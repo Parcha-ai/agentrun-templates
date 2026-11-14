@@ -19,6 +19,8 @@ jobs:
   build:
     if: github.repository == 'Parcha-ai/agentrun-templates'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
@@ -36,7 +38,10 @@ jobs:
           restore-keys: site-cache-
       - run: npm ci --prefix site
       - run: npm test --prefix site
+      # The token only raises the API rate limit for the star counts; a local build goes anonymous.
       - run: node site/build.mjs --sha "$GITHUB_SHA"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: node site/check.mjs
       - uses: actions/upload-pages-artifact@v4
         with:

@@ -128,8 +128,10 @@ export class GitHub {
     const fresh = cached && Date.now() - Date.parse(cached.fetched_at) < STATS_TTL_MS;
     if (this.offline || fresh) return cached?.missing ? null : cached ? { stars: cached.stars, forks: cached.forks } : null;
     try {
+      // GITHUB_TOKEN when the workflow passes one (a higher rate limit); anonymous otherwise, as on a local build.
+      const token = process.env.GITHUB_TOKEN;
       const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
-        headers: { accept: "application/vnd.github+json", "user-agent": "agentrun-marketplace-site", "x-github-api-version": "2022-11-28" },
+        headers: { accept: "application/vnd.github+json", "user-agent": "agentrun-marketplace-site", "x-github-api-version": "2022-11-28", ...(token ? { authorization: `Bearer ${token}` } : {}) },
         signal: AbortSignal.timeout(15_000),
       });
       if (res.status === 404) {

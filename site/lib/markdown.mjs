@@ -1,6 +1,6 @@
 // Markdown to HTML for text that comes from template packages (instructions, skills, sample reports). A package is
-// third-party text, so raw HTML in it is shown as text, never rendered, and links and images keep only http(s),
-// mailto and in-page targets. Headings shift down so a page keeps one h1.
+// third-party text, so raw HTML in it is shown as text, never rendered, links keep only http(s), mailto and in-page
+// targets, and images become links. Headings shift down so a page keeps one h1.
 
 import { Marked } from "marked";
 import { escapeHtml } from "./util.mjs";
@@ -33,10 +33,12 @@ function instance(shift) {
         const external = /^https?:/i.test(url);
         return `<a href="${escapeHtml(url)}"${title ? ` title="${escapeHtml(title)}"` : ""}${external ? ' rel="nofollow noopener" target="_blank"' : ""}>${text}</a>`;
       },
-      image({ href, title, text }) {
+      // A page loads nothing from a third party, so an image in a package is a link to it, never fetched.
+      image({ href, text }) {
         const url = safeUrl(href);
-        if (!url || url.startsWith("mailto:")) return escapeHtml(text);
-        return `<img src="${escapeHtml(url)}" alt="${escapeHtml(text)}"${title ? ` title="${escapeHtml(title)}"` : ""} loading="lazy" referrerpolicy="no-referrer">`;
+        const label = escapeHtml(text || "image");
+        if (!url || !/^https?:/i.test(url)) return label;
+        return `<a href="${escapeHtml(url)}" rel="nofollow noopener" target="_blank">${label}</a>`;
       },
     },
   });

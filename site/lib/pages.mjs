@@ -18,9 +18,9 @@ export function layout(site, page) {
   const csp = [
     "default-src 'self'",
     "script-src 'self'",
-    "style-src 'self' https://fonts.googleapis.com",
-    "font-src https://fonts.gstatic.com",
-    "img-src 'self' https: data:",
+    "style-src 'self'",
+    "font-src 'self'",
+    "img-src 'self' data:",
     "connect-src 'self'",
     "base-uri 'none'",
     "form-action 'self'",
@@ -48,9 +48,8 @@ ${page.noindex ? "" : html`<meta property="og:url" content="${url}">`}
 <meta name="twitter:title" content="${page.ogTitle ?? page.title}">
 <meta name="twitter:description" content="${page.description}">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&amp;family=Schibsted+Grotesk:wght@400;600&amp;display=swap">
+<link rel="preload" href="/assets/fonts/jetbrains-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/schibsted-grotesk-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css?v=${site.assetVersion}">
 ${page.jsonLd ? jsonLdTag(page.jsonLd) : ""}
 <script src="/assets/site.js?v=${site.assetVersion}" defer></script>

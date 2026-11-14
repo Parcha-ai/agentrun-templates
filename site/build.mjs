@@ -16,6 +16,8 @@ import { categoryPage, homePage, layout, listPage, notFoundPage, SITE_NAME, temp
 import { mdText } from "./lib/util.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
+/** The console's two families (@fontsource, pinned in package.json); their latin 400 and 600 files are served. */
+const FONTS = ["jetbrains-mono", "schibsted-grotesk"];
 
 export async function build(options = {}) {
   const root = resolve(options.root ?? join(here, ".."));
@@ -75,8 +77,13 @@ export async function build(options = {}) {
     write(page.path.endsWith("/") ? `${page.path}index.html` : page.path, layout(site, page));
     if (page.mdPath) write(page.mdPath, page.md);
   }
-  mkdirSync(join(out, "assets"), { recursive: true });
+  mkdirSync(join(out, "assets", "fonts"), { recursive: true });
   for (const f of assetFiles) copyFileSync(join(assetsDir, f), join(out, "assets", f));
+  for (const font of FONTS) {
+    const pkg = join(here, "node_modules", "@fontsource", font);
+    for (const weight of [400, 600]) copyFileSync(join(pkg, "files", `${font}-latin-${weight}-normal.woff2`), join(out, "assets", "fonts", `${font}-latin-${weight}-normal.woff2`));
+    copyFileSync(join(pkg, "LICENSE"), join(out, "assets", "fonts", `${font}-LICENSE.txt`));
+  }
   write(".nojekyll", "");
 
   write("search.json", JSON.stringify(packages.map((p) => ({

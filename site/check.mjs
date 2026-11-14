@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Checks a built site/dist: every page has a title, a meta description, a canonical URL that points at a page that
 // exists, OG and Twitter tags, one h1, and JSON-LD that parses; every internal link, asset and #fragment resolves;
-// the sitemap, llms.txt and the .md twins line up with the pages; nothing inline breaks the CSP.
+// the sitemap, llms.txt and the .md twins line up with the pages; nothing inline breaks the CSP; and nothing on a
+// page (scripts, styles, fonts, images) loads from another origin.
 // Usage: node site/check.mjs [--dir site/dist] [--base-url https://marketplace.agentrun.ai]. Exits 1 on any problem.
 
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
@@ -80,6 +81,16 @@ export function check({ dir, baseUrl }) {
     }
     for (const m of scripts) if (!/type="application\/ld\+json"/.test(m[1]) && m[2].trim()) bad(file, "inline script (the CSP refuses it)");
     if (/\sstyle="/.test(text)) bad(file, "inline style attribute (the CSP refuses it)");
+    // Nothing on a page loads from another origin: every src, every non-navigation <link>, every CSS url().
+    for (const [, url] of text.matchAll(/\ssrc="([^"]*)"/g)) if (/^(https?:)?\/\//i.test(decode(url))) bad(file, `loads ${decode(url)} from another origin`);
+    for (const [tag] of text.matchAll(/<link\s[^>]*>/g)) {
+      const rel = /rel="([^"]*)"/.exec(tag)?.[1] ?? "";
+      const href = decode(/href="([^"]*)"/.exec(tag)?.[1] ?? "");
+      if (!/^(canonical|alternate)$/.test(rel) && /^(https?:)?\/\//i.test(href)) bad(file, `<link rel="${rel}"> loads ${href} from another origin`);
+    }
+    const csp = /<meta http-equiv="Content-Security-Policy" content="([^"]*)">/.exec(text);
+    if (!csp) bad(file, "no Content-Security-Policy");
+    else if (/https?:/.test(decode(csp[1]).replace(/form-action[^;]*/, ""))) bad(file, `the CSP allows another origin: ${decode(csp[1])}`);
     if (/\son[a-z]+="/.test(text)) bad(file, "inline event handler (the CSP refuses it)");
 
     const seen = new Set();
@@ -121,6 +132,13 @@ export function check({ dir, baseUrl }) {
     }
   }
   try { JSON.parse(readFileSync(join(root, "search.json"), "utf8")); } catch (err) { bad("search.json", err.message); }
+  for (const css of files.filter((f) => f.endsWith(".css"))) {
+    for (const [, url] of readFileSync(join(root, css), "utf8").matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/g)) {
+      if (/^(https?:)?\/\//i.test(url)) bad(css, `loads ${url} from another origin`);
+      else if (url.startsWith("/") && !fileFor(url)) bad(css, `url(${url}) does not resolve`);
+    }
+    if (/@import/.test(readFileSync(join(root, css), "utf8"))) bad(css, "@import loads another stylesheet");
+  }
   for (const md of files.filter((f) => f.endsWith(".md"))) if (!readFileSync(join(root, md), "utf8").startsWith("# ")) bad(md, "does not start with a # title");
   if (!existsSync(join(root, "404.html"))) bad("404.html", "missing");
 

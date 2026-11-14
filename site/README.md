@@ -11,7 +11,10 @@ node site/serve.mjs          # http://127.0.0.1:7420/
 npm test --prefix site
 ```
 
-Node 24, git, and one dependency (`marked`, pinned) for Markdown.
+Node 24, git, and three pinned dependencies: `marked` for Markdown, and the console's fonts,
+`@fontsource/jetbrains-mono` and `@fontsource/schibsted-grotesk` (latin 400 and 600, copied into
+`dist/assets/fonts` with their OFL licence). A page loads nothing from another origin; `check.mjs` fails the build if
+one does.
 
 ## What it reads
 
@@ -20,7 +23,8 @@ Node 24, git, and one dependency (`marked`, pinned) for Markdown.
 - A `github:<owner>/<repo>[/<path>][@<ref>]` entry (the bundled templates in Parcha-ai/agentrun) comes from GitHub.
   The ref, or the default branch when there is none, resolves to a commit sha with `git ls-remote`, and the files are
   read at that sha through a shallow, blobless git fetch. The install link pins that sha.
-- Stars and forks come from the GitHub API, anonymously. Results are cached in `site/.cache/` for six hours; when
+- Stars and forks come from the GitHub API at build time, with `GITHUB_TOKEN` when set (the workflow passes it),
+  anonymously otherwise. Results are cached in `site/.cache/` for six hours; when
   the API is rate-limited or down the build uses the last cached numbers, or shows none. It never fails on them.
 - `measured.json` beside a template's agent.md (`{median_usd, runs, model, harness, measured_on}`) sets the cost per
   run. Without it the page says "Not measured yet" and shows the budget cap.
@@ -40,9 +44,9 @@ Node 24, git, and one dependency (`marked`, pinned) for Markdown.
 | `<path>.md` | the Markdown twin of each page |
 | `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/search.json`, `/404.html` | |
 
-Package text (instructions, skills, sample reports) is third-party: raw HTML in it renders as text, and links keep
-only http(s), mailto and in-page targets. Pages carry a Content-Security-Policy that allows the one script,
-`assets/site.js`, and nothing inline.
+Package text (instructions, skills, sample reports) is third-party: raw HTML in it renders as text, links keep only
+http(s), mailto and in-page targets, and images become links. Pages carry a Content-Security-Policy that allows only
+this site's own script, styles, fonts and images, and nothing inline.
 
 Structured data is `SoftwareApplication` per template: a template is one installable, versioned, licensed package
 from a publisher, which is what that type describes. `HowTo` was the other option; Google stopped showing HowTo

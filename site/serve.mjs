@@ -14,7 +14,7 @@ const root = resolve(values.dir ?? join(here, "dist"));
 const port = Number(values.port ?? 7420);
 const TYPES = {
   ".html": "text/html; charset=utf-8", ".md": "text/markdown; charset=utf-8", ".txt": "text/plain; charset=utf-8",
-  ".json": "application/json", ".xml": "application/xml", ".css": "text/css", ".js": "text/javascript", ".svg": "image/svg+xml",
+  ".json": "application/json", ".xml": "application/xml", ".css": "text/css", ".js": "text/javascript", ".svg": "image/svg+xml", ".woff2": "font/woff2",
 };
 
 async function find(urlPath) {

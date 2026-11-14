@@ -2,6 +2,13 @@
    follows the system. Colour only through the tokens below; mono for structure, sans for prose; 8px controls, 12px
    cards, square tabs; shadow only on the dialog. */
 
+/* Self-hosted, as the console does: @fontsource latin subsets, 400 and 600, copied into /assets/fonts by build.mjs
+   (SIL Open Font License 1.1, beside the files). */
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url(/assets/fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 600; font-display: swap; src: url(/assets/fonts/jetbrains-mono-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family: "Schibsted Grotesk"; font-style: normal; font-weight: 400; font-display: swap; src: url(/assets/fonts/schibsted-grotesk-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "Schibsted Grotesk"; font-style: normal; font-weight: 600; font-display: swap; src: url(/assets/fonts/schibsted-grotesk-latin-600-normal.woff2) format("woff2"); }
+
 :root {
   color-scheme: dark;
   --background: 240 6% 9%;

@@ -93,6 +93,7 @@ test("markdown from a package never renders its HTML or script links", () => {
   assert.doesNotMatch(out, /<script/);
   assert.doesNotMatch(out, /javascript:/);
   assert.doesNotMatch(out, /<img/);
+  assert.match(markdownToHtml("![chart](https://cdn.example/c.png)"), /<a href="https:\/\/cdn\.example\/c\.png"[^>]*>chart<\/a>/, "an image is a link, never loaded");
   assert.match(out, /<a href="https:\/\/ok\.example" rel="nofollow noopener" target="_blank">y<\/a>/);
 });
 
@@ -134,6 +135,11 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.match(page, /Illustrative\. Written by hand/, "output.md renders as written");
     assert.match(page, /Beta this week/);
     assert.doesNotMatch(page, /<script>alert|<img src=x|href="javascript:/);
+    assert.doesNotMatch(page, /googleapis|gstatic/);
+    assert.match(page, /font-src &#39;self&#39;/);
+    for (const f of ["jetbrains-mono-latin-400-normal.woff2", "schibsted-grotesk-latin-600-normal.woff2", "jetbrains-mono-LICENSE.txt"]) {
+      assert.ok(readFileSync(join(out, "assets", "fonts", f)).length > 0, f);
+    }
     const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
     assert.match(md, /^# Sample watch\n/);
     const llms = readFileSync(join(out, "llms.txt"), "utf8");
