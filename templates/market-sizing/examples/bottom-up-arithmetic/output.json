@@ -1,0 +1,244 @@
+{
+  "checked_on": "2026-11-14",
+  "market": {
+    "definition": "Paid, dedicated appointment-reminder software subscriptions purchased by independent, non-corporate veterinary clinics in the United States, measured per clinic.",
+    "revenue_basis": "end_user_spend",
+    "region": "United States",
+    "base_year": 2025,
+    "horizon_year": 2030,
+    "inclusions": [
+      "Dedicated appointment-reminder subscriptions",
+      "Independent veterinary clinic locations"
+    ],
+    "exclusions": [
+      "Corporate-owned veterinary clinics",
+      "Free reminder tools",
+      "Practice-management software revenue not separately attributable to dedicated reminders",
+      "Implementation services and separately billed messaging charges not included in the supplied price"
+    ],
+    "interpretation": "Size the paying installed base, not universal adoption. Apply the supplied 2026 subscription price to the 2025 clinic count and adoption rate; this is an annualized spending estimate, not measured historical 2025 revenue."
+  },
+  "bottom_line": "Calculation: annualized TAM is $30 million, with an inference-based sensitivity range of $19.2–43.2 million, using the 2025 installed base at the supplied 2026 price [S1–S3]. Conditional SAM equals TAM because no narrower product or channel restrictions were supplied. Inference: illustrative 2030 SOM is $0.192–2.16 million annually, with a $0.6 million base case, assuming an unchanged market and 1–5% capture. Growth is unavailable and confidence is low: survey representativeness and market-average spending are unverified.",
+  "confidence": "low",
+  "published_estimates": [],
+  "estimate_gap": "No published market-value estimate was supplied, and no external search was performed. The supplied pages describe clinic count, survey adoption and one vendor's price, rather than independent market valuations. Consequently, there are no published estimates to average or reconcile.",
+  "bottom_up": {
+    "formula": "Annual spending = independent clinics × paid dedicated-tool adoption × annual spending per adopting clinic; divide USD by 1,000,000 for usd_m.",
+    "inputs": [
+      {
+        "name": "Independent US veterinary clinics",
+        "base": 40000,
+        "low": 40000,
+        "high": 40000,
+        "unit": "clinic locations",
+        "basis": "fact",
+        "reasoning": "S1 states the end-2025 count. Held fixed across scenarios; this does not establish that the count is error-free.",
+        "confidence": "medium",
+        "sources": [
+          "S1"
+        ]
+      },
+      {
+        "name": "Paid dedicated appointment-reminder adoption",
+        "base": 25,
+        "low": 20,
+        "high": 30,
+        "unit": "percent of independent clinics",
+        "basis": "fact",
+        "reasoning": "S2 reports 25% among surveyed clinics in 2025. Applying it nationally is an inference. The 20–30% bounds are analyst sensitivity assumptions, not a survey confidence interval.",
+        "confidence": "low",
+        "sources": [
+          "S2"
+        ]
+      },
+      {
+        "name": "Annual spending per adopting clinic",
+        "base": 3000,
+        "low": 2400,
+        "high": 3600,
+        "unit": "USD per clinic per year",
+        "basis": "fact",
+        "reasoning": "S3 states $250 monthly and $3,000 annually, retrieved in 2026. Its use as market-average spending is an inference; $2,400–3,600 is an analyst sensitivity range, not observed market pricing.",
+        "confidence": "low",
+        "sources": [
+          "S3"
+        ]
+      }
+    ],
+    "steps": [
+      "Calculation, base: 40,000 clinics × 25 / 100 = 10,000 paying clinics [S1,S2].",
+      "Calculation, base: 10,000 × $3,000 = $30,000,000 annually; divide by 1,000,000 = 30 usd_m [S1,S2,S3].",
+      "Calculation, low scenario: 40,000 × 20 / 100 = 8,000 paying clinics; 8,000 × $2,400 = $19,200,000 = 19.2 usd_m. Adoption and spending bounds are inference.",
+      "Calculation, high scenario: 40,000 × 30 / 100 = 12,000 paying clinics; 12,000 × $3,600 = $43,200,000 = 43.2 usd_m. Adoption and spending bounds are inference.",
+      "Arithmetic cross-check, base: 40,000 × $3,000 = $120,000,000 at universal adoption; $120,000,000 × 25% = $30,000,000 = 30 usd_m [S1,S2,S3]."
+    ],
+    "result": {
+      "low": 19.2,
+      "base": 30,
+      "high": 43.2
+    }
+  },
+  "tiers": {
+    "tam": {
+      "usd_m": {
+        "low": 19.2,
+        "base": 30,
+        "high": 43.2
+      },
+      "year": 2025,
+      "method": "Calculation using 40,000 clinics × 25% paid adoption × $3,000 annually. Range applies inference bounds of 20–30% adoption and $2,400–3,600 annual spending. Represents the 2025 installed base at the supplied 2026 price, not actual 2025 revenue.",
+      "basis": "calculation",
+      "sources": [
+        "S1",
+        "S2",
+        "S3"
+      ]
+    },
+    "sam": {
+      "usd_m": {
+        "low": 19.2,
+        "base": 30,
+        "high": 43.2
+      },
+      "year": 2025,
+      "method": "Inference: SAM equals TAM conditional on a supplier being able to serve all US independent clinics buying dedicated reminders. No company, integration, channel or regional constraints were supplied; this is a scope-based SAM, not demonstrated distribution reach.",
+      "basis": "inference",
+      "sources": [
+        "S1",
+        "S2",
+        "S3"
+      ]
+    },
+    "som": {
+      "usd_m": {
+        "low": 0.192,
+        "base": 0.6,
+        "high": 2.16
+      },
+      "year": 2030,
+      "method": "Inference: hold annual SAM unchanged through 2030 and assume low/base/high capture of 1%/2%/5%. Calculations: 19.2 × 1% = 0.192; 30 × 2% = 0.6; 43.2 × 5% = 2.16 usd_m. These capture assumptions lack comparable-company evidence and illustrate a scenario, not a validated forecast.",
+      "basis": "inference",
+      "sources": [
+        "S1",
+        "S2",
+        "S3"
+      ]
+    }
+  },
+  "reconciliation": "Calculation: the full-adoption spending ceiling is 40,000 × $3,000 = $120 million annually [S1,S3]; it is not current TAM. Applying the observed survey adoption proxy gives $120 million × 25% = $30 million [S2]. This reproduces the bottom-up calculation but is not independent corroboration. No external top-down estimate was supplied. The model combines a 2025 buyer/adoption snapshot with a price retrieved in 2026.",
+  "growth": {
+    "historical_cagr_pct": null,
+    "forecast_cagr_pct": null,
+    "drivers": [
+      {
+        "point": "Inference: additional paid adoption could expand spending. S2 establishes paid adoption in its survey but does not establish adoption momentum or willingness to buy among non-adopters.",
+        "sources": [
+          "S2"
+        ]
+      }
+    ],
+    "headwinds": [
+      {
+        "point": "Inference: the market estimate is sensitive to whether one vendor's listed subscription price represents realized average spending. Discounts, product mix and additional charges are unavailable.",
+        "sources": [
+          "S3"
+        ]
+      }
+    ]
+  },
+  "segments": [
+    {
+      "name": "Paid dedicated reminder subscriptions",
+      "definition": "The modeled market: independent US clinics paying for a dedicated appointment-reminder tool. Calculation: 40,000 × 25% × $3,000 = $30 million annualized at the supplied price, not independently observed segment revenue.",
+      "share_pct": null,
+      "value_usd_m": 30,
+      "basis": "calculation",
+      "sources": [
+        "S1",
+        "S2",
+        "S3"
+      ]
+    },
+    {
+      "name": "Clinics without a paid dedicated reminder tool",
+      "definition": "Outside current paid-market spending. The survey does not distinguish free tools, bundled reminders, manual workflows or no reminders; this group cannot be treated as uniformly addressable demand.",
+      "share_pct": null,
+      "value_usd_m": null,
+      "basis": "inference",
+      "sources": [
+        "S2"
+      ]
+    }
+  ],
+  "players": [
+    {
+      "name": "ReminderVet (label inferred from supplied domain)",
+      "domain": "remindervet.example",
+      "segment": "Clinic reminder subscriptions",
+      "positioning": "The supplied pricing page identifies a reminder plan sold per clinic. No broader feature claims, market position or verified legal company name were supplied.",
+      "pricing_model": "Fact: $250 per clinic per month, billed monthly; $3,000 annually, retrieved 2026-11-14 [S3].",
+      "funding": null,
+      "size_estimate": null,
+      "sources": [
+        "S3"
+      ]
+    }
+  ],
+  "sensitivity": [
+    {
+      "case": "low",
+      "changes": "Inference assumptions: 20% adoption and $2,400 annual spending; clinic count held at the sourced 40,000. Calculation: 40,000 × 0.20 × $2,400 / 1,000,000 = 19.2.",
+      "bottom_up_usd_m": 19.2
+    },
+    {
+      "case": "base",
+      "changes": "Sourced proxies: 25% surveyed adoption and $3,000 listed annual price; 40,000 clinics. Calculation: 40,000 × 0.25 × $3,000 / 1,000,000 = 30.",
+      "bottom_up_usd_m": 30
+    },
+    {
+      "case": "high",
+      "changes": "Inference assumptions: 30% adoption and $3,600 annual spending; clinic count held at the sourced 40,000. Calculation: 40,000 × 0.30 × $3,600 / 1,000,000 = 43.2.",
+      "bottom_up_usd_m": 43.2
+    }
+  ],
+  "caveats": [
+    "The supplied captured pages count as read. Their URLs use example domains; neither publisher authenticity nor the underlying studies were independently verified. No external searches or fetches were performed.",
+    "Fact: S2 reports a 2025 survey sample of 1,200 clinics. Sampling frame, weighting, response rate and representativeness are unavailable; the reported adoption rate is not a verified national penetration rate.",
+    "The 2025 clinic count and adoption snapshot are combined with pricing retrieved in 2026. The result is annualized spending at that price, not measured historical revenue or a verified 2026 market size.",
+    "The adoption and spending bounds are inference-based sensitivity assumptions, not statistical confidence intervals or sourced market ranges. Their simultaneous extremes need not be equally likely.",
+    "One vendor's listed price is not an observed market-average realized price. Discounts, add-ons, taxes, churn, billing mix and partial-year subscriptions are unavailable.",
+    "SAM assumes no reach restrictions. SOM uses unsupported capture assumptions and a constant-market scenario because no company capabilities, comparable shares, acquisition economics or growth series were supplied.",
+    "The top-down check reuses the bottom-up inputs and is not independent validation. Published market estimates, historical growth, forecast CAGR and a comprehensive competitor map are unavailable from the supplied material.",
+    "Research only; not investment, legal or financial advice."
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "url": "https://vetassociation.example/stats/clinics-2025",
+      "title": "Independent veterinary clinics in the US, 2025",
+      "publisher": "vetassociation.example",
+      "published": "2026-02-10",
+      "read_on": "2026-11-14",
+      "found": true
+    },
+    {
+      "id": "S2",
+      "url": "https://vetsoftwaresurvey.example/2025-adoption",
+      "title": "2025 practice software survey",
+      "publisher": "vetsoftwaresurvey.example",
+      "published": "2026-01-30",
+      "read_on": "2026-11-14",
+      "found": true
+    },
+    {
+      "id": "S3",
+      "url": "https://remindervet.example/pricing",
+      "title": "Pricing",
+      "publisher": "remindervet.example",
+      "published": null,
+      "read_on": "2026-11-14",
+      "found": true
+    }
+  ],
+  "report_markdown": "Plan: use the supplied pages to define scope and build annual spending; check the result against the full-adoption ceiling; then show conditional market tiers and sensitivity.\n\n## Bottom line\n**Calculation: $30 million in annualized US spending**, with an **inference-based sensitivity range of $19.2–43.2 million**. The estimate applies the supplied price retrieved in 2026 to the 2025 clinic and adoption snapshot; it is not measured historical revenue. Confidence is low because national adoption and average realized spending are not independently established. [S1][S2][S3]\n\n## Market definition\nThe buyer is an independent, non-corporate US veterinary clinic, and the unit is an annual paid subscription to a dedicated appointment-reminder tool. The revenue basis is end-user spending. Corporate clinics, free tools and undifferentiated practice-management software revenue are excluded. The model assumes each adopting clinic buys a clinic-level subscription at the modeled annual spend.\n\n## Published estimates\n| Evidence | Availability |\n|---|---|\n| Independent published market valuation | Not supplied; no external search performed |\n| Top-down check | Full-adoption spending ceiling, calculated below |\n\nThe supplied pages are count, adoption and pricing inputs, not independent market-size reports. There is therefore no published-estimate disagreement to reconcile.\n\n## Bottom-up build\n| Input | Base | Classification and limitation |\n|---|---:|---|\n| Independent clinics | 40,000 | Fact: end of 2025 [S1] |\n| Paid dedicated-tool adoption | 25% | Fact for the surveyed clinics in 2025; national extrapolation is inference [S2] |\n| Annual subscription price | $3,000 per clinic | Fact for the supplied plan, retrieved in 2026; market-average use is inference [S3] |\n\n**Calculation:** 40,000 clinics × 25% = 10,000 paying clinics. Then 10,000 × $3,000 = $30,000,000 annually, or **30 usd_m**. [S1][S2][S3]\n\nThe arithmetic checks in reverse order: 40,000 × $3,000 = $120 million at full adoption; multiplying by 25% gives $30 million. This is an arithmetic check, not independent evidence.\n\n## TAM / SAM / SOM\n- **TAM — calculation:** $19.2–43.2 million, base $30 million, for the 2025 installed-base snapshot at the supplied 2026 price. TAM measures current paid-category spending rather than hypothetical universal adoption.\n- **SAM — inference:** the same range, conditional on a supplier being able to serve the entire defined US segment. No narrower product, integration, channel or geographic constraints were supplied. This does not demonstrate practical distribution reach.\n- **SOM — inference:** illustrative annual spending captured by 2030 is $0.192–2.16 million, base $0.6 million. The scenario holds market spending unchanged and assumes low/base/high capture of 1%/2%/5% of the corresponding SAM cases. These are assumptions, not comparable-backed forecasts.\n\n**Short top-down check:** the calculated full-adoption ceiling is $120 million at the supplied price. Applying the observed survey adoption proxy reduces that ceiling to $30 million. Calling the ceiling current TAM would ignore paid adoption. [S1][S2][S3]\n\n## Growth and drivers\nHistorical and forecast CAGR are unavailable: the material contains no time series. Additional paid adoption could expand spending, but that is an inference rather than demonstrated momentum. The survey does not establish whether non-adopters want dedicated software or already use acceptable bundled alternatives. Market-average realized pricing is also unknown. [S2][S3]\n\n## Segments\nThe quantified segment is paid dedicated reminder subscriptions. Clinics without such a subscription are outside current paid spending; the evidence does not separate free tools, bundled functionality and manual workflows. No reliable revenue split by clinic specialty, size or reminder channel can be produced. [S2]\n\n## Players\nThe only supplied vendor evidence is the reminder plan at remindervet.example, labeled ReminderVet from its domain. **Fact:** its plan costs $250 per clinic monthly, equivalent to the stated $3,000 annually. Funding, customer count, revenue, legal company name and competitive standing are unavailable. This is a limited vendor observation, not a comprehensive market map. [S3]\n\n## Sensitivity\nThe following bounds are analyst inferences, not measured market ranges or survey confidence intervals. The sourced clinic count is held fixed.\n\n| Case | Adoption | Annual spend per adopter | Calculated annual market |\n|---|---:|---:|---:|\n| Low | 20% | $2,400 | $19.2 million |\n| Base | 25% | $3,000 | $30 million |\n| High | 30% | $3,600 | $43.2 million |\n\nLow calculation: 40,000 × 20% × $2,400 = $19.2 million. High calculation: 40,000 × 30% × $3,600 = $43.2 million. Spending changes proportionally with either adoption or annual spend when the other input is held fixed.\n\n## Caveats and gaps\nThe captured pages were accepted as read, as requested; their example-domain publishers and underlying evidence were not independently verified. **Fact:** the adoption survey reports a sample of 1,200 clinics, but sampling methods and representativeness are unavailable. [S2] One vendor's list price does not establish market-average realized spending. The result also mixes a 2025 installed-base snapshot with pricing retrieved in 2026. [S1][S2][S3]\n\nNo independent top-down market valuation, growth series, validated capture benchmark or comprehensive competitor evidence was supplied. Consequently, the bottom-up calculation is transparent, but its national extrapolation remains uncertain. Research only; not investment, legal or financial advice."
+}
