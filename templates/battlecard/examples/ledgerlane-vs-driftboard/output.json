@@ -1,0 +1,59 @@
+{
+  "checked_on": "2026-11-14",
+  "your_company": { "name": "Ledgerlane", "website": "https://ledgerlane.example", "competing_products": ["Ledgerlane Close"] },
+  "competitor": {
+    "name": "Driftboard",
+    "legal_name": null,
+    "website": "https://driftboard.example",
+    "headquarters": null,
+    "ownership_and_funding": null,
+    "competing_products": ["Driftboard (accounting close)"],
+    "identity_note": "Driftboard means the accounting tool at driftboard.example. DriftBoard Pro, a task-management product from a different company, was rejected."
+  },
+  "overlap": "direct",
+  "bottom_line": "Driftboard sells month-end close software to finance teams and starts at $40 per user per month [S1]. Ledgerlane holds a SOC 2 Type II report issued 2026-08-30 [S3], while Driftboard's status page logged two incidents in the last two months [S2]. Win on security evidence and recent reliability. Respect that Driftboard's published price is clear and that reviews of its setup and exports are good [S4]. Ask the buyer how often close is blocked by outages.",
+  "target_customers": [
+    { "segment": "Finance teams of 30 to 200 people", "example_logos": [], "sources": ["S4"] }
+  ],
+  "pricing": [
+    { "plan": "Starting price (comparison page)", "price": "$40 per user per month", "limits": null, "as_of": "2026-11-14", "basis": "published", "sources": ["S1"] },
+    { "plan": "Enterprise", "price": null, "limits": "SSO, dedicated success manager", "as_of": "2026-11-14", "basis": "contact_sales", "sources": ["S5"] }
+  ],
+  "pricing_notes": "The $40 figure appears only on Driftboard's comparison page, not on its pricing page. No archived pricing copy was read, so no price change is claimed.",
+  "feature_comparison": [
+    { "capability": "SOC 2 Type II report", "competitor": "unclear", "you": "yes", "note": "Ledgerlane: report issued 2026-08-30, under NDA. Driftboard's trust page was not read.", "sources": ["S3"] },
+    { "capability": "Multi-entity consolidation", "competitor": "yes", "you": "unclear", "note": "Driftboard: Growth plan. Ledgerlane's product page was not read.", "sources": ["S5"] },
+    { "capability": "US and EU data regions", "competitor": "unclear", "you": "yes", "note": null, "sources": ["S3"] }
+  ],
+  "strengths": [
+    { "claim": "Reviewers praise quick setup and solid exports.", "sources": ["S4"] },
+    { "claim": "Multi-entity consolidation is on a published plan.", "sources": ["S5"] }
+  ],
+  "weaknesses": [
+    { "claim": "Two incidents in two months.", "evidence": "2026-10-06 degraded reports and exports for 3h 10m; 2026-09-22 partial sign-in outage for 1h 40m, from the vendor's status history.", "frequency": "unclear", "sources": ["S2"] }
+  ],
+  "recent_moves": [],
+  "win_themes": [
+    { "theme": "Security evidence a review team can request today.", "proof": "SOC 2 Type II issued 2026-08-30 with US and EU regions.", "sources": ["S3"] },
+    { "theme": "Reliability around month-end.", "proof": "Two incidents, one touching reports and exports, in the two months before this card.", "sources": ["S2"] }
+  ],
+  "objections": [
+    { "objection": "Driftboard is cheaper to start.", "response": "Compare total cost at the buyer's seat count and ask for Driftboard's quote on the plan they need: its Enterprise price is not public.", "sources": ["S1", "S5"] }
+  ],
+  "landmines": [
+    { "question": "How many close days did you lose to tool downtime last quarter?", "why_it_works": "Driftboard's status page shows a 3h 10m degradation of reports and exports in October.", "sources": ["S2"] }
+  ],
+  "gaps": [
+    "Driftboard's trust page and its legal entity were not read, so its security and ownership cells are unclear.",
+    "Ledgerlane's product pages were not read: consolidation on your side is unclear.",
+    "Four reviews were available; no trend is claimed."
+  ],
+  "sources": [
+    { "id": "S1", "url": "https://driftboard.example/vs/ledgerlane", "title": "Driftboard vs Ledgerlane", "publisher": "Driftboard", "published": null, "read_on": "2026-11-14" },
+    { "id": "S2", "url": "https://status.driftboard.example/history", "title": "Driftboard status: incident history", "publisher": "Driftboard", "published": null, "read_on": "2026-11-14" },
+    { "id": "S3", "url": "https://ledgerlane.example/trust", "title": "Trust at Ledgerlane", "publisher": "Ledgerlane", "published": null, "read_on": "2026-11-14" },
+    { "id": "S4", "url": "https://reviews.example/products/driftboard", "title": "Driftboard reviews", "publisher": "Reviews.example", "published": null, "read_on": "2026-11-14" },
+    { "id": "S5", "url": "https://driftboard.example/pricing", "title": "Pricing", "publisher": "Driftboard", "published": null, "read_on": "2026-11-14" }
+  ],
+  "report_markdown": "## Bottom line\nDriftboard sells month-end close software and starts at $40 per user per month [S1]. Ledgerlane holds a SOC 2 Type II report issued 2026-08-30 [S3], and Driftboard's status page logged two incidents in two months [S2]. Win on security evidence and recent reliability. Respect the clear published price and good setup reviews [S4].\n\n## Pricing and packaging (checked 2026-11-14)\n| Plan | Price | Basis |\n|---|---|---|\n| Starting price | $40 per user per month | published on its comparison page [S1] |\n| Enterprise | not public | contact sales [S5] |\n\n## Feature comparison\n| Capability | Driftboard | Ledgerlane |\n|---|---|---|\n| SOC 2 Type II | unclear | yes [S3] |\n| Multi-entity consolidation | yes [S5] | unclear |\n| US and EU data regions | unclear | yes [S3] |\n\n## Strengths to respect\n- Quick setup and solid exports in reviews [S4].\n- Consolidation on a published plan [S5].\n\n## Weaknesses with evidence\n- Two incidents: 2026-10-06 (3h 10m, reports and exports) and 2026-09-22 (1h 40m, sign-in) [S2].\n\n## Win themes\n1. Security evidence a review team can request today [S3].\n2. Reliability around month-end [S2].\n\n## Objection handling\n| Objection | Response |\n|---|---|\n| Driftboard is cheaper to start | Compare at the buyer's seat count; Enterprise is not public [S1][S5] |\n\n## Landmine questions\n- How many close days did you lose to tool downtime last quarter? Driftboard's October degradation hit reports and exports [S2].\n\n## Gaps and assumptions\nDriftboard's trust page and legal entity were not read. Ledgerlane's product pages were not read. Four reviews: no trend claimed."
+}

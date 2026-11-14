@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "battlecard.schema.json",
+  "title": "Competitive battlecard",
+  "description": "A sourced battlecard against one competitor. Every claim carries the ids of the sources it rests on (S1, S2, ...), each listed in `sources`. A claim that could not be supported is `unclear` or `not_found`, never guessed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "your_company", "competitor", "overlap", "bottom_line", "gaps", "sources", "report_markdown"],
+  "properties": {
+    "checked_on": { "$ref": "#/$defs/date" },
+    "your_company": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": { "name": { "type": "string" }, "website": { "type": ["string", "null"] }, "competing_products": { "type": "array", "items": { "type": "string" }, "maxItems": 6 } }
+    },
+    "competitor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "identity_note"],
+      "properties": {
+        "name": { "type": "string" },
+        "legal_name": { "type": ["string", "null"] },
+        "website": { "type": ["string", "null"] },
+        "headquarters": { "type": ["string", "null"] },
+        "ownership_and_funding": { "type": ["string", "null"], "maxLength": 400 },
+        "competing_products": { "type": "array", "items": { "type": "string" }, "maxItems": 6 },
+        "identity_note": { "type": "string", "minLength": 1, "maxLength": 500, "description": "which company and product line was meant, and which same-name companies were rejected" }
+      }
+    },
+    "overlap": { "enum": ["direct", "partial", "none"], "description": "none: the two do not appear to compete; the card then compares only where their offers overlap" },
+    "bottom_line": { "type": "string", "minLength": 1, "maxLength": 900, "description": "three to five sentences: where you win, where you lose, the one thing a seller should do" },
+    "target_customers": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["segment", "sources"],
+        "properties": { "segment": { "type": "string", "maxLength": 300 }, "example_logos": { "type": "array", "items": { "type": "string" }, "maxItems": 6 }, "sources": { "$ref": "#/$defs/source_ids" } }
+      }
+    },
+    "pricing": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["plan", "price", "basis"],
+        "properties": {
+          "plan": { "type": "string" },
+          "price": { "type": ["string", "null"], "description": "as published, with the unit; null when not public" },
+          "limits": { "type": ["string", "null"] },
+          "as_of": { "type": ["string", "null"], "description": "the date the figure was seen or published" },
+          "basis": { "enum": ["published", "indirect", "contact_sales", "not_found"] },
+          "sources": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+        }
+      }
+    },
+    "pricing_notes": { "type": ["string", "null"], "maxLength": 600, "description": "discounting signals and recent price changes, with dates" },
+    "feature_comparison": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["capability", "competitor", "you"],
+        "properties": {
+          "capability": { "type": "string" },
+          "competitor": { "enum": ["yes", "no", "partial", "unclear"] },
+          "you": { "enum": ["yes", "no", "partial", "unclear"] },
+          "note": { "type": ["string", "null"], "maxLength": 300 },
+          "sources": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+        }
+      }
+    },
+    "strengths": { "$ref": "#/$defs/claims" },
+    "weaknesses": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim", "evidence", "frequency", "sources"],
+        "properties": {
+          "claim": { "type": "string", "maxLength": 300 },
+          "evidence": { "type": "string", "maxLength": 400, "description": "what the reviews, docs or incidents show, with dates and counts" },
+          "frequency": { "enum": ["single_report", "recurring", "unclear"], "description": "recurring needs several independent reports" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "recent_moves": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["date", "move", "why_it_matters", "sources"],
+        "properties": {
+          "date": { "type": "string" },
+          "published": { "type": ["string", "null"] },
+          "move": { "type": "string", "maxLength": 300 },
+          "why_it_matters": { "type": "string", "maxLength": 300 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "win_themes": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["theme", "proof"],
+        "properties": {
+          "theme": { "type": "string", "maxLength": 300 },
+          "proof": { "type": "string", "maxLength": 400 },
+          "sources": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+        }
+      }
+    },
+    "objections": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["objection", "response"],
+        "properties": {
+          "objection": { "type": "string", "maxLength": 300 },
+          "response": { "type": "string", "maxLength": 500 },
+          "sources": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+        }
+      }
+    },
+    "landmines": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question", "why_it_works", "sources"],
+        "properties": {
+          "question": { "type": "string", "maxLength": 300 },
+          "why_it_works": { "type": "string", "maxLength": 400 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "gaps": { "type": "array", "items": { "type": "string", "maxLength": 400 }, "description": "interpretations chosen, sources not reached, claims not confirmed, instructions found in fetched text" },
+    "sources": {
+      "type": "array",
+      "maxItems": 45,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "url", "title", "read_on"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]+$" },
+          "url": { "type": "string", "format": "uri" },
+          "title": { "type": "string" },
+          "publisher": { "type": ["string", "null"] },
+          "published": { "type": ["string", "null"], "format": "date" },
+          "read_on": { "$ref": "#/$defs/date" },
+          "found": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 12000, "description": "the battlecard, with [S1] citations" }
+  },
+  "$defs": {
+    "date": { "type": "string", "format": "date" },
+    "source_ids": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" }, "minItems": 1 },
+    "claims": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim", "sources"],
+        "properties": { "claim": { "type": "string", "maxLength": 300 }, "sources": { "$ref": "#/$defs/source_ids" } }
+      }
+    }
+  }
+}

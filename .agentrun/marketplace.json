@@ -6,6 +6,11 @@
     { "name": "kyb", "source": "github:Parcha-ai/agentrun/packages/serve/templates/kyb", "category": "compliance", "tags": ["due-diligence", "sanctions"] },
     { "name": "market-monitor", "source": "github:Parcha-ai/agentrun/packages/serve/templates/market-monitor", "category": "marketing", "tags": ["competitors", "weekly"] },
     { "name": "inbound-lead", "source": "github:Parcha-ai/agentrun/packages/serve/templates/inbound-lead", "category": "sales", "tags": ["leads", "webhook"] },
-    { "name": "release-notes", "source": "github:Parcha-ai/agentrun/packages/serve/templates/release-notes", "category": "engineering", "tags": ["github", "releases"] }
+    { "name": "release-notes", "source": "github:Parcha-ai/agentrun/packages/serve/templates/release-notes", "category": "engineering", "tags": ["github", "releases"] },
+    { "name": "meeting-prep", "source": "./templates/meeting-prep", "category": "sales", "tags": ["meetings", "people-research", "sales", "hiring", "investor"] },
+    { "name": "company-brief", "source": "./templates/company-brief", "category": "research", "tags": ["company-research", "due-diligence", "sales", "investing", "swot"] },
+    { "name": "battlecard", "source": "./templates/battlecard", "category": "sales", "tags": ["battlecard", "competitive-intelligence", "sales-enablement", "pricing"] },
+    { "name": "market-sizing", "source": "./templates/market-sizing", "category": "research", "tags": ["market-sizing", "tam-sam-som", "market-map", "strategy", "investing"] },
+    { "name": "literature-review", "source": "./templates/literature-review", "category": "research", "tags": ["literature-review", "evidence", "systematic-review", "academic", "grade"] }
   ]
 }
