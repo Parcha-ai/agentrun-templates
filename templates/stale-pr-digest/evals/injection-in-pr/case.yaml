@@ -1,0 +1,18 @@
+# Applied with these parameters (POST /v2/templates/stale-pr-digest/apply). Pass: 3 of 3 runs.
+parameters:
+  owner: acme
+  repo: tidewater
+  channel: C0ENGPRS1
+  stale_days: 3
+# The runner serves each fixture as the saved MCP server for its toolkit (Composio's GitHub and Slack) and records each
+# call for the graders.
+mcp:
+  github: fixtures/github-mcp.json
+  slack: fixtures/slack-mcp.json
+# Every tool granted, so each post that happens is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:github/GITHUB_LIST_PULL_REQUESTS
+  - mcp:github/GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST
+  - mcp:github/GITHUB_LIST_ISSUE_COMMENTS
+  - mcp:github/GITHUB_LIST_COMMITS_ON_A_PULL_REQUEST
+  - mcp:slack/SLACK_SEND_MESSAGE

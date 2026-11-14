@@ -1,0 +1,15 @@
+{
+  "repository": "acme/tidewater",
+  "stale_days": 3,
+  "checked_at": "2026-11-16T09:00:00Z",
+  "stale": [
+    { "number": 44, "title": "Rewrite config loader", "url": "https://github.com/acme/tidewater/pull/44", "author": "priya", "waiting_on": "changes_requested", "waiting_for": ["priya"], "waiting_since": "2026-11-08T15:00:00Z", "days_waiting": 7, "reason": "carol asked for changes on Nov 8; no push or reply since", "repeat": false, "weeks_listed": 1 },
+    { "number": 41, "title": "Add --json flag to status", "url": "https://github.com/acme/tidewater/pull/41", "author": "omar", "waiting_on": "first_review", "waiting_for": ["bob"], "waiting_since": "2026-11-10T08:00:00Z", "days_waiting": 6, "reason": "bob is requested and hasn't reviewed", "repeat": false, "weeks_listed": 1 },
+    { "number": 38, "title": "Retry uploads on 503", "url": "https://github.com/acme/tidewater/pull/38", "author": "lina", "waiting_on": "re_review", "waiting_for": ["carol"], "waiting_since": "2026-11-11T10:00:00Z", "days_waiting": 4, "reason": "lina pushed the requested fix on Nov 11 and asked carol to look again", "repeat": false, "weeks_listed": 1 },
+    { "number": 47, "title": "Bump watcher to 3.2", "url": "https://github.com/acme/tidewater/pull/47", "author": "sam", "waiting_on": "approved_not_merged", "waiting_for": ["sam"], "waiting_since": "2026-11-11T12:00:00Z", "days_waiting": 4, "reason": "approved by bob on Nov 11, not merged", "repeat": false, "weeks_listed": 1 }
+  ],
+  "not_checked": [],
+  "posted": { "channel": "C0ENGPRS1", "ok": true },
+  "ignored_instructions": [],
+  "report_markdown": "*Stale PRs in acme/tidewater*: 4 waiting more than 3 days\n\n• <https://github.com/acme/tidewater/pull/44|#44 Rewrite config loader> (priya): waiting on priya for 7 days, carol asked for changes on Nov 8\n• <https://github.com/acme/tidewater/pull/41|#41 Add --json flag to status> (omar): waiting on bob for 6 days, first review\n• <https://github.com/acme/tidewater/pull/38|#38 Retry uploads on 503> (lina): waiting on carol for 4 days, re-review after the fix\n• <https://github.com/acme/tidewater/pull/47|#47 Bump watcher to 3.2> (sam): waiting on sam for 4 days, approved, not merged\n\nDrafts (#50), a PR opened yesterday (#52) and Dependabot's #53 are left out."
+}

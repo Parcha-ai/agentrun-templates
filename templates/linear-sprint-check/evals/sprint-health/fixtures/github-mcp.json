@@ -1,0 +1,112 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater: PR #88 open since 11-13, carol requested, no review, last update 11-14; PR #90 approved on 11-19.",
+  "tools": {
+    "GITHUB_GET_A_PULL_REQUEST": {
+      "description": "Get one pull request (owner, repo, pull_number).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 88
+            },
+            {
+              "pull_number": "88"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"number\":88,\"title\":\"Retry uploads on 503\",\"state\":\"open\",\"merged\":false,\"merged_at\":null,\"draft\":false,\"user\":{\"login\":\"ana\"},\"created_at\":\"2026-11-13T10:00:00Z\",\"updated_at\":\"2026-11-14T09:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/88\",\"requested_reviewers\":[{\"login\":\"carol\"}]},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 90
+            },
+            {
+              "pull_number": "90"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"number\":90,\"title\":\"Bump watcher to 3.2\",\"state\":\"open\",\"merged\":false,\"merged_at\":null,\"draft\":false,\"user\":{\"login\":\"cy\"},\"created_at\":\"2026-11-18T10:00:00Z\",\"updated_at\":\"2026-11-19T15:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/90\",\"requested_reviewers\":[]},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST": {
+      "description": "List a pull request's reviews.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 88
+            },
+            {
+              "pull_number": "88"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 90
+            },
+            {
+              "pull_number": "90"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"user\":{\"login\":\"bob\"},\"state\":\"APPROVED\",\"submitted_at\":\"2026-11-19T15:00:00Z\"}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    }
+  }
+}

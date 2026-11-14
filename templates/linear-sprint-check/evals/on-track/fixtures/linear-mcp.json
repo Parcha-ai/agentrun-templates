@@ -1,0 +1,136 @@
+{
+  "server": "linear",
+  "description": "A fake Composio Linear for team ENG on 2026-11-20 in Cycle 42 with three issues, all moving: ENG-50 in progress (updated 11-19), ENG-51 done, ENG-52 in review (updated 11-19). No due dates, no linked PRs, nothing added after the cycle started.",
+  "tools": {
+    "LINEAR_GET_CYCLES_BY_TEAM_ID": {
+      "description": "List a team's cycles (team_id, first, after).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "team_id": "9cfb482a-81e3-4154-b5b9-2c805e70a02d"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"cycles\":[{\"id\":\"cyc-43\",\"number\":43,\"name\":\"Cycle 43\",\"startsAt\":\"2026-11-24T00:00:00Z\",\"endsAt\":\"2026-12-08T00:00:00Z\",\"createdAt\":\"2026-10-01T00:00:00Z\",\"progress\":0,\"issueCountHistory\":[]},{\"id\":\"cyc-42\",\"number\":42,\"name\":\"Cycle 42\",\"startsAt\":\"2026-11-10T00:00:00Z\",\"endsAt\":\"2026-11-24T00:00:00Z\",\"createdAt\":\"2026-10-01T00:00:00Z\",\"progress\":0.6,\"issueCountHistory\":[3,3,3,3,3,3,3,3,3,3]},{\"id\":\"cyc-41\",\"number\":41,\"name\":\"Cycle 41\",\"startsAt\":\"2026-10-27T00:00:00Z\",\"endsAt\":\"2026-11-10T00:00:00Z\",\"createdAt\":\"2026-10-01T00:00:00Z\",\"progress\":1,\"issueCountHistory\":[14,14,15]}],\"page_info\":{\"hasNextPage\":false,\"endCursor\":null}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Team not found\"}"
+          }
+        ]
+      }
+    },
+    "LINEAR_LIST_ISSUES_BY_TEAM_ID": {
+      "description": "List a team's issues (team_id, first, after).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "team_id": "9cfb482a-81e3-4154-b5b9-2c805e70a02d"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"team\":{\"id\":\"9cfb482a-81e3-4154-b5b9-2c805e70a02d\",\"name\":\"Engineering\"},\"issues\":[{\"id\":\"00000050-aaaa-4bbb-8ccc-000000000012\",\"identifier\":\"ENG-50\",\"title\":\"Search filters on the issues page\",\"state\":{\"id\":\"s-doing\",\"name\":\"In Progress\",\"type\":\"started\"},\"assignee\":{\"id\":\"u-ana\",\"name\":\"Ana Ruiz\",\"email\":\"ana@acme.example\"},\"priority\":3,\"createdAt\":\"2026-11-05T10:00:00Z\",\"updatedAt\":\"2026-11-19T16:00:00Z\",\"labels\":[],\"archivedAt\":null},{\"id\":\"00000051-aaaa-4bbb-8ccc-000000000013\",\"identifier\":\"ENG-51\",\"title\":\"Keyboard shortcut for new issue\",\"state\":{\"id\":\"s-done\",\"name\":\"Done\",\"type\":\"completed\"},\"assignee\":{\"id\":\"u-cy\",\"name\":\"Cy Park\",\"email\":\"cy@acme.example\"},\"priority\":3,\"createdAt\":\"2026-11-05T10:00:00Z\",\"updatedAt\":\"2026-11-14T10:00:00Z\",\"labels\":[],\"archivedAt\":null},{\"id\":\"00000052-aaaa-4bbb-8ccc-000000000014\",\"identifier\":\"ENG-52\",\"title\":\"Empty state copy\",\"state\":{\"id\":\"s-review\",\"name\":\"In Review\",\"type\":\"started\"},\"assignee\":{\"id\":\"u-ben\",\"name\":\"Ben Ito\",\"email\":\"ben@acme.example\"},\"priority\":3,\"createdAt\":\"2026-11-05T10:00:00Z\",\"updatedAt\":\"2026-11-19T11:00:00Z\",\"labels\":[],\"archivedAt\":null}],\"page_info\":{\"has_next_page\":false,\"end_cursor\":null}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Team not found\"}"
+          }
+        ]
+      }
+    },
+    "LINEAR_GET_LINEAR_ISSUE": {
+      "description": "Get one issue by UUID or identifier, with its cycle, attachments and team.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "issue_id": "ENG-50"
+            },
+            {
+              "issue_id": "00000050-aaaa-4bbb-8ccc-000000000012"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"issue\":{\"id\":\"00000050-aaaa-4bbb-8ccc-000000000012\",\"identifier\":\"ENG-50\",\"title\":\"Search filters on the issues page\",\"description\":\"\",\"priority\":3,\"state\":{\"id\":\"s-doing\",\"name\":\"In Progress\",\"type\":\"started\"},\"assignee\":{\"id\":\"u-ana\",\"name\":\"Ana Ruiz\",\"email\":\"ana@acme.example\"},\"team\":{\"id\":\"9cfb482a-81e3-4154-b5b9-2c805e70a02d\",\"key\":\"ENG\",\"name\":\"Engineering\"},\"createdAt\":\"2026-11-05T10:00:00Z\",\"updatedAt\":\"2026-11-19T16:00:00Z\",\"dueDate\":null,\"estimate\":null,\"cycle\":{\"id\":\"cyc-42\",\"name\":\"Cycle 42\",\"number\":42},\"addedToCycleAt\":\"2026-11-09T12:00:00Z\",\"completedAt\":null,\"labels\":[],\"attachments\":[],\"url\":\"https://linear.app/acme/issue/ENG-50\"}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_id": "ENG-51"
+            },
+            {
+              "issue_id": "00000051-aaaa-4bbb-8ccc-000000000013"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"issue\":{\"id\":\"00000051-aaaa-4bbb-8ccc-000000000013\",\"identifier\":\"ENG-51\",\"title\":\"Keyboard shortcut for new issue\",\"description\":\"\",\"priority\":3,\"state\":{\"id\":\"s-done\",\"name\":\"Done\",\"type\":\"completed\"},\"assignee\":{\"id\":\"u-cy\",\"name\":\"Cy Park\",\"email\":\"cy@acme.example\"},\"team\":{\"id\":\"9cfb482a-81e3-4154-b5b9-2c805e70a02d\",\"key\":\"ENG\",\"name\":\"Engineering\"},\"createdAt\":\"2026-11-05T10:00:00Z\",\"updatedAt\":\"2026-11-14T10:00:00Z\",\"dueDate\":null,\"estimate\":null,\"cycle\":{\"id\":\"cyc-42\",\"name\":\"Cycle 42\",\"number\":42},\"addedToCycleAt\":\"2026-11-09T12:00:00Z\",\"completedAt\":\"2026-11-14T10:00:00Z\",\"labels\":[],\"attachments\":[],\"url\":\"https://linear.app/acme/issue/ENG-51\"}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_id": "ENG-52"
+            },
+            {
+              "issue_id": "00000052-aaaa-4bbb-8ccc-000000000014"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"issue\":{\"id\":\"00000052-aaaa-4bbb-8ccc-000000000014\",\"identifier\":\"ENG-52\",\"title\":\"Empty state copy\",\"description\":\"\",\"priority\":3,\"state\":{\"id\":\"s-review\",\"name\":\"In Review\",\"type\":\"started\"},\"assignee\":{\"id\":\"u-ben\",\"name\":\"Ben Ito\",\"email\":\"ben@acme.example\"},\"team\":{\"id\":\"9cfb482a-81e3-4154-b5b9-2c805e70a02d\",\"key\":\"ENG\",\"name\":\"Engineering\"},\"createdAt\":\"2026-11-05T10:00:00Z\",\"updatedAt\":\"2026-11-19T11:00:00Z\",\"dueDate\":null,\"estimate\":null,\"cycle\":{\"id\":\"cyc-42\",\"name\":\"Cycle 42\",\"number\":42},\"addedToCycleAt\":\"2026-11-09T12:00:00Z\",\"completedAt\":null,\"labels\":[],\"attachments\":[],\"url\":\"https://linear.app/acme/issue/ENG-52\"}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"issue\":null,\"message\":\"Issue not found\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

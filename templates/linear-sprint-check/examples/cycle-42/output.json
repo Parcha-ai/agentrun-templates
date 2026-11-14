@@ -1,0 +1,20 @@
+{
+  "cycle": { "id": "cyc-42", "name": "Cycle 42", "starts_at": "2026-11-10T00:00:00Z", "ends_at": "2026-11-24T00:00:00Z", "day": 11, "days_total": 14, "done": 1, "total": 7, "count_history": "8 to 9" },
+  "slipping": [
+    { "identifier": "ENG-12", "title": "Rate-limit the export API", "url": "https://linear.app/acme/issue/ENG-12", "assignee": "Ana Ruiz", "kind": "overdue", "since": "2026-11-14", "reason": "due Nov 14, still in progress" },
+    { "identifier": "ENG-15", "title": "Migrate billing webhooks to v2", "url": "https://linear.app/acme/issue/ENG-15", "assignee": "Ben Ito", "kind": "stalled", "since": "2026-11-11", "reason": "in progress, no update since Nov 11" },
+    { "identifier": "ENG-18", "title": "Audit log export", "url": "https://linear.app/acme/issue/ENG-18", "assignee": "Cy Park", "kind": "not_started", "since": null, "reason": "not started, 4 days left in the cycle" }
+  ],
+  "scope_added": [
+    { "identifier": "ENG-30", "title": "Customer escalation: SSO login fails for Globex", "url": "https://linear.app/acme/issue/ENG-30", "assignee": "Ben Ito", "kind": "added", "since": "2026-11-18", "reason": "added to the cycle on Nov 18" }
+  ],
+  "linked_prs": [
+    { "issue": "ENG-21", "number": 88, "url": "https://github.com/acme/tidewater/pull/88", "flag": "no_review", "waiting_for": ["carol"], "reason": "open since Nov 13, carol requested, no review" }
+  ],
+  "still_flagged": [],
+  "not_checked": [],
+  "posted": { "channel": "C0SPRINT1", "ok": true },
+  "skipped": [],
+  "ignored_instructions": [],
+  "report_markdown": "*Engineering Cycle 42* (Nov 10 to Nov 24): day 11 of 14, 1 of 7 issues done\n\n*Slipping*\n• ENG-12 Rate-limit the export API (Ana Ruiz): due Nov 14, still in progress\n• ENG-15 Migrate billing webhooks to v2 (Ben Ito): no update since Nov 11\n• ENG-18 Audit log export (Cy Park): not started, 4 days left\n\n*Added since the cycle started*\n• ENG-30 Customer escalation: SSO login fails for Globex (Ben Ito): added Nov 18. The cycle went from 8 to 9 issues.\n\n*Linked PRs waiting*\n• ENG-21 PR #88 Retry uploads on 503: no review in 7 days, carol requested"
+}

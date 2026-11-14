@@ -1,0 +1,24 @@
+{
+  "release": { "tag": "v2.4.0", "name": "Lantern 2.4.0", "url": "https://github.com/acme/lantern/releases/tag/v2.4.0", "published_at": "2026-11-14T16:00:00Z", "prerelease": false },
+  "pr_source": "release_notes",
+  "pull_requests": [
+    { "number": 101, "title": "Export dashboards to PDF", "author": "mira-k", "highlight": true },
+    { "number": 104, "title": "Fix login loop on Safari 17", "author": "jon-b", "highlight": true },
+    { "number": 107, "title": "Drop Node 18 support", "author": "mira-k", "highlight": true },
+    { "number": 109, "title": "Bump eslint from 9.1.0 to 9.2.0", "author": "dependabot[bot]", "highlight": false }
+  ],
+  "highlights": [
+    { "text": "Export any dashboard to PDF from File > Export, one page per row", "prs": [101] },
+    { "text": "Signing in on Safari 17 no longer loops back to the login page", "prs": [104] },
+    { "text": "The CLI now needs Node 20 or later: upgrade Node before you upgrade Lantern", "prs": [107], "breaking": true }
+  ],
+  "contributors": ["mira-k", "jon-b"],
+  "posted": {
+    "channel": "C0SHIPIT1",
+    "ok": true,
+    "text": ":tada: *lantern v2.4.0 is out.* <https://github.com/acme/lantern/releases/tag/v2.4.0|Release notes>\nDashboards export to PDF now.\n• Export any dashboard to PDF from File > Export, one page per row (#101)\n• Signing in on Safari 17 no longer loops back to the login page (#104)\n• Heads up: the CLI now needs Node 20 or later (#107)\n4 pull requests from 2 people and a bot. Thanks mira-k and jon-b."
+  },
+  "skipped": [],
+  "ignored_instructions": [],
+  "report_markdown": ":tada: *lantern v2.4.0 is out.* [Release notes](https://github.com/acme/lantern/releases/tag/v2.4.0)\n\nDashboards export to PDF now.\n\n- Export any dashboard to PDF from File > Export, one page per row (#101)\n- Signing in on Safari 17 no longer loops back to the login page (#104)\n- Heads up: the CLI now needs Node 20 or later (#107)\n\n4 pull requests from 2 people and a bot. Thanks mira-k and jon-b.\n\nThe PRs came from the release notes, which name all four. The Dependabot bump (#109) counts in the total and isn't a highlight."
+}

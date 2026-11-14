@@ -1,0 +1,133 @@
+{
+  "server": "github",
+  "description": "A fake GitHub MCP server for acme/lantern: the first release v0.1.0 (published 2026-11-14), with an empty body, no earlier release and no merged pull requests.",
+  "tools": {
+    "get_release_by_tag": {
+      "description": "Get a release by its tag.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "tag": "v0.1.0"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"id\":9026,\"tag_name\":\"v0.1.0\",\"name\":\"v0.1.0\",\"body\":\"\",\"draft\":false,\"prerelease\":false,\"html_url\":\"https://github.com/acme/lantern/releases/tag/v0.1.0\",\"created_at\":\"2026-11-14T16:00:00Z\",\"published_at\":\"2026-11-14T16:00:00Z\",\"author\":{\"login\":\"mira-k\"},\"target_commitish\":\"main\"}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "Not Found: no release with that tag"
+          }
+        ]
+      }
+    },
+    "list_releases": {
+      "description": "List releases, newest first.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "page": 2
+            },
+            {
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "[]"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[{\"id\":9026,\"tag_name\":\"v0.1.0\",\"name\":\"v0.1.0\",\"body\":\"\",\"draft\":false,\"prerelease\":false,\"html_url\":\"https://github.com/acme/lantern/releases/tag/v0.1.0\",\"created_at\":\"2026-11-14T16:00:00Z\",\"published_at\":\"2026-11-14T16:00:00Z\",\"author\":{\"login\":\"mira-k\"},\"target_commitish\":\"main\"}]"
+          }
+        ]
+      }
+    },
+    "list_pull_requests": {
+      "description": "List pull requests (state, sort, direction, base, perPage, page).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "page": 2
+            },
+            {
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "[]"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "state": "open"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "[]"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[]"
+          }
+        ]
+      }
+    },
+    "pull_request_read": {
+      "description": "Read a pull request (method get, pullNumber).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "Not Found"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stale-prs.schema.json",
+  "title": "Stale pull request digest",
+  "description": "The open pull requests in one repository that have waited past the set number of days, who each one is waiting on, and the Slack post that listed them.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["repository", "stale_days", "checked_at", "stale", "not_checked", "posted", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "repository": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9._-]{1,100}$" },
+    "stale_days": { "type": "integer", "minimum": 1 },
+    "checked_at": { "type": "string", "format": "date-time" },
+    "stale": {
+      "type": "array",
+      "maxItems": 100,
+      "description": "stale PRs, oldest wait first; empty when none waited past the limit",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["number", "title", "url", "author", "waiting_on", "waiting_for", "waiting_since", "days_waiting", "reason", "repeat"],
+        "properties": {
+          "number": { "type": "integer", "minimum": 1 },
+          "title": { "type": "string", "maxLength": 300 },
+          "url": { "type": "string", "format": "uri", "pattern": "^https://github\\.com/" },
+          "author": { "type": "string", "maxLength": 100 },
+          "waiting_on": { "enum": ["first_review", "no_reviewer", "changes_requested", "re_review", "approved_not_merged"] },
+          "waiting_for": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 100 }, "description": "the logins or teams who have the next move" },
+          "waiting_since": { "type": "string", "format": "date-time" },
+          "days_waiting": { "type": "integer", "minimum": 0 },
+          "reason": { "type": "string", "minLength": 1, "maxLength": 300, "description": "one clause: what is needed and from whom" },
+          "repeat": { "type": "boolean", "description": "true when last week's digest listed it with the same wait" },
+          "weeks_listed": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "not_checked": {
+      "type": "array",
+      "maxItems": 100,
+      "description": "PRs not read in full and why (over the 25-PR limit, a failed read)",
+      "items": { "type": "string", "maxLength": 300 }
+    },
+    "posted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel", "ok"],
+      "properties": {
+        "channel": { "type": "string", "maxLength": 20 },
+        "ok": { "type": "boolean" },
+        "why_not": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 8000 }
+  }
+}
