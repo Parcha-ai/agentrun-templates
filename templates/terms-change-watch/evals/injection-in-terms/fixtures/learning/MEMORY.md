@@ -1,0 +1,1 @@
+- [Northdesk legal pages as last seen](northdesk.md) — privacy policy stamp and key clauses seen 2026-11-09; nothing reported yet

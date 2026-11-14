@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "regulatory.schema.json",
+  "title": "Regulatory tracker",
+  "description": "New and proposed rules, guidance, consultations and other official acts on the topic in the named jurisdictions inside the window, each resting on the official document.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "quiet", "items", "sources_checked", "unconfirmed_leads", "assumptions", "dropped_repeats", "unreachable", "ignored_instructions", "report_markdown"],
+  "$defs": {
+    "date": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "url": { "type": "string", "format": "uri", "pattern": "^https?://" }
+  },
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "description": "half-open: from < date <= to",
+      "properties": { "from": { "$ref": "#/$defs/date" }, "to": { "$ref": "#/$defs/date" } }
+    },
+    "quiet": { "type": "boolean" },
+    "items": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["jurisdiction", "issuing_body", "title", "kind", "stage", "dates", "summary", "who_is_affected", "so_what", "source_urls"],
+        "properties": {
+          "jurisdiction": { "type": "string", "minLength": 1, "maxLength": 120, "description": "the input jurisdiction it falls under" },
+          "issuing_body": { "type": "string", "minLength": 1, "maxLength": 160, "description": "as the document names it" },
+          "title": { "type": "string", "minLength": 1, "maxLength": 300, "description": "the document's own title" },
+          "document_id": { "type": ["string", "null"], "maxLength": 120, "description": "docket, FR document number, CELEX, bill number, as published" },
+          "kind": { "enum": ["statute", "regulation", "guidance", "consultation", "bill", "enforcement", "ruling", "speech", "standard", "other"] },
+          "stage": { "enum": ["bill_introduced", "bill_progress", "proposed", "final", "in_force", "consultation_open", "guidance", "enforcement", "ruling", "signal"] },
+          "dates": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["meaning", "date"],
+              "properties": {
+                "meaning": { "enum": ["published", "adopted", "comment_deadline", "effective", "compliance", "hearing", "appeal_deadline", "delivered"] },
+                "date": { "$ref": "#/$defs/date" },
+                "note": { "type": "string", "maxLength": 160, "description": "e.g. 'for risk assessments only', 'extended from 2026-12-01'" }
+              }
+            }
+          },
+          "summary": { "type": "string", "minLength": 1, "maxLength": 800, "description": "what the document does, in its own terms" },
+          "who_is_affected": { "type": "string", "minLength": 1, "maxLength": 400, "description": "covered entities, thresholds, sectors, in the document's terms" },
+          "reader_in_scope": {
+            "type": ["object", "null"],
+            "additionalProperties": false,
+            "required": ["answer", "check"],
+            "description": "only when exposure was given",
+            "properties": {
+              "answer": { "enum": ["yes", "no", "unclear"] },
+              "check": { "type": "string", "maxLength": 300, "description": "the threshold or fact that decides it" }
+            }
+          },
+          "change_since_last": { "type": "string", "maxLength": 200, "description": "for an item the last brief reported: what developed since" },
+          "so_what": { "type": "string", "minLength": 1, "maxLength": 300, "description": "what to review, check or calendar; never legal advice" },
+          "source_urls": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "$ref": "#/$defs/url" }, "description": "the official document first" }
+        }
+      }
+    },
+    "sources_checked": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "result"],
+        "properties": {
+          "source": { "type": "string", "maxLength": 160 },
+          "url": { "type": ["string", "null"], "maxLength": 500 },
+          "result": { "enum": ["items", "quiet", "unreachable"] }
+        }
+      }
+    },
+    "unconfirmed_leads": {
+      "type": "array",
+      "maxItems": 10,
+      "description": "reports found only in news or commentary, with no official document yet; never items",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim", "source_url", "why"],
+        "properties": {
+          "claim": { "type": "string", "maxLength": 300, "description": "what the commentary says, attributed to it" },
+          "source_url": { "$ref": "#/$defs/url" },
+          "why": { "type": "string", "maxLength": 200, "description": "e.g. 'no official document found on legislation.gov.uk or gov.uk'" }
+        }
+      }
+    },
+    "assumptions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "dropped_repeats": { "type": "array", "maxItems": 30, "items": { "type": "string", "maxLength": 300 } },
+    "unreachable": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["url", "reason"],
+        "properties": {
+          "url": { "type": "string", "maxLength": 500 },
+          "reason": { "enum": ["blocked", "rate_limited", "not_found", "error", "skipped"] },
+          "detail": { "type": "string", "maxLength": 200 }
+        }
+      }
+    },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 12000 }
+  }
+}

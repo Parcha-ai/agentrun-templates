@@ -1,0 +1,1 @@
+- [Skip small fines](skip-small-fines.md) — the owner doesn't want actions under $100,000 reported

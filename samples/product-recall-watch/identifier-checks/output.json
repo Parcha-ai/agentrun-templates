@@ -1,0 +1,161 @@
+{
+  "window": {
+    "from": "2026-11-09",
+    "to": "2026-11-16"
+  },
+  "quiet": false,
+  "notices": [
+    {
+      "regulator": "FDA",
+      "maker": "Kestrel Foods, Inc.",
+      "notice_id": "F-0388-2027",
+      "status": "class_ii_recall",
+      "product": "Kestrel Oat Crunch Granola, Maple Almond, 12 oz (340 g) bag",
+      "matched_line": "Kestrel Foods",
+      "affected": [
+        "Lot 24-118",
+        "Lot 24-119",
+        "Lot 24-121",
+        "UPC 0 12345 67890 1",
+        "Best by 2027-03-01 through 2027-03-20."
+      ],
+      "hazard": "Undeclared peanut. Product may contain peanut, which is not declared on the label.",
+      "counts": "18,240 bags",
+      "remedy": "Consumers should not eat the product and may return it to the place of purchase for a full refund. Questions: Kestrel Foods consumer line 1-800-555-0142, Monday to Friday 9am to 5pm CT.",
+      "published_on": "2026-11-12",
+      "event_date": "2026-11-05",
+      "is_update": false,
+      "identifier_checks": [
+        {
+          "identifier": "LOT 24-118",
+          "result": "match",
+          "why": "Matches Lot 24-118; label capitalization does not affect the value."
+        },
+        {
+          "identifier": "LOT 24-11",
+          "result": "no_match",
+          "why": "24-11 is not a listed lot; a partial lot string does not match."
+        },
+        {
+          "identifier": "BW-200 serial 2205-8812",
+          "result": "no_match",
+          "why": "Identifies a different product, not the listed granola."
+        }
+      ],
+      "so_what": "Do not eat held LOT 24-118; return it to the place of purchase for a full refund.",
+      "source_url": "https://api.fda.gov/food/enforcement.json?search=report_date:%5B20261109+TO+20261116%5D&limit=100"
+    },
+    {
+      "regulator": "CPSC",
+      "maker": "Brightwell Home Electronics",
+      "notice_id": "27015",
+      "status": "voluntary_recall",
+      "product": "Brightwell BW-200 Video Baby Monitor",
+      "matched_line": "Brightwell BW-200 baby monitor",
+      "affected": [
+        "BW-200",
+        "January 2025 through June 2025"
+      ],
+      "hazard": "The parent unit's lithium-ion battery can overheat, posing a burn hazard. Camera units are not included.",
+      "counts": "About 41,000. Brightwell has received 14 reports of the battery overheating, including 2 reports of minor burns.",
+      "remedy": "Immediately stop using the affected parent unit and contact Brightwell for a free replacement battery pack: 888-555-0190, 8 a.m. to 6 p.m. ET Monday through Friday, or www.brightwell.example/recall.",
+      "published_on": "2026-11-13",
+      "is_update": false,
+      "identifier_checks": [
+        {
+          "identifier": "LOT 24-118",
+          "result": "no_match",
+          "why": "Not an identifier for the listed monitor."
+        },
+        {
+          "identifier": "LOT 24-11",
+          "result": "no_match",
+          "why": "Not an identifier for the listed monitor."
+        },
+        {
+          "identifier": "BW-200 serial 2205-8812",
+          "result": "cannot_tell",
+          "why": "Model matches, but the notice gives manufacture dates, not serial ranges. Check the MM/YYYY label inside the battery door against January 2025 through June 2025."
+        }
+      ],
+      "so_what": "Check the parent unit's manufacture-date label; if in the stated range, stop using it and contact Brightwell for a free replacement battery pack.",
+      "source_url": "https://www.cpsc.gov/Recalls/2027/brightwell-home-electronics-recalls-bw-200-video-baby-monitors-due-to-burn-hazard"
+    },
+    {
+      "regulator": "NHTSA",
+      "maker": "NORTHLINE",
+      "notice_id": "PE26-014",
+      "status": "investigation",
+      "product": "2024 NORTHLINE ROAMER",
+      "matched_line": "2024 Northline Roamer",
+      "affected": [
+        "2024 NORTHLINE ROAMER"
+      ],
+      "hazard": "Complaints allege that power liftgate gas struts lose pressure and the liftgate falls closed without warning. ODI opened a Preliminary Evaluation to assess the alleged defect.",
+      "counts": "37 complaints; Three complaints report minor injuries. Estimated population: 62,300 vehicles.",
+      "remedy": "No remedy or consumer contact route is stated in the supplied investigation notice. This is an investigation, not a recall.",
+      "published_on": "2026-11-10",
+      "event_date": "2026-11-10",
+      "is_update": false,
+      "identifier_checks": [
+        {
+          "identifier": "LOT 24-118",
+          "result": "no_match",
+          "why": "Not an identifier for the vehicle under investigation."
+        },
+        {
+          "identifier": "LOT 24-11",
+          "result": "no_match",
+          "why": "Not an identifier for the vehicle under investigation."
+        },
+        {
+          "identifier": "BW-200 serial 2205-8812",
+          "result": "no_match",
+          "why": "Identifies a monitor, not the vehicle under investigation."
+        }
+      ],
+      "so_what": "Watch investigation PE26-014 for findings or a subsequent recall; the supplied notice provides no remedy.",
+      "source_url": "https://www.nhtsa.gov/vehicle/2024/NORTHLINE/ROAMER"
+    }
+  ],
+  "identifier_summary": "LOT 24-118 matches the Kestrel recall. LOT 24-11 does not match the listed lots. BW-200 serial 2205-8812 cannot establish recall coverage without the parent unit's manufacture date. No held vehicle identifier was supplied.",
+  "sources_checked": [
+    {
+      "source": "FDA food enforcement — supplied official record",
+      "url": "https://api.fda.gov/food/enforcement.json?search=report_date:%5B20261109+TO+20261116%5D&limit=100",
+      "result": "notices_found"
+    },
+    {
+      "source": "CPSC recall API — supplied official records",
+      "url": "https://www.saferproducts.gov/RestWebServices/Recall?format=json&RecallDateStart=2026-11-09&RecallDateEnd=2026-11-16",
+      "result": "notices_found"
+    },
+    {
+      "source": "NHTSA recalls — supplied response",
+      "url": "https://api.nhtsa.gov/recalls/recallsByVehicle?make=northline&model=roamer&modelYear=2024",
+      "result": "nothing_matching"
+    },
+    {
+      "source": "NHTSA vehicle investigations — supplied page",
+      "url": "https://www.nhtsa.gov/vehicle/2024/NORTHLINE/ROAMER",
+      "result": "notices_found"
+    }
+  ],
+  "assumptions": [
+    "Used the scheduled trigger date, 2026-11-16; the window is 2026-11-09 < publication date <= 2026-11-16.",
+    "Used only the supplied test-data pages as official-source substitutes; no fetches or searches were made because the sites were declared unreachable.",
+    "No previous completed alert was supplied, so no prior-report comparison was possible.",
+    "For PE26-014, the stated opening date is used as the notice date; no separate publication date was supplied.",
+    "CPSC Recall 27015 is represented as voluntary_recall because the schema has no generic recall status; the supplied record does not explicitly state voluntariness.",
+    "Pinecrest dressers are outside the watched products. Maker pages were not supplied and could not be checked."
+  ],
+  "dropped_repeats": [],
+  "unreachable": [
+    {
+      "page": "FDA, CPSC and NHTSA URLs supplied in the request",
+      "why": "Declared unreachable by the user; supplied page contents were used instead. Linked notice pages and maker pages were not independently accessed."
+    }
+  ],
+  "ignored_instructions": [],
+  "report_markdown": "**Recall watch** 2026-11-09 to 2026-11-16\nHeld LOT 24-118 matches the Kestrel recall: do not eat it; return it for a full refund.\n\n- **Kestrel Foods, Inc. granola: Class II recall** (FDA F-0388-2027, published 2026-11-12). Undeclared peanut. Affected: Lot 24-118, Lot 24-119, Lot 24-121; UPC 0 12345 67890 1; Best by 2027-03-01 through 2027-03-20. Do not eat; return to the place of purchase for a full refund. Questions: 1-800-555-0142, Monday to Friday 9am to 5pm CT. Your identifiers: LOT 24-118 matches; LOT 24-11 does not. [Official record](https://api.fda.gov/food/enforcement.json?search=report_date:%5B20261109+TO+20261116%5D&limit=100)\n\n- **Brightwell Home Electronics BW-200: recall** (CPSC 27015, published 2026-11-13). Parent-unit batteries can overheat and cause burns. Affected: BW-200 parent units manufactured January 2025 through June 2025; cameras excluded. Check the MM/YYYY label inside the battery door. Stop using affected parent units and request a free replacement battery pack: 888-555-0190, 8 a.m. to 6 p.m. ET Monday through Friday, or www.brightwell.example/recall. Your serial alone cannot establish coverage. [Notice](https://www.cpsc.gov/Recalls/2027/brightwell-home-electronics-recalls-bw-200-video-baby-monitors-due-to-burn-hazard)\n\n- **NORTHLINE 2024 ROAMER: investigation—not a recall** (NHTSA PE26-014, opened 2026-11-10). Complaints allege liftgates fall closed as gas struts lose pressure; three complaints report minor injuries. No remedy is stated. Watch the investigation for findings or a subsequent recall. No held vehicle identifier was supplied. [Notice](https://www.nhtsa.gov/vehicle/2024/NORTHLINE/ROAMER)\n\n_Checked using supplied copies: FDA and CPSC (matching recalls); NHTSA recall API (zero recalls); NHTSA vehicle page (investigation). Live sites were declared unreachable; maker pages were not checked._"
+}

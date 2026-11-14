@@ -1,0 +1,27 @@
+---
+description: "FDA lists a Kestrel granola recall by lot, CPSC recalls the Brightwell BW-200 monitor by manufacture date, and NHTSA opened an investigation (not a recall) into the 2024 Northline Roamer. The reader holds one lot that matches exactly, one lookalike that does not, and a monitor serial the notice cannot settle. An unrelated CPSC recall stays out."
+runs: 3
+max_cost_usd: 1.50
+input:
+  products: ["Kestrel Foods", "Brightwell BW-200 baby monitor", "2024 Northline Roamer"]
+  regions: "US"
+  held_identifiers: ["LOT 24-118", "LOT 24-11", "BW-200 serial 2205-8812"]
+  lookback_days: 7
+---
+Scheduled run, fired 2026-11-16T08:00:00Z (Monday). Check for new recalls and safety notices on the products below with your recall-watch skill.
+
+The sites below are not reachable from this run. The pages that follow are what their URLs return today; use them in place of fetching. These firms, products and notices are test data.
+
+--- https://api.fda.gov/food/enforcement.json?search=report_date:[20261109+TO+20261116]&limit=100 (fetched 2026-11-16) ---
+{"results":[{"recall_number":"F-0388-2027","status":"Ongoing","classification":"Class II","recalling_firm":"Kestrel Foods, Inc.","product_description":"Kestrel Oat Crunch Granola, Maple Almond, 12 oz (340 g) bag, UPC 0 12345 67890 1","code_info":"Lot 24-118, Lot 24-119, Lot 24-121. Best by 2027-03-01 through 2027-03-20.","reason_for_recall":"Undeclared peanut. Product may contain peanut, which is not declared on the label.","product_quantity":"18,240 bags","distribution_pattern":"Nationwide in the US through retail stores and online","voluntary_mandated":"Voluntary: Firm initiated","recall_initiation_date":"20261105","report_date":"20261112","more_code_info":"Consumers who have the product should not eat it and may return it to the place of purchase for a full refund. Questions: Kestrel Foods consumer line 1-800-555-0142, Monday to Friday 9am to 5pm CT.","event_id":"94512"}]}
+
+--- https://www.saferproducts.gov/RestWebServices/Recall?format=json&RecallDateStart=2026-11-09&RecallDateEnd=2026-11-16 (fetched 2026-11-16) ---
+[{"RecallID":10931,"RecallNumber":"27015","RecallDate":"2026-11-13T00:00:00","Title":"Brightwell Home Electronics Recalls BW-200 Video Baby Monitors Due to Burn Hazard","URL":"https://www.cpsc.gov/Recalls/2027/brightwell-home-electronics-recalls-bw-200-video-baby-monitors-due-to-burn-hazard","Products":[{"Name":"Brightwell BW-200 Video Baby Monitor","Description":"Model BW-200 parent units manufactured from January 2025 through June 2025. The manufacture date is printed as MM/YYYY on a label inside the battery door. Camera units are not included.","NumberOfUnits":"About 41,000"}],"Hazards":[{"Name":"The parent unit's lithium-ion battery can overheat, posing a burn hazard."}],"Injuries":[{"Name":"Brightwell has received 14 reports of the battery overheating, including 2 reports of minor burns."}],"Remedies":[{"Name":"Consumers should immediately stop using the parent unit and contact Brightwell for a free replacement battery pack."}],"ConsumerContact":"Brightwell Home Electronics toll-free at 888-555-0190 from 8 a.m. to 6 p.m. ET Monday through Friday, or online at www.brightwell.example/recall."},{"RecallID":10934,"RecallNumber":"27018","RecallDate":"2026-11-14T00:00:00","Title":"Pinecrest Kids Recalls Six-Drawer Dressers Due to Tip-Over Hazard","URL":"https://www.cpsc.gov/Recalls/2027/pinecrest-kids-recalls-six-drawer-dressers-due-to-tip-over-hazard","Products":[{"Name":"Pinecrest Kids six-drawer dresser","NumberOfUnits":"About 9,500"}],"Hazards":[{"Name":"The dressers can tip over if not anchored to the wall."}],"Remedies":[{"Name":"Stop using unanchored dressers and contact Pinecrest for a free anchoring kit."}]}]
+
+--- https://api.nhtsa.gov/recalls/recallsByVehicle?make=northline&model=roamer&modelYear=2024 (fetched 2026-11-16) ---
+{"Count":0,"Message":"Results returned successfully","results":[]}
+
+--- https://www.nhtsa.gov/vehicle/2024/NORTHLINE/ROAMER (fetched 2026-11-16) ---
+2024 NORTHLINE ROAMER. Recalls: 0. Complaints: 52. Investigations: 1.
+Investigation PE26-014 · Preliminary Evaluation · opened 2026-11-10 · Component: STRUCTURE: BODY: HATCHBACK/LIFTGATE: SUPPORTS
+Summary: The Office of Defects Investigation has received 37 complaints alleging that the power liftgate gas struts on model year 2024 Northline Roamer vehicles lose pressure and the liftgate falls closed without warning. Three complaints report minor injuries. ODI has opened this Preliminary Evaluation to assess the scope, frequency and safety consequences of the alleged defect. Estimated population: 62,300 vehicles.

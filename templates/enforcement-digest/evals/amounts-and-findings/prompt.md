@@ -1,0 +1,35 @@
+---
+description: "An AML-focused week for a broker-dealer team. The SEC settled with Harborline Securities (penalty, disgorgement and interest, neither admitting nor denying) and FinCEN fined Crestmoor Clearing (part suspended, facts admitted). A FINRA recordkeeping fine is outside the AML focus, an SEC complaint is only filed, a speech is a speech, and one release predates the window. The digest holds the two AML actions with their amounts split as stated."
+runs: 3
+max_cost_usd: 1.50
+input:
+  industry: "US broker-dealers"
+  regulators: ["SEC", "FINRA", "FinCEN"]
+  focus: "AML"
+  lookback_days: 7
+---
+Scheduled run, fired 2026-11-16T08:00:00Z (Monday). Write this week's enforcement digest with your enforcement-digest skill.
+
+The sites below are not reachable from this run. The pages that follow are what their URLs return today; use them in place of fetching. These firms and actions are test data.
+
+--- https://www.sec.gov/newsroom/press-releases (fetched 2026-11-16) ---
+2026-11-14 · Speech: "AML at Broker-Dealers: What We Keep Seeing" · Remarks by the Director of the Division of Examinations at a compliance conference.
+2026-11-12 · Press Release 2026-188 · SEC Charges Harborline Securities LLC for Failing to File Suspicious Activity Reports · https://www.sec.gov/newsroom/press-releases/2026-188
+2026-11-11 · Litigation Release No. 26411 · SEC Files Complaint Against Tollgate Brokerage Inc. Alleging AML Program Failures · https://www.sec.gov/enforcement-litigation/litigation-releases/2026/lr26411
+2026-11-06 · Press Release 2026-185 · SEC Charges Westmark Advisers for Custody Rule Violations
+
+--- https://www.sec.gov/newsroom/press-releases/2026-188 (fetched 2026-11-16) ---
+Washington D.C., Nov. 12, 2026. The Securities and Exchange Commission today announced settled charges against New York-based broker-dealer Harborline Securities LLC for failing to file Suspicious Activity Reports on at least 412 suspicious transactions in low-priced securities between January 2021 and March 2024. According to the SEC's order, Harborline's surveillance system generated alerts on the transactions, but staff closed them without documented review. The deficiencies were identified during an SEC examination.
+Without admitting or denying the SEC's findings, Harborline agreed to a cease-and-desist order, a censure, a civil penalty of $1,500,000, disgorgement of $340,000 and prejudgment interest of $41,500. Harborline also agreed to retain an independent compliance consultant within 60 days to review its AML program. Order Instituting Administrative and Cease-and-Desist Proceedings, dated November 12, 2026: https://www.sec.gov/files/litigation/admin/2026/34-99812.pdf
+
+--- https://www.sec.gov/enforcement-litigation/litigation-releases/2026/lr26411 (fetched 2026-11-16) ---
+On November 10, 2026, the SEC filed a complaint in the U.S. District Court for the Southern District of New York against Tollgate Brokerage Inc., alleging that it failed to establish an AML program reasonably designed to detect suspicious activity. The SEC seeks permanent injunctive relief and civil penalties. The litigation is ongoing.
+
+--- https://www.finra.org/rules-guidance/oversight-enforcement/finra-disciplinary-actions (fetched 2026-11-16) ---
+2026-11-10 · Pinewood Capital Markets LLC · AWC No. 2024081234501 · Without admitting or denying the findings, the firm consented to a censure and a $250,000 fine for failing to preserve business-related text messages sent by registered representatives on personal devices from 2020 to 2023.
+
+--- https://www.fincen.gov/news-room/enforcement-actions (fetched 2026-11-16) ---
+2026-11-13 · FinCEN Assesses $4,000,000 Civil Money Penalty Against Crestmoor Clearing Corp. for Willful Violations of the Bank Secrecy Act · https://www.fincen.gov/news/news-releases/fincen-assesses-penalty-against-crestmoor-clearing
+
+--- https://www.fincen.gov/news/news-releases/fincen-assesses-penalty-against-crestmoor-clearing (fetched 2026-11-16) ---
+WASHINGTON, November 13, 2026. The Financial Crimes Enforcement Network (FinCEN) assessed a $4,000,000 civil money penalty against Crestmoor Clearing Corp., a clearing broker-dealer in Chicago, for willfully failing to implement an adequate anti-money laundering program and to file Suspicious Activity Reports. $1,000,000 of the penalty is suspended pending Crestmoor's completion of the undertakings in the Consent Order. In the Consent Order dated November 12, 2026, Crestmoor admits that from June 2020 through December 2023 it did not monitor the deposits and liquidations of introducing-firm customers in low-priced securities. FinCEN's investigation followed a referral from FINRA. Crestmoor must engage an independent consultant to conduct a SAR lookback review covering 2022 and 2023.

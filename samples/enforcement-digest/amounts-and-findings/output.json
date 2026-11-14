@@ -1,0 +1,134 @@
+{
+  "window": {
+    "from": "2026-11-09",
+    "to": "2026-11-16"
+  },
+  "quiet": false,
+  "actions": [
+    {
+      "regulator": "Financial Crimes Enforcement Network (FinCEN)",
+      "respondent": "Crestmoor Clearing Corp.",
+      "kind": "civil_penalty",
+      "amounts": [
+        {
+          "value": 4000000,
+          "currency": "USD",
+          "component": "penalty",
+          "as_stated": "$4,000,000 civil money penalty"
+        },
+        {
+          "value": 1000000,
+          "currency": "USD",
+          "component": "suspended",
+          "as_stated": "$1,000,000 of the penalty is suspended"
+        }
+      ],
+      "findings_status": "admitted",
+      "practice_punished": "Willfully failing to implement an adequate AML program and file Suspicious Activity Reports; failing to monitor deposits and liquidations of introducing-firm customers in low-priced securities.",
+      "duration": "from June 2020 through December 2023",
+      "how_found": "referral",
+      "remediation": "Engage an independent consultant to conduct a SAR lookback review covering 2022 and 2023. Suspension of $1,000,000 of the penalty depends on completion of the Consent Order undertakings.",
+      "status": "not_stated",
+      "announced_on": "2026-11-13",
+      "order_date": "2026-11-12",
+      "why_in_scope": "A clearing broker-dealer sanctioned for AML program and SAR failures.",
+      "lesson": "Check that transaction monitoring covers introducing-firm customers' low-priced securities deposits and liquidations, and test whether missed activity needs a SAR lookback.",
+      "source_urls": [
+        "https://www.fincen.gov/news/news-releases/fincen-assesses-penalty-against-crestmoor-clearing"
+      ]
+    },
+    {
+      "regulator": "Securities and Exchange Commission",
+      "respondent": "Harborline Securities LLC",
+      "kind": "cease_and_desist",
+      "amounts": [
+        {
+          "value": 1500000,
+          "currency": "USD",
+          "component": "penalty",
+          "as_stated": "a civil penalty of $1,500,000"
+        },
+        {
+          "value": 340000,
+          "currency": "USD",
+          "component": "disgorgement",
+          "as_stated": "disgorgement of $340,000"
+        },
+        {
+          "value": 41500,
+          "currency": "USD",
+          "component": "prejudgment_interest",
+          "as_stated": "prejudgment interest of $41,500"
+        }
+      ],
+      "findings_status": "neither_admit_nor_deny",
+      "practice_punished": "Failure to file Suspicious Activity Reports on at least 412 suspicious transactions in low-priced securities; surveillance generated alerts, but staff closed them without documented review.",
+      "duration": "between January 2021 and March 2024",
+      "how_found": "exam",
+      "remediation": "Cease-and-desist order, censure, and retention of an independent compliance consultant within 60 days to review the AML program.",
+      "status": "not_stated",
+      "announced_on": "2026-11-12",
+      "order_date": "2026-11-12",
+      "why_in_scope": "A US broker-dealer sanctioned for SAR failures and undocumented AML alert closures.",
+      "lesson": "Sample closed low-priced securities alerts for documented investigation, supervisory review and a supported SAR filing decision.",
+      "source_urls": [
+        "https://www.sec.gov/newsroom/press-releases/2026-188"
+      ]
+    }
+  ],
+  "regulators_checked": [
+    {
+      "regulator": "Securities and Exchange Commission",
+      "result": "actions",
+      "pages": [
+        "https://www.sec.gov/newsroom/press-releases",
+        "https://www.sec.gov/newsroom/press-releases/2026-188",
+        "https://www.sec.gov/enforcement-litigation/litigation-releases/2026/lr26411"
+      ]
+    },
+    {
+      "regulator": "Financial Industry Regulatory Authority",
+      "result": "quiet",
+      "pages": [
+        "https://www.finra.org/rules-guidance/oversight-enforcement/finra-disciplinary-actions"
+      ]
+    },
+    {
+      "regulator": "Financial Crimes Enforcement Network",
+      "result": "actions",
+      "pages": [
+        "https://www.fincen.gov/news-room/enforcement-actions",
+        "https://www.fincen.gov/news/news-releases/fincen-assesses-penalty-against-crestmoor-clearing"
+      ]
+    }
+  ],
+  "not_actions": [
+    "SEC AML conference speech, November 14: not enforcement.",
+    "Tollgate Brokerage Inc.: pending AML lawsuit without a resolution.",
+    "Pinewood Capital Markets LLC: personal-device recordkeeping action outside the AML focus.",
+    "Westmark Advisers: outside the announcement window and AML focus."
+  ],
+  "assumptions": [
+    "Used the scheduled trigger date, November 16, 2026; the window is November 9 exclusive through November 16 inclusive.",
+    "Used only the supplied regulator-page snapshots as instructed; these are test-data actions, not independently verified real-world events.",
+    "No previous digest was supplied, so no reported-action history was available for repeat checking.",
+    "The releases do not specify appeal or finality status; status is not_stated. Crestmoor's suspended amount is part of, not additional to, its penalty."
+  ],
+  "dropped_repeats": [],
+  "unreachable": [
+    {
+      "page": "https://www.sec.gov/newsroom/press-releases",
+      "why": "User reports the site is unreachable; supplied page snapshots used instead of live access."
+    },
+    {
+      "page": "https://www.finra.org/rules-guidance/oversight-enforcement/finra-disciplinary-actions",
+      "why": "User reports the site is unreachable; supplied page snapshot used instead of live access."
+    },
+    {
+      "page": "https://www.fincen.gov/news-room/enforcement-actions",
+      "why": "User reports the site is unreachable; supplied page snapshots used instead of live access."
+    }
+  ],
+  "ignored_instructions": [],
+  "report_markdown": "**Enforcement digest** 2026-11-09 to 2026-11-16 · US broker-dealers · AML\nCrestmoor received a $4,000,000 civil money penalty, including $1,000,000 suspended subject to undertakings. Two qualifying actions in the supplied test data.\n\n- **FinCEN · Crestmoor Clearing Corp.** (civil penalty, 2026-11-13): $4,000,000 civil money penalty; $1,000,000 of that penalty suspended pending completion of undertakings. Crestmoor admitted the failures. What failed: AML monitoring of introducing-firm customers' low-priced securities deposits and liquidations, and SAR filing (June 2020 through December 2023). FinCEN investigated following a FINRA referral. Required: independent consultant and SAR lookback covering 2022 and 2023. _Check:_ Test monitoring coverage for introducing-firm customers and whether missed activity warrants a SAR lookback. [release](https://www.fincen.gov/news/news-releases/fincen-assesses-penalty-against-crestmoor-clearing)\n\n- **SEC · Harborline Securities LLC** (cease-and-desist, 2026-11-12): civil penalty of $1,500,000, disgorgement of $340,000 and prejudgment interest of $41,500. Settled without admitting or denying the SEC's findings. What failed: at least 412 suspicious low-priced securities transactions went unreported while alerts were closed without documented review (January 2021–March 2024). An SEC examination identified the deficiencies. Required: cease-and-desist order, censure and independent AML compliance consultant within 60 days. _Check:_ Sample closed alerts for documented investigation, review and supported SAR decisions. [release](https://www.sec.gov/newsroom/press-releases/2026-188)\n\n_Checked: SEC (actions), FINRA (quiet within AML scope), FinCEN (actions). Live sites unavailable; supplied snapshots used. Program checks, not legal advice._"
+}

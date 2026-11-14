@@ -1,0 +1,135 @@
+{
+  "window": {
+    "from": "2026-11-09",
+    "to": "2026-11-16"
+  },
+  "quiet": false,
+  "changes": [
+    {
+      "platform": "Vercel",
+      "product": "Fast Data Transfer",
+      "kind": "pricing",
+      "section": "act_now",
+      "title": "Pro transfer overage rises to $0.20 per GB",
+      "what_changed": "Starting December 1, 2026, Fast Data Transfer beyond the included 1 TB on the Pro plan costs $0.20 per GB, up from $0.15 per GB. Hobby and Enterprise are unchanged.",
+      "affects": "Pro projects exceeding the included 1 TB; your Node backend runs on Vercel Pro.",
+      "announced_on": "2026-11-11",
+      "deadline": {
+        "date": "2026-12-01",
+        "wording": "Starting December 1, 2026"
+      },
+      "action": "Review Pro transfer usage and update the overage budget before December 1, 2026.",
+      "source_urls": [
+        "https://vercel.com/changelog/fast-data-transfer-pricing-update-for-pro"
+      ]
+    },
+    {
+      "platform": "OpenAI API",
+      "product": "gpt-6-luna",
+      "kind": "deprecation",
+      "section": "act_now",
+      "title": "Alias moves December 2; old snapshot shuts down January 14",
+      "what_changed": "The gpt-6-luna alias moves to gpt-6-luna-2026-10 on December 2, 2026. The deprecated gpt-6-luna-2026-03 snapshot shuts down on January 14, 2027; the recommended replacement is gpt-6-luna-2026-10.",
+      "affects": "Calls using gpt-6-luna or gpt-6-luna-2026-03; your chat completions use the alias.",
+      "announced_on": "2026-11-10",
+      "deadline": {
+        "date": "2026-12-02",
+        "wording": "December 2, 2026"
+      },
+      "action": "Run chat-completion regression tests against gpt-6-luna-2026-10 before the alias moves; replace any gpt-6-luna-2026-03 pins before January 14, 2027.",
+      "source_urls": [
+        "https://platform.openai.com/docs/deprecations"
+      ]
+    },
+    {
+      "platform": "Stripe API",
+      "product": "Checkout",
+      "kind": "breaking",
+      "section": "coming",
+      "title": "Subscription Checkout rejects customer_creation=if_required on upgrade",
+      "what_changed": "In API version 2026-11-12.acacia, customer_creation no longer accepts if_required for Checkout Sessions in subscription mode; omit the parameter instead.",
+      "affects": "Subscription-mode Checkout Sessions when upgrading to 2026-11-12.acacia; your Checkout integration is potentially affected.",
+      "announced_on": "2026-11-12",
+      "deadline": {
+        "date": null,
+        "wording": "when you upgrade your API version to 2026-11-12.acacia"
+      },
+      "action": "Check subscription Checkout Session creation in the Node backend, omit customer_creation instead of sending if_required, and test before upgrading the API version.",
+      "source_urls": [
+        "https://docs.stripe.com/changelog/acacia/2026-11-12/checkout-customer-creation"
+      ]
+    },
+    {
+      "platform": "OpenAI API",
+      "product": "Assistants API",
+      "kind": "deprecation",
+      "section": "coming",
+      "title": "Support bot needs migration to Responses API",
+      "what_changed": "The Assistants API is deprecated in favor of the Responses API. Shutdown is later in 2027, with at least 6 months' notice of the exact date.",
+      "affects": "Assistants API integrations; your support bot uses this API.",
+      "announced_on": "2026-11-13",
+      "deadline": {
+        "date": null,
+        "wording": "later in 2027"
+      },
+      "action": "Scope the support bot's migration to the Responses API and track the exact shutdown-date announcement; no calendar deadline has been supplied.",
+      "source_urls": [
+        "https://platform.openai.com/docs/deprecations"
+      ]
+    }
+  ],
+  "platforms_checked": [
+    {
+      "platform": "Stripe API",
+      "status": "changes",
+      "sources": [
+        "https://docs.stripe.com/changelog"
+      ],
+      "left_out": [
+        "Terminal BBPOS WisePad 2 end of support: no Terminal usage stated."
+      ]
+    },
+    {
+      "platform": "OpenAI API",
+      "status": "changes",
+      "sources": [
+        "https://platform.openai.com/docs/deprecations"
+      ],
+      "left_out": []
+    },
+    {
+      "platform": "Vercel",
+      "status": "changes",
+      "sources": [
+        "https://vercel.com/changelog"
+      ],
+      "left_out": [
+        "Vercel Ship 2026 recap: marketing, not an actionable platform change."
+      ]
+    }
+  ],
+  "unconfirmed": [],
+  "assumptions": [
+    "Used the scheduled trigger date, 2026-11-16, for the seven-day window.",
+    "Used the supplied test-data pages as vendor-page substitutes; made no web requests.",
+    "No previous completed log was supplied, so prior-report deduplication could not be verified.",
+    "The Stripe API version and subscription Checkout parameters currently used were not supplied."
+  ],
+  "dropped_repeats": [],
+  "unreachable": [
+    {
+      "page": "https://docs.stripe.com/changelog",
+      "why": "Reported unreachable by the user; supplied page content used instead."
+    },
+    {
+      "page": "https://platform.openai.com/docs/deprecations",
+      "why": "Reported unreachable by the user; supplied page content used instead."
+    },
+    {
+      "page": "https://vercel.com/changelog",
+      "why": "Reported unreachable by the user; supplied page content used instead."
+    }
+  ],
+  "ignored_instructions": [],
+  "report_markdown": "**Platform changes** 2026-11-09 to 2026-11-16\nVercel Pro transfer overage rises December 1; the gpt-6-luna alias moves December 2.\n\n**Act now**\n- **Vercel Fast Data Transfer: Pro overage increase** (Starting December 1, 2026). Beyond the included 1 TB, pricing rises from $0.15 per GB to $0.20 per GB. _Do:_ Review usage and update the overage budget. [source](https://vercel.com/changelog/fast-data-transfer-pricing-update-for-pro)\n- **OpenAI API gpt-6-luna: alias and snapshot migration** (by December 2, 2026). The alias moves to gpt-6-luna-2026-10; gpt-6-luna-2026-03 shuts down January 14, 2027. _Do:_ Regression-test the replacement before the alias moves and remove old snapshot pins before shutdown. [source](https://platform.openai.com/docs/deprecations)\n\n**Coming**\n- **Stripe API Checkout: subscription parameter break** (when you upgrade your API version to 2026-11-12.acacia). Subscription-mode Sessions no longer accept customer_creation=if_required. _Do:_ Omit the parameter and test before upgrading. [source](https://docs.stripe.com/changelog/acacia/2026-11-12/checkout-customer-creation)\n- **OpenAI API Assistants API: deprecated** (later in 2027). Responses API is the replacement; OpenAI promises at least 6 months' notice of the exact shutdown date. _Do:_ Scope the support bot migration and monitor the date announcement. [source](https://platform.openai.com/docs/deprecations)\n\n_Checked: Stripe API (changelog), OpenAI API (deprecations), Vercel (changelog), using supplied page substitutes. Unconfirmed: none. Unreachable: all three supplied source sites; no live requests made._"
+}

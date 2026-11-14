@@ -1,0 +1,1 @@
+- [No employer reviews](no-employer-reviews.md) — the owner doesn't want Glassdoor or Indeed reviews listed; HR handles them

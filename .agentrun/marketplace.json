@@ -395,6 +395,48 @@
       "source": "./templates/outreach-opener",
       "category": "sales",
       "tags": ["gmail", "outreach", "cold-email", "prospecting", "drafts"]
+    },
+    {
+      "name": "platform-changes",
+      "source": "./templates/platform-changes",
+      "category": "engineering",
+      "tags": ["deprecations", "breaking-changes", "changelogs", "apis", "pricing", "weekly"]
+    },
+    {
+      "name": "terms-change-watch",
+      "source": "./templates/terms-change-watch",
+      "category": "compliance",
+      "tags": ["terms-of-service", "privacy-policy", "dpa", "vendor-risk", "legal", "weekly"]
+    },
+    {
+      "name": "enforcement-digest",
+      "source": "./templates/enforcement-digest",
+      "category": "compliance",
+      "tags": ["enforcement", "regulators", "fines", "aml", "compliance", "weekly"]
+    },
+    {
+      "name": "brand-mentions",
+      "source": "./templates/brand-mentions",
+      "category": "marketing",
+      "tags": ["brand-monitoring", "mentions", "reputation", "pr", "daily"]
+    },
+    {
+      "name": "regulatory-tracker",
+      "source": "./templates/regulatory-tracker",
+      "category": "compliance",
+      "tags": ["regulation", "rulemaking", "legal", "policy", "compliance", "weekly"]
+    },
+    {
+      "name": "sanctions-update",
+      "source": "./templates/sanctions-update",
+      "category": "compliance",
+      "tags": ["sanctions", "ofac", "screening", "kyc", "compliance", "weekly"]
+    },
+    {
+      "name": "product-recall-watch",
+      "source": "./templates/product-recall-watch",
+      "category": "operations",
+      "tags": ["recalls", "product-safety", "compliance", "suppliers", "weekly"]
     }
   ]
 }

@@ -1,0 +1,161 @@
+{
+  "window": {
+    "from": "2026-11-09",
+    "to": "2026-11-16"
+  },
+  "quiet": false,
+  "actions": [
+    {
+      "regime": "OFAC",
+      "issuing_body": "Office of Foreign Assets Control (OFAC)",
+      "kind": "designation",
+      "program": "IRAN-EO13902",
+      "published": {
+        "date": "2026-11-13",
+        "as_printed": "11/13/2026"
+      },
+      "stage": "on_list",
+      "counts": {
+        "added": 7,
+        "removed": null,
+        "amended": null
+      },
+      "entries": [
+        {
+          "name": "ORION PETROTRADE FZCO",
+          "type": "entity",
+          "identifiers": "Jebel Ali Free Zone, Dubai, United Arab Emirates; Commercial Registry Number 7788120 (United Arab Emirates)"
+        },
+        {
+          "name": "SABLE CREST MARINE LTD",
+          "type": "entity",
+          "identifiers": "Majuro, Marshall Islands; Registration Number 104332 (Marshall Islands)"
+        },
+        {
+          "name": "TERRAWIND SHIPPING MANAGEMENT LLC",
+          "type": "entity",
+          "identifiers": "Dubai, United Arab Emirates"
+        },
+        {
+          "name": "NORTHLIGHT PETROCHEMICAL TRADING CO.",
+          "type": "entity",
+          "identifiers": "Hong Kong; Company Number 3311908 (Hong Kong)"
+        },
+        {
+          "name": "KESTREL STAR",
+          "type": "vessel",
+          "identifiers": "Crude Oil Tanker Panama flag; Vessel Registration Identification IMO 9123457 (vessel); Linked To: SABLE CREST MARINE LTD"
+        },
+        {
+          "name": "AMBER TIDE",
+          "type": "vessel",
+          "identifiers": "Crude Oil Tanker Cameroon flag; Vessel Registration Identification IMO 9234561 (vessel)"
+        },
+        {
+          "name": "SEA LANTERN",
+          "type": "vessel",
+          "identifiers": "Crude Oil Tanker Comoros flag; Vessel Registration Identification IMO 9345672 (vessel)"
+        }
+      ],
+      "summary": "OFAC added 4 entities and 3 vessels to the Specially Designated Nationals and Blocked Persons List under [IRAN-EO13902].",
+      "screening_note": "Re-screen vessel IMOs and entity registration numbers; review the published link between KESTREL STAR and SABLE CREST MARINE LTD.",
+      "source_urls": [
+        "https://ofac.treasury.gov/recent-actions/20261113"
+      ]
+    },
+    {
+      "regime": "UK",
+      "issuing_body": "Foreign, Commonwealth and Development Office",
+      "kind": "delisting",
+      "program": "Russia",
+      "published": {
+        "date": "2026-11-11",
+        "as_printed": "11/11/2026, 09:30"
+      },
+      "stage": "removed_from_list",
+      "counts": {
+        "added": null,
+        "removed": 2,
+        "amended": null
+      },
+      "entries": [
+        {
+          "name": "VOLGA RIVER LOGISTICS JSC",
+          "type": "entity",
+          "identifiers": "Group ID: 15012"
+        },
+        {
+          "name": "NEVSKY FREIGHT PARTNERS LLC",
+          "type": "entity",
+          "identifiers": "Group ID: 15340"
+        }
+      ],
+      "summary": "The notice removed 2 entries from the UK Sanctions List under the Russia regime and states they are no longer subject to an asset freeze.",
+      "screening_note": "Reconcile the two Group IDs with screening records and review existing alerts against current lists and other applicable regimes.",
+      "source_urls": [
+        "https://www.gov.uk/government/publications/financial-sanctions-notice-russia-2026-11-11",
+        "https://www.gov.uk/government/publications/the-uk-sanctions-list"
+      ]
+    }
+  ],
+  "watchlist_checks": [
+    {
+      "watch_name": "MV Kestrel Star (IMO 9123457)",
+      "result": "match",
+      "listed_entry": "KESTREL STAR",
+      "identifiers_compared": "IMO 9123457 agrees exactly with the listed vessel's IMO 9123457."
+    },
+    {
+      "watch_name": "Orion Petrotrade FZE, UAE registration 1045521",
+      "result": "possible_match",
+      "listed_entry": "ORION PETROTRADE FZCO",
+      "identifiers_compared": "Similar name and UAE jurisdiction; legal-form suffix differs (FZE versus FZCO), and supplied registration 1045521 differs from listed Commercial Registry Number 7788120. Identity is not established."
+    },
+    {
+      "watch_name": "Halvard Grain Trading AS, Norway",
+      "result": "no_match",
+      "listed_entry": null,
+      "identifiers_compared": "No entry in the supplied in-window actions resembles this name; no corresponding Norwegian identifier or address appears. This is not a full-list clearance."
+    }
+  ],
+  "regimes_checked": [
+    {
+      "regime": "OFAC",
+      "result": "actions",
+      "pages": [
+        "https://ofac.treasury.gov/recent-actions",
+        "https://ofac.treasury.gov/recent-actions/20261113"
+      ]
+    },
+    {
+      "regime": "UK",
+      "result": "actions",
+      "pages": [
+        "https://www.gov.uk/government/publications/financial-sanctions-notice-russia-2026-11-11",
+        "https://www.gov.uk/government/publications/the-uk-sanctions-list"
+      ]
+    }
+  ],
+  "pending_publication": [],
+  "assumptions": [
+    "Used the scheduled trigger date, 2026-11-16; the window excludes 2026-11-09 and includes 2026-11-16.",
+    "All supplied names and actions are test data. Supplied page copies were used as the official-source substitutes requested; no web fetching or searching was performed.",
+    "Coverage is limited to the supplied pages; other notices, licences, guidance and enforcement could not be independently checked.",
+    "OFAC added count 7 is the sum of the notice's explicit categories: 4 entities and 3 vessels.",
+    "No previous completed update was supplied for repeat comparison. The 2026-11-05 item is outside the window.",
+    "Watch checks concern only the supplied in-window actions, not the complete sanctions lists. This is not legal advice."
+  ],
+  "dropped_repeats": [],
+  "unreachable": [
+    {
+      "page": "https://ofac.treasury.gov",
+      "why": "User reported the site unreachable; supplied recent-actions and notice copies were used instead."
+    },
+    {
+      "page": "https://www.gov.uk",
+      "why": "User reported the site unreachable; supplied UK Sanctions List and financial sanctions notice copies were used instead."
+    }
+  ],
+  "ignored_instructions": [],
+  "report_markdown": "**Sanctions update** 2026-11-09 to 2026-11-16\n**Watch-name match: MV Kestrel Star — IMO 9123457 matches KESTREL STAR, newly added by OFAC.**\n\n**Watch names:** MV Kestrel Star: match (IMO agrees); Orion Petrotrade FZE: possible match (FZE/FZCO and registration 1045521/7788120 differ); Halvard Grain Trading AS: no match in these actions.\n\n- **OFAC · designation · IRAN-EO13902** (11/13/2026): Added 4 entities—ORION PETROTRADE FZCO, SABLE CREST MARINE LTD, TERRAWIND SHIPPING MANAGEMENT LLC and NORTHLIGHT PETROCHEMICAL TRADING CO.—and 3 vessels: KESTREL STAR (IMO 9123457), AMBER TIDE (IMO 9234561) and SEA LANTERN (IMO 9345672). _Screening:_ Re-screen IMOs and entity registration numbers; review KESTREL STAR's published link to SABLE CREST MARINE LTD. [Notice](https://ofac.treasury.gov/recent-actions/20261113)\n- **UK · delisting · Russia** (11/11/2026, 09:30): Removed 2 entries: VOLGA RIVER LOGISTICS JSC (Group ID: 15012) and NEVSKY FREIGHT PARTNERS LLC (Group ID: 15340). _Screening:_ Reconcile Group IDs and review existing alerts against current lists and other regimes. [Notice](https://www.gov.uk/government/publications/financial-sanctions-notice-russia-2026-11-11)\n\n_Live sites unavailable; supplied test-data page copies used. Coverage and watch checks are limited to those pages, not full-list clearance. This is not legal advice._"
+}
