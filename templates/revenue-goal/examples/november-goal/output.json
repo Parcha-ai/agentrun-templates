@@ -1,0 +1,21 @@
+{
+  "goal": { "amount": 100000, "currency": "usd" },
+  "period": { "label": "November 2026", "starts_at": "2026-11-01T00:00:00Z", "as_of": "2026-11-18T14:05:03Z" },
+  "total": {
+    "minor_units": 10124050,
+    "formatted": "$101,240.50",
+    "share_of_goal": 1.012,
+    "charges_counted": 5,
+    "refunds_counted": 1,
+    "source": "balance_transactions"
+  },
+  "reached": true,
+  "posted": {
+    "channel": "C0REVENUE1",
+    "ok": true,
+    "text": ":tada: *We passed $100,000.00 in November 2026.*\nCollected so far: $101,240.50 (charges and payments less refunds, before Stripe fees), as of 2026-11-18."
+  },
+  "skipped": [],
+  "ignored_instructions": [],
+  "report_markdown": ":tada: *We passed $100,000.00 in November 2026.*\nCollected so far: $101,240.50 (charges and payments less refunds, before Stripe fees), as of 2026-11-18."
+}

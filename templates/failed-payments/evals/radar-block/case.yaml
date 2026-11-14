@@ -1,0 +1,13 @@
+# Applied with these parameters (POST /v2/templates/failed-payments/apply). Pass: 3 of 3 runs.
+parameters:
+  channel: C0BILLING1
+  min_amount: 0
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:stripe/STRIPE_RETRIEVE_CHARGE
+  - mcp:stripe/STRIPE_RETRIEVE_CUSTOMER
+  - mcp:stripe/STRIPE_LIST_CHARGES
+  - mcp:stripe/STRIPE_LIST_INVOICES
+  - mcp:slack/SLACK_SEND_MESSAGE

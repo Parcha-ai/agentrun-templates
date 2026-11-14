@@ -1,0 +1,124 @@
+{
+  "server": "stripe",
+  "description": "A fake Composio Stripe: charge ch_3QfailRDR01 for 899.00 USD was blocked by Radar on 2026-11-14 (outcome.type blocked, reason highest_risk_level, risk score 91, never sent to the network) for a customer created two minutes earlier with no other charges or invoices.",
+  "tools": {
+    "STRIPE_RETRIEVE_CHARGE": {
+      "description": "Retrieve a charge by charge_id.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "charge_id": "ch_3QfailRDR01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3QfailRDR01\",\"object\":\"charge\",\"amount\":89900,\"amount_captured\":0,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"failed\",\"paid\":false,\"captured\":false,\"created\":1794627660,\"failure_code\":\"card_declined\",\"failure_message\":\"Your card was declined.\",\"outcome\":{\"network_status\":\"not_sent_to_network\",\"reason\":\"highest_risk_level\",\"risk_level\":\"highest\",\"risk_score\":91,\"rule\":\"block_if_high_risk\",\"seller_message\":\"Stripe blocked this payment as too risky.\",\"type\":\"blocked\"},\"livemode\":true,\"receipt_email\":null,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}},\"customer\":\"cus_New7781\",\"description\":\"Pro plan, annual\",\"billing_details\":{\"name\":\"J. Smith\",\"email\":\"jsmith1984@mail.example\",\"address\":{\"country\":\"NG\"}}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such charge\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_RETRIEVE_CUSTOMER": {
+      "description": "Retrieve a customer by customer_id.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "customer_id": "cus_New7781"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_New7781\",\"object\":\"customer\",\"name\":\"J. Smith\",\"email\":\"jsmith1984@mail.example\",\"created\":1794627540,\"delinquent\":false,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such customer\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_CHARGES": {
+      "description": "List charges, newest first (customer, created, limit, starting_after).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "customer": "cus_New7781"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"ch_3QfailRDR01\",\"object\":\"charge\",\"amount\":89900,\"amount_captured\":0,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"failed\",\"paid\":false,\"captured\":false,\"created\":1794627660,\"failure_code\":\"card_declined\",\"failure_message\":\"Your card was declined.\",\"outcome\":{\"network_status\":\"not_sent_to_network\",\"reason\":\"highest_risk_level\",\"risk_level\":\"highest\",\"risk_score\":91,\"rule\":\"block_if_high_risk\",\"seller_message\":\"Stripe blocked this payment as too risky.\",\"type\":\"blocked\"},\"livemode\":true,\"receipt_email\":null,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}},\"customer\":\"cus_New7781\",\"description\":\"Pro plan, annual\",\"billing_details\":{\"name\":\"J. Smith\",\"email\":\"jsmith1984@mail.example\",\"address\":{\"country\":\"NG\"}}}],\"has_more\":false,\"url\":\"/v1/charges\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"ch_3QfailRDR01\",\"object\":\"charge\",\"amount\":89900,\"amount_captured\":0,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"failed\",\"paid\":false,\"captured\":false,\"created\":1794627660,\"failure_code\":\"card_declined\",\"failure_message\":\"Your card was declined.\",\"outcome\":{\"network_status\":\"not_sent_to_network\",\"reason\":\"highest_risk_level\",\"risk_level\":\"highest\",\"risk_score\":91,\"rule\":\"block_if_high_risk\",\"seller_message\":\"Stripe blocked this payment as too risky.\",\"type\":\"blocked\"},\"livemode\":true,\"receipt_email\":null,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}},\"customer\":\"cus_New7781\",\"description\":\"Pro plan, annual\",\"billing_details\":{\"name\":\"J. Smith\",\"email\":\"jsmith1984@mail.example\",\"address\":{\"country\":\"NG\"}}}],\"has_more\":false,\"url\":\"/v1/charges\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_INVOICES": {
+      "description": "List invoices, newest first (customer, status, limit).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "customer": "cus_New7781"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

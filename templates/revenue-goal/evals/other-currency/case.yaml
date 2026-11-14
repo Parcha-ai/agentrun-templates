@@ -1,0 +1,14 @@
+# Applied with these parameters (POST /v2/templates/revenue-goal/apply). Pass: 3 of 3 runs.
+parameters:
+  goal_amount: 100000
+  currency: usd
+  period: month
+  timezone: UTC
+  channel: C0REVENUE1
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:stripe/STRIPE_LIST_BALANCE_TRANSACTIONS
+  - mcp:stripe/STRIPE_SEARCH_CHARGES
+  - mcp:slack/SLACK_SEND_MESSAGE

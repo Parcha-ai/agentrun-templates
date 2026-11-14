@@ -1,0 +1,124 @@
+{
+  "server": "stripe",
+  "description": "A fake Composio Stripe: charge ch_3QfailNSF01 for 1,200.00 USD failed on 2026-11-14 (insufficient_funds, issuer declined) for Globex Corp (cus_Globex01), a customer since March 2026 with eight paid monthly charges of 1,200.00, the last on 2026-10-14. Invoice 4F2A-0011 is open, with a retry set for 2026-11-17. It never reaches Stripe.",
+  "tools": {
+    "STRIPE_RETRIEVE_CHARGE": {
+      "description": "Retrieve a charge by charge_id.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "charge_id": "ch_3QfailNSF01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3QfailNSF01\",\"object\":\"charge\",\"amount\":120000,\"amount_captured\":0,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"failed\",\"paid\":false,\"captured\":false,\"created\":1794643920,\"failure_code\":\"card_declined\",\"failure_message\":\"Your card has insufficient funds.\",\"outcome\":{\"network_status\":\"declined_by_network\",\"reason\":\"insufficient_funds\",\"risk_level\":\"normal\",\"seller_message\":\"The bank returned the decline code `insufficient_funds`.\",\"type\":\"issuer_declined\"},\"livemode\":true,\"receipt_email\":null,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}},\"customer\":\"cus_Globex01\",\"description\":\"Invoice 4F2A-0011\",\"invoice\":\"in_1QGlobex11\",\"decline_code\":\"insufficient_funds\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such charge\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_RETRIEVE_CUSTOMER": {
+      "description": "Retrieve a customer by customer_id.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "customer_id": "cus_Globex01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Globex01\",\"object\":\"customer\",\"name\":\"Globex Corp\",\"email\":\"billing@globex.example\",\"created\":1772445600,\"delinquent\":false,\"description\":\"Annual plan, 40 seats\",\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such customer\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_CHARGES": {
+      "description": "List charges, newest first (customer, created, limit, starting_after).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "customer": "cus_Globex01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"ch_3QfailNSF01\",\"object\":\"charge\",\"amount\":120000,\"amount_captured\":0,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"failed\",\"paid\":false,\"captured\":false,\"created\":1794643920,\"failure_code\":\"card_declined\",\"failure_message\":\"Your card has insufficient funds.\",\"outcome\":{\"network_status\":\"declined_by_network\",\"reason\":\"insufficient_funds\",\"risk_level\":\"normal\",\"seller_message\":\"The bank returned the decline code `insufficient_funds`.\",\"type\":\"issuer_declined\"},\"livemode\":true,\"receipt_email\":null,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}},\"customer\":\"cus_Globex01\",\"description\":\"Invoice 4F2A-0011\",\"invoice\":\"in_1QGlobex11\",\"decline_code\":\"insufficient_funds\"},{\"id\":\"ch_hist1\",\"object\":\"charge\",\"amount\":120000,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1791965400,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}}},{\"id\":\"ch_hist2\",\"object\":\"charge\",\"amount\":120000,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1789373400,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}}},{\"id\":\"ch_hist3\",\"object\":\"charge\",\"amount\":120000,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1786695000,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}}},{\"id\":\"ch_hist4\",\"object\":\"charge\",\"amount\":120000,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1784016600,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}}},{\"id\":\"ch_hist5\",\"object\":\"charge\",\"amount\":120000,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1781424600,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}}},{\"id\":\"ch_hist6\",\"object\":\"charge\",\"amount\":120000,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1778746200,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}}},{\"id\":\"ch_hist7\",\"object\":\"charge\",\"amount\":120000,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1776154200,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}}},{\"id\":\"ch_hist8\",\"object\":\"charge\",\"amount\":120000,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1773475800,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}}}],\"has_more\":false,\"url\":\"/v1/charges\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"ch_3QfailNSF01\",\"object\":\"charge\",\"amount\":120000,\"amount_captured\":0,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"failed\",\"paid\":false,\"captured\":false,\"created\":1794643920,\"failure_code\":\"card_declined\",\"failure_message\":\"Your card has insufficient funds.\",\"outcome\":{\"network_status\":\"declined_by_network\",\"reason\":\"insufficient_funds\",\"risk_level\":\"normal\",\"seller_message\":\"The bank returned the decline code `insufficient_funds`.\",\"type\":\"issuer_declined\"},\"livemode\":true,\"receipt_email\":null,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}},\"customer\":\"cus_Globex01\",\"description\":\"Invoice 4F2A-0011\",\"invoice\":\"in_1QGlobex11\",\"decline_code\":\"insufficient_funds\"}],\"has_more\":false,\"url\":\"/v1/charges\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_INVOICES": {
+      "description": "List invoices, newest first (customer, status, limit).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "customer": "cus_Globex01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"in_1QGlobex11\",\"object\":\"invoice\",\"number\":\"4F2A-0011\",\"status\":\"open\",\"amount_due\":120000,\"amount_paid\":0,\"currency\":\"usd\",\"due_date\":1794614400,\"attempt_count\":1,\"next_payment_attempt\":1794903120,\"subscription\":\"sub_Globex\",\"created\":1794643200},{\"id\":\"in_1QGlobex10\",\"object\":\"invoice\",\"number\":\"4F2A-0010\",\"status\":\"paid\",\"amount_due\":120000,\"amount_paid\":120000,\"currency\":\"usd\",\"created\":1791964800}],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

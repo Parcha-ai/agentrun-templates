@@ -1,0 +1,50 @@
+{
+  "server": "stripe",
+  "description": "A fake Composio Stripe for November 2026: USD charges of 45,000.00, 32,000.00 and the event's 5,000.00, and a payout that must not count. Total 82,000.00, below a 100,000.00 goal.",
+  "tools": {
+    "STRIPE_LIST_BALANCE_TRANSACTIONS": {
+      "description": "List balance transactions (created {gte,lte}, currency, type, limit, starting_after).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "starting_after": "txn_000013"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[],\"has_more\":false,\"url\":\"/v1/balance_transactions\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"txn_000010\",\"object\":\"balance_transaction\",\"amount\":4500000,\"currency\":\"usd\",\"type\":\"charge\",\"reporting_category\":\"charge\",\"created\":1793700000,\"net\":4500000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src10\"},{\"id\":\"txn_000011\",\"object\":\"balance_transaction\",\"amount\":3200000,\"currency\":\"usd\",\"type\":\"charge\",\"reporting_category\":\"charge\",\"created\":1794218400,\"net\":3200000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src11\"},{\"id\":\"txn_000012\",\"object\":\"balance_transaction\",\"amount\":500000,\"currency\":\"usd\",\"type\":\"charge\",\"reporting_category\":\"charge\",\"created\":1795010700,\"net\":500000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src12\"},{\"id\":\"txn_000013\",\"object\":\"balance_transaction\",\"amount\":-6000000,\"currency\":\"usd\",\"type\":\"payout\",\"reporting_category\":\"payout\",\"created\":1794268800,\"net\":-6000000,\"fee\":0,\"status\":\"available\",\"source\":\"po_x\"}],\"has_more\":false,\"url\":\"/v1/balance_transactions\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_SEARCH_CHARGES": {
+      "description": "Search charges with Stripe's search query language (query, limit, page).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"search_result\",\"data\":[{\"id\":\"ch_src10\",\"object\":\"charge\",\"amount\":4500000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1793700000},{\"id\":\"ch_src11\",\"object\":\"charge\",\"amount\":3200000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1794218400},{\"id\":\"ch_src12\",\"object\":\"charge\",\"amount\":500000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1795010700}],\"has_more\":false,\"next_page\":null},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}
