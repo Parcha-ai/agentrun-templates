@@ -395,6 +395,12 @@
       "source": "./templates/outreach-opener",
       "category": "sales",
       "tags": ["gmail", "outreach", "cold-email", "prospecting", "drafts"]
+    },
+    {
+      "name": "competitor-content",
+      "source": "./templates/competitor-content",
+      "category": "marketing",
+      "tags": ["competitors", "content-marketing", "competitive-intelligence", "youtube", "weekly"]
     }
   ]
 }

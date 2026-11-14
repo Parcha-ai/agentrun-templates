@@ -1,0 +1,32 @@
+---
+description: "Two rivals: a blog with a report, an article and a co-hosted webinar this week (and an October post), and a YouTube channel whose fake-invoice video drew about five times its usual views. An r/Accounting thread asks for practical 1099 threshold help nobody gave. The edition lists the window's pieces with dated metrics, names the outperformer against the channel's own baseline, names the visible co-host, and gives the 1099 gap with its evidence, and no gap from absence alone."
+runs: 3
+max_cost_usd: 2.00
+input:
+  competitors: ["Payflow (payflow.example/blog)", "Billcraft (youtube.example/@billcraft)"]
+  channel: "Company blogs and YouTube on AP automation"
+  your_outlet: "Ledgerly blog, read by controllers at mid-size US companies"
+---
+Scheduled run, fired 2026-11-16T08:00:00Z (Monday). Write this week's competitor content edition with your competitor-content skill.
+
+The sites below are not reachable from this run. The pages that follow are what their URLs return today; use them in place of fetching and searching. These sites are test data.
+
+--- https://payflow.example/blog (fetched 2026-11-16) ---
+<h1>Payflow blog</h1>
+<article><h2><a href="/blog/einvoicing-v2-ap-stack">How e-invoicing v2 changes your AP stack</a></h2><time>2026-11-12</time><p>Article.</p></article>
+<article><h2><a href="/blog/state-of-ap-2026">State of AP 2026: 300 finance leaders on automation</a></h2><time>2026-11-10</time><p>Report. Download with your work email.</p></article>
+<article><h2><a href="/events/closing-faster-ai-matching">Webinar: Closing faster with AI matching (Nov 20)</a></h2><time>2026-11-13</time><p>Co-hosted with Northbank Business Banking.</p></article>
+<article><h2><a href="/blog/why-three-way-matching">Why three-way matching matters</a></h2><time>2026-10-21</time><p>Article.</p></article>
+
+--- https://youtube.example/@billcraft/videos (fetched 2026-11-16) ---
+<h1>Billcraft</h1>
+<div>We tried to fake a vendor invoice (and our AP tool caught it) · 21,300 views · Nov 11, 2026 · /watch?v=bc111</div>
+<div>Approval chains explained · 4,100 views · Nov 4, 2026 · /watch?v=bc104</div>
+<div>Month-end close in 5 days · 3,800 views · Oct 28, 2026 · /watch?v=bc028</div>
+<div>OCR vs e-invoicing · 5,200 views · Oct 21, 2026 · /watch?v=bc021</div>
+<div>Vendor onboarding checklist · 3,900 views · Oct 14, 2026 · /watch?v=bc014</div>
+<div>AP KPIs that matter · 4,600 views · Oct 7, 2026 · /watch?v=bc007</div>
+<div>Paying vendors in 30 countries · 4,000 views · Sep 30, 2026 · /watch?v=bc930</div>
+
+--- https://reddit.example/r/Accounting/comments/9k3p2/ (fetched 2026-11-16) ---
+<h1>How are you setting up the new $2,000 1099-NEC threshold in your AP system? Every vendor blog just says "it changed".</h1><p>Posted November 12, 2026 · 520 points · 180 comments</p><p>Top comment: "Same. I want a step-by-step for flagging vendors, not a news recap."</p>

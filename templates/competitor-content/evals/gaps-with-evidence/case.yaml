@@ -1,0 +1,6 @@
+# Applied with these parameters (POST /v2/templates/competitor-content/apply). Pass: 3 of 3 runs.
+parameters:
+  competitors: ["Payflow (payflow.example/blog)", "Billcraft (youtube.example/@billcraft)"]
+  channel: "Company blogs and YouTube on AP automation"
+  your_outlet: "Ledgerly blog, read by controllers at mid-size US companies"
+# The run starts with the input in prompt.md's front matter; prompt.md's body is its content.

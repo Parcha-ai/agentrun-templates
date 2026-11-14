@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "What competitors published this week",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["edition_date", "window", "quiet", "interpretation", "competitors", "gaps", "dropped_repeats", "unreachable", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "edition_date": { "type": "string", "format": "date" },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "format": "date" },
+        "to": { "type": "string", "format": "date" }
+      }
+    },
+    "quiet": { "type": "boolean", "description": "True when no competitor published anything new in the window." },
+    "interpretation": { "type": "string", "maxLength": 400 },
+    "competitors": {
+      "type": "array",
+      "description": "Every listed competitor, once, in the order given.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["competitor", "status", "pieces", "themes", "outperformer", "change"],
+        "properties": {
+          "competitor": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["published", "quiet", "not_located", "unreachable"] },
+          "pieces": {
+            "type": "array",
+            "maxItems": 10,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["title", "url", "published", "format", "topic", "metric", "sponsor"],
+              "properties": {
+                "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+                "url": { "type": "string", "format": "uri" },
+                "published": { "type": "string", "format": "date" },
+                "format": { "enum": ["article", "report", "webinar", "video", "short", "live", "podcast", "newsletter", "case_study", "other"] },
+                "topic": { "type": "string", "maxLength": 200 },
+                "metric": { "type": ["string", "null"], "maxLength": 120, "description": "As the page shows it, with the date read: \"19,400 views as of 2026-11-16\"." },
+                "sponsor": { "type": ["string", "null"], "maxLength": 120, "description": "Only a visible sponsorship or disclosed partner." }
+              }
+            }
+          },
+          "themes": { "type": "string", "maxLength": 300, "description": "Topics and formats this week in a line; empty when quiet." },
+          "outperformer": {
+            "type": ["object", "null"],
+            "additionalProperties": false,
+            "required": ["title", "metric", "baseline"],
+            "properties": {
+              "title": { "type": "string" },
+              "metric": { "type": "string" },
+              "baseline": { "type": "string", "description": "The rival's own recent baseline it beat, and how it was worked out." }
+            }
+          },
+          "change": { "type": ["string", "null"], "maxLength": 240, "description": "A format or cadence change you saw, else null." }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gap", "evidence", "evidence_url", "idea"],
+        "properties": {
+          "gap": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "evidence": { "type": "string", "minLength": 1, "maxLength": 300, "description": "What shows the demand, with its date and traction." },
+          "evidence_url": { "type": "string", "format": "uri" },
+          "idea": { "type": "string", "minLength": 1, "maxLength": 240, "description": "Starts 'For <your outlet>:' or 'Open gap:'." }
+        }
+      }
+    },
+    "dropped_repeats": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "unreachable": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "ignored_instructions": { "type": "array", "items": { "type": "string", "maxLength": 400 } },
+    "report_markdown": { "type": "string", "minLength": 1, "contentMediaType": "text/markdown" }
+  }
+}
