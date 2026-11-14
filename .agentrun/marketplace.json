@@ -419,6 +419,12 @@
       "source": "./templates/brand-mentions",
       "category": "marketing",
       "tags": ["brand-monitoring", "mentions", "reputation", "pr", "daily"]
+    },
+    {
+      "name": "regulatory-tracker",
+      "source": "./templates/regulatory-tracker",
+      "category": "compliance",
+      "tags": ["regulation", "rulemaking", "legal", "policy", "compliance", "weekly"]
     }
   ]
 }

@@ -1,0 +1,1 @@
+- [No EFRAG Q&As](no-efrag-qa.md) — the owner doesn't want EFRAG implementation guidance or Q&A batches in the brief

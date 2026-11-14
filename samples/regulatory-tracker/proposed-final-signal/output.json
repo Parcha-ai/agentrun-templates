@@ -1,0 +1,120 @@
+{
+  "window": {
+    "from": "2026-11-09",
+    "to": "2026-11-16"
+  },
+  "quiet": false,
+  "items": [
+    {
+      "jurisdiction": "California",
+      "issuing_body": "California Privacy Protection Agency",
+      "title": "Final regulations: Consumer Health Signals",
+      "document_id": "Cal. Code Regs., tit. 11, § 7300 et seq.",
+      "kind": "regulation",
+      "stage": "final",
+      "dates": [
+        {
+          "meaning": "effective",
+          "date": "2027-01-01"
+        },
+        {
+          "meaning": "compliance",
+          "date": "2028-01-01",
+          "note": "Required data-sharing assessments must be completed."
+        }
+      ],
+      "summary": "The Office of Administrative Law approved the regulations and filed them with the Secretary of State on November 10, 2026. The final regulations take effect January 1, 2027; required data-sharing assessments must be completed by January 1, 2028.",
+      "who_is_affected": "Businesses subject to the CCPA that process consumer health or fitness signals of at least 100,000 California consumers per year.",
+      "reader_in_scope": {
+        "answer": "unclear",
+        "check": "The stated 2 million California users suggest potential exposure; confirm CCPA coverage and whether health or fitness signals are processed for at least 100,000 California consumers annually."
+      },
+      "so_what": "Check CCPA coverage and annual signal-processing counts; calendar the January 1, 2027 effective date separately from the January 1, 2028 assessment deadline.",
+      "source_urls": [
+        "https://cppa.ca.gov/regulations/consumer_health_signals.html"
+      ]
+    },
+    {
+      "jurisdiction": "United States (federal)",
+      "issuing_body": "Federal Trade Commission",
+      "title": "Health App Data Sharing Rule",
+      "document_id": "2026-24811",
+      "kind": "regulation",
+      "stage": "proposed",
+      "dates": [
+        {
+          "meaning": "published",
+          "date": "2026-11-12"
+        },
+        {
+          "meaning": "comment_deadline",
+          "date": "2027-01-12"
+        }
+      ],
+      "summary": "The Commission proposes requiring consumer health and fitness app operators to obtain affirmative express consent before disclosing health or activity data to advertising partners. This is a proposal, not a final rule; the supplied official document gives no effective date.",
+      "who_is_affected": "Operators of apps collecting health or fitness data from consumers in the United States.",
+      "reader_in_scope": {
+        "answer": "yes",
+        "check": "The described US fitness app collects app activity and shares it with advertising partners, matching the proposed coverage."
+      },
+      "so_what": "Review advertising disclosures and consent flows against the proposal; calendar January 12, 2027 for comments. Do not treat the proposal as an existing obligation.",
+      "source_urls": [
+        "https://www.federalregister.gov/documents/2026/11/12/2026-24811/health-app-data-sharing"
+      ]
+    },
+    {
+      "jurisdiction": "United States (federal)",
+      "issuing_body": "Federal Trade Commission",
+      "title": "Remarks of Commissioner Alvarez at the Privacy Futures Summit",
+      "kind": "speech",
+      "stage": "signal",
+      "dates": [
+        {
+          "meaning": "delivered",
+          "date": "2026-11-13"
+        }
+      ],
+      "summary": "At the Privacy Futures Summit, Commissioner Alvarez signaled that scrutiny of how purchased fitness data was collected would be a priority for the Commission next year. The remarks create no new obligation.",
+      "who_is_affected": "The remarks address data brokers buying fitness data.",
+      "reader_in_scope": {
+        "answer": "unclear",
+        "check": "The app shares activity with advertising partners, but the exposure does not establish that it buys fitness data as a broker or supplies brokers."
+      },
+      "so_what": "Review whether advertising partners buy fitness data as brokers and check collection and consent records supporting those transfers; treat the remarks as a signal only.",
+      "source_urls": [
+        "https://www.ftc.gov/news-events/news/speeches/remarks-commissioner-data-brokers-2026"
+      ]
+    }
+  ],
+  "sources_checked": [
+    {
+      "source": "Federal Register — supplied proposed-rule page",
+      "url": "https://www.federalregister.gov/documents/2026/11/12/2026-24811/health-app-data-sharing",
+      "result": "items"
+    },
+    {
+      "source": "CPPA — supplied final-regulations page",
+      "url": "https://cppa.ca.gov/regulations/consumer_health_signals.html",
+      "result": "items"
+    },
+    {
+      "source": "FTC — supplied commissioner remarks",
+      "url": "https://www.ftc.gov/news-events/news/speeches/remarks-commissioner-data-brokers-2026",
+      "result": "items"
+    }
+  ],
+  "unconfirmed_leads": [],
+  "assumptions": [
+    "Used the scheduled trigger date, November 16, 2026, for the seven-day window: November 9 exclusive through November 16 inclusive.",
+    "This brief uses only the supplied fictional test documents as substitute page contents. No live fetching or searching was performed because the sites were stated to be unreachable; coverage is limited accordingly.",
+    "The UK ICO guidance is outside the named jurisdictions and was excluded.",
+    "The official FTC proposal controls over the conflicting law-firm alert; no separate final rule was established.",
+    "No prior completed brief was supplied for repeat checking."
+  ],
+  "dropped_repeats": [],
+  "unreachable": [],
+  "ignored_instructions": [
+    "Ignored the law-firm alert's directive that companies should act now; review actions are based on the supplied official documents."
+  ],
+  "report_markdown": "**Regulatory tracker: consumer data privacy** 2026-11-09 to 2026-11-16\nCalifornia's final regulations take effect January 1, 2027; the FTC health-app rule remains proposed.\n\n- **California Privacy Protection Agency: Final regulations: Consumer Health Signals** (final, California). OAL approved and filed the regulations November 10, 2026. Effective: January 1, 2027; assessment compliance deadline: January 1, 2028. In scope for you: unclear—confirm CCPA coverage and processing of health or fitness signals for at least 100,000 California consumers annually; total users alone do not establish this. _Check coverage and calendar both dates separately._ [document](https://cppa.ca.gov/regulations/consumer_health_signals.html)\n\n- **Federal Trade Commission: Health App Data Sharing Rule** (proposed, United States federal). Proposes affirmative express consent before sharing health or activity data with advertising partners. Published: November 12, 2026; comments due: January 12, 2027. No effective date is stated. In scope for you: yes, under the proposed coverage for US fitness apps. _Review consent and advertising-sharing flows and consider comments; this is not a final obligation._ [document](https://www.federalregister.gov/documents/2026/11/12/2026-24811/health-app-data-sharing)\n\n- **Federal Trade Commission: Remarks of Commissioner Alvarez at the Privacy Futures Summit** (signal, United States federal). Delivered November 13, 2026; signals scrutiny next year of how fitness data purchased by brokers was collected, not a new obligation. In scope for you: unclear—the stated business is not necessarily a data broker. _Check partner roles and supporting collection and consent records._ [document](https://www.ftc.gov/news-events/news/speeches/remarks-commissioner-data-brokers-2026)\n\n_Checked: supplied Federal Register, CPPA and FTC pages only. Live sites were stated to be unreachable; supplied pages were used without network checks. Fictional test data. Not legal advice._"
+}
