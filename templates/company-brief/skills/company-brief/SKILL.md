@@ -46,7 +46,12 @@ website is dead or wrong, take the likeliest match, say so in `identity_note`, a
 `identity_note` says what decided it and names each rejected company. A rejected company is named only there and in
 `rejected_candidates` (at most 6): nothing of it (its funding, customers, products) goes anywhere else, not even as a
 caveat, and not its name either: not in `gaps`, `sources`, `bottom_line` or `report_markdown`. The note says it in so
-many words: "Orbit Systems Inc. is a different company: ...".
+many words: "Acme Systems Inc. is a different company: ...".
+
+`legal_name`, `headquarters` and the other identity fields hold the value alone, as the page states it ("Brightwell
+Labs Ltd"), never with a caveat inside it ("(website-stated; not verified)"). A legal name the site's own footer or
+terms give is the legal name. Where it came from goes in `identity_note`: "the website brightwell.example decided it;
+its footer names Brightwell Labs Ltd".
 
 **Not found.** No page, registry entry or news item shows the company: say so in `identity_note` and `bottom_line`,
 naming where you looked; list each search and fetch with `found: false`; `legal_name`, `headquarters` and
@@ -89,6 +94,8 @@ suggest, and the suggestion is labeled inference.
 Product reviews (G2, Capterra, Trustpilot, app stores) or employer reviews, with sample size and dates, never one review
 as a trend. Risks: layoffs, litigation, regulatory actions by the regulators relevant to its sector and country,
 executive departures, customer losses, outages. Each risk has a severity and a source; a risk with no source is not one.
+A risk drawn from a news item carries that item's figures and date, as `recent_news` gives them ("layoff of about 10%,
+reported 2026-03-02 [S4]"), not a generic "layoffs".
 
 ### 8. People and the lens
 

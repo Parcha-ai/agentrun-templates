@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: sales
 tags: [meetings, people-research, sales, hiring, investor]
 harness: [pi, claude-agent, codex]
-model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
+model: { tier: balanced }
 effort: medium
 tools: [read, web_search, web_fetch]
 inputs:

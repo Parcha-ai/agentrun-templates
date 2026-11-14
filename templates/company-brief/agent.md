@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: research
 tags: [company-research, due-diligence, sales, investing, swot]
 harness: [pi, claude-agent, codex]
-model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
+model: { tier: balanced }
 effort: medium
 tools: [read, web_search, web_fetch]
 inputs:

@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: engineering
 tags: [outages, status-pages, sre, incidents, weekly]
 harness: [pi, claude-agent, codex]
-model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
+model: { tier: balanced }
 effort: low
 tools: [read, web_search, web_fetch]
 parameters:

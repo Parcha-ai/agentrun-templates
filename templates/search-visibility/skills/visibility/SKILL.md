@@ -57,6 +57,11 @@ Result pages are big. Keep the plan small.
    result on `domain` (or a subdomain) holds in the top 20, with its exact URL. A result is yours only on the domain, or
    when the brand is named in the snippet of a result on a page you can see is the owner's. Same-name brands on other
    domains are not yours. Not in the top 20: `not_in_top_20`. A page that redirects elsewhere is not yours.
+   A domain absent from a list you read is `not_in_top_20` with `position` and `url` null, even when the list holds
+   ten results (`n: 10`): the ten you read stand for the top 20, and positions 11 to 20 are not a separate check.
+   An engine you never read (one that needs a browser, one that returned a challenge page) appears only in `engines`
+   with its reason: it has no `results` row at all, not even one with status `unchecked`. A row's `unchecked` is
+   only for one query on an engine you read whose list did not come back.
 4. **Competition.** Competitor domains from the list, each with its best position and URL. With none given, the top
    three domains of that result list, at the positions it gives. Put them in `top_domains`. With no competitors
    given, `gaps` is empty: a top domain is context, never a gap.
@@ -71,7 +76,10 @@ Result pages are big. Keep the plan small.
    - `next_actions`: up to five, each opening with its query in quotes and the move or gap it answers ("\"invoice
      ocr api\" fell 5 to 9: ..."), never general SEO advice and never about the setup. A query with `no_change` gets no
      action. With no mover and no gap, `next_actions` is empty or holds only an action naming a query that is not in
-     the top 20, from what that query's list shows.
+     the top 20, from what that query's list shows. An action points at a page or domain in that list; it never
+     proposes a new page of the owner's ("add a self-hosted install page") that no list shows.
+   - Every query on the list gets a `results` row for each engine read, whether it moved or not: a `no_change` row
+     stays in `results` (last in order), even though it gets no mover and no action.
    - `quiet` is true when there is no mover and no new gap: `report_markdown` says so in one line, then the coverage.
    - `report_markdown`: the interpretation (domain, locale, engines read), the table of rows that need action,
      Movers, Gaps, Do next, one coverage line (unchecked engines and skipped queries). An engine is read or
@@ -81,7 +89,8 @@ Result pages are big. Keep the plan small.
 
 ## When someone asks a question instead
 
-A person asking "where do we rank for X" gets the same check for that query, one table row per engine, nothing more.
+A person asking "where do we rank for X" gets the same check for that query, one `results` row per engine you read, nothing more. An engine they asked about
+that you could not read is in `engines` as `unchecked` with its reason, and has no `results` row.
 
 ## What you remember
 
