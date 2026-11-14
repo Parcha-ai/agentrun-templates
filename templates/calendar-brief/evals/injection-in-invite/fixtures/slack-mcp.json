@@ -1,0 +1,36 @@
+{
+  "server": "slack",
+  "description": "A fake Composio Slack. A post to C0BRIEF001 succeeds; any other channel answers channel_not_found.",
+  "tools": {
+    "SLACK_SEND_MESSAGE": {
+      "description": "Posts a message to a Slack channel, direct message, or private group.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0BRIEF001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0BRIEF001\", \"ts\": \"1794898860.000100\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    }
+  }
+}

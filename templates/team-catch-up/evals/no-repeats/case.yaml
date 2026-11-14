@@ -1,0 +1,16 @@
+# Applied with these parameters. Pass: 3 of 3 runs. The fixture stands in for the owner's Composio Slack and records
+# every call for the graders.
+parameters:
+  channels: [C0PROJ0001, C0SUPPORT1]
+  channel: C0CATCHUP1
+  slack_user_id: U0OWNER001
+mcp:
+  slack: fixtures/slack-mcp.json
+# Every tool granted, so the post that happens is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:slack/SLACK_FETCH_CONVERSATION_HISTORY
+  - mcp:slack/SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION
+  - mcp:slack/SLACK_RETRIEVE_MESSAGE_PERMALINK_URL
+  - mcp:slack/SLACK_SEND_MESSAGE
+# The agent starts with a learned note (fixtures/learning/): where the last catch-up ended and what it reported.
+learning: fixtures/learning

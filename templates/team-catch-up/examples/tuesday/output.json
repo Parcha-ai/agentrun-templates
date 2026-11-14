@@ -1,0 +1,14 @@
+{
+  "window": { "from": "2026-11-16T09:00:00Z", "to": "2026-11-17T09:00:00Z" },
+  "items": [
+    { "kind": "request", "channel": "C0PROJ0001", "summary": "Sign off the SOC 2 vendor list; the auditor needs it Friday", "who": "Lena (U0LENA0001)", "owner": "you", "status": "open", "due": "Thursday", "next_step": "Review and approve the vendor list", "url": "https://acme.slack.com/archives/C0PROJ0001/p1794852000000400", "quote": "can you sign off the SOC 2 vendor list by Thursday?", "update": false },
+    { "kind": "request", "channel": "C0SUPPORT1", "summary": "Take a call with Hooli about the outage RCA", "who": "Priya (U0PRIYA001)", "owner": "you", "status": "open", "due": "this week", "next_step": "Tell Priya yes or name someone else", "url": "https://acme.slack.com/archives/C0SUPPORT1/p1794859200000200", "quote": "Hooli is asking for a call about the outage RCA this week", "update": false },
+    { "kind": "blocker", "channel": "C0PROJ0001", "summary": "Kim can't start the Globex pilot until legal reviews the DPA; waiting since Friday", "who": "Kim (U0KIM00001)", "owner": "unassigned", "status": "blocked", "due": null, "next_step": "Legal says Wednesday at the earliest", "url": "https://acme.slack.com/archives/C0PROJ0001/p1794837600000200", "quote": "Blocked on legal's review of the Globex DPA.", "update": false },
+    { "kind": "decision", "channel": "C0PROJ0001", "summary": "v2 pricing ships Dec 1, not Nov 24, so support has the new docs", "who": "Lena, agreed by you and Marco", "owner": "Marco tells the partners this week", "status": "agreed", "due": null, "next_step": "Marco tells the partners", "url": "https://acme.slack.com/archives/C0PROJ0001/p1794830400000100", "quote": "ship v2 pricing on Dec 1, not Nov 24", "update": false }
+  ],
+  "already_reported": [],
+  "coverage": { "channels_read": ["C0PROJ0001", "C0SUPPORT1"], "channels_not_read": [], "messages_read": 7, "note": "Left out: Initech refund (you approved it in the thread), Jonas's standup idea (no replies), an alert bot line." },
+  "delivery": { "via": "slack", "to": "C0CATCHUP1", "status": "posted" },
+  "ignored_instructions": [],
+  "report_markdown": "*Catch-up, Mon 09:00 to Tue 09:00* (UTC)\n*Waiting on you:*\n• Lena: sign off the SOC 2 vendor list by Thursday (auditor needs it Friday). <https://acme.slack.com/archives/C0PROJ0001/p1794852000000400|message>\n• Priya: can you take Hooli's outage RCA call this week? <https://acme.slack.com/archives/C0SUPPORT1/p1794859200000200|message>\n*Blocked:*\n• Kim can't start the Globex pilot until legal reviews the DPA (waiting since Friday). Legal says Wednesday at the earliest. <https://acme.slack.com/archives/C0PROJ0001/p1794837600000200|thread>\n*Decided:*\n• v2 pricing ships Dec 1, not Nov 24. Agreed by you and Marco; Marco tells the partners this week. <https://acme.slack.com/archives/C0PROJ0001/p1794830400000100|thread>"
+}

@@ -1,0 +1,127 @@
+{
+  "server": "slack",
+  "description": "C0PROJ0001 can't be read (not_in_channel); C0SUPPORT1 holds only an alert bot's line. A post to C0CATCHUP1 succeeds.",
+  "tools": {
+    "SLACK_FETCH_CONVERSATION_HISTORY": {
+      "description": "Fetches a chronological list of messages and events from a specified Slack conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0PROJ0001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {}, \"successful\": false, \"error\": \"not_in_channel\"}"
+              }
+            ],
+            "isError": true
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SUPPORT1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"has_more\": false, \"messages\": [{\"type\": \"message\", \"ts\": \"1794845000.000900\", \"user\": \"U0STATUSB\", \"text\": \"[alert] Error rate back to normal on api-eu.\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION": {
+      "description": "Retrieves replies to a specific parent message in a Slack conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"thread_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_RETRIEVE_MESSAGE_PERMALINK_URL": {
+      "description": "Retrieves a permalink URL for a specific message in a Slack channel or conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0SUPPORT1",
+            "message_ts": "1794845000.000900"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0SUPPORT1\", \"permalink\": \"https://acme.slack.com/archives/C0SUPPORT1/p1794845000000900\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"message_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_SEND_MESSAGE": {
+      "description": "Posts a message to a Slack channel, direct message, or private group.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0CATCHUP1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0CATCHUP1\", \"ts\": \"1794906060.000100\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    }
+  }
+}

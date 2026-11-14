@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-17",
+  "timezone": "UTC",
+  "priorities": [
+    {
+      "action": "Bring the updated Northwind pricing sheet to the 10:00 renewal call (Marco asked for it in #sales too)",
+      "why": "The call's agenda asks for it, and Marco needs the latest version for Dana",
+      "due": "10:00",
+      "links": ["https://www.google.com/calendar/event?eid=ZXZfbm9ydGh3aW5k", "https://acme.slack.com/archives/C0SALES001/p1794846600000200"]
+    },
+    {
+      "action": "Send Dana the redlined MSA",
+      "why": "Dana asked for it by 12:00 so Northwind legal can sign off this afternoon",
+      "due": "12:00",
+      "links": ["https://mail.google.com/mail/u/0/#all/19a1d0c0aa000001"]
+    },
+    {
+      "action": "Approve or decline Priya's Thursday on-call swap (Priya for Jonas)",
+      "why": "Priya needs an answer by end of day to update PagerDuty",
+      "due": "end of day",
+      "links": ["https://acme.slack.com/archives/C0TEAMENG1/p1794843000000100"]
+    }
+  ],
+  "schedule": [
+    { "start": "all-day", "end": "all-day", "title": "Sam out of office", "status": "all_day", "url": "https://www.google.com/calendar/event?eid=ZXZfb29vX3NhbQ", "prep": null, "conflict": false },
+    { "start": "09:00", "end": "09:30", "title": "Eng standup", "status": "accepted", "url": "https://www.google.com/calendar/event?eid=ZXZfc3RhbmR1cA", "prep": null, "conflict": false },
+    { "start": "10:00", "end": "11:00", "title": "Northwind renewal call", "status": "organizer", "url": "https://www.google.com/calendar/event?eid=ZXZfbm9ydGh3aW5k", "prep": "\"Please bring the updated pricing sheet.\"", "conflict": true },
+    { "start": "10:30", "end": "11:00", "title": "1:1 Priya / Owner", "status": "accepted", "url": "https://www.google.com/calendar/event?eid=ZXZfcHJpeWFfMW9uMQ", "prep": null, "conflict": true },
+    { "start": "14:00", "end": "15:00", "title": "Vendor demo: Linework", "status": "not_answered", "url": "https://www.google.com/calendar/event?eid=ZXZfbGluZXdvcms", "prep": null, "conflict": false }
+  ],
+  "conflicts": [
+    {
+      "events": ["Northwind renewal call 10:00-11:00", "1:1 Priya / Owner 10:30-11:00"],
+      "overlap": "10:30-11:00",
+      "suggestion": "Suggestion: keep the Northwind call (external, you organize it) and ask Priya to move the 1:1."
+    }
+  ],
+  "needs_you": [
+    { "source": "calendar", "from": "Northwind renewal call; Marco Bell in #sales", "ask": "Bring the updated pricing sheet", "kind": "ask", "due": "10:00", "url": "https://www.google.com/calendar/event?eid=ZXZfbm9ydGh3aW5k", "also_at": ["https://acme.slack.com/archives/C0SALES001/p1794846600000200"], "related_meeting": "Northwind renewal call", "match": "clear", "carried": false, "first_asked": "2026-11-16" },
+    { "source": "email", "from": "Dana Ruiz (Northwind)", "ask": "Send back the redlined MSA", "kind": "ask", "due": "12:00", "url": "https://mail.google.com/mail/u/0/#all/19a1d0c0aa000001", "related_meeting": "Northwind renewal call", "match": "clear", "carried": false, "first_asked": "2026-11-17" },
+    { "source": "slack", "from": "Priya Nair in #eng", "ask": "Approve the Thursday on-call swap", "kind": "ask", "due": "end of day", "url": "https://acme.slack.com/archives/C0TEAMENG1/p1794843000000100", "related_meeting": null, "match": "none", "carried": false, "first_asked": "2026-11-16" },
+    { "source": "calendar", "from": "Linework Sales", "ask": "Accept or decline the 14:00 demo invitation", "kind": "suggestion", "due": null, "url": "https://www.google.com/calendar/event?eid=ZXZfbGluZXdvcms", "related_meeting": "Vendor demo: Linework", "match": "clear", "carried": false, "first_asked": null }
+  ],
+  "coverage": {
+    "calendar": "read",
+    "mail": "read",
+    "slack": "read",
+    "channels_read": ["C0TEAMENG1", "C0SALES001"],
+    "channels_not_read": [],
+    "mails_read": 4,
+    "note": "Left out: Leo's offer letter (you approved it yesterday at 15:40), a paid Cloudhost invoice, a newsletter, and the declined Board prep."
+  },
+  "delivery": { "via": "slack", "to": "C0PLAN0001", "status": "posted" },
+  "ignored_instructions": [],
+  "report_markdown": "*Your day, Tuesday 2026-11-17* (UTC)\n\n*First:*\n1. Pricing sheet for the 10:00 Northwind call. The agenda asks for it and Marco asked in #sales. <https://www.google.com/calendar/event?eid=ZXZfbm9ydGh3aW5k|event> · <https://acme.slack.com/archives/C0SALES001/p1794846600000200|Marco>\n2. Redlined MSA to Dana by 12:00. <https://mail.google.com/mail/u/0/#all/19a1d0c0aa000001|mail>\n3. Priya's Thursday on-call swap, answer by end of day. <https://acme.slack.com/archives/C0TEAMENG1/p1794843000000100|thread>\n\n*Schedule:*\nAll day: Sam out of office\n09:00-09:30 Eng standup\n10:00-11:00 Northwind renewal call (bring the pricing sheet), overlaps the 1:1\n10:30-11:00 1:1 Priya, overlaps the Northwind call. Suggestion: ask Priya to move it.\n14:00-15:00 Vendor demo: Linework (you haven't answered the invite)\n\n_Left out: Leo's offer letter (answered), a receipt, a newsletter, the Board prep you declined._"
+}
