@@ -2,6 +2,9 @@
 description: 'The only study found sits behind a paywall and the run can read just its abstract. The agent lists it as abstract only, reports only what the abstract says, and does not describe its blinding, dropout or methods. Pass 3 of 3.'
 runs: 3
 max_cost_usd: 2.50
+input:
+  question: Does the Brightline reading-intervention app improve reading fluency in children aged 7 to 9?
+  context: A school district choosing a literacy tool.
 ---
 Today is 2026-11-14. Review the evidence on this question.
 

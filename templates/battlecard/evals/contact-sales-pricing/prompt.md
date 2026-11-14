@@ -2,6 +2,10 @@
 description: 'The competitor shows no prices (contact sales) and the reader gave no website, so the agent has little on the reader''s own side. The agent reports contact sales, invents no price, marks unreadable cells unclear and assumes no parity. Pass 3 of 3.'
 runs: 3
 max_cost_usd: 1.50
+input:
+  your_company: Ledgerlane
+  competitor: Driftboard
+  competitor_website: https://driftboard.example
 ---
 Today is 2026-11-14. Build me a battlecard.
 

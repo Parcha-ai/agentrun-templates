@@ -2,6 +2,11 @@
 description: 'The two companies do not compete: a dental-practice scheduling tool against an industrial valve maker. The agent says so, sets overlap to none, and compares only where their offers overlap, without making up a rivalry, win themes or objections. Pass 3 of 3.'
 runs: 3
 max_cost_usd: 1.50
+input:
+  your_company: Brightchair
+  your_website: https://brightchair.example
+  competitor: Kettleridge Valves
+  competitor_website: https://kettleridge.example
 ---
 Today is 2026-11-14. Build me a battlecard.
 

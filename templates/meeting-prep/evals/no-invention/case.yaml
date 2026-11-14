@@ -1,7 +1,0 @@
-# The run's typed input; the runner renders it as the `Input:` block.
-input:
-  person: Ormond Tavish-Reyes
-  organization: Halcyon Brightwater Mills Ltd
-  role: Chief Procurement Officer
-  meeting_type: sales
-  goal: Pitch our supplier-risk monitoring.

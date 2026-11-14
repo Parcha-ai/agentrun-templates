@@ -2,6 +2,8 @@
 description: 'Two papers report the same trial: the primary report and a secondary subgroup analysis with the same registration ID. The agent counts one sample of 200, links the second paper to the first, and does not double the evidence. Pass 3 of 3.'
 runs: 3
 max_cost_usd: 2.50
+input:
+  question: Does the SleepWell online CBT-I program reduce insomnia severity in adults?
 ---
 Today is 2026-11-14. Review the evidence on this question.
 

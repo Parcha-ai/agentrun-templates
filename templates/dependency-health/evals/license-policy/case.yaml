@@ -2,6 +2,3 @@
 parameters:
   license_policy: "BUSL-1.1, SSPL-1.0, AGPL-3.0-only"
 # The run starts with this input, checked against the template's input schema; prompt.md is its content.
-input:
-  package: "github.com/hashicorp/terraform"
-  concern: "Can we embed this in a product we sell?"

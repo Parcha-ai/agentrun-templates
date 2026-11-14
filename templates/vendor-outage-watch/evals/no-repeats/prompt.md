@@ -2,6 +2,9 @@
 description: "Last week's brief reported an AWS us-east-1 DynamoDB incident and a GitHub Pages incident. This week AWS published the post-event summary (a development), the Pages incident is unchanged, and Azure had an East US incident that a learned note puts out of scope. The brief holds only the AWS postmortem."
 runs: 3
 max_cost_usd: 1.50
+input:
+  vendors: ["AWS us-east-1", "Azure", "GitHub"]
+  lookback_days: 7
 ---
 Scheduled run, fired 2026-11-16T08:00:00Z (Monday). Write this week's outage brief for the vendors below with your outage-watch skill.
 

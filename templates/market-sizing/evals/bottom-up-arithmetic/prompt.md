@@ -2,6 +2,9 @@
 description: 'Three sourced inputs are given, so the bottom-up answer is fixed: 40,000 clinics x 25% adoption x $3,000 a year is $30M. The agent shows the formula and each step, gets the number right, and marks each input as fact. Pass 3 of 3.'
 runs: 3
 max_cost_usd: 2.00
+input:
+  market: Appointment-reminder software for independent veterinary clinics
+  region: United States
 ---
 Today is 2026-11-14. Size this market bottom-up. The three inputs below come from pages you can treat as read; cite them
 by the URLs given. You do not need to search for other inputs. A short top-down check is enough.

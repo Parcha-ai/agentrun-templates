@@ -2,6 +2,10 @@
 description: "Last week's run reported Quillforge's Team price rise to $59 and Business going to 'Contact sales', but the learned note of the page still holds the older prices. This week an Enterprise plan appeared and a logo strip with five customers was added, which a learned note says the owner doesn't want. The report holds only the new Enterprise plan; the Team and Business changes sit in dropped_repeats."
 runs: 3
 max_cost_usd: 1.50
+input:
+  pages: ["https://quillforge.example/pricing"]
+  company: "Inkwell"
+  lookback_days: 7
 ---
 Scheduled run, fired 2026-11-23T08:00:00Z (Monday). Check the pages below for meaningful changes with your page-watch skill.
 

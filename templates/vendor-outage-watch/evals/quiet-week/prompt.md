@@ -2,6 +2,9 @@
 description: "Neither Twilio nor Datadog had an incident in the window; their last incidents are weeks old. The brief is one quiet line with the vendors checked, and invents nothing."
 runs: 3
 max_cost_usd: 1.50
+input:
+  vendors: ["Twilio", "Datadog"]
+  lookback_days: 7
 ---
 Scheduled run, fired 2026-11-16T08:00:00Z (Monday). Write this week's outage brief for the vendors below with your outage-watch skill.
 

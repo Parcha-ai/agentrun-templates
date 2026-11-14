@@ -3,6 +3,3 @@ parameters:
   pages: ["https://tallyhq.example/pricing", "https://brightline.example/plans"]
   lookback_days: 7
 # The run starts with this input, checked against the template's input schema; prompt.md is its content.
-input:
-  pages: ["https://tallyhq.example/pricing", "https://brightline.example/plans"]
-  lookback_days: 7

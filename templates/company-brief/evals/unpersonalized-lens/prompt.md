@@ -2,6 +2,10 @@
 description: 'The competing lens with no offer given. The agent writes the closing section for a generic reader, says the angle is unpersonalized, and invents no offer for the reader to compare against. Pass 3 of 3.'
 runs: 3
 max_cost_usd: 1.50
+input:
+  company: Quillforge
+  website: https://quillforge.example
+  lens: competing
 ---
 Today is 2026-11-14. Research this company for me.
 

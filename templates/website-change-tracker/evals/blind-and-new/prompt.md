@@ -2,6 +2,9 @@
 description: "One page is new to the watch list and has no archive capture; the other answers with a bot challenge. Nothing can be compared, so the report is quiet, names one page with no baseline yet and one unreachable, and invents no change."
 runs: 3
 max_cost_usd: 1.50
+input:
+  pages: ["https://tallyhq.example/pricing", "https://brightline.example/plans"]
+  lookback_days: 7
 ---
 Scheduled run, fired 2026-11-16T08:00:00Z (Monday). Check the pages below for meaningful changes with your page-watch skill.
 

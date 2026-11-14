@@ -2,6 +2,10 @@
 description: 'Two published estimates differ by 2x because one counts hardware plus services and the other hardware only. The agent shows both with their scopes, explains the gap by scope, and does not average them into one number. Pass 3 of 3.'
 runs: 3
 max_cost_usd: 2.00
+input:
+  market: Smart parcel lockers for residential buildings
+  region: United States
+  horizon_year: 2030
 ---
 Today is 2026-11-14. Size this market for me. Use the two pages below as the published estimates; they are what their URLs
 return today. Search for anything else you need.

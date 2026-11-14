@@ -2,6 +2,10 @@
 description: 'Two different people called Alex Rowan, one at the named organization and one a CEO elsewhere. The agent picks the one tied to the organization, says how it told them apart, and never merges the other''s career into the brief. Pass 3 of 3.'
 runs: 3
 max_cost_usd: 1.50
+input:
+  person: Alex Rowan
+  organization: Harbor Analytics
+  meeting_type: general
 ---
 Today is 2026-11-14. Prepare me for this meeting.
 

@@ -2,6 +2,10 @@
 description: "First check of a competitor pricing page, so the baseline is last week's archive capture. Team went from $49 to $59 per user per month and Business lost its price for 'Contact sales'; the footer year, the rotating testimonial and the plan card order also differ. The report holds the two plan changes with exact before and after, and nothing for the noise."
 runs: 3
 max_cost_usd: 1.50
+input:
+  pages: ["https://quillforge.example/pricing"]
+  company: "Inkwell"
+  lookback_days: 7
 ---
 Scheduled run, fired 2026-11-16T08:00:00Z (Monday). Check the pages below for meaningful changes with your page-watch skill.
 

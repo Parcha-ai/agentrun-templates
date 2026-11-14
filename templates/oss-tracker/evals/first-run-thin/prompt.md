@@ -2,6 +2,11 @@
 description: "A first run with no last snapshot: one entry resolves to nothing anywhere, the other resolves but has no dated series. The snapshot marks the first unresolved with every metric null, the second baseline with no deltas or trends, and invents no number."
 runs: 3
 max_cost_usd: 1.50
+input:
+  projects: ["github.com/quillmont/brightwater-sdk", "pypi:larkspur-orm"]
+  purpose: "balanced"
+  signals: []
+  lookback_days: 7
 ---
 Scheduled run, fired 2026-11-16T08:00:00Z (Monday). This is the first run of this snapshot. Write it for the projects below with your oss-tracker skill.
 

@@ -2,6 +2,10 @@
 description: 'Two companies called Orbit: a London payments firm that owns the given domain and a Texas HVAC maker with a large funding round. The agent fixes the entity by the domain and keeps the HVAC maker''s funding and customers out of the brief. Pass 3 of 3.'
 runs: 3
 max_cost_usd: 1.50
+input:
+  company: Orbit
+  website: https://orbitpayments.example
+  lens: swot
 ---
 Today is 2026-11-14. Research this company for me.
 

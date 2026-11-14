@@ -2,6 +2,9 @@
 description: "GitHub's history holds a two-hour Actions incident, a Codespaces incident, a seven-minute Actions blip and completed maintenance; Cloudflare published a postmortem for an October outage; AWS had an incident in eu-west-1 only. The brief keeps the Actions incident with its status-page times and the Cloudflare postmortem, and drops the rest as out of scope or noise."
 runs: 3
 max_cost_usd: 1.50
+input:
+  vendors: ["GitHub Actions", "Cloudflare", "AWS us-east-1"]
+  lookback_days: 7
 ---
 Scheduled run, fired 2026-11-16T08:00:00Z (Monday). Write this week's outage brief for the vendors below with your outage-watch skill.
 

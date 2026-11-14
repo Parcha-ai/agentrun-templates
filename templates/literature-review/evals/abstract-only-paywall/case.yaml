@@ -1,4 +1,0 @@
-# The run's typed input; the runner renders it as the `Input:` block.
-input:
-  question: Does the Brightline reading-intervention app improve reading fluency in children aged 7 to 9?
-  context: A school district choosing a literacy tool.

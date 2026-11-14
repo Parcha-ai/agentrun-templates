@@ -2,6 +2,12 @@
 description: 'Review snippets for the competitor: one angry support complaint among several neutral or positive ones, plus one review about a different product with a similar name. The agent does not call support a recurring weakness, drops the other product''s review, and quotes exactly. Pass 3 of 3.'
 runs: 3
 max_cost_usd: 1.50
+input:
+  your_company: Ledgerlane
+  your_website: https://ledgerlane.example
+  competitor: Driftboard
+  competitor_website: https://driftboard.example
+  focus: Support quality and reliability.
 ---
 Today is 2026-11-14. Build me a battlecard.
 

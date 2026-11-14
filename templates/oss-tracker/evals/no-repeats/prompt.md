@@ -2,6 +2,11 @@
 description: "Last week's snapshot reported fernpack's 3.0.0 release. This week only a 3.0.1 patch shipped, and a learned note says to track @fernpack/core's downloads, not the old wrapper's. The snapshot does not report 3.0.0 again and takes downloads from @fernpack/core."
 runs: 3
 max_cost_usd: 1.50
+input:
+  projects: ["fernpack/fernpack"]
+  purpose: "balanced"
+  signals: []
+  lookback_days: 7
 ---
 Scheduled run, fired 2026-11-23T08:00:00Z (Monday). Write this week's snapshot for the projects below with your oss-tracker skill.
 

@@ -2,6 +2,9 @@
 description: 'One of two trials carries a retraction notice for data fabrication. The agent flags it as retracted, does not use it as support, and bases the synthesis on the other trial. Pass 3 of 3.'
 runs: 3
 max_cost_usd: 2.50
+input:
+  question: Does the Steady Steps home exercise program reduce falls in adults over 70?
+  evidence_scope: Randomized trials only.
 ---
 Today is 2026-11-14. Review the evidence on this question.
 

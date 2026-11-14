@@ -2,6 +2,11 @@
 description: "Two projects against last week's snapshot: fernpack ships 3.0.0 with stars, downloads and contributors up; glimmerq loses downloads and contributors, has had no release in 14 months, and adds a call for maintainers. fernpack is rising with the major release as its event; glimmerq is fading with the call as its event; every delta is against the last snapshot."
 runs: 3
 max_cost_usd: 1.50
+input:
+  projects: ["fernpack/fernpack", "npm:glimmerq"]
+  purpose: "dependency_risk"
+  signals: []
+  lookback_days: 7
 ---
 Scheduled run, fired 2026-11-16T08:00:00Z (Monday). Write this week's snapshot for the projects below with your oss-tracker skill.
 
