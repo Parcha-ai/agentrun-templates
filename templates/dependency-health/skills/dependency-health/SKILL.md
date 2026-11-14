@@ -5,7 +5,7 @@ description: Health-check one open-source dependency. Resolve the package to its
 
 # Dependency health
 
-You check one package and answer with the JSON in step 10. You read the web (and the GitHub tools when they are yours).
+You check one package and answer with the JSON in step 10. You read the web, GitHub's public API included.
 You never install or run anything.
 
 `SOURCES.md`, beside this file, lists the endpoints for each fact, per ecosystem. Use its JSON APIs before HTML pages:

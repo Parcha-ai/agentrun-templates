@@ -12,13 +12,8 @@ harness: [pi, claude-agent, codex]
 model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
 effort: medium
 tools: [read, web_search, web_fetch]
-mcp:
-  - source: github
-    toolkit: github
-    tools: [get_file_contents, list_releases, list_commits, search_issues, search_pull_requests]
-    required: false
-    reason: "Optional: reads each tracked repository (README, releases, commits, issues) through your GitHub connection instead of GitHub's unauthenticated API, which allows 60 requests an hour."
-    allow: [get_file_contents, list_releases, list_commits, search_issues, search_pull_requests]
+# No GitHub connection: the repositories change every run, so its tools can't be pinned to one, and a hostile README
+# could have an unpinned read fetch a private repository (SPEC scope pins). Public data comes over GitHub's public API.
 parameters:
   projects: { type: array, items: { type: string }, required: true, description: "the projects to track, one per entry: a repository URL (\"https://github.com/vercel/next.js\"), an owner/name (\"withastro/astro\") or a registry-prefixed package (\"npm:vite\", \"pypi:fastapi\", \"crates:tokio\")" }
   purpose: { type: string, enum: [balanced, dependency_risk, competitive], default: balanced, description: "why you track them: dependency_risk weighs maintenance, release pace, security and maintainer concentration; competitive weighs stars, downloads and contributor growth; balanced weighs both" }

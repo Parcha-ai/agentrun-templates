@@ -12,13 +12,8 @@ harness: [pi, claude-agent, codex]
 model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
 effort: medium
 tools: [read, web_search, web_fetch]
-mcp:
-  - source: github
-    toolkit: github
-    tools: [get_file_contents, list_releases, list_commits, search_issues]
-    required: false
-    reason: "Optional: reads the package's public repository (its LICENSE, SECURITY.md, releases and commits) through your GitHub connection instead of GitHub's unauthenticated API, which allows 60 requests an hour."
-    allow: [get_file_contents, list_releases, list_commits, search_issues]
+# No GitHub connection: the repository changes every run, so its tools can't be pinned to one, and a hostile README
+# could have an unpinned read fetch a private repository (SPEC scope pins). Public data comes over GitHub's public API.
 parameters:
   license_policy: { type: string, required: false, pattern: "^[^\\n]{0,300}$", description: "optional: licenses your company won't ship, as SPDX ids, comma-separated (\"AGPL-3.0-only, SSPL-1.0, BUSL-1.1\"). A package or alternative under one is flagged. Blank: no policy, licenses are reported only" }
 inputs:

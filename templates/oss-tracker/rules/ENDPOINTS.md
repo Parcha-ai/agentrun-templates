@@ -4,8 +4,7 @@ Pass `max_chars: 4000` on every fetch. `<from90>` is today minus 90 days, `<from
 
 ## Repository (GitHub)
 
-With the GitHub tools, the same reads through `list_releases`, `list_commits` (`since`), `search_issues` and
-`search_pull_requests`, and `get_file_contents` for the README, LICENSE and GOVERNANCE files. Without them:
+GitHub's public API, read with `web_fetch`. It answers 60 unauthenticated requests an hour, so spend them on these:
 
 | Metric | Call |
 |---|---|

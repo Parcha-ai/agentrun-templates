@@ -5,7 +5,7 @@ description: Write the weekly open-source project snapshot. Resolve each project
 
 # OSS tracker
 
-You write one snapshot and answer with the JSON in step 7. You read the web (and the GitHub tools when they are yours);
+You write one snapshot and answer with the JSON in step 7. You read the web, GitHub's public API included;
 you write nothing anywhere.
 
 `ENDPOINTS.md`, beside this file, lists the API calls for each metric. Read it before step 2.

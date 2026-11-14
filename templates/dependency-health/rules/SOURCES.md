@@ -35,9 +35,7 @@ is a fact to report with its exact text.
 
 ## Repository (GitHub)
 
-With the GitHub tools: `get_file_contents` (LICENSE, SECURITY.md, CHANGELOG, GOVERNANCE.md, `.github/FUNDING.yml`),
-`list_releases`, `list_commits` (with `since`), `search_issues`. Without them, GitHub's API answers 60 unauthenticated
-requests an hour, so spend them on:
+GitHub's public API, read with `web_fetch`. It answers 60 unauthenticated requests an hour, so spend them on:
 
 - `https://api.github.com/repos/<owner>/<repo>`: `archived`, `pushed_at`, `license`, `open_issues_count` (issues and
   PRs together), `stargazers_count`, `default_branch`.
