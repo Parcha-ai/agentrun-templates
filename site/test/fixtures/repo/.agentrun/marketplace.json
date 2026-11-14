@@ -1,0 +1,4 @@
+{ "name": "agentrun", "owner": { "name": "Parcha", "url": "https://github.com/Parcha-ai" },
+  "templates": [
+    { "name": "sample-watch", "source": "./templates/sample-watch", "category": "research", "tags": ["fixture", "weekly"] }
+  ] }

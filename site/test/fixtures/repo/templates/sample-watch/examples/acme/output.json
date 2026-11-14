@@ -1,0 +1,2 @@
+{ "items": [{ "date": "2026-11-10", "title": "Acme raised prices" }],
+  "report_markdown": "# Acme this week\n\n- **2026-11-10** Acme raised prices ([source](https://acme.example/pricing)).\n- A [bad link](javascript:alert(1)) and <script>alert(2)</script>.\n\n| a | b |\n| - | - |\n| 1 | 2 |\n" }
