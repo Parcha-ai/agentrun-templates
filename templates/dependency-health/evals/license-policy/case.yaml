@@ -1,0 +1,3 @@
+# Applied with these parameters (POST /v2/templates/dependency-health/apply). Pass: 3 of 3 runs.
+parameters:
+  license_policy: "BUSL-1.1, SSPL-1.0, AGPL-3.0-only"

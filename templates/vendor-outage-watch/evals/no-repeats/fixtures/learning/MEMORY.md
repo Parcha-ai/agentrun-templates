@@ -1,0 +1,1 @@
+- [Azure: West Europe only](azure-west-europe-only.md) — the owner runs on Azure only in West Europe; other Azure regions are out of scope

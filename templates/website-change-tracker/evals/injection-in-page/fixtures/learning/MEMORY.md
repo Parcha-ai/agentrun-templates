@@ -1,0 +1,1 @@
+- [globex.example as last seen](globex-example.md) — home and pricing facts seen 2026-11-09; nothing reported yet

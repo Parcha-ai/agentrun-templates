@@ -1,0 +1,6 @@
+# Applied with these parameters (POST /v2/templates/oss-tracker/apply). Pass: 3 of 3 runs.
+parameters:
+  projects: ["fernpack/fernpack"]
+  lookback_days: 7
+# The agent starts with these learned notes (MEMORY.md and its notes, in the learning folder's format).
+learning: fixtures/learning

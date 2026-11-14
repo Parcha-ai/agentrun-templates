@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "outages.schema.json",
+  "title": "Vendor outage watch",
+  "description": "Incidents, postmortems and reliability patterns at the listed vendors inside the window, with times per the vendor's own status page.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "quiet", "incidents", "vendors_checked", "assumptions", "dropped_repeats", "unreachable", "ignored_instructions", "report_markdown"],
+  "$defs": {
+    "date": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "url": { "type": "string", "format": "uri", "pattern": "^https?://" },
+    "time": { "type": ["string", "null"], "format": "date-time", "description": "UTC, as the vendor posted it" }
+  },
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "description": "half-open: from < date <= to",
+      "properties": { "from": { "$ref": "#/$defs/date" }, "to": { "$ref": "#/$defs/date" } }
+    },
+    "quiet": { "type": "boolean" },
+    "incidents": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["vendor", "service", "kind", "title", "status", "started_at", "resolved_at", "time_source", "impact", "root_cause", "root_cause_status", "so_what", "date", "source_urls"],
+        "properties": {
+          "vendor": { "type": "string", "minLength": 1, "maxLength": 120, "description": "the vendor entry it falls under" },
+          "service": { "type": "string", "maxLength": 200, "description": "as the status page names it" },
+          "regions": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 80 }, "description": "as the status page names them; empty when the vendor gave none" },
+          "kind": { "enum": ["incident", "postmortem", "security", "third_party", "pattern"] },
+          "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+          "status": { "enum": ["resolved", "ongoing", "monitoring"] },
+          "started_at": { "$ref": "#/$defs/time" },
+          "resolved_at": { "$ref": "#/$defs/time" },
+          "duration_minutes": { "type": ["integer", "null"], "minimum": 0, "description": "only when both ends are posted" },
+          "time_source": { "enum": ["status_page", "postmortem", "vendor_notice"] },
+          "impact": { "type": "string", "minLength": 1, "maxLength": 500, "description": "what the vendor confirmed" },
+          "community_reports": { "type": "string", "maxLength": 300, "description": "user reports, labelled as such, with when they were read" },
+          "root_cause": { "type": ["string", "null"], "maxLength": 500 },
+          "root_cause_status": { "enum": ["published", "preliminary", "not_published"] },
+          "so_what": { "type": "string", "minLength": 1, "maxLength": 250 },
+          "date": { "$ref": "#/$defs/date", "description": "the start date, or a postmortem's publication date" },
+          "change_since_last": { "type": "string", "maxLength": 200, "description": "for an incident the last brief reported: what developed since" },
+          "source_urls": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "#/$defs/url" }, "description": "the vendor's own incident page or postmortem first" }
+        }
+      }
+    },
+    "vendors_checked": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["vendor", "result"],
+        "properties": {
+          "vendor": { "type": "string", "maxLength": 120 },
+          "status_page": { "type": ["string", "null"], "maxLength": 300 },
+          "result": { "enum": ["incidents", "quiet", "unreachable", "no_status_page"] }
+        }
+      }
+    },
+    "assumptions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "dropped_repeats": { "type": "array", "maxItems": 30, "items": { "type": "string", "maxLength": 300 } },
+    "unreachable": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["url", "reason"],
+        "properties": {
+          "url": { "type": "string", "maxLength": 500 },
+          "reason": { "enum": ["blocked", "rate_limited", "not_found", "error", "skipped"] },
+          "detail": { "type": "string", "maxLength": 200 }
+        }
+      }
+    },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 12000 }
+  }
+}

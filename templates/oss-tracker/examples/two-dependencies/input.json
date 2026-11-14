@@ -1,0 +1,6 @@
+{
+  "projects": ["fernpack/fernpack", "npm:glimmerq"],
+  "purpose": "dependency_risk",
+  "signals": "",
+  "lookback_days": 7
+}

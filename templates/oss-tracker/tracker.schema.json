@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tracker.schema.json",
+  "title": "Open-source project tracker",
+  "description": "A weekly snapshot per tracked project: metrics with their source and period, this window's events, and a status resting on several signals. A metric that could not be read is null, never estimated.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "purpose", "projects", "assumptions", "dropped_repeats", "unreachable", "ignored_instructions", "report_markdown"],
+  "$defs": {
+    "date": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "url": { "type": "string", "format": "uri", "pattern": "^https?://" },
+    "int": { "type": ["integer", "null"], "minimum": 0 },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": ["number", "null"] },
+        "previous": { "type": ["number", "null"], "description": "the last snapshot's value, when one was handed to the run" },
+        "period": { "type": "string", "maxLength": 80 },
+        "source": { "type": ["string", "null"], "maxLength": 500, "description": "the URL it was read from; null with a null value when it could not be read" }
+      }
+    }
+  },
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": { "from": { "$ref": "#/$defs/date" }, "to": { "$ref": "#/$defs/date" } }
+    },
+    "purpose": { "enum": ["balanced", "dependency_risk", "competitive"] },
+    "projects": {
+      "type": "array",
+      "maxItems": 25,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["input", "resolved", "repo_url", "package", "status", "status_reason", "metrics", "events", "so_what"],
+        "properties": {
+          "input": { "type": "string", "maxLength": 300, "description": "the entry as given" },
+          "resolved": { "type": "boolean" },
+          "repo_url": { "type": ["string", "null"], "format": "uri" },
+          "package": { "type": ["string", "null"], "maxLength": 200, "description": "ecosystem:name of the main package" },
+          "status": { "enum": ["rising", "stalling", "fading", "baseline", "unresolved"] },
+          "status_reason": { "type": "string", "minLength": 1, "maxLength": 400, "description": "the signals that decided it" },
+          "metrics": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["stars", "downloads", "contributors_30d", "contributors_90d", "top_author_share", "open_issues", "open_prs", "last_release"],
+            "properties": {
+              "stars": { "$ref": "#/$defs/metric" },
+              "stars_delta": { "type": ["integer", "null"] },
+              "downloads": { "$ref": "#/$defs/metric" },
+              "downloads_trend": { "type": ["string", "null"], "maxLength": 200, "description": "against the last snapshot or a dated series, with the periods compared; null on a first run with no series" },
+              "contributors_30d": { "$ref": "#/$defs/metric" },
+              "contributors_90d": { "$ref": "#/$defs/metric" },
+              "top_author_share": { "$ref": "#/$defs/metric" },
+              "open_issues": { "$ref": "#/$defs/metric" },
+              "open_prs": { "$ref": "#/$defs/metric" },
+              "median_first_response_hours": { "$ref": "#/$defs/metric" },
+              "last_release": {
+                "type": ["object", "null"],
+                "additionalProperties": false,
+                "required": ["version", "date", "source"],
+                "properties": { "version": { "type": "string", "maxLength": 80 }, "date": { "$ref": "#/$defs/date" }, "source": { "$ref": "#/$defs/url" } }
+              },
+              "releases_90d": { "$ref": "#/$defs/int" },
+              "license": { "type": ["string", "null"], "maxLength": 80 },
+              "how_counted": { "type": "string", "maxLength": 300 }
+            }
+          },
+          "events": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "date", "summary", "url"],
+              "properties": {
+                "kind": { "enum": ["major_release", "release", "advisory", "relicense", "archived", "deprecated", "maintainer_call", "fork", "foundation", "governance", "launch_spike", "other"] },
+                "date": { "$ref": "#/$defs/date" },
+                "summary": { "type": "string", "minLength": 1, "maxLength": 300 },
+                "url": { "$ref": "#/$defs/url" }
+              }
+            }
+          },
+          "so_what": { "type": "string", "maxLength": 250 }
+        }
+      }
+    },
+    "assumptions": { "type": "array", "maxItems": 15, "items": { "type": "string", "maxLength": 300 } },
+    "dropped_repeats": { "type": "array", "maxItems": 30, "items": { "type": "string", "maxLength": 300 } },
+    "unreachable": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["url", "reason"],
+        "properties": {
+          "url": { "type": "string", "maxLength": 500 },
+          "reason": { "enum": ["blocked", "rate_limited", "not_found", "error", "skipped"] },
+          "detail": { "type": "string", "maxLength": 200 }
+        }
+      }
+    },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 16000 }
+  }
+}

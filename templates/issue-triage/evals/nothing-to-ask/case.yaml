@@ -1,0 +1,15 @@
+# Applied with these parameters (POST /v2/templates/issue-triage/apply). Pass: 3 of 3 runs.
+parameters:
+  owner: acme
+  repo: tidewater
+# The runner serves fixtures/github-mcp.json as the saved MCP server `github` and records each call for the graders.
+mcp:
+  github: fixtures/github-mcp.json
+# Every tool granted, so each write that happens is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:github/issue_read
+  - mcp:github/list_issues
+  - mcp:github/search_issues
+  - mcp:github/list_label
+  - mcp:github/issue_write
+  - mcp:github/add_issue_comment

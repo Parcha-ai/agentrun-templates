@@ -1,0 +1,42 @@
+{
+  "issue": {
+    "number": 483,
+    "title": "--watch dies with ENOSPC on a big monorepo",
+    "url": "https://github.com/acme/tidewater/issues/483",
+    "author": "dev-user"
+  },
+  "kind": "bug",
+  "labels": {
+    "kept": [],
+    "added": [
+      { "name": "bug", "why": "sync --watch exits with an error it should handle; the report gives expected and actual behaviour." },
+      { "name": "area:sync", "why": "The failure is in the file watcher, which the label's description puts under the sync engine." }
+    ]
+  },
+  "duplicates": [
+    {
+      "number": 301,
+      "title": "sync --watch crashes with ENOSPC on large folders",
+      "url": "https://github.com/acme/tidewater/issues/301",
+      "state": "closed",
+      "confidence": "high",
+      "why": "Same error text (ENOSPC, file watcher limit) on the same command and a large folder. Closed as fixed in 2.4.0, which falls back to polling; the reporter is on 2.3.1."
+    },
+    {
+      "number": 377,
+      "title": "Watcher limit error on Fedora with many files",
+      "url": "https://github.com/acme/tidewater/issues/377",
+      "state": "open",
+      "confidence": "medium",
+      "why": "Same error on sync --watch with 2.3.0 on Fedora. Still open, possibly the same root cause as #301 on an older version."
+    }
+  ],
+  "missing": [],
+  "comment": {
+    "posted": true,
+    "body": "Thanks for the report.\n\nThis looks like the same problem as:\n\n- #301 sync --watch crashes with ENOSPC on large folders (same `ENOSPC` file-watcher error on `sync --watch`). It was closed as fixed in 2.4.0, which falls back to polling when the watcher limit runs out, and you're on 2.3.1, so upgrading may solve it.\n- #377 Watcher limit error on Fedora with many files (same error, still open).\n\nIf this is the same problem, following #301 or #377 keeps it in one place.\n\n_Automated triage. A maintainer will follow up._"
+  },
+  "ignored_instructions": [],
+  "skipped": [],
+  "report_markdown": "## Issue #483: --watch dies with ENOSPC on a big monorepo\n\n**Kind:** bug. **Labels added:** `bug`, `area:sync`.\n\n**Likely duplicates**\n\n| Issue | State | Confidence | Why |\n|---|---|---|---|\n| [#301](https://github.com/acme/tidewater/issues/301) | closed, fixed in 2.4.0 | high | same ENOSPC watcher error on `sync --watch` |\n| [#377](https://github.com/acme/tidewater/issues/377) | open | medium | same error on 2.3.0, Fedora |\n\nThe report is complete (version, OS, steps, expected and actual), so the comment asks for nothing. It points the author at the 2.4.0 fix. Not closed and not marked a duplicate: that's yours to decide."
+}

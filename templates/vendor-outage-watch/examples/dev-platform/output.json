@@ -1,0 +1,52 @@
+{
+  "window": { "from": "2026-11-09", "to": "2026-11-16" },
+  "quiet": false,
+  "incidents": [
+    {
+      "vendor": "GitHub Actions",
+      "service": "Actions",
+      "regions": [],
+      "kind": "incident",
+      "title": "Actions jobs started late for over two hours",
+      "status": "resolved",
+      "started_at": "2026-11-12T14:05:00Z",
+      "resolved_at": "2026-11-12T16:20:00Z",
+      "duration_minutes": 135,
+      "time_source": "status_page",
+      "impact": "About 30% of workflow jobs on GitHub-hosted runners started more than 10 minutes late, and 4% failed to start.",
+      "root_cause": null,
+      "root_cause_status": "not_published",
+      "so_what": "Re-run jobs that never started on Nov 12; consider self-hosted runners for release-critical workflows.",
+      "date": "2026-11-12",
+      "source_urls": ["https://www.githubstatus.com/incidents/a7h3"]
+    },
+    {
+      "vendor": "Cloudflare",
+      "service": "Workers KV",
+      "regions": ["global"],
+      "kind": "postmortem",
+      "title": "Postmortem: Workers KV reads failed for 1h49m on Oct 22",
+      "status": "resolved",
+      "started_at": "2026-10-22T17:12:00Z",
+      "resolved_at": "2026-10-22T19:01:00Z",
+      "duration_minutes": 109,
+      "time_source": "postmortem",
+      "impact": "Workers KV reads failed for 18% of requests worldwide.",
+      "root_cause": "A configuration change to the storage gateway's connection limits was rolled out to all locations at once.",
+      "root_cause_status": "published",
+      "so_what": "If Workers read config from KV, check they fail safe when KV errors; Cloudflare now stages these rollouts.",
+      "date": "2026-11-11",
+      "source_urls": ["https://blog.cloudflare.com/workers-kv-outage-2026-10-22/"]
+    }
+  ],
+  "vendors_checked": [
+    { "vendor": "GitHub Actions", "status_page": "https://www.githubstatus.com", "result": "incidents" },
+    { "vendor": "Cloudflare", "status_page": "https://www.cloudflarestatus.com", "result": "incidents" },
+    { "vendor": "AWS us-east-1", "status_page": "https://health.aws.amazon.com/health/status", "result": "quiet" }
+  ],
+  "assumptions": [],
+  "dropped_repeats": [],
+  "unreachable": [],
+  "ignored_instructions": [],
+  "report_markdown": "**Outage watch** 2026-11-09 to 2026-11-16\nGitHub Actions jobs started late or not at all for 2h15m on Thursday.\n\n- **GitHub Actions**: workflow jobs delayed. 14:05 to 16:20 UTC on Nov 12 per status page (135 min). About 30% of jobs on GitHub-hosted runners started over 10 minutes late; 4% failed to start. Root cause: not published yet. _For your on-call:_ re-run jobs that never started that afternoon. [incident](https://www.githubstatus.com/incidents/a7h3)\n- **Cloudflare Workers KV** (postmortem, published Nov 11): reads failed for 18% of requests worldwide, 17:12 to 19:01 UTC on Oct 22 per postmortem. Root cause: a gateway connection-limit change pushed to every location at once. _For your on-call:_ check that Workers reading config from KV fail safe. [postmortem](https://blog.cloudflare.com/workers-kv-outage-2026-10-22/)\n\n_Checked: GitHub (githubstatus.com), Cloudflare (cloudflarestatus.com), AWS us-east-1 (AWS Health Dashboard, quiet)._"
+}

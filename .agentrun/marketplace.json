@@ -6,6 +6,12 @@
     { "name": "kyb", "source": "github:Parcha-ai/agentrun/packages/serve/templates/kyb", "category": "compliance", "tags": ["due-diligence", "sanctions"] },
     { "name": "market-monitor", "source": "github:Parcha-ai/agentrun/packages/serve/templates/market-monitor", "category": "marketing", "tags": ["competitors", "weekly"] },
     { "name": "inbound-lead", "source": "github:Parcha-ai/agentrun/packages/serve/templates/inbound-lead", "category": "sales", "tags": ["leads", "webhook"] },
-    { "name": "release-notes", "source": "github:Parcha-ai/agentrun/packages/serve/templates/release-notes", "category": "engineering", "tags": ["github", "releases"] }
+    { "name": "release-notes", "source": "github:Parcha-ai/agentrun/packages/serve/templates/release-notes", "category": "engineering", "tags": ["github", "releases"] },
+    { "name": "issue-triage", "source": "./templates/issue-triage", "category": "engineering", "tags": ["github", "issues", "triage", "duplicates", "labels"] },
+    { "name": "dependency-health", "source": "./templates/dependency-health", "category": "engineering", "tags": ["dependencies", "open-source", "cve", "license", "supply-chain"] },
+    { "name": "vulnerability-digest", "source": "./templates/vulnerability-digest", "category": "security", "tags": ["cve", "vulnerabilities", "cisa-kev", "patching", "daily"] },
+    { "name": "vendor-outage-watch", "source": "./templates/vendor-outage-watch", "category": "engineering", "tags": ["outages", "status-pages", "sre", "incidents", "weekly"] },
+    { "name": "oss-tracker", "source": "./templates/oss-tracker", "category": "engineering", "tags": ["open-source", "github", "dependencies", "competitors", "weekly"] },
+    { "name": "website-change-tracker", "source": "./templates/website-change-tracker", "category": "marketing", "tags": ["website-monitoring", "competitors", "pricing", "change-detection", "weekly"] }
   ]
 }

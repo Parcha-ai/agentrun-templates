@@ -1,0 +1,7 @@
+# Applied with these parameters (POST /v2/templates/website-change-tracker/apply). Pass: 3 of 3 runs.
+parameters:
+  pages: ["https://quillforge.example/pricing"]
+  company: "Inkwell"
+  lookback_days: 7
+# The agent starts with these learned notes (MEMORY.md and its notes, in the learning folder's format).
+learning: fixtures/learning

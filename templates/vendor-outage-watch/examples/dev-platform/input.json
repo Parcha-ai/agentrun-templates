@@ -1,0 +1,4 @@
+{
+  "vendors": ["GitHub Actions", "Cloudflare", "AWS us-east-1"],
+  "lookback_days": 7
+}

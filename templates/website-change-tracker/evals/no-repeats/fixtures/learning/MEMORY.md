@@ -1,0 +1,2 @@
+- [quillforge.example as last seen](quillforge-example.md) — pricing page facts seen 2026-11-09
+- [No customer logos](no-customer-logos.md) — the owner doesn't want logo or case-study changes reported

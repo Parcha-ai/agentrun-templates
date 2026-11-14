@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "health.schema.json",
+  "title": "Dependency health check",
+  "description": "A health check on one open-source package. Facts carry the ids of the sources they rest on (S1, S2, ...), each listed in `sources` with the date it was read. A number that could not be read is null and named in `gaps`, never estimated.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "resolved", "verdict", "snapshot", "maintenance", "advisories", "license", "alternatives", "gaps", "sources", "report_markdown"],
+  "$defs": {
+    "date": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "maybe_date": { "type": ["string", "null"], "format": "date" },
+    "maybe_int": { "type": ["integer", "null"], "minimum": 0 },
+    "source_ids": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]{1,3}$" }, "maxItems": 10 }
+  },
+  "properties": {
+    "checked_on": { "$ref": "#/$defs/date" },
+    "resolved": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["found", "name", "ecosystem", "choice_note"],
+      "properties": {
+        "found": { "type": "boolean" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 300, "description": "the package as the registry names it, or the input as given when not found" },
+        "ecosystem": { "type": ["string", "null"] },
+        "version_checked": { "type": ["string", "null"], "description": "the input version, else the latest stable" },
+        "registry_url": { "type": ["string", "null"], "format": "uri" },
+        "repository_url": { "type": ["string", "null"], "format": "uri" },
+        "choice_note": { "type": "string", "maxLength": 600, "description": "how the package was resolved: the ecosystem picked and why, a rename or move followed, a typosquat risk; or where it was looked for when not found" },
+        "other_candidates": { "type": "array", "maxItems": 6, "items": { "type": "string", "maxLength": 200 } }
+      }
+    },
+    "verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "reasons"],
+      "properties": {
+        "decision": { "enum": ["adopt", "adopt_with_caution", "keep_but_plan_exit", "avoid", "unresolved"] },
+        "reasons": { "type": "array", "minItems": 1, "maxItems": 5, "items": { "type": "string", "minLength": 1, "maxLength": 400 } }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["latest_version", "latest_release_date", "license_spdx", "downloads", "dependents", "open_advisories"],
+      "properties": {
+        "latest_version": { "type": ["string", "null"] },
+        "latest_release_date": { "$ref": "#/$defs/maybe_date" },
+        "license_spdx": { "type": ["string", "null"] },
+        "downloads": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["count", "period"],
+          "properties": { "count": { "type": "integer", "minimum": 0 }, "period": { "type": "string", "maxLength": 60 }, "sources": { "$ref": "#/$defs/source_ids" } }
+        },
+        "dependents": { "$ref": "#/$defs/maybe_int" },
+        "open_advisories": { "$ref": "#/$defs/maybe_int", "description": "advisories with no fixed version, or affecting the version checked" }
+      }
+    },
+    "maintenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["releases_12m", "releases_24m", "archived", "deprecated", "committers_12m", "top_committer_share", "how_counted"],
+      "properties": {
+        "releases_12m": { "$ref": "#/$defs/maybe_int" },
+        "releases_24m": { "$ref": "#/$defs/maybe_int" },
+        "longest_gap_days": { "$ref": "#/$defs/maybe_int" },
+        "last_commit_date": { "$ref": "#/$defs/maybe_date" },
+        "archived": { "type": ["boolean", "null"] },
+        "deprecated": { "type": ["string", "null"], "description": "the registry's or README's deprecation text, verbatim; null when none" },
+        "committers_12m": { "$ref": "#/$defs/maybe_int" },
+        "top_committer_share": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "how_counted": { "type": "string", "maxLength": 300 },
+        "backing": { "type": ["string", "null"], "maxLength": 300, "description": "company, foundation, sponsors or one person, as a source says" },
+        "open_issues": { "$ref": "#/$defs/maybe_int" },
+        "open_prs": { "$ref": "#/$defs/maybe_int" },
+        "issue_note": { "type": ["string", "null"], "maxLength": 400 },
+        "sources": { "$ref": "#/$defs/source_ids" }
+      }
+    },
+    "advisories": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "severity", "summary", "affected", "fixed", "published", "sources"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^(GHSA-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}|CVE-[0-9]{4}-[0-9]{4,}|[A-Z]+-[0-9A-Za-z-]+)$" },
+          "aliases": { "type": "array", "maxItems": 5, "items": { "type": "string" } },
+          "severity": { "type": "string", "maxLength": 80, "description": "with its source: \"CVSS 7.5 (GitHub)\", \"High (vendor)\", \"not yet scored\"" },
+          "summary": { "type": "string", "maxLength": 300 },
+          "affected": { "type": "string", "maxLength": 200 },
+          "fixed": { "type": ["string", "null"], "maxLength": 100 },
+          "published": { "$ref": "#/$defs/maybe_date" },
+          "affects_version_checked": { "type": ["boolean", "null"] },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "security_practices": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "security_policy": { "type": ["boolean", "null"] },
+        "scorecard": { "type": ["number", "null"], "minimum": 0, "maximum": 10 },
+        "scorecard_date": { "$ref": "#/$defs/maybe_date" },
+        "provenance": { "type": ["string", "null"], "maxLength": 200 },
+        "incidents": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 300 } }
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["spdx", "policy_conflict", "history", "note"],
+      "properties": {
+        "spdx": { "type": ["string", "null"] },
+        "registry_says": { "type": ["string", "null"] },
+        "policy_conflict": { "type": ["boolean", "null"], "description": "true when the license is on the owner's policy list; null when there is no policy" },
+        "history": { "type": "string", "maxLength": 500, "description": "relicensing with dates and versions, or \"no change found\"" },
+        "note": { "type": "string", "maxLength": 600, "description": "what to check for commercial use; never legal advice" },
+        "sources": { "$ref": "#/$defs/source_ids" }
+      }
+    },
+    "alternatives": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "last_release", "license", "tradeoff"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 200 },
+          "last_release": { "$ref": "#/$defs/maybe_date" },
+          "license": { "type": ["string", "null"] },
+          "downloads": { "type": ["string", "null"], "maxLength": 80 },
+          "open_advisories": { "$ref": "#/$defs/maybe_int" },
+          "tradeoff": { "type": "string", "maxLength": 300 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "gaps": { "type": "array", "maxItems": 20, "description": "what could not be verified and why, and any instruction found in fetched text", "items": { "type": "string", "maxLength": 300 } },
+    "sources": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "url", "retrieved"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]{1,3}$" },
+          "url": { "type": "string", "format": "uri", "pattern": "^https?://" },
+          "retrieved": { "$ref": "#/$defs/date" },
+          "what": { "type": "string", "maxLength": 200 },
+          "found": { "type": "boolean", "description": "false for a lookup that found nothing" }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 20000 }
+  }
+}

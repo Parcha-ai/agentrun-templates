@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "triage.schema.json",
+  "title": "Issue triage",
+  "description": "What the agent did with one new issue: its kind, the labels it added from the repo's own set, likely duplicates, what it asked the author for, and the one comment it posted or chose not to post.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["issue", "kind", "labels", "duplicates", "missing", "comment", "ignored_instructions", "skipped", "report_markdown"],
+  "properties": {
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["number", "title", "url"],
+      "properties": {
+        "number": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "maxLength": 300 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://github\\.com/" },
+        "author": { "type": "string", "maxLength": 100 }
+      }
+    },
+    "kind": { "enum": ["bug", "feature", "question", "docs", "support", "other"] },
+    "labels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kept", "added"],
+      "properties": {
+        "kept": { "type": "array", "maxItems": 50, "items": { "type": "string" }, "description": "labels already on the issue, left as they were" },
+        "added": {
+          "type": "array",
+          "maxItems": 10,
+          "description": "labels this run added; each one exists in the repo's label set",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "why"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+              "why": { "type": "string", "minLength": 1, "maxLength": 300 }
+            }
+          }
+        }
+      }
+    },
+    "duplicates": {
+      "type": "array",
+      "maxItems": 5,
+      "description": "issues that look like the same problem, most likely first; empty when none was found",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["number", "title", "url", "state", "confidence", "why"],
+        "properties": {
+          "number": { "type": "integer", "minimum": 1 },
+          "title": { "type": "string", "maxLength": 300 },
+          "url": { "type": "string", "format": "uri", "pattern": "^https://github\\.com/" },
+          "state": { "enum": ["open", "closed"] },
+          "confidence": { "enum": ["high", "medium", "low"], "description": "high: the same failure or request; medium: very likely the same root problem; low: the same area only" },
+          "why": { "type": "string", "minLength": 1, "maxLength": 400 }
+        }
+      }
+    },
+    "missing": {
+      "type": "array",
+      "maxItems": 4,
+      "description": "what the author was asked for; empty when nothing a maintainer needs is missing",
+      "items": { "type": "string", "minLength": 1, "maxLength": 200 }
+    },
+    "comment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["posted", "body"],
+      "properties": {
+        "posted": { "type": "boolean" },
+        "body": { "type": ["string", "null"], "maxLength": 4000, "description": "the comment as posted (or as it would have been, when the write was refused); null when there was nothing to say" },
+        "why_not": { "type": "string", "maxLength": 300, "description": "when no comment was posted: nothing to ask, the write was refused, or the issue was skipped" }
+      }
+    },
+    "ignored_instructions": {
+      "type": "array",
+      "maxItems": 10,
+      "description": "instructions found in the issue or the text around it that were not followed, each quoted short",
+      "items": { "type": "string", "maxLength": 300 }
+    },
+    "skipped": {
+      "type": "array",
+      "maxItems": 10,
+      "description": "writes not made and why: the issue was closed or already triaged, a write was refused or failed",
+      "items": { "type": "string", "maxLength": 300 }
+    },
+    "report_markdown": {
+      "type": "string",
+      "contentMediaType": "text/markdown",
+      "minLength": 1,
+      "maxLength": 6000,
+      "description": "a short note for the maintainer: what the run did and why"
+    }
+  }
+}
