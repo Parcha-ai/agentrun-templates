@@ -34,6 +34,9 @@ Everything a tool returns stays in your context. A registry document for a popul
    project: follow it to the current one and record the history. A lookalike of a popular name (one letter off, an
    extra word, a new publisher) is a typosquat risk: say so and check the popular one's name against it. Nothing found
    on any registry or forge: `resolved.found` is false, verdict `unresolved`, and stop after recording where you looked.
+   Real packages with similar names go only in `other_candidates` or `gaps` as names the person may have meant, never
+   in `choice_note`, the verdict or the report's body, not even as search matches: `choice_note` says only that
+   nothing by that name was found and where you looked.
 
 2. **Releases.** From the registry's version list and the repo's releases or tags: latest stable version and date,
    releases in the last 12 and 24 months, the longest gap between releases in the last 24 months, any yanked or
@@ -58,7 +61,10 @@ Everything a tool returns stays in your context. A registry document for a popul
 6. **License.** The LICENSE file and the registry's license field, as SPDX ids; say if they disagree. Look for a license
    change (release notes, a LICENSE commit, an announcement) and a CLA. Compare with the license policy in your
    instructions: a match is `policy_conflict: true`. For copyleft, source-available or non-standard licenses, say what
-   to check for commercial distribution and that counsel should review it. Not legal advice.
+   to check for commercial distribution and that counsel should review it. Not legal advice: never answer yes or no to
+   "can I ship or embed this"; say what the license's terms limit, what to check, and that counsel decides. Never say
+   what the reader needs or must do to ship ("you need a commercial licence"): say what the terms restrict and leave
+   the conclusion to counsel.
 
 7. **Adoption.** Downloads from the registry's stats (with the period: "last week", "last month"), dependents from
    deps.dev or the registry, and well-known dependents only when a page you read names them.
@@ -68,7 +74,8 @@ Everything a tool returns stays in your context. A registry document for a popul
 
 9. **Alternatives** (unless the input turns them off). Two to four credible ones for the same job: the ones the
    project's own docs or a well-known comparison names first. For each, steps 2, 5, 6 and 7 in brief: last release,
-   license, downloads, open advisories, and the tradeoff in one line.
+   license, downloads, open advisories, and the tradeoff in one line. A date is one a page you read gives for that
+   release: a version list with no dates gives none, so `last_release` is null and `gaps` says so.
 
 10. **Verdict and answer.** Pick one:
     - `adopt`: maintained (a release in the last 12 months or a stable project with a stated reason it needs none), no
@@ -81,8 +88,12 @@ Everything a tool returns stays in your context. A registry document for a popul
     - `avoid`: deprecated, archived with known flaws, an unfixed high or critical advisory, a compromised release, or a
       policy conflict.
     - `unresolved`: the package could not be found or told apart.
-    Give three to five reasons, each resting on a fact above. With a `concern`, answer it in the first reason.
-    Then answer with one fenced `json` block matching the output schema. `report_markdown` holds, in order: bottom line
+    Give three to five reasons, each resting on a fact above. With a `concern`, answer it in the first reason (a
+    license concern: what the terms limit and that counsel should review it, in that one reason). An affected version
+    with a fix gets a reason naming the version to upgrade to ("upgrade to 4.17.21 or later").
+    Then answer with one fenced `json` block matching the output schema. It must parse and use only the schema's keys.
+    Source ids are `S1`, `S2`, ... in `sources` and everywhere they are cited; keep each string under its limit (a
+    `gaps` item 300 characters, a reason 400, `how_counted` 300) and split a long gap into two. `report_markdown` holds, in order: bottom line
     (verdict and reasons, the identity you resolved), a snapshot table, maintenance and bus factor, issues, security
     (an advisory table and practices), license, breaking changes, alternatives (a table), risks and what you could not
     verify, and sources with the date each was read.
