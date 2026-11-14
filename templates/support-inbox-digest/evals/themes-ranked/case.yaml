@@ -1,0 +1,12 @@
+# Applied with these parameters. Pass: 3 of 3 runs. The fixtures stand in for the owner's Composio Gmail and Slack;
+# every call is recorded for the graders.
+parameters:
+  query: label:support newer_than:7d
+  channel: C0SUPPORT1
+  team_domains: [acme.example]
+mcp:
+  gmail: fixtures/gmail-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:gmail/GMAIL_FETCH_EMAILS
+  - mcp:slack/SLACK_SEND_MESSAGE
