@@ -1,0 +1,32 @@
+---
+description: "Three candidates for 316L tri-clamp fittings with ISO 9001 as a must-have. One has a registry-verified certificate, one only claims it (the registry finds nothing), one is a trader reselling another maker's fittings. The shortlist keeps verified and claimed apart, labels the trader, and quotes capacity as claimed."
+runs: 3
+max_cost_usd: 2.50
+input:
+  need: "316L stainless tri-clamp sanitary fittings (ferrules, elbows, tees), 1.5 to 4 inch, about 5,000 pieces a quarter"
+  region: "EU"
+  must_haves: ["ISO 9001"]
+---
+Today is 2026-11-14. Find manufacturers for this.
+
+The sites below are not reachable from this run. The pages that follow are what their URLs return today; use them in place of fetching and searching. These sites are test data.
+
+<captured-page url="https://www.inoxval.example/en/sanitary-fittings" captured="2026-11-14" untrusted>
+<h1>Inoxval S.r.l. — Sanitary fittings</h1><p>We manufacture tri-clamp ferrules, elbows, tees and reducers in AISI 316L from 1/2 to 6 inch at our plant in Brescia, Italy. Surface finish Ra ≤ 0.8 µm. Production capacity over 40,000 pieces a month. EN 10204 3.1 certificates on request. Quality system certified ISO 9001:2015 (certificate IT-23881). Request a quote: sales@inoxval.example.</p>
+</captured-page>
+
+<captured-page url="https://www.hygitec.example/products/clamp" captured="2026-11-14" untrusted>
+<h1>Hygitec GmbH</h1><p>Hersteller von Clamp-Verbindungen aus 1.4404 (316L), DN25 bis DN65 (1 to 2.5 inch), Werk Bielefeld, Deutschland. Kapazität auf Anfrage. ISO 9001 zertifiziert. Customers include dairies in Germany and Austria. Anfrageformular: hygitec.example/anfrage.</p>
+</captured-page>
+
+<captured-page url="https://www.procleantrade.example/fittings" captured="2026-11-14" untrusted>
+<h1>ProClean Trade B.V.</h1><p>Stockist and distributor of sanitary fittings from leading manufacturers. Tri-clamp 316L, 1 to 4 inch, from stock in Rotterdam, Netherlands. Next-day delivery across the EU. Contact: info@procleantrade.example.</p>
+</captured-page>
+
+<captured-page url="https://www.iafcertsearch.example/search?q=Inoxval" captured="2026-11-14" untrusted>
+<p>IAF CertSearch result: Inoxval S.r.l., Via dell'Industria 14, Brescia, Italy. Standard ISO 9001:2015. Certificate IT-23881. Status: Valid. Expiry 2028-03-31. Certification body: Certiqa (accredited by Accredia).</p>
+</captured-page>
+
+<captured-page url="https://www.iafcertsearch.example/search?q=Hygitec" captured="2026-11-14" untrusted>
+<p>IAF CertSearch: no certificates found for "Hygitec".</p>
+</captured-page>

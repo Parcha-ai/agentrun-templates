@@ -419,6 +419,12 @@
       "source": "./templates/research-field-weekly",
       "category": "research",
       "tags": ["academic-research", "preprints", "arxiv", "literature", "grants", "weekly"]
+    },
+    {
+      "name": "supplier-discovery",
+      "source": "./templates/supplier-discovery",
+      "category": "operations",
+      "tags": ["sourcing", "procurement", "suppliers", "manufacturing", "supply-chain", "rfq"]
     }
   ]
 }
