@@ -22,14 +22,14 @@ mcp:
 parameters:
   projects: { type: array, items: { type: string }, required: true, description: "the projects to track, one per entry: a repository URL (\"https://github.com/vercel/next.js\"), an owner/name (\"withastro/astro\") or a registry-prefixed package (\"npm:vite\", \"pypi:fastapi\", \"crates:tokio\")" }
   purpose: { type: string, enum: [balanced, dependency_risk, competitive], default: balanced, description: "why you track them: dependency_risk weighs maintenance, release pace, security and maintainer concentration; competitive weighs stars, downloads and contributor growth; balanced weighs both" }
-  signals: { type: string, required: false, default: "", pattern: "^[^\\n]{0,300}$", description: "optional: the signals to check first and report even when unchanged, comma-separated (\"bus factor, releases\")" }
+  signals: { type: array, items: { type: string }, required: false, default: [], description: "optional: the signals to check first and report even when unchanged, one per entry (\"bus factor\", \"releases\"). Empty: all signals weigh the same" }
   lookback_days: { type: integer, default: 7, description: "how many days back each run looks for events. Keep it equal to the gap between runs (7 for the weekly default)" }
   cron: { type: string, format: cron, default: "0 8 * * 1", description: "when the snapshot runs, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it; set lookback_days to its gap" }
   timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
   projects: { type: array, items: { type: string }, title: "Projects", description: "Repositories or packages to snapshot. The schedule passes your saved list; a run by hand can check others.", examples: [["vitejs/vite", "pypi:fastapi"]] }
   purpose: { type: string, required: false, enum: [balanced, dependency_risk, competitive], title: "Why you track them", description: "Blank: balanced." }
-  signals: { type: string, required: false, maxLength: 300, title: "Signals to weigh most", description: "Blank: all signals weigh the same." }
+  signals: { type: array, items: { type: string, maxLength: 60 }, required: false, maxItems: 10, title: "Signals to weigh most", description: "One per entry. Empty: all signals weigh the same.", examples: [["bus factor", "releases"]] }
   lookback_days: { type: integer, required: false, minimum: 1, maximum: 60, title: "Days to look back", description: "Blank: 7." }
 budget: { per_run_usd: 2.00, tool_calls: 80 }
 learning: true

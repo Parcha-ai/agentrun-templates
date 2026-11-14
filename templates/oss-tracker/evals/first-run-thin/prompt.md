@@ -35,7 +35,7 @@ Input:
     "pypi:larkspur-orm"
   ],
   "purpose": "balanced",
-  "signals": "",
+  "signals": [],
   "lookback_days": 7
 }
 ```

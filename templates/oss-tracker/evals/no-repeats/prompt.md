@@ -35,7 +35,7 @@ Input:
     "fernpack/fernpack"
   ],
   "purpose": "balanced",
-  "signals": "",
+  "signals": [],
   "lookback_days": 7
 }
 ```

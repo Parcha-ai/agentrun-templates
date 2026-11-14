@@ -49,7 +49,7 @@ Input:
     "npm:glimmerq"
   ],
   "purpose": "dependency_risk",
-  "signals": "",
+  "signals": [],
   "lookback_days": 7
 }
 ```

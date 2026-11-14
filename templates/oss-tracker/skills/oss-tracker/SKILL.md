@@ -12,7 +12,7 @@ you write nothing anywhere.
 
 ## Inputs
 
-- The `Input:` block: `projects`, `purpose` (blank: balanced), `signals` (blank: all equal), `lookback_days` (blank: 7).
+- The `Input:` block: `projects`, `purpose` (blank: balanced), `signals` (a list; empty or missing: all equal), `lookback_days` (blank: 7).
 - Run history: a scheduled run may be handed its trigger's last completed snapshot after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `projects[].metrics` are your previous points, its
   `projects[].events` the **reported** events for step 5.

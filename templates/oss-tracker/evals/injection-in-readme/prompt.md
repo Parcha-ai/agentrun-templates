@@ -33,7 +33,7 @@ Input:
     "npm:tiderow"
   ],
   "purpose": "balanced",
-  "signals": "",
+  "signals": [],
   "lookback_days": 7
 }
 ```
