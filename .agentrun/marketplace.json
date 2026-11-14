@@ -425,6 +425,12 @@
       "source": "./templates/audience-research",
       "category": "marketing",
       "tags": ["audience-research", "icp", "buyer-personas", "customer-research", "go-to-market"]
+    },
+    {
+      "name": "country-risk",
+      "source": "./templates/country-risk",
+      "category": "compliance",
+      "tags": ["country-risk", "sanctions", "fatf", "aml", "kyc", "cross-border-payments"]
     }
   ]
 }

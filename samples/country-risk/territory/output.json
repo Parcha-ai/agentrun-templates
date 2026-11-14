@@ -1,0 +1,281 @@
+{
+  "checked_on": "2026-11-14",
+  "country": {
+    "name": "Crimea",
+    "other_names": [
+      "Crimea and Sevastopol"
+    ],
+    "interpretation": "Profiled as the Ukrainian territory of Crimea, including Sevastopol, not as Russia or Ukraine generally. OFAC and EU measures treat the territory separately [S1][S2]. Context is agricultural-produce procurement; buyer jurisdiction, destination, origin and payment route are unspecified."
+  },
+  "rating": "prohibitive",
+  "rating_reason": "Assessment: do not proceed with a Crimea-origin purchase involving US imports or EU imports absent confirmed authorization or an applicable exception. Both regimes impose territorial import restrictions; agricultural produce is not shown to be exempt [S1][S2]. Other transaction structures remain unconfirmed.",
+  "context_focus": "Supplier procurement and payments: establish actual growing origin, import destination, buyer nexus, beneficial ownership and banking route before contracting. A supplier address alone does not establish goods origin.",
+  "sanctions": [
+    {
+      "regime": "US OFAC",
+      "program": "Ukraine-/Russia-Related Sanctions",
+      "scope": "comprehensive",
+      "legal_basis": "Executive Order 13685 of December 19, 2014, “Blocking Property of Certain Persons and Prohibiting Certain Transactions With Respect to the Crimea Region of Ukraine”.",
+      "key_limits": "Territorial, not Ukraine-wide. Source prohibits US-person new investment, direct or indirect imports into the US of goods, services or technology from Crimea, and exports to the region. No agricultural import exception is established by the supplied extract.",
+      "last_amended": null,
+      "status": "Supplied OFAC primary-source capture, 2026-11-14: “the importation into the United States, directly or indirectly, of any goods, services or technology from the Crimea region” is prohibited. Latest amendment and transaction-specific licensing are unconfirmed.",
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "regime": "EU",
+      "program": "Crimea and Sevastopol: EU restrictive measures",
+      "scope": "sectoral",
+      "legal_basis": "Council Decision 2014/386/CFSP and Council Regulation (EU) No 692/2014.",
+      "key_limits": "Broad goods-origin import restriction alongside sector-specific trade/investment restrictions and tourism-services prohibition. Source states an import ban on Crimea/Sevastopol-origin goods. Agricultural exceptions and the proposed payment's treatment are not established.",
+      "last_amended": null,
+      "status": "Supplied Council primary-source capture, 2026-11-14: “an import ban on goods originating in Crimea or Sevastopol”; “the current renewal runs to 2027-06-23.” Exact latest amending instrument is unconfirmed.",
+      "sources": [
+        "S2"
+      ]
+    }
+  ],
+  "indicators": [
+    {
+      "indicator": "FATF jurisdictions under increased monitoring",
+      "value": "Unconfirmed: primary statement returned HTTP 403. No separate Crimea status or parent-state proxy is asserted.",
+      "edition": "2026-10-30 statement identified in search",
+      "published": "2026-10-30",
+      "stale": false,
+      "sources": [
+        "S5"
+      ]
+    },
+    {
+      "indicator": "FATF high-risk jurisdictions subject to a call for action",
+      "value": "Unconfirmed: attempted primary statement returned HTTP 403. No list status inferred.",
+      "edition": "October 2026; statement body unverified",
+      "published": null,
+      "stale": false,
+      "sources": [
+        "S6"
+      ]
+    },
+    {
+      "indicator": "EU AML high-risk third-country list",
+      "value": null,
+      "edition": null,
+      "published": null,
+      "stale": false,
+      "sources": [
+        "S7",
+        "S11"
+      ]
+    },
+    {
+      "indicator": "Basel AML Index",
+      "value": null,
+      "edition": "2025 Public Edition",
+      "published": null,
+      "stale": false,
+      "sources": [
+        "S8"
+      ]
+    },
+    {
+      "indicator": "Transparency International Corruption Perceptions Index",
+      "value": null,
+      "edition": "2025",
+      "published": "2026-02-10",
+      "stale": false,
+      "sources": [
+        "S9"
+      ]
+    },
+    {
+      "indicator": "WGI Political Stability, Control of Corruption and Rule of Law",
+      "value": null,
+      "edition": "2026; observations through 2025",
+      "published": null,
+      "stale": false,
+      "sources": [
+        "S10"
+      ]
+    }
+  ],
+  "political_and_payment": [
+    {
+      "topic": "payment_rails",
+      "finding": "Assessment, 2026-11-14: do not initiate payment until counsel establishes that the underlying purchase/import is permitted. The sources establish territorial trade restrictions, not a usable bank route or authorization for this payment. Changing currency or intermediary does not establish legality.",
+      "date": "2026-11-14",
+      "sources": [
+        "S1",
+        "S2"
+      ]
+    },
+    {
+      "topic": "correspondent_banking",
+      "finding": "Assessment, 2026-11-14: availability of a lawful correspondent route is unconfirmed. No beneficiary bank, intermediary, account location or currency was supplied. Require the remitting bank's written acceptance only after legal clearance; bank willingness is not legal authorization.",
+      "date": "2026-11-14",
+      "sources": [
+        "S1",
+        "S2"
+      ]
+    },
+    {
+      "topic": "stability_conflict",
+      "finding": "FCDO advice updated 2026-10-02, current 2026-11-14: “FCDO advises against all travel to Crimea.” It reports continuing Russian attacks and damage to Ukrainian transport and energy infrastructure. Assessment: physical verification and delivery continuity are high-risk. Independent US advisory confirmation failed with HTTP 403.",
+      "date": "2026-10-02",
+      "sources": [
+        "S3",
+        "S4"
+      ]
+    }
+  ],
+  "controls": [
+    {
+      "control": "Assessment—enhanced: place the proposed purchase and all deposits on hold pending written sanctions-counsel clearance for each relevant US and EU nexus; otherwise use a supplier outside Crimea.",
+      "level": "enhanced",
+      "tied_to": "Territorial import restrictions [S1][S2]."
+    },
+    {
+      "control": "Assessment—enhanced: obtain farm locations, growing/harvest records, title documents, origin certificates and transport records; independently reconcile actual origin rather than relying on the invoicing address.",
+      "level": "enhanced",
+      "tied_to": "Crimea-origin import bans and indirect US imports [S1][S2]."
+    },
+    {
+      "control": "Assessment—enhanced: have counsel verify the exact authorization or exception, its validity and coverage of produce, payments, shipping and insurance. Do not assume food-related permissions elsewhere cover imports from Crimea.",
+      "level": "enhanced",
+      "tied_to": "No agricultural import exception established by reviewed extracts [S1][S2]."
+    },
+    {
+      "control": "Assessment—enhanced: screen the supplier, ownership chain, banks, intermediaries, carriers and insurers under applicable US and EU lists and ownership/control rules before approval and each payment.",
+      "level": "enhanced",
+      "tied_to": "Transaction-specific parties and ownership have not been checked."
+    },
+    {
+      "control": "Assessment—enhanced: if legally cleared, obtain bank approval for the fully disclosed beneficiary and correspondent route. Reject undisclosed third-party accounts, origin relabeling and routing intended to bypass restrictions.",
+      "level": "enhanced",
+      "tied_to": "Payment legality and correspondent availability remain unconfirmed [S1][S2]."
+    },
+    {
+      "control": "Assessment—enhanced: if authorized, require sanctions termination rights, auditable origin warranties, no unauthorized substitution, and independently confirmed shipping and insurance arrangements; avoid unsecured prepayment.",
+      "level": "enhanced",
+      "tied_to": "Origin restrictions and conflict-related delivery risk [S1][S2][S3]."
+    },
+    {
+      "control": "Assessment—enhanced: refresh sanctions and licensing checks before commitment, shipment and payment; monitor the stated EU renewal deadline of 2027-06-23.",
+      "level": "enhanced",
+      "tied_to": "EU renewal date and transaction-sensitive restrictions [S2]."
+    }
+  ],
+  "open_questions": [
+    "Before contracting: where is the buyer established, which US/EU persons participate, and where will the produce be imported?",
+    "Before approval: where was the produce actually grown and harvested, and does Crimea include any transit, storage or processing location in this supply chain?",
+    "Before payment: what are the supplier's legal identity, beneficial owners, beneficiary bank, intermediaries, account jurisdiction and settlement currency?",
+    "Counsel must confirm whether any current authorization or exception covers this exact purchase and associated services; none has been established here.",
+    "Recheck FATF and EU AML primary statements before onboarding; their relevant current list statuses were not confirmed.",
+    "If considering an authorized transaction, confirm FX conversion, transfer restrictions, refunds, enforceability, insurance and any applicable personal-data transfer/localization requirements.",
+    "Monitor EU measures ahead of 2027-06-23 and recheck both regimes immediately before each transaction stage."
+  ],
+  "gaps": [
+    "Supplied OFAC and Council captures were used as instructed without refetching. They establish the quoted restrictions but do not provide complete consolidated rules, all exceptions, current licences or latest amending instruments.",
+    "Both attempted FATF primary statements returned HTTP 403. October 2026 material was identified in search, but list membership and the latest plenary conclusions remain unconfirmed.",
+    "European Commission AML pages were reachable, but the extracted portions contained navigation rather than the current list or governing consolidated annex. EU AML list status and regulation/date remain unconfirmed.",
+    "The Basel page confirmed the 2025 edition, but the retrieved portion did not establish a Crimea-specific score/rank or publication date. No Ukraine/Russia score is substituted.",
+    "TI's retrieved CPI 2025 page did not establish a Crimea-specific score/rank. Its linked release is dated 2026-02-10. No country-level proxy is presented as Crimea data.",
+    "The World Bank page confirms WGI 2026 with observations through 2025, superseding older search results. Crimea-specific values/ranks and the exact release date were not retrieved.",
+    "For indicators with unknown publication dates, stale=false does not certify freshness; age could not be calculated. No retrieved, dated indicator publication was older than 12 months.",
+    "The US State Department travel advisory returned HTTP 403; conflict risk could not be checked against a second government's advisory.",
+    "Current capital controls, FX availability, repatriation/refund rules, local rails, SWIFT access and bank-specific correspondent availability were not verified from monetary authorities.",
+    "No applicable data-localization statute or regulator guidance was retrieved. No supplier, beneficial-owner, vessel or bank screening was performed.",
+    "The research limit of five searches and nine fetches was reached; unresolved items are not negative findings or evidence that restrictions are absent."
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Ukraine-/Russia-Related Sanctions — supplied primary-source capture, 2026-11-14",
+      "publisher": "US Department of the Treasury, OFAC",
+      "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information/ukraine-russia-related-sanctions",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S2",
+      "title": "Crimea and Sevastopol: EU restrictive measures — supplied primary-source capture, 2026-11-14",
+      "publisher": "Council of the European Union",
+      "url": "https://www.consilium.europa.eu/en/policies/sanctions-against-russia/crimea-sevastopol/",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S3",
+      "title": "Ukraine travel advice — current 2026-11-14",
+      "publisher": "UK Foreign, Commonwealth & Development Office",
+      "url": "https://www.gov.uk/foreign-travel-advice/ukraine",
+      "published": "2026-10-02",
+      "found": true
+    },
+    {
+      "id": "S4",
+      "title": "Ukraine Travel Advisory — HTTP 403",
+      "publisher": "US Department of State",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/ukraine-travel-advisory.html",
+      "published": null,
+      "found": false
+    },
+    {
+      "id": "S5",
+      "title": "Jurisdictions under Increased Monitoring — 30 October 2026; fetch returned HTTP 403",
+      "publisher": "FATF",
+      "url": "https://www.fatf-gafi.org/en/publications/High-risk-and-other-monitored-jurisdictions/increased-monitoring-october-2026.html",
+      "published": "2026-10-30",
+      "found": false
+    },
+    {
+      "id": "S6",
+      "title": "Attempted October 2026 call-for-action statement — HTTP 403",
+      "publisher": "FATF",
+      "url": "https://www.fatf-gafi.org/en/publications/High-risk-and-other-monitored-jurisdictions/call-for-action-october-2026.html",
+      "published": null,
+      "found": false
+    },
+    {
+      "id": "S7",
+      "title": "Anti-money laundering and countering the financing of terrorism at international level",
+      "publisher": "European Commission",
+      "url": "https://finance.ec.europa.eu/financial-crime/anti-money-laundering-and-countering-financing-terrorism-international-level_en",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S8",
+      "title": "Public Ranking — Basel AML Index, 2025 Public Edition",
+      "publisher": "Basel Institute on Governance",
+      "url": "https://index.baselgovernance.org/ranking",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S9",
+      "title": "Corruption Perceptions Index 2025",
+      "publisher": "Transparency International",
+      "url": "https://www.transparency.org/en/cpi/2025/index/ukr",
+      "published": "2026-02-10",
+      "found": true
+    },
+    {
+      "id": "S10",
+      "title": "Worldwide Governance Indicators — 2026 edition",
+      "publisher": "World Bank",
+      "url": "https://www.worldbank.org/en/publication/worldwide-governance-indicators",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S11",
+      "title": "Implementing and delegated acts — Anti-Money Laundering Directive IV",
+      "publisher": "European Commission",
+      "url": "https://finance.ec.europa.eu/regulation-and-supervision/financial-services-legislation/implementing-and-delegated-acts/anti-money-laundering-and-terrorist-financing-directive-4_en",
+      "published": null,
+      "found": true
+    }
+  ],
+  "report_markdown": "## Bottom line\n**Assessment: prohibitive for the contemplated Crimea-origin procurement where the stated US or EU import prohibitions apply. Hold contracting and payment.** Crimea is assessed as a territory, including Sevastopol, rather than substituting Russia-wide or Ukraine-wide conclusions. Both regimes impose separate territorial restrictions [S1][S2].\n\n**US OFAC:** importing Crimea-origin produce into the United States, directly or indirectly, is prohibited absent applicable authorization. The supplied source also prohibits US-person new investment and exports to Crimea. It does not establish the legality of every offshore purchase or payment [S1]. **EU:** the supplied Council source states a ban on importing Crimea/Sevastopol-origin goods; treat the contemplated EU import as prohibited absent a confirmed applicable exception or authorization [S2]. Neither extract establishes an agricultural import exemption. Buying food is not, by itself, a clearance.\n\nThe supplier's location and the goods' actual growing origin must be distinguished. Buyer jurisdiction, destination and payment chain are unknown. This is not legal advice; the controls below are considerations for compliance and legal functions.\n\n## Sanctions\n| Regime | Program and scope | Key limits | Source/date |\n|---|---|---|---|\n| US OFAC | Ukraine-/Russia-Related Sanctions; comprehensive territorial restrictions under EO 13685, dated 2014-12-19 | Source prohibits imports into the US, directly or indirectly, of goods from Crimea, plus specified investment/export activity | [S1], captured 2026-11-14; latest amendment unconfirmed |\n| EU | Crimea/Sevastopol measures; broad import and sectoral restrictions under Decision 2014/386/CFSP and Regulation 692/2014 | Source states an origin-based import ban, sectoral trade/investment restrictions and tourism-services ban | [S2], captured 2026-11-14; renewal stated through 2027-06-23 |\n\n## AML and corruption indicators\n| Indicator | Status or score | Edition/date | Stale? |\n|---|---|---|---|\n| FATF increased monitoring | Unconfirmed; primary page returned 403 | Statement identified as 2026-10-30 [S5] | No by identified date; body unverified |\n| FATF call for action | Unconfirmed; attempted primary page returned 403 | October 2026 attempted [S6] | Publication date unverified |\n| EU AML high-risk countries | Current annex/status unconfirmed | Retrieved extracts insufficient [S7][S11] | Unknown |\n| Basel AML Index | Crimea score/rank not confirmed | 2025 Public Edition [S8] | Publication date unknown |\n| TI CPI | Crimea score/rank not confirmed | 2025; release 2026-02-10 [S9] | No |\n| WGI: stability, corruption control, rule of law | Crimea values not confirmed | 2026 edition; data through 2025 [S10] | Exact publication date unknown |\n\nCountry-level indices are not presented as Crimea-specific measurements. Missing values are not favorable findings.\n\n## Political and payment risk\n**Assessment:** legal permissibility comes before payment feasibility. No bank or correspondent route has been verified; bank acceptance would not override sanctions [S1][S2]. Capital controls, FX availability, refunds/repatriation, SWIFT access and localization obligations remain unconfirmed.\n\nFCDO advice updated 2026-10-02 advises against all travel to Crimea and describes continuing attacks affecting Ukrainian infrastructure. Assessment: inspections, logistics and delivery continuity face substantial risk [S3]. The attempted independent US advisory check returned 403 [S4].\n\n## Controls\n- **Enhanced:** hold the transaction pending written US/EU sanctions analysis.\n- **Enhanced:** independently verify farms, growing origin, title and transport records.\n- **Enhanced:** establish any exact authorization and screen ownership, counterparties, banks and logistics providers.\n- **Enhanced:** if legally permitted, obtain fully disclosed bank-route acceptance and enforceable origin/termination protections; avoid unsecured prepayment.\n\n## Open questions\nEstablish buyer nexus, destination, actual origin, ownership and banking chain before commitment. Recheck restrictions before shipment/payment and monitor the stated EU renewal deadline, 2027-06-23 [S2].\n\n## Gaps\nFATF bodies were inaccessible; EU AML list content and territorial index values were not established. Monetary-authority and data-law verification remains outstanding. Unknown publication dates prevent reliable staleness conclusions. The supplied sanctions extracts are authoritative captures but are not complete consolidated legal or licensing reviews."
+}
