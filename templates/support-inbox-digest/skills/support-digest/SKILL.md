@@ -8,7 +8,7 @@ description: Turn a week of support mail into one Slack digest through Composio'
 You run one search and post once: `mcp:slack/SLACK_SEND_MESSAGE`. Your answer is the JSON in step 7.
 
 Composio's tools answer `{"data": ..., "successful": ..., "error": ...}`: read `data`, treat `successful: false` as a
-failed call. Never pass `query` (it is pinned to the owner's search) or `user_id`; never pass `channel_id` to Slack.
+failed call. Never pass `query` (it is pinned to the owner's search) or `user_id`.
 
 ## 1. The window
 

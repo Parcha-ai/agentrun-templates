@@ -39,13 +39,12 @@ mcp:
     reason: "Reads the channels you list, with their threads and message links, and posts the plan to the one channel you set. Every read is held to your list; the post goes nowhere else."
     allow: [SLACK_FETCH_CONVERSATION_HISTORY, SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION, SLACK_RETRIEVE_MESSAGE_PERMALINK_URL]
     # Messages are anyone's text: every read is held to the listed channels (a list parameter pins as one-of), so a
-    # message can't have a read reach a private channel the post would then quote. channel_id is held absent beside
-    # channel so the pinned channel is the only destination.
+    # message can't have a read reach a private channel the post would then quote.
     pin:
       SLACK_FETCH_CONVERSATION_HISTORY: { channel: "${parameters.channels}" }
       SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION: { channel: "${parameters.channels}" }
       SLACK_RETRIEVE_MESSAGE_PERMALINK_URL: { channel: "${parameters.channels}" }
-      SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null }
+      SLACK_SEND_MESSAGE: { channel: "${parameters.channel}" }
 parameters:
   channels: { type: array, items: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$" }, description: "the Slack channels to read, by id (C0123ABCD: in Slack, the channel's details, at the bottom), at most 10. These are the only channels it can read" }
   channel: { type: string, pattern: "^[CDG][A-Z0-9]{8,12}$", description: "where the plan is posted, by id: a channel (C0123ABCD) or your own direct-message channel with the app (D0123ABCD). The only place it posts" }

@@ -32,8 +32,7 @@ mcp:
     required: true
     reason: "Posts one message per release to the one Slack channel you set, and nowhere else."
     allow: []
-    # channel_id is the name the action also takes a channel by: held absent, so the pinned channel is the only one.
-    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
+    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}" } }
 parameters:
   owner: { type: string, pattern: "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", description: "the GitHub account or organization that owns the repository, like Parcha-ai" }
   repo: { type: string, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "the repository's name without the owner, like agentrun" }

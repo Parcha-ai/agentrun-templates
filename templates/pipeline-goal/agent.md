@@ -31,8 +31,7 @@ mcp:
     required: true
     reason: "Posts one message when the pipeline passes the goal, to the one Slack channel you set, and nowhere else."
     allow: []
-    # channel_id is the name the action also takes a channel by: held absent, so the pinned channel is the only one.
-    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
+    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}" } }
 parameters:
   goal_amount: { type: number, description: "the pipeline goal, in whole units of your HubSpot currency (500000 for $500,000)" }
   weighted: { type: boolean, default: false, required: false, description: "count each deal at its stage's win probability (a 100,000 deal at 60% counts 60,000) instead of its full amount; off unless you set it" }

@@ -28,7 +28,7 @@ mcp:
     required: true
     reason: "Posts the digest to the one Slack channel you set, and nowhere else."
     allow: []
-    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
+    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}" } }
 parameters:
   query: { type: string, pattern: "^[^\\n]{3,300}$", description: "the Gmail search for your support mail, with the week in it, as you'd type it in Gmail's search box: label:support newer_than:7d, or to:support@acme.com newer_than:7d. The digest reads only what this returns" }
   channel: { type: string, pattern: "^[CDG][A-Z0-9]{8,12}$", description: "where the digest is posted, by id: a channel (C0123ABCD: in Slack, the channel's details, at the bottom) or your direct-message channel with the app (D0123ABCD). The only place it posts" }

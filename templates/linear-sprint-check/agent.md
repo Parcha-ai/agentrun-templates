@@ -42,8 +42,7 @@ mcp:
     required: true
     reason: "Posts the sprint check to the one Slack channel you set, and nowhere else."
     allow: []
-    # channel_id is the name the action also takes a channel by: held absent, so the pinned channel is the only one.
-    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
+    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}" } }
 parameters:
   team_id: { type: string, pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", description: "your Linear team's ID, a UUID like 9cfb482a-81e3-4154-b5b9-2c805e70a02d as Linear's API and Composio's LINEAR_LIST_LINEAR_TEAMS show it. Not the team key like ENG" }
   channel: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the check goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }

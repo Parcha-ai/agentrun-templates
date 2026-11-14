@@ -33,7 +33,7 @@ mcp:
     required: true
     reason: "Posts the brief to the one Slack channel you set, and nowhere else."
     allow: []
-    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
+    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}" } }
 parameters:
   channel: { type: string, pattern: "^[CDG][A-Z0-9]{8,12}$", description: "where the brief is posted, by id: a channel (C0123ABCD: in Slack, the channel's details, at the bottom) or your direct-message channel with the app (D0123ABCD). The only place it posts" }
   calendar_id: { type: string, required: false, default: primary, description: "the Google calendar to read: primary (your main calendar) unless you set another calendar's id" }

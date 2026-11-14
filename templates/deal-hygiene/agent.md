@@ -31,8 +31,7 @@ mcp:
     required: true
     reason: "Posts the weekly list to the one Slack channel you set, and nowhere else."
     allow: []
-    # channel_id is the name the action also takes a channel by: held absent, so the pinned channel is the only one.
-    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
+    pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}" } }
 parameters:
   pipeline_id: { type: string, default: default, pattern: "^[A-Za-z0-9_-]{1,64}$", required: false, description: "the HubSpot deal pipeline to check: default for HubSpot's first pipeline, or another pipeline's ID (Settings, Objects, Deals, Pipelines)" }
   channel: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the list goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }

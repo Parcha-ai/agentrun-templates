@@ -25,7 +25,7 @@ mcp:
       SLACK_FETCH_CONVERSATION_HISTORY: { channel: "${parameters.channels}" }
       SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION: { channel: "${parameters.channels}" }
       SLACK_RETRIEVE_MESSAGE_PERMALINK_URL: { channel: "${parameters.channels}" }
-      SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null }
+      SLACK_SEND_MESSAGE: { channel: "${parameters.channel}" }
 parameters:
   channels: { type: array, items: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$" }, description: "the Slack channels to catch up on, by id (C0123ABCD: in Slack, the channel's details, at the bottom), at most 10. These are the only channels it can read" }
   channel: { type: string, pattern: "^[CDG][A-Z0-9]{8,12}$", description: "where the catch-up is posted, by id: a channel (C0123ABCD) or your direct-message channel with the app (D0123ABCD). The only place it posts" }
