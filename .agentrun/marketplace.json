@@ -401,6 +401,12 @@
       "source": "./templates/market-entry",
       "category": "research",
       "tags": ["market-entry", "expansion", "regulation", "competitors", "go-no-go"]
+    },
+    {
+      "name": "investment-memo",
+      "source": "./templates/investment-memo",
+      "category": "finance",
+      "tags": ["investment-memo", "venture-capital", "due-diligence", "investing", "private-companies"]
     }
   ]
 }

@@ -1,0 +1,316 @@
+{
+  "checked_on": "2026-11-14",
+  "company": {
+    "name": "Saltmarsh Robotics",
+    "legal_name": "Saltmarsh Robotics Ltd",
+    "website": "https://saltmarsh-robotics.example",
+    "headquarters": "Norwich, United Kingdom; company-reported [S1]",
+    "founded": "2022; company-reported [S1]",
+    "identity_note": "The supplied website capture identifies the Norwich agricultural robotics business and its legal name [S1]. Registry identity is not independently confirmed. Unrelated search results were excluded."
+  },
+  "interpretation": "Use supplied proposed Series A terms, not the reported seed round. Assume $ means USD and a fully subscribed primary equity round. [M] denotes supplied, unverified deal terms. With no fund thesis, apply a generic venture bar: large outcome potential, credible execution and scalable economics. Order follows the memo skill; this is a partner-editable draft, not investment advice.",
+  "bottom_line": "Saltmarsh says it leases autonomous weeders to organic vegetable farms [S1]. Proposed terms imply $50M post-money and 4.0% ownership for our $2M check before additional dilution [M; arithmetic below]. Hold for diligence rather than approve: can seasonal lease receipts cover robot capital, maintenance and field support while delivering demonstrable grower savings? Revenue, deployments and unit economics were not found.",
+  "thesis": [
+    "Confirm that seasonal leasing can lower growers' upfront adoption barrier while producing attractive asset-level returns; the website establishes the offering, not customer demand or profitability [S1].",
+    "Confirm a defensible performance or service advantage: FarmDroid already offers autonomous seeding and mechanical weeding, while Carbon offers laser weed control [S4, S5].",
+    "Confirm a credible expansion market beyond the initial regional wedge. England's organic vegetable area is measurable, but compatible acreage, adoption and robot capacity remain unknown [S2, S7]."
+  ],
+  "team": [
+    {
+      "name": "Elena Brooks",
+      "role": "Co-founder and CEO; company-reported",
+      "background": "Website says she was formerly a robotics engineer at a farm equipment maker; employer, dates and delivery record not found independently.",
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "name": "Tom Hale",
+      "role": "Co-founder and CTO; company-reported",
+      "background": "Prior professional history and technical delivery record not found in the reviewed evidence.",
+      "sources": [
+        "S1"
+      ]
+    }
+  ],
+  "market": {
+    "summary": "Initial wedge is organic vegetable growers; the reported seed financed East Anglia trials [S1, S2]. Defra reports 8.4 thousand hectares of organic vegetables, including potatoes and land in conversion, in England in 2025 [S7]. This is an acreage reference, not compatible acreage or customer count. A defensible revenue TAM is not found: robot coverage, crop fit, paid season length and adoption are missing. Do not multiply all organic operators by the lease price.",
+    "estimates": [
+      {
+        "metric": "England organic vegetable area, including potatoes and land in conversion, 2025",
+        "value": "8.4 thousand hectares",
+        "basis": "reported",
+        "method": "Defra organic land-use table; broader than confirmed Saltmarsh-compatible acreage.",
+        "sources": [
+          "S7"
+        ]
+      },
+      {
+        "metric": "UK organic operators, all categories, 2025",
+        "value": "5,004",
+        "basis": "reported",
+        "method": "Context only; includes operators outside the target vegetable-farm segment and is not a customer denominator.",
+        "sources": [
+          "S3"
+        ]
+      },
+      {
+        "metric": "Annual addressable lease revenue",
+        "value": null,
+        "basis": "not_found",
+        "method": "Formula: compatible hectares / hectares served per robot-season × adopted share × paid months × $2,500. Only the company-reported monthly price is available; no revenue TAM calculated.",
+        "sources": [
+          "S1",
+          "S7"
+        ]
+      }
+    ]
+  },
+  "product": "Company-reported autonomous weeding robots for organic vegetable farms, leased at $2,500 per robot per month during the growing season [S1]. Dollar currency, minimum term, taxes, maintenance, transport and supervision inclusions are not specified. The weeding mechanism, supported crops, throughput, autonomy limits and safety evidence are not found. Seasonal access is the clearest stated commercial feature; technical differentiation is unproven. FarmDroid describes GPS-based seeding and mechanical weeding; Carbon markets laser weed control [S4, S5]. Their capabilities do not establish Saltmarsh's performance.",
+  "traction": [
+    {
+      "metric": "Advertised seasonal lease price",
+      "value": "$2,500 per robot per month",
+      "status": "company_reported_unverifiable",
+      "note": "Website claim only; signed contracts, realized prices and currency not independently established.",
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "metric": "Trials",
+      "value": "East Anglia organic-grower trials reported",
+      "status": "not_found",
+      "note": "Seed article describes funding to expand trials, not completed trials, paid customers or validated results. Current trial count and outcomes not found.",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "metric": "Revenue / ARR",
+      "value": null,
+      "status": "not_found",
+      "note": "Seed coverage explicitly did not disclose revenue; current revenue and contracted recurring receipts not found.",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "metric": "Paid customers / deployed robots / backlog",
+      "value": null,
+      "status": "not_found",
+      "note": "Seed coverage did not disclose field robot count; current fleet and customer counts not found.",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "metric": "Growth / renewal / retention / concentration",
+      "value": null,
+      "status": "not_found",
+      "note": "No cohort, contract or customer-level evidence found.",
+      "sources": []
+    },
+    {
+      "metric": "Gross margin / robot payback / service cost",
+      "value": null,
+      "status": "not_found",
+      "note": "No manufacturing, depreciation, utilization or field-support cost data found.",
+      "sources": []
+    },
+    {
+      "metric": "Cash / burn / runway",
+      "value": null,
+      "status": "not_found",
+      "note": "No current financial statements or cash forecast supplied or found.",
+      "sources": []
+    }
+  ],
+  "competition": [
+    {
+      "company": "FarmDroid",
+      "relation": "Direct functional competitor: autonomous seeding and mechanical weeding; manufacturer description is corroborated by distributor trial coverage.",
+      "stage": "Private; investment announced October 2024",
+      "last_valuation_or_multiple": null,
+      "sources": [
+        "S5",
+        "S6",
+        "S9"
+      ]
+    },
+    {
+      "company": "Carbon Robotics",
+      "relation": "Adjacent/direct task competitor: LaserWeeder G2 targets weed control using a different approach; not evidence of comparable autonomy or economics.",
+      "stage": "Not established in reviewed evidence",
+      "last_valuation_or_multiple": null,
+      "sources": [
+        "S4"
+      ]
+    }
+  ],
+  "deal": {
+    "terms_source": "input",
+    "summary": "Proposed Series A: $10M raise at $40M pre-money; our check $2M [M]. Post-money = $40M + $10M = $50M. Ownership = $2M / $50M = 4.0%, assuming full subscription and no incremental option-pool, convertible or other dilution. Separately, press reports a GBP 3M seed led by Fenland Capital on 2025-04-02; closing evidence and valuation not found [S2]. FarmDroid announced EUR 10.5M funding in October 2024, but that is a financing amount, not a valuation comp [S6]. Comparable valuations and revenue multiples not found; entry-price attractiveness cannot be established.",
+    "post_money": "$50M = $40M pre-money + $10M primary raise [M]",
+    "ownership": "4.0% = $2M check / $50M post-money, before additional dilution [M]"
+  },
+  "risks": [
+    {
+      "risk": "Market: the initial organic-vegetable wedge may be too narrow for venture-scale returns; compatible acreage and willingness to pay are unproven [S1, S7].",
+      "mitigant": "Potential expansion by geography or crop is a diligence hypothesis, not a demonstrated company capability.",
+      "sources": [
+        "S1",
+        "S7"
+      ]
+    },
+    {
+      "risk": "Product: crop damage, residual weeds and human intervention could erase savings. Distributor coverage of other robots' trials describes field-performance limitations [S9].",
+      "mitigant": "Require independent crop-specific comparisons against current practice; competitor trials cannot validate Saltmarsh.",
+      "sources": [
+        "S1",
+        "S9"
+      ]
+    },
+    {
+      "risk": "Financing: seasonal leasing may require substantial fleet capital while generating seasonal receipts; robot cost, asset life and service burden are unknown [S1].",
+      "mitigant": "Stage fleet commitments against contracted demand and test asset-financing options only after demonstrated utilization and collections.",
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "risk": "Team: founder roles and limited engineering history are company-reported; manufacturing, agronomy and field-service leadership are not established [S1].",
+      "mitigant": "Obtain professional references, delivery histories and a capability-gap hiring plan.",
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "risk": "Regulatory and liability: autonomous machinery may create worker-safety and crop-loss exposure; applicable compliance, insurance and incident evidence were not found.",
+      "mitigant": "Commission jurisdiction-specific safety/compliance review and inspect insurance, operating restrictions and incident logs.",
+      "sources": []
+    },
+    {
+      "risk": "Commercial concentration: regional trial origins may leave customer and seasonal exposure concentrated; actual concentration is unknown [S2].",
+      "mitigant": "Inspect customer-level receipts, geography, renewal history and a contracted diversification plan.",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "risk": "Competition and price: established alternative approaches exist, while Saltmarsh's differentiation and the proposed valuation are unsupported by comparative economics [S4, S5; M].",
+      "mitigant": "Run matched grower comparisons and make pricing judgment conditional on verified economics and competitive win/loss evidence.",
+      "sources": [
+        "S4",
+        "S5"
+      ]
+    }
+  ],
+  "diligence_questions": [
+    "Provide registry identity, founder employment references, technical delivery histories, IP assignments and the operating-team capability map. Which manufacturing, agronomy and service roles are filled?",
+    "Provide seed closing documents and the current fully diluted cap table. Confirm Series A currency, security, option-pool treatment, convertibles, liquidation preferences and investor rights.",
+    "What were monthly recognized revenue, lease receipts and contracted recurring revenue through October 2026? Reconcile definitions and growth to contracts, invoices and bank receipts.",
+    "How many paying farms, deployed robots and contracted future deployments exist? Separate trials from paid use and provide customer references and customer/geographic concentration.",
+    "What are renewal, cancellation and repeat-season rates by cohort, and what evidence distinguishes signed backlog from non-binding interest?",
+    "Provide robot build cost, useful life, depreciation, repairs, transport, supervision and field-service costs, realized gross margin and asset payback by deployment cohort.",
+    "What are current cash, monthly net burn, liabilities and runway? Provide a fleet-capital and working-capital plan tied to the proposed raise and downside utilization.",
+    "Provide independent trials showing crop compatibility, hectares served per season, weed control, crop damage, uptime, intervention hours and grower savings against current practice.",
+    "Confirm lease currency, paid months, minimum term, discounts, collection rates and included services. What happens to robots and costs outside the growing season?",
+    "Provide a bottom-up customer list and compatible acreage by crop/geography, supported adoption evidence and expansion milestones. What supports a venture-scale addressable market?",
+    "Provide the machinery safety file, applicable compliance assessments, insurance, incidents and contractual allocation of crop-loss and worker-safety liability.",
+    "Provide competitive win/loss records, defensible IP or data advantages, comparable customer economics and sourced valuation benchmarks supporting the entry price."
+  ],
+  "do_next": [
+    "Request contracts, financials, fleet register, cap table and seed closing documents; reconcile them before returning to IC.",
+    "Arrange independent grower references and a crop-specific field assessment with an agronomist and robotics engineer.",
+    "Build a seasonal fleet cash-flow model from verified utilization and full service costs; stress-test downtime and weak renewals.",
+    "Complete legal identity, IP, machinery compliance, insurance and financing-term reviews.",
+    "Return with a conditional recommendation only after proving grower ROI, asset-level returns and a scalable market."
+  ],
+  "gaps": [
+    "The two supplied captures were accepted as the pages returned today and were not fetched again. Website claims remain company-reported; the seed article remains a single press report [S1, S2].",
+    "Legal identity and professional histories lack independent confirmation. Exact-name searches did not establish a matching independent source; unrelated results were excluded.",
+    "Current revenue, growth, cash, burn and runway were not found. No customer count or revenue was inferred from lease price.",
+    "Paid fleet, customer references, backlog quality, renewal and concentration data were not found.",
+    "Robot cost, margins, depreciation, utilization, paid season length and lease inclusions were not found; advertised dollar currency is unspecified [S1].",
+    "Saltmarsh-specific technical performance, mechanism, safety, compliance, insurance and defensibility evidence were not found.",
+    "Market evidence is an acreage reference, not a revenue TAM. Compatible crop acreage, customer count, robot capacity and adoption are missing [S7].",
+    "Seed closing documents, current cap table and definitive Series A terms were not found; [M] is a proposed input, not a completed financing [S2; M].",
+    "No usable comparable valuation or multiple was found. FarmDroid's financing amount is not its valuation [S6].",
+    "Research stopped at the skill's search/fetch limits. Competition and regulatory coverage are thin. The journal fetch failed; the primary ITB fetch exposed navigation only, so field-performance discussion relies on attributed distributor coverage [S8, S9, S10].",
+    "Key Saltmarsh claims could not be checked against a second independent source. No instruction-like content in the supplied captures or input required exclusion."
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Saltmarsh Robotics website — supplied capture, 2026-11-14",
+      "url": "https://saltmarsh-robotics.example/",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S2",
+      "title": "Saltmarsh Robotics raises GBP 3M seed — supplied capture",
+      "url": "https://agtechdaily.example/2025/04/saltmarsh-seed",
+      "published": "2025-04-02",
+      "found": true
+    },
+    {
+      "id": "S3",
+      "title": "Defra: Organic farming statistics 2025 — United Kingdom",
+      "url": "https://www.gov.uk/government/statistics/organic-farming-statistics-2025/organic-farming-statistics-2025-united-kingdom",
+      "published": "2026-05-07",
+      "found": true
+    },
+    {
+      "id": "S4",
+      "title": "Carbon Robotics — product overview",
+      "url": "https://carbonrobotics.com/",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S5",
+      "title": "FarmDroid FD20 — manufacturer product description",
+      "url": "https://farmdroid.com/products/farmdroid-fd20/",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S6",
+      "title": "FarmDroid secures EUR 10.5M investment",
+      "url": "https://farmdroid.com/news/farmdroid-secures-eur-10-5m-investment-to-accelerate-the-expansion-of-its-autonomous-solar-powered-agricultural-robot-in-the-conventional-market/",
+      "published": "2024-10-22",
+      "found": true
+    },
+    {
+      "id": "S7",
+      "title": "Defra: Organic farming statistics 2025 — England",
+      "url": "https://www.gov.uk/government/statistics/organic-farming-statistics-2025/organic-farming-statistics-2025-england",
+      "published": "2026-05-07",
+      "found": true
+    },
+    {
+      "id": "S8",
+      "title": "Autonomous mechanical weeding robots scoping review — fetch returned 403",
+      "url": "https://bsssjournals.onlinelibrary.wiley.com/doi/10.1111/ejss.70302",
+      "published": null,
+      "found": false
+    },
+    {
+      "id": "S9",
+      "title": "Robot Distribution: Weeding robots in field crops — 2026 trials, 2027 plans",
+      "url": "https://robot-distribution.com/en/news/weeding-robots-field-crops-2027-season",
+      "published": "2026-11-02",
+      "found": true
+    },
+    {
+      "id": "S10",
+      "title": "ITB: Essais désherbage robotique de 2026 — retrieved portion contained navigation only",
+      "url": "https://www.itbfr.org/acces-directs/acces-utilisateurs/apercu-darticle/essais-desherbage-robotique-de-2026",
+      "published": null,
+      "found": true
+    }
+  ],
+  "report_markdown": "# Saltmarsh Robotics: IC memo draft, 2026-11-14\n\n*Interpretation:* Proposed Series A; assume dollars are USD and full primary subscription. [M] denotes supplied, unverified terms. Apply a generic venture bar; fund fit remains for the partner to confirm. This is a diligence draft, not investment advice.\n\n## Bottom line\n**Hold for diligence, not approval.** Saltmarsh says it leases autonomous weeders to organic vegetable farms [S1]. The proposed investment buys 4.0% before additional dilution [M; calculation below]. The central question is whether seasonal receipts cover fleet capital and field support while delivering grower savings. Commercial scale and economics are not established.\n\n## Summary and thesis\n- Confirm that seasonal leasing reduces adoption friction without undermining asset returns [S1].\n- Confirm differentiation against existing robotic weed-control alternatives [S4, S5].\n- Confirm that a regional organic-farming wedge can expand into a venture-scale market [S2, S7].\n\n## Team\nThe website identifies co-founders Elena Brooks, CEO and formerly a robotics engineer at a farm equipment maker, and Tom Hale, CTO [S1]. These are company claims; employer details, delivery histories and operational leadership depth were not independently established.\n\n## Market — method\nDefra reports **8.4 thousand hectares** of organic vegetables in England in 2025, including potatoes and land in conversion [S7]. This is not confirmed compatible acreage. The UK's **5,004 organic operators** include non-target businesses and should not be treated as customers [S3].\n\nRevenue-sizing formula: compatible hectares ÷ hectares served per robot-season × adoption × paid months × advertised $2,500 monthly lease [S1]. Capacity, compatibility, adoption and season length are missing; **revenue TAM is not found**.\n\n## Product\nThe company advertises autonomous weeding robots at **$2,500 per robot per month during the growing season** [S1]. Currency, service inclusions, mechanism, throughput, supervision and safety evidence are unspecified. Seasonal access is a commercial feature, not demonstrated technical defensibility.\n\n## Traction\n| Metric | Value | Status | Source |\n|---|---|---|---|\n| Advertised lease | $2,500/robot/month | Company-reported, unverifiable commercially | [S1] |\n| Trials | Funding intended to expand East Anglia trials | Current count/results not found | [S2] |\n| Revenue, growth | Not found | Not found | [S2]; reviewed evidence |\n| Paid customers, fleet, renewals | Not found | Not found | Reviewed evidence |\n| Margin, burn, runway | Not found | Not found | Reviewed evidence |\n\nA press report dated 2025-04-02 describes a **GBP 3M seed led by Fenland Capital**, but discloses neither revenue nor field robot count [S2]. It does not prove commercial adoption.\n\n## Competition and comps\n| Company | Relevance | Valuation evidence |\n|---|---|---|\n| FarmDroid | Autonomous seeding and mechanical weeding [S5, S9] | Not found; EUR 10.5M investment announced October 2024 is funding, not valuation [S6] |\n| Carbon Robotics | LaserWeeder G2, alternative weed-control approach [S4] | Not found |\n\n## Deal and terms\nProposed raise **$10M at $40M pre-money**, including our **$2M** [M]. Post-money = $40M + $10M = **$50M**; ownership = $2M ÷ $50M = **4.0%**. This excludes incremental pool, convertible or other dilution. Cap table, preferences and definitive documents are missing. Neither a revenue multiple nor a reliable comp-price judgment is possible.\n\n## Risks and mitigants\n| Risk | Proposed mitigant |\n|---|---|\n| Narrow market [S7] | Validate compatible acreage and expansion demand |\n| Unproven field performance [S1]; competitor trials show limitations [S9] | Independent crop-specific testing |\n| Seasonal, capital-intensive fleet [S1] | Contract-backed deployment and full-cost modeling |\n| Team execution gaps [S1] | Professional references and capability plan |\n| Safety/liability evidence missing | Specialist compliance and insurance review |\n| Unknown concentration [S2] | Customer-level revenue and renewal review |\n\n## Diligence questions\nRequest revenue reconciliation; paid fleet and customer references; cohort renewals and concentration; robot build and service costs; cash and runway; independent performance and grower ROI; lease seasonality; market build; founder references and IP; safety documentation; cap table and financing rights; and competitive win/loss evidence.\n\n## Do next\nReconcile the data room, obtain grower references and independent field assessment, model seasonal fleet cash flows, and complete legal/safety reviews before returning to IC.\n\n## Gaps\nSupplied captures were accepted without refetching. Saltmarsh-specific claims lack independent corroboration. Revenue, unit economics, compatible market size and valuation support remain missing. Research reached its limits; journal access failed and the primary trial page's retrieved portion contained navigation only, leaving performance context attributed to distributor coverage [S8–S10]."
+}

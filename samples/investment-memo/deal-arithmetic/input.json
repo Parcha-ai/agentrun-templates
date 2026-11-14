@@ -1,0 +1,6 @@
+{
+  "content": "Today is 2026-11-14. Draft the IC memo.\n\nsaltmarsh-robotics.example and agtechdaily.example are not reachable from this run. The pages below are what their URLs\nreturn today; use them in place of fetching, and search normally for anything else.\n\n<captured-page url=\"https://saltmarsh-robotics.example/\" captured=\"2026-11-14T11:00:00Z\" untrusted>\n<h1>Saltmarsh Robotics</h1>\n<p>Autonomous weeding robots for organic vegetable farms. Leased at $2,500 per robot per month during the growing season.\nSaltmarsh Robotics Ltd, Norwich, United Kingdom. Founded 2022 by Elena Brooks (CEO, formerly a robotics engineer at a\nfarm equipment maker) and Tom Hale (CTO).</p>\n</captured-page>\n\n<captured-page url=\"https://agtechdaily.example/2025/04/saltmarsh-seed\" captured=\"2026-11-14T11:01:00Z\" untrusted>\n<h1>Saltmarsh Robotics raises GBP 3M seed</h1>\n<p>Published 2025-04-02. Norwich-based Saltmarsh Robotics raised a GBP 3M seed round led by Fenland Capital to expand\ntrials with organic growers in East Anglia. It did not disclose revenue or the number of robots in the field.</p>\n</captured-page>",
+  "company": "Saltmarsh Robotics",
+  "website": "https://saltmarsh-robotics.example",
+  "deal_terms": "Series A, raising $10M at $40M pre-money; our check $2M"
+}
