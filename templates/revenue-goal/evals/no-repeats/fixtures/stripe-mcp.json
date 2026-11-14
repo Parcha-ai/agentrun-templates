@@ -1,0 +1,50 @@
+{
+  "server": "stripe",
+  "description": "A fake Composio Stripe for November 2026 after the goal was reached on 11-18: total 104,240.50 USD with a 3,000.00 charge on 11-20.",
+  "tools": {
+    "STRIPE_LIST_BALANCE_TRANSACTIONS": {
+      "description": "List balance transactions (created {gte,lte}, currency, type, limit, starting_after).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "starting_after": "txn_000023"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[],\"has_more\":false,\"url\":\"/v1/balance_transactions\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"txn_000014\",\"object\":\"balance_transaction\",\"amount\":4500000,\"currency\":\"usd\",\"type\":\"charge\",\"reporting_category\":\"charge\",\"created\":1793700000,\"net\":4500000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src14\",\"description\":null},{\"id\":\"txn_000015\",\"object\":\"balance_transaction\",\"amount\":3200000,\"currency\":\"usd\",\"type\":\"charge\",\"reporting_category\":\"charge\",\"created\":1794218400,\"net\":3200000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src15\",\"description\":null},{\"id\":\"txn_000016\",\"object\":\"balance_transaction\",\"amount\":1834050,\"currency\":\"usd\",\"type\":\"charge\",\"reporting_category\":\"charge\",\"created\":1794650400,\"net\":1834050,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src16\",\"description\":null},{\"id\":\"txn_000017\",\"object\":\"balance_transaction\",\"amount\":500000,\"currency\":\"usd\",\"type\":\"payment\",\"reporting_category\":\"charge\",\"created\":1794736800,\"net\":500000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src17\",\"description\":null},{\"id\":\"txn_000018\",\"object\":\"balance_transaction\",\"amount\":-150000,\"currency\":\"usd\",\"type\":\"refund\",\"reporting_category\":\"refund\",\"created\":1794823200,\"net\":-150000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src18\",\"description\":null},{\"id\":\"txn_000019\",\"object\":\"balance_transaction\",\"amount\":240000,\"currency\":\"usd\",\"type\":\"charge\",\"reporting_category\":\"charge\",\"created\":1795010700,\"net\":240000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src19\",\"description\":null},{\"id\":\"txn_000020\",\"object\":\"balance_transaction\",\"amount\":-6000000,\"currency\":\"usd\",\"type\":\"payout\",\"reporting_category\":\"payout\",\"created\":1794268800,\"net\":-6000000,\"fee\":0,\"status\":\"available\",\"source\":\"po_x\",\"description\":null},{\"id\":\"txn_000021\",\"object\":\"balance_transaction\",\"amount\":-29000,\"currency\":\"usd\",\"type\":\"stripe_fee\",\"reporting_category\":\"fee\",\"created\":1794441600,\"net\":-29000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src21\",\"description\":null},{\"id\":\"txn_000022\",\"object\":\"balance_transaction\",\"amount\":1200000,\"currency\":\"usd\",\"type\":\"charge\",\"reporting_category\":\"charge\",\"created\":1793354400,\"net\":1200000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src22\",\"description\":null},{\"id\":\"txn_000023\",\"object\":\"balance_transaction\",\"amount\":300000,\"currency\":\"usd\",\"type\":\"charge\",\"reporting_category\":\"charge\",\"created\":1795165200,\"net\":300000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src23\",\"description\":null}],\"has_more\":false,\"url\":\"/v1/balance_transactions\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_SEARCH_CHARGES": {
+      "description": "Search charges with Stripe's search query language (query, limit, page).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"search_result\",\"data\":[{\"id\":\"ch_src14\",\"object\":\"charge\",\"amount\":4500000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1793700000,\"description\":null,\"metadata\":{}},{\"id\":\"ch_src15\",\"object\":\"charge\",\"amount\":3200000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1794218400,\"description\":null,\"metadata\":{}},{\"id\":\"ch_src16\",\"object\":\"charge\",\"amount\":1834050,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1794650400,\"description\":null,\"metadata\":{}},{\"id\":\"ch_src19\",\"object\":\"charge\",\"amount\":240000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1795010700,\"description\":null,\"metadata\":{}},{\"id\":\"ch_src22\",\"object\":\"charge\",\"amount\":1200000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1793354400,\"description\":null,\"metadata\":{}},{\"id\":\"ch_src23\",\"object\":\"charge\",\"amount\":300000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1795165200,\"description\":null,\"metadata\":{}}],\"has_more\":false,\"next_page\":null},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

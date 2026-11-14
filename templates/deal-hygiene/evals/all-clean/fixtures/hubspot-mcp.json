@@ -1,0 +1,81 @@
+{
+  "server": "hubspot",
+  "description": "Two open deals in the default pipeline on 2026-11-16, both healthy: recent activity, a next step with a date ahead, and a close date ahead. One closed-won deal with old activity and no next step, which doesn't count.",
+  "tools": {
+    "HUBSPOT_SEARCH_DEALS": {
+      "description": "Search deals (filterGroups, properties, sorts, limit, after).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "after": "100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"total\":3,\"results\":[]},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"total\":3,\"results\":[{\"id\":\"7001\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"7001\",\"pipeline\":\"default\",\"dealname\":\"Globex expansion\",\"dealstage\":\"contractsent\",\"amount\":\"180000\",\"closedate\":\"2026-11-30T00:00:00Z\",\"hs_last_sales_activity_timestamp\":\"2026-11-12T15:00:00Z\",\"notes_last_updated\":\"2026-11-12T15:00:00Z\",\"hs_next_step\":\"Legal redlines back by Friday\",\"notes_next_activity_date\":\"2026-11-18T15:00:00Z\",\"hubspot_owner_id\":\"501\"}},{\"id\":\"7010\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"7010\",\"pipeline\":\"default\",\"dealname\":\"Oscorp seats\",\"dealstage\":\"qualifiedtobuy\",\"amount\":\"22000\",\"closedate\":\"2026-12-31T00:00:00Z\",\"hs_last_sales_activity_timestamp\":\"2026-11-14T09:00:00Z\",\"notes_last_updated\":\"2026-11-14T09:00:00Z\",\"hs_next_step\":\"Demo for their IT lead\",\"notes_next_activity_date\":\"2026-11-19T17:00:00Z\",\"hubspot_owner_id\":\"502\"}},{\"id\":\"7007\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"7007\",\"pipeline\":\"default\",\"dealname\":\"Stark annual\",\"dealstage\":\"closedwon\",\"amount\":\"200000\",\"closedate\":\"2026-09-30T00:00:00Z\",\"hs_last_sales_activity_timestamp\":\"2026-09-28T10:00:00Z\",\"notes_last_updated\":\"2026-09-28T10:00:00Z\",\"hs_next_step\":\"\",\"notes_next_activity_date\":null,\"hubspot_owner_id\":\"501\"}}]},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "HUBSPOT_RETRIEVE_PIPELINE_STAGES": {
+      "description": "Retrieve the stages of one pipeline (objectType, pipelineId).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "objectType": "deals",
+            "pipelineId": "default"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"results\":[{\"id\":\"appointmentscheduled\",\"label\":\"Appointment scheduled\",\"displayOrder\":0,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.2\"}},{\"id\":\"qualifiedtobuy\",\"label\":\"Qualified to buy\",\"displayOrder\":1,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.4\"}},{\"id\":\"presentationscheduled\",\"label\":\"Presentation scheduled\",\"displayOrder\":2,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.6\"}},{\"id\":\"decisionmakerboughtin\",\"label\":\"Decision maker bought-in\",\"displayOrder\":3,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.8\"}},{\"id\":\"contractsent\",\"label\":\"Contract sent\",\"displayOrder\":4,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.9\"}},{\"id\":\"closedwon\",\"label\":\"Closed won\",\"displayOrder\":5,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"true\",\"probability\":\"1\"}},{\"id\":\"closedlost\",\"label\":\"Closed lost\",\"displayOrder\":6,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"true\",\"probability\":\"0\"}}]},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Pipeline not found for objectType and pipelineId given\"}"
+          }
+        ]
+      }
+    },
+    "HUBSPOT_RETRIEVE_OWNERS": {
+      "description": "Retrieve all owners in the HubSpot account (no arguments).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"results\":[{\"id\":\"501\",\"type\":\"PERSON\",\"email\":\"dana@acme.example\",\"firstName\":\"Dana\",\"lastName\":\"Reyes\",\"archived\":false,\"createdAt\":\"2024-01-10T00:00:00Z\",\"updatedAt\":\"2026-01-10T00:00:00Z\",\"userId\":9101},{\"id\":\"502\",\"type\":\"PERSON\",\"email\":\"omar@acme.example\",\"firstName\":\"Omar\",\"lastName\":\"Haddad\",\"archived\":false,\"createdAt\":\"2024-03-02T00:00:00Z\",\"updatedAt\":\"2026-01-10T00:00:00Z\",\"userId\":9102}]},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

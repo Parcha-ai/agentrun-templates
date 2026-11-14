@@ -1,0 +1,38 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater with no pull requests.",
+  "tools": {
+    "GITHUB_GET_A_PULL_REQUEST": {
+      "description": "Get one pull request (owner, repo, pull_number).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST": {
+      "description": "List a pull request's reviews.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    }
+  }
+}

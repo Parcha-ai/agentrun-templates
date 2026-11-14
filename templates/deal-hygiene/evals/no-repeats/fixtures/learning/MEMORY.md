@@ -1,0 +1,1 @@
+- [Last list](last-list.md) — the deals the 2026-11-09 hygiene list named and why

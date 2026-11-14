@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "failed.schema.json",
+  "title": "Failed payment alert",
+  "description": "One failed Stripe charge explained (who, how much, why, the customer's recent payments, the next step) and the one Slack alert about it, or why none was posted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["charge", "customer", "decline", "history", "posted", "skipped", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "charge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "minor_units", "currency", "formatted"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^ch_" },
+        "minor_units": { "type": "integer", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[a-z]{3}$" },
+        "formatted": { "type": "string", "maxLength": 40 },
+        "created_at": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "maxLength": 20 },
+        "livemode": { "type": "boolean" }
+      }
+    },
+    "customer": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": ["string", "null"], "maxLength": 40 },
+        "name": { "type": ["string", "null"], "maxLength": 60, "description": "null when there is none or it was set aside as untrusted text" },
+        "customer_since": { "type": ["string", "null"], "format": "date" },
+        "guest": { "type": "boolean", "description": "true for a charge with no Stripe customer" }
+      }
+    },
+    "card": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["brand", "last4"],
+      "properties": {
+        "brand": { "type": "string", "maxLength": 20 },
+        "last4": { "type": "string", "pattern": "^[0-9]{4}$" }
+      }
+    },
+    "decline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "plain", "next_step"],
+      "properties": {
+        "code": { "type": "string", "maxLength": 60, "description": "the reason Stripe gave: blocked, a decline code or a failure code" },
+        "blocked_by_radar": { "type": "boolean" },
+        "risk_level": { "type": ["string", "null"], "maxLength": 20 },
+        "risk_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+        "plain": { "type": "string", "maxLength": 300 },
+        "next_step": { "type": "string", "maxLength": 300 },
+        "retry_advised": { "type": "boolean", "description": "false for Radar blocks and possible fraud" }
+      }
+    },
+    "history": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "null for a guest checkout",
+      "properties": {
+        "paid_count": { "type": "integer", "minimum": 0 },
+        "failed_count": { "type": "integer", "minimum": 0 },
+        "last_paid_at": { "type": ["string", "null"], "format": "date" },
+        "first_payment": { "type": "boolean" },
+        "open_invoice": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "number": { "type": ["string", "null"], "maxLength": 40 },
+            "attempt_count": { "type": "integer", "minimum": 0 },
+            "next_retry_at": { "type": ["string", "null"], "format": "date-time" }
+          }
+        },
+        "missing": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 200 } }
+      }
+    },
+    "posted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel", "ok"],
+      "properties": {
+        "channel": { "type": "string", "maxLength": 20 },
+        "ok": { "type": "boolean" },
+        "text": { "type": ["string", "null"], "maxLength": 1500 },
+        "why_not": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "skipped": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "why nothing was posted: not failed, below min_amount, a refused post" },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 4000 }
+  }
+}

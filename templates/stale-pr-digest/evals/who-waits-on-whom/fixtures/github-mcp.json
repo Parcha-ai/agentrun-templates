@@ -1,0 +1,489 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater on 2026-11-16: open PRs #38 (author answered a change request: waits on carol), #41 (bob requested, no review; only a bot comment since), #44 (changes requested, author silent), #47 (approved, not merged), a draft #50, a day-old #52 and a Dependabot #53. Composio's GitHub slugs and {data, successful, error} results; it never reaches GitHub.",
+  "tools": {
+    "GITHUB_LIST_PULL_REQUESTS": {
+      "description": "List pull requests in a repository (state, sort, direction, per_page, page).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "state": "closed"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "page": 2
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "page": "2"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":[{\"number\":38,\"title\":\"Retry uploads on 503\",\"state\":\"open\",\"draft\":false,\"user\":{\"login\":\"lina\",\"type\":\"User\"},\"body\":\"\",\"created_at\":\"2026-11-02T10:00:00Z\",\"updated_at\":\"2026-11-11T10:05:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/38\",\"requested_reviewers\":[{\"login\":\"carol\"}],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-38\"}},{\"number\":41,\"title\":\"Add --json flag to status\",\"state\":\"open\",\"draft\":false,\"user\":{\"login\":\"omar\",\"type\":\"User\"},\"body\":\"\",\"created_at\":\"2026-11-10T08:00:00Z\",\"updated_at\":\"2026-11-14T16:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/41\",\"requested_reviewers\":[{\"login\":\"bob\"}],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-41\"}},{\"number\":44,\"title\":\"Rewrite config loader\",\"state\":\"open\",\"draft\":false,\"user\":{\"login\":\"priya\",\"type\":\"User\"},\"body\":\"\",\"created_at\":\"2026-11-01T09:00:00Z\",\"updated_at\":\"2026-11-08T15:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/44\",\"requested_reviewers\":[],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-44\"}},{\"number\":47,\"title\":\"Bump watcher to 3.2\",\"state\":\"open\",\"draft\":false,\"user\":{\"login\":\"sam\",\"type\":\"User\"},\"body\":\"\",\"created_at\":\"2026-11-09T12:00:00Z\",\"updated_at\":\"2026-11-11T12:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/47\",\"requested_reviewers\":[],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-47\"}},{\"number\":50,\"title\":\"WIP: plugin API\",\"state\":\"open\",\"draft\":true,\"user\":{\"login\":\"omar\",\"type\":\"User\"},\"body\":\"\",\"created_at\":\"2026-10-20T09:00:00Z\",\"updated_at\":\"2026-10-21T09:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/50\",\"requested_reviewers\":[],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-50\"}},{\"number\":52,\"title\":\"Fix typo in README\",\"state\":\"open\",\"draft\":false,\"user\":{\"login\":\"dev-user\",\"type\":\"User\"},\"body\":\"\",\"created_at\":\"2026-11-15T09:00:00Z\",\"updated_at\":\"2026-11-15T09:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/52\",\"requested_reviewers\":[{\"login\":\"bob\"}],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-52\"}},{\"number\":53,\"title\":\"Bump lodash from 4.17.20 to 4.17.21\",\"state\":\"open\",\"draft\":false,\"user\":{\"login\":\"dependabot[bot]\",\"type\":\"Bot\"},\"body\":\"\",\"created_at\":\"2026-11-01T06:00:00Z\",\"updated_at\":\"2026-11-01T06:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/53\",\"requested_reviewers\":[],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-53\"}}],\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST": {
+      "description": "List a pull request's reviews, oldest first.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 38
+            },
+            {
+              "pull_number": "38"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"id\":3800,\"user\":{\"login\":\"carol\",\"type\":\"User\"},\"state\":\"CHANGES_REQUESTED\",\"submitted_at\":\"2026-11-06T14:00:00Z\",\"body\":\"\"}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 41
+            },
+            {
+              "pull_number": "41"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 44
+            },
+            {
+              "pull_number": "44"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"id\":4400,\"user\":{\"login\":\"carol\",\"type\":\"User\"},\"state\":\"CHANGES_REQUESTED\",\"submitted_at\":\"2026-11-08T15:00:00Z\",\"body\":\"\"}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 47
+            },
+            {
+              "pull_number": "47"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"id\":4700,\"user\":{\"login\":\"bob\",\"type\":\"User\"},\"state\":\"APPROVED\",\"submitted_at\":\"2026-11-11T12:00:00Z\",\"body\":\"\"}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 50
+            },
+            {
+              "pull_number": "50"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 52
+            },
+            {
+              "pull_number": "52"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 53
+            },
+            {
+              "pull_number": "53"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_COMMITS_ON_A_PULL_REQUEST": {
+      "description": "List a pull request's commits, oldest first.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 38
+            },
+            {
+              "pull_number": "38"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"3800abcdef\",\"author\":{\"login\":\"lina\",\"type\":\"User\"},\"commit\":{\"message\":\"Retry uploads on 503\",\"committer\":{\"date\":\"2026-11-02T09:50:00Z\"},\"author\":{\"date\":\"2026-11-02T09:50:00Z\",\"name\":\"lina\"}}},{\"sha\":\"3801abcdef\",\"author\":{\"login\":\"lina\",\"type\":\"User\"},\"commit\":{\"message\":\"Cap retries at 5, per review\",\"committer\":{\"date\":\"2026-11-11T10:00:00Z\"},\"author\":{\"date\":\"2026-11-11T10:00:00Z\",\"name\":\"lina\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 41
+            },
+            {
+              "pull_number": "41"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"4100abcdef\",\"author\":{\"login\":\"omar\",\"type\":\"User\"},\"commit\":{\"message\":\"status: --json\",\"committer\":{\"date\":\"2026-11-10T07:55:00Z\"},\"author\":{\"date\":\"2026-11-10T07:55:00Z\",\"name\":\"omar\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 44
+            },
+            {
+              "pull_number": "44"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"4400abcdef\",\"author\":{\"login\":\"priya\",\"type\":\"User\"},\"commit\":{\"message\":\"New config loader\",\"committer\":{\"date\":\"2026-11-05T11:00:00Z\"},\"author\":{\"date\":\"2026-11-05T11:00:00Z\",\"name\":\"priya\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 47
+            },
+            {
+              "pull_number": "47"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"4700abcdef\",\"author\":{\"login\":\"sam\",\"type\":\"User\"},\"commit\":{\"message\":\"Bump watcher\",\"committer\":{\"date\":\"2026-11-09T11:58:00Z\"},\"author\":{\"date\":\"2026-11-09T11:58:00Z\",\"name\":\"sam\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 50
+            },
+            {
+              "pull_number": "50"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"5000abcdef\",\"author\":{\"login\":\"omar\",\"type\":\"User\"},\"commit\":{\"message\":\"wip\",\"committer\":{\"date\":\"2026-10-20T09:00:00Z\"},\"author\":{\"date\":\"2026-10-20T09:00:00Z\",\"name\":\"omar\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 52
+            },
+            {
+              "pull_number": "52"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"5200abcdef\",\"author\":{\"login\":\"dev-user\",\"type\":\"User\"},\"commit\":{\"message\":\"typo\",\"committer\":{\"date\":\"2026-11-15T08:59:00Z\"},\"author\":{\"date\":\"2026-11-15T08:59:00Z\",\"name\":\"dev-user\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 53
+            },
+            {
+              "pull_number": "53"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"5300abcdef\",\"author\":{\"login\":\"dependabot[bot]\",\"type\":\"Bot\"},\"commit\":{\"message\":\"Bump lodash\",\"committer\":{\"date\":\"2026-11-01T06:00:00Z\"},\"author\":{\"date\":\"2026-11-01T06:00:00Z\",\"name\":\"dependabot[bot]\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_ISSUE_COMMENTS": {
+      "description": "List an issue's or pull request's conversation comments, oldest first.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "issue_number": 38
+            },
+            {
+              "issue_number": "38"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"id\":38000,\"user\":{\"login\":\"lina\",\"type\":\"User\"},\"created_at\":\"2026-11-11T10:05:00Z\",\"body\":\"Addressed the retry cap, PTAL.\"}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 41
+            },
+            {
+              "issue_number": "41"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"id\":41000,\"user\":{\"login\":\"github-actions[bot]\",\"type\":\"Bot\"},\"created_at\":\"2026-11-14T16:00:00Z\",\"body\":\"Preview build ready.\"}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 44
+            },
+            {
+              "issue_number": "44"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 47
+            },
+            {
+              "issue_number": "47"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 50
+            },
+            {
+              "issue_number": "50"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 52
+            },
+            {
+              "issue_number": "52"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 53
+            },
+            {
+              "issue_number": "53"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

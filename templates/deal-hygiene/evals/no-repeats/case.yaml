@@ -1,0 +1,17 @@
+# Applied with these parameters (POST /v2/templates/deal-hygiene/apply). Pass: 3 of 3 runs.
+parameters:
+  pipeline_id: default
+  channel: C0SALES001
+  stale_days: 14
+  top_n: 10
+  currency: usd
+mcp:
+  hubspot: fixtures/hubspot-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:hubspot/HUBSPOT_SEARCH_DEALS
+  - mcp:hubspot/HUBSPOT_RETRIEVE_PIPELINE_STAGES
+  - mcp:hubspot/HUBSPOT_RETRIEVE_OWNERS
+  - mcp:slack/SLACK_SEND_MESSAGE
+# The agent starts with last week's list as a learned note (MEMORY.md and its note, in the learning folder's format).
+learning: fixtures/learning

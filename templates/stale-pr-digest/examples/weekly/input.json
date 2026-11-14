@@ -1,0 +1,4 @@
+{
+  "content": "Scheduled run. Write this week's stale pull request digest with your stale-prs skill and post it.",
+  "stale_days": 3
+}

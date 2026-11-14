@@ -1,0 +1,50 @@
+{
+  "server": "stripe",
+  "description": "A fake Composio Stripe for November 2026 whose only charges are in EUR (25,000.00 and 90,000.00): no USD money moved this month.",
+  "tools": {
+    "STRIPE_LIST_BALANCE_TRANSACTIONS": {
+      "description": "List balance transactions (created {gte,lte}, currency, type, limit, starting_after).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "starting_after": "txn_000028"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[],\"has_more\":false,\"url\":\"/v1/balance_transactions\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"txn_000027\",\"object\":\"balance_transaction\",\"amount\":2500000,\"currency\":\"eur\",\"type\":\"charge\",\"reporting_category\":\"charge\",\"created\":1793872800,\"net\":2500000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src27\",\"description\":null},{\"id\":\"txn_000028\",\"object\":\"balance_transaction\",\"amount\":9000000,\"currency\":\"eur\",\"type\":\"charge\",\"reporting_category\":\"charge\",\"created\":1795010700,\"net\":9000000,\"fee\":0,\"status\":\"available\",\"source\":\"ch_src28\",\"description\":null}],\"has_more\":false,\"url\":\"/v1/balance_transactions\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_SEARCH_CHARGES": {
+      "description": "Search charges with Stripe's search query language (query, limit, page).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"search_result\",\"data\":[{\"id\":\"ch_src27\",\"object\":\"charge\",\"amount\":2500000,\"amount_refunded\":0,\"currency\":\"eur\",\"status\":\"succeeded\",\"paid\":true,\"created\":1793872800,\"description\":null,\"metadata\":{}},{\"id\":\"ch_src28\",\"object\":\"charge\",\"amount\":9000000,\"amount_refunded\":0,\"currency\":\"eur\",\"status\":\"succeeded\",\"paid\":true,\"created\":1795010700,\"description\":null,\"metadata\":{}}],\"has_more\":false,\"next_page\":null},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

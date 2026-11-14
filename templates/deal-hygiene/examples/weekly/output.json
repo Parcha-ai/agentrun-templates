@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-16",
+  "pipeline_id": "default",
+  "stale_days": 14,
+  "open_deals": 6,
+  "listed_count": 5,
+  "deals": [
+    { "id": "7002", "name": "Initech platform", "amount": 120000, "stage": "Presentation scheduled", "owner": "Omar Haddad", "flags": ["no_activity", "no_next_step", "past_close"], "days_since_activity": 27, "close_date": "2026-10-31", "repeat": false, "weeks_listed": 1 },
+    { "id": "7003", "name": "Umbrella renewal", "amount": 95000, "stage": "Decision maker bought-in", "owner": "Dana Reyes", "flags": ["no_activity"], "days_since_activity": 22, "close_date": "2026-12-15", "repeat": false, "weeks_listed": 1 },
+    { "id": "7004", "name": "Hooli pilot", "amount": 60500, "stage": "Qualified to buy", "owner": "Omar Haddad", "flags": ["past_close"], "days_since_activity": 3, "close_date": "2026-11-10", "repeat": false, "weeks_listed": 1 },
+    { "id": "7005", "name": "Vandelay imports", "amount": 50000, "stage": "Appointment scheduled", "owner": "Dana Reyes", "flags": ["no_next_step"], "days_since_activity": 6, "close_date": "2026-12-20", "repeat": false, "weeks_listed": 1 },
+    { "id": "7006", "name": "Soylent intro", "amount": null, "stage": "Appointment scheduled", "owner": "Omar Haddad", "flags": ["no_activity", "no_next_step"], "days_since_activity": null, "close_date": "2027-01-15", "repeat": false, "weeks_listed": 1 }
+  ],
+  "posted": { "channel": "C0SALES001", "ok": true },
+  "skipped": [],
+  "ignored_instructions": [],
+  "report_markdown": ":broom: *Deal hygiene, 2026-11-16*: 5 of 6 open deals need a look.\n1. *Initech platform* ($120,000, Presentation scheduled, Omar Haddad): no activity in 27 days, no next step, close date 2026-10-31 passed.\n2. *Umbrella renewal* ($95,000, Decision maker bought-in, Dana Reyes): no activity in 22 days.\n3. *Hooli pilot* ($60,500, Qualified to buy, Omar Haddad): close date 2026-11-10 passed.\n4. *Vandelay imports* ($50,000, Appointment scheduled, Dana Reyes): no next step.\n5. *Soylent intro* (no amount, Appointment scheduled, Omar Haddad): no activity logged, no next step."
+}

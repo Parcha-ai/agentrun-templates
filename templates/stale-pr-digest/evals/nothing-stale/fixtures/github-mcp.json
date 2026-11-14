@@ -1,0 +1,273 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater on 2026-11-16 where nothing has waited past 3 days: #70 opened 2026-11-14, #71 an old draft, #72 approved on 2026-11-15.",
+  "tools": {
+    "GITHUB_LIST_PULL_REQUESTS": {
+      "description": "List pull requests in a repository (state, sort, direction, per_page, page).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "state": "closed"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "page": 2
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "page": "2"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":[{\"number\":70,\"title\":\"Add sync --dry-run\",\"state\":\"open\",\"draft\":false,\"user\":{\"login\":\"omar\",\"type\":\"User\"},\"body\":\"\",\"created_at\":\"2026-11-14T15:00:00Z\",\"updated_at\":\"2026-11-14T15:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/70\",\"requested_reviewers\":[{\"login\":\"bob\"}],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-70\"}},{\"number\":71,\"title\":\"WIP: Windows service\",\"state\":\"open\",\"draft\":true,\"user\":{\"login\":\"sam\",\"type\":\"User\"},\"body\":\"\",\"created_at\":\"2026-09-01T09:00:00Z\",\"updated_at\":\"2026-09-02T09:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/71\",\"requested_reviewers\":[],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-71\"}},{\"number\":72,\"title\":\"Log level from env\",\"state\":\"open\",\"draft\":false,\"user\":{\"login\":\"lina\",\"type\":\"User\"},\"body\":\"\",\"created_at\":\"2026-11-10T09:00:00Z\",\"updated_at\":\"2026-11-15T10:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/72\",\"requested_reviewers\":[],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-72\"}}],\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST": {
+      "description": "List a pull request's reviews, oldest first.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 70
+            },
+            {
+              "pull_number": "70"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 71
+            },
+            {
+              "pull_number": "71"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 72
+            },
+            {
+              "pull_number": "72"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"id\":7200,\"user\":{\"login\":\"carol\",\"type\":\"User\"},\"state\":\"APPROVED\",\"submitted_at\":\"2026-11-15T10:00:00Z\",\"body\":\"\"}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_COMMITS_ON_A_PULL_REQUEST": {
+      "description": "List a pull request's commits, oldest first.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 70
+            },
+            {
+              "pull_number": "70"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"7000abcdef\",\"author\":{\"login\":\"omar\",\"type\":\"User\"},\"commit\":{\"message\":\"dry run\",\"committer\":{\"date\":\"2026-11-14T14:58:00Z\"},\"author\":{\"date\":\"2026-11-14T14:58:00Z\",\"name\":\"omar\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 71
+            },
+            {
+              "pull_number": "71"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"7100abcdef\",\"author\":{\"login\":\"sam\",\"type\":\"User\"},\"commit\":{\"message\":\"wip\",\"committer\":{\"date\":\"2026-09-01T09:00:00Z\"},\"author\":{\"date\":\"2026-09-01T09:00:00Z\",\"name\":\"sam\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 72
+            },
+            {
+              "pull_number": "72"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"7200abcdef\",\"author\":{\"login\":\"lina\",\"type\":\"User\"},\"commit\":{\"message\":\"LOG_LEVEL\",\"committer\":{\"date\":\"2026-11-10T08:58:00Z\"},\"author\":{\"date\":\"2026-11-10T08:58:00Z\",\"name\":\"lina\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_ISSUE_COMMENTS": {
+      "description": "List an issue's or pull request's conversation comments, oldest first.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "issue_number": 70
+            },
+            {
+              "issue_number": "70"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 71
+            },
+            {
+              "issue_number": "71"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 72
+            },
+            {
+              "issue_number": "72"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

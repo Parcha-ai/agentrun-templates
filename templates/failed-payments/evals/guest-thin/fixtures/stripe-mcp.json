@@ -1,0 +1,82 @@
+{
+  "server": "stripe",
+  "description": "A fake Composio Stripe: charge ch_3QfailGST01 for 45.00 USD failed on 2026-11-14 with a generic decline; it has no customer, no description and no billing name or email. Any customer lookup answers 'No such customer'.",
+  "tools": {
+    "STRIPE_RETRIEVE_CHARGE": {
+      "description": "Retrieve a charge by charge_id.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "charge_id": "ch_3QfailGST01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3QfailGST01\",\"object\":\"charge\",\"amount\":4500,\"amount_captured\":0,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"failed\",\"paid\":false,\"captured\":false,\"created\":1794655200,\"failure_code\":\"card_declined\",\"failure_message\":\"Your card was declined.\",\"outcome\":{\"network_status\":\"declined_by_network\",\"reason\":\"generic_decline\",\"risk_level\":\"normal\",\"seller_message\":\"The bank did not return any further details with this decline.\",\"type\":\"issuer_declined\"},\"livemode\":true,\"receipt_email\":null,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}},\"customer\":null,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such charge\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_RETRIEVE_CUSTOMER": {
+      "description": "Retrieve a customer by customer_id.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such customer\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_CHARGES": {
+      "description": "List charges, newest first (customer, created, limit, starting_after).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"ch_3QfailGST01\",\"object\":\"charge\",\"amount\":4500,\"amount_captured\":0,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"failed\",\"paid\":false,\"captured\":false,\"created\":1794655200,\"failure_code\":\"card_declined\",\"failure_message\":\"Your card was declined.\",\"outcome\":{\"network_status\":\"declined_by_network\",\"reason\":\"generic_decline\",\"risk_level\":\"normal\",\"seller_message\":\"The bank did not return any further details with this decline.\",\"type\":\"issuer_declined\"},\"livemode\":true,\"receipt_email\":null,\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\",\"exp_month\":4,\"exp_year\":2028,\"country\":\"US\",\"funding\":\"credit\"}},\"customer\":null,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null}}],\"has_more\":false,\"url\":\"/v1/charges\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_INVOICES": {
+      "description": "List invoices, newest first (customer, status, limit).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

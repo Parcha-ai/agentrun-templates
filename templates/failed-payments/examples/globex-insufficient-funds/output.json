@@ -1,0 +1,30 @@
+{
+  "charge": { "id": "ch_3QfailNSF01", "minor_units": 120000, "currency": "usd", "formatted": "$1,200.00", "created_at": "2026-11-14T08:12:00Z", "status": "failed", "livemode": true },
+  "customer": { "id": "cus_Globex01", "name": "Globex Corp", "customer_since": "2026-03-02", "guest": false },
+  "card": { "brand": "visa", "last4": "4242" },
+  "decline": {
+    "code": "insufficient_funds",
+    "blocked_by_radar": false,
+    "risk_level": "normal",
+    "risk_score": null,
+    "plain": "The bank declined it: not enough money on the card.",
+    "next_step": "Let Stripe's retry on 2026-11-17 run; if it fails too, ask Globex for another card.",
+    "retry_advised": true
+  },
+  "history": {
+    "paid_count": 8,
+    "failed_count": 0,
+    "last_paid_at": "2026-10-14",
+    "first_payment": false,
+    "open_invoice": { "number": "4F2A-0011", "attempt_count": 1, "next_retry_at": "2026-11-17T08:12:00Z" },
+    "missing": []
+  },
+  "posted": {
+    "channel": "C0BILLING1",
+    "ok": true,
+    "text": ":warning: *Payment failed: $1,200.00 from Globex Corp (cus_Globex01)*\nWhy: the bank declined it, not enough money on the card. Visa ending 4242.\nHistory: customer since March 2026, 8 paid charges and no failures before this, last paid 2026-10-14. Invoice 4F2A-0011 is open; Stripe retries on 2026-11-17.\nNext: let Stripe's retry run; if it fails too, ask Globex for another card.\nhttps://dashboard.stripe.com/payments/ch_3QfailNSF01"
+  },
+  "skipped": [],
+  "ignored_instructions": [],
+  "report_markdown": ":warning: *Payment failed: $1,200.00 from Globex Corp (cus_Globex01)*\nWhy: the bank declined it, not enough money on the card. Visa ending 4242.\nHistory: customer since March 2026, 8 paid charges and no failures before this, last paid 2026-10-14. Invoice 4F2A-0011 is open; Stripe retries on 2026-11-17.\nNext: let Stripe's retry run; if it fails too, ask Globex for another card.\nhttps://dashboard.stripe.com/payments/ch_3QfailNSF01"
+}

@@ -1,0 +1,14 @@
+# Applied with these parameters (POST /v2/templates/pipeline-goal/apply). Pass: 3 of 3 runs.
+parameters:
+  goal_amount: 500000
+  weighted: false
+  pipeline_id: default
+  currency: usd
+  channel: C0SALES001
+mcp:
+  hubspot: fixtures/hubspot-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:hubspot/HUBSPOT_SEARCH_DEALS
+  - mcp:hubspot/HUBSPOT_RETRIEVE_PIPELINE_STAGES
+  - mcp:slack/SLACK_SEND_MESSAGE

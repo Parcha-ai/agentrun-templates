@@ -1,0 +1,219 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater on 2026-11-16: #41 still waits on bob's first review (listed last week), #55 waits on its author after a change request on 2026-11-10 (new this week). #44, listed last week, has merged and is not open.",
+  "tools": {
+    "GITHUB_LIST_PULL_REQUESTS": {
+      "description": "List pull requests in a repository (state, sort, direction, per_page, page).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "state": "closed"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "page": 2
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "page": "2"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":[{\"number\":41,\"title\":\"Add --json flag to status\",\"state\":\"open\",\"draft\":false,\"user\":{\"login\":\"omar\",\"type\":\"User\"},\"body\":\"\",\"created_at\":\"2026-11-03T08:00:00Z\",\"updated_at\":\"2026-11-03T08:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/41\",\"requested_reviewers\":[{\"login\":\"bob\"}],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-41\"}},{\"number\":55,\"title\":\"Cache auth tokens\",\"state\":\"open\",\"draft\":false,\"user\":{\"login\":\"lina\",\"type\":\"User\"},\"body\":\"\",\"created_at\":\"2026-11-09T09:00:00Z\",\"updated_at\":\"2026-11-10T16:00:00Z\",\"html_url\":\"https://github.com/acme/tidewater/pull/55\",\"requested_reviewers\":[],\"requested_teams\":[],\"base\":{\"ref\":\"main\"},\"head\":{\"ref\":\"branch-55\"}}],\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST": {
+      "description": "List a pull request's reviews, oldest first.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 41
+            },
+            {
+              "pull_number": "41"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 55
+            },
+            {
+              "pull_number": "55"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"id\":5500,\"user\":{\"login\":\"carol\",\"type\":\"User\"},\"state\":\"CHANGES_REQUESTED\",\"submitted_at\":\"2026-11-10T16:00:00Z\",\"body\":\"\"}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_COMMITS_ON_A_PULL_REQUEST": {
+      "description": "List a pull request's commits, oldest first.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 41
+            },
+            {
+              "pull_number": "41"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"4100abcdef\",\"author\":{\"login\":\"omar\",\"type\":\"User\"},\"commit\":{\"message\":\"status: --json\",\"committer\":{\"date\":\"2026-11-03T07:55:00Z\"},\"author\":{\"date\":\"2026-11-03T07:55:00Z\",\"name\":\"omar\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 55
+            },
+            {
+              "pull_number": "55"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[{\"sha\":\"5500abcdef\",\"author\":{\"login\":\"lina\",\"type\":\"User\"},\"commit\":{\"message\":\"token cache\",\"committer\":{\"date\":\"2026-11-09T08:55:00Z\"},\"author\":{\"date\":\"2026-11-09T08:55:00Z\",\"name\":\"lina\"}}}],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_ISSUE_COMMENTS": {
+      "description": "List an issue's or pull request's conversation comments, oldest first.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "issue_number": 41
+            },
+            {
+              "issue_number": "41"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 55
+            },
+            {
+              "issue_number": "55"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":[],\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

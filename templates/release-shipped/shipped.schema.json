@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "shipped.schema.json",
+  "title": "Release announcement",
+  "description": "One release, the pull requests behind it, the highlights picked for the team, and the one Slack message that announced it (or why none was posted).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["release", "pr_source", "pull_requests", "highlights", "contributors", "posted", "skipped", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag", "url"],
+      "properties": {
+        "tag": { "type": "string", "maxLength": 100 },
+        "name": { "type": ["string", "null"], "maxLength": 200 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://github\\.com/" },
+        "published_at": { "type": ["string", "null"], "format": "date-time" },
+        "prerelease": { "type": "boolean" }
+      }
+    },
+    "pr_source": { "enum": ["release_notes", "merged_between", "first_release", "none"], "description": "how the PRs were found: named in the notes, by merge date between releases, the first release, or not looked up (a skipped run)" },
+    "pull_requests": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["number", "title", "author", "highlight"],
+        "properties": {
+          "number": { "type": "integer", "minimum": 1 },
+          "title": { "type": "string", "maxLength": 300 },
+          "author": { "type": "string", "maxLength": 100 },
+          "highlight": { "type": "boolean" }
+        }
+      }
+    },
+    "highlights": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["text", "prs"],
+        "properties": {
+          "text": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "prs": { "type": "array", "maxItems": 5, "items": { "type": "integer", "minimum": 1 } },
+          "breaking": { "type": "boolean" }
+        }
+      }
+    },
+    "contributors": { "type": "array", "maxItems": 100, "items": { "type": "string", "maxLength": 100 }, "description": "authors thanked, bots left out" },
+    "posted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel", "ok"],
+      "properties": {
+        "channel": { "type": "string", "maxLength": 20 },
+        "ok": { "type": "boolean" },
+        "text": { "type": ["string", "null"], "maxLength": 2000 },
+        "why_not": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "skipped": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "why nothing was posted: announced before, a draft, a pre-release, another repository, a refused post" },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 6000 }
+  }
+}

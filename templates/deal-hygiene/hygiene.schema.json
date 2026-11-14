@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hygiene.schema.json",
+  "title": "Deal hygiene list",
+  "description": "The open HubSpot deals in one pipeline that have gone quiet, have no next step or are past their close date, biggest first, and the one Slack post.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["date", "pipeline_id", "stale_days", "open_deals", "listed_count", "deals", "posted", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "date": { "type": "string", "format": "date" },
+    "pipeline_id": { "type": "string", "maxLength": 64 },
+    "stale_days": { "type": "integer", "minimum": 1 },
+    "open_deals": { "type": "integer", "minimum": 0, "description": "open deals in the pipeline" },
+    "listed_count": { "type": "integer", "minimum": 0, "description": "open deals with at least one flag, including any past top_n" },
+    "deals": {
+      "type": "array",
+      "maxItems": 50,
+      "description": "the listed deals, largest amount first, at most top_n",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "amount", "flags", "repeat", "weeks_listed"],
+        "properties": {
+          "id": { "type": "string", "maxLength": 30 },
+          "name": { "type": "string", "maxLength": 80 },
+          "amount": { "type": ["number", "null"], "minimum": 0 },
+          "stage": { "type": "string", "maxLength": 80 },
+          "owner": { "type": ["string", "null"], "maxLength": 80, "description": "the owner's name, never an email" },
+          "flags": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "enum": ["no_activity", "no_next_step", "past_close"] }
+          },
+          "days_since_activity": { "type": ["integer", "null"], "minimum": 0, "description": "null when no activity was ever logged" },
+          "close_date": { "type": ["string", "null"], "format": "date" },
+          "repeat": { "type": "boolean" },
+          "weeks_listed": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "posted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel", "ok"],
+      "properties": {
+        "channel": { "type": "string", "maxLength": 20 },
+        "ok": { "type": "boolean" },
+        "why_not": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "skipped": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 6000 }
+  }
+}

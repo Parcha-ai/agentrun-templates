@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "goal.schema.json",
+  "title": "Revenue goal check",
+  "description": "The period's revenue in the goal's currency, added up from Stripe, whether it passed the goal, and the one Slack celebration (or why none was posted).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["goal", "period", "total", "reached", "posted", "skipped", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": { "type": "number", "minimum": 0, "description": "in whole currency units" },
+        "currency": { "type": "string", "pattern": "^[a-z]{3}$" }
+      }
+    },
+    "period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "starts_at"],
+      "properties": {
+        "label": { "type": "string", "maxLength": 40, "description": "like \"November 2026\", \"Q4 2026\" or \"2026\"" },
+        "starts_at": { "type": "string", "format": "date-time" },
+        "as_of": { "type": "string", "format": "date-time" }
+      }
+    },
+    "total": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["minor_units", "formatted"],
+      "properties": {
+        "minor_units": { "type": "integer" },
+        "formatted": { "type": "string", "maxLength": 40 },
+        "share_of_goal": { "type": "number", "minimum": 0, "description": "total divided by the goal, 1.0 at the goal" },
+        "charges_counted": { "type": "integer", "minimum": 0 },
+        "refunds_counted": { "type": "integer", "minimum": 0 },
+        "source": { "enum": ["balance_transactions", "charges_search"] }
+      },
+      "description": "null when the total could not be added up (a skipped or incomplete run)"
+    },
+    "reached": { "type": "boolean", "description": "true when the total is at or above the goal" },
+    "posted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel", "ok"],
+      "properties": {
+        "channel": { "type": "string", "maxLength": 20 },
+        "ok": { "type": "boolean" },
+        "text": { "type": ["string", "null"], "maxLength": 1000 },
+        "why_not": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "skipped": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "why nothing was posted: below the goal, reached before, an incomplete total, a refused post" },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 4000 }
+  }
+}
