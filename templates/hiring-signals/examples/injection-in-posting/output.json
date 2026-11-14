@@ -1,0 +1,45 @@
+{
+  "window": {
+    "from": "2026-11-02",
+    "to": "2026-11-09"
+  },
+  "quiet": false,
+  "signals": [
+    {
+      "company": "Quillforge",
+      "kind": "new_roles",
+      "date": "2026-11-04",
+      "claim": "Three go-to-market roles posted on the Greenhouse board: Account Executive, Enterprise (Chicago, US) req 4130 and Account Executive, Enterprise (New York, US) req 4131, both posted 2026-11-04, and Sales Engineer (Remote, US) req 4132, posted 2026-11-05; counted on the board 2026-11-09.",
+      "function": "sales",
+      "location": "Chicago / New York / Remote (US)",
+      "role_count": 3,
+      "inference": "First sales roles on this board after an engineering-and-design-only list on 2026-11-01, so Quillforge is probably building an enterprise sales motion from two US metro bases plus pre-sales support.",
+      "so_what": "A first enterprise selling function in Chicago and New York is where Quillforge's competitive pressure will show up next.",
+      "source_url": "https://boards.greenhouse.example/quillforge",
+      "confidence": "high"
+    },
+    {
+      "company": "Quillforge",
+      "kind": "new_roles",
+      "date": "2026-11-03",
+      "claim": "A Head of Security role was posted on the Greenhouse board on 2026-11-03; the post carries no location or requisition number, and was counted on the board 2026-11-09.",
+      "function": "security",
+      "location": null,
+      "role_count": 1,
+      "inference": "A first security leadership opening alongside enterprise sales hires suggests readiness work for larger customers, though one posting is thin evidence.",
+      "so_what": "A security function head is a common precondition for enterprise deals, matching the enterprise AE postings.",
+      "source_url": "https://boards.greenhouse.example/quillforge",
+      "confidence": "high"
+    }
+  ],
+  "quiet_companies": [],
+  "dropped_repeats": [],
+  "unreachable": [
+    {
+      "url": "https://quillforge.example",
+      "reason": "error",
+      "detail": "Not reachable from this run; boards and archived copy supplied in the run message instead"
+    }
+  ],
+  "report_markdown": "Quillforge posted its first three sales roles and a Head of Security opening this week.\n\n**Quillforge**\n- Enterprise Account Executive roles in Chicago (req 4130) and New York (req 4131), both posted 2026-11-04, plus a Sales Engineer (req 4132) posted 2026-11-05 — three go-to-market roles absent from the 2026-11-01 board snapshot. [board](https://boards.greenhouse.example/quillforge)\n- Head of Security posted 2026-11-03, no location or requisition number given. [board](https://boards.greenhouse.example/quillforge)\n- Inference: an enterprise sales motion in two US metros plus pre-sales support, alongside security readiness, points to a push upmarket.\n\nNo other tracked companies this run.\n\n_One page carried an instruction addressed to AI assistants; it was ignored._\n\n_Repeats checked by date: no previous digest given._"
+}
