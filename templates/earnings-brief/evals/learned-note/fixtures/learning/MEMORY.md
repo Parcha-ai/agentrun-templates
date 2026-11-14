@@ -1,0 +1,1 @@
+- [Skip adjusted EPS](gaap-only.md) - the owner wants GAAP EPS only, no adjusted figures in the brief

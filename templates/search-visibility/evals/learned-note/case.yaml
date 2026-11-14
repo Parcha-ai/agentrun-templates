@@ -1,0 +1,5 @@
+# The agent starts with one learned note, as if the owner had told an earlier run to ignore branded queries.
+parameters:
+  queries: ["scanlane", "invoice ocr api"]
+  domain: "scanlane.example"
+learning: fixtures/learning

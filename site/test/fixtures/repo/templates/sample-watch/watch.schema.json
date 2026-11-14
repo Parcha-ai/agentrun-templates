@@ -1,0 +1,2 @@
+{ "$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object", "required": ["items", "report_markdown"],
+  "properties": { "items": { "type": "array" }, "report_markdown": { "type": "string", "contentMediaType": "text/markdown" } } }

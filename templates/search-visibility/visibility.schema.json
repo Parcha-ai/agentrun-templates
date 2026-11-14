@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "visibility.schema.json",
+  "title": "Search visibility report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_date", "domain", "locale", "quiet", "engines", "results", "movers", "gaps", "next_actions", "report_markdown"],
+  "properties": {
+    "run_date": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "domain": { "type": "string", "minLength": 3 },
+    "locale": { "type": "string" },
+    "quiet": { "type": "boolean", "description": "true when no query moved and no gap is new: movers is then empty" },
+    "skipped_queries": { "type": "integer", "minimum": 0, "description": "queries left out because the list ran over 25" },
+    "engines": {
+      "type": "array",
+      "description": "every engine the run tried, including the ones it could not read",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["engine", "status"],
+        "properties": {
+          "engine": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "status": { "enum": ["checked", "unchecked"] },
+          "reason": { "type": "string", "maxLength": 300, "description": "why it was unchecked: a challenge page, needs JavaScript, an error" }
+        }
+      }
+    },
+    "results": {
+      "type": "array",
+      "maxItems": 100,
+      "description": "one row per query per checked engine, rows that need action first",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["query", "engine", "status", "change", "evidence_url"],
+        "properties": {
+          "query": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "engine": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "status": { "enum": ["ranked", "not_in_top_20", "unchecked"] },
+          "position": { "type": ["integer", "null"], "minimum": 1, "maximum": 20 },
+          "url": { "type": ["string", "null"], "description": "the exact page of yours that ranked" },
+          "features": { "type": "array", "items": { "type": "string" }, "description": "SERP features seen, such as featured snippet or people-also-ask" },
+          "top_domains": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["domain", "position"],
+              "properties": {
+                "domain": { "type": "string" },
+                "url": { "type": "string" },
+                "position": { "type": "integer", "minimum": 1 }
+              }
+            }
+          },
+          "change": { "enum": ["up", "down", "new", "lost", "no_change", "no_baseline"] },
+          "change_by": { "type": ["integer", "null"], "minimum": 1, "description": "places moved, for up and down" },
+          "evidence_url": { "type": "string", "description": "the results page or API URL this row was read from" }
+        }
+      }
+    },
+    "movers": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "one line per notable gain or loss, naming the query and the evidence" },
+    "gaps": {
+      "type": "array",
+      "maxItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["query", "competitor_domain", "competitor_url"],
+        "properties": {
+          "query": { "type": "string" },
+          "competitor_domain": { "type": "string" },
+          "competitor_url": { "type": "string" }
+        }
+      }
+    },
+    "next_actions": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 300 }, "description": "up to five actions, each tied to a named query" },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 40, "maxLength": 4000, "description": "the report a person reads: the interpretation line, a table of rows that need action, Movers, Gaps, Do next and one coverage line. Quiet queries take one line" }
+  }
+}

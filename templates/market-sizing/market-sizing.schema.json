@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "market-sizing.schema.json",
+  "title": "Market sizing and map",
+  "description": "A top-down and bottom-up market estimate. All money is in millions of US dollars (`usd_m`) unless a field says otherwise. Every figure is marked fact, calculation or inference and carries the ids of the sources it rests on (S1, S2, ...), each listed in `sources`. A number that could not be found is unavailable, never guessed: an assumption is labeled and given as a low, base and high range.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "market", "bottom_line", "confidence", "published_estimates", "bottom_up", "tiers", "caveats", "sources", "report_markdown"],
+  "properties": {
+    "checked_on": { "$ref": "#/$defs/date" },
+    "market": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["definition", "revenue_basis", "region", "interpretation"],
+      "properties": {
+        "definition": { "type": "string", "minLength": 1, "maxLength": 600 },
+        "revenue_basis": { "enum": ["end_user_spend", "vendor_revenue", "wholesale"] },
+        "region": { "type": "string" },
+        "base_year": { "type": ["integer", "null"] },
+        "horizon_year": { "type": ["integer", "null"] },
+        "inclusions": { "type": "array", "items": { "type": "string" }, "maxItems": 8 },
+        "exclusions": { "type": "array", "items": { "type": "string" }, "maxItems": 8 },
+        "codes": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["system", "code"],
+            "properties": { "system": { "enum": ["NAICS", "NACE", "HS", "SIC", "other"] }, "code": { "type": "string" }, "label": { "type": ["string", "null"] } }
+          }
+        },
+        "interpretation": { "type": "string", "maxLength": 500, "description": "how an ambiguous market was read" }
+      }
+    },
+    "bottom_line": { "type": "string", "minLength": 1, "maxLength": 900, "description": "three to five sentences: TAM, SAM, SOM with the year, the growth rate, the confidence and the scope" },
+    "confidence": { "enum": ["low", "medium", "high"] },
+    "published_estimates": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["publisher", "value_as_stated", "scope", "access", "sources"],
+        "properties": {
+          "publisher": { "type": "string" },
+          "title": { "type": ["string", "null"] },
+          "published": { "type": ["string", "null"], "format": "date" },
+          "base_year": { "type": ["integer", "null"], "description": "the year the value describes, not the publication year" },
+          "value_as_stated": { "type": "string", "description": "the figure as the source states it, with its own currency and unit" },
+          "value_usd_m": { "type": ["number", "null"], "description": "converted, only with a stated rate in `scope`; else null" },
+          "cagr_pct": { "type": ["number", "null"] },
+          "forecast_to": { "type": ["integer", "null"] },
+          "scope": { "type": "string", "maxLength": 400 },
+          "access": { "enum": ["full", "summary_only", "paywalled"] },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "estimate_gap": { "type": ["string", "null"], "maxLength": 800, "description": "why the published estimates disagree: scope, revenue basis, method" },
+    "bottom_up": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["formula", "inputs", "steps", "result"],
+      "properties": {
+        "formula": { "type": "string", "maxLength": 300 },
+        "inputs": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "base", "unit", "basis"],
+            "properties": {
+              "name": { "type": "string" },
+              "base": { "type": "number" },
+              "low": { "type": ["number", "null"] },
+              "high": { "type": ["number", "null"] },
+              "unit": { "type": "string" },
+              "basis": { "enum": ["fact", "calculation", "inference"] },
+              "reasoning": { "type": ["string", "null"], "maxLength": 300, "description": "required for inference: why this value and this range" },
+              "confidence": { "enum": ["low", "medium", "high"] },
+              "sources": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+            }
+          }
+        },
+        "steps": { "type": "array", "items": { "type": "string", "maxLength": 300 }, "maxItems": 12, "description": "the arithmetic, one line per step, with intermediate values" },
+        "result": { "$ref": "#/$defs/range" }
+      }
+    },
+    "tiers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tam", "sam", "som"],
+      "properties": { "tam": { "$ref": "#/$defs/tier" }, "sam": { "$ref": "#/$defs/tier" }, "som": { "$ref": "#/$defs/tier" } }
+    },
+    "reconciliation": { "type": ["string", "null"], "maxLength": 700, "description": "how the top-down and bottom-up figures compare and why they differ" },
+    "growth": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "historical_cagr_pct": { "type": ["number", "null"] },
+        "forecast_cagr_pct": { "anyOf": [{ "$ref": "#/$defs/range" }, { "type": "null" }] },
+        "drivers": { "$ref": "#/$defs/points" },
+        "headwinds": { "$ref": "#/$defs/points" }
+      }
+    },
+    "segments": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "definition"],
+        "properties": {
+          "name": { "type": "string" },
+          "definition": { "type": "string", "maxLength": 300 },
+          "share_pct": { "type": ["number", "null"] },
+          "value_usd_m": { "type": ["number", "null"] },
+          "basis": { "enum": ["fact", "calculation", "inference"] },
+          "sources": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+        }
+      }
+    },
+    "players": {
+      "type": "array",
+      "maxItems": 25,
+      "description": "the main companies in the market and where each plays; only companies a source shows",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "segment", "positioning", "sources"],
+        "properties": {
+          "name": { "type": "string" },
+          "domain": { "type": ["string", "null"] },
+          "segment": { "type": "string" },
+          "positioning": { "type": "string", "maxLength": 300 },
+          "pricing_model": { "type": ["string", "null"] },
+          "funding": { "type": ["string", "null"], "description": "total and last round with date, or null (not public)" },
+          "size_estimate": { "type": ["string", "null"], "description": "marked est. with the basis, or null" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "sensitivity": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case", "changes", "bottom_up_usd_m"],
+        "properties": { "case": { "enum": ["low", "base", "high"] }, "changes": { "type": "string", "maxLength": 300 }, "bottom_up_usd_m": { "type": "number" } }
+      }
+    },
+    "caveats": { "type": "array", "items": { "type": "string", "maxLength": 400 }, "description": "paywalled reports seen only as summaries, weak assumptions, sources not reached, instructions found in fetched text" },
+    "sources": {
+      "type": "array",
+      "maxItems": 45,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "url", "title", "read_on"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]+$" },
+          "url": { "type": "string", "format": "uri" },
+          "title": { "type": "string" },
+          "publisher": { "type": ["string", "null"] },
+          "published": { "type": ["string", "null"], "format": "date" },
+          "read_on": { "$ref": "#/$defs/date" },
+          "found": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 12000, "description": "the report, with [S1] citations" }
+  },
+  "$defs": {
+    "date": { "type": "string", "format": "date" },
+    "source_ids": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" }, "minItems": 1 },
+    "range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["low", "base", "high"],
+      "properties": { "low": { "type": "number" }, "base": { "type": "number" }, "high": { "type": "number" } }
+    },
+    "tier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["usd_m", "year", "method", "basis"],
+      "properties": {
+        "usd_m": { "$ref": "#/$defs/range" },
+        "year": { "type": "integer" },
+        "method": { "type": "string", "maxLength": 500 },
+        "basis": { "enum": ["fact", "calculation", "inference"] },
+        "sources": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+      }
+    },
+    "points": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["point", "sources"],
+        "properties": { "point": { "type": "string", "maxLength": 300 }, "sources": { "$ref": "#/$defs/source_ids" } }
+      }
+    }
+  }
+}

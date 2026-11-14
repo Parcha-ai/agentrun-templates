@@ -1,0 +1,4 @@
+# The run's typed input; the runner renders it as the `Input:` block.
+input:
+  question: Does Somnaflora herbal tea improve sleep quality in adults with insomnia?
+  max_studies: 10

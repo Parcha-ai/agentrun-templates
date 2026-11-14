@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "deals.schema.json",
+  "title": "Deal flow digest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "sector", "quiet", "deals", "report_markdown"],
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "to": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    },
+    "sector": { "type": "string", "description": "the sector as the owner named it, plus the reading you took when it was ambiguous" },
+    "quiet": { "type": "boolean", "description": "true when no deal passed the checks: deals is then empty" },
+    "deals": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["company", "deal_type", "status", "date", "amount", "lead", "source_url", "confidence"],
+        "properties": {
+          "company": { "type": "string", "minLength": 1, "maxLength": 160, "description": "the company raising, bought, listing or closing; for a new fund, the fund's manager" },
+          "deal_type": { "enum": ["funding_round", "new_fund", "acquisition", "merger", "divestiture", "buyout", "ipo_filing", "listing", "secondary", "shutdown"] },
+          "status": { "enum": ["rumored", "announced", "signed", "pending_approval", "closed", "filed", "priced", "listed"] },
+          "date": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "the event's date, not the article's" },
+          "amount": { "type": "string", "maxLength": 120, "description": "the figure with its currency, or the word undisclosed. Never an estimate" },
+          "amount_basis": { "type": ["string", "null"], "maxLength": 160, "description": "who gave the figure when it is not the company, such as per PitchBook or reported by Reuters" },
+          "lead": { "type": "string", "maxLength": 160, "description": "the lead investor or the acquirer, named as the primary source names them, or the word undisclosed" },
+          "others": { "type": "array", "items": { "type": "string" }, "description": "other named participants" },
+          "terms": { "type": ["string", "null"], "maxLength": 300, "description": "valuation, multiple, cash and stock mix, earn-outs, when disclosed; null otherwise" },
+          "rationale": { "type": ["string", "null"], "maxLength": 300, "description": "the stated reason, attributed to whoever stated it in the same string" },
+          "so_what": { "type": "string", "maxLength": 300 },
+          "source_url": { "type": "string", "description": "the press release, filing or decision page, never an index or a search page" },
+          "confidence": { "enum": ["high", "medium", "low"] }
+        }
+      }
+    },
+    "dropped_repeats": { "type": "array", "items": { "type": "string", "maxLength": 300 } },
+    "unreachable": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["url", "reason"],
+        "properties": {
+          "url": { "type": "string" },
+          "reason": { "enum": ["blocked", "not_found", "error", "skipped"] },
+          "detail": { "type": "string", "maxLength": 200 }
+        }
+      }
+    },
+    "watch_next": { "type": ["string", "null"], "maxLength": 300, "description": "one dated thing to watch: a pricing date, a regulator deadline, an expected close; null when there is none" },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 40, "maxLength": 4500, "description": "the digest a person reads: the biggest deal first, then deals grouped as rounds, M&A, listings, exits, with numbers first. A quiet week is a header and one line" }
+  }
+}

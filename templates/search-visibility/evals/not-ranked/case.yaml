@@ -1,0 +1,3 @@
+parameters:
+  queries: ["self-hosted invoice ocr for sap"]
+  domain: "scanlane.example"

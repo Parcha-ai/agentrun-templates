@@ -1,0 +1,3 @@
+parameters:
+  sector: "industrial robotics"
+  lookback_days: 7

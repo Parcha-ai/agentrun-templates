@@ -1,0 +1,11 @@
+{
+  "queries": [
+    "invoice ocr api",
+    "invoice ocr pricing"
+  ],
+  "competitors": [
+    "readwise-ocr.example",
+    "docparse.example"
+  ],
+  "focus": "only queries about invoice OCR"
+}

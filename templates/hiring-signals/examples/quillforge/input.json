@@ -1,0 +1,12 @@
+{
+  "companies": [
+    "Quillforge (quillforge.example)",
+    "Brightpane (brightpane.example)"
+  ],
+  "functions": [
+    "sales",
+    "security"
+  ],
+  "regions": [],
+  "focus": "sales and security roles"
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "earnings.schema.json",
+  "title": "Earnings brief",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "quiet", "reports", "not_reported", "report_markdown"],
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "to": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    },
+    "quiet": { "type": "boolean", "description": "true when no watched company reported inside the window: reports is then empty" },
+    "reports": {
+      "type": "array",
+      "maxItems": 30,
+      "description": "one per company that reported inside the window, largest guidance change, surprise or stock move first",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ticker", "company", "period", "reported_on", "vs_expectations", "guidance", "source_urls"],
+        "properties": {
+          "ticker": { "type": "string", "minLength": 1, "maxLength": 20, "description": "the ticker with its exchange when it is ambiguous" },
+          "company": { "type": "string", "maxLength": 160 },
+          "period": { "type": "string", "maxLength": 80, "description": "the fiscal period as the company labels it, such as Q3 FY2026, quarter ended Sep 30" },
+          "reported_on": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "the results release date" },
+          "headline": { "type": "string", "maxLength": 300, "description": "revenue and EPS as reported, with the basis, and the GAAP or IFRS figure beside any adjusted one" },
+          "vs_expectations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["metric", "actual", "expected", "expected_source", "verdict"],
+              "properties": {
+                "metric": { "type": "string", "maxLength": 80 },
+                "actual": { "type": "string", "maxLength": 80 },
+                "expected": { "type": ["string", "null"], "maxLength": 80 },
+                "expected_source": { "type": "string", "maxLength": 200, "description": "the named consensus source and the date it was compiled, or the words consensus not verified, or guidance or prior year when that was the comparison" },
+                "verdict": { "enum": ["beat", "miss", "in_line", "not_verified"] }
+              }
+            }
+          },
+          "guidance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["change"],
+            "properties": {
+              "change": { "enum": ["raised", "cut", "maintained", "initiated", "withdrawn", "not_given"], "description": "maintained means the company said so, never silence: silence is not_given" },
+              "metric": { "type": ["string", "null"] },
+              "old_range": { "type": ["string", "null"] },
+              "new_range": { "type": ["string", "null"] }
+            }
+          },
+          "segments": { "type": "array", "items": { "type": "string", "maxLength": 200 } },
+          "quotes": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["speaker", "title", "text", "url"],
+              "properties": {
+                "speaker": { "type": "string" },
+                "title": { "type": "string" },
+                "text": { "type": "string", "maxLength": 500, "description": "word for word from the transcript or release you read" },
+                "url": { "type": "string" }
+              }
+            }
+          },
+          "qa_themes": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 200 }, "description": "themes of the analyst questions; empty when no transcript or replay could be read" },
+          "stock_reaction": { "type": ["string", "null"], "maxLength": 200, "description": "a percentage with its date and session and the source, such as fell 6.2% on Oct 29, first full session after results, per Nasdaq; null when not verified" },
+          "changed_since_prior": { "type": ["string", "null"], "maxLength": 400 },
+          "material_items": { "type": "array", "items": { "type": "string", "maxLength": 200 }, "description": "buybacks, dividend changes, restructurings, impairments, executive or auditor changes disclosed with results" },
+          "so_what": { "type": "string", "maxLength": 300, "description": "what it means against the focus or the benchmark; facts only, no advice" },
+          "source_urls": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "the release, filing or transcript pages read, the primary one first" },
+          "confidence": { "enum": ["high", "medium", "low"] }
+        }
+      }
+    },
+    "moves": {
+      "type": "array",
+      "description": "the price recap for watched tickers that did not report; empty when recap is off",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ticker", "change", "as_of", "source", "driver"],
+        "properties": {
+          "ticker": { "type": "string" },
+          "change": { "type": "string", "maxLength": 60, "description": "a percentage over the window, such as -3.1%" },
+          "as_of": { "type": "string", "maxLength": 80, "description": "the date and session, such as close Nov 13" },
+          "source": { "type": "string", "maxLength": 120 },
+          "driver": { "type": "string", "maxLength": 300, "description": "the cause with its link, or the words no identified driver. Never inferred from timing alone" }
+        }
+      }
+    },
+    "not_reported": { "type": "array", "items": { "type": "string" }, "description": "watched companies with no results inside the window, or whose quarter an earlier report already covered" },
+    "unresolved": { "type": "array", "items": { "type": "string" }, "description": "entries that are not a listed company or could not be resolved to one" },
+    "dropped_repeats": { "type": "array", "items": { "type": "string", "maxLength": 300 } },
+    "unreachable": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["url", "reason"],
+        "properties": {
+          "url": { "type": "string" },
+          "reason": { "enum": ["blocked", "not_found", "error", "skipped"] },
+          "detail": { "type": "string", "maxLength": 200 }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 40, "maxLength": 5000, "description": "what a person reads: the single most consequential result first as a claim with a number, then one short section per report, then the recap lines and one line naming companies that did not report" }
+  }
+}

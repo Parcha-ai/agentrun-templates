@@ -1,0 +1,44 @@
+{
+  "window": { "from": "2026-11-02", "to": "2026-11-09" },
+  "subject": "Quillforge (iOS app)",
+  "quiet": false,
+  "themes": [
+    {
+      "theme": "Notes lost after sync since update 4.2",
+      "product": "Quillforge iOS",
+      "kind": "complaint",
+      "status": "new",
+      "volume": "about 3 of 8 App Store reviews read, Nov 2 to 9",
+      "sample_size": 8,
+      "severity": "high",
+      "version_link": "4.2: three reviewers name it, posted 2026-11-07 and 2026-11-08",
+      "vendor_response": null,
+      "quotes": [
+        { "text": "Notes keep disappearing after sync since 4.2.", "url": "https://apps.apple.example/review/9002", "source": "app store", "date": "2026-11-07" },
+        { "text": "Update 4.2 broke sync, half my notebook is gone.", "url": "https://apps.apple.example/review/9003", "source": "app store", "date": "2026-11-07" }
+      ]
+    },
+    {
+      "theme": "Dark mode is welcome",
+      "product": "Quillforge iOS",
+      "kind": "praise",
+      "status": "new",
+      "volume": "about 3 of 8 App Store reviews read, Nov 2 to 9",
+      "sample_size": 8,
+      "severity": "low",
+      "version_link": null,
+      "vendor_response": null,
+      "quotes": [
+        { "text": "Dark mode is great, wish widgets worked.", "url": "https://apps.apple.example/review/9005", "source": "app store", "date": "2026-11-05" }
+      ]
+    }
+  ],
+  "contrast": null,
+  "suspected_fake": [],
+  "dropped_repeats": [],
+  "sources": [
+    { "source": "app store", "status": "read", "detail": "8 reviews read" },
+    { "source": "google play", "status": "unreadable", "detail": "needs a browser" }
+  ],
+  "report_markdown": "**Lost notes after sync is the top theme.** About 3 of 8 App Store reviews read (Nov 2 to 9) say notes disappeared after sync since 4.2: \"Update 4.2 broke sync, half my notebook is gone.\" That is data loss, so it ranks first.\n\n**Dark mode is welcome** (about 3 of 8): \"Dark mode is great, wish widgets worked.\"\n\nNot read: Google Play (needs a browser)."
+}

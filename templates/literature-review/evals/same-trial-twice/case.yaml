@@ -1,0 +1,3 @@
+# The run's typed input; the runner renders it as the `Input:` block.
+input:
+  question: Does the SleepWell online CBT-I program reduce insomnia severity in adults?

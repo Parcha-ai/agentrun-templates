@@ -1,0 +1,77 @@
+{
+  "reviewed_on": "2026-11-14",
+  "question": {
+    "text": "Does the SleepWell online CBT-I program reduce insomnia severity in adults?",
+    "interpretation": "Read as: the SleepWell program specifically, with evidence on online CBT-I in general as context.",
+    "population": "Adults with insomnia",
+    "intervention_or_exposure": "SleepWell online cognitive behavioral therapy for insomnia",
+    "comparison": "Waitlist or usual care",
+    "outcomes": ["Insomnia severity (ISI)"]
+  },
+  "scope": { "years": "2018-2026", "designs": "Randomized trials and systematic reviews", "populations": "Adults", "context": "An employee-benefits team choosing a digital sleep program." },
+  "search": {
+    "run_on": "2026-11-14",
+    "indexes": [
+      { "name": "Crossref", "queries": ["SleepWell online CBT-I"], "hits": 3, "accessible": true, "note": null },
+      { "name": "PubMed", "queries": ["SleepWell[All Fields] AND insomnia"], "hits": 2, "accessible": true, "note": null },
+      { "name": "Europe PMC", "queries": ["SleepWell insomnia randomized"], "hits": 2, "accessible": true, "note": null },
+      { "name": "ClinicalTrials.gov", "queries": ["SleepWell"], "hits": 0, "accessible": true, "note": "The trial was registered elsewhere (SW-2022-014)." }
+    ],
+    "existing_syntheses": ["P1"]
+  },
+  "bottom_line": "One randomized trial of SleepWell (n = 200) found a clear drop in insomnia severity against a waitlist, ISI mean difference -5.3 (95% CI -7.2 to -3.4) [P2]. A 2025 meta-analysis of online CBT-I in general found a moderate to large effect across nine trials, but it does not include SleepWell [P1]. Certainty for SleepWell itself is low: one trial, a waitlist comparison and no follow-up past nine weeks.",
+  "certainty": "low",
+  "studies": [
+    {
+      "id": "P1", "authors": "Okonkwo N, Lind M, Ferreira R", "year": 2025,
+      "title": "Online cognitive behavioral therapy for insomnia: a systematic review and meta-analysis of randomized trials",
+      "venue": "Sleep Interventions Review", "doi": "10.0000/sir.2025.0112",
+      "url": "https://sleepresearch.example/articles/online-cbti-meta-2025",
+      "design": "meta_analysis", "sample_size": 2840,
+      "population": "Adults with insomnia, nine trials",
+      "finding": "Online CBT-I beat waitlist or usual care. Heterogeneity was substantial. SleepWell is not among the nine included trials.",
+      "effect": { "metric": "SMD", "value": "-0.76 (lower is better)", "ci_95": "-0.95 to -0.57", "follow_up": "up to 12 weeks" },
+      "flags": [], "same_trial_as": null, "funding": "Public research council", "opened": "full_text", "published": "2025-04-18"
+    },
+    {
+      "id": "P2", "authors": "Rask E, Daniels O", "year": 2023,
+      "title": "SleepWell online CBT-I for insomnia: a randomized trial",
+      "venue": "Sleep Interventions", "doi": "10.0000/si.2023.0071",
+      "url": "https://sleepresearch.example/articles/sleepwell-primary-2023",
+      "design": "rct", "sample_size": 200,
+      "population": "Adults with insomnia, 100 per arm",
+      "finding": "Nine-week trial against a waitlist, registered as SW-2022-014. Registered primary outcome reported.",
+      "effect": { "metric": "MD on ISI", "value": "-5.3 points (lower is better)", "ci_95": "-7.2 to -3.4", "follow_up": "9 weeks" },
+      "flags": [], "same_trial_as": null, "funding": "Public funding", "opened": "full_text", "published": "2023-06-02"
+    },
+    {
+      "id": "P3", "authors": "Daniels O, Rask E, Tran H", "year": 2024,
+      "title": "Does age moderate the effect of online CBT-I? A secondary analysis of the SleepWell trial",
+      "venue": "Sleep Interventions", "doi": "10.0000/si.2024.0033",
+      "url": "https://sleepresearch.example/articles/sleepwell-subgroup-2024",
+      "design": "rct", "sample_size": 200,
+      "population": "The same 200 adults as P2",
+      "finding": "Age 18 to 39 (n = 82): MD -6.0 (95% CI -8.9 to -3.1). Age 40 or older (n = 118): MD -4.8 (95% CI -7.3 to -2.3). Interaction p = 0.41, so no evidence age changes the effect.",
+      "effect": { "metric": "MD on ISI", "value": "-6.0 and -4.8 points by age group", "ci_95": null, "follow_up": "9 weeks" },
+      "flags": ["same_trial_as_other"], "same_trial_as": "P2", "funding": "Public funding", "opened": "full_text", "published": "2024-02-21"
+    }
+  ],
+  "synthesis": {
+    "agreement": "The one SleepWell trial and the wider online CBT-I meta-analysis point the same way: online CBT-I lowers insomnia severity against waitlist or usual care.",
+    "disagreement": "The size differs: the SleepWell trial's MD of -5.3 on the ISI is not directly comparable to the meta-analysis's SMD of -0.76 without a conversion, and none is made here.",
+    "likely_reasons": "Different comparison conditions, outcome scales and follow-up lengths."
+  },
+  "evidence": [
+    { "outcome": "Insomnia severity (ISI) at 9 weeks, SleepWell", "certainty": "low", "reason": "One trial (P2, with its secondary analysis P3 counted once). Waitlist comparison, which tends to overstate behavioral effects. Short follow-up.", "studies": ["P2", "P3"] },
+    { "outcome": "Insomnia severity, online CBT-I in general", "certainty": "moderate", "reason": "A meta-analysis of nine randomized trials with substantial heterogeneity; indirect to SleepWell, which it does not include.", "studies": ["P1"] }
+  ],
+  "measures": ["Insomnia Severity Index (ISI): 0 to 28, lower is better; validated for self-report, sensitive to change but not a diagnosis."],
+  "gaps": [
+    "No trial compares SleepWell with an active control or in-person CBT-I.",
+    "No follow-up beyond nine weeks, so durability is unknown.",
+    "No data on shift workers or on people with comorbid depression.",
+    "ClinicalTrials.gov holds no record: the trial's registration (SW-2022-014) is in another registry."
+  ],
+  "implications": "For an employee-benefits team, the evidence supports that online CBT-I as a class lowers insomnia severity, and that SleepWell has one positive trial. It does not show SleepWell beats other programs or that the gain lasts. A review of the trial's registered protocol against the paper would be a reasonable next check.",
+  "report_markdown": "## Bottom line\nOne randomized trial of SleepWell (n = 200) found a clear drop in insomnia severity against a waitlist, ISI mean difference -5.3 (95% CI -7.2 to -3.4) [P2]. A 2025 meta-analysis of online CBT-I in general found a moderate to large effect across nine trials but does not include SleepWell [P1]. Certainty for SleepWell itself is low.\n\n## Search strategy\nRun 2026-11-14 on Crossref, PubMed, Europe PMC and ClinicalTrials.gov, scope 2018 to 2026, randomized trials and systematic reviews, adults. Hits: Crossref 3, PubMed 2, Europe PMC 2, ClinicalTrials.gov 0.\n\n## Key studies\n| Paper | Design | n | Finding | Effect (95% CI) | Flags |\n|---|---|---|---|---|---|\n| Okonkwo 2025 [P1] | meta-analysis, 9 trials | 2,840 | online CBT-I beats waitlist or usual care | SMD -0.76 (-0.95 to -0.57) | |\n| Rask 2023 [P2] | RCT | 200 | SleepWell beats waitlist at 9 weeks | MD -5.3 (-7.2 to -3.4) | |\n| Daniels 2024 [P3] | secondary analysis of P2 | same 200 | no age interaction (p = 0.41) | -6.0 and -4.8 by age | same trial as P2 |\n\n## Synthesis\nThe SleepWell trial and the meta-analysis agree in direction. Their effect sizes use different scales and are not compared.\n\n## Evidence strength\n| Outcome | Certainty | Reason |\n|---|---|---|\n| ISI at 9 weeks, SleepWell | low | one trial counted once, waitlist control, short follow-up |\n| Insomnia severity, online CBT-I in general | moderate | meta-analysis, heterogeneity, indirect to SleepWell |\n\n## Gaps\nNo active-control trial, no follow-up beyond nine weeks, no shift-worker data.\n\n## Implications for the stated context\nThe evidence supports online CBT-I as a class and gives SleepWell one positive trial. It does not show SleepWell is better than other programs or that the gain lasts."
+}

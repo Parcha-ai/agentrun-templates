@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tenders.schema.json",
+  "title": "Open tenders",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_date", "interpretation", "quiet", "new_tenders", "still_open", "coverage", "report_markdown"],
+  "properties": {
+    "run_date": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "interpretation": { "type": "string", "maxLength": 400, "description": "one line: how the offering, regions and holdings were read, and which codes or terms were searched" },
+    "quiet": { "type": "boolean", "description": "true when no new tender was found: new_tenders is then empty" },
+    "new_tenders": {
+      "type": "array",
+      "maxItems": 30,
+      "description": "tenders not in the previous report, earliest deadline first",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "buyer", "country", "value", "deadline", "fit", "fit_reason", "eligibility", "notice_url", "checked_on"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1, "maxLength": 300, "description": "as published, with an English translation in brackets when needed" },
+          "buyer": { "type": "string", "maxLength": 200, "description": "the contracting authority's official name" },
+          "country": { "type": "string", "maxLength": 120 },
+          "value": { "type": "string", "maxLength": 120, "description": "the stated figure with currency and tax basis, or the words not stated" },
+          "deadline": { "type": "string", "maxLength": 80, "description": "date, time and zone as the notice gives them, or the words zone not stated, such as 2026-12-04 12:00 CET" },
+          "deadline_date": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+          "fit": { "enum": ["strong", "good"] },
+          "fit_reason": { "type": "string", "maxLength": 200 },
+          "eligibility": { "enum": ["qualifies", "does_not_qualify", "unclear", "not_assessed"] },
+          "eligibility_notes": { "type": "string", "maxLength": 400, "description": "set-asides, mandatory certifications, local presence rules, lots" },
+          "notice_url": { "type": "string", "description": "the notice page itself, never a search page or a portal home page" },
+          "portal": { "type": "string", "maxLength": 120 },
+          "checked_on": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "the day this run read the notice page and saw it open" },
+          "closing_soon": { "type": "boolean", "description": "true when the deadline is within 7 days of run_date" }
+        }
+      }
+    },
+    "still_open": {
+      "type": "array",
+      "maxItems": 60,
+      "description": "tenders the previous report listed that this run found still open, one short line each",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "notice_url", "deadline"],
+        "properties": {
+          "title": { "type": "string", "maxLength": 300 },
+          "notice_url": { "type": "string" },
+          "deadline": { "type": "string", "maxLength": 80 },
+          "changed": { "type": ["string", "null"], "maxLength": 200, "description": "an amendment or a moved deadline, when the notice shows one; null otherwise" }
+        }
+      }
+    },
+    "closed_since": { "type": "array", "items": { "type": "string", "maxLength": 300 }, "description": "tenders from the previous report that are now closed, cancelled or awarded, one line each with the notice that says so" },
+    "near_misses": { "type": "array", "maxItems": 15, "items": { "type": "string", "maxLength": 300 }, "description": "open notices left out for value or partial fit, one line each" },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["portals_searched", "unreachable"],
+      "properties": {
+        "portals_searched": { "type": "array", "items": { "type": "string" } },
+        "unreachable": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["portal", "reason"],
+            "properties": {
+              "portal": { "type": "string" },
+              "reason": { "enum": ["blocked", "needs_login", "needs_javascript", "error", "skipped"] },
+              "detail": { "type": "string", "maxLength": 200 }
+            }
+          }
+        }
+      }
+    },
+    "do_next": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 40, "maxLength": 4500, "description": "what a person reads: new tenders by deadline with buyer, value, fit and eligibility, those closing within 7 days first, a line for tenders still open, near misses, do next, and the coverage line" }
+  }
+}

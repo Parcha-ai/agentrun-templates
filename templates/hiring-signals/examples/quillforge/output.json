@@ -1,0 +1,23 @@
+{
+  "window": { "from": "2026-11-02", "to": "2026-11-09" },
+  "quiet": false,
+  "signals": [
+    {
+      "company": "Quillforge",
+      "kind": "new_roles",
+      "date": "2026-11-05",
+      "claim": "Three sales roles posted 2026-11-04 and 2026-11-05 on the Greenhouse board, counted 2026-11-09: two Enterprise Account Executives (Chicago, New York) and a Sales Engineer (remote, US). A Head of Security was posted 2026-11-03.",
+      "function": "sales",
+      "location": "US",
+      "role_count": 3,
+      "inference": "Consistent with a push into enterprise accounts: the board had no sales roles on 2026-11-01.",
+      "so_what": "For your team: expect Quillforge in more enterprise deals from next quarter.",
+      "source_url": "https://boards.greenhouse.example/quillforge",
+      "confidence": "high"
+    }
+  ],
+  "quiet_companies": ["Brightpane"],
+  "dropped_repeats": [],
+  "unreachable": [],
+  "report_markdown": "**Quillforge is building an enterprise sales team.** Three sales roles appeared on its Greenhouse board between 2026-11-04 and 2026-11-05 (two Enterprise Account Executives, one Sales Engineer), counted 2026-11-09, plus a Head of Security. The board had none of them on 2026-11-01. That is consistent with an enterprise push (inference).\n\nNothing new at Brightpane."
+}

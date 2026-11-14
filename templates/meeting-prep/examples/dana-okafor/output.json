@@ -1,0 +1,56 @@
+{
+  "prepared_on": "2026-11-14",
+  "subject": {
+    "person": "Dana Okafor",
+    "organization": "Northwind Freight",
+    "current_role": "VP of Operations",
+    "role_since": "2023-03",
+    "identity": {
+      "confidence": "confirmed",
+      "assumption": "The Northwind Freight leadership page names Dana Okafor as VP of Operations, matching the role given. No other Dana Okafor was tied to Northwind Freight.",
+      "rejected_candidates": []
+    }
+  },
+  "meeting_type": "sales",
+  "goal": "Learn how they choose a freight-audit vendor and who signs off.",
+  "bottom_line": "Dana Okafor runs network operations across 14 cross-dock facilities at Northwind Freight and has done so since March 2023 [S1]. She came from six years at Cobalt Parcel, last as Director of Linehaul [S1]. Northwind's own 2026 operations update says her team is evaluating freight-audit and payment tooling this year [S2], which makes this a live buying window. Who signs off on a vendor is not public, so ask early.",
+  "career": [
+    { "years": "2023 to now", "organization": "Northwind Freight", "role": "VP of Operations", "sources": ["S1"] },
+    { "years": "about 2017 to 2023", "organization": "Cobalt Parcel", "role": "Director of Linehaul (last role)", "sources": ["S1"] }
+  ],
+  "public_work": [
+    { "date": "2026-02", "kind": "talk", "title": "Carrier scorecards that carriers will accept", "key_point": "Scorecards only change behavior when carriers see the same data and the same dispute window as the shipper.", "sources": ["S3"] }
+  ],
+  "organization_snapshot": {
+    "summary": "Northwind Freight operates a cross-dock network of 14 facilities [S1]. The 2026 operations update lists freight-audit and payment tooling among this year's evaluations [S2].",
+    "recent_news": [
+      { "date": "2026-01-20", "published": "2026-01-22", "event": "Published the 2026 operations update naming freight-audit tooling as an evaluation this year.", "sources": ["S2"] }
+    ]
+  },
+  "likely_priorities": [
+    { "priority": "Cutting invoice disputes with carriers", "evidence": "Her talk is about scorecards and a shared dispute window; the operations update names freight-audit tooling.", "sources": ["S2", "S3"] }
+  ],
+  "sensitivities": [],
+  "talking_points": [
+    { "point": "Share how audit tooling changed dispute rates at a comparable shipper, with a number you can source.", "why": "Her talk makes dispute handling the center of her carrier work.", "sources": ["S3"] },
+    { "point": "Ask what the 2026 evaluation has covered so far.", "why": "The operations update says the evaluation is under way, not finished.", "sources": ["S2"] }
+  ],
+  "questions": [
+    "Which carriers or lanes are driving the audit work, and what does a good outcome look like for your team?",
+    "Who else is part of the vendor decision besides operations?",
+    "How did you handle freight audit at Cobalt Parcel, and what would you do differently here?",
+    "What would make you drop a vendor from the evaluation?",
+    "What timeline is the evaluation working to?"
+  ],
+  "gaps": [
+    "Who signs off on vendor contracts is not stated in any source read.",
+    "The leadership page is the only source for her Cobalt Parcel years and her start date.",
+    "The conference page for the 2026 talk gives no recording, so the key point comes from its abstract."
+  ],
+  "sources": [
+    { "id": "S1", "url": "https://northwindfreight.example/company/leadership", "title": "Leadership | Northwind Freight", "publisher": "Northwind Freight", "published": null, "read_on": "2026-11-14" },
+    { "id": "S2", "url": "https://northwindfreight.example/blog/2026-operations-update", "title": "2026 operations update", "publisher": "Northwind Freight", "published": "2026-01-22", "read_on": "2026-11-14" },
+    { "id": "S3", "url": "https://dockweek.example/2026/speakers/dana-okafor", "title": "DockWeek 2026 speakers: Dana Okafor", "publisher": "DockWeek", "published": "2026-02-03", "read_on": "2026-11-14" }
+  ],
+  "report_markdown": "## Bottom line\nDana Okafor runs network operations across 14 cross-dock facilities at Northwind Freight, since March 2023 [S1]. She came from Cobalt Parcel, last as Director of Linehaul [S1]. Northwind's 2026 operations update says her team is evaluating freight-audit and payment tooling this year [S2]. Who signs off on a vendor is not public: ask early.\n\n## Profile\n| Years | Organization | Role |\n|---|---|---|\n| 2023 to now | Northwind Freight | VP of Operations [S1] |\n| about 2017 to 2023 | Cobalt Parcel | Director of Linehaul [S1] |\n\n## Public work and statements\n- 2026-02, talk, \"Carrier scorecards that carriers will accept\": scorecards change behavior when carriers see the same data and the same dispute window [S3].\n\n## Organization and recent news\nCross-dock network of 14 facilities [S1]. 2026-01-20: the operations update names freight-audit tooling as an evaluation this year (published 2026-01-22) [S2].\n\n## Likely priorities (inference)\n- Cutting carrier invoice disputes, from her talk and the operations update [S2][S3].\n\n## Talking points\n1. Share how audit tooling changed dispute rates at a comparable shipper, with a number you can source [S3].\n2. Ask what the 2026 evaluation has covered so far [S2].\n\n## Questions\n1. Which carriers or lanes drive the audit work, and what does a good outcome look like?\n2. Who else is part of the vendor decision besides operations?\n3. How did you handle freight audit at Cobalt Parcel?\n4. What would make you drop a vendor?\n5. What timeline is the evaluation working to?\n\n## Gaps and coverage\nSign-off authority is not stated anywhere read. The Cobalt Parcel years and start date rest on the leadership page alone."
+}

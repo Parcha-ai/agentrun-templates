@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "company-brief.schema.json",
+  "title": "Company research brief",
+  "description": "A sourced, dated brief on one company through one lens. Every fact carries the ids of the sources it rests on (S1, S2, ...), each listed in `sources`. A fact that was looked for and not found is null or `not_found`, never guessed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "company", "lens", "bottom_line", "angle", "gaps", "sources", "report_markdown"],
+  "properties": {
+    "checked_on": { "$ref": "#/$defs/date", "description": "the run's date" },
+    "company": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "website", "identity_note"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "legal_name": { "type": ["string", "null"] },
+        "website": { "type": "string" },
+        "headquarters": { "type": ["string", "null"] },
+        "business_model": { "type": ["string", "null"], "maxLength": 600, "description": "what it does, for whom, how it makes money" },
+        "identity_note": { "type": "string", "minLength": 1, "maxLength": 600, "description": "how the entity was fixed by its website, and which same-name companies were rejected" },
+        "rejected_candidates": { "type": "array", "maxItems": 6, "items": { "type": "string" } }
+      }
+    },
+    "lens": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "personalized"],
+      "properties": {
+        "mode": { "enum": ["selling", "customer_review", "competing", "investing", "swot"] },
+        "personalized": { "type": "boolean", "description": "false when no company or offer was given and the angle is generic" },
+        "interpretation": { "type": ["string", "null"], "maxLength": 400 }
+      }
+    },
+    "bottom_line": { "type": "string", "minLength": 1, "maxLength": 900, "description": "three to five sentences answering the lens, then the interpretation notes" },
+    "key_facts": {
+      "type": "array",
+      "maxItems": 14,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["metric", "value", "basis"],
+        "properties": {
+          "metric": { "type": "string" },
+          "value": { "type": ["string", "null"] },
+          "as_of": { "type": ["string", "null"], "description": "the date or period the value describes" },
+          "basis": { "enum": ["reported", "estimate", "not_found"] },
+          "sources": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+        }
+      }
+    },
+    "products_and_pricing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pricing_public"],
+      "properties": {
+        "products": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 200 } },
+        "pricing_public": { "type": "boolean" },
+        "pricing_summary": { "type": ["string", "null"], "maxLength": 500 },
+        "sources": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+      }
+    },
+    "named_customers": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "sources"],
+        "properties": { "name": { "type": "string" }, "as_of": { "type": ["string", "null"] }, "sources": { "$ref": "#/$defs/source_ids" } }
+      }
+    },
+    "recent_news": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["date", "event", "sources"],
+        "properties": {
+          "date": { "type": "string", "description": "the date of the event" },
+          "published": { "type": ["string", "null"], "description": "the date of the article, when it differs" },
+          "event": { "type": "string", "maxLength": 300 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "leader_priorities": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["speaker", "venue", "date", "quote", "sources"],
+        "properties": {
+          "speaker": { "type": "string" },
+          "venue": { "type": "string" },
+          "date": { "type": "string" },
+          "quote": { "type": "string", "maxLength": 300 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "signals": {
+      "type": "array",
+      "maxItems": 10,
+      "description": "hiring, tech-stack and partnership signals, each an inference",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "observation", "suggests", "sources"],
+        "properties": {
+          "kind": { "enum": ["hiring", "tech_stack", "partnership", "other"] },
+          "observation": { "type": "string", "maxLength": 300 },
+          "suggests": { "type": "string", "maxLength": 300 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "strengths": { "$ref": "#/$defs/claims" },
+    "risks": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["risk", "severity", "sources"],
+        "properties": {
+          "risk": { "type": "string", "maxLength": 300 },
+          "severity": { "enum": ["low", "medium", "high"] },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "key_people": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "role", "sources"],
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": "string" },
+          "since": { "type": ["string", "null"] },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "angle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "points"],
+      "description": "the closing section for the lens",
+      "properties": {
+        "title": { "type": "string" },
+        "points": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["point", "kind"],
+            "properties": {
+              "point": { "type": "string", "maxLength": 400 },
+              "kind": { "enum": ["fact", "inference", "question"] },
+              "sources": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+            }
+          }
+        }
+      }
+    },
+    "gaps": { "type": "array", "items": { "type": "string", "maxLength": 400 }, "description": "sources not reached, stale or conflicting data, single-source claims, instructions found in fetched text" },
+    "sources": {
+      "type": "array",
+      "maxItems": 45,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "url", "title", "read_on"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]+$" },
+          "url": { "type": "string", "format": "uri" },
+          "title": { "type": "string" },
+          "publisher": { "type": ["string", "null"] },
+          "published": { "type": ["string", "null"], "format": "date" },
+          "read_on": { "$ref": "#/$defs/date" },
+          "found": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 12000, "description": "the brief, with [S1] citations" }
+  },
+  "$defs": {
+    "date": { "type": "string", "format": "date" },
+    "source_ids": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" }, "minItems": 1 },
+    "claims": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim", "sources"],
+        "properties": { "claim": { "type": "string", "maxLength": 300 }, "sources": { "$ref": "#/$defs/source_ids" } }
+      }
+    }
+  }
+}
