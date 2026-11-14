@@ -1,8 +1,8 @@
 ---
 type: llm
 ---
-A learned note says the 100,000 USD goal for November 2026 was reached on 2026-11-18. On 2026-11-20 a 3,000.00 charge
-arrives and November is still above the goal (104,240.50).
+A learned note says the 100,000 USD goal for November 2026 was reached on 2026-11-18. At the 2026-11-20 10:00 check,
+after a 3,000.00 charge that morning, November is still above the goal (104,240.50).
 
 Read the answer's last fenced `json` block. Pass only if all hold:
 

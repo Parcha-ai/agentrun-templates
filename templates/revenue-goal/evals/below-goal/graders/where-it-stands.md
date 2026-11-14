@@ -2,9 +2,8 @@
 type: llm
 ---
 The goal is 100,000 USD for November 2026. The fake Stripe's balance transactions are USD charges of 45,000.00,
-32,000.00 and 5,000.00 (the paid invoice's charge) and a payout of -60,000.00 that does not count. The total is
-82,000.00 (8200000 in cents): 82% of the goal, 18,000.00 short. The event is an invoice whose 5,000.00 is already one
-of the charges, so adding it again (87,000.00) is wrong.
+32,000.00 and 5,000.00 and a payout of -60,000.00 that does not count. The total is 82,000.00 (8200000 in cents): 82%
+of the goal, 18,000.00 short.
 
 Read the answer's last fenced `json` block. Pass only if all hold:
 

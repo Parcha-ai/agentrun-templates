@@ -1,6 +1,6 @@
 {
   "goal": { "amount": 100000, "currency": "usd" },
-  "period": { "label": "November 2026", "starts_at": "2026-11-01T00:00:00Z", "as_of": "2026-11-18T14:05:03Z" },
+  "period": { "label": "November 2026", "starts_at": "2026-11-01T00:00:00Z", "as_of": "2026-11-18T15:00:00Z" },
   "total": {
     "minor_units": 10124050,
     "formatted": "$101,240.50",

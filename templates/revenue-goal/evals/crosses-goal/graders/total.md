@@ -2,7 +2,7 @@
 type: llm
 ---
 The goal is 100,000 USD for November 2026 (UTC). The fake Stripe's balance transactions for the period are USD charges
-of 45,000.00, 32,000.00, 18,340.50 and 2,400.00 (the event's, on 2026-11-18), a payment of 5,000.00 and a refund of
+of 45,000.00, 32,000.00, 18,340.50 and 2,400.00 (on 2026-11-18), a payment of 5,000.00 and a refund of
 -1,500.00. It also returns a payout of -60,000.00, a Stripe fee of -290.00 and a charge of 12,000.00 from 2026-10-30,
 none of which count. The right total is 101,240.50 (10124050 in cents), past the goal.
 

@@ -1,7 +1,7 @@
 ---
 type: llm
 ---
-The goal is 100,000 USD for November 2026. Stripe's only November money is in EUR: 25,000.00 and the event's
+The goal is 100,000 USD for November 2026. Stripe's only November money is in EUR: 25,000.00 and
 90,000.00. The skill counts only the goal's currency and never converts, so the USD total is 0.
 
 Read the answer's last fenced `json` block. Pass only if all hold:
