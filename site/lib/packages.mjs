@@ -127,7 +127,7 @@ export async function loadPackage(entry, ctx) {
       inputs.push({ key, ...spec, required: spec.required !== false });
     }
   }
-  const parameters = Object.entries(params).map(([key, spec]) => ({ key, ...(isObj(spec) ? spec : {}), required: isObj(spec) && spec.required === true }));
+  const parameters = Object.entries(params).map(([key, spec]) => ({ key, ...(isObj(spec) ? spec : {}), required: isObj(spec) && spec.required !== false }));
 
   let outputSchema, outputSchemaPath;
   if (isObj(m.output) && typeof m.output.schema === "string") {

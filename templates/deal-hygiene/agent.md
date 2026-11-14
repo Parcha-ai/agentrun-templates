@@ -34,13 +34,13 @@ mcp:
     # channel_id is the name the action also takes a channel by: held absent, so the pinned channel is the only one.
     pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
 parameters:
-  pipeline_id: { type: string, default: default, pattern: "^[A-Za-z0-9_-]{1,64}$", description: "the HubSpot deal pipeline to check: default for HubSpot's first pipeline, or another pipeline's ID (Settings, Objects, Deals, Pipelines)" }
-  channel: { type: string, required: true, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the list goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
-  stale_days: { type: integer, default: 14, description: "how many days with no logged activity before a deal is listed; 14 unless you set it" }
-  top_n: { type: integer, default: 10, description: "how many deals the post lists at most, biggest first; the rest are counted; 10 unless you set it" }
-  currency: { type: string, default: usd, pattern: "^[a-z]{3}$", description: "your HubSpot account's currency, used only to write amounts ($, €); nothing is converted" }
-  cron: { type: string, format: cron, default: "0 9 * * 1", description: "when the list runs, as a cron line (minute hour day-of-month month day-of-week): Monday 09:00 unless you set it" }
-  timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line and the dates are read in (Europe/Madrid, America/New_York): UTC unless you set it" }
+  pipeline_id: { type: string, default: default, pattern: "^[A-Za-z0-9_-]{1,64}$", required: false, description: "the HubSpot deal pipeline to check: default for HubSpot's first pipeline, or another pipeline's ID (Settings, Objects, Deals, Pipelines)" }
+  channel: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the list goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
+  stale_days: { type: integer, default: 14, required: false, description: "how many days with no logged activity before a deal is listed; 14 unless you set it" }
+  top_n: { type: integer, default: 10, required: false, description: "how many deals the post lists at most, biggest first; the rest are counted; 10 unless you set it" }
+  currency: { type: string, default: usd, pattern: "^[a-z]{3}$", required: false, description: "your HubSpot account's currency, used only to write amounts ($, €); nothing is converted" }
+  cron: { type: string, format: cron, default: "0 9 * * 1", required: false, description: "when the list runs, as a cron line (minute hour day-of-month month day-of-week): Monday 09:00 unless you set it" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line and the dates are read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
   stale_days: { type: integer, required: false, minimum: 1, maximum: 180, title: "Days with no activity", description: "The schedule passes your saved setting. Blank: 14.", examples: [14] }
 budget: { per_run_usd: 0.40 }

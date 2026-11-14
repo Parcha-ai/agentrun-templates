@@ -45,13 +45,13 @@ mcp:
     # channel_id is the name the action also takes a channel by: held absent, so the pinned channel is the only one.
     pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
 parameters:
-  team_id: { type: string, required: true, pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", description: "your Linear team's ID, a UUID like 9cfb482a-81e3-4154-b5b9-2c805e70a02d as Linear's API and Composio's LINEAR_LIST_LINEAR_TEAMS show it. Not the team key like ENG" }
-  channel: { type: string, required: true, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the check goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
+  team_id: { type: string, pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", description: "your Linear team's ID, a UUID like 9cfb482a-81e3-4154-b5b9-2c805e70a02d as Linear's API and Composio's LINEAR_LIST_LINEAR_TEAMS show it. Not the team key like ENG" }
+  channel: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the check goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
   owner: { type: string, required: false, pattern: "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", description: "optional: the GitHub account or organization that owns the repository your issues link pull requests from, like Parcha-ai. Leave it and repo out to skip the PR check" }
   repo: { type: string, required: false, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "optional: that repository's name without the owner, like agentrun" }
-  stale_days: { type: integer, default: 3, description: "how many days without an update makes an in-progress issue or an open linked PR stale; 3 unless you set it" }
-  cron: { type: string, format: cron, default: "0 9 * * 1,4", description: "when the check runs, as a cron line (minute hour day-of-month month day-of-week): Monday and Thursday 09:00 unless you set it" }
-  timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
+  stale_days: { type: integer, default: 3, required: false, description: "how many days without an update makes an in-progress issue or an open linked PR stale; 3 unless you set it" }
+  cron: { type: string, format: cron, default: "0 9 * * 1,4", required: false, description: "when the check runs, as a cron line (minute hour day-of-month month day-of-week): Monday and Thursday 09:00 unless you set it" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
   stale_days: { type: integer, required: false, minimum: 1, maximum: 30, title: "Days before work counts as stale", description: "The schedule passes your saved setting. Blank: 3.", examples: [3] }
 budget: { per_run_usd: 0.80 }

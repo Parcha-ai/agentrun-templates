@@ -36,12 +36,12 @@ mcp:
     # channel_id is the name the action also takes a channel by: held absent, so the pinned channel is the only one.
     pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
 parameters:
-  owner: { type: string, required: true, pattern: "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", description: "the GitHub account or organization that owns the repository, like Parcha-ai" }
-  repo: { type: string, required: true, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "the repository's name without the owner, like agentrun" }
-  channel: { type: string, required: true, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the digest goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
-  stale_days: { type: integer, default: 3, description: "how many days a PR may wait on someone before it is listed; 3 unless you set it. Weekends count" }
-  cron: { type: string, format: cron, default: "0 9 * * 1", description: "when the digest runs, as a cron line (minute hour day-of-month month day-of-week): Monday 09:00 unless you set it" }
-  timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
+  owner: { type: string, pattern: "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", description: "the GitHub account or organization that owns the repository, like Parcha-ai" }
+  repo: { type: string, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "the repository's name without the owner, like agentrun" }
+  channel: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the digest goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
+  stale_days: { type: integer, default: 3, required: false, description: "how many days a PR may wait on someone before it is listed; 3 unless you set it. Weekends count" }
+  cron: { type: string, format: cron, default: "0 9 * * 1", required: false, description: "when the digest runs, as a cron line (minute hour day-of-month month day-of-week): Monday 09:00 unless you set it" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
   stale_days: { type: integer, required: false, minimum: 1, maximum: 90, title: "Days before a PR counts as stale", description: "The schedule passes your saved setting. Blank: 3.", examples: [3] }
 budget: { per_run_usd: 0.60 }

@@ -13,10 +13,10 @@ model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
 effort: low
 tools: [read, web_search, web_fetch]
 parameters:
-  vendors: { type: array, items: { type: string }, required: true, description: "the vendors, products or narrower components you depend on, one per entry: \"AWS us-east-1\", \"GitHub Actions\", \"Stripe\", \"Cloudflare\", \"Okta\". A narrower entry limits the watch to that service or region" }
-  lookback_days: { type: integer, default: 7, description: "how many days back each run looks. Keep it equal to the gap between runs (7 for the weekly default): longer and briefs repeat each other, shorter and days are missed" }
-  cron: { type: string, format: cron, default: "0 8 * * 1", description: "when the brief runs, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it; set lookback_days to its gap" }
-  timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
+  vendors: { type: array, items: { type: string }, description: "the vendors, products or narrower components you depend on, one per entry: \"AWS us-east-1\", \"GitHub Actions\", \"Stripe\", \"Cloudflare\", \"Okta\". A narrower entry limits the watch to that service or region" }
+  lookback_days: { type: integer, default: 7, required: false, description: "how many days back each run looks. Keep it equal to the gap between runs (7 for the weekly default): longer and briefs repeat each other, shorter and days are missed" }
+  cron: { type: string, format: cron, default: "0 8 * * 1", required: false, description: "when the brief runs, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it; set lookback_days to its gap" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
   vendors: { type: array, items: { type: string }, title: "Vendors", description: "Vendors or components to check. The schedule passes your saved list; a run by hand can check others.", examples: [["AWS us-east-1", "GitHub Actions", "Cloudflare", "Stripe"]] }
   lookback_days: { type: integer, required: false, minimum: 1, maximum: 60, title: "Days to look back", description: "Blank: 7." }

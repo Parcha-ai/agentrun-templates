@@ -16,13 +16,13 @@ inputs:
   tickers: { type: array, items: { type: string }, required: false, title: "Tickers for this run", description: "Cover these tickers or company names instead of the setup's list. At most 30." }
   focus: { type: string, required: false, maxLength: 300, title: "Focus", description: "A one-off angle for this run, such as \"capex and data-center revenue\"." }
 parameters:
-  tickers: { type: array, items: { type: string }, required: true, description: "the companies to watch, one ticker or name per item (\"AAPL\", \"MSFT\", \"Nestle\"). Add the exchange when a ticker is ambiguous (\"SHEL.L\"). At most 30 items" }
-  focus: { type: string, pattern: "^[^\\n]{0,300}$", description: "segments, metrics or Q&A threads to put first in every brief (\"cloud revenue\", \"gross margin\"). It sets order, not coverage" }
-  compare_against: { type: string, pattern: "^[^\\n]{0,300}$", description: "a benchmark to weigh each company against, such as a peer figure or your own target. Leave out to compare with each company's prior quarter, year-ago quarter and prior guidance" }
-  recap: { type: boolean, default: true, description: "also give a one-line price move for each watched ticker that did not report, with its driver. On unless you turn it off" }
-  lookback_days: { type: integer, description: "how many days back a run looks for new results; leave it out for 7. Keep it equal to the gap between runs" }
-  cron: { type: string, format: cron, default: "0 7 * * 1", description: "when the run starts, as a cron line (minute hour day-of-month month day-of-week): Monday 07:00 unless you set it. For a run the day after a reporting date, set the cron to that date and lookback_days to 2" }
-  timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
+  tickers: { type: array, items: { type: string }, description: "the companies to watch, one ticker or name per item (\"AAPL\", \"MSFT\", \"Nestle\"). Add the exchange when a ticker is ambiguous (\"SHEL.L\"). At most 30 items" }
+  focus: { type: string, pattern: "^[^\\n]{0,300}$", required: false, description: "segments, metrics or Q&A threads to put first in every brief (\"cloud revenue\", \"gross margin\"). It sets order, not coverage" }
+  compare_against: { type: string, pattern: "^[^\\n]{0,300}$", required: false, description: "a benchmark to weigh each company against, such as a peer figure or your own target. Leave out to compare with each company's prior quarter, year-ago quarter and prior guidance" }
+  recap: { type: boolean, default: true, required: false, description: "also give a one-line price move for each watched ticker that did not report, with its driver. On unless you turn it off" }
+  lookback_days: { type: integer, required: false, description: "how many days back a run looks for new results; leave it out for 7. Keep it equal to the gap between runs" }
+  cron: { type: string, format: cron, default: "0 7 * * 1", required: false, description: "when the run starts, as a cron line (minute hour day-of-month month day-of-week): Monday 07:00 unless you set it. For a run the day after a reporting date, set the cron to that date and lookback_days to 2" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 budget: { per_run_usd: 6.00 }
 learning: true
 triggers:

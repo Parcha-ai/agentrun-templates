@@ -18,13 +18,13 @@ inputs:
   regions: { type: array, items: { type: string }, required: false, title: "Regions", description: "Locations to look at closely this run, instead of the setup's." }
   focus: { type: string, required: false, maxLength: 300, title: "Focus", description: "A one-off angle for this run, such as \"only sales roles in Germany\"." }
 parameters:
-  companies: { type: array, items: { type: string }, required: true, description: "the companies to track, one per item, each a name and its domain: \"Acme (acme.com)\". At most 30 items" }
+  companies: { type: array, items: { type: string }, description: "the companies to track, one per item, each a name and its domain: \"Acme (acme.com)\". At most 30 items" }
   functions: { type: array, items: { type: string }, required: false, default: [], description: "role types to look at closely, one per item (\"sales\", \"security engineering\"). They come first in the report; other notable signals are still reported" }
   regions: { type: array, items: { type: string }, required: false, default: [], description: "locations to look at closely, one per item (\"Germany\", \"Singapore\"). Signals elsewhere are still reported" }
-  reason: { type: string, pattern: "^[^\\n]{0,300}$", description: "why you watch them (\"competing for the same deals\", \"a portfolio holding\"). It frames each so-what line" }
-  lookback_days: { type: integer, description: "how many days back a run looks; leave it out for 7. Keep it equal to the gap between runs (7 for the weekly default): longer and runs repeat each other, shorter and days between them are missed" }
-  cron: { type: string, format: cron, default: "0 8 * * 1", description: "when the run starts, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it; set lookback_days to its gap" }
-  timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
+  reason: { type: string, pattern: "^[^\\n]{0,300}$", required: false, description: "why you watch them (\"competing for the same deals\", \"a portfolio holding\"). It frames each so-what line" }
+  lookback_days: { type: integer, required: false, description: "how many days back a run looks; leave it out for 7. Keep it equal to the gap between runs (7 for the weekly default): longer and runs repeat each other, shorter and days between them are missed" }
+  cron: { type: string, format: cron, default: "0 8 * * 1", required: false, description: "when the run starts, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it; set lookback_days to its gap" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 budget: { per_run_usd: 4.00 }
 learning: true
 triggers:

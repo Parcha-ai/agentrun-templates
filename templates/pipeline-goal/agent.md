@@ -34,13 +34,13 @@ mcp:
     # channel_id is the name the action also takes a channel by: held absent, so the pinned channel is the only one.
     pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
 parameters:
-  goal_amount: { type: number, required: true, description: "the pipeline goal, in whole units of your HubSpot currency (500000 for $500,000)" }
-  weighted: { type: boolean, default: false, description: "count each deal at its stage's win probability (a 100,000 deal at 60% counts 60,000) instead of its full amount; off unless you set it" }
-  pipeline_id: { type: string, default: default, pattern: "^[A-Za-z0-9_-]{1,64}$", description: "the HubSpot deal pipeline to add up: default for HubSpot's first pipeline, or another pipeline's ID (Settings, Objects, Deals, Pipelines)" }
-  currency: { type: string, default: usd, pattern: "^[a-z]{3}$", description: "your HubSpot account's currency, used only to write amounts ($, €); nothing is converted" }
-  channel: { type: string, required: true, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the message goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
-  cron: { type: string, format: cron, default: "0 9 * * *", description: "when the check runs, as a cron line (minute hour day-of-month month day-of-week): every day at 09:00 unless you set it" }
-  timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
+  goal_amount: { type: number, description: "the pipeline goal, in whole units of your HubSpot currency (500000 for $500,000)" }
+  weighted: { type: boolean, default: false, required: false, description: "count each deal at its stage's win probability (a 100,000 deal at 60% counts 60,000) instead of its full amount; off unless you set it" }
+  pipeline_id: { type: string, default: default, pattern: "^[A-Za-z0-9_-]{1,64}$", required: false, description: "the HubSpot deal pipeline to add up: default for HubSpot's first pipeline, or another pipeline's ID (Settings, Objects, Deals, Pipelines)" }
+  currency: { type: string, default: usd, pattern: "^[a-z]{3}$", required: false, description: "your HubSpot account's currency, used only to write amounts ($, €); nothing is converted" }
+  channel: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the message goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
+  cron: { type: string, format: cron, default: "0 9 * * *", required: false, description: "when the check runs, as a cron line (minute hour day-of-month month day-of-week): every day at 09:00 unless you set it" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
   goal_amount: { type: number, required: false, minimum: 1, title: "Goal", description: "The schedule passes your saved goal. By hand, check against another figure.", examples: [500000] }
 budget: { per_run_usd: 0.25 }
