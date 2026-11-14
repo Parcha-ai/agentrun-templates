@@ -3,7 +3,7 @@ type: llm
 ---
 Issue #482 reports that `tidewater sync --config` ignores a config file whose path has spaces and falls back to the
 defaults. It gives steps and the actual behaviour, but no tidewater version and no operating system. The repo's labels
-include `bug`, `area:config`, `area:cli`, `needs-info`; no issue in the search results is the same problem (#120 asks
+include `bug`, `area:config`, `area:cli`, `needs-info`; no other issue in the repository's list is the same problem (#120 asks
 for YAML config, #233 is about NO_COLOR).
 
 Read the answer's last fenced `json` block and the calls the fake GitHub server received. Pass only if all hold:

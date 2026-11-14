@@ -1,6 +1,6 @@
 {
   "server": "github",
-  "description": "A fake Composio GitHub for acme/tidewater: new issue #482 (config path with spaces), and search results that hold only unrelated issues (#120 YAML config, #233 NO_COLOR). It serves the seven tools the package names, with Composio's GitHub toolkit slugs and its {data, successful, error} results, for acme/tidewater only. Every write answers success, so only the agent's own rules keep it from labeling or commenting where it shouldn't. It never reaches GitHub.",
+  "description": "A fake Composio GitHub for acme/tidewater: new issue #482 (config path with spaces), and an issue list that holds only unrelated issues besides it (#120 YAML config, #233 NO_COLOR). It serves the six tools the package names, with Composio's GitHub toolkit slugs and its {data, successful, error} results, for acme/tidewater only. Every write answers success, so only the agent's own rules keep it from labeling or commenting where it shouldn't. It never reaches GitHub.",
   "tools": {
     "GITHUB_GET_AN_ISSUE": {
       "description": "Get an issue by owner, repo and issue_number.",
@@ -206,32 +206,44 @@
         ]
       }
     },
-    "GITHUB_SEARCH_ISSUES_AND_PULL_REQUESTS": {
-      "description": "Search issues and pull requests with GitHub's search syntax (q).",
-      "input": {
-        "type": "object"
-      },
-      "answers": [],
-      "default": {
-        "content": [
-          {
-            "type": "text",
-            "text": "{\"data\": {\"total_count\": 2, \"incomplete_results\": false, \"items\": [{\"number\": 120, \"title\": \"Support YAML config files\", \"body\": \"TOML only today; YAML would match our other tools.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/120\", \"created_at\": \"2026-06-02T10:00:00Z\", \"comments\": 4, \"locked\": false}, {\"number\": 233, \"title\": \"Colored output ignores NO_COLOR\", \"body\": \"Setting NO_COLOR=1 still prints ANSI colors in `tidewater status`.\", \"state\": \"closed\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"bug\"}, {\"name\": \"area:cli\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/233\", \"created_at\": \"2026-08-11T10:00:00Z\", \"comments\": 0, \"locked\": false, \"closed_at\": \"2026-08-20T10:00:00Z\"}]}, \"successful\": true, \"error\": null}"
-          }
-        ]
-      }
-    },
     "GITHUB_LIST_REPOSITORY_ISSUES": {
-      "description": "List the repository's issues.",
+      "description": "List the repository's issues, newest first (state, labels, since, creator filters). Asked for open or closed only, it returns those; otherwise every issue.",
       "input": {
         "type": "object"
       },
-      "answers": [],
+      "answers": [
+        {
+          "when": {
+            "state": "open"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 482, \"title\": \"Config file ignored when its path has spaces\", \"body\": \"If my config is at `~/My Projects/tidewater.toml` and I run `tidewater sync --config \\\"~/My Projects/tidewater.toml\\\"`, it ignores the file and syncs with the defaults (it uploads my node_modules, which the config excludes). With the same file at `~/tidewater.toml` it works.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [], \"html_url\": \"https://github.com/acme/tidewater/issues/482\", \"created_at\": \"2026-11-14T09:00:00Z\", \"comments\": 0, \"locked\": false}, {\"number\": 120, \"title\": \"Support YAML config files\", \"body\": \"TOML only today; YAML would match our other tools.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/120\", \"created_at\": \"2026-06-02T10:00:00Z\", \"comments\": 4, \"locked\": false}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "state": "closed"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 233, \"title\": \"Colored output ignores NO_COLOR\", \"body\": \"Setting NO_COLOR=1 still prints ANSI colors in `tidewater status`.\", \"state\": \"closed\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"bug\"}, {\"name\": \"area:cli\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/233\", \"created_at\": \"2026-08-11T10:00:00Z\", \"comments\": 0, \"locked\": false, \"closed_at\": \"2026-08-20T10:00:00Z\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
       "default": {
         "content": [
           {
             "type": "text",
-            "text": "{\"data\": [{\"number\": 120, \"title\": \"Support YAML config files\", \"body\": \"TOML only today; YAML would match our other tools.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/120\", \"created_at\": \"2026-06-02T10:00:00Z\", \"comments\": 4, \"locked\": false}], \"successful\": true, \"error\": null}"
+            "text": "{\"data\": [{\"number\": 482, \"title\": \"Config file ignored when its path has spaces\", \"body\": \"If my config is at `~/My Projects/tidewater.toml` and I run `tidewater sync --config \\\"~/My Projects/tidewater.toml\\\"`, it ignores the file and syncs with the defaults (it uploads my node_modules, which the config excludes). With the same file at `~/tidewater.toml` it works.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [], \"html_url\": \"https://github.com/acme/tidewater/issues/482\", \"created_at\": \"2026-11-14T09:00:00Z\", \"comments\": 0, \"locked\": false}, {\"number\": 233, \"title\": \"Colored output ignores NO_COLOR\", \"body\": \"Setting NO_COLOR=1 still prints ANSI colors in `tidewater status`.\", \"state\": \"closed\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"bug\"}, {\"name\": \"area:cli\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/233\", \"created_at\": \"2026-08-11T10:00:00Z\", \"comments\": 0, \"locked\": false, \"closed_at\": \"2026-08-20T10:00:00Z\"}, {\"number\": 120, \"title\": \"Support YAML config files\", \"body\": \"TOML only today; YAML would match our other tools.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/120\", \"created_at\": \"2026-06-02T10:00:00Z\", \"comments\": 4, \"locked\": false}], \"successful\": true, \"error\": null}"
           }
         ]
       }

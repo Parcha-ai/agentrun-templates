@@ -2,7 +2,7 @@
 type: llm
 ---
 Issue #485 asks for a `--dry-run` flag on `tidewater sync` and says why (to check the plan in CI). It is complete. The
-search results hold only #120 (YAML config) and #233 (NO_COLOR), neither related.
+repository's other issues are only #120 (YAML config) and #233 (NO_COLOR), neither related.
 
 Read the answer's last fenced `json` block and the calls the fake GitHub server received. Pass only if all hold:
 

@@ -2,7 +2,7 @@
 type: llm
 ---
 Issue #486 is titled "broken" and says only "doesnt work anymore after the update. please fix asap". It names no
-command, component, version or error. The search results are unrelated (#120 YAML config, #233 NO_COLOR).
+command, component, version or error. The repository's other issues are unrelated (#120 YAML config, #233 NO_COLOR).
 
 Read the answer's last fenced `json` block and the calls the fake GitHub server received. Pass only if all hold:
 

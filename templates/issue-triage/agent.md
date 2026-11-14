@@ -2,7 +2,7 @@
 name: issue-triage
 display_name: "Issue triage: ${parameters.owner}/${parameters.repo}"
 version: 0.1.0
-description: Triages each new issue on your GitHub repository the moment it is opened. It labels the issue from the labels your repo already has, searches open and closed issues for likely duplicates and links them, and asks the author in one comment for whatever a maintainer would need first (steps to reproduce, the version, the error). It can't close, edit or mark an issue a duplicate, and never creates a label. Connects through Composio's GitHub toolkit.
+description: Triages each new issue on your GitHub repository the moment it is opened. It labels the issue from the labels your repo already has, checks your open and closed issues for likely duplicates and links them, and asks the author in one comment for whatever a maintainer would need first (steps to reproduce, the version, the error). It can't close, edit or mark an issue a duplicate, and never creates a label. Connects through Composio's GitHub toolkit.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -15,21 +15,18 @@ tools: [read]
 mcp:
   - source: composio
     toolkit: github
-    # Composio's action slugs. GITHUB_LIST_REPOSITORY_ISSUES is confirmed; the others follow Composio's naming of
-    # GitHub's REST operations and are marked where they still need checking against the toolkit listing.
-    tools:
-      - GITHUB_GET_AN_ISSUE                     # slug to confirm
-      - GITHUB_LIST_ISSUE_COMMENTS              # slug to confirm
-      - GITHUB_LIST_LABELS_FOR_A_REPOSITORY     # slug to confirm
-      - GITHUB_SEARCH_ISSUES_AND_PULL_REQUESTS  # slug to confirm
-      - GITHUB_LIST_REPOSITORY_ISSUES
-      - GITHUB_ADD_LABELS_TO_AN_ISSUE           # slug to confirm
-      - GITHUB_CREATE_AN_ISSUE_COMMENT          # slug to confirm
+    tools: [GITHUB_GET_AN_ISSUE, GITHUB_LIST_ISSUE_COMMENTS, GITHUB_LIST_LABELS_FOR_A_REPOSITORY, GITHUB_LIST_REPOSITORY_ISSUES, GITHUB_ADD_LABELS_TO_AN_ISSUE, GITHUB_CREATE_AN_ISSUE_COMMENT]
     required: true
-    reason: "Reads the new issue, its comments, your repo's labels and its other issues; adds labels to the new issue and posts one comment on it. Both writes are pinned to the repository you set. No tool that closes, edits or creates an issue is asked for."
-    allow: [GITHUB_GET_AN_ISSUE, GITHUB_LIST_ISSUE_COMMENTS, GITHUB_LIST_LABELS_FOR_A_REPOSITORY, GITHUB_SEARCH_ISSUES_AND_PULL_REQUESTS, GITHUB_LIST_REPOSITORY_ISSUES]
-    # The two writes are held to the one repository. Adding labels appends to the issue's set; it can't remove one.
+    reason: "Reads the new issue, its comments, and your repo's labels and issues; adds labels to the new issue and posts one comment on it. Every call is pinned to the repository you set. Labels can't be limited to a set: GitHub creates a label that doesn't exist yet. No tool that closes, edits or assigns is asked for."
+    allow: [GITHUB_GET_AN_ISSUE, GITHUB_LIST_ISSUE_COMMENTS, GITHUB_LIST_LABELS_FOR_A_REPOSITORY, GITHUB_LIST_REPOSITORY_ISSUES]
+    # Every call is held to the one repository, the reads too: the issue body is anyone's text, and an unpinned read
+    # could fetch a private repository's issue that the pinned comment would then post here. There is no search tool:
+    # Composio's takes only free text and searches every repository the connection sees.
     pin:
+      GITHUB_GET_AN_ISSUE: { owner: "${parameters.owner}", repo: "${parameters.repo}" }
+      GITHUB_LIST_ISSUE_COMMENTS: { owner: "${parameters.owner}", repo: "${parameters.repo}" }
+      GITHUB_LIST_LABELS_FOR_A_REPOSITORY: { owner: "${parameters.owner}", repo: "${parameters.repo}" }
+      GITHUB_LIST_REPOSITORY_ISSUES: { owner: "${parameters.owner}", repo: "${parameters.repo}" }
       GITHUB_ADD_LABELS_TO_AN_ISSUE: { owner: "${parameters.owner}", repo: "${parameters.repo}" }
       GITHUB_CREATE_AN_ISSUE_COMMENT: { owner: "${parameters.owner}", repo: "${parameters.repo}" }
 parameters:
@@ -45,17 +42,21 @@ learning: true
 # the pins above hold either way.
 approvals: ask
 triggers:
-  - name: issue-added
-    # Each new issue is one run. Set up Composio's GitHub trigger GITHUB_ISSUE_ADDED_EVENT for this repository, then
-    # register this trigger's hook_url as the Composio project's webhook and give it the secret Composio shows.
-    # Composio sends every trigger of a project to that one URL, so the where keeps this agent to its own repository's
-    # issues. The /data/url field is to confirm against a live delivery.
+  - name: issue-created
+    # Each new issue is one run. In Composio, create the GitHub trigger GITHUB_ISSUE_CREATED_TRIGGER with config owner
+    # and repo set to this repository (Composio polls GitHub: a new issue arrives in about 30 seconds), register this
+    # trigger's hook_url as the Composio project's webhook and give it the secret Composio shows. Composio sends every
+    # trigger of a project to that one URL, so the where keeps this agent to its own repository's issues, and never a
+    # pull request.
     source:
       kind: webhook
       signature: composio
       accept:
-        - event: GITHUB_ISSUE_ADDED_EVENT
-          where: [{ pointer: /data/url, prefix: "https://github.com/${parameters.owner}/${parameters.repo}/issues/" }]
+        - event: GITHUB_ISSUE_CREATED_TRIGGER
+          where:
+            - { pointer: /data/repository_owner, in: ["${parameters.owner}"] }
+            - { pointer: /data/repository_name, in: ["${parameters.repo}"] }
+            - { pointer: /data/is_pull_request, in: [false] }
     max_active_runs: 3
     target:
       kind: start_run
