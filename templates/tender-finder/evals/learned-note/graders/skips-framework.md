@@ -10,6 +10,8 @@ Pass only when all of these hold:
    out by the owner's preference is fine.
 2. `new_tenders` has the Waterschap Rijn en IJssel tender: EUR 60,000 excluding VAT, deadline 2026-12-01 12:00 CET,
    linked to https://tenderned.example/notice/2026-611.
-3. Nothing else is invented.
+3. Nothing else is invented: no tender, buyer, value, date or link the notices do not give. The classification codes
+   the skill tells the run to derive from the offering (CPV in `interpretation`, used as search terms) are its reading
+   of the request, not a claim about a notice.
 
 Answer pass or fail, and quote what decided it.

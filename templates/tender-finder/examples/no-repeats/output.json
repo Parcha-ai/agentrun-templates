@@ -1,0 +1,55 @@
+{
+  "run_date": "2026-11-16",
+  "interpretation": "Penetration testing services in the Netherlands, including pentest, penetratietesten and red-team assessments; CPV 72150000. No holdings or minimum value supplied. Reviewed supplied official-notice snapshots; no live searches.",
+  "quiet": false,
+  "new_tenders": [
+    {
+      "title": "Red team assessment",
+      "buyer": "Gemeente Eindhoven",
+      "country": "Netherlands",
+      "value": "not stated",
+      "deadline": "2026-11-20 14:00 CET",
+      "deadline_date": "2026-11-20",
+      "fit": "strong",
+      "fit_reason": "Red-team assessment aligns closely with offensive security and penetration testing; confirm detailed scope in the tender documents.",
+      "eligibility": "not_assessed",
+      "eligibility_notes": "No holdings supplied. Notice states no set-asides and a single lot; mandatory certifications and local-presence requirements are not stated.",
+      "notice_url": "https://tenderned.example/notice/2026-530",
+      "portal": "TenderNed",
+      "checked_on": "2026-11-16",
+      "closing_soon": true
+    }
+  ],
+  "still_open": [
+    {
+      "title": "Penetratietesten webapplicaties",
+      "notice_url": "https://tenderned.example/notice/2026-481",
+      "deadline": "2026-12-04 12:00 CET",
+      "changed": "Corrigendum 2026-11-12: deadline moved from 2026-11-27 12:00 CET to 2026-12-04 12:00 CET."
+    }
+  ],
+  "closed_since": [],
+  "near_misses": [],
+  "coverage": {
+    "portals_searched": [
+      "TenderNed — supplied notice snapshots reviewed only; no live search"
+    ],
+    "unreachable": [
+      {
+        "portal": "TenderNed",
+        "reason": "error",
+        "detail": "Live portal unavailable according to the run input; used the two supplied notice snapshots dated 2026-11-16 instead."
+      },
+      {
+        "portal": "TED",
+        "reason": "skipped",
+        "detail": "Run input states portals are unreachable; no TED snapshot supplied. No live search or independent cross-check performed."
+      }
+    ]
+  },
+  "do_next": [
+    "For Gemeente Eindhoven's Red team assessment, confirm scope, mandatory certifications and delivery requirements in the tender documents before the 20 November deadline.",
+    "Update the Utrecht opportunity's tracked deadline to 4 December 2026, 12:00 CET."
+  ],
+  "report_markdown": "## New — closing within 7 days\n- **[Red team assessment](https://tenderned.example/notice/2026-530)** — Gemeente Eindhoven. **Deadline: 20 November 2026, 14:00 CET.** Value: not stated. **Strong fit:** red-team assessment closely matches offensive security testing; detailed scope needs confirmation. Eligibility: not assessed because no holdings were supplied. No set-asides; single lot. Certifications and local-presence requirements not stated.\n\n## Still open\n- [Penetratietesten webapplicaties — Gemeente Utrecht](https://tenderned.example/notice/2026-481): deadline moved from **27 November, 12:00 CET** to **4 December 2026, 12:00 CET**, by the 12 November corrigendum.\n\n## Do next\n- Confirm Eindhoven's scope and mandatory requirements before its 20 November deadline.\n- Update Utrecht's tracked deadline.\n\n**Coverage:** Reviewed the two supplied TenderNed notice snapshots dated 16 November; both state open. Live portals were unavailable, and TED was not checked. No broader search or independent verification was possible. Fit and eligibility are preliminary recommendations for the owner to confirm against the tender documents."
+}
