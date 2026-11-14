@@ -1,17 +1,185 @@
 {
   "name": "agentrun",
-  "owner": { "name": "Parcha", "url": "https://github.com/Parcha-ai" },
+  "owner": {
+    "name": "Parcha",
+    "url": "https://github.com/Parcha-ai"
+  },
   "templates": [
-    { "name": "code-review", "source": "github:Parcha-ai/agentrun/packages/serve/templates/code-review", "category": "engineering", "tags": ["github", "pull-requests"] },
-    { "name": "kyb", "source": "github:Parcha-ai/agentrun/packages/serve/templates/kyb", "category": "compliance", "tags": ["due-diligence", "sanctions"] },
-    { "name": "market-monitor", "source": "github:Parcha-ai/agentrun/packages/serve/templates/market-monitor", "category": "marketing", "tags": ["competitors", "weekly"] },
-    { "name": "inbound-lead", "source": "github:Parcha-ai/agentrun/packages/serve/templates/inbound-lead", "category": "sales", "tags": ["leads", "webhook"] },
-    { "name": "release-notes", "source": "github:Parcha-ai/agentrun/packages/serve/templates/release-notes", "category": "engineering", "tags": ["github", "releases"] },
-    { "name": "search-visibility", "source": "./templates/search-visibility", "category": "marketing", "tags": ["seo", "search", "ranking", "competitors", "weekly"] },
-    { "name": "hiring-signals", "source": "./templates/hiring-signals", "category": "research", "tags": ["hiring", "competitors", "leadership", "jobs", "weekly"] },
-    { "name": "deal-flow", "source": "./templates/deal-flow", "category": "finance", "tags": ["funding", "m-and-a", "ipo", "venture", "weekly"] },
-    { "name": "tender-finder", "source": "./templates/tender-finder", "category": "sales", "tags": ["tenders", "rfp", "public-sector", "procurement", "weekly"] },
-    { "name": "user-voice", "source": "./templates/user-voice", "category": "marketing", "tags": ["reviews", "feedback", "voice-of-customer", "app-store", "weekly"] },
-    { "name": "earnings-brief", "source": "./templates/earnings-brief", "category": "finance", "tags": ["earnings", "stocks", "guidance", "watchlist", "weekly"] }
+    {
+      "name": "code-review",
+      "source": "github:Parcha-ai/agentrun/packages/serve/templates/code-review",
+      "category": "engineering",
+      "tags": [
+        "github",
+        "pull-requests"
+      ]
+    },
+    {
+      "name": "inbound-lead",
+      "source": "github:Parcha-ai/agentrun/packages/serve/templates/inbound-lead",
+      "category": "sales",
+      "tags": [
+        "leads",
+        "webhook"
+      ]
+    },
+    {
+      "name": "kyb",
+      "source": "github:Parcha-ai/agentrun/packages/serve/templates/kyb",
+      "category": "compliance",
+      "tags": [
+        "due-diligence",
+        "sanctions"
+      ]
+    },
+    {
+      "name": "market-monitor",
+      "source": "github:Parcha-ai/agentrun/packages/serve/templates/market-monitor",
+      "category": "marketing",
+      "tags": [
+        "competitors",
+        "weekly"
+      ]
+    },
+    {
+      "name": "release-notes",
+      "source": "github:Parcha-ai/agentrun/packages/serve/templates/release-notes",
+      "category": "engineering",
+      "tags": [
+        "github",
+        "releases"
+      ]
+    },
+    {
+      "name": "battlecard",
+      "source": "./templates/battlecard",
+      "category": "sales",
+      "tags": [
+        "battlecard",
+        "competitive-intelligence",
+        "sales-enablement",
+        "pricing"
+      ]
+    },
+    {
+      "name": "company-brief",
+      "source": "./templates/company-brief",
+      "category": "research",
+      "tags": [
+        "company-research",
+        "due-diligence",
+        "sales",
+        "investing",
+        "swot"
+      ]
+    },
+    {
+      "name": "deal-flow",
+      "source": "./templates/deal-flow",
+      "category": "finance",
+      "tags": [
+        "funding",
+        "m-and-a",
+        "ipo",
+        "venture",
+        "weekly"
+      ]
+    },
+    {
+      "name": "earnings-brief",
+      "source": "./templates/earnings-brief",
+      "category": "finance",
+      "tags": [
+        "earnings",
+        "stocks",
+        "guidance",
+        "watchlist",
+        "weekly"
+      ]
+    },
+    {
+      "name": "hiring-signals",
+      "source": "./templates/hiring-signals",
+      "category": "research",
+      "tags": [
+        "hiring",
+        "competitors",
+        "leadership",
+        "jobs",
+        "weekly"
+      ]
+    },
+    {
+      "name": "literature-review",
+      "source": "./templates/literature-review",
+      "category": "research",
+      "tags": [
+        "literature-review",
+        "evidence",
+        "systematic-review",
+        "academic",
+        "grade"
+      ]
+    },
+    {
+      "name": "market-sizing",
+      "source": "./templates/market-sizing",
+      "category": "research",
+      "tags": [
+        "market-sizing",
+        "tam-sam-som",
+        "market-map",
+        "strategy",
+        "investing"
+      ]
+    },
+    {
+      "name": "meeting-prep",
+      "source": "./templates/meeting-prep",
+      "category": "sales",
+      "tags": [
+        "meetings",
+        "people-research",
+        "sales",
+        "hiring",
+        "investor"
+      ]
+    },
+    {
+      "name": "search-visibility",
+      "source": "./templates/search-visibility",
+      "category": "marketing",
+      "tags": [
+        "seo",
+        "search",
+        "ranking",
+        "competitors",
+        "weekly"
+      ]
+    },
+    {
+      "name": "tender-finder",
+      "source": "./templates/tender-finder",
+      "category": "sales",
+      "tags": [
+        "tenders",
+        "rfp",
+        "public-sector",
+        "procurement",
+        "weekly"
+      ]
+    },
+    {
+      "name": "user-voice",
+      "source": "./templates/user-voice",
+      "category": "marketing",
+      "tags": [
+        "reviews",
+        "feedback",
+        "voice-of-customer",
+        "app-store",
+        "weekly"
+      ]
+    }
   ]
 }
