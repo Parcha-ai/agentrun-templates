@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "audience-research.schema.json",
+  "title": "Audience research",
+  "description": "A sourced profile of the buyers of one product or one audience. Every fact carries the ids of the sources it rests on (S1, S2, ...), each listed in `sources`. Quotes are verbatim; no private individual is named.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "mode", "interpretation", "summary", "segments", "roles", "pains", "triggers", "objections", "gathering_places", "example_companies", "messaging", "gaps", "sources", "report_markdown"],
+  "properties": {
+    "checked_on": { "$ref": "#/$defs/date" },
+    "mode": { "enum": ["company", "segment"] },
+    "interpretation": { "type": "string", "maxLength": 600, "description": "how the subject, offer and geography were read" },
+    "summary": { "type": "string", "minLength": 1, "maxLength": 1000, "description": "who to sell to, the top pains and the best channels" },
+    "segments": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "description", "priority_reason", "sources"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 120 },
+          "description": { "type": "string", "maxLength": 400, "description": "industry, size, geography, tech stack" },
+          "estimated_size": { "type": ["string", "null"], "maxLength": 200, "description": "a count with its source and year, or null" },
+          "priority_reason": { "type": "string", "maxLength": 400 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "roles": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "part", "evidence", "sources"],
+        "properties": {
+          "role": { "type": "string", "maxLength": 120, "description": "a job title, never a person" },
+          "part": { "enum": ["decision_maker", "budget_holder", "champion", "end_user"] },
+          "evidence": { "type": "string", "maxLength": 300 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "jobs_to_be_done": { "type": "array", "maxItems": 6, "items": { "type": "string", "maxLength": 240 } },
+    "pains": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["theme", "quotes", "voices"],
+        "properties": {
+          "theme": { "type": "string", "maxLength": 160 },
+          "voices": { "type": "integer", "minimum": 0, "description": "how many separate posts or reviews voice it" },
+          "quotes": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["text", "platform", "source"],
+              "properties": {
+                "text": { "type": "string", "maxLength": 400, "description": "verbatim from one post or review" },
+                "platform": { "type": "string", "maxLength": 60 },
+                "date": { "type": ["string", "null"] },
+                "source": { "type": "string", "pattern": "^S[0-9]+$" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "pain_sample_note": { "type": ["string", "null"], "maxLength": 400, "description": "how many posts or reviews were read, where, and their date range; or that none were found" },
+    "triggers": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["trigger", "evidence", "sources"],
+        "properties": {
+          "trigger": { "type": "string", "maxLength": 200 },
+          "evidence": { "type": "string", "maxLength": 300, "description": "dated, cited, or labeled inference" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "objections": { "type": "array", "maxItems": 6, "items": { "type": "string", "maxLength": 300 }, "description": "price, switching, risk and trust concerns, cited inline or labeled inference" },
+    "gathering_places": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "kind", "url", "sources"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 120 },
+          "kind": { "enum": ["community", "forum", "association", "media", "newsletter", "podcast", "event", "other"] },
+          "url": { "type": "string" },
+          "audience_size": { "type": ["string", "null"], "maxLength": 120, "description": "only as a page states it" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "trusted_tools": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 200 }, "description": "brands and tools they use and trust, each cited inline" },
+    "example_companies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["included"],
+      "properties": {
+        "included": { "type": "boolean" },
+        "skipped_reason": { "type": ["string", "null"], "maxLength": 300 },
+        "items": {
+          "type": "array",
+          "maxItems": 15,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "website", "segment", "reason", "sources"],
+            "properties": {
+              "name": { "type": "string" },
+              "website": { "type": "string" },
+              "segment": { "type": "string", "maxLength": 120 },
+              "reason": { "type": "string", "maxLength": 240 },
+              "sources": { "$ref": "#/$defs/source_ids" }
+            }
+          }
+        }
+      }
+    },
+    "messaging": { "type": "array", "maxItems": 6, "items": { "type": "string", "maxLength": 300 }, "description": "angles and phrases drawn from the evidence; recommendations" },
+    "gaps": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 400 } },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "url", "found"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]+$" },
+          "title": { "type": "string" },
+          "url": { "type": "string" },
+          "published": { "type": ["string", "null"] },
+          "found": { "type": "boolean" }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "description": "the profile as Markdown, citing sources inline as [S1]" }
+  },
+  "$defs": {
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "source_ids": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+  }
+}

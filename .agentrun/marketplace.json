@@ -419,6 +419,12 @@
       "source": "./templates/industry-events",
       "category": "marketing",
       "tags": ["events", "conferences", "calendar", "deadlines", "trade-shows", "field-marketing"]
+    },
+    {
+      "name": "audience-research",
+      "source": "./templates/audience-research",
+      "category": "marketing",
+      "tags": ["audience-research", "icp", "buyer-personas", "customer-research", "go-to-market"]
     }
   ]
 }
