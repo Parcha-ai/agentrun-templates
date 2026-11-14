@@ -431,6 +431,12 @@
       "source": "./templates/buyer-evidence",
       "category": "sales",
       "tags": ["sales-enablement", "objection-handling", "case-studies", "roi", "proof-points"]
+    },
+    {
+      "name": "grant-finder",
+      "source": "./templates/grant-finder",
+      "category": "research",
+      "tags": ["grants", "funding", "scholarships", "open-calls", "nonprofits", "startups"]
     }
   ]
 }

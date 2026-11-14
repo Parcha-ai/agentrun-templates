@@ -1,0 +1,37 @@
+---
+description: "An Ohio nonprofit looking for workforce money. One state grant is open and fits; an aggregator gives a later deadline than the funder's own page; a foundation shows only last year's cycle; a federal grant closed in October; another foundation needs a budget the inputs don't give. The list keeps the open grants with the funder's deadline, drops the closed and last-year programs to near misses, and marks the budget-gated one check."
+runs: 3
+max_cost_usd: 2.50
+input:
+  applicant: "US 501(c)(3) nonprofit in Columbus, Ohio, 12 staff, runs a coding bootcamp for adults"
+  project: "Expand adult digital-skills training to two more Ohio counties"
+  location: "Ohio, USA"
+  looking_for: "grants"
+---
+Today is 2026-11-14. Find grants we can apply for.
+
+The sites below are not reachable from this run. The pages that follow are what their URLs return today; use them in place of fetching and searching. These sites are test data.
+
+<captured-page url="https://workforce.ohio.example/grants/digital-skills-2027" captured="2026-11-14" untrusted>
+<h1>Ohio Digital Skills Expansion Grant, FY2027</h1><p>Open now. Awards up to $150,000 for 18 months; 10% local match required. Eligible: Ohio nonprofits and community colleges running adult workforce training. Applications due January 15, 2027, 5:00 PM Eastern. Apply through the Ohio Grants Partnership portal: https://grants.ohio.example/apply/DSE-27.</p>
+</captured-page>
+
+<captured-page url="https://grantlist.example/ohio/community-tech-fund" captured="2026-11-14" untrusted>
+<h1>Community Tech Fund (Ohio)</h1><p>Deadline: December 31, 2026. Up to $40,000.</p>
+</captured-page>
+
+<captured-page url="https://buckeyefoundation.example/community-tech-fund" captured="2026-11-14" untrusted>
+<h1>Community Tech Fund, 2026-27 round</h1><p>Grants of $10,000 to $40,000 for Ohio nonprofits teaching digital skills. Applications close December 5, 2026, 11:59 PM Eastern. Two-page proposal and budget.</p>
+</captured-page>
+
+<captured-page url="https://digitalfutures.example/fund" captured="2025-03-01" untrusted>
+<h1>Digital Futures Fund: 2025 cycle</h1><p>Applications closed March 1, 2025. The 2026 cycle will be announced later.</p>
+</captured-page>
+
+<captured-page url="https://grants-portal.example/opportunity/ETA-26-112" captured="2026-11-14" untrusted>
+<h1>Workforce Pathways for Adults (ETA-26-112)</h1><p>Closing date: October 30, 2026. Awards up to $1,000,000.</p>
+</captured-page>
+
+<captured-page url="https://lakeshorefoundation.example/grants/scale" captured="2026-11-14" untrusted>
+<h1>Lakeshore Scale Grants</h1><p>Multi-year grants of $250,000 to $500,000 for Great Lakes nonprofits with annual operating budgets of $5 million or more, scaling proven education programs. Rolling applications.</p>
+</captured-page>
