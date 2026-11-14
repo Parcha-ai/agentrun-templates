@@ -407,6 +407,12 @@
       "source": "./templates/content-ideas",
       "category": "marketing",
       "tags": ["content-marketing", "editorial-calendar", "newsjacking", "seo", "weekly"]
+    },
+    {
+      "name": "job-watch",
+      "source": "./templates/job-watch",
+      "category": "personal",
+      "tags": ["job-search", "job-alerts", "careers", "remote-work", "daily"]
     }
   ]
 }

@@ -1,0 +1,67 @@
+{
+  "window": {
+    "from": "2026-11-13",
+    "to": "2026-11-16"
+  },
+  "quiet": false,
+  "interpretation": "Mid-level product-design duties, including UX/UI equivalents; full-time in Lisbon onsite/hybrid or EU-eligible remote. Health/climate and listed pay preferred. Lisbon-based roles treated as compatible with EU-based candidates, without assuming sponsorship.",
+  "postings": [
+    {
+      "rank": 1,
+      "title": "Product Designer (Mid-level)",
+      "employer": "Tilda Health",
+      "location_terms": "Lisbon, Portugal · Hybrid, 2 days a week in office",
+      "pay": "EUR 48,000 to 58,000 per year",
+      "contract_type": "full_time",
+      "posted": "2026-11-15",
+      "posted_note": null,
+      "deadline": "not stated",
+      "fit_note": "Explicitly mid-level, full-time Lisbon hybrid role designing patient booking and messaging flows. Health sector and listed pay meet both preferences.",
+      "flag": null,
+      "url": "https://boards.greenhouse.example/tildahealth/jobs/4410",
+      "also_seen_on": [
+        "https://jobboard.example/jobs/product-designer-tilda-health-lisbon"
+      ]
+    },
+    {
+      "rank": 2,
+      "title": "UX/UI Designer",
+      "employer": "Corvo Labs",
+      "location_terms": "Lisbon, Portugal · Onsite",
+      "pay": "not listed",
+      "contract_type": "full_time",
+      "posted": "2026-11-14",
+      "posted_note": null,
+      "deadline": "not stated",
+      "fit_note": "Full-time Lisbon role owning logistics-dashboard design from research to final UI; duties and 3+ years suggest mid-level product design (inference). Pay not listed; neither preferred sector stated.",
+      "flag": null,
+      "url": "https://apply.workable.example/corvolabs/j/7F21",
+      "also_seen_on": []
+    }
+  ],
+  "changes": [],
+  "near_misses": [
+    {
+      "title": "Product Designer",
+      "employer": "Brightpath",
+      "failed": "Location/eligibility: remote is restricted to the United States, not EU-based candidates.",
+      "url": "https://jobs.lever.example/brightpath/88c1"
+    },
+    {
+      "title": "Senior Product Designer",
+      "employer": "Verdant Grid",
+      "failed": "Seniority: explicitly senior, requiring 7+ years leading B2B design, rather than mid-level.",
+      "url": "https://jobs.ashby.example/verdant/3301"
+    },
+    {
+      "title": "Product Designer, 6-month contract",
+      "employer": "Recruiter for undisclosed client",
+      "failed": "Employment type: six-month contract rather than the required full-time role; board-only evidence.",
+      "url": "https://jobboard.example/jobs/product-designer-contract-lisbon"
+    }
+  ],
+  "dropped_repeats": [],
+  "unreachable": [],
+  "ignored_instructions": [],
+  "report_markdown": "**New Mid-level product designer postings** 2026-11-13 to 2026-11-16\n2 new matches; 0 have a stated deadline within a week.\n\nPlan: review the supplied page snapshots; check fit and freshness; merge duplicates and rank. Completed using the supplied pages only, without additional searches or fetches.\n\n1. **[Product Designer (Mid-level)](https://boards.greenhouse.example/tildahealth/jobs/4410)**, Tilda Health · Lisbon, hybrid, 2 office days/week · EUR 48,000 to 58,000 per year · full-time · posted 2026-11-15.\n   Explicit mid-level fit; patient-facing product work, health sector and listed pay. The board copy was merged.\n2. **[UX/UI Designer](https://apply.workable.example/corvolabs/j/7F21)**, Corvo Labs · Lisbon, onsite · pay not listed · full-time · posted 2026-11-14.\n   Research-to-UI ownership and 3+ years suggest mid-level product design (inference). Neither preferred sector is stated.\n\n**Changes:** No changes to postings shown before.\n\n**Near misses:** [Brightpath](https://jobs.lever.example/brightpath/88c1): US-only remote; [Verdant Grid](https://jobs.ashby.example/verdant/3301): senior rather than mid-level; [undisclosed client via Harbor Talent](https://jobboard.example/jobs/product-designer-contract-lisbon): six-month contract rather than full-time.\n\n**Excluded as stale:** [Maresa](https://boards.greenhouse.example/maresa/jobs/1022), posted 2026-09-20 with no refresh stated.\n\nVerification used the supplied employer/ATS snapshots. Lisbon roles were treated as geographically compatible; neither states sponsorship terms. No independent source was supplied for Corvo Labs."
+}

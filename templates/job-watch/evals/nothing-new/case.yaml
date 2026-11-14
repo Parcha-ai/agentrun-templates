@@ -1,0 +1,5 @@
+# Applied with these parameters (POST /v2/templates/job-watch/apply). Pass: 3 of 3 runs.
+parameters:
+  role: "Marine biologist, field research"
+  location: "Azores, Portugal (onsite)"
+# The run starts with the input in prompt.md's front matter; prompt.md's body is its content.
