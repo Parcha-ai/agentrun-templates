@@ -395,6 +395,12 @@
       "source": "./templates/outreach-opener",
       "category": "sales",
       "tags": ["gmail", "outreach", "cold-email", "prospecting", "drafts"]
+    },
+    {
+      "name": "seo-audit",
+      "source": "./templates/seo-audit",
+      "category": "marketing",
+      "tags": ["seo", "technical-seo", "lighthouse", "rankings", "site-audit"]
     }
   ]
 }
