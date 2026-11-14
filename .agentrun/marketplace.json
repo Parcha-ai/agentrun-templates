@@ -86,6 +86,19 @@
       ]
     },
     {
+      "name": "deal-hygiene",
+      "source": "./templates/deal-hygiene",
+      "category": "sales",
+      "tags": [
+        "hubspot",
+        "deals",
+        "pipeline",
+        "crm-hygiene",
+        "slack",
+        "weekly"
+      ]
+    },
+    {
       "name": "dependency-health",
       "source": "./templates/dependency-health",
       "category": "engineering",
@@ -110,6 +123,19 @@
       ]
     },
     {
+      "name": "failed-payments",
+      "source": "./templates/failed-payments",
+      "category": "finance",
+      "tags": [
+        "stripe",
+        "payments",
+        "dunning",
+        "billing",
+        "slack",
+        "alerts"
+      ]
+    },
+    {
       "name": "hiring-signals",
       "source": "./templates/hiring-signals",
       "category": "research",
@@ -127,6 +153,31 @@
       "category": "engineering",
       "tags": [
         "github",
+        "issues",
+        "triage",
+        "duplicates",
+        "labels"
+      ]
+    },
+    {
+      "name": "linear-sprint-check",
+      "source": "./templates/linear-sprint-check",
+      "category": "engineering",
+      "tags": [
+        "linear",
+        "sprint",
+        "cycles",
+        "standup",
+        "github",
+        "slack"
+      ]
+    },
+    {
+      "name": "linear-triage",
+      "source": "./templates/linear-triage",
+      "category": "engineering",
+      "tags": [
+        "linear",
         "issues",
         "triage",
         "duplicates",
@@ -182,6 +233,43 @@
       ]
     },
     {
+      "name": "pipeline-goal",
+      "source": "./templates/pipeline-goal",
+      "category": "sales",
+      "tags": [
+        "hubspot",
+        "pipeline",
+        "deals",
+        "goals",
+        "slack",
+        "daily"
+      ]
+    },
+    {
+      "name": "release-shipped",
+      "source": "./templates/release-shipped",
+      "category": "engineering",
+      "tags": [
+        "github",
+        "releases",
+        "slack",
+        "celebrate",
+        "changelog"
+      ]
+    },
+    {
+      "name": "revenue-goal",
+      "source": "./templates/revenue-goal",
+      "category": "finance",
+      "tags": [
+        "stripe",
+        "revenue",
+        "goals",
+        "slack",
+        "celebrate"
+      ]
+    },
+    {
       "name": "search-visibility",
       "source": "./templates/search-visibility",
       "category": "marketing",
@@ -190,6 +278,18 @@
         "search",
         "ranking",
         "competitors",
+        "weekly"
+      ]
+    },
+    {
+      "name": "stale-pr-digest",
+      "source": "./templates/stale-pr-digest",
+      "category": "engineering",
+      "tags": [
+        "github",
+        "pull-requests",
+        "code-review",
+        "slack",
         "weekly"
       ]
     },

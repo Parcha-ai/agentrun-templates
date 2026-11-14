@@ -1,0 +1,66 @@
+{
+  "server": "hubspot",
+  "description": "Open deals in the default pipeline: Globex expansion 180,000 (contract sent), Initech platform 120,000 (presentation), Umbrella renewal 95,000 (decision maker bought in), Hooli pilot 60,500 (qualified), Vandelay imports 50,000 (appointment) and Soylent intro with no amount: 505,500 unweighted, 344,200 weighted by stage probability. Also a closed-won 200,000, a closed-lost 75,000 and a 90,000 deal in another pipeline (4471001), none of which count. It answers every search with the same deals, so the agent must filter them itself. Composio's {data, successful, error} results; it never reaches HubSpot.",
+  "tools": {
+    "HUBSPOT_SEARCH_DEALS": {
+      "description": "Search deals (filterGroups, properties, sorts, limit, after).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "after": "100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"total\":9,\"results\":[]},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"total\":9,\"results\":[{\"id\":\"9001\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"9001\",\"pipeline\":\"default\",\"dealname\":\"Globex expansion\",\"dealstage\":\"contractsent\",\"amount\":\"180000\",\"closedate\":\"2026-11-28T00:00:00Z\"}},{\"id\":\"9002\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"9002\",\"pipeline\":\"default\",\"dealname\":\"Initech platform\",\"dealstage\":\"presentationscheduled\",\"amount\":\"120000\",\"closedate\":\"2026-12-12T00:00:00Z\"}},{\"id\":\"9003\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"9003\",\"pipeline\":\"default\",\"dealname\":\"Umbrella renewal\",\"dealstage\":\"decisionmakerboughtin\",\"amount\":\"95000\",\"closedate\":\"2026-12-01T00:00:00Z\"}},{\"id\":\"9004\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"9004\",\"pipeline\":\"default\",\"dealname\":\"Hooli pilot\",\"dealstage\":\"qualifiedtobuy\",\"amount\":\"60500\",\"closedate\":\"2027-01-15T00:00:00Z\"}},{\"id\":\"9005\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"9005\",\"pipeline\":\"default\",\"dealname\":\"Vandelay imports\",\"dealstage\":\"appointmentscheduled\",\"amount\":\"50000\",\"closedate\":\"2027-02-01T00:00:00Z\"}},{\"id\":\"9006\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"9006\",\"pipeline\":\"default\",\"dealname\":\"Stark annual\",\"dealstage\":\"closedwon\",\"amount\":\"200000\",\"closedate\":\"2026-11-05T00:00:00Z\"}},{\"id\":\"9007\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"9007\",\"pipeline\":\"default\",\"dealname\":\"Wonka add-on\",\"dealstage\":\"closedlost\",\"amount\":\"75000\",\"closedate\":\"2026-11-02T00:00:00Z\"}},{\"id\":\"9008\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"9008\",\"pipeline\":\"4471001\",\"dealname\":\"Partner resale: Acme EU\",\"dealstage\":\"4471001-open\",\"amount\":\"90000\",\"closedate\":\"2026-12-20T00:00:00Z\"}},{\"id\":\"9009\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"9009\",\"pipeline\":\"default\",\"dealname\":\"Soylent intro\",\"dealstage\":\"appointmentscheduled\",\"amount\":\"\",\"closedate\":\"2027-03-01T00:00:00Z\"}}]},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "HUBSPOT_RETRIEVE_PIPELINE_STAGES": {
+      "description": "Retrieve the stages of one pipeline (objectType, pipelineId).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "objectType": "deals",
+            "pipelineId": "default"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"results\":[{\"id\":\"appointmentscheduled\",\"label\":\"Appointment scheduled\",\"displayOrder\":0,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.2\"}},{\"id\":\"qualifiedtobuy\",\"label\":\"Qualified to buy\",\"displayOrder\":1,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.4\"}},{\"id\":\"presentationscheduled\",\"label\":\"Presentation scheduled\",\"displayOrder\":2,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.6\"}},{\"id\":\"decisionmakerboughtin\",\"label\":\"Decision maker bought-in\",\"displayOrder\":3,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.8\"}},{\"id\":\"contractsent\",\"label\":\"Contract sent\",\"displayOrder\":4,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.9\"}},{\"id\":\"closedwon\",\"label\":\"Closed won\",\"displayOrder\":5,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"true\",\"probability\":\"1\"}},{\"id\":\"closedlost\",\"label\":\"Closed lost\",\"displayOrder\":6,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"true\",\"probability\":\"0\"}}]},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Pipeline not found for objectType and pipelineId given\"}"
+          }
+        ]
+      }
+    }
+  }
+}

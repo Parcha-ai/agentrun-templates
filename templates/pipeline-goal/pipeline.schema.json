@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pipeline.schema.json",
+  "title": "Pipeline goal check",
+  "description": "The open pipeline in one HubSpot deal pipeline, added up in full or weighted by stage probability, whether it passed the goal, and the one Slack message (or why none was posted).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["goal", "mode", "pipeline_id", "total", "reached", "posted", "skipped", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[a-z]{3}$" }
+      }
+    },
+    "mode": { "enum": ["open", "weighted"] },
+    "pipeline_id": { "type": "string", "maxLength": 64 },
+    "as_of": { "type": "string", "format": "date" },
+    "total": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["amount", "formatted", "deals_counted", "without_amount"],
+      "description": "null when the total could not be added up (a skipped or incomplete run)",
+      "properties": {
+        "amount": { "type": "number", "minimum": 0 },
+        "formatted": { "type": "string", "maxLength": 40 },
+        "share_of_goal": { "type": "number", "minimum": 0 },
+        "deals_counted": { "type": "integer", "minimum": 0 },
+        "without_amount": { "type": "integer", "minimum": 0, "description": "open deals left out because they have no amount" },
+        "by_stage": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["stage", "deals", "amount"],
+            "properties": {
+              "stage": { "type": "string", "maxLength": 80 },
+              "probability": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+              "deals": { "type": "integer", "minimum": 0 },
+              "amount": { "type": "number", "minimum": 0, "description": "as counted: weighted in weighted mode" }
+            }
+          }
+        }
+      }
+    },
+    "reached": { "type": "boolean" },
+    "posted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel", "ok"],
+      "properties": {
+        "channel": { "type": "string", "maxLength": 20 },
+        "ok": { "type": "boolean" },
+        "text": { "type": ["string", "null"], "maxLength": 1000 },
+        "why_not": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "skipped": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "why nothing was posted: below the goal, reached before, a failed read, a refused post" },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 4000 }
+  }
+}

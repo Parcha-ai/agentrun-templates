@@ -1,0 +1,29 @@
+{
+  "goal": { "amount": 500000, "currency": "usd" },
+  "mode": "open",
+  "pipeline_id": "default",
+  "as_of": "2026-11-16",
+  "total": {
+    "amount": 505500,
+    "formatted": "$505,500",
+    "share_of_goal": 1.011,
+    "deals_counted": 5,
+    "without_amount": 1,
+    "by_stage": [
+      { "stage": "Contract sent", "probability": 0.9, "deals": 1, "amount": 180000 },
+      { "stage": "Decision maker bought-in", "probability": 0.8, "deals": 1, "amount": 95000 },
+      { "stage": "Presentation scheduled", "probability": 0.6, "deals": 1, "amount": 120000 },
+      { "stage": "Qualified to buy", "probability": 0.4, "deals": 1, "amount": 60500 },
+      { "stage": "Appointment scheduled", "probability": 0.2, "deals": 1, "amount": 50000 }
+    ]
+  },
+  "reached": true,
+  "posted": {
+    "channel": "C0SALES001",
+    "ok": true,
+    "text": ":rocket: *The open pipeline passed $500,000.*\n$505,500 across 5 open deals in the default pipeline, as of 2026-11-16. 1 deal has no amount and isn't counted."
+  },
+  "skipped": [],
+  "ignored_instructions": [],
+  "report_markdown": ":rocket: *The open pipeline passed $500,000.*\n$505,500 across 5 open deals in the default pipeline, as of 2026-11-16. 1 deal has no amount and isn't counted."
+}

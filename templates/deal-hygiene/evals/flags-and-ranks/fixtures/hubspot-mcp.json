@@ -1,0 +1,81 @@
+{
+  "server": "hubspot",
+  "description": "Deals in the default pipeline on 2026-11-16, with stale_days 14 (cutoff 2026-11-02). Initech platform 120,000: last activity 2026-10-20, no next step, close date 2026-10-31 (all three flags). Umbrella renewal 95,000: last activity 2026-10-25 (no activity), next step set. Hooli pilot 60,500: close date 2026-11-10 passed, recent activity and a next step. Vandelay imports 50,000: no next step. Soylent intro, no amount: never any activity, no next step. Globex expansion 180,000 is healthy; Stark (won) and Wonka (lost) are closed and don't count. Owners 501 Dana Reyes and 502 Omar Haddad. It answers every search with the same deals, so the agent must filter them itself.",
+  "tools": {
+    "HUBSPOT_SEARCH_DEALS": {
+      "description": "Search deals (filterGroups, properties, sorts, limit, after).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "after": "100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"total\":8,\"results\":[]},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"total\":8,\"results\":[{\"id\":\"7001\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"7001\",\"pipeline\":\"default\",\"dealname\":\"Globex expansion\",\"dealstage\":\"contractsent\",\"amount\":\"180000\",\"closedate\":\"2026-11-30T00:00:00Z\",\"hs_last_sales_activity_timestamp\":\"2026-11-12T15:00:00Z\",\"notes_last_updated\":\"2026-11-12T15:00:00Z\",\"hs_next_step\":\"Legal redlines back by Friday\",\"notes_next_activity_date\":\"2026-11-18T15:00:00Z\",\"hubspot_owner_id\":\"501\"}},{\"id\":\"7002\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"7002\",\"pipeline\":\"default\",\"dealname\":\"Initech platform\",\"dealstage\":\"presentationscheduled\",\"amount\":\"120000\",\"closedate\":\"2026-10-31T00:00:00Z\",\"hs_last_sales_activity_timestamp\":\"2026-10-20T10:00:00Z\",\"notes_last_updated\":\"2026-10-20T10:00:00Z\",\"hs_next_step\":\"\",\"notes_next_activity_date\":null,\"hubspot_owner_id\":\"502\"}},{\"id\":\"7003\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"7003\",\"pipeline\":\"default\",\"dealname\":\"Umbrella renewal\",\"dealstage\":\"decisionmakerboughtin\",\"amount\":\"95000\",\"closedate\":\"2026-12-15T00:00:00Z\",\"hs_last_sales_activity_timestamp\":\"2026-10-25T10:00:00Z\",\"notes_last_updated\":\"2026-10-25T10:00:00Z\",\"hs_next_step\":\"Send pricing\",\"notes_next_activity_date\":null,\"hubspot_owner_id\":\"501\"}},{\"id\":\"7004\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"7004\",\"pipeline\":\"default\",\"dealname\":\"Hooli pilot\",\"dealstage\":\"qualifiedtobuy\",\"amount\":\"60500\",\"closedate\":\"2026-11-10T00:00:00Z\",\"hs_last_sales_activity_timestamp\":\"2026-11-13T10:00:00Z\",\"notes_last_updated\":\"2026-11-13T10:00:00Z\",\"hs_next_step\":\"Call on Nov 20\",\"notes_next_activity_date\":\"2026-11-20T16:00:00Z\",\"hubspot_owner_id\":\"502\"}},{\"id\":\"7005\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"7005\",\"pipeline\":\"default\",\"dealname\":\"Vandelay imports\",\"dealstage\":\"appointmentscheduled\",\"amount\":\"50000\",\"closedate\":\"2026-12-20T00:00:00Z\",\"hs_last_sales_activity_timestamp\":\"2026-11-10T10:00:00Z\",\"notes_last_updated\":\"2026-11-10T10:00:00Z\",\"hs_next_step\":\"\",\"notes_next_activity_date\":null,\"hubspot_owner_id\":\"501\"}},{\"id\":\"7006\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"7006\",\"pipeline\":\"default\",\"dealname\":\"Soylent intro\",\"dealstage\":\"appointmentscheduled\",\"amount\":null,\"closedate\":\"2027-01-15T00:00:00Z\",\"hs_last_sales_activity_timestamp\":null,\"notes_last_updated\":null,\"hs_next_step\":\"\",\"notes_next_activity_date\":null,\"hubspot_owner_id\":\"502\"}},{\"id\":\"7007\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"7007\",\"pipeline\":\"default\",\"dealname\":\"Stark annual\",\"dealstage\":\"closedwon\",\"amount\":\"200000\",\"closedate\":\"2026-09-30T00:00:00Z\",\"hs_last_sales_activity_timestamp\":\"2026-09-28T10:00:00Z\",\"notes_last_updated\":\"2026-09-28T10:00:00Z\",\"hs_next_step\":\"\",\"notes_next_activity_date\":null,\"hubspot_owner_id\":\"501\"}},{\"id\":\"7008\",\"archived\":false,\"createdAt\":\"2026-08-01T10:00:00Z\",\"updatedAt\":\"2026-11-13T10:00:00Z\",\"properties\":{\"hs_object_id\":\"7008\",\"pipeline\":\"default\",\"dealname\":\"Wonka add-on\",\"dealstage\":\"closedlost\",\"amount\":\"75000\",\"closedate\":\"2026-10-15T00:00:00Z\",\"hs_last_sales_activity_timestamp\":\"2026-10-01T10:00:00Z\",\"notes_last_updated\":\"2026-10-01T10:00:00Z\",\"hs_next_step\":\"\",\"notes_next_activity_date\":null,\"hubspot_owner_id\":\"502\"}}]},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "HUBSPOT_RETRIEVE_PIPELINE_STAGES": {
+      "description": "Retrieve the stages of one pipeline (objectType, pipelineId).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "objectType": "deals",
+            "pipelineId": "default"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"results\":[{\"id\":\"appointmentscheduled\",\"label\":\"Appointment scheduled\",\"displayOrder\":0,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.2\"}},{\"id\":\"qualifiedtobuy\",\"label\":\"Qualified to buy\",\"displayOrder\":1,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.4\"}},{\"id\":\"presentationscheduled\",\"label\":\"Presentation scheduled\",\"displayOrder\":2,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.6\"}},{\"id\":\"decisionmakerboughtin\",\"label\":\"Decision maker bought-in\",\"displayOrder\":3,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.8\"}},{\"id\":\"contractsent\",\"label\":\"Contract sent\",\"displayOrder\":4,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"false\",\"probability\":\"0.9\"}},{\"id\":\"closedwon\",\"label\":\"Closed won\",\"displayOrder\":5,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"true\",\"probability\":\"1\"}},{\"id\":\"closedlost\",\"label\":\"Closed lost\",\"displayOrder\":6,\"archived\":false,\"createdAt\":\"1970-01-01T00:00:00Z\",\"updatedAt\":\"2025-02-11T10:00:00Z\",\"metadata\":{\"isClosed\":\"true\",\"probability\":\"0\"}}]},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Pipeline not found for objectType and pipelineId given\"}"
+          }
+        ]
+      }
+    },
+    "HUBSPOT_RETRIEVE_OWNERS": {
+      "description": "Retrieve all owners in the HubSpot account (no arguments).",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"results\":[{\"id\":\"501\",\"type\":\"PERSON\",\"email\":\"dana@acme.example\",\"firstName\":\"Dana\",\"lastName\":\"Reyes\",\"archived\":false,\"createdAt\":\"2024-01-10T00:00:00Z\",\"updatedAt\":\"2026-01-10T00:00:00Z\",\"userId\":9101},{\"id\":\"502\",\"type\":\"PERSON\",\"email\":\"omar@acme.example\",\"firstName\":\"Omar\",\"lastName\":\"Haddad\",\"archived\":false,\"createdAt\":\"2024-03-02T00:00:00Z\",\"updatedAt\":\"2026-01-10T00:00:00Z\",\"userId\":9102}]},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}
