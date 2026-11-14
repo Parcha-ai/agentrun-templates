@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "follow-up.schema.json",
+  "title": "Follow-up draft",
+  "description": "What the agent did with one Gmail thread: the reply draft it saved (never sent), how it answers each open question, the blanks the owner fills, or why it left the thread alone.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["thread", "action", "draft", "answered", "others_on_thread", "ignored_instructions", "skipped", "report_markdown"],
+  "properties": {
+    "thread": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "subject", "url"],
+      "properties": {
+        "id": { "type": ["string", "null"], "maxLength": 40 },
+        "subject": { "type": ["string", "null"], "maxLength": 300 },
+        "url": { "type": ["string", "null"], "format": "uri", "pattern": "^https://mail\\.google\\.com/" },
+        "counterpart": { "type": ["string", "null"], "maxLength": 200, "description": "who the owner is writing back to: name and address" }
+      }
+    },
+    "action": { "enum": ["drafted", "skipped"] },
+    "draft": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["recipient_email", "subject", "body", "thread_id"],
+      "properties": {
+        "recipient_email": { "type": "string", "format": "email" },
+        "subject": { "type": "string", "maxLength": 300 },
+        "body": { "type": "string", "minLength": 1, "maxLength": 6000 },
+        "thread_id": { "type": "string", "maxLength": 40 },
+        "draft_id": { "type": ["string", "null"], "maxLength": 100 },
+        "saved": { "type": "boolean", "description": "false when the draft call was refused or failed" }
+      }
+    },
+    "answered": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ask", "how"],
+        "properties": {
+          "ask": { "type": "string", "maxLength": 300 },
+          "how": { "enum": ["from_thread", "from_notes", "blank"], "description": "answered from the owner's own words in the thread, from the notes input, or left as a bracketed blank" },
+          "answer": { "type": ["string", "null"], "maxLength": 300 }
+        }
+      }
+    },
+    "others_on_thread": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 200 }, "description": "people on the thread the draft does not address, for the owner to add" },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "skipped": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "why no draft was saved, or a write refused or failed" },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 4000, "description": "a short note for the owner: what the draft says, the blanks to fill, what to check" }
+  }
+}

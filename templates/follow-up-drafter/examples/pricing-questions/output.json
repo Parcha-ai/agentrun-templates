@@ -1,0 +1,26 @@
+{
+  "thread": {
+    "id": "19b0a1c2d3e4f501",
+    "subject": "Re: Acme Team plan for Initech",
+    "url": "https://mail.google.com/mail/u/0/#all/19b0a1c2d3e4f501",
+    "counterpart": "Jamie Chen <jamie@initech.example>"
+  },
+  "action": "drafted",
+  "draft": {
+    "recipient_email": "jamie@initech.example",
+    "subject": "Re: Acme Team plan for Initech",
+    "body": "Hi Jamie,\n\nThanks for the questions.\n\n1. Yes, SSO is included on the Team plan, for all 60 people.\n2. Starting Dec 1: [confirm: can we start Dec 1?]\n3. Two-year term: [your call: 15% off for two years?]\n\nBest,\nMia",
+    "thread_id": "19b0a1c2d3e4f501",
+    "draft_id": "r-5520417",
+    "saved": true
+  },
+  "answered": [
+    { "ask": "Does the Team plan include SSO, for all 60 people?", "how": "from_thread", "answer": "Yes. Your Nov 12 mail says the Team plan includes SSO." },
+    { "ask": "Could we start on Dec 1?", "how": "blank", "answer": null },
+    { "ask": "15% off for a two-year term?", "how": "blank", "answer": null }
+  ],
+  "others_on_thread": ["Robin Diaz <robin@initech.example> (cc'd by Jamie)"],
+  "ignored_instructions": [],
+  "skipped": [],
+  "report_markdown": "Draft saved in **Re: Acme Team plan for Initech** to Jamie Chen. Not sent.\n\n- SSO: answered yes, from your Nov 12 quote.\n- Fill before sending: the Dec 1 start date and the two-year discount.\n- Robin Diaz was cc'd on Jamie's mail. Add Robin if you want them on the reply."
+}
