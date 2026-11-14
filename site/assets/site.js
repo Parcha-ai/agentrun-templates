@@ -1,5 +1,5 @@
 // The only script on the site, and every page reads fine without it: search filters the cards already on the page,
-// the Install button opens <your AgentRun>/templates/install?src=..., Copy copies the CLI line.
+// the Install button opens <your AgentRun>/#/templates/install?src=..., Copy copies the CLI line.
 (() => {
   "use strict";
   const KEY = "agentrun.marketplace.address";
@@ -55,7 +55,7 @@
     return `${u.origin}${u.pathname.replace(/\/+$/, "")}`;
   };
 
-  const installUrl = (address, src) => `${address}/templates/install?src=${encodeURIComponent(src)}`;
+  const installUrl = (address, src) => `${address}/#/templates/install?src=${encodeURIComponent(src)}`;
   const button = document.querySelector("[data-install]");
   const forget = document.querySelector("[data-install-forget]");
   const where = document.querySelector("[data-install-address]");

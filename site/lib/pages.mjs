@@ -444,7 +444,7 @@ function templateMd(site, pkg, { cost, keys, triggers, cli, stats }) {
     cli,
     "```",
     "",
-    `Or open \`<your AgentRun address>/templates/install?src=${encodeURIComponent(pkg.installSource)}\`. Pinned to commit ${pkg.sha}.`,
+    `Or open \`<your AgentRun address>/#/templates/install?src=${encodeURIComponent(pkg.installSource)}\`. Pinned to commit ${pkg.sha}.`,
     "",
     "## What it does",
     "",
