@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "market-entry.schema.json",
+  "title": "Market entry assessment",
+  "description": "A sourced assessment of one company entering one market. Every fact carries the ids of the sources it rests on (S1, S2, ...), each listed in `sources`. What was looked for and not found is named in `gaps`, never guessed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "company", "target", "verdict", "market_size", "competitors", "regulation", "costs", "partners", "risks", "entry_options", "next_steps", "gaps", "sources", "report_markdown"],
+  "properties": {
+    "checked_on": { "$ref": "#/$defs/date" },
+    "company": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "profile", "identity_note"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "website": { "type": ["string", "null"] },
+        "profile": { "type": ["string", "null"], "maxLength": 600, "description": "what it sells, to whom, how it charges, where it operates now; null when not found" },
+        "identity_note": { "type": "string", "maxLength": 400, "description": "how the company was identified, or that it could not be" },
+        "sources": { "$ref": "#/$defs/source_ids" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["market", "interpretation"],
+      "properties": {
+        "market": { "type": "string", "minLength": 1 },
+        "interpretation": { "type": "string", "maxLength": 400, "description": "how the target and any constraints were read" }
+      }
+    },
+    "verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["view", "confidence", "reasons", "would_change"],
+      "properties": {
+        "view": { "enum": ["go", "conditional_go", "no_go", "insufficient_evidence"] },
+        "confidence": { "enum": ["low", "medium", "high"] },
+        "reasons": { "type": "array", "minItems": 1, "maxItems": 5, "items": { "type": "string", "maxLength": 400 }, "description": "each cites [S1] or says it is inference" },
+        "conditions": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 300 }, "description": "for conditional_go: what must hold first" },
+        "would_change": { "type": "array", "minItems": 1, "maxItems": 5, "items": { "type": "string", "maxLength": 300 }, "description": "specific findings that would move the view, and in which direction" }
+      }
+    },
+    "fit": { "type": ["string", "null"], "maxLength": 800, "description": "why the target could or could not suit this company" },
+    "market_size": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["metric", "value", "basis", "sources"],
+        "properties": {
+          "metric": { "type": "string", "maxLength": 200 },
+          "value": { "type": ["string", "null"], "maxLength": 160 },
+          "as_of": { "type": ["string", "null"] },
+          "basis": { "enum": ["reported", "estimate", "calculation", "not_found"] },
+          "method": { "type": ["string", "null"], "maxLength": 300, "description": "for a calculation: the formula and inputs" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "customer_needs": { "type": "array", "maxItems": 6, "items": { "type": "string", "maxLength": 400 } },
+    "competitors": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "type", "operates_in_target", "offering", "sources"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "type": { "enum": ["local", "international"] },
+          "operates_in_target": { "enum": ["confirmed", "not_confirmed"], "description": "confirmed only when a page shows it serves the target" },
+          "offering": { "type": "string", "maxLength": 300 },
+          "scale": { "type": ["string", "null"], "maxLength": 200 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "regulation": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["requirement", "body", "sources"],
+        "properties": {
+          "requirement": { "type": "string", "maxLength": 400 },
+          "body": { "type": "string", "maxLength": 160, "description": "the approving body or law" },
+          "timeline": { "type": ["string", "null"], "maxLength": 200, "description": "only as a source states it" },
+          "open_question": { "type": ["string", "null"], "maxLength": 300 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "costs": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item", "range", "basis", "sources"],
+        "properties": {
+          "item": { "type": "string", "maxLength": 120 },
+          "range": { "type": ["string", "null"], "maxLength": 160 },
+          "basis": { "enum": ["reported", "estimate", "not_found"] },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "first_year_budget_band": { "type": ["string", "null"], "maxLength": 300, "description": "a rough band with what it adds up, labeled estimate; null when the costs are not known" },
+    "partners": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "role", "sources"],
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": "string", "maxLength": 200 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["risk", "likelihood", "impact", "mitigation"],
+        "properties": {
+          "risk": { "type": "string", "maxLength": 300 },
+          "likelihood": { "enum": ["low", "medium", "high"] },
+          "impact": { "enum": ["low", "medium", "high"] },
+          "mitigation": { "type": "string", "maxLength": 300 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "entry_options": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["mode", "cost", "speed", "control", "risk"],
+        "properties": {
+          "mode": { "type": "string", "maxLength": 80, "description": "direct (subsidiary or branch), partner (distributor, reseller, licence, JV), acquisition" },
+          "cost": { "type": "string", "maxLength": 160 },
+          "speed": { "type": "string", "maxLength": 160 },
+          "control": { "type": "string", "maxLength": 160 },
+          "risk": { "type": "string", "maxLength": 200 },
+          "preferred": { "type": "boolean" }
+        }
+      }
+    },
+    "next_steps": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "type": "string", "maxLength": 300 }, "description": "what to validate first" },
+    "gaps": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 400 } },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "url", "found"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]+$" },
+          "title": { "type": "string" },
+          "url": { "type": "string" },
+          "published": { "type": ["string", "null"] },
+          "found": { "type": "boolean" }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "description": "the assessment as Markdown, citing sources inline as [S1]" }
+  },
+  "$defs": {
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "source_ids": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+  }
+}

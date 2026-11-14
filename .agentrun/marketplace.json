@@ -395,6 +395,12 @@
       "source": "./templates/outreach-opener",
       "category": "sales",
       "tags": ["gmail", "outreach", "cold-email", "prospecting", "drafts"]
+    },
+    {
+      "name": "market-entry",
+      "source": "./templates/market-entry",
+      "category": "research",
+      "tags": ["market-entry", "expansion", "regulation", "competitors", "go-no-go"]
     }
   ]
 }
