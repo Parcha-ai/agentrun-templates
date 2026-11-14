@@ -24,7 +24,7 @@ parameters:
 inputs:
   projects: { type: array, items: { type: string }, title: "Projects", description: "Repositories or packages to snapshot. The schedule passes your saved list; a run by hand can check others.", examples: [["vitejs/vite", "pypi:fastapi"]] }
   purpose: { type: string, required: false, enum: [balanced, dependency_risk, competitive], title: "Why you track them", description: "Blank: balanced." }
-  signals: { type: array, items: { type: string, maxLength: 60 }, required: false, maxItems: 10, title: "Signals to weigh most", description: "One per entry. Empty: all signals weigh the same.", examples: [["bus factor", "releases"]] }
+  signals: { type: array, items: { type: string, maxLength: 60 }, required: false, title: "Signals to weigh most", description: "One per entry, up to 10. Empty: all signals weigh the same.", examples: [["bus factor", "releases"]] }
   lookback_days: { type: integer, required: false, minimum: 1, maximum: 60, title: "Days to look back", description: "Blank: 7." }
 # The commits feed gives 20 commits a page, so a busy repository takes up to 25 fetches: hence the call budget.
 budget: { per_run_usd: 4.00, tool_calls: 250 }

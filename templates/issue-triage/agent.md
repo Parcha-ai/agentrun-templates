@@ -17,7 +17,7 @@ mcp:
     toolkit: github
     tools: [GITHUB_GET_AN_ISSUE, GITHUB_LIST_ISSUE_COMMENTS, GITHUB_LIST_LABELS_FOR_A_REPOSITORY, GITHUB_LIST_REPOSITORY_ISSUES, GITHUB_ADD_LABELS_TO_AN_ISSUE, GITHUB_CREATE_AN_ISSUE_COMMENT]
     required: true
-    reason: "Reads the new issue, its comments, and your repo's labels and issues; adds labels to the new issue and posts one comment on it. Every call is pinned to the repository you set. Labels can't be limited to a set: GitHub creates a label that doesn't exist yet. No tool that closes, edits or assigns is asked for."
+    reason: "Reads the new issue, its comments, and your repo's labels and issues; labels the issue and posts one comment on it. Every call is held to the repository you set. Labels can't be limited to a set: GitHub creates a label that doesn't exist yet."
     allow: [GITHUB_GET_AN_ISSUE, GITHUB_LIST_ISSUE_COMMENTS, GITHUB_LIST_LABELS_FOR_A_REPOSITORY, GITHUB_LIST_REPOSITORY_ISSUES]
     # Every call is held to the one repository, the reads too: the issue body is anyone's text, and an unpinned read
     # could fetch a private repository's issue that the pinned comment would then post here. There is no search tool:

@@ -20,7 +20,7 @@ parameters:
   cron: { type: string, format: cron, default: "0 8 * * 1", description: "when the check runs, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it" }
   timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
-  pages: { type: array, items: { type: string }, maxItems: 30, title: "Pages to check", description: "Page URLs, domains or company names. The schedule passes your saved list; a run by hand can check others.", examples: [["https://quillforge.example/pricing", "globex.example"]] }
+  pages: { type: array, items: { type: string }, title: "Pages to check", description: "Page URLs, domains or company names, up to 30. The schedule passes your saved list; a run by hand can check others.", examples: [["https://quillforge.example/pricing", "globex.example"]] }
   focus: { type: string, required: false, maxLength: 300, title: "What counts as a change", description: "Blank: pricing, products, messaging, pages added or removed, customer logos." }
   company: { type: string, required: false, maxLength: 120, title: "Your company", description: "Frames what each change means for you." }
   lookback_days: { type: integer, required: false, minimum: 1, maximum: 90, title: "Days since the last check", description: "Blank: 7." }
