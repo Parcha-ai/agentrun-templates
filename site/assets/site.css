@@ -110,6 +110,7 @@ h2, h3 { font-weight: 600; }
 .eyebrow { font-size: 11px; color: hsl(var(--brand-text)); margin: 0 0 8px; }
 .lead { font-family: var(--font-sans); font-size: 17px; line-height: 1.6; max-width: 72ch; margin: 0 0 12px; }
 .facts-line { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; max-width: 72ch; margin: 0 0 12px; color: hsl(var(--muted-foreground)); }
+.unproven { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; max-width: 72ch; margin: 0 0 12px; padding: 8px 12px; border-left: 2px solid hsl(var(--destructive-text)); background: hsl(var(--accent)); }
 .meta { font-size: 11px; color: hsl(var(--muted-foreground)); }
 .muted { color: hsl(var(--muted-foreground)); font-family: var(--font-sans); font-size: 15px; }
 .big { font-size: 20px; font-weight: 600; margin: 0 0 4px; }

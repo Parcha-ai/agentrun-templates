@@ -28,6 +28,9 @@ one does.
   the API is rate-limited or down the build uses the last cached numbers, or shows none. It never fails on them.
 - `measured.json` beside a template's agent.md (`{median_usd, runs, model, harness, measured_on}`) sets the cost per
   run. Without it the page says "Not measured yet" and shows the budget cap.
+- `site/proven-live.json` (`{"<template>": "YYYY-MM-DD"}`) lists the templates someone has run against real accounts.
+  A template whose tools come through Composio and that isn't listed says "Integration not yet proven live" on its
+  page. A name not in the index fails the build.
 - The sample output is `samples/<template>/<name>/output.md` when there is one, else the `contentMediaType: text/markdown`
   field (`report_markdown`) of `samples/<template>/<name>/output.json`.
 

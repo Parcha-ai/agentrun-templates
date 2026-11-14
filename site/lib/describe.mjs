@@ -113,6 +113,14 @@ export function mcpWords(need) {
   return need.server ? `${need.server} MCP server` : "An MCP server";
 }
 
+/** The page's warning for a template whose tools come through Composio and that no one has yet run against real
+ *  accounts (site/proven-live.json lists the ones that have been), or null. */
+export function unprovenWords(pkg) {
+  const toolkits = [...new Set(pkg.mcp.filter((n) => n.source === "composio").map((n) => TOOLKIT_NAMES[n.toolkit] ?? n.toolkit))];
+  if (!toolkits.length || pkg.provenLive) return null;
+  return `Integration not yet proven live: no one has run it against real ${listWords(toolkits)} accounts through Composio yet; its eval cases run against stand-ins, not live accounts.`;
+}
+
 const HARNESS_NAMES = { pi: "pi", "claude-agent": "Claude Code", codex: "Codex" };
 
 /** "a, b and c" */

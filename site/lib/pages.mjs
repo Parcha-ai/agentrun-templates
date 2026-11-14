@@ -1,6 +1,6 @@
 // The pages: each is real HTML a crawler reads (no client-side rendering), plus a Markdown twin with the same content.
 
-import { CATEGORY_TEXT, computerWords, costWords, factsLine, factsShort, keyWords, mcpWords, modelWords, triggerLines, typeWords } from "./describe.mjs";
+import { CATEGORY_TEXT, computerWords, costWords, factsLine, factsShort, keyWords, mcpWords, modelWords, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
 import { markdownToHtml } from "./markdown.mjs";
 import { clip, html, mdCode, mdText, plural, raw, upperFirst } from "./util.mjs";
 
@@ -284,6 +284,7 @@ ${crumbNav(trail)}
   <h1>${pkg.displayName}</h1>
   <p class="lead">${pkg.description}</p>
   <p class="facts-line">${factsLine(pkg)}</p>
+  ${unprovenWords(pkg) ? html`<p class="unproven">${unprovenWords(pkg)}</p>` : ""}
   <p class="meta">${[pkg.version ? `Version ${pkg.version}` : null, pkg.license, pkg.author?.name ? `by ${pkg.author.name}` : null, stats ? `${plural(stats.stars, "star")} and ${plural(stats.forks, "fork")} on ${pkg.owner}/${pkg.repo}` : null].filter(Boolean).join(" · ")}</p>
 </section>
 
@@ -431,6 +432,7 @@ function templateMd(site, pkg, { cost, keys, triggers, cli, stats }) {
     "",
     factsLine(pkg),
     "",
+    ...(unprovenWords(pkg) ? [`**${unprovenWords(pkg)}**`, ""] : []),
     `Category: ${CATEGORY_TEXT[pkg.category].title}. Tags: ${pkg.tags.join(", ") || "none"}. ${pkg.version ? `Version ${pkg.version}. ` : ""}${pkg.license ? `License ${pkg.license}. ` : ""}${pkg.author?.name ? `By ${pkg.author.name}.` : ""}`.trim(),
     "",
     "## Install",

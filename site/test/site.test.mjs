@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { frontMatter, parseYaml } from "../lib/yaml.mjs";
 import { fillParameters, parseGithubSource, readIndex } from "../lib/packages.mjs";
 import { markdownToHtml } from "../lib/markdown.mjs";
-import { cronWords, factsLine, keyWords } from "../lib/describe.mjs";
+import { cronWords, factsLine, keyWords, unprovenWords } from "../lib/describe.mjs";
 import { build } from "../build.mjs";
 import { check } from "../check.mjs";
 import { CSP, SECURITY_HEADERS, siteServer } from "../lib/server.mjs";
@@ -197,4 +197,12 @@ test("the server sends the security headers on every answer, serves index pages,
     rmSync(dir, { recursive: true, force: true });
     rmSync(join(tmpdir(), "outside-site.txt"), { force: true });
   }
+});
+
+test("a template whose tools come through Composio says it is not yet proven live, until proven-live.json lists it", () => {
+  const pkg = { mcp: [{ source: "composio", toolkit: "gmail" }, { source: "composio", toolkit: "slack" }, { source: "composio", toolkit: "slack" }], provenLive: null };
+  assert.equal(unprovenWords(pkg), "Integration not yet proven live: no one has run it against real Gmail and Slack accounts through Composio yet; its eval cases run against stand-ins, not live accounts.");
+  assert.equal(unprovenWords({ ...pkg, provenLive: "2026-11-20" }), null);
+  assert.equal(unprovenWords({ mcp: [{ source: "github", toolkit: "github" }], provenLive: null }), null);
+  assert.equal(unprovenWords({ mcp: [], provenLive: null }), null);
 });

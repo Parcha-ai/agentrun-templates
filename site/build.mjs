@@ -5,7 +5,7 @@
 
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -39,6 +39,15 @@ export async function build(options = {}) {
 
   const packages = [];
   for (const entry of index.templates) packages.push(await loadPackage(entry, ctx));
+  // site/proven-live.json: {"<template>": "<date it was run live against real accounts>"}. A template not in it whose
+  // tools come through Composio says so on its page.
+  const provenFile = join(root, "site", "proven-live.json");
+  const proven = existsSync(provenFile) ? JSON.parse(readFileSync(provenFile, "utf8")) : {};
+  for (const [name, date] of Object.entries(proven)) {
+    if (!packages.some((p) => p.name === name)) throw new SiteError(`site/proven-live.json names ${name}, which is not in the index`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date))) throw new SiteError(`site/proven-live.json: ${name} needs the date it was proven, as YYYY-MM-DD`);
+  }
+  for (const pkg of packages) pkg.provenLive = proven[pkg.name] ?? null;
   const stats = new Map();
   for (const key of new Set(packages.map((p) => `${p.owner}/${p.repo}`))) {
     const [o, r] = key.split("/");
