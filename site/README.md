@@ -7,7 +7,7 @@ lists, nothing else, and writes plain HTML pages a crawler can read, each with a
 npm ci --prefix site
 node site/build.mjs          # writes site/dist
 node site/check.mjs          # titles, descriptions, canonicals, JSON-LD, links, sitemap, llms.txt
-node site/serve.mjs          # http://127.0.0.1:7420/
+node site/serve.mjs          # http://127.0.0.1:7420/, with the production server and headers
 npm test --prefix site
 ```
 
@@ -19,7 +19,7 @@ one does.
 ## What it reads
 
 - A `./templates/<name>` entry comes from disk. Its install link pins the commit the site is built from
-  (`git rev-parse HEAD`, or `--sha`).
+  (`--sha`, else `SITE_SHA`, else `git rev-parse HEAD`).
 - A `github:<owner>/<repo>[/<path>][@<ref>]` entry (the bundled templates in Parcha-ai/agentrun) comes from GitHub.
   The ref, or the default branch when there is none, resolves to a commit sha with `git ls-remote`, and the files are
   read at that sha through a shallow, blobless git fetch. The install link pins that sha.
@@ -45,8 +45,8 @@ one does.
 | `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/search.json`, `/404.html` | |
 
 Package text (instructions, skills, sample reports) is third-party: raw HTML in it renders as text, links keep only
-http(s), mailto and in-page targets, and images become links. Pages carry a Content-Security-Policy that allows only
-this site's own script, styles, fonts and images, and nothing inline.
+http(s), mailto and in-page targets, and images become links. The server sends a Content-Security-Policy that allows
+only this site's own script, styles, fonts and images, nothing inline, and no framing.
 
 Structured data is `SoftwareApplication` per template: a template is one installable, versioned, licensed package
 from a publisher, which is what that type describes. `HowTo` was the other option; Google stopped showing HowTo
@@ -61,4 +61,21 @@ JavaScript the page still shows `agentrun template install <source>@<sha>`.
 
 ## Deploy
 
-`.github/workflows/site.yml` builds, tests, checks and deploys to GitHub Pages on every push to main.
+`site/Dockerfile` (built from the repository root) runs the tests, builds the site at the commit it is given as
+`NF_GIT_SHA`, checks it, and serves `dist` with `serve.mjs --prod` on port 8080. The host builds it from main on every
+push and routes marketplace.agentrun.ai to it.
+
+The server (`lib/server.mjs`) sends these on every answer, 404s and redirects included:
+
+| Header | Value |
+| --- | --- |
+| `Content-Security-Policy` | `default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'` |
+| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains` |
+| `X-Content-Type-Options` | `nosniff` |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` |
+| `Permissions-Policy` | camera, microphone, geolocation, payment, usb and interest-cohort off |
+| `Cross-Origin-Opener-Policy`, `Cross-Origin-Resource-Policy` | `same-origin` |
+| `X-Frame-Options` | `DENY` |
+
+Pages are cached 5 minutes and `/assets/` a day (CSS and JS carry a `?v=` of their content). It answers GET and HEAD
+only. `.github/workflows/site.yml` runs the same tests, build and check on every pull request and deploys nothing.

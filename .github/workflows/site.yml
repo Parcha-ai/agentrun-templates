@@ -1,26 +1,20 @@
-# Builds marketplace.agentrun.ai from .agentrun/marketplace.json and deploys it to GitHub Pages on every push to main.
-# Needs, once, in the repository's settings: Pages > Source = GitHub Actions, and the custom domain
-# marketplace.agentrun.ai (with its DNS record). Until then the deploy job fails and the build job still checks the site.
+# Checks that marketplace.agentrun.ai still builds from this commit: tests, a full build and the page checker.
+# It deploys nothing: the host builds site/Dockerfile from main on every push and serves it (site/README.md, Deploy).
+# A pull request that would break that build fails here first.
 name: site
 
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
-  build:
-    if: github.repository == 'Parcha-ai/agentrun-templates'
+  check:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
@@ -29,33 +23,10 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: site/package-lock.json
-      # Bundled templates are read from GitHub with git at a resolved sha, and stars come from the API; both are cached
-      # so a rate-limited run still builds (with the last known stars).
-      - uses: actions/cache@v4
-        with:
-          path: site/.cache
-          key: site-cache-${{ github.run_id }}
-          restore-keys: site-cache-
       - run: npm ci --prefix site
       - run: npm test --prefix site
-      # The token only raises the API rate limit for the star counts; a local build goes anonymous.
-      - run: node site/build.mjs --sha "$GITHUB_SHA"
+      # The token only raises the API rate limit for the star counts; without it the build goes anonymous.
+      - run: node site/build.mjs --sha "${{ github.event.pull_request.head.sha || github.sha }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: node site/check.mjs
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: site/dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4

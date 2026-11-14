@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 // Checks a built site/dist: every page has a title, a meta description, a canonical URL that points at a page that
 // exists, OG and Twitter tags, one h1, and JSON-LD that parses; every internal link, asset and #fragment resolves;
-// the sitemap, llms.txt and the .md twins line up with the pages; nothing inline breaks the CSP; and nothing on a
-// page (scripts, styles, fonts, images) loads from another origin.
+// the sitemap, llms.txt and the .md twins line up with the pages; nothing inline breaks the CSP the server sends
+// (lib/server.mjs), which allows no other origin; and nothing on a page (scripts, styles, fonts, images) loads from
+// another origin.
 // Usage: node site/check.mjs [--dir site/dist] [--base-url https://marketplace.agentrun.ai]. Exits 1 on any problem.
 
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
+import { CSP } from "./lib/server.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -17,6 +19,7 @@ export function check({ dir, baseUrl }) {
   const base = baseUrl.replace(/\/+$/, "");
   const problems = [];
   const bad = (file, msg) => problems.push(`${file}: ${msg}`);
+  if (/https?:/.test(CSP.replace(/form-action[^;]*/, ""))) bad("lib/server.mjs", `the CSP allows another origin: ${CSP}`);
   const walk = (d) => readdirSync(d).flatMap((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : [join(d, f)]));
   const files = walk(root).map((f) => relative(root, f).split(sep).join("/"));
   const htmlFiles = files.filter((f) => f.endsWith(".html"));
@@ -88,9 +91,6 @@ export function check({ dir, baseUrl }) {
       const href = decode(/href="([^"]*)"/.exec(tag)?.[1] ?? "");
       if (!/^(canonical|alternate)$/.test(rel) && /^(https?:)?\/\//i.test(href)) bad(file, `<link rel="${rel}"> loads ${href} from another origin`);
     }
-    const csp = /<meta http-equiv="Content-Security-Policy" content="([^"]*)">/.exec(text);
-    if (!csp) bad(file, "no Content-Security-Policy");
-    else if (/https?:/.test(decode(csp[1]).replace(/form-action[^;]*/, ""))) bad(file, `the CSP allows another origin: ${decode(csp[1])}`);
     if (/\son[a-z]+="/.test(text)) bad(file, "inline event handler (the CSP refuses it)");
 
     const seen = new Set();

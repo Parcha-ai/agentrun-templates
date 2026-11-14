@@ -10,6 +10,7 @@ import { markdownToHtml } from "../lib/markdown.mjs";
 import { cronWords, factsLine, keyWords } from "../lib/describe.mjs";
 import { build } from "../build.mjs";
 import { check } from "../check.mjs";
+import { CSP, SECURITY_HEADERS, siteServer } from "../lib/server.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const fixture = join(here, "fixtures", "repo");
@@ -143,7 +144,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.match(page, /Beta this week/);
     assert.doesNotMatch(page, /<script>alert|<img src=x|href="javascript:/);
     assert.doesNotMatch(page, /googleapis|gstatic/);
-    assert.match(page, /font-src &#39;self&#39;/);
+    assert.doesNotMatch(page, /http-equiv/, "the CSP is a header the server sends, not a meta tag");
     for (const f of ["jetbrains-mono-latin-400-normal.woff2", "schibsted-grotesk-latin-600-normal.woff2", "jetbrains-mono-LICENSE.txt"]) {
       assert.ok(readFileSync(join(out, "assets", "fonts", f)).length > 0, f);
     }
@@ -159,5 +160,41 @@ test("builds the fixture into pages that pass the checker", async () => {
   } finally {
     rmSync(out, { recursive: true, force: true });
     rmSync(cache, { recursive: true, force: true });
+  }
+});
+
+test("the server sends the security headers on every answer, serves index pages, and keeps requests inside the site", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "site-serve-"));
+  mkdirSync(join(dir, "templates", "kyb"), { recursive: true });
+  writeFileSync(join(dir, "index.html"), "home");
+  writeFileSync(join(dir, "404.html"), "missing");
+  writeFileSync(join(dir, "templates", "kyb", "index.html"), "kyb");
+  writeFileSync(join(tmpdir(), "outside-site.txt"), "secret");
+  const server = siteServer({ root: dir });
+  await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  try {
+    const got = async (path, init) => {
+      const res = await fetch(base + path, { redirect: "manual", ...init });
+      return { status: res.status, body: await res.text(), headers: res.headers };
+    };
+    for (const [path, status, body] of [["/", 200, "home"], ["/templates/kyb/", 200, "kyb"], ["/nope", 404, "missing"], ["/..%2Foutside-site.txt", 404, "missing"], ["/%E0%A4%A", 404, "missing"]]) {
+      const res = await got(path);
+      assert.equal(res.status, status, path);
+      assert.equal(res.body, body, path);
+      for (const [name, value] of Object.entries(SECURITY_HEADERS)) assert.equal(res.headers.get(name), value, `${path} ${name}`);
+    }
+    const redirect = await got("/templates/kyb?x=1");
+    assert.equal(redirect.status, 301);
+    assert.equal(redirect.headers.get("location"), "/templates/kyb/?x=1");
+    assert.equal(redirect.headers.get("content-security-policy"), CSP);
+    const post = await got("/", { method: "POST", body: "x" });
+    assert.equal(post.status, 405);
+    assert.match(CSP, /frame-ancestors 'none'/);
+    assert.match(CSP, /script-src 'self'(;|$)/);
+  } finally {
+    await new Promise((ok) => server.close(ok));
+    rmSync(dir, { recursive: true, force: true });
+    rmSync(join(tmpdir(), "outside-site.txt"), { force: true });
   }
 });

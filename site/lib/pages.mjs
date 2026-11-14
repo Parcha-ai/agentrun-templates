@@ -15,17 +15,6 @@ function jsonLdTag(data) {
 
 export function layout(site, page) {
   const url = site.url(page.path);
-  const csp = [
-    "default-src 'self'",
-    "script-src 'self'",
-    "style-src 'self'",
-    "font-src 'self'",
-    "img-src 'self' data:",
-    "connect-src 'self'",
-    "base-uri 'none'",
-    "form-action 'self'",
-    "object-src 'none'",
-  ].join("; ");
   return `<!doctype html>\n${html`<html lang="en">
 <head>
 <meta charset="utf-8">
@@ -34,8 +23,6 @@ export function layout(site, page) {
 <meta name="description" content="${page.description}">
 ${page.noindex ? "" : html`<link rel="canonical" href="${url}">`}
 ${page.mdPath ? html`<link rel="alternate" type="text/markdown" href="${page.mdPath}" title="This page as Markdown">` : ""}
-<meta http-equiv="Content-Security-Policy" content="${csp}">
-<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="color-scheme" content="dark light">
 ${page.noindex ? raw('<meta name="robots" content="noindex">') : ""}
 <meta property="og:site_name" content="${SITE_NAME}">

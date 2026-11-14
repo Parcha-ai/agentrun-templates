@@ -1,0 +1,6 @@
+.git
+.github
+**/.parcha
+site/node_modules
+site/dist
+site/.cache
