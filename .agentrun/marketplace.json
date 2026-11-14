@@ -1,0 +1,11 @@
+{
+  "name": "agentrun",
+  "owner": { "name": "Parcha", "url": "https://github.com/Parcha-ai" },
+  "templates": [
+    { "name": "code-review", "source": "github:Parcha-ai/agentrun/packages/serve/templates/code-review", "category": "engineering", "tags": ["github", "pull-requests"] },
+    { "name": "kyb", "source": "github:Parcha-ai/agentrun/packages/serve/templates/kyb", "category": "compliance", "tags": ["due-diligence", "sanctions"] },
+    { "name": "market-monitor", "source": "github:Parcha-ai/agentrun/packages/serve/templates/market-monitor", "category": "marketing", "tags": ["competitors", "weekly"] },
+    { "name": "inbound-lead", "source": "github:Parcha-ai/agentrun/packages/serve/templates/inbound-lead", "category": "sales", "tags": ["leads", "webhook"] },
+    { "name": "release-notes", "source": "github:Parcha-ai/agentrun/packages/serve/templates/release-notes", "category": "engineering", "tags": ["github", "releases"] }
+  ]
+}
