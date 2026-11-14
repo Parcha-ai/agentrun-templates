@@ -395,6 +395,12 @@
       "source": "./templates/outreach-opener",
       "category": "sales",
       "tags": ["gmail", "outreach", "cold-email", "prospecting", "drafts"]
+    },
+    {
+      "name": "platform-changes",
+      "source": "./templates/platform-changes",
+      "category": "engineering",
+      "tags": ["deprecations", "breaking-changes", "changelogs", "apis", "pricing", "weekly"]
     }
   ]
 }
