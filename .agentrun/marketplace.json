@@ -413,6 +413,12 @@
       "source": "./templates/job-watch",
       "category": "personal",
       "tags": ["job-search", "job-alerts", "careers", "remote-work", "daily"]
+    },
+    {
+      "name": "research-field-weekly",
+      "source": "./templates/research-field-weekly",
+      "category": "research",
+      "tags": ["academic-research", "preprints", "arxiv", "literature", "grants", "weekly"]
     }
   ]
 }

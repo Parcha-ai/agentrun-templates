@@ -1,0 +1,89 @@
+{
+  "edition_date": "2026-11-16",
+  "window": {
+    "from": "2026-11-10",
+    "to": "2026-11-16"
+  },
+  "quiet": false,
+  "interpretation": "Single-cell RNA sequencing methods covers annotation, integration and reusable reference data, alongside directly relevant research funding.",
+  "items": [
+    {
+      "kind": "paper",
+      "title": "A benchmark of 14 single-cell data integration methods",
+      "by": "Reyes P, Chen L, et al.",
+      "date": "2026-11-10",
+      "peer_reviewed": true,
+      "venue": "Genome Biology Methods",
+      "contribution": "Benchmarks integration methods and finds that no method ranks first across every tested dataset.",
+      "method": "Compares 14 integration methods on 8 datasets containing 1.2 million cells using 10 metrics.",
+      "key_result": "The authors report that scVI ranks first on 5 of 8 datasets; no method ranks first on all datasets.",
+      "caveats": "Only the supplied abstract-level excerpt was available; metric definitions and the ranking procedure could not be assessed.",
+      "read": "abstract",
+      "deadline": null,
+      "url": "https://journal.example/genomebio/article/10.5555/gb.2026.118",
+      "doi": "10.5555/gb.2026.118",
+      "so_what": "For researchers: include scVI as a baseline, but evaluate integration methods on your own datasets rather than assuming one universal winner."
+    },
+    {
+      "kind": "preprint",
+      "title": "ScaleCell: a foundation model for cell-type annotation across tissues",
+      "by": "Okafor A, Lindqvist M, Tanaka R, et al.",
+      "date": "2026-11-11",
+      "peer_reviewed": false,
+      "venue": "bioRxiv",
+      "contribution": "Introduces a pretrained transformer for cell-type annotation across tissues.",
+      "method": "Pretrains on 48 million cells from 31 tissues and evaluates on 12 held-out datasets.",
+      "key_result": "The authors report a mean adjusted Rand index of 0.71 on 12 held-out datasets, against 0.64 for scANVI, the best existing method in their comparison.",
+      "caveats": "Preprint, not peer-reviewed; abstract only, with PDF unavailable. The press claim that it 'solves cell annotation' exceeds the reported benchmark evidence.",
+      "read": "abstract",
+      "deadline": null,
+      "url": "https://biorxiv.example/content/10.1101/2026.11.09.551234v1",
+      "doi": "10.1101/2026.11.09.551234",
+      "so_what": "For researchers: consider ScaleCell as an annotation baseline, but await full methods before judging evaluation leakage or transfer to your tissue."
+    },
+    {
+      "kind": "dataset",
+      "title": "Human Lung Development Atlas v1",
+      "by": "Hartmann Lab",
+      "date": "2026-11-13",
+      "peer_reviewed": null,
+      "venue": "Zenodo",
+      "contribution": "Releases human lung development raw counts and annotations under CC-BY 4.0.",
+      "method": "The repository record describes 2.1 million cells from 64 donors.",
+      "key_result": "The authors report 2.1 million cells from 64 donors, with raw counts and annotations available.",
+      "caveats": "Record only; developmental-stage coverage, assay protocols, donor balance and annotation validation are not specified in the supplied excerpt.",
+      "read": "record",
+      "deadline": null,
+      "url": "https://zenodo.example/records/1188822",
+      "doi": null,
+      "so_what": "For researchers: inspect the donor and assay metadata before using the atlas for annotation transfer or integration benchmarks."
+    },
+    {
+      "kind": "funding_call",
+      "title": "RFA-HG-27-004: Scalable tools for single-cell data analysis (U01)",
+      "by": "Issuing funder not named in the supplied call excerpt",
+      "date": "2026-11-09",
+      "peer_reviewed": null,
+      "venue": "Grants Guide",
+      "contribution": "Supports scalable single-cell analysis tools with up to $500,000 in direct costs per year for up to 4 years; domestic higher-education institutions and nonprofits are eligible, but foreign organizations are not.",
+      "method": null,
+      "key_result": null,
+      "caveats": "Included as an open call announced within the last 30 days. The supplied excerpt does not identify the issuing funder or provide complete application requirements.",
+      "read": "call_page",
+      "deadline": "2027-02-16, 5:00 PM local time of applicant organization.",
+      "url": "https://grants-guide.example/rfa-hg-27-004",
+      "doi": null,
+      "so_what": "For researchers: check institutional eligibility and the complete call, then plan backward from the applicant-organization-local deadline."
+    }
+  ],
+  "next_watch": null,
+  "skipped": [
+    "ScaleCell university press story, 2026-11-12: not an independent research item; its universal annotation claim exceeds the abstract's evidence.",
+    "Single-Cell Genomics 2027 CFP: extension to 2026-11-28, 23:59 AoE, from November 21 is stated, but no announcement date establishes eligibility for this edition.",
+    "Doublet detection at scale: published 2026-08-04, outside the reporting window."
+  ],
+  "dropped_repeats": [],
+  "unreachable": [],
+  "ignored_instructions": [],
+  "report_markdown": "**Single-cell RNA sequencing methods weekly** 2026-11-10 to 2026-11-16\nThe November 10 integration benchmark reports scVI ranking first on 5 of 8 datasets, with no method first across all datasets.\n\n1. **A benchmark of 14 single-cell data integration methods** (Genome Biology Methods · Nov 10)\n   Reyes P, Chen L, et al. compare 14 methods on 8 datasets comprising 1.2 million cells using 10 metrics. The authors report that scVI ranks first on 5 of 8 datasets, but no method leads everywhere.\n   Only an abstract-level excerpt was available; metric definitions and ranking procedures remain unassessed.\n   For researchers: include scVI as a baseline and test method choice against your own datasets. [Source](https://journal.example/genomebio/article/10.5555/gb.2026.118)\n\n2. **ScaleCell: a foundation model for cell-type annotation across tissues** (bioRxiv · Nov 11), Preprint (not peer-reviewed)\n   Okafor A, Lindqvist M, Tanaka R, et al. introduce a transformer pretrained on 48 million cells from 31 tissues. The authors report a mean adjusted Rand index of 0.71 on 12 held-out datasets, against 0.64 for scANVI, their strongest existing comparator.\n   Abstract only; the PDF is unavailable. The associated press claim that this 'solves cell annotation' is not established by these benchmark results.\n   For researchers: consider it a candidate baseline, but await full methods before judging transferability and evaluation leakage. [Source](https://biorxiv.example/content/10.1101/2026.11.09.551234v1)\n\n3. **Human Lung Development Atlas v1** (Zenodo · Nov 13)\n   Hartmann Lab releases raw counts and annotations under CC-BY 4.0. The authors report 2.1 million cells from 64 donors.\n   Record only; assay details, developmental-stage coverage and annotation validation are not provided in the supplied excerpt.\n   For researchers: inspect donor and assay metadata before building transfer or integration benchmarks. [Source](https://zenodo.example/records/1188822)\n\n4. **RFA-HG-27-004: Scalable tools for single-cell data analysis (U01)** (Grants Guide · Nov 9)\n   The call offers up to $500,000 in direct costs per year for up to 4 years. Domestic higher-education institutions and nonprofits are eligible; foreign organizations are not. Applications are due February 16, 2027, at 5:00 PM local time of the applicant organization.\n   Included under the recent-open-call exception. The supplied excerpt does not identify the funder or provide complete application requirements.\n   For researchers: verify eligibility and the full requirements before planning an application. [Source](https://grants-guide.example/rfa-hg-27-004)\n\n_Source limitation: this edition uses the supplied replacement pages only. Independent corroboration and full-text assessment were unavailable; numerical findings remain the authors' reported results._"
+}
