@@ -1,6 +1,6 @@
 // The pages: each is real HTML a crawler reads (no client-side rendering), plus a Markdown twin with the same content.
 
-import { CATEGORY_TEXT, computerWords, costWords, keyWords, mcpWords, modelWords, triggerLines, typeWords } from "./describe.mjs";
+import { CATEGORY_TEXT, computerWords, costWords, factsLine, factsShort, keyWords, mcpWords, modelWords, triggerLines, typeWords } from "./describe.mjs";
 import { markdownToHtml } from "./markdown.mjs";
 import { clip, html, mdCode, mdText, plural, raw, upperFirst } from "./util.mjs";
 
@@ -296,6 +296,7 @@ ${crumbNav(trail)}
   <p class="row">${chip(cat.title, "active")}${pkg.tags.map((t) => chip(t))}</p>
   <h1>${pkg.displayName}</h1>
   <p class="lead">${pkg.description}</p>
+  <p class="facts-line">${factsLine(pkg)}</p>
   <p class="meta">${[pkg.version ? `Version ${pkg.version}` : null, pkg.license, pkg.author?.name ? `by ${pkg.author.name}` : null, stats ? `${plural(stats.stars, "star")} and ${plural(stats.forks, "fork")} on ${pkg.owner}/${pkg.repo}` : null].filter(Boolean).join(" · ")}</p>
 </section>
 
@@ -413,7 +414,12 @@ ${crumbNav(trail)}
     ogType: "article",
     title: `${clip(pkg.displayName, 50)}: AgentRun template`,
     ogTitle: pkg.displayName,
-    description: clip(pkg.description, 158),
+    // The search snippet: what it does (its first sentence), then the cost and eval line, inside 158 characters.
+    description: (() => {
+      const short = factsShort(pkg);
+      const first = pkg.description.split(/(?<=\.)\s/)[0];
+      return short ? `${clip(first, 157 - short.length)} ${short}` : clip(pkg.description, 158);
+    })(),
     jsonLd,
     body,
     md: templateMd(site, pkg, { cost, keys, triggers, cli, stats }),
@@ -435,6 +441,8 @@ function templateMd(site, pkg, { cost, keys, triggers, cli, stats }) {
     `# ${pkg.displayName}`,
     "",
     pkg.description,
+    "",
+    factsLine(pkg),
     "",
     `Category: ${CATEGORY_TEXT[pkg.category].title}. Tags: ${pkg.tags.join(", ") || "none"}. ${pkg.version ? `Version ${pkg.version}. ` : ""}${pkg.license ? `License ${pkg.license}. ` : ""}${pkg.author?.name ? `By ${pkg.author.name}.` : ""}`.trim(),
     "",
@@ -543,7 +551,7 @@ ${crumbNav(trail)}
 <section aria-labelledby="cost-note">
   <h2 id="cost-note" class="caps section-label">Cost per run</h2>
   <p>Add a <code>measured.json</code> beside agent.md once you have run your evals, and the page shows the median cost instead of "not measured yet":</p>
-  <pre class="code"><code>{ "median_usd": 0.42, "runs": 12, "model": "openrouter/particle-ai/particle-1", "harness": "pi", "measured_on": "2026-11-14" }</code></pre>
+  <pre class="code"><code>{ "median_usd": 0.42, "runs": 12, "model": "openrouter/particle-ai/particle-1", "harness": "pi", "measured_on": "2026-11-14", "passed": { "pi": "5/5", "claude-agent": "4/5", "codex": "5/5" } }</code></pre>
 </section>`;
   return {
     path,
@@ -572,7 +580,7 @@ ${crumbNav(trail)}
       "",
       "## Cost per run",
       "",
-      "Add a `measured.json` beside agent.md: `{ \"median_usd\": 0.42, \"runs\": 12, \"model\": \"...\", \"harness\": \"pi\", \"measured_on\": \"2026-11-14\" }`.",
+      "Add a `measured.json` beside agent.md: `{ \"median_usd\": 0.42, \"runs\": 12, \"model\": \"...\", \"harness\": \"pi\", \"measured_on\": \"2026-11-14\", \"passed\": { \"pi\": \"5/5\" } }` (passed: cases passed per harness, from your latest runs).",
       "",
     ].join("\n"),
   };

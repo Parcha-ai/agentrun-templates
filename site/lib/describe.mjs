@@ -94,12 +94,56 @@ export function keyWords(pkg) {
   return { model, secrets: keys };
 }
 
-/** Where an MCP need's tools come from, as a short name: "GitHub", "Composio gmail", "slack". */
+const TOOLKIT_NAMES = { github: "GitHub", gmail: "Gmail", googlecalendar: "Google Calendar", slack: "Slack", linear: "Linear", hubspot: "HubSpot", stripe: "Stripe" };
+
+/** Where an MCP need's tools come from, as a short name: "GitHub", "Composio Gmail", "slack MCP server". */
 export function mcpWords(need) {
   if (need.source === "github") return "GitHub";
-  if (need.source === "composio") return `Composio ${need.toolkit ?? ""}`.trim();
+  if (need.source === "composio") return `Composio ${TOOLKIT_NAMES[need.toolkit] ?? need.toolkit ?? ""}`.trim();
   if (need.source === "url") return need.toolkit ? `${need.toolkit} MCP server` : "An MCP server";
   return need.server ? `${need.server} MCP server` : "An MCP server";
+}
+
+const HARNESS_NAMES = { pi: "pi", "claude-agent": "Claude Code", codex: "Codex" };
+
+/** "a, b and c" */
+function listWords(items) {
+  return items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
+
+/** The eval results measured.json records per harness, as [harness name, passed, total]; a non-count ("cap hold") is left out. */
+function passCounts(pkg) {
+  const passed = pkg.measured?.passed;
+  if (!passed || typeof passed !== "object") return [];
+  return Object.entries(passed).flatMap(([h, v]) => {
+    const m = /^(\d+)\/(\d+)$/.exec(String(v));
+    return m ? [[HARNESS_NAMES[h] ?? h, Number(m[1]), Number(m[2])]] : [];
+  });
+}
+
+/** One plain sentence for a template's page and its search snippet: what it needs, what a run costs, how its evals went.
+ *  "Needs only a model key and the web, costs about $0.06 a run, and passes 5 of 5 eval cases on pi and 4 of 5 on Codex." */
+export function factsLine(pkg) {
+  const required = pkg.mcp.filter((n) => n.required).map(mcpWords);
+  const optional = pkg.mcp.filter((n) => !n.required).map(mcpWords);
+  const web = pkg.tools.some((t) => t === "web_search" || t === "web_fetch");
+  let needs = required.length ? `Needs ${listWords(required)}` : `Needs only a model key${web ? " and the web" : ""}`;
+  if (optional.length) needs += ` (${listWords(optional)} optional)`;
+  const cap = pkg.budget?.per_run_usd;
+  const cost = pkg.measured ? `costs about ${usd(pkg.measured.median_usd)} a run` : typeof cap === "number" ? `stops each run at ${usd(cap)}` : null;
+  const counts = passCounts(pkg);
+  const evals = counts.length
+    ? `passes ${listWords(counts.map(([h, p, t], k) => (k ? `${p} of ${t} on ${h}` : `${p} of ${t} eval cases on ${h}`)))}`
+    : pkg.evals.length ? `is tested by ${pkg.evals.length} eval case${pkg.evals.length === 1 ? "" : "s"}` : null;
+  const parts = [needs, cost, evals].filter(Boolean);
+  return `${parts.length > 1 ? `${parts.slice(0, -1).join(", ")}, and ${parts[parts.length - 1]}` : parts[0]}.`;
+}
+
+/** The short form for a search snippet: "About $0.06 a run; passes 5 of 5 eval cases." (pi's count when measured). */
+export function factsShort(pkg) {
+  const [first] = passCounts(pkg);
+  const parts = [pkg.measured ? `About ${usd(pkg.measured.median_usd)} a run` : null, first ? `passes ${first[1]} of ${first[2]} eval cases` : null].filter(Boolean);
+  return parts.length ? `${parts.join("; ")}.` : "";
 }
 
 export function costWords(pkg) {

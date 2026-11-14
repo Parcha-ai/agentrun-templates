@@ -143,6 +143,8 @@ test("builds the fixture into pages that pass the checker", async () => {
     const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
     assert.match(md, /^# Sample watch\n/);
     assert.match(md, /2 eval cases: injection, thin-data\./);
+    assert.match(md, /Needs only a model key and the web \(GitHub optional\), costs about \$0\.084 a run, and passes 2 of 2 eval cases on pi and 1 of 2 on Claude Code\./);
+    assert.match(page, /<meta name="description" content="Watches one topic every week and answers with what changed, each item dated and linked\. About \$0\.084 a run; passes 2 of 2 eval cases\."/);
     const llms = readFileSync(join(out, "llms.txt"), "utf8");
     assert.match(llms, /\[Sample watch\]\(https:\/\/marketplace\.agentrun\.ai\/templates\/sample-watch\.md\)/);
     const search = JSON.parse(readFileSync(join(out, "search.json"), "utf8"));
