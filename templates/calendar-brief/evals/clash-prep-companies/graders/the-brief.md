@@ -4,7 +4,7 @@ type: llm
 The calendar for Tue 2026-11-17 and Wed 2026-11-18 (UTC) holds: Globex pilot kickoff 09:00-09:45 (the owner organizes;
 its description says "Please bring the draft rollout plan"); Hiring sync 09:30-10:00 (accepted); Intro: Brightpane
 13:00-13:30 (not answered); Advisor catch-up Wed 11:00-12:00 with jo.smith@gmail.com; Team offsite planning Wed 15:00,
-declined. The prompt's pages say Globex (globex.example) makes retail inventory software and raised a $40M Series B on
+declined. The prompt's search results say Globex (globex.example) makes retail inventory software and raised a $40M Series B on
 2026-10-21; Brightpane (brightpane.example) makes product analytics dashboards and launched anomaly alerts on
 2026-11-10. "Globex Shipping" and "Brightpane Windows" are other companies.
 
