@@ -85,9 +85,18 @@ export function computerWords(computer) {
 
 const PROVIDERS = { openrouter: "OpenRouter", anthropic: "Anthropic", openai: "OpenAI" };
 
-/** The model key a run needs, read off model.prefer's provider. */
+const MONID_PROVIDERS = { dataforseo: "DataForSEO", apollo: "Apollo", keenable: "Keenable" };
+
+/** The providers of the monid endpoints a package grants in `tools` (monid:<provider>/<endpoint>), by display name. */
+export function monidProviders(pkg) {
+  const slugs = pkg.tools.map((t) => /^monid:([^/]+)\//.exec(t)?.[1]).filter(Boolean);
+  return [...new Set(slugs)].map((p) => MONID_PROVIDERS[p] ?? p);
+}
+
+/** The model key a run needs, read off model.prefer's provider; a package granting monid endpoints needs monid's key. */
 export function keyWords(pkg) {
   const keys = [...pkg.secrets];
+  if (monidProviders(pkg).length && !keys.includes("MONID_API_KEY")) keys.push("MONID_API_KEY");
   const provider = pkg.model?.prefer?.split("/")[0];
   const name = PROVIDERS[provider] ?? provider;
   const model = provider ? `A model key for the ${pkg.model.tier ?? "default"} tier; the preferred model runs with a key for ${name}` : "A model key";
@@ -127,7 +136,9 @@ export function factsLine(pkg) {
   const required = pkg.mcp.filter((n) => n.required).map(mcpWords);
   const optional = pkg.mcp.filter((n) => !n.required).map(mcpWords);
   const web = pkg.tools.some((t) => t === "web_search" || t === "web_fetch");
-  let needs = required.length ? `Needs ${listWords(required)}` : `Needs only a model key${web ? " and the web" : ""}`;
+  const monid = monidProviders(pkg);
+  const paid = [...required, ...(monid.length ? [`a monid key (for ${listWords(monid)})`] : [])];
+  let needs = paid.length ? `Needs ${listWords(paid)}` : `Needs only a model key${web ? " and the web" : ""}`;
   if (optional.length) needs += ` (${listWords(optional)} optional)`;
   const cap = pkg.budget?.per_run_usd;
   const cost = pkg.measured ? `costs about ${usd(pkg.measured.median_usd)} a run` : typeof cap === "number" ? `stops each run at ${usd(cap)}` : null;

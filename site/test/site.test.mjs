@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { frontMatter, parseYaml } from "../lib/yaml.mjs";
 import { fillParameters, parseGithubSource, readIndex } from "../lib/packages.mjs";
 import { markdownToHtml } from "../lib/markdown.mjs";
-import { cronWords } from "../lib/describe.mjs";
+import { cronWords, factsLine, keyWords } from "../lib/describe.mjs";
 import { build } from "../build.mjs";
 import { check } from "../check.mjs";
 
@@ -102,6 +102,13 @@ test("cron lines in words", () => {
   assert.equal(cronWords("30 6 * * *"), "every day at 06:30");
   assert.equal(cronWords("0 9 * * 1-5"), "weekdays at 09:00");
   assert.equal(cronWords("*/5 * * * *"), null);
+});
+
+test("a package granting monid endpoints says it needs a monid key, and for which providers", () => {
+  const pkg = { tools: ["read", "web_fetch", "monid:dataforseo/onpage/lighthouse", "monid:dataforseo/serp/google-organic", "monid:apollo/mixed_companies/search"], mcp: [], secrets: [], evals: ["a", "b", "c"], budget: { per_run_usd: 0.5 }, measured: null, model: { tier: "balanced" } };
+  assert.equal(factsLine(pkg), "Needs a monid key (for DataForSEO and Apollo), stops each run at $0.50, and is tested by 3 eval cases.");
+  assert.deepEqual(keyWords(pkg).secrets, ["MONID_API_KEY"]);
+  assert.equal(factsLine({ ...pkg, tools: ["web_search"] }), "Needs only a model key and the web, stops each run at $0.50, and is tested by 3 eval cases.");
 });
 
 test("the index is checked", () => {
