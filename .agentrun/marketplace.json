@@ -425,6 +425,12 @@
       "source": "./templates/regulatory-tracker",
       "category": "compliance",
       "tags": ["regulation", "rulemaking", "legal", "policy", "compliance", "weekly"]
+    },
+    {
+      "name": "sanctions-update",
+      "source": "./templates/sanctions-update",
+      "category": "compliance",
+      "tags": ["sanctions", "ofac", "screening", "kyc", "compliance", "weekly"]
     }
   ]
 }

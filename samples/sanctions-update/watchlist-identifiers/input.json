@@ -1,0 +1,13 @@
+{
+  "content": "Scheduled run, fired 2026-11-16T08:00:00Z (Monday). Write this week's sanctions update with your sanctions-update skill.\n\nThe sites below are not reachable from this run. The pages that follow are what their URLs return today; use them in place of fetching. These names, vessels and actions are test data.\n\n--- https://ofac.treasury.gov/recent-actions (fetched 2026-11-16) ---\n11/13/2026 · Iran-related Designations · https://ofac.treasury.gov/recent-actions/20261113\n11/05/2026 · Counter Terrorism Designation Update\n\n--- https://ofac.treasury.gov/recent-actions/20261113 (fetched 2026-11-16) ---\nIran-related Designations. 11/13/2026.\nThe Office of Foreign Assets Control (OFAC) has added the following entities and vessels to the Specially Designated Nationals and Blocked Persons List (SDN List) under program tag [IRAN-EO13902]:\nEntities (4):\nORION PETROTRADE FZCO, Jebel Ali Free Zone, Dubai, United Arab Emirates; Commercial Registry Number 7788120 (United Arab Emirates) [IRAN-EO13902].\nSABLE CREST MARINE LTD, Majuro, Marshall Islands; Registration Number 104332 (Marshall Islands) [IRAN-EO13902].\nTERRAWIND SHIPPING MANAGEMENT LLC, Dubai, United Arab Emirates [IRAN-EO13902].\nNORTHLIGHT PETROCHEMICAL TRADING CO., Hong Kong; Company Number 3311908 (Hong Kong) [IRAN-EO13902].\nVessels (3):\nKESTREL STAR Crude Oil Tanker Panama flag; Vessel Registration Identification IMO 9123457 (vessel) [IRAN-EO13902] (Linked To: SABLE CREST MARINE LTD).\nAMBER TIDE Crude Oil Tanker Cameroon flag; Vessel Registration Identification IMO 9234561 (vessel) [IRAN-EO13902].\nSEA LANTERN Crude Oil Tanker Comoros flag; Vessel Registration Identification IMO 9345672 (vessel) [IRAN-EO13902].\n\n--- https://www.gov.uk/government/publications/financial-sanctions-notice-russia-2026-11-11 (fetched 2026-11-16) ---\nFinancial Sanctions Notice. Russia. 11/11/2026, 09:30.\nThe Foreign, Commonwealth and Development Office has removed the following 2 entries from the UK Sanctions List under the Russia regime. They are no longer subject to an asset freeze.\nEntities: 1. VOLGA RIVER LOGISTICS JSC (Group ID: 15012). 2. NEVSKY FREIGHT PARTNERS LLC (Group ID: 15340).\n\n--- https://www.gov.uk/government/publications/the-uk-sanctions-list (fetched 2026-11-16) ---\nUK Sanctions List. Last updated 11 November 2026, 09:30. See the Financial Sanctions Notice of 11/11/2026 for the changes.",
+  "regimes": [
+    "OFAC",
+    "UK"
+  ],
+  "watch_names": [
+    "MV Kestrel Star (IMO 9123457)",
+    "Orion Petrotrade FZE, UAE registration 1045521",
+    "Halvard Grain Trading AS, Norway"
+  ],
+  "lookback_days": 7
+}

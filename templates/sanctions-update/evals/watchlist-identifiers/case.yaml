@@ -1,0 +1,6 @@
+# Applied with these parameters (POST /v2/templates/sanctions-update/apply). Pass: 3 of 3 runs.
+parameters:
+  regimes: ["OFAC", "UK"]
+  watch_names: ["MV Kestrel Star (IMO 9123457)", "Orion Petrotrade FZE, UAE registration 1045521", "Halvard Grain Trading AS, Norway"]
+  lookback_days: 7
+# The run starts with this input, checked against the template's input schema; prompt.md is its content.
