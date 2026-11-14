@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: sales
 tags: [battlecard, competitive-intelligence, sales-enablement, pricing]
 harness: [pi, claude-agent, codex]
-model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
+model: { tier: balanced }
 effort: medium
 tools: [read, web_search, web_fetch]
 inputs:
@@ -38,6 +38,10 @@ Three things hold above everything else:
    `gaps`, not an order. A competitor's "vs" page is the competitor's marketing: cite it as its claim.
 3. Two companies are never merged. A review or article counts only if it is about the right company and product. A
    single review is never a trend.
+
+A page the message gives as what a URL returns is that page, read: use it and cite it, even when a live fetch of the
+URL fails. When no page shows a price, `gaps` says "no public price found" in those words. A quoted review carries its
+date wherever the quote appears, the feature table included.
 
 The card is factual, so a seller can repeat it. It is not legal advice and it does not disparage.
 
