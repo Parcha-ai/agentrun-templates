@@ -13,12 +13,14 @@ model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
 effort: low
 tools: [web_search, web_fetch, read]
 inputs:
-  companies: { type: array, items: { type: string }, required: false, title: "Companies for this run", description: "Check these companies instead of the watch list set at install. Each is a name, with its domain when you know it." }
+  companies: { type: array, items: { type: string }, required: false, title: "Companies for this run", description: "Check these companies instead of the setup's list. Each is a name, with its domain when you know it. At most 30." }
+  functions: { type: array, items: { type: string }, required: false, title: "Functions", description: "Role types to look at closely this run, instead of the setup's." }
+  regions: { type: array, items: { type: string }, required: false, title: "Regions", description: "Locations to look at closely this run, instead of the setup's." }
   focus: { type: string, required: false, maxLength: 300, title: "Focus", description: "A one-off angle for this run, such as \"only sales roles in Germany\"." }
 parameters:
-  companies: { type: string, required: true, pattern: "^[^\\n]{2,2000}$", description: "the companies to track, comma-separated, each a name and its domain: \"Acme (acme.com), Globex (globex.io)\". At most 30" }
-  functions: { type: string, pattern: "^[^\\n]{0,300}$", description: "role types to look at closely (\"sales, security engineering\"). They come first in the report; other notable signals are still reported" }
-  regions: { type: string, pattern: "^[^\\n]{0,300}$", description: "locations to look at closely (\"Germany, Singapore\"). Signals elsewhere are still reported" }
+  companies: { type: array, items: { type: string }, required: true, description: "the companies to track, one per item, each a name and its domain: \"Acme (acme.com)\". At most 30 items" }
+  functions: { type: array, items: { type: string }, required: false, default: [], description: "role types to look at closely, one per item (\"sales\", \"security engineering\"). They come first in the report; other notable signals are still reported" }
+  regions: { type: array, items: { type: string }, required: false, default: [], description: "locations to look at closely, one per item (\"Germany\", \"Singapore\"). Signals elsewhere are still reported" }
   reason: { type: string, pattern: "^[^\\n]{0,300}$", description: "why you watch them (\"competing for the same deals\", \"a portfolio holding\"). It frames each so-what line" }
   lookback_days: { type: integer, description: "how many days back a run looks; leave it out for 7. Keep it equal to the gap between runs (7 for the weekly default): longer and runs repeat each other, shorter and days between them are missed" }
   cron: { type: string, format: cron, default: "0 8 * * 1", description: "when the run starts, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it; set lookback_days to its gap" }
@@ -31,20 +33,23 @@ triggers:
     target:
       kind: start_run
       input:
-        content: "Scheduled weekly run. Write this week's hiring signals for ${parameters.companies} with your signals skill."
+        content: "Scheduled weekly run. Write this week's hiring signals with your signals skill."
+        companies: "${parameters.companies}"
+        functions: "${parameters.functions}"
+        regions: "${parameters.regions}"
 output: { schema: signals.schema.json }
 ---
 You are a hiring analyst. Each run you read what the tracked companies posted and announced about people, and write
 the signals that are new since the last run, with your signals skill (`signals/SKILL.md`). Follow it step by step. Its
 rules are in `SIGNALS.md` beside it.
 
-- Companies: ${parameters.companies}
-- Functions to watch closely (may be blank): ${parameters.functions}
-- Regions to watch closely (may be blank): ${parameters.regions}
+- Setup companies (fallback when the input has no `companies`): ${parameters.companies}
+- Setup functions to watch closely (may be empty): ${parameters.functions}
+- Setup regions to watch closely (may be empty): ${parameters.regions}
 - Why they are watched (may be blank): ${parameters.reason}
 - Lookback in days (blank: 7): ${parameters.lookback_days}
 
-A run's input may replace the companies (`companies`) or narrow the run (`focus`). The input wins over the list above.
+A run's `Input:` json block carries the scope (the schedule fills it from the setup values above); a run started by hand may pass its own. A field the block leaves out falls back to the setup value. `focus` narrows the run.
 
 Only things that happened inside the lookback window go in, and only those a previous report handed to you did not
 already say. Every signal is dated and linked to the page that shows it. A quiet week is one line naming the quiet

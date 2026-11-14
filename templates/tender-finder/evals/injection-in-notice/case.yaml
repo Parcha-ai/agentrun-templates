@@ -1,4 +1,4 @@
 parameters:
   offering: "penetration testing services"
-  regions: "Netherlands"
-  holdings: "ISO 27001"
+  regions: ["Netherlands"]
+  holdings: ["ISO 27001"]

@@ -12,8 +12,9 @@ differ.
 
 ## Inputs
 
-- The domain, brand, watch list, competitors and locale from your instructions. A run's input may replace the list
-  (`queries`) or narrow it (`focus`).
+- The run's `Input:` json block: `queries` and `competitors` (arrays) and an optional `focus`. A scheduled run's block
+  is filled from the setup; a run started by hand may pass its own. A field the block leaves out falls back to the
+  setup value in your instructions. The domain, brand and locale come from your instructions.
 - Run history: a scheduled run is handed its trigger's last completed report after its message, as a fenced json block
   under "The result of this trigger's last completed run". Its `results` are the **baseline**. A manual run has one
   only when a person pastes it in. With none, every `change` is `no_baseline`.
@@ -33,7 +34,7 @@ Result pages are big. Keep the plan small.
 
 ## Steps
 
-1. **Queries.** Split the watch list on semicolons (a run's `queries` replaces it). Trim, drop duplicates, keep 25. A
+1. **Queries.** Take the `queries` array. Trim, drop duplicates, keep 25. A
    `focus` that names a subset narrows the list; say which in the report.
 2. **Engines.** `web_search` is always one engine: name it `web_search` (it is one provider's results, not Google's).
    Try one more engine only where a plain fetch can read its results page: `https://duckduckgo.com/html/?q=<query>`

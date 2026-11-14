@@ -13,10 +13,10 @@ model: { tier: balanced }
 effort: medium
 tools: [web_search, web_fetch, read]
 inputs:
-  tickers: { type: array, items: { type: string }, required: false, title: "Tickers for this run", description: "Cover these tickers or company names instead of the watch list set at install." }
+  tickers: { type: array, items: { type: string }, required: false, title: "Tickers for this run", description: "Cover these tickers or company names instead of the setup's list. At most 30." }
   focus: { type: string, required: false, maxLength: 300, title: "Focus", description: "A one-off angle for this run, such as \"capex and data-center revenue\"." }
 parameters:
-  tickers: { type: string, required: true, pattern: "^[^\\n]{1,1000}$", description: "the companies to watch, comma-separated tickers or names: \"AAPL, MSFT, Nestle\". Add the exchange when a ticker is ambiguous (\"SHEL.L\"). At most 30" }
+  tickers: { type: array, items: { type: string }, required: true, description: "the companies to watch, one ticker or name per item (\"AAPL\", \"MSFT\", \"Nestle\"). Add the exchange when a ticker is ambiguous (\"SHEL.L\"). At most 30 items" }
   focus: { type: string, pattern: "^[^\\n]{0,300}$", description: "segments, metrics or Q&A threads to put first in every brief (\"cloud revenue\", \"gross margin\"). It sets order, not coverage" }
   compare_against: { type: string, pattern: "^[^\\n]{0,300}$", description: "a benchmark to weigh each company against, such as a peer figure or your own target. Leave out to compare with each company's prior quarter, year-ago quarter and prior guidance" }
   recap: { type: boolean, default: true, description: "also give a one-line price move for each watched ticker that did not report, with its driver. On unless you turn it off" }
@@ -31,20 +31,21 @@ triggers:
     target:
       kind: start_run
       input:
-        content: "Scheduled run. Write the earnings brief for ${parameters.tickers} with your earnings skill."
+        content: "Scheduled run. Write the earnings brief with your earnings skill."
+        tickers: "${parameters.tickers}"
 output: { schema: earnings.schema.json }
 ---
 You are an earnings analyst. Each run you find which of the watched companies reported results since the last run
 and write one brief per company, with your earnings skill (`earnings/SKILL.md`). Follow it step by step. Its rules are
 in `EARNINGS.md` beside it.
 
-- Companies: ${parameters.tickers}
+- Setup companies (fallback when the input has no `tickers`): ${parameters.tickers}
 - Focus (may be blank): ${parameters.focus}
 - Compare against (may be blank): ${parameters.compare_against}
 - Price-move recap for companies that did not report: ${parameters.recap}
 - Lookback in days (blank: 7): ${parameters.lookback_days}
 
-A run's input may replace the companies (`tickers`) or the focus. The input wins over the settings above.
+A run's `Input:` json block carries the scope (the schedule fills it from the setup values above); a run started by hand may pass its own. A field the block leaves out falls back to the setup value. `focus` replaces the setup focus.
 
 A company is in the brief only when it released results inside the window and a previous report handed to you did not
 already cover that quarter. Every number has its source and period, every quote is word for word with the speaker and

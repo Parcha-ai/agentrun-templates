@@ -12,7 +12,9 @@ before step 2. Your `# Learned` notes are the owner's standing preferences and s
 
 ## Inputs
 
-- The companies, functions, regions, reason and lookback from your instructions. A company is a name and a domain; one
+- The run's `Input:` json block: `companies`, `functions` and `regions` (arrays) and an optional `focus`. A scheduled
+  run's block is filled from the setup; a run started by hand may pass its own. A field the block leaves out falls back
+  to the setup value in your instructions, which also holds the reason and lookback. A company is a name and a domain; one
   without a domain gets its official site from its one search. More than 30: take the first 30 and say so.
 - Run history: a scheduled run is handed its trigger's last completed digest after its message, as a fenced json block
   under "The result of this trigger's last completed run". Its `signals` are the **reported** list. A manual run has

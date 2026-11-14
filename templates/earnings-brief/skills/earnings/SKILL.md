@@ -12,8 +12,9 @@ before step 2. Your `# Learned` notes are the owner's standing preferences and U
 
 ## Inputs
 
-- The companies, focus, benchmark, recap switch and lookback from your instructions. A run's input may replace the
-  companies or the focus.
+- The run's `Input:` json block: `tickers` (array) and an optional `focus`. A scheduled run's block is filled from the
+  setup; a run started by hand may pass its own. A field the block leaves out falls back to the setup value in your
+  instructions, which also holds the benchmark, recap switch and lookback.
 - Run history: a scheduled run is handed its trigger's last completed brief after its message, as a fenced json block
   under "The result of this trigger's last completed run". Its `reports` (ticker and period) are the **covered** list.
   A manual run has one only when a person pastes it in.

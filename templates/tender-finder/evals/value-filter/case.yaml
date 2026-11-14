@@ -1,4 +1,4 @@
 parameters:
   offering: "penetration testing services"
-  regions: "Netherlands"
+  regions: ["Netherlands"]
   min_value: "EUR 100000"

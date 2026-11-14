@@ -1,6 +1,6 @@
 # The agent starts with one learned note, as if the owner had told an earlier run to lead with margins.
 parameters:
-  tickers: "GLOBEX"
+  tickers: ["GLOBEX"]
   recap: false
   lookback_days: 7
 learning: fixtures/learning

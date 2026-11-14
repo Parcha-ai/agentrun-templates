@@ -1,3 +1,3 @@
 parameters:
   offering: "penetration testing services"
-  regions: "Netherlands"
+  regions: ["Netherlands"]

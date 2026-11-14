@@ -1,4 +1,4 @@
 parameters:
-  tickers: "ACME, GLOBEX"
+  tickers: ["ACME", "GLOBEX"]
   recap: true
   lookback_days: 7

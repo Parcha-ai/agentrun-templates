@@ -13,12 +13,14 @@ model: { tier: balanced }
 effort: medium
 tools: [web_search, web_fetch, read]
 inputs:
-  offering: { type: string, required: false, maxLength: 300, title: "What you sell, for this run", description: "Search for this instead of the offering set at install." }
-  focus: { type: string, required: false, maxLength: 300, title: "Focus", description: "A one-off angle for this run, such as \"only framework agreements\" or \"development-funded work\"." }
+  offering: { type: string, required: false, maxLength: 300, title: "What you sell, for this run", description: "Search for this instead of the setup's offering." }
+  regions: { type: array, items: { type: string }, required: false, title: "Regions", description: "Countries or regions to search this run, instead of the setup's." }
+  holdings: { type: array, items: { type: string }, required: false, title: "Holdings", description: "Certifications, set-asides or status held, for this run, instead of the setup's." }
+  focus: { type: string, required: false, maxLength: 300, title: "Focus", description: "A one-off angle for this run, such as \"only single contracts\" or \"development-funded work\"." }
 parameters:
   offering: { type: string, required: true, pattern: "^[^\\n]{2,300}$", description: "what you sell, in the words a buyer would use: \"penetration testing services\", \"school meal catering\"" }
-  regions: { type: string, required: true, pattern: "^[^\\n]{2,300}$", description: "countries or regions to search, comma-separated: \"Germany, Netherlands\" or \"EU\". A bloc covers its member countries and the bloc's own journal" }
-  holdings: { type: string, pattern: "^[^\\n]{0,500}$", description: "certifications, set-asides or status you hold (\"ISO 27001, SME, 8(a)\"). Each notice is marked qualifies, does not qualify or unclear. Leave out and no eligibility call is made" }
+  regions: { type: array, items: { type: string }, required: true, description: "countries or regions to search, one per item: \"Germany\", \"Netherlands\" or \"EU\". A bloc covers its member countries and the bloc's own journal. At most 10 items" }
+  holdings: { type: array, items: { type: string }, required: false, default: [], description: "certifications, set-asides or status you hold, one per item (\"ISO 27001\", \"SME\", \"8(a)\"). Each notice is marked qualifies, does not qualify or unclear. Leave out and no eligibility call is made" }
   min_value: { type: string, pattern: "^[^\\n]{0,60}$", description: "the smallest contract value you want, with its currency: \"EUR 100000\". Notices with no stated value are kept. Leave out for no filter" }
   cron: { type: string, format: cron, default: "0 7 * * 1", description: "when the search runs, as a cron line (minute hour day-of-month month day-of-week): Monday 07:00 unless you set it" }
   timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
@@ -30,19 +32,22 @@ triggers:
     target:
       kind: start_run
       input:
-        content: "Scheduled weekly run. Find the open tenders for ${parameters.offering} in ${parameters.regions} with your tenders skill."
+        content: "Scheduled weekly run. Find the open tenders with your tenders skill."
+        offering: "${parameters.offering}"
+        regions: "${parameters.regions}"
+        holdings: "${parameters.holdings}"
 output: { schema: tenders.schema.json }
 ---
 You are a tender researcher. Each run you find the public tenders, RFPs and RFQs that are open now in the owner's
 regions and match what they sell, and list what is new since the last run, with your tenders skill
 (`tenders/SKILL.md`). Follow it step by step. Its rules are in `TENDERS.md` beside it.
 
-- What the owner sells: ${parameters.offering}
-- Countries or regions: ${parameters.regions}
-- Certifications, set-asides or status held (may be blank): ${parameters.holdings}
+- Setup offering (fallback when the input has no `offering`): ${parameters.offering}
+- Setup countries or regions (fallback): ${parameters.regions}
+- Setup certifications, set-asides or status held (fallback; may be empty): ${parameters.holdings}
 - Minimum contract value (may be blank): ${parameters.min_value}
 
-A run's input may replace the offering (`offering`) or narrow the run (`focus`). The input wins over the settings above.
+A run's `Input:` json block carries the scope (the schedule fills it from the setup values above); a run started by hand may pass its own. A field the block leaves out falls back to the setup value. `focus` narrows the run.
 
 A tender is listed only after you read its official notice page in this run and saw it open, with its deadline. A
 tender a previous report already listed and that is still open goes in one short line, never described again. A quiet

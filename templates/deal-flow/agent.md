@@ -13,12 +13,13 @@ model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
 effort: low
 tools: [web_search, web_fetch, read]
 inputs:
-  sector: { type: string, required: false, maxLength: 200, title: "Sector for this run", description: "Cover this sector instead of the one set at install, such as \"fintech in Southeast Asia\"." }
+  sector: { type: string, required: false, maxLength: 200, title: "Sector for this run", description: "Cover this sector instead of the setup's, such as \"fintech in Southeast Asia\"." }
+  deal_types: { type: array, items: { type: string }, required: false, title: "Deal types", description: "Deal types to include this run, instead of the setup's." }
   focus: { type: string, required: false, maxLength: 300, title: "Focus", description: "A one-off angle for this run, such as \"only deals over $100M\"." }
 parameters:
   sector: { type: string, required: true, pattern: "^[^\\n]{2,200}$", description: "the sector, with a geography if you want one: \"industrial robotics\", \"US healthcare services\". Only deals where the company operates in it are covered" }
   stage: { type: string, pattern: "^[^\\n]{0,200}$", description: "a round or size band (\"seed to Series B\", \"deals over $50M\"). Deals outside it are dropped. Leave out for all" }
-  deal_types: { type: string, pattern: "^[^\\n]{0,300}$", description: "deal types to include, comma-separated, from: funding rounds, new funds, acquisitions, mergers, divestitures, buyouts, IPO filings and listings, shutdowns. Leave out for all" }
+  deal_types: { type: array, items: { type: string }, required: false, default: [], description: "deal types to include, one per item, from: funding rounds, new funds, acquisitions, mergers, divestitures, buyouts, IPO filings and listings, shutdowns. Leave out for all" }
   angle: { type: string, default: dealmakers, enum: [founder, investor, corp_dev, dealmakers], description: "who reads it: founder stresses active investors and terms, investor stresses new companies and exits, corp_dev stresses rationale and multiples. dealmakers unless you set it" }
   lookback_days: { type: integer, description: "how many days back a run looks; leave it out for 7. Keep it equal to the gap between runs" }
   cron: { type: string, format: cron, default: "0 8 * * 1", description: "when the run starts, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it; set lookback_days to its gap" }
@@ -31,20 +32,22 @@ triggers:
     target:
       kind: start_run
       input:
-        content: "Scheduled weekly run. Write this week's deal flow digest for ${parameters.sector} with your deals skill."
+        content: "Scheduled weekly run. Write this week's deal flow digest with your deals skill."
+        sector: "${parameters.sector}"
+        deal_types: "${parameters.deal_types}"
 output: { schema: deals.schema.json }
 ---
 You are a deal analyst. Each run you write one digest of the deals announced, closed, filed or listed in one sector
 since the last run, with your deals skill (`deals/SKILL.md`). Follow it step by step. Its rules are in `DEALS.md`
 beside it.
 
-- Sector: ${parameters.sector}
+- Setup sector (fallback when the input has no `sector`): ${parameters.sector}
 - Stage or size (may be blank): ${parameters.stage}
-- Deal types (blank: all): ${parameters.deal_types}
+- Setup deal types (fallback; empty: all): ${parameters.deal_types}
 - Reader angle: ${parameters.angle}
 - Lookback in days (blank: 7): ${parameters.lookback_days}
 
-A run's input may replace the sector (`sector`) or narrow the run (`focus`). The input wins over the settings above.
+A run's `Input:` json block carries the scope (the schedule fills it from the setup values above); a run started by hand may pass its own. A field the block leaves out falls back to the setup value. `focus` narrows the run.
 
 Only deals that happened inside the lookback window go in, and only those a previous digest handed to you did not
 already say. Every deal has an amount or the word undisclosed, a named lead, a status and a link to the page that shows

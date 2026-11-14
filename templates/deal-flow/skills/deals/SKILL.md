@@ -11,8 +11,9 @@ standing preferences and sources that worked: they win over `DEALS.md` where the
 
 ## Inputs
 
-- The sector, stage, deal types, angle and lookback from your instructions. A run's input may replace the sector or
-  narrow the run. An ambiguous sector gets the reading most dealmakers use, stated in the report.
+- The run's `Input:` json block: `sector`, `deal_types` (array) and an optional `focus` that narrows the run. A
+  scheduled run's block is filled from the setup; a run started by hand may pass its own. A field the block leaves out
+  falls back to the setup value in your instructions, which also holds the stage, angle and lookback. An ambiguous sector gets the reading most dealmakers use, stated in the report.
 - Run history: a scheduled run is handed its trigger's last completed digest after its message, as a fenced json block
   under "The result of this trigger's last completed run". Its `deals` are the **reported** list. A manual run has one
   only when a person pastes it in.

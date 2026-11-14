@@ -12,8 +12,10 @@ two differ.
 
 ## Inputs
 
-- The subject, sources, competitors, app store id and lookback from your instructions. A run's input may replace the
-  subject or set a `focus`: keep only posts that bear on it, and say how much of the week's volume it covered.
+- The run's `Input:` json block: `subject`, `sources` and `competitors` (arrays) and an optional `focus`: keep only
+  posts that bear on it, and say how much of the week's volume it covered. A scheduled run's block is filled from the
+  setup; a run started by hand may pass its own. A field the block leaves out falls back to the setup value in your
+  instructions, which also holds the app store id and lookback.
 - Run history: a scheduled run is handed its trigger's last completed report after its message, as a fenced json block
   under "The result of this trigger's last completed run". Its `themes` are the **reported** list. A manual run has
   one only when a person pastes it in.

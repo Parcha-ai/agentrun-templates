@@ -12,8 +12,9 @@ the two differ.
 
 ## Inputs
 
-- The offering, regions, holdings and minimum value from your instructions. A run's input may replace the offering or
-  narrow the run.
+- The run's `Input:` json block: `offering`, `regions` and `holdings` (arrays) and an optional `focus` that narrows the
+  run. A scheduled run's block is filled from the setup; a run started by hand may pass its own. A field the block
+  leaves out falls back to the setup value in your instructions, which also holds the minimum value.
 - Run history: a scheduled run is handed its trigger's last completed report after its message, as a fenced json block
   under "The result of this trigger's last completed run". Its `new_tenders` and `still_open` are the **seen** list. A
   manual run has one only when a person pastes it in.

@@ -1,4 +1,4 @@
 parameters:
-  queries: "invoice ocr api"
+  queries: ["invoice ocr api"]
   domain: "scanlane.example"
-  competitors: "readwise-ocr.example"
+  competitors: ["readwise-ocr.example"]
