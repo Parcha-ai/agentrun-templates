@@ -1,1 +1,1 @@
-- [Open items in the 2026-11-17 plan](open-items-2026-11-17.md) — the requests yesterday's plan listed, by link, to check today
+- [Open items in the 2026-11-17 plan](open-items-2026-11-17.md) - the requests yesterday's plan listed, by link, to check today

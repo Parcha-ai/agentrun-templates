@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "opener.schema.json",
+  "title": "Outreach opener",
+  "description": "One first outreach email saved as a Gmail draft (never sent): who it's to, whether the person was confirmed at the company, the dated, sourced facts found, the one it opens on, and what was left out.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["person", "facts", "hook", "draft", "not_used", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "person": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "company", "confirmed"],
+      "properties": {
+        "name": { "type": "string", "maxLength": 120 },
+        "company": { "type": "string", "maxLength": 160 },
+        "domain": { "type": ["string", "null"], "maxLength": 120 },
+        "role": { "type": ["string", "null"], "maxLength": 160, "description": "only when a page states it" },
+        "confirmed": { "type": "boolean", "description": "a page ties this name to this company" },
+        "evidence_url": { "type": ["string", "null"], "format": "uri" }
+      }
+    },
+    "facts": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["fact", "url", "date", "about", "stale"],
+        "properties": {
+          "fact": { "type": "string", "maxLength": 300 },
+          "url": { "type": "string", "format": "uri" },
+          "date": { "type": ["string", "null"], "format": "date" },
+          "about": { "enum": ["person", "company"] },
+          "stale": { "type": "boolean", "description": "older than six months, or undated" }
+        }
+      }
+    },
+    "hook": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["fact", "url", "date"],
+      "properties": {
+        "fact": { "type": "string", "maxLength": 300 },
+        "url": { "type": "string", "format": "uri" },
+        "date": { "type": "string", "format": "date" }
+      }
+    },
+    "draft": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["recipient_email", "subject", "body", "saved"],
+      "properties": {
+        "recipient_email": { "type": "string", "format": "email" },
+        "subject": { "type": "string", "maxLength": 120 },
+        "body": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "draft_id": { "type": ["string", "null"], "maxLength": 100 },
+        "saved": { "type": "boolean", "description": "false when the draft call was refused or failed" }
+      }
+    },
+    "not_used": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 3000, "description": "what the draft opens on and why, what couldn't be confirmed, what to check before sending" }
+  }
+}

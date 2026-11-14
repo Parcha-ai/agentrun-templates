@@ -252,6 +252,48 @@
         "change-detection",
         "weekly"
       ]
+    },
+    {
+      "name": "morning-brief",
+      "source": "./templates/morning-brief",
+      "category": "personal",
+      "tags": ["daily-plan", "calendar", "gmail", "slack", "productivity"]
+    },
+    {
+      "name": "calendar-brief",
+      "source": "./templates/calendar-brief",
+      "category": "personal",
+      "tags": ["calendar", "meetings", "meeting-prep", "slack", "productivity"]
+    },
+    {
+      "name": "team-catch-up",
+      "source": "./templates/team-catch-up",
+      "category": "operations",
+      "tags": ["slack", "team-updates", "decisions", "blockers", "catch-up"]
+    },
+    {
+      "name": "follow-up-drafter",
+      "source": "./templates/follow-up-drafter",
+      "category": "sales",
+      "tags": ["gmail", "email", "follow-up", "drafts", "replies"]
+    },
+    {
+      "name": "meeting-follow-up",
+      "source": "./templates/meeting-follow-up",
+      "category": "sales",
+      "tags": ["gmail", "calendar", "meetings", "follow-up", "drafts"]
+    },
+    {
+      "name": "support-inbox-digest",
+      "source": "./templates/support-inbox-digest",
+      "category": "operations",
+      "tags": ["gmail", "support", "customer-feedback", "digest", "slack"]
+    },
+    {
+      "name": "outreach-opener",
+      "source": "./templates/outreach-opener",
+      "category": "sales",
+      "tags": ["gmail", "outreach", "cold-email", "prospecting", "drafts"]
     }
   ]
 }

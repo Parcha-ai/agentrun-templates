@@ -1,0 +1,30 @@
+{
+  "person": {
+    "name": "Kim Lee",
+    "company": "Globex",
+    "domain": "globex.example",
+    "role": "VP of Retail Operations",
+    "confirmed": true,
+    "evidence_url": "https://globex.example/news/2026-11-02-kim-lee-vp-retail-operations"
+  },
+  "facts": [
+    { "fact": "Kim Lee named VP of Retail Operations; will lead store staffing across all stores, including the 2027 openings.", "url": "https://globex.example/news/2026-11-02-kim-lee-vp-retail-operations", "date": "2026-11-02", "about": "person", "stale": false },
+    { "fact": "Globex will open 40 stores in 2027 and hire about 1,500 store staff.", "url": "https://retailwire.example/2026/10/28/globex-40-stores", "date": "2026-10-28", "about": "company", "stale": false },
+    { "fact": "Globex named regional retailer of the year.", "url": "https://retailwire.example/2023/06/12/globex-award", "date": "2023-06-12", "about": "company", "stale": true }
+  ],
+  "hook": {
+    "fact": "Kim Lee named VP of Retail Operations, leading store staffing for the 2027 openings.",
+    "url": "https://globex.example/news/2026-11-02-kim-lee-vp-retail-operations",
+    "date": "2026-11-02"
+  },
+  "draft": {
+    "recipient_email": "kim@globex.example",
+    "subject": "Staffing 40 new Globex stores",
+    "body": "Hi Kim,\n\nCongratulations on the new role. Leading store staffing while Globex opens 40 stores and hires about 1,500 people next year is a big first project.\n\nI run sales at Shiftly. We make shift-scheduling software for retail chains, and new stores are usually where scheduling gets hardest: new teams, no history to plan from.\n\nWould it be worth 20 minutes in the next few weeks to compare notes on how you plan to staff the openings?\n\nBest, Mia",
+    "draft_id": "r-9014471",
+    "saved": true
+  },
+  "not_used": ["2023 regional retailer award: stale, older than six months."],
+  "ignored_instructions": [],
+  "report_markdown": "Draft saved to **Kim Lee** (kim@globex.example). Not sent.\n\nIt opens on Kim's new role as VP of Retail Operations ([Globex, Nov 2](https://globex.example/news/2026-11-02-kim-lee-vp-retail-operations)) and the 40 stores planned for 2027 ([RetailWire, Oct 28](https://retailwire.example/2026/10/28/globex-40-stores)).\n\nCheck before sending: the 20-minute ask, if you'd rather open without one."
+}

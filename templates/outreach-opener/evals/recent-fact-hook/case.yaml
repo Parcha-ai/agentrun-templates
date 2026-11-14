@@ -1,0 +1,10 @@
+# Applied with these parameters. Pass: 3 of 3 runs. The fixture stands in for the owner's Composio Gmail and records
+# every call for the graders. The web is not reachable: the prompt holds what the URLs and searches return.
+parameters:
+  about_you: I run sales at Shiftly; we make shift-scheduling software for retail chains.
+  sign_off: Best, Mia
+mcp:
+  gmail: fixtures/gmail-mcp.json
+# The draft granted (the owner says yes when it asks), so the draft that happens is the agent's choice.
+grants:
+  - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
