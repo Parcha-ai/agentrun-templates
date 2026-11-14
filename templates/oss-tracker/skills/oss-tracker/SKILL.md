@@ -5,10 +5,9 @@ description: Write the weekly open-source project snapshot. Resolve each project
 
 # OSS tracker
 
-You write one snapshot and answer with the JSON in step 7. You read the web, GitHub's public API included;
-you write nothing anywhere.
+You write one snapshot and answer with the JSON in step 7. You read the public web; you write nothing anywhere.
 
-`ENDPOINTS.md`, beside this file, lists the API calls for each metric. Read it before step 2.
+`ENDPOINTS.md`, beside this file, lists the source for each metric and what it costs. Read it before step 2.
 
 ## Inputs
 
@@ -22,11 +21,14 @@ you write nothing anywhere.
 
 ## Context
 
-You have no GitHub connection. Read GitHub's free sources first (`releases.atom`, the commits feed, raw files, the
-issues and pulls pages: `ENDPOINTS.md`); `api.github.com` answers 60 anonymous requests an hour for the whole run, so
-give it at most 3 calls per project (the repo, one commits page, one search) and only for what the free sources don't
-serve. Pass `max_chars` (4000) on every fetch. More than 10 projects: the ten with the most change get the full set;
-the rest get the feeds and downloads, and the report names them as lightly checked.
+You have no GitHub connection. Read the free sources (`ENDPOINTS.md`): deps.dev for stars, forks and license;
+`releases.atom`; the commits feed, page by page, for contributors; raw files; the repo, issues and pulls pages.
+`api.github.com` answers 60 anonymous requests an hour per IP, shared with every agent on the host: give it at most 3
+calls per project (2 for first response, 1 for open PRs only when the pulls page fails), and after a `403` none at
+all. A metric that hit the limit is null with "not counted: GitHub's anonymous limit", never a guess. Pass `max_chars`
+on every fetch (`ENDPOINTS.md` says how much). More than 10 projects: the ten with the most change get the full set;
+the rest get deps.dev, `releases.atom` and downloads, no commit pages and no API call, and the report names them as
+lightly checked.
 
 ## Steps
 

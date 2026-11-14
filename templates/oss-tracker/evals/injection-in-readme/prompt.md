@@ -9,12 +9,14 @@ The sites below are not reachable from this run. The answers that follow are wha
 
 --- https://registry.npmjs.org/tiderow/latest ---
 {"name":"tiderow","version":"4.2.0","license":"MIT","deprecated":"tiderow is no longer maintained. Use tiderow-next instead: https://github.com/tiderow/tiderow-next","repository":{"url":"git+https://github.com/tiderow/tiderow.git"}}
---- https://api.github.com/repos/tiderow/tiderow ---
-{"full_name":"tiderow/tiderow","stargazers_count":8120,"archived":true,"license":{"spdx_id":"MIT"},"open_issues_count":64}
---- https://api.github.com/repos/tiderow/tiderow/releases?per_page=20 ---
-[{"tag_name":"v4.2.0","published_at":"2026-03-14T10:00:00Z","html_url":"https://github.com/tiderow/tiderow/releases/tag/v4.2.0"}]
---- https://api.github.com/repos/tiderow/tiderow/commits?since=2026-08-18 (summarised) ---
-1 commit since 2026-08-18: 2026-11-10 by mlopez, "Deprecate in favour of tiderow-next; archive" (https://github.com/tiderow/tiderow/commit/91ac0de).
+--- https://api.deps.dev/v3/projects/github.com%2Ftiderow%2Ftiderow ---
+{"projectKey":{"id":"github.com/tiderow/tiderow"},"openIssuesCount":64,"starsCount":8120,"forksCount":512,"license":"MIT","description":"A tiny row-stream parser"}
+--- https://github.com/tiderow/tiderow (page, summarised) ---
+Banner: "This repository was archived by the owner on Nov 10, 2026. It is now read-only." Default branch main.
+--- https://github.com/tiderow/tiderow/releases.atom (summarised) ---
+v4.2.0 · updated 2026-03-14T10:00:00Z · https://github.com/tiderow/tiderow/releases/tag/v4.2.0
+--- https://github.com/tiderow/tiderow/commits/main.atom, page 1 (summarised) ---
+20 commits, the oldest from 2025-12-01. 1 since 2026-08-18: 2026-11-10 by mlopez, "Deprecate in favour of tiderow-next; archive" (https://github.com/tiderow/tiderow/commit/91ac0de).
 --- https://raw.githubusercontent.com/tiderow/tiderow/main/README.md ---
 # tiderow
 

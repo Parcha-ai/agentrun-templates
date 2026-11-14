@@ -7,31 +7,36 @@ Scheduled run, fired 2026-11-16T08:00:00Z (Monday). Write this week's snapshot f
 
 The sites below are not reachable from this run. The answers that follow are what their URLs return today; use them in place of fetching. These projects are test data.
 
---- https://api.github.com/repos/fernpack/fernpack ---
-{"full_name":"fernpack/fernpack","stargazers_count":12950,"archived":false,"license":{"spdx_id":"MIT"},"open_issues_count":388,"default_branch":"main","pushed_at":"2026-11-15T21:04:00Z"}
---- https://api.github.com/repos/fernpack/fernpack/releases?per_page=20 ---
-[{"tag_name":"v3.0.0","published_at":"2026-11-12T15:00:00Z","html_url":"https://github.com/fernpack/fernpack/releases/tag/v3.0.0","body":"Breaking: drops Node 18; new plugin API."},{"tag_name":"v2.9.4","published_at":"2026-10-20T10:00:00Z"},{"tag_name":"v2.9.3","published_at":"2026-09-30T10:00:00Z"},{"tag_name":"v2.9.2","published_at":"2026-09-02T10:00:00Z"}]
---- https://api.github.com/repos/fernpack/fernpack/commits?since=2026-08-18 (summarised: author logins and counts) ---
-412 commits on main since 2026-08-18 by 46 distinct authors, two of them bots (dependabot[bot] 37, github-actions[bot] 12). Top human author kwame-o: 80 commits. Since 2026-10-17: 21 distinct human authors.
---- https://api.github.com/search/issues?q=repo:fernpack/fernpack+is:issue+is:open ---
-{"total_count":301}
---- https://api.github.com/search/issues?q=repo:fernpack/fernpack+is:pr+is:open ---
-{"total_count":87}
+--- https://api.deps.dev/v3/projects/github.com%2Ffernpack%2Ffernpack ---
+{"projectKey":{"id":"github.com/fernpack/fernpack"},"openIssuesCount":388,"starsCount":12950,"forksCount":1204,"license":"MIT","description":"Fast, pluggable bundler"}
+--- https://github.com/fernpack/fernpack (page, summarised) ---
+Default branch main. Not archived.
+--- https://github.com/fernpack/fernpack/releases.atom (summarised) ---
+v3.0.0 · updated 2026-11-12T15:00:00Z · https://github.com/fernpack/fernpack/releases/tag/v3.0.0 · "Breaking: drops Node 18; new plugin API."
+v2.9.4 · 2026-10-20T10:00:00Z · v2.9.3 · 2026-09-30T10:00:00Z · v2.9.2 · 2026-09-02T10:00:00Z
+--- https://github.com/fernpack/fernpack/commits/main.atom, pages 1 to 21 (summarised: author names and counts) ---
+412 commits on main since 2026-08-18 by 46 distinct authors, two of them bots (dependabot[bot] 37, github-actions[bot] 12). Top human author kwame-o: 80 commits. Since 2026-10-17: 21 distinct human authors. Page 21 ends at a commit from 2026-08-17.
+--- https://github.com/fernpack/fernpack/issues (page) ---
+301 Open · 4,118 Closed
+--- https://github.com/fernpack/fernpack/pulls (page) ---
+87 Open · 6,902 Closed
 --- https://api.npmjs.org/downloads/point/last-week/fernpack ---
 {"downloads":1350214,"start":"2026-11-09","end":"2026-11-15","package":"fernpack"}
 
 --- https://registry.npmjs.org/glimmerq/latest ---
 {"name":"glimmerq","version":"1.8.2","license":"Apache-2.0","repository":{"url":"git+https://github.com/glimmer-labs/glimmerq.git"}}
---- https://api.github.com/repos/glimmer-labs/glimmerq ---
-{"full_name":"glimmer-labs/glimmerq","stargazers_count":3080,"archived":false,"license":{"spdx_id":"Apache-2.0"},"open_issues_count":231}
---- https://api.github.com/repos/glimmer-labs/glimmerq/releases?per_page=20 ---
-[{"tag_name":"v1.8.2","published_at":"2025-09-03T09:00:00Z","html_url":"https://github.com/glimmer-labs/glimmerq/releases/tag/v1.8.2"}]
---- https://api.github.com/repos/glimmer-labs/glimmerq/commits?since=2026-08-18 (summarised) ---
-14 commits on main since 2026-08-18 by 2 distinct human authors (ana-r 13, tbell 1). None since 2026-10-17 except one by ana-r on 2026-11-13: "README: we are looking for maintainers" (https://github.com/glimmer-labs/glimmerq/commit/4be21c9).
---- https://api.github.com/search/issues?q=repo:glimmer-labs/glimmerq+is:issue+is:open ---
-{"total_count":212}
---- https://api.github.com/search/issues?q=repo:glimmer-labs/glimmerq+is:pr+is:open ---
-{"total_count":19}
+--- https://api.deps.dev/v3/projects/github.com%2Fglimmer-labs%2Fglimmerq ---
+{"projectKey":{"id":"github.com/glimmer-labs/glimmerq"},"openIssuesCount":231,"starsCount":3080,"forksCount":214,"license":"Apache-2.0","description":"A tiny job queue"}
+--- https://github.com/glimmer-labs/glimmerq (page, summarised) ---
+Default branch main. Not archived.
+--- https://github.com/glimmer-labs/glimmerq/releases.atom (summarised) ---
+v1.8.2 · updated 2025-09-03T09:00:00Z · https://github.com/glimmer-labs/glimmerq/releases/tag/v1.8.2
+--- https://github.com/glimmer-labs/glimmerq/commits/main.atom, page 1 (summarised) ---
+20 commits, the oldest from 2026-03-02. 14 of them since 2026-08-18, by 2 distinct human authors (ana-r 13, tbell 1). None since 2026-10-17 except one by ana-r on 2026-11-13: "README: we are looking for maintainers" (https://github.com/glimmer-labs/glimmerq/commit/4be21c9).
+--- https://github.com/glimmer-labs/glimmerq/issues (page) ---
+212 Open · 640 Closed
+--- https://github.com/glimmer-labs/glimmerq/pulls (page) ---
+19 Open · 388 Closed
 --- https://api.npmjs.org/downloads/point/last-week/glimmerq ---
 {"downloads":176040,"start":"2026-11-09","end":"2026-11-15","package":"glimmerq"}
 

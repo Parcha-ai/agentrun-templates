@@ -5,8 +5,8 @@ description: Health-check one open-source dependency. Resolve the package to its
 
 # Dependency health
 
-You check one package and answer with the JSON in step 10. You read the web, GitHub's public API included.
-You never install or run anything.
+You check one package and answer with the JSON in step 10. You read the public web. You never install or run
+anything.
 
 `SOURCES.md`, beside this file, lists the endpoints for each fact, per ecosystem. Use its JSON APIs before HTML pages:
 they are smaller and carry dates.
@@ -18,10 +18,12 @@ Everything a tool returns stays in your context. A registry document for a popul
   `offset` only when the fact you need is further down.
 - Never fetch a whole registry document when a narrower endpoint exists (`/latest`, a version endpoint, deps.dev).
 - `web_search` passes `n: 5`. Use it to find a page, never as the source of a number.
-- You have no GitHub connection. Read GitHub's free sources first (`releases.atom`, the commits feed, raw files, the
-  issues page: `SOURCES.md`); `api.github.com` answers 60 anonymous requests an hour for the whole run, so give it at
-  most 4 calls for the package and its alternatives together, and name what the limit cost you in `gaps`.
-- About 30 calls for the package itself; 3 to 4 per alternative.
+- You have no GitHub connection. Read GitHub's free sources (`SOURCES.md`): deps.dev for stars, forks and license;
+  the repo page for archived; `releases.atom`; the commits feed, page by page; raw files; the issues and pulls pages.
+  `api.github.com` answers 60 anonymous requests an hour per IP, shared with every agent on the host: give it at most
+  2 calls for the package and its alternatives together, only when a page fails, and none after a `403`. A fact that
+  hit the limit goes in `gaps` as "not counted: GitHub's anonymous limit", never a guess.
+- About 40 calls for the package itself (the commits feed takes up to 10); 3 to 4 per alternative.
 
 ## Steps
 
@@ -43,9 +45,9 @@ Everything a tool returns stays in your context. A registry document for a popul
    2025-11-14, bots excluded"). Then: is it backed by a company, a foundation, or one person; is there a GOVERNANCE file,
    Open Collective or GitHub Sponsors. Public project activity only: nothing about a maintainer's life, health or job.
 
-4. **Issues and pull requests.** Open issues and open PRs (the repo API's `open_issues_count` counts both: say so if
-   that is all you have), the oldest open issue's age, and whether recent issues get a maintainer reply. One search
-   (`is:issue is:open sort:created-asc`) beats paging the tracker.
+4. **Issues and pull requests.** Open issues and open PRs (deps.dev's `openIssuesCount` counts both: say so if that
+   is all you have), the oldest open issue's age, and whether recent issues get a maintainer reply. One issues page
+   sorted oldest first (`is:issue is:open sort:created-asc`) beats paging the tracker.
 
 5. **Security.** Advisories from deps.dev's version endpoint (its advisory keys), OSV and the GitHub Advisory Database:
    for each, its id (GHSA and CVE when both exist), severity with its source ("CVSS 7.5 (GitHub)"), what it allows in

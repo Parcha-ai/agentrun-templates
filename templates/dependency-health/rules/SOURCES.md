@@ -11,8 +11,8 @@ a deps.dev project key (`github.com%2F<owner>%2F<repo>`).
 | Versions with publish dates, default version | `https://api.deps.dev/v3/systems/<system>/packages/<name>` (system: `npm`, `pypi`, `cargo`, `maven`, `go`, `nuget`, `rubygems`) |
 | A version's licenses, advisory keys, repository link | `https://api.deps.dev/v3/systems/<system>/packages/<name>/versions/<version>` |
 | An advisory | `https://api.deps.dev/v3/advisories/<GHSA id>`, `https://api.osv.dev/v1/vulns/<id>`, `https://github.com/advisories/<GHSA id>` |
-| Advisories against a package | `https://api.github.com/advisories?ecosystem=<npm\|pip\|rust\|maven\|go\|nuget\|rubygems\|composer>&affects=<name>&per_page=30`, then `https://osv.dev/list?ecosystem=<Ecosystem>&q=<name>` |
-| Project: stars, forks, open issues, Scorecard | `https://api.deps.dev/v3/projects/<project key>` |
+| Advisories against a package | `https://github.com/advisories?query=type%3Areviewed+ecosystem%3A<npm\|pip\|rust\|maven\|go\|nuget\|rubygems\|composer>+affects%3A<name>` (the public database page, not the API), then `https://osv.dev/list?ecosystem=<Ecosystem>&q=<name>` |
+| Project: stars, forks, license, Scorecard | `https://api.deps.dev/v3/projects/<project key>` (`starsCount`, `forksCount`, `license`, `scorecard`; its `openIssuesCount` counts PRs too) |
 | Scorecard detail | `https://api.securityscorecards.dev/projects/github.com/<owner>/<repo>` |
 | Support windows | `https://endoflife.date/api/<product>.json` (only listed products) |
 | License as curated | `https://api.clearlydefined.io/definitions/<type>/<provider>/<namespace or ->/<name>/<version>` |
@@ -35,22 +35,26 @@ is a fact to report with its exact text.
 
 ## Repository (GitHub)
 
-No GitHub connection: everything is public GitHub, read anonymously with `web_fetch`. Feeds and raw files have no
-rate limit; `api.github.com` answers 60 anonymous requests an hour for the whole run, so it gets at most 4 calls per
-package (the alternatives share them) and only for what nothing else serves.
+No GitHub connection: everything is public GitHub, read anonymously with `web_fetch`. Feeds, raw files, pages and
+deps.dev have no hourly cap. `api.github.com` answers 60 anonymous requests an hour per IP address, shared by every
+agent on the same AgentRun host, so the whole check (package and alternatives together) gets at most 2 API calls, and
+only for what nothing else serves.
 
-- Free: `https://github.com/<owner>/<repo>/releases.atom` (versions, dates, notes; no releases: `/tags.atom`),
-  `https://github.com/<owner>/<repo>/commits/<default branch>.atom` (the newest 20 commits, authors and dates), and
-  `https://raw.githubusercontent.com/<owner>/<repo>/HEAD/<path>` for LICENSE, SECURITY.md, CHANGELOG, GOVERNANCE.md,
-  `.github/FUNDING.yml`, manifests and lockfiles. Open issues and PRs: the "Open" counts on
-  `https://github.com/<owner>/<repo>/issues` and `/pulls`.
-- 1 API call: `https://api.github.com/repos/<owner>/<repo>` for `archived`, `pushed_at`, `license`, `stargazers_count`,
-  `default_branch`.
-- 1 to 3 more, only when needed: `https://api.github.com/repos/<owner>/<repo>/commits?since=<YYYY-MM-DD>&per_page=100`
-  for the 12-month committer count when the feed's 20 commits are all recent (one page; a full page means "at least");
-  `https://api.github.com/search/issues?q=repo:<owner>/<repo>+is:issue+is:open&sort=created&order=asc&per_page=5` for
-  the oldest open issues; `https://api.github.com/repos/<owner>/<repo>/contributors?per_page=20` (all-time: never the
-  12-month count).
+- Stars, forks, license, Scorecard: deps.dev's project endpoint (above).
+- Archived, default branch: `https://github.com/<owner>/<repo>` (the "archived" banner; the branch picker).
+- Releases: `https://github.com/<owner>/<repo>/releases.atom` (versions, dates, notes; no releases: `/tags.atom`).
+- Commits: `https://github.com/<owner>/<repo>/commits/<default branch>.atom`, 20 newest per page (authors and dates;
+  pass `max_chars: 12000`); read on with `?page=2`, `3`... until an entry is older than 12 months, at most 10 pages
+  (more: the committer count is "at least").
+- Files: `https://raw.githubusercontent.com/<owner>/<repo>/HEAD/<path>` for LICENSE, SECURITY.md, CHANGELOG,
+  GOVERNANCE.md, `.github/FUNDING.yml`, manifests and lockfiles.
+- Open issues and PRs: the "Open" counts on `https://github.com/<owner>/<repo>/issues` and `/pulls`. The oldest open
+  issues: `https://github.com/<owner>/<repo>/issues?q=is%3Aissue+is%3Aopen+sort%3Acreated-asc`.
+- API, only when a page above fails: `https://api.github.com/search/issues?q=repo:<owner>/<repo>+is:issue+is:open&sort=created&order=asc&per_page=5`
+  for the oldest open issues (1 call), and `https://api.github.com/repos/<owner>/<repo>` for `archived` and
+  `default_branch` (1 call). `/contributors` counts all-time commits: never the 12-month count.
 
-A `403` or `429` from the API is a gap to name, not a fact about the project. GitLab and Codeberg: their own API
+A `403` or `429` from the API, or a `429` from a github.com page or feed, means GitHub's anonymous limit is spent: the
+fact is a gap, named "not counted: GitHub's anonymous limit" in `gaps`, never a guess and never a fact about
+the project. After an API `403`, no more API calls this run. GitLab and Codeberg: their own API
 (`https://gitlab.com/api/v4/projects/<owner>%2F<repo>`, `https://codeberg.org/api/v1/repos/<owner>/<repo>`).
