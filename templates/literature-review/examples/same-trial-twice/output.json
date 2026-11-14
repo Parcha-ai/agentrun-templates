@@ -1,0 +1,207 @@
+{
+  "reviewed_on": "2026-11-14",
+  "question": {
+    "text": "Does the SleepWell online CBT-I program reduce insomnia severity in adults?",
+    "interpretation": "I interpret SleepWell as the fictional online CBT-I program described in the supplied captures, not other interventions sharing its name. The direct comparison is with a waitlist over nine weeks; the two reports concern one randomized sample.",
+    "population": "Adults with insomnia",
+    "intervention_or_exposure": "SleepWell online cognitive behavioral therapy for insomnia (CBT-I)",
+    "comparison": "Waitlist",
+    "outcomes": [
+      "Insomnia severity",
+      "Age-related modification of the treatment effect"
+    ]
+  },
+  "scope": {
+    "years": "2011-2026, through 2026-11-14",
+    "designs": "All designs eligible; the supplied evidence consists of one randomized trial and its secondary age-subgroup analysis.",
+    "populations": "Adults with insomnia; detailed eligibility criteria were not supplied.",
+    "context": "Program-specific evidence review using the two supplied captured pages in place of fetching those pages, supplemented by open-index and registration searches."
+  },
+  "search": {
+    "run_on": "2026-11-14",
+    "indexes": [
+      {
+        "name": "Cochrane Library via web search",
+        "queries": [
+          "site.cochranelibrary.com \"SleepWell\" \"CBT-I\" review"
+        ],
+        "hits": null,
+        "accessible": false,
+        "note": "The search returned off-target results, not a usable Cochrane review of this fictional program."
+      },
+      {
+        "name": "Epistemonikos",
+        "queries": [
+          "SleepWell insomnia"
+        ],
+        "hits": null,
+        "accessible": false,
+        "note": "The search page returned HTTP 403."
+      },
+      {
+        "name": "Europe PMC",
+        "queries": [
+          "SleepWell AND (insomnia OR CBT-I) AND (REVIEW)",
+          "\"SW-2022-014\""
+        ],
+        "hits": null,
+        "accessible": true,
+        "note": "The broad query reported 89 hits, not 89 eligible studies; the inspected result slice did not identify this fictional program. The exact registration query reported zero hits. The broad result set was not exhaustively screened."
+      },
+      {
+        "name": "PubMed",
+        "queries": [
+          "\"SleepWell online CBT-I\""
+        ],
+        "hits": 0,
+        "accessible": true,
+        "note": "PubMed reported zero records and warned that the quoted phrase was not found."
+      },
+      {
+        "name": "Crossref",
+        "queries": [
+          "works/10.0000/si.2023.0071",
+          "works/10.0000/si.2024.0033"
+        ],
+        "hits": null,
+        "accessible": false,
+        "note": "Both DOI-record requests returned HTTP 404. Bibliographic details are transcribed from the supplied captured paper pages, not independently verified in Crossref; correction and retraction metadata could not be checked there."
+      },
+      {
+        "name": "ClinicalTrials.gov",
+        "queries": [
+          "\"SW-2022-014\""
+        ],
+        "hits": 0,
+        "accessible": true,
+        "note": "The API returned an empty studies array. The supplied registration could not be checked against a protocol or registered outcomes."
+      },
+      {
+        "name": "Web search for retractions",
+        "queries": [
+          "\"SleepWell online CBT-I for insomnia: a randomized trial\" retraction",
+          "\"Does age moderate the effect of online CBT-I?\" retraction"
+        ],
+        "hits": null,
+        "accessible": true,
+        "note": "No matching notice appeared in returned results. Off-target snippets were not used as evidence. This does not establish that no correction or retraction exists."
+      }
+    ],
+    "existing_syntheses": []
+  },
+  "bottom_line": "In the supplied fictional trial, SleepWell reduced insomnia severity versus waitlist at nine weeks: the mean difference was -5.3 ISI points (95% CI -7.2 to -3.4). The two papers describe one randomized sample of 200 adults, not two independent trials. Certainty is low because only short captured summaries were available, leaving important bias safeguards unassessable. The age analysis does not establish different effects by age, and durability, harms, and effectiveness against active treatment remain unknown.",
+  "certainty": "low",
+  "studies": [
+    {
+      "id": "P1",
+      "authors": "E. Rask; O. Daniels",
+      "year": 2023,
+      "title": "SleepWell online CBT-I for insomnia: a randomized trial",
+      "venue": "Sleep Interventions",
+      "doi": "10.0000/si.2023.0071",
+      "url": "https://sleepresearch.example/articles/sleepwell-primary-2023",
+      "design": "rct",
+      "sample_size": 200,
+      "population": "Adults with insomnia; 100 randomized per arm.",
+      "finding": "The supplied captured summary reports lower insomnia severity with SleepWell than waitlist at nine weeks. Registration SW-2022-014. Only the captured summary was available; full methods and results were not provided.",
+      "effect": {
+        "metric": "Mean difference in Insomnia Severity Index (ISI) points",
+        "value": "-5.3 points, SleepWell versus waitlist; lower favors SleepWell",
+        "ci_95": "-7.2 to -3.4",
+        "follow_up": "9 weeks"
+      },
+      "flags": [
+        "abstract_only"
+      ],
+      "same_trial_as": null,
+      "funding": "Public funding, according to the supplied captured page; funder and role not specified.",
+      "opened": "abstract_only",
+      "published": null
+    },
+    {
+      "id": "P2",
+      "authors": "O. Daniels; E. Rask; H. Tran",
+      "year": 2024,
+      "title": "Does age moderate the effect of online CBT-I? A secondary analysis of the SleepWell trial",
+      "venue": "Sleep Interventions",
+      "doi": "10.0000/si.2024.0033",
+      "url": "https://sleepresearch.example/articles/sleepwell-subgroup-2024",
+      "design": "rct",
+      "sample_size": 200,
+      "population": "The same trial participants as P1: ages 18-39, n=82; ages 40 or older, n=118.",
+      "finding": "Secondary analysis of SW-2022-014, not an independent trial. Reported mean differences were -6.0 points (95% CI -8.9 to -3.1) at ages 18-39 and -4.8 points (95% CI -7.3 to -2.3) at ages 40 or older; interaction p=0.41. No statistically detectable age interaction was reported.",
+      "effect": {
+        "metric": "Age-stratified mean difference in insomnia-severity points",
+        "value": "Ages 18-39: -6.0 points; ages 40 or older: -4.8 points; interaction p=0.41",
+        "ci_95": "Ages 18-39: -8.9 to -3.1; ages 40 or older: -7.3 to -2.3",
+        "follow_up": null
+      },
+      "flags": [
+        "abstract_only",
+        "same_trial_as_other"
+      ],
+      "same_trial_as": "P1",
+      "funding": "Public funding, according to the supplied captured page; funder and role not specified.",
+      "opened": "abstract_only",
+      "published": null
+    }
+  ],
+  "synthesis": {
+    "agreement": "The overall estimate and both age-stratified estimates favor SleepWell over waitlist. However, the subgroup report reuses the primary trial sample and therefore supplies no independent replication.",
+    "disagreement": "No between-trial disagreement can be assessed because there is only one trial. The numerically larger estimate among younger adults does not establish an age difference; the reported interaction p-value is 0.41.",
+    "likely_reasons": "The subgroup estimates are compatible with sampling variation. Whether age meaningfully modifies treatment benefit remains unresolved because the interaction confidence interval, subgroup prespecification, and interaction power were not supplied."
+  },
+  "evidence": [
+    {
+      "outcome": "Insomnia severity versus waitlist at nine weeks",
+      "certainty": "low",
+      "reason": "Randomization starts high; downgraded two levels for serious unresolved risk-of-bias concerns because only a brief summary was available: allocation concealment, attrition, missing-data handling, and selective reporting cannot be assessed. The 95% CI (-7.2 to -3.4 ISI points) excludes zero. Replication and publication bias remain unassessable.",
+      "studies": [
+        "P1"
+      ]
+    },
+    {
+      "outcome": "Age-related modification of the effect on insomnia severity",
+      "certainty": "very_low",
+      "reason": "Inherits the trial's unassessable bias safeguards, with additional imprecision for the interaction: n=82 and n=118 age strata, interaction p=0.41, and no interaction confidence interval or power information. Failure to detect interaction does not demonstrate equivalent effects across ages.",
+      "studies": [
+        "P2"
+      ]
+    },
+    {
+      "outcome": "Durability beyond nine weeks",
+      "certainty": "insufficient",
+      "reason": "Neither supplied summary reports a longer-term outcome.",
+      "studies": []
+    },
+    {
+      "outcome": "Adverse effects",
+      "certainty": "insufficient",
+      "reason": "Neither supplied summary reports adverse events or systematic harms assessment.",
+      "studies": []
+    },
+    {
+      "outcome": "Insomnia severity versus an active treatment",
+      "certainty": "insufficient",
+      "reason": "The only reported comparator is waitlist; there is no direct active-comparator evidence.",
+      "studies": []
+    }
+  ],
+  "measures": [
+    "P1 identifies the primary measure as the Insomnia Severity Index (ISI), with lower scores indicating less severe insomnia. The captures provide no clinical-importance threshold, responder definition, or remission criterion.",
+    "The reported mean difference is a between-group average, not an individual response rate or the proportion achieving remission. No conversion to those outcomes was attempted."
+  ],
+  "gaps": [
+    "Only brief captured summaries were supplied. The schema's abstract_only label is used conservatively; these captures do not provide complete abstracts, methods, or results.",
+    "Authors, years, venues, and DOIs were checked against the supplied page text only. Both Crossref DOI requests returned 404, consistent with the explicitly fictional setting; independent bibliographic verification was unavailable.",
+    "No matching registration was found in the ClinicalTrials.gov search. Prespecification, outcome switching, and unpublished registered results could not be assessed.",
+    "Retraction checks were incomplete: the supplied captures showed no notice, web searches yielded no matching notice, and Crossref records were unavailable. Absence of a notice in these checks is not definitive.",
+    "Allocation concealment, recruitment setting, baseline severity, diagnostic criteria, participant characteristics, adherence, attrition, missing-data handling, and analysis population were not reported in the captures.",
+    "P2 does not explicitly restate its outcome instrument, comparator, or assessment time. It is linked to P1 by registration and stated sample identity; its follow-up is therefore left null rather than assumed.",
+    "There is no independent replication, active comparator, longer-term follow-up, harms result, or reported response/remission outcome in the supplied evidence.",
+    "Age-interaction prespecification, interaction confidence interval, multiplicity handling, and subgroup arm sizes are unavailable.",
+    "The search was targeted, not exhaustive: Epistemonikos was blocked, the broad Europe PMC results were not fully screened, and citation chasing was not completed. No external paper was added to the stipulated two-paper evidence set."
+  ],
+  "implications": "Within this fictional evidence set, the findings support a short-term average reduction in insomnia severity relative to waiting for treatment. They do not establish superiority to another treatment, sustained benefit, individual response probability, or safety. The secondary report does not justify an age-specific effectiveness claim. Generalization beyond the enrolled adults is uncertain because eligibility, setting, and participant characteristics are sparsely described. These are evidence interpretations, not clinical recommendations.",
+  "report_markdown": "## Bottom line\nThe supplied fictional trial reports that SleepWell online CBT-I reduced insomnia severity compared with waitlist at nine weeks: mean difference **-5.3 Insomnia Severity Index (ISI) points**, 95% CI **-7.2 to -3.4**, with lower scores favoring SleepWell [P1]. This is evidence from **one randomized trial involving 200 adults**, reported in two papers—not two independent trials. Overall certainty is **low**, principally because the available captures are too brief to assess important safeguards against bias.\n\n## Search strategy\nThe review followed three steps: (1) frame the program-specific question and look for existing syntheses; (2) search open indexes and registration records, check bibliographic and retraction information, and link duplicate trial reports; (3) extract the supplied results and assess certainty separately by outcome.\n\nSearches ran on **2026-11-14**, with a default publication scope of 2011–2026. The question concerns adults receiving the specified fictional SleepWell program, compared with waitlist, with insomnia severity as the primary outcome. Other interventions called SleepWell were not treated as evidence about this program.\n\nA Cochrane-targeted web search for `SleepWell CBT-I review` yielded no usable program-specific synthesis. Epistemonikos returned HTTP 403. Europe PMC's broad `SleepWell AND (insomnia OR CBT-I) AND (REVIEW)` query reported 89 hits, but this was a broad retrieval count rather than an eligible-study count; only the returned slice was inspected. Its exact `SW-2022-014` query found zero records. PubMed's `\"SleepWell online CBT-I\"` query also reported zero records, with a phrase-not-found warning. ClinicalTrials.gov returned no studies for the supplied registration identifier.\n\nCrossref requests for both supplied DOIs returned HTTP 404. Exact-title retraction searches produced no matching notice, but these checks cannot establish the absence of corrections or retractions. Bibliographic details below therefore come from the supplied captured paper pages, not independent index confirmation. The two captures were used in place of fetching their URLs. Both are classified conservatively as **abstract-only**, meaning summary-level access rather than verified full text. No external paper or search snippet was used to supply an effectiveness finding.\n\n## Key studies\n| Report | Design and population | Sample | Finding and published effect | Access and linkage |\n|---|---|---:|---|---|\n| Rask and Daniels, 2023 [P1] | Randomized trial; adults with insomnia; SleepWell versus waitlist | 200, with 100 per arm | Nine-week ISI mean difference -5.3 points; 95% CI -7.2 to -3.4 | Captured summary only; primary report; public funding reported |\n| Daniels, Rask, and Tran, 2024 [P2] | Secondary age analysis of the same randomized trial | Same 200: ages 18–39, n=82; ages ≥40, n=118 | Ages 18–39: mean difference -6.0 points, 95% CI -8.9 to -3.1. Ages ≥40: -4.8 points, 95% CI -7.3 to -2.3. Interaction p=0.41 | Captured summary only; same registration, SW-2022-014; public funding reported |\n\nThe unique randomized sample is **200**, not 400. P2 contributes information about possible effect modification but does not replicate P1. Its capture does not explicitly restate the assessment time, outcome instrument, or comparator, so those details are not treated as independently documented for that report.\n\n## Synthesis\n**Reported findings:** The primary estimate favors SleepWell and its confidence interval excludes no between-group difference [P1]. Both age-stratified estimates also favor the intervention, while the reported interaction test is not statistically significant, p=0.41 [P2]. No effects were pooled or recalculated for this review.\n\n**Interpretation:** The evidence supports a short-term average advantage over waitlist in this sample. It does not show how SleepWell compares with another credible treatment. Nor does an average difference identify the probability that an individual participant will respond or achieve remission.\n\nThe younger subgroup's estimate is numerically more favorable, but the appropriate reported comparison of treatment effects across age groups is the interaction test—not whether either subgroup separately has a confidence interval excluding zero. The interaction result does **not** establish that younger adults benefit more. Conversely, failure to detect an interaction does **not** demonstrate equivalent effects across ages [P2].\n\nThere is no independent-study agreement or disagreement to assess. The overall and subgroup estimates are related results from one sample, and apparent consistency must not be presented as replication.\n\n## Evidence strength\nThese are GRADE-style judgments adapted to the unusually limited, fictional source material.\n\n| Outcome | Certainty | Main rationale |\n|---|---|---|\n| Nine-week insomnia severity versus waitlist | Low | Randomization is reported, but two levels are deducted for unresolved risk-of-bias concerns: concealment, attrition, missing-data handling, and selective reporting cannot be assessed from the capture. The CI, -7.2 to -3.4 points, excludes zero. |\n| Age modification of benefit | Very low | Inherits the trial's assessment limitations; interaction precision is unclear because no interaction CI or power information is supplied. |\n| Benefit beyond nine weeks | Insufficient | No longer-term results supplied. |\n| Adverse effects | Insufficient | No harms results supplied. |\n| Effectiveness versus active treatment | Insufficient | No active comparator reported. |\n\nUnreported safeguards are **unknown**, not demonstrated methodological failures. Nevertheless, their absence from the available material materially limits confidence in the result. A single available trial also leaves consistency and publication bias unresolved; neither can be inferred from the existence of two publications.\n\n## Common measures\nP1 identifies ISI as its primary outcome and states that lower scores are better [P1]. No clinically important difference threshold, responder definition, or remission criterion is supplied. Consequently, this review reports the published point difference without attaching an unsupported clinical-importance label or converting it into response rates.\n\n## Gaps and future directions\nThe most immediate need is the complete trial report and a verifiable protocol or registration, allowing assessment of allocation procedures, prespecified outcomes, attrition, analysis population, and missing-data methods. Detailed eligibility criteria, baseline severity, recruitment setting, comorbidities, intervention content, and adherence would help assess applicability.\n\nIndependent randomized replication would address the lack of corroboration. Active-comparator trials, longer follow-up, and systematic harms reporting would answer questions the waitlist result cannot resolve. Age moderation requires a prespecified interaction analysis with an effect estimate and confidence interval, rather than conclusions based only on separate subgroup significance tests.\n\nSearch limitations include the blocked synthesis database, incomplete screening of broad Europe PMC results, unavailable Crossref records, and inability to inspect a matching registry entry. The bibliographic and registration limitations are explicit features of reviewing this fictional evidence set, not proof of misconduct or selective reporting.\n\n## Implications for the stated context\nThe evidence supports a cautious statement that SleepWell reduced average insomnia severity relative to waitlist over nine weeks in the supplied trial. It does not establish durable benefit, comparative effectiveness against active treatment, safety, or an age-specific advantage. These conclusions summarize the supplied evidence and are not clinical advice."
+}
