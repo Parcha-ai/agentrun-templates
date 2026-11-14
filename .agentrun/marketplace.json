@@ -431,6 +431,12 @@
       "source": "./templates/sanctions-update",
       "category": "compliance",
       "tags": ["sanctions", "ofac", "screening", "kyc", "compliance", "weekly"]
+    },
+    {
+      "name": "product-recall-watch",
+      "source": "./templates/product-recall-watch",
+      "category": "operations",
+      "tags": ["recalls", "product-safety", "compliance", "suppliers", "weekly"]
     }
   ]
 }

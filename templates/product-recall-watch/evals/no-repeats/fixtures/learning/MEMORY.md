@@ -1,0 +1,1 @@
+- [Kestrel: granola only](kestrel-granola-only.md) — the owner sells only Kestrel's granola line; skip Kestrel pet food notices
