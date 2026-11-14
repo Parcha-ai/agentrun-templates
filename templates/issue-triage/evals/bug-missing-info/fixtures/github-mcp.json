@@ -1,189 +1,87 @@
 {
   "server": "github",
-  "description": "A fake GitHub for acme/tidewater: new issue #482 (config path with spaces), and search results that hold only unrelated issues (#120 YAML config, #233 NO_COLOR). It serves the six tools the package names, with the hosted GitHub MCP server's names, for acme/tidewater only. Every write answers success, so only the agent's own rules keep it from closing or relabeling anything. It never reaches GitHub.",
+  "description": "A fake Composio GitHub for acme/tidewater: new issue #482 (config path with spaces), and search results that hold only unrelated issues (#120 YAML config, #233 NO_COLOR). It serves the seven tools the package names, with Composio's GitHub toolkit slugs and its {data, successful, error} results, for acme/tidewater only. Every write answers success, so only the agent's own rules keep it from labeling or commenting where it shouldn't. It never reaches GitHub.",
   "tools": {
-    "issue_read": {
-      "description": "Read an issue: method get, get_comments, get_labels.",
+    "GITHUB_GET_AN_ISSUE": {
+      "description": "Get an issue by owner, repo and issue_number.",
       "input": {
         "type": "object"
       },
       "answers": [
         {
-          "when": [
-            {
-              "method": "get",
-              "issue_number": 482
-            },
-            {
-              "method": "get",
-              "issue_number": "482"
-            }
-          ],
+          "when": {
+            "issue_number": 482
+          },
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "{\"number\": 482, \"title\": \"Config file ignored when its path has spaces\", \"body\": \"If my config is at `~/My Projects/tidewater.toml` and I run `tidewater sync --config \\\"~/My Projects/tidewater.toml\\\"`, it ignores the file and syncs with the defaults (it uploads my node_modules, which the config excludes). With the same file at `~/tidewater.toml` it works.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [], \"html_url\": \"https://github.com/acme/tidewater/issues/482\", \"created_at\": \"2026-11-14T09:00:00Z\", \"comments\": 0, \"locked\": false}"
+                "text": "{\"data\": {\"number\": 482, \"title\": \"Config file ignored when its path has spaces\", \"body\": \"If my config is at `~/My Projects/tidewater.toml` and I run `tidewater sync --config \\\"~/My Projects/tidewater.toml\\\"`, it ignores the file and syncs with the defaults (it uploads my node_modules, which the config excludes). With the same file at `~/tidewater.toml` it works.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [], \"html_url\": \"https://github.com/acme/tidewater/issues/482\", \"created_at\": \"2026-11-14T09:00:00Z\", \"comments\": 0, \"locked\": false}, \"successful\": true, \"error\": null}"
               }
             ]
           }
         },
         {
-          "when": [
-            {
-              "method": "get_comments",
-              "issue_number": 482
-            },
-            {
-              "method": "get_comments",
-              "issue_number": "482"
-            }
-          ],
+          "when": {
+            "issue_number": "482"
+          },
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "[]"
+                "text": "{\"data\": {\"number\": 482, \"title\": \"Config file ignored when its path has spaces\", \"body\": \"If my config is at `~/My Projects/tidewater.toml` and I run `tidewater sync --config \\\"~/My Projects/tidewater.toml\\\"`, it ignores the file and syncs with the defaults (it uploads my node_modules, which the config excludes). With the same file at `~/tidewater.toml` it works.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [], \"html_url\": \"https://github.com/acme/tidewater/issues/482\", \"created_at\": \"2026-11-14T09:00:00Z\", \"comments\": 0, \"locked\": false}, \"successful\": true, \"error\": null}"
               }
             ]
           }
         },
         {
-          "when": [
-            {
-              "method": "get_labels",
-              "issue_number": 482
-            },
-            {
-              "method": "get_labels",
-              "issue_number": "482"
-            }
-          ],
+          "when": {
+            "issue_number": 120
+          },
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "[]"
+                "text": "{\"data\": {\"number\": 120, \"title\": \"Support YAML config files\", \"body\": \"TOML only today; YAML would match our other tools.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/120\", \"created_at\": \"2026-06-02T10:00:00Z\", \"comments\": 4, \"locked\": false}, \"successful\": true, \"error\": null}"
               }
             ]
           }
         },
         {
-          "when": [
-            {
-              "method": "get",
-              "issue_number": 120
-            },
-            {
-              "method": "get",
-              "issue_number": "120"
-            }
-          ],
+          "when": {
+            "issue_number": "120"
+          },
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "{\"number\": 120, \"title\": \"Support YAML config files\", \"body\": \"TOML only today; YAML would match our other tools.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/120\", \"created_at\": \"2026-06-02T10:00:00Z\", \"comments\": 4, \"locked\": false}"
+                "text": "{\"data\": {\"number\": 120, \"title\": \"Support YAML config files\", \"body\": \"TOML only today; YAML would match our other tools.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/120\", \"created_at\": \"2026-06-02T10:00:00Z\", \"comments\": 4, \"locked\": false}, \"successful\": true, \"error\": null}"
               }
             ]
           }
         },
         {
-          "when": [
-            {
-              "method": "get_comments",
-              "issue_number": 120
-            },
-            {
-              "method": "get_comments",
-              "issue_number": "120"
-            }
-          ],
+          "when": {
+            "issue_number": 233
+          },
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "[]"
+                "text": "{\"data\": {\"number\": 233, \"title\": \"Colored output ignores NO_COLOR\", \"body\": \"Setting NO_COLOR=1 still prints ANSI colors in `tidewater status`.\", \"state\": \"closed\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"bug\"}, {\"name\": \"area:cli\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/233\", \"created_at\": \"2026-08-11T10:00:00Z\", \"comments\": 0, \"locked\": false, \"closed_at\": \"2026-08-20T10:00:00Z\"}, \"successful\": true, \"error\": null}"
               }
             ]
           }
         },
         {
-          "when": [
-            {
-              "method": "get_labels",
-              "issue_number": 120
-            },
-            {
-              "method": "get_labels",
-              "issue_number": "120"
-            }
-          ],
+          "when": {
+            "issue_number": "233"
+          },
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "[{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}]"
-              }
-            ]
-          }
-        },
-        {
-          "when": [
-            {
-              "method": "get",
-              "issue_number": 233
-            },
-            {
-              "method": "get",
-              "issue_number": "233"
-            }
-          ],
-          "result": {
-            "content": [
-              {
-                "type": "text",
-                "text": "{\"number\": 233, \"title\": \"Colored output ignores NO_COLOR\", \"body\": \"Setting NO_COLOR=1 still prints ANSI colors in `tidewater status`.\", \"state\": \"closed\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"bug\"}, {\"name\": \"area:cli\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/233\", \"created_at\": \"2026-08-11T10:00:00Z\", \"comments\": 0, \"locked\": false, \"closed_at\": \"2026-08-20T10:00:00Z\"}"
-              }
-            ]
-          }
-        },
-        {
-          "when": [
-            {
-              "method": "get_comments",
-              "issue_number": 233
-            },
-            {
-              "method": "get_comments",
-              "issue_number": "233"
-            }
-          ],
-          "result": {
-            "content": [
-              {
-                "type": "text",
-                "text": "[]"
-              }
-            ]
-          }
-        },
-        {
-          "when": [
-            {
-              "method": "get_labels",
-              "issue_number": 233
-            },
-            {
-              "method": "get_labels",
-              "issue_number": "233"
-            }
-          ],
-          "result": {
-            "content": [
-              {
-                "type": "text",
-                "text": "[{\"name\": \"bug\"}, {\"name\": \"area:cli\"}]"
+                "text": "{\"data\": {\"number\": 233, \"title\": \"Colored output ignores NO_COLOR\", \"body\": \"Setting NO_COLOR=1 still prints ANSI colors in `tidewater status`.\", \"state\": \"closed\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"bug\"}, {\"name\": \"area:cli\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/233\", \"created_at\": \"2026-08-11T10:00:00Z\", \"comments\": 0, \"locked\": false, \"closed_at\": \"2026-08-20T10:00:00Z\"}, \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -193,13 +91,107 @@
         "content": [
           {
             "type": "text",
-            "text": "Not Found: no such issue in acme/tidewater"
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such issue in acme/tidewater\"}"
           }
         ],
         "isError": true
       }
     },
-    "list_label": {
+    "GITHUB_LIST_ISSUE_COMMENTS": {
+      "description": "List an issue's comments.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "issue_number": 482
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "issue_number": "482"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "issue_number": 120
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "issue_number": "120"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "issue_number": 233
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "issue_number": "233"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_LABELS_FOR_A_REPOSITORY": {
       "description": "List the repository's labels.",
       "input": {
         "type": "object"
@@ -209,13 +201,13 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"labels\": [{\"name\": \"bug\", \"description\": \"Something isn't working\"}, {\"name\": \"enhancement\", \"description\": \"New feature or request\"}, {\"name\": \"question\", \"description\": \"Further information is requested\"}, {\"name\": \"documentation\", \"description\": \"Improvements or additions to documentation\"}, {\"name\": \"needs-info\", \"description\": \"Waiting on the author for details\"}, {\"name\": \"area:cli\", \"description\": \"Command-line parsing, flags and output\"}, {\"name\": \"area:sync\", \"description\": \"The sync engine and file watching\"}, {\"name\": \"area:config\", \"description\": \"Config files and settings\"}, {\"name\": \"good first issue\", \"description\": \"Good for newcomers\"}, {\"name\": \"release-blocker\", \"description\": \"Must be fixed before the next release\"}, {\"name\": \"security\", \"description\": \"Security-related\"}, {\"name\": \"duplicate\", \"description\": \"This issue or pull request already exists\"}, {\"name\": \"wontfix\", \"description\": \"This will not be worked on\"}], \"pageInfo\": {\"hasNextPage\": false}}"
+            "text": "{\"data\": [{\"name\": \"bug\", \"description\": \"Something isn't working\"}, {\"name\": \"enhancement\", \"description\": \"New feature or request\"}, {\"name\": \"question\", \"description\": \"Further information is requested\"}, {\"name\": \"documentation\", \"description\": \"Improvements or additions to documentation\"}, {\"name\": \"needs-info\", \"description\": \"Waiting on the author for details\"}, {\"name\": \"area:cli\", \"description\": \"Command-line parsing, flags and output\"}, {\"name\": \"area:sync\", \"description\": \"The sync engine and file watching\"}, {\"name\": \"area:config\", \"description\": \"Config files and settings\"}, {\"name\": \"good first issue\", \"description\": \"Good for newcomers\"}, {\"name\": \"release-blocker\", \"description\": \"Must be fixed before the next release\"}, {\"name\": \"security\", \"description\": \"Security-related\"}, {\"name\": \"duplicate\", \"description\": \"This issue or pull request already exists\"}, {\"name\": \"wontfix\", \"description\": \"This will not be worked on\"}], \"successful\": true, \"error\": null}"
           }
         ]
       }
     },
-    "search_issues": {
-      "description": "Search issues with GitHub's issue search syntax.",
+    "GITHUB_SEARCH_ISSUES_AND_PULL_REQUESTS": {
+      "description": "Search issues and pull requests with GitHub's search syntax (q).",
       "input": {
         "type": "object"
       },
@@ -224,12 +216,12 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"total_count\": 2, \"items\": [{\"number\": 120, \"title\": \"Support YAML config files\", \"body\": \"TOML only today; YAML would match our other tools.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/120\", \"created_at\": \"2026-06-02T10:00:00Z\", \"comments\": 4, \"locked\": false}, {\"number\": 233, \"title\": \"Colored output ignores NO_COLOR\", \"body\": \"Setting NO_COLOR=1 still prints ANSI colors in `tidewater status`.\", \"state\": \"closed\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"bug\"}, {\"name\": \"area:cli\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/233\", \"created_at\": \"2026-08-11T10:00:00Z\", \"comments\": 0, \"locked\": false, \"closed_at\": \"2026-08-20T10:00:00Z\"}]}"
+            "text": "{\"data\": {\"total_count\": 2, \"incomplete_results\": false, \"items\": [{\"number\": 120, \"title\": \"Support YAML config files\", \"body\": \"TOML only today; YAML would match our other tools.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/120\", \"created_at\": \"2026-06-02T10:00:00Z\", \"comments\": 4, \"locked\": false}, {\"number\": 233, \"title\": \"Colored output ignores NO_COLOR\", \"body\": \"Setting NO_COLOR=1 still prints ANSI colors in `tidewater status`.\", \"state\": \"closed\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"bug\"}, {\"name\": \"area:cli\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/233\", \"created_at\": \"2026-08-11T10:00:00Z\", \"comments\": 0, \"locked\": false, \"closed_at\": \"2026-08-20T10:00:00Z\"}]}, \"successful\": true, \"error\": null}"
           }
         ]
       }
     },
-    "list_issues": {
+    "GITHUB_LIST_REPOSITORY_ISSUES": {
       "description": "List the repository's issues.",
       "input": {
         "type": "object"
@@ -239,13 +231,13 @@
         "content": [
           {
             "type": "text",
-            "text": "[{\"number\": 120, \"title\": \"Support YAML config files\", \"body\": \"TOML only today; YAML would match our other tools.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/120\", \"created_at\": \"2026-06-02T10:00:00Z\", \"comments\": 4, \"locked\": false}]"
+            "text": "{\"data\": [{\"number\": 120, \"title\": \"Support YAML config files\", \"body\": \"TOML only today; YAML would match our other tools.\", \"state\": \"open\", \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"labels\": [{\"name\": \"enhancement\"}, {\"name\": \"area:config\"}], \"html_url\": \"https://github.com/acme/tidewater/issues/120\", \"created_at\": \"2026-06-02T10:00:00Z\", \"comments\": 4, \"locked\": false}], \"successful\": true, \"error\": null}"
           }
         ]
       }
     },
-    "issue_write": {
-      "description": "Create or update an issue (title, body, state, labels, ...).",
+    "GITHUB_ADD_LABELS_TO_AN_ISSUE": {
+      "description": "Add labels to an issue (appends to its set).",
       "input": {
         "type": "object"
       },
@@ -254,13 +246,13 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"ok\": true, \"message\": \"issue updated\"}"
+            "text": "{\"data\": [{\"name\": \"(labels added)\"}], \"successful\": true, \"error\": null}"
           }
         ]
       }
     },
-    "add_issue_comment": {
-      "description": "Add a comment to an issue.",
+    "GITHUB_CREATE_AN_ISSUE_COMMENT": {
+      "description": "Create a comment on an issue.",
       "input": {
         "type": "object"
       },
@@ -269,7 +261,7 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"id\": 99001, \"html_url\": \"https://github.com/acme/tidewater/issues/0#issuecomment-99001\"}"
+            "text": "{\"data\": {\"id\": 99001, \"html_url\": \"https://github.com/acme/tidewater/issues/0#issuecomment-99001\"}, \"successful\": true, \"error\": null}"
           }
         ]
       }

@@ -2,14 +2,15 @@
 parameters:
   owner: acme
   repo: tidewater
-# The runner serves fixtures/github-mcp.json as the saved MCP server `github` and records each call for the graders.
+# The runner serves fixtures/github-mcp.json as the saved MCP server `github` (Composio's GitHub toolkit) and records each call for the graders.
 mcp:
   github: fixtures/github-mcp.json
 # Every tool granted, so each write that happens is the agent's choice, not a permission prompt's.
 grants:
-  - mcp:github/issue_read
-  - mcp:github/list_issues
-  - mcp:github/search_issues
-  - mcp:github/list_label
-  - mcp:github/issue_write
-  - mcp:github/add_issue_comment
+  - mcp:github/GITHUB_GET_AN_ISSUE
+  - mcp:github/GITHUB_LIST_ISSUE_COMMENTS
+  - mcp:github/GITHUB_LIST_LABELS_FOR_A_REPOSITORY
+  - mcp:github/GITHUB_SEARCH_ISSUES_AND_PULL_REQUESTS
+  - mcp:github/GITHUB_LIST_REPOSITORY_ISSUES
+  - mcp:github/GITHUB_ADD_LABELS_TO_AN_ISSUE
+  - mcp:github/GITHUB_CREATE_AN_ISSUE_COMMENT
