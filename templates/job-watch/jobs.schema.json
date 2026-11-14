@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "New matching job postings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "quiet", "interpretation", "postings", "changes", "near_misses", "dropped_repeats", "unreachable", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "format": "date" },
+        "to": { "type": "string", "format": "date" }
+      }
+    },
+    "quiet": { "type": "boolean", "description": "True when no new matching posting was found." },
+    "interpretation": { "type": "string", "maxLength": 400, "description": "How you read the role, location and filters, in one line." },
+    "postings": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rank", "title", "employer", "location_terms", "pay", "contract_type", "posted", "posted_note", "deadline", "fit_note", "flag", "url", "also_seen_on"],
+        "properties": {
+          "rank": { "type": "integer", "minimum": 1 },
+          "title": { "type": "string", "minLength": 1, "maxLength": 200, "description": "As posted." },
+          "employer": { "type": "string", "minLength": 1, "maxLength": 160, "description": "The hiring company, or \"Recruiter for undisclosed client\"." },
+          "location_terms": { "type": "string", "maxLength": 160, "description": "\"Hybrid, 2 days, Lisbon\", \"Remote, EU only\"." },
+          "pay": { "type": "string", "maxLength": 120, "description": "Figure, currency and period as posted, or \"not listed\"." },
+          "contract_type": { "enum": ["full_time", "part_time", "contract", "freelance", "internship", "temporary", "not_stated"] },
+          "posted": { "type": "string", "format": "date" },
+          "posted_note": { "type": ["string", "null"], "enum": ["reopened", "refreshed", null] },
+          "deadline": { "type": "string", "maxLength": 60, "description": "YYYY-MM-DD, \"rolling\" or \"not stated\"." },
+          "fit_note": { "type": "string", "maxLength": 300, "description": "Matched criteria and gaps; inference labeled." },
+          "flag": { "type": ["string", "null"], "maxLength": 200, "description": "A scam or risk sign, else null." },
+          "url": { "type": "string", "format": "uri", "description": "The employer's or ATS posting page." },
+          "also_seen_on": { "type": "array", "items": { "type": "string", "format": "uri" }, "description": "Board copies merged into this row." }
+        }
+      }
+    },
+    "changes": {
+      "type": "array",
+      "items": { "type": "string", "maxLength": 240 },
+      "description": "Earlier reported postings that closed, moved a deadline or added pay, one line each."
+    },
+    "near_misses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "employer", "failed", "url"],
+        "properties": {
+          "title": { "type": "string" },
+          "employer": { "type": "string" },
+          "failed": { "type": "string", "maxLength": 200, "description": "The one criterion it failed." },
+          "url": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "dropped_repeats": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "unreachable": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "ignored_instructions": { "type": "array", "items": { "type": "string", "maxLength": 400 } },
+    "report_markdown": { "type": "string", "minLength": 1, "contentMediaType": "text/markdown" }
+  }
+}

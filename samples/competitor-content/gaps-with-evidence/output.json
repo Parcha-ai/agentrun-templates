@@ -1,0 +1,83 @@
+{
+  "interpretation": "Plan: 1) Review supplied archives for Nov 10–16. 2) Filter dates and repeats, then calculate the visible baseline. 3) Identify demand-backed gaps and validate the edition. Used the scheduled trigger date and supplied test pages only; independent corroboration was unavailable.",
+  "edition_date": "2026-11-16",
+  "window": {
+    "from": "2026-11-10",
+    "to": "2026-11-16"
+  },
+  "quiet": false,
+  "competitors": [
+    {
+      "competitor": "Payflow",
+      "status": "published",
+      "pieces": [
+        {
+          "title": "How e-invoicing v2 changes your AP stack",
+          "url": "https://payflow.example/blog/einvoicing-v2-ap-stack",
+          "published": "2026-11-12",
+          "format": "article",
+          "topic": "E-invoicing v2 and its implications for the AP technology stack.",
+          "metric": null,
+          "sponsor": null
+        },
+        {
+          "title": "State of AP 2026: 300 finance leaders on automation",
+          "url": "https://payflow.example/blog/state-of-ap-2026",
+          "published": "2026-11-10",
+          "format": "report",
+          "topic": "Finance leaders' perspectives on AP automation; archive listing only.",
+          "metric": null,
+          "sponsor": null
+        },
+        {
+          "title": "Webinar: Closing faster with AI matching (Nov 20)",
+          "url": "https://payflow.example/events/closing-faster-ai-matching",
+          "published": "2026-11-13",
+          "format": "webinar",
+          "topic": "AI matching for a faster close; announcement published this week for a November 20 event.",
+          "metric": null,
+          "sponsor": "Co-hosted with Northbank Business Banking"
+        }
+      ],
+      "themes": "AP modernization through e-invoicing, an automation report and an AI-matching webinar announcement.",
+      "outperformer": null,
+      "change": null
+    },
+    {
+      "competitor": "Billcraft",
+      "status": "published",
+      "pieces": [
+        {
+          "title": "We tried to fake a vendor invoice (and our AP tool caught it)",
+          "url": "https://youtube.example/watch?v=bc111",
+          "published": "2026-11-11",
+          "format": "video",
+          "topic": "A fake-vendor-invoice detection demonstration.",
+          "metric": "21,300 views as of 2026-11-16",
+          "sponsor": null
+        }
+      ],
+      "themes": "Invoice-fraud detection presented as a practical video demonstration.",
+      "outperformer": {
+        "title": "We tried to fake a vendor invoice (and our AP tool caught it)",
+        "metric": "21,300 views as of 2026-11-16",
+        "baseline": "4,050 views: median of the six other videos shown, excluding the tested video. Counts read 2026-11-16: 4,100; 3,800; 5,200; 3,900; 4,600; 4,000. Middle values 4,000 and 4,100 average to 4,050; the tested video has 5.26× that median. Counts are not age-normalized."
+      },
+      "change": null
+    }
+  ],
+  "gaps": [
+    {
+      "gap": "Step-by-step 1099-NEC vendor-flagging configuration in AP systems.",
+      "evidence": "A Nov 12, 2026 r/Accounting thread asks how to configure the threshold described by its author; 520 points and 180 comments as read Nov 16. The top comment requests vendor-flagging steps rather than another news recap.",
+      "evidence_url": "https://reddit.example/r/Accounting/comments/9k3p2/",
+      "idea": "For Ledgerly blog, read by controllers at mid-size US companies: publish a vendor-flagging setup checklist with field mappings, exception tests and year-end checks; verify the applicable threshold before publication."
+    }
+  ],
+  "dropped_repeats": [],
+  "unreachable": [
+    "Payflow report body was not accessed: the supplied archive says download requires a work email. Only its public listing is reported; no form was submitted."
+  ],
+  "ignored_instructions": [],
+  "report_markdown": "**Competitor content: Company blogs and YouTube on AP automation** 2026-11-10 to 2026-11-16\nBillcraft's invoice-fraud demonstration reached 21,300 views as of 2026-11-16—5.26× its six-video comparison median of 4,050.\n\n**Payflow**: 3 pieces. E-invoicing, AP automation research and an AI-matching webinar announcement.\n- [How e-invoicing v2 changes your AP stack](https://payflow.example/blog/einvoicing-v2-ap-stack) (article, Nov 12).\n- [State of AP 2026: 300 finance leaders on automation](https://payflow.example/blog/state-of-ap-2026) (report, Nov 10). Public listing only; the report download requires a work email.\n- [Webinar: Closing faster with AI matching (Nov 20)](https://payflow.example/events/closing-faster-ai-matching) (webinar, Nov 13), co-hosted with Northbank Business Banking. Nov 13 is the listing date; the event is Nov 20.\nSource: [supplied Payflow archive](https://payflow.example/blog), read 2026-11-16. No engagement metrics were visible.\n\n**Billcraft**: 1 piece. Invoice-fraud detection demonstrated on video.\n- [We tried to fake a vendor invoice (and our AP tool caught it)](https://youtube.example/watch?v=bc111) (video, Nov 11), 21,300 views as of 2026-11-16.\nOutperformer: this video earned 5.26× the 4,050-view median of the six other videos shown. Their counts were 4,100, 3,800, 5,200, 3,900, 4,600 and 4,000, all read 2026-11-16. The median is the average of 4,000 and 4,100. This is a snapshot comparison, not age-normalized performance.\nSource: [supplied Billcraft videos archive](https://youtube.example/@billcraft/videos).\n\n**Gaps**\n- **1099-NEC vendor-flagging setup:** A Nov 12 r/Accounting thread asks for configuration help, with 520 points and 180 comments as of 2026-11-16; its top comment requests practical vendor-flagging steps ([source](https://reddit.example/r/Accounting/comments/9k3p2/)). No listed rival's in-window title addresses this request. For Ledgerly blog, read by controllers at mid-size US companies: publish a setup checklist with field mappings, exception tests and year-end checks. Verify the applicable legal threshold first; the thread's premise was not independently checked.\n\n_No prior reported pieces were supplied, so no repeats were dropped. Coverage uses the supplied archive snapshots; the gated report body was not reviewed, so its detailed coverage remains unknown._"
+}

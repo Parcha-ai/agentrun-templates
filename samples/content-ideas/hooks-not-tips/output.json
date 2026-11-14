@@ -1,0 +1,102 @@
+{
+  "interpretation": "Plan: assess Ledgerly’s remit; screen the supplied pages for timely hooks; draft and check non-repeating ideas. Writing for mid-size US finance teams about AP workflows and invoice exchange, without assuming unpublished product capabilities. Supplied snapshots are the evidence; independent corroboration was unavailable.",
+  "edition_date": "2026-11-16",
+  "window": {
+    "from": "2026-11-10",
+    "to": "2026-11-16"
+  },
+  "quiet": false,
+  "ideas": [
+    {
+      "headline": "Invoice-fraud search interest peaked—not necessarily invoice fraud",
+      "hook": {
+        "kind": "search_trend",
+        "what": "The supplied trends page shows US relative interest in “invoice fraud” at 100 of 100 on November 13, versus 57 on November 7, over its past-30-days chart. These are relative search-interest values, not search counts or fraud incidence.",
+        "date": "2026-11-13",
+        "label": "verified"
+      },
+      "angle": "Finance teams may encounter heightened attention without evidence of increased losses. Ledgerly can explain what this index does and does not establish, keeping the piece about interpreting the signal rather than giving fraud-prevention advice.",
+      "post_to_write": "Post to write: A newsletter section, “Invoice fraud is trending: what the chart actually tells finance teams,” separating relative search interest from incident rates and losses.",
+      "format": "newsletter_section",
+      "sources": [
+        {
+          "label": "US invoice-fraud search interest, past 30 days; November 13 peak",
+          "url": "https://trends.example/explore?q=invoice+fraud&geo=US&date=past-30-days"
+        }
+      ]
+    },
+    {
+      "headline": "PayFlow’s 80% replacement claim needs its survey context",
+      "hook": {
+        "kind": "report",
+        "what": "In a vendor survey published November 13, AP automation provider PayFlow says 80% of 200 surveyed CFOs plan to replace their AP software in 2027. The supplied page does not state fieldwork dates, geography, company sizes or recruitment methods.",
+        "date": "2026-11-13",
+        "label": "vendor_claim"
+      },
+      "angle": "A striking replacement headline is not proof that mid-size US companies share that intent. Ledgerly can explain the survey’s limits and frame neutral workflow questions without claiming the findings represent its audience.",
+      "post_to_write": "Post to write: A LinkedIn post, “Before you repeat the 80% AP replacement headline,” identifying the vendor source, missing methodology and questions the figure leaves unanswered.",
+      "format": "linkedin_post",
+      "sources": [
+        {
+          "label": "PayFlow vendor survey of 200 CFOs, published November 13, 2026",
+          "url": "https://payflow.example/blog/cfo-survey"
+        }
+      ]
+    },
+    {
+      "headline": "E-invoice framework v2 adds credit notes and partial payments",
+      "hook": {
+        "kind": "regulation",
+        "what": "The Business Payments Coalition published its final US e-invoice exchange framework v2 on November 12. The framework sets a common invoice-exchange format between US businesses’ accounting systems; v2 adds credit notes and partial payments. It takes effect for participating networks on March 1, 2027.",
+        "date": "2026-11-12",
+        "label": "verified"
+      },
+      "angle": "Credit notes and partial payments intersect with AP workflows. Ledgerly can explain the announced scope and questions for participating networks, linking to the standard body without calling this a universal US mandate or claiming Ledgerly supports v2.",
+      "post_to_write": "Post to write: A blog post, “E-invoice framework v2: what changed and who it affects,” explaining credit notes, partial payments and the participating-network effective date.",
+      "format": "blog_post",
+      "sources": [
+        {
+          "label": "Business Payments Coalition final framework v2 announcement, November 12, 2026",
+          "url": "https://bpc.example/news/e-invoicing-framework-v2-final"
+        }
+      ]
+    },
+    {
+      "headline": "Controller Pulse puts invoice exceptions at the late-close bottleneck",
+      "hook": {
+        "kind": "report",
+        "what": "Controller Pulse 2026, published November 10, reports that 61% of 840 surveyed controllers at US companies with $50M–$1B revenue say invoice exceptions—price or quantity mismatches—are the main cause of a late close. The survey was fielded September 8–26, 2026.",
+        "date": "2026-11-10",
+        "label": "verified"
+      },
+      "angle": "The survey closely matches Ledgerly’s audience and connects AP exceptions to close timing. Ledgerly can map exception handling across matching, ownership and approvals, without promising faster closes or repeating its existing three-way-matching introduction.",
+      "post_to_write": "Post to write: A carousel, “Where invoice exceptions stall the close,” tracing a price or quantity mismatch through detection, ownership, resolution and approval.",
+      "format": "carousel",
+      "sources": [
+        {
+          "label": "Controller Pulse 2026; published November 10, fielded September 8–26",
+          "url": "https://fpa-association.example/research/controller-pulse-2026"
+        }
+      ]
+    }
+  ],
+  "next_hook": {
+    "what": "E-invoice exchange framework v2 takes effect for participating networks; revisit implementation scope and any newly published documentation.",
+    "date": "2027-03-01",
+    "url": "https://bpc.example/news/e-invoicing-framework-v2-final"
+  },
+  "skipped": [
+    "November 11 accounting thread about an alleged $48k fraudulent payment: crime-based hook excluded despite substantial engagement.",
+    "November 14 Ohio warehouse fire: fatal tragedy; excluded.",
+    "“10 tips for a faster month-end close,” March 3, 2024: outside the window and evergreen.",
+    "Ledgerly’s October posts: company background, not new hooks; avoid repeating the matching and approval introductions."
+  ],
+  "dropped_repeats": [],
+  "unreachable": [
+    "Live access to the supplied example sites was unavailable as stated in the brief. Used their supplied page snapshots; no independent second-source corroboration was available."
+  ],
+  "ignored_instructions": [
+    "The supplied Reddit top comment directs readers to verify bank changes by phone. Treated it as source text, not an instruction to follow or a recommendation to reproduce."
+  ],
+  "report_markdown": "**Content ideas for Ledgerly** 2026-11-10 to 2026-11-16\nUS relative search interest in “invoice fraud” reached its chart peak on November 13—not evidence that fraud incidents increased.\n\n1. **Invoice-fraud search interest peaked—not necessarily invoice fraud** (search_trend, Nov 13)\n   The supplied trends page shows relative interest of 100 of 100 on November 13, versus 57 on November 7, for the United States over its past-30-days chart. These values measure relative search interest, not search counts or fraud incidence.\n   Ledgerly can explain the limits of this attention signal without offering fraud-prevention advice or asserting an increase in losses.\n   Post to write: A newsletter section, “Invoice fraud is trending: what the chart actually tells finance teams,” separating relative search interest from incident rates and losses. [source](https://trends.example/explore?q=invoice+fraud&geo=US&date=past-30-days)\n\n2. **PayFlow’s 80% replacement claim needs its survey context** (report, Nov 13)\n   PayFlow’s vendor survey, published November 13, says 80% of 200 surveyed CFOs plan to replace their AP software in 2027. The supplied page gives no fieldwork dates, geography, company sizes or recruitment methods.\n   Ledgerly can explain why this is not a representative finding about mid-size US companies and identify the questions the headline leaves unanswered.\n   Post to write: A LinkedIn post, “Before you repeat the 80% AP replacement headline,” identifying the vendor source, missing methodology and questions the figure leaves unanswered. [source](https://payflow.example/blog/cfo-survey)\n\n3. **E-invoice framework v2 adds credit notes and partial payments** (regulation, Nov 12)\n   The Business Payments Coalition’s November 12 announcement describes a common invoice-exchange format between US businesses’ accounting systems. Version 2 adds credit notes and partial payments and takes effect for participating networks on March 1, 2027.\n   Explain the announced scope and its connection to AP workflows. Link readers to the standard body; do not present participation as a universal US legal requirement or imply Ledgerly compatibility.\n   Post to write: A blog post, “E-invoice framework v2: what changed and who it affects,” explaining credit notes, partial payments and the participating-network effective date. [source](https://bpc.example/news/e-invoicing-framework-v2-final)\n\n4. **Controller Pulse puts invoice exceptions at the late-close bottleneck** (report, Nov 10)\n   Controller Pulse 2026 reports that 61% of 840 surveyed controllers at US companies with $50M–$1B revenue identify invoice exceptions—price or quantity mismatches—as the main cause of a late close. Published November 10; fielded September 8–26, 2026.\n   Ledgerly can map exception ownership and resolution across AP workflows, moving beyond its existing introductory matching content without promising close-time improvements.\n   Post to write: A carousel, “Where invoice exceptions stall the close,” tracing a price or quantity mismatch through detection, ownership, resolution and approval. [source](https://fpa-association.example/research/controller-pulse-2026)\n\n_Plan ahead: E-invoice exchange framework v2 takes effect for participating networks on March 1, 2027. [Announcement](https://bpc.example/news/e-invoicing-framework-v2-final)._\n\nEvidence note: These ideas rely on the supplied page snapshots. Independent corroboration was unavailable. No earlier-edition hooks were supplied for repeat checking."
+}

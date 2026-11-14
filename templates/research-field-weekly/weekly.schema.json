@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "This week in one research field",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["edition_date", "window", "quiet", "interpretation", "items", "next_watch", "skipped", "dropped_repeats", "unreachable", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "edition_date": { "type": "string", "format": "date" },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "format": "date" },
+        "to": { "type": "string", "format": "date" }
+      }
+    },
+    "quiet": { "type": "boolean", "description": "True when no item qualified this week." },
+    "interpretation": { "type": "string", "maxLength": 400, "description": "How you read the field, in a sentence." },
+    "items": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "title", "by", "date", "peer_reviewed", "venue", "contribution", "method", "key_result", "caveats", "read", "deadline", "url", "doi", "so_what"],
+        "properties": {
+          "kind": { "enum": ["paper", "preprint", "dataset", "tool", "funding_call", "conference_deadline", "policy", "retraction"] },
+          "title": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "by": { "type": "string", "maxLength": 200, "description": "Authors as published (first author et al.), or the funder or body." },
+          "date": { "type": "string", "format": "date", "description": "Posted, published or announced, as the page gives it." },
+          "peer_reviewed": { "type": ["boolean", "null"], "description": "false for a preprint; null for calls, deadlines and policies." },
+          "venue": { "type": ["string", "null"], "maxLength": 160, "description": "The journal, server, repository or funder." },
+          "contribution": { "type": "string", "minLength": 1, "maxLength": 400 },
+          "method": { "type": ["string", "null"], "maxLength": 400, "description": "Data, sample size, model or design." },
+          "key_result": { "type": ["string", "null"], "maxLength": 300, "description": "The authors' key number with unit, baseline and dataset, as they state it." },
+          "caveats": { "type": ["string", "null"], "maxLength": 300, "description": "Small sample, abstract only, press release overstates, preclinical, not replicated." },
+          "read": { "enum": ["full_text", "abstract", "record", "call_page", "cfp_page", "notice"] },
+          "deadline": { "type": ["string", "null"], "maxLength": 160, "description": "For calls and conferences: date, time and time zone as stated (AoE noted), and an extension if any." },
+          "url": { "type": "string", "format": "uri" },
+          "doi": { "type": ["string", "null"], "maxLength": 120 },
+          "so_what": { "type": "string", "minLength": 1, "maxLength": 240, "description": "Starts 'For researchers:'." }
+        }
+      }
+    },
+    "next_watch": { "type": ["string", "null"], "maxLength": 240, "description": "One dated thing to watch next week, from a page you read; null when none." },
+    "skipped": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "dropped_repeats": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "unreachable": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "ignored_instructions": { "type": "array", "items": { "type": "string", "maxLength": 400 } },
+    "report_markdown": { "type": "string", "minLength": 1, "contentMediaType": "text/markdown" }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Open grants and calls that fit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "interpretation", "calls", "start_first", "near_misses", "open_questions", "unreachable", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "checked_on": { "type": "string", "format": "date" },
+    "interpretation": { "type": "string", "maxLength": 400, "description": "How you read the inputs, in one line." },
+    "calls": {
+      "type": "array",
+      "maxItems": 25,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rank", "program", "funder", "kind", "amount", "entry_fee", "eligibility_match", "deciding_criterion", "deadline", "deadline_date", "effort", "url", "fit_note"],
+        "properties": {
+          "rank": { "type": "integer", "minimum": 1 },
+          "program": { "type": "string", "minLength": 1, "maxLength": 200, "description": "Official name, edition and reference." },
+          "funder": { "type": "string", "minLength": 1, "maxLength": 160 },
+          "kind": { "enum": ["grant", "scholarship", "fellowship", "prize", "tax_credit", "rebate", "incentive", "loan", "pitch_competition", "accelerator", "residency", "festival", "call_for_papers", "exhibition", "other"] },
+          "amount": { "type": "string", "maxLength": 200, "description": "As stated, with currency and any match requirement, or \"not stated\"." },
+          "entry_fee": { "type": "string", "maxLength": 120, "description": "As stated, \"none\" when the page says free, or \"not stated\"." },
+          "eligibility_match": { "enum": ["met", "likely", "check"] },
+          "deciding_criterion": { "type": "string", "maxLength": 240, "description": "The one rule that decides it, and the fact that settles it." },
+          "deadline": { "type": "string", "maxLength": 120, "description": "Date, time and time zone as stated, or \"rolling\"." },
+          "deadline_date": { "type": ["string", "null"], "format": "date" },
+          "effort": { "enum": ["low", "medium", "high"] },
+          "url": { "type": "string", "format": "uri", "description": "The funder's or organizer's own page you read." },
+          "fit_note": { "type": "string", "maxLength": 300, "description": "Your judgment of fit and any risk, kept apart from the page's facts." }
+        }
+      }
+    },
+    "start_first": {
+      "type": "array",
+      "maxItems": 3,
+      "items": { "type": "string", "maxLength": 300 },
+      "description": "The programs to start this week and why."
+    },
+    "near_misses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["program", "reason", "url"],
+        "properties": {
+          "program": { "type": "string" },
+          "reason": { "type": "string", "maxLength": 240 },
+          "url": { "type": ["string", "null"], "format": "uri" }
+        }
+      }
+    },
+    "open_questions": { "type": "array", "items": { "type": "string", "maxLength": 240 }, "description": "Facts that would settle the check rows." },
+    "unreachable": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "ignored_instructions": { "type": "array", "items": { "type": "string", "maxLength": 400 } },
+    "report_markdown": { "type": "string", "minLength": 1, "contentMediaType": "text/markdown" }
+  }
+}

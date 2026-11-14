@@ -358,85 +358,261 @@
       "name": "morning-brief",
       "source": "./templates/morning-brief",
       "category": "personal",
-      "tags": ["daily-plan", "calendar", "gmail", "slack", "productivity"]
+      "tags": [
+        "daily-plan",
+        "calendar",
+        "gmail",
+        "slack",
+        "productivity"
+      ]
     },
     {
       "name": "calendar-brief",
       "source": "./templates/calendar-brief",
       "category": "personal",
-      "tags": ["calendar", "meetings", "meeting-prep", "slack", "productivity"]
+      "tags": [
+        "calendar",
+        "meetings",
+        "meeting-prep",
+        "slack",
+        "productivity"
+      ]
     },
     {
       "name": "team-catch-up",
       "source": "./templates/team-catch-up",
       "category": "operations",
-      "tags": ["slack", "team-updates", "decisions", "blockers", "catch-up"]
+      "tags": [
+        "slack",
+        "team-updates",
+        "decisions",
+        "blockers",
+        "catch-up"
+      ]
     },
     {
       "name": "follow-up-drafter",
       "source": "./templates/follow-up-drafter",
       "category": "sales",
-      "tags": ["gmail", "email", "follow-up", "drafts", "replies"]
+      "tags": [
+        "gmail",
+        "email",
+        "follow-up",
+        "drafts",
+        "replies"
+      ]
     },
     {
       "name": "meeting-follow-up",
       "source": "./templates/meeting-follow-up",
       "category": "sales",
-      "tags": ["gmail", "calendar", "meetings", "follow-up", "drafts"]
+      "tags": [
+        "gmail",
+        "calendar",
+        "meetings",
+        "follow-up",
+        "drafts"
+      ]
     },
     {
       "name": "support-inbox-digest",
       "source": "./templates/support-inbox-digest",
       "category": "operations",
-      "tags": ["gmail", "support", "customer-feedback", "digest", "slack"]
+      "tags": [
+        "gmail",
+        "support",
+        "customer-feedback",
+        "digest",
+        "slack"
+      ]
     },
     {
       "name": "outreach-opener",
       "source": "./templates/outreach-opener",
       "category": "sales",
-      "tags": ["gmail", "outreach", "cold-email", "prospecting", "drafts"]
+      "tags": [
+        "gmail",
+        "outreach",
+        "cold-email",
+        "prospecting",
+        "drafts"
+      ]
     },
     {
       "name": "platform-changes",
       "source": "./templates/platform-changes",
       "category": "engineering",
-      "tags": ["deprecations", "breaking-changes", "changelogs", "apis", "pricing", "weekly"]
+      "tags": [
+        "deprecations",
+        "breaking-changes",
+        "changelogs",
+        "apis",
+        "pricing",
+        "weekly"
+      ]
     },
     {
       "name": "terms-change-watch",
       "source": "./templates/terms-change-watch",
       "category": "compliance",
-      "tags": ["terms-of-service", "privacy-policy", "dpa", "vendor-risk", "legal", "weekly"]
+      "tags": [
+        "terms-of-service",
+        "privacy-policy",
+        "dpa",
+        "vendor-risk",
+        "legal",
+        "weekly"
+      ]
     },
     {
       "name": "enforcement-digest",
       "source": "./templates/enforcement-digest",
       "category": "compliance",
-      "tags": ["enforcement", "regulators", "fines", "aml", "compliance", "weekly"]
+      "tags": [
+        "enforcement",
+        "regulators",
+        "fines",
+        "aml",
+        "compliance",
+        "weekly"
+      ]
     },
     {
       "name": "brand-mentions",
       "source": "./templates/brand-mentions",
       "category": "marketing",
-      "tags": ["brand-monitoring", "mentions", "reputation", "pr", "daily"]
+      "tags": [
+        "brand-monitoring",
+        "mentions",
+        "reputation",
+        "pr",
+        "daily"
+      ]
     },
     {
       "name": "regulatory-tracker",
       "source": "./templates/regulatory-tracker",
       "category": "compliance",
-      "tags": ["regulation", "rulemaking", "legal", "policy", "compliance", "weekly"]
+      "tags": [
+        "regulation",
+        "rulemaking",
+        "legal",
+        "policy",
+        "compliance",
+        "weekly"
+      ]
     },
     {
       "name": "sanctions-update",
       "source": "./templates/sanctions-update",
       "category": "compliance",
-      "tags": ["sanctions", "ofac", "screening", "kyc", "compliance", "weekly"]
+      "tags": [
+        "sanctions",
+        "ofac",
+        "screening",
+        "kyc",
+        "compliance",
+        "weekly"
+      ]
     },
     {
       "name": "product-recall-watch",
       "source": "./templates/product-recall-watch",
       "category": "operations",
-      "tags": ["recalls", "product-safety", "compliance", "suppliers", "weekly"]
+      "tags": [
+        "recalls",
+        "product-safety",
+        "compliance",
+        "suppliers",
+        "weekly"
+      ]
+    },
+    {
+      "name": "competitor-content",
+      "source": "./templates/competitor-content",
+      "category": "marketing",
+      "tags": [
+        "competitors",
+        "content-marketing",
+        "competitive-intelligence",
+        "youtube",
+        "weekly"
+      ]
+    },
+    {
+      "name": "content-ideas",
+      "source": "./templates/content-ideas",
+      "category": "marketing",
+      "tags": [
+        "content-marketing",
+        "editorial-calendar",
+        "newsjacking",
+        "seo",
+        "weekly"
+      ]
+    },
+    {
+      "name": "job-watch",
+      "source": "./templates/job-watch",
+      "category": "personal",
+      "tags": [
+        "job-search",
+        "job-alerts",
+        "careers",
+        "remote-work",
+        "daily"
+      ]
+    },
+    {
+      "name": "research-field-weekly",
+      "source": "./templates/research-field-weekly",
+      "category": "research",
+      "tags": [
+        "academic-research",
+        "preprints",
+        "arxiv",
+        "literature",
+        "grants",
+        "weekly"
+      ]
+    },
+    {
+      "name": "supplier-discovery",
+      "source": "./templates/supplier-discovery",
+      "category": "operations",
+      "tags": [
+        "sourcing",
+        "procurement",
+        "suppliers",
+        "manufacturing",
+        "supply-chain",
+        "rfq"
+      ]
+    },
+    {
+      "name": "buyer-evidence",
+      "source": "./templates/buyer-evidence",
+      "category": "sales",
+      "tags": [
+        "sales-enablement",
+        "objection-handling",
+        "case-studies",
+        "roi",
+        "proof-points"
+      ]
+    },
+    {
+      "name": "grant-finder",
+      "source": "./templates/grant-finder",
+      "category": "research",
+      "tags": [
+        "grants",
+        "funding",
+        "scholarships",
+        "open-calls",
+        "nonprofits",
+        "startups"
+      ]
     }
   ]
 }

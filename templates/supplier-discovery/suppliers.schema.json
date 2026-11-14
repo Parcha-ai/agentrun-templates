@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Supplier shortlist",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "interpretation", "suppliers", "tradeoffs", "rfq_questions", "do_next", "near_misses", "unreachable", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "checked_on": { "type": "string", "format": "date" },
+    "interpretation": { "type": "string", "maxLength": 400, "description": "How you read the need, spec, volume and filters, in one line." },
+    "suppliers": {
+      "type": "array",
+      "maxItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rank", "name", "trader", "locations", "makes", "fit", "fit_gap", "capacity", "certifications", "trade_evidence", "risks", "contact_route", "sources"],
+        "properties": {
+          "rank": { "type": "integer", "minimum": 1 },
+          "name": { "type": "string", "minLength": 1, "maxLength": 200, "description": "Legal name, and trading name if different." },
+          "trader": { "type": "boolean", "description": "True for a trader or distributor, not a manufacturer." },
+          "locations": { "type": "string", "maxLength": 240, "description": "HQ and each relevant plant, city and country." },
+          "makes": { "type": "string", "maxLength": 400, "description": "The matching products as the site states them." },
+          "fit": { "enum": ["exact", "close", "partial"] },
+          "fit_gap": { "type": ["string", "null"], "maxLength": 200 },
+          "capacity": { "type": "string", "maxLength": 200, "description": "\"Claimed: ...\" or \"Not stated\"." },
+          "certifications": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "status", "source_url", "valid_until"],
+              "properties": {
+                "name": { "type": "string", "maxLength": 120 },
+                "status": { "enum": ["verified", "claimed", "unverified", "withdrawn"] },
+                "source_url": { "type": ["string", "null"], "format": "uri", "description": "The registry record for verified, the supplier's page for claimed." },
+                "valid_until": { "type": ["string", "null"], "format": "date" }
+              }
+            }
+          },
+          "trade_evidence": { "type": "string", "maxLength": 300, "description": "Cited customers, export markets, trade shows, or \"None found\"." },
+          "risks": { "type": "string", "maxLength": 300, "description": "Findings and ownership notes, or \"None found\"." },
+          "contact_route": { "type": "string", "maxLength": 200, "description": "The business channel the supplier publishes: RFQ form, sales email, distributor page." },
+          "sources": { "type": "array", "minItems": 1, "items": { "type": "string", "format": "uri" } }
+        }
+      }
+    },
+    "tradeoffs": { "type": "array", "maxItems": 4, "items": { "type": "string", "maxLength": 300 } },
+    "rfq_questions": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "do_next": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 240 } },
+    "near_misses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "reason"],
+        "properties": {
+          "name": { "type": "string" },
+          "reason": { "type": "string", "maxLength": 240 }
+        }
+      }
+    },
+    "unreachable": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "ignored_instructions": { "type": "array", "items": { "type": "string", "maxLength": 400 } },
+    "report_markdown": { "type": "string", "minLength": 1, "contentMediaType": "text/markdown" }
+  }
+}
