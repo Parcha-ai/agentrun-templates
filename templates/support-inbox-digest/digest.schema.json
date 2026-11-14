@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "digest.schema.json",
+  "title": "Support inbox digest",
+  "description": "One week of support mail from the owner's Gmail search: urgent threads with links, themes ranked by thread count with last week's count and trimmed quotes, what was dropped, and where it was posted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "coverage", "urgent", "themes", "delivery", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": ["string", "null"], "format": "date-time", "description": "null on a first run: everything the search returned" },
+        "to": { "type": "string", "format": "date-time" }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["messages_read", "threads_kept", "dropped", "more_than_read"],
+      "properties": {
+        "messages_read": { "type": "integer", "minimum": 0 },
+        "threads_kept": { "type": "integer", "minimum": 0 },
+        "dropped": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["reason", "messages"],
+            "properties": {
+              "reason": { "enum": ["before_window", "team", "automated", "other"] },
+              "messages": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "more_than_read": { "type": "boolean" },
+        "search_failed": { "type": "boolean" }
+      }
+    },
+    "urgent": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["thread_id", "subject", "why", "url", "still_open"],
+        "properties": {
+          "thread_id": { "type": "string", "maxLength": 40 },
+          "subject": { "type": "string", "maxLength": 300 },
+          "company": { "type": ["string", "null"], "maxLength": 200, "description": "the sender's domain, never a name or address" },
+          "why": { "type": "string", "maxLength": 200 },
+          "last_message_at": { "type": ["string", "null"], "format": "date-time" },
+          "url": { "type": "string", "format": "uri", "pattern": "^https://mail\\.google\\.com/" },
+          "still_open": { "type": "boolean", "description": "reported urgent in an earlier digest and written to again" },
+          "first_reported": { "type": ["string", "null"], "format": "date" }
+        }
+      }
+    },
+    "themes": {
+      "type": "array",
+      "maxItems": 20,
+      "description": "most threads first",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "threads", "last_week", "quotes", "examples"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 80 },
+          "threads": { "type": "integer", "minimum": 1 },
+          "last_week": { "type": ["integer", "null"], "minimum": 0 },
+          "quotes": { "type": "array", "maxItems": 2, "items": { "type": "string", "maxLength": 200 } },
+          "examples": { "type": "array", "maxItems": 3, "items": { "type": "string", "format": "uri", "pattern": "^https://mail\\.google\\.com/" } }
+        }
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["posted", "channel"],
+      "properties": {
+        "posted": { "type": "boolean" },
+        "channel": { "type": "string", "maxLength": 20 },
+        "ts": { "type": ["string", "null"], "maxLength": 40 },
+        "error": { "type": ["string", "null"], "maxLength": 300 }
+      }
+    },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 4000, "description": "the text posted to Slack" }
+  }
+}

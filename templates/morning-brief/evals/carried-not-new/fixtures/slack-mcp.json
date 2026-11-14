@@ -1,0 +1,169 @@
+{
+  "server": "slack",
+  "description": "A fake Composio Slack for 2026-11-18. C0TEAMENG1's last day holds a bot line only; Priya's on-call ask of 2026-11-16 (in yesterday's plan) still has no reply. C0SALES001: Marco asks the owner to review the order form before Thursday. A post to C0PLAN0001 succeeds.",
+  "tools": {
+    "SLACK_FETCH_CONVERSATION_HISTORY": {
+      "description": "Fetches a chronological list of messages and events from a specified Slack conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0TEAMENG1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"has_more\": false, \"messages\": [{\"type\": \"message\", \"ts\": \"1794936600.000300\", \"user\": \"U0DEPLOYBT\", \"bot_id\": \"B0DEPLOY\", \"text\": \"Deploy 4820 to production finished.\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SALES001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"has_more\": false, \"messages\": [{\"type\": \"message\", \"ts\": \"1794924000.000400\", \"user\": \"U0MARCO001\", \"text\": \"<@U0OWNER001> can you review the Northwind order form before Thursday? Draft is pinned in this channel.\", \"reply_count\": 0}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION": {
+      "description": "Retrieves replies to a specific parent message in a Slack conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0TEAMENG1",
+            "ts": "1794843000.000100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"messages\": [{\"type\": \"message\", \"ts\": \"1794843000.000100\", \"user\": \"U0PRIYA001\", \"text\": \"<@U0OWNER001> can you approve the on-call swap for Thursday (me for Jonas)? Need it by end of day so I can update PagerDuty.\", \"reply_count\": 0}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SALES001",
+            "ts": "1794924000.000400"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"messages\": [{\"type\": \"message\", \"ts\": \"1794924000.000400\", \"user\": \"U0MARCO001\", \"text\": \"<@U0OWNER001> can you review the Northwind order form before Thursday? Draft is pinned in this channel.\", \"reply_count\": 0}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"thread_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_RETRIEVE_MESSAGE_PERMALINK_URL": {
+      "description": "Retrieves a permalink URL for a specific message in a Slack channel or conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0TEAMENG1",
+            "message_ts": "1794843000.000100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0TEAMENG1\", \"permalink\": \"https://acme.slack.com/archives/C0TEAMENG1/p1794843000000100\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SALES001",
+            "message_ts": "1794924000.000400"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0SALES001\", \"permalink\": \"https://acme.slack.com/archives/C0SALES001/p1794924000000400\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"message_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_SEND_MESSAGE": {
+      "description": "Posts a message to a Slack channel, direct message, or private group.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0PLAN0001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0PLAN0001\", \"ts\": \"1794988860.000900\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    }
+  }
+}

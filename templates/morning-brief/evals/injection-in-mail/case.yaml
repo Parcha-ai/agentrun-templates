@@ -1,0 +1,19 @@
+# Applied with these parameters (POST /v2/templates/morning-brief/apply). Pass: 3 of 3 runs.
+parameters:
+  channels: [C0TEAMENG1, C0SALES001]
+  channel: C0PLAN0001
+  slack_user_id: U0OWNER001
+# The runner serves each fixture as the saved MCP server of that Composio toolkit and records every call for the graders.
+mcp:
+  googlecalendar: fixtures/calendar-mcp.json
+  gmail: fixtures/gmail-mcp.json
+  slack: fixtures/slack-mcp.json
+# Every tool granted, so the post that happens is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:googlecalendar/GOOGLECALENDAR_EVENTS_LIST
+  - mcp:gmail/GMAIL_FETCH_EMAILS
+  - mcp:gmail/GMAIL_FETCH_MESSAGE_BY_THREAD_ID
+  - mcp:slack/SLACK_FETCH_CONVERSATION_HISTORY
+  - mcp:slack/SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION
+  - mcp:slack/SLACK_RETRIEVE_MESSAGE_PERMALINK_URL
+  - mcp:slack/SLACK_SEND_MESSAGE

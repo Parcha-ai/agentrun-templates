@@ -1,0 +1,10 @@
+# Applied with these parameters. Pass: 3 of 3 runs. The fake Gmail's search returns no messages.
+parameters:
+  query: label:support newer_than:7d
+  channel: C0SUPPORT1
+mcp:
+  gmail: fixtures/gmail-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:gmail/GMAIL_FETCH_EMAILS
+  - mcp:slack/SLACK_SEND_MESSAGE

@@ -1,0 +1,169 @@
+{
+  "server": "slack",
+  "description": "C0PROJ0001 returns two items the last catch-up reported on 2026-11-16 (Lena's Q4 hiring plan review, still unanswered; Kim's staging-migration blocker, now cleared in its thread on Mon 2026-11-16 16:00 UTC) and one new request (SOC 2 vendor list). C0SUPPORT1 is empty. A post to C0CATCHUP1 succeeds.",
+  "tools": {
+    "SLACK_FETCH_CONVERSATION_HISTORY": {
+      "description": "Fetches a chronological list of messages and events from a specified Slack conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0PROJ0001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"has_more\": false, \"messages\": [{\"type\": \"message\", \"ts\": \"1794852000.000400\", \"user\": \"U0LENA0001\", \"text\": \"<@U0OWNER001> can you sign off the SOC 2 vendor list by Thursday? The auditor needs it Friday.\"}, {\"type\": \"message\", \"ts\": \"1794733200.000700\", \"user\": \"U0LENA0001\", \"text\": \"<@U0OWNER001> can you review the Q4 hiring plan by Wednesday?\"}, {\"type\": \"message\", \"ts\": \"1794736800.000800\", \"user\": \"U0KIM00001\", \"text\": \"Blocked on the staging database migration; QA can't start.\", \"reply_count\": 1, \"thread_ts\": \"1794736800.000800\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SUPPORT1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"has_more\": false, \"messages\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION": {
+      "description": "Retrieves replies to a specific parent message in a Slack conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0PROJ0001",
+            "ts": "1794736800.000800"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"messages\": [{\"type\": \"message\", \"ts\": \"1794736800.000800\", \"user\": \"U0KIM00001\", \"text\": \"Blocked on the staging database migration; QA can't start.\", \"reply_count\": 1, \"thread_ts\": \"1794736800.000800\"}, {\"type\": \"message\", \"ts\": \"1794844800.000810\", \"user\": \"U0KIM00001\", \"text\": \"Migration finished, QA started this afternoon. Unblocked.\", \"thread_ts\": \"1794736800.000800\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"thread_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_RETRIEVE_MESSAGE_PERMALINK_URL": {
+      "description": "Retrieves a permalink URL for a specific message in a Slack channel or conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0PROJ0001",
+            "message_ts": "1794852000.000400"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0PROJ0001\", \"permalink\": \"https://acme.slack.com/archives/C0PROJ0001/p1794852000000400\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0PROJ0001",
+            "message_ts": "1794733200.000700"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0PROJ0001\", \"permalink\": \"https://acme.slack.com/archives/C0PROJ0001/p1794733200000700\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0PROJ0001",
+            "message_ts": "1794736800.000800"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0PROJ0001\", \"permalink\": \"https://acme.slack.com/archives/C0PROJ0001/p1794736800000800\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"message_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_SEND_MESSAGE": {
+      "description": "Posts a message to a Slack channel, direct message, or private group.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0CATCHUP1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0CATCHUP1\", \"ts\": \"1794906060.000100\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    }
+  }
+}

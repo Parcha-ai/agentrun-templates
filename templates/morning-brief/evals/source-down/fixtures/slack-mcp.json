@@ -1,0 +1,112 @@
+{
+  "server": "slack",
+  "description": "A fake Composio Slack: C0TEAMENG1 can't be read (not_in_channel); C0SALES001 holds only a bot's deploy notice. A post to C0PLAN0001 succeeds.",
+  "tools": {
+    "SLACK_FETCH_CONVERSATION_HISTORY": {
+      "description": "Fetches a chronological list of messages and events from a specified Slack conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0TEAMENG1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {}, \"successful\": false, \"error\": \"not_in_channel\"}"
+              }
+            ],
+            "isError": true
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SALES001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"has_more\": false, \"messages\": [{\"type\": \"message\", \"ts\": \"1794850200.000300\", \"user\": \"U0DEPLOYBT\", \"bot_id\": \"B0DEPLOY\", \"text\": \"Nightly CRM sync finished: 0 errors.\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION": {
+      "description": "Retrieves replies to a specific parent message in a Slack conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"thread_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_RETRIEVE_MESSAGE_PERMALINK_URL": {
+      "description": "Retrieves a permalink URL for a specific message in a Slack channel or conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"message_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_SEND_MESSAGE": {
+      "description": "Posts a message to a Slack channel, direct message, or private group.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0PLAN0001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0PLAN0001\", \"ts\": \"1794902460.000900\", \"message\": {\"type\": \"message\", \"ts\": \"1794902460.000900\", \"text\": \"posted\"}}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    }
+  }
+}

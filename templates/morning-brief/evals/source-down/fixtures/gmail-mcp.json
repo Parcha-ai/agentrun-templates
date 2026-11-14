@@ -1,0 +1,37 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail whose search finds nothing.",
+  "tools": {
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Fetches a list of email messages from a Gmail account, supporting filtering by Gmail search query.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"messages\": [], \"resultSizeEstimate\": 0}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_FETCH_MESSAGE_BY_THREAD_ID": {
+      "description": "Retrieves messages from a Gmail thread using its thread_id.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Requested entity was not found.\"}"
+          }
+        ],
+        "isError": true
+      }
+    }
+  }
+}

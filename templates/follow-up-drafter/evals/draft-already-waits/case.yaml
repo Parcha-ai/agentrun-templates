@@ -1,0 +1,11 @@
+# Applied with these parameters. Pass: 3 of 3 runs. The fixture stands in for the owner's Composio Gmail and records
+# every call for the graders.
+parameters:
+  label: follow-up
+  gmail_trigger_id: ti_gmail_followup01
+mcp:
+  gmail: fixtures/gmail-mcp.json
+# Both tools granted, as the owner ticks the draft at apply, so the draft that happens is the agent's choice.
+grants:
+  - mcp:gmail/GMAIL_FETCH_MESSAGE_BY_THREAD_ID
+  - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT

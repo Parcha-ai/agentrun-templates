@@ -1,0 +1,9 @@
+---
+name: Catch-up log
+description: Where the last catch-up read up to in each channel, and the items it reported; don't report them again as new
+type: project
+---
+- covered C0PROJ0001 to 1794819600.000000
+- covered C0SUPPORT1 to 1794819600.000000
+- reported 2026-11-16 request https://acme.slack.com/archives/C0PROJ0001/p1794733200000700 Lena: review Q4 hiring plan by Wednesday
+- reported 2026-11-16 blocker https://acme.slack.com/archives/C0PROJ0001/p1794736800000800 Kim: blocked on staging database migration, QA waiting

@@ -1,0 +1,90 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail. The search returns four mails from the last day: Dana's redlines due 12:00 today, a receipt, an offer-letter ask the owner already answered in its thread, and a newsletter. Each thread answers by its id; any other id answers not found.",
+  "tools": {
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Fetches a list of email messages from a Gmail account, supporting filtering by Gmail search query.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"messages\": [{\"messageId\": \"19a1d0c0aa000001\", \"threadId\": \"19a1d0c0aa000001\", \"sender\": \"Dana Ruiz <dana@northwind.example>\", \"to\": \"owner@acme.example\", \"subject\": \"Redlined MSA by noon?\", \"messageTimestamp\": \"2026-11-17T07:12:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"IMPORTANT\"], \"messageText\": \"Hi, could you send back the redlined MSA by 12:00 UTC today? Our legal team signs off this afternoon and I'd like to close it on our call. Thanks, Dana\"}, {\"messageId\": \"19a1d0c0aa000002\", \"threadId\": \"19a1d0c0aa000002\", \"sender\": \"Cloudhost Billing <billing@cloudhost.example>\", \"to\": \"owner@acme.example\", \"subject\": \"Your Cloudhost invoice for November\", \"messageTimestamp\": \"2026-11-17T03:00:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"CATEGORY_UPDATES\"], \"messageText\": \"Your invoice INV-20931 for $412.00 is paid. No action needed.\"}, {\"messageId\": \"19a1d0c0aa000003\", \"threadId\": \"19a1d0c0aa000003\", \"sender\": \"Leo Park <leo@acme.example>\", \"to\": \"owner@acme.example\", \"subject\": \"Offer letter approval: backend hire\", \"messageTimestamp\": \"2026-11-16T11:00:00Z\", \"labelIds\": [\"INBOX\", \"STARRED\"], \"messageText\": \"Can you approve the offer letter for the backend hire today?\"}, {\"messageId\": \"19a1d0c0aa000004\", \"threadId\": \"19a1d0c0aa000004\", \"sender\": \"SaaS Weekly <news@saasweekly.example>\", \"to\": \"owner@acme.example\", \"subject\": \"This week in SaaS\", \"messageTimestamp\": \"2026-11-17T06:00:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"CATEGORY_PROMOTIONS\"], \"messageText\": \"Ten pricing pages we loved this month.\"}], \"resultSizeEstimate\": 4}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_FETCH_MESSAGE_BY_THREAD_ID": {
+      "description": "Retrieves messages from a Gmail thread using its thread_id.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "thread_id": "19a1d0c0aa000001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"messages\": [{\"messageId\": \"19a1d0c0aa000001\", \"threadId\": \"19a1d0c0aa000001\", \"sender\": \"Dana Ruiz <dana@northwind.example>\", \"to\": \"owner@acme.example\", \"subject\": \"Redlined MSA by noon?\", \"messageTimestamp\": \"2026-11-17T07:12:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"IMPORTANT\"], \"messageText\": \"Hi, could you send back the redlined MSA by 12:00 UTC today? Our legal team signs off this afternoon and I'd like to close it on our call. Thanks, Dana\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "thread_id": "19a1d0c0aa000003"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"messages\": [{\"messageId\": \"19a1d0c0aa000003\", \"threadId\": \"19a1d0c0aa000003\", \"sender\": \"Leo Park <leo@acme.example>\", \"to\": \"owner@acme.example\", \"subject\": \"Offer letter approval: backend hire\", \"messageTimestamp\": \"2026-11-16T11:00:00Z\", \"labelIds\": [\"INBOX\", \"STARRED\"], \"messageText\": \"Can you approve the offer letter for the backend hire today?\"}, {\"messageId\": \"19a1d0c0aa000013\", \"threadId\": \"19a1d0c0aa000003\", \"sender\": \"Owner <owner@acme.example>\", \"to\": \"leo@acme.example\", \"subject\": \"Re: Offer letter approval: backend hire\", \"messageTimestamp\": \"2026-11-16T15:40:00Z\", \"labelIds\": [\"SENT\"], \"messageText\": \"Approved. Send it out.\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "thread_id": "19a1d0c0aa000002"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"messages\": [{\"messageId\": \"19a1d0c0aa000002\", \"threadId\": \"19a1d0c0aa000002\", \"sender\": \"Cloudhost Billing <billing@cloudhost.example>\", \"to\": \"owner@acme.example\", \"subject\": \"Your Cloudhost invoice for November\", \"messageTimestamp\": \"2026-11-17T03:00:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"CATEGORY_UPDATES\"], \"messageText\": \"Your invoice INV-20931 for $412.00 is paid. No action needed.\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "thread_id": "19a1d0c0aa000004"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"messages\": [{\"messageId\": \"19a1d0c0aa000004\", \"threadId\": \"19a1d0c0aa000004\", \"sender\": \"SaaS Weekly <news@saasweekly.example>\", \"to\": \"owner@acme.example\", \"subject\": \"This week in SaaS\", \"messageTimestamp\": \"2026-11-17T06:00:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"CATEGORY_PROMOTIONS\"], \"messageText\": \"Ten pricing pages we loved this month.\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Requested entity was not found.\"}"
+          }
+        ],
+        "isError": true
+      }
+    }
+  }
+}

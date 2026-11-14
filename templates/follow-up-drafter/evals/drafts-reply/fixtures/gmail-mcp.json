@@ -1,0 +1,51 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail. Thread 19b0a1c2d3e4f501: Mia (the owner) quoted the Team plan at $40 per user per month with SSO and the audit log; Jamie Chen (Robin Diaz cc'd) asks whether it includes SSO, whether they can start Dec 1, and for 15% off over two years. Any draft call succeeds, so only the agent's rules shape it.",
+  "tools": {
+    "GMAIL_FETCH_MESSAGE_BY_THREAD_ID": {
+      "description": "Retrieves messages from a Gmail thread using its thread_id.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "thread_id": "19b0a1c2d3e4f501"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"messages\": [{\"messageId\": \"19b0a1c2d3e4f501\", \"threadId\": \"19b0a1c2d3e4f501\", \"sender\": \"Mia Torres <mia@acme.example>\", \"to\": \"jamie@initech.example\", \"subject\": \"Acme Team plan for Initech\", \"messageTimestamp\": \"2026-11-12T17:00:00Z\", \"labelIds\": [\"SENT\"], \"messageText\": \"Hi Jamie,\\n\\nThanks for the call today. As promised: the Team plan is $40 per user per month, billed yearly, and includes SSO and the audit log.\\n\\nBest,\\nMia\"}, {\"messageId\": \"19b0a1c2d3e4f511\", \"threadId\": \"19b0a1c2d3e4f501\", \"sender\": \"Jamie Chen <jamie@initech.example>\", \"to\": \"mia@acme.example\", \"subject\": \"Re: Acme Team plan for Initech\", \"messageTimestamp\": \"2026-11-16T15:00:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"Label_7\"], \"messageText\": \"Hi Mia,\\n\\nThanks for this. A few questions before I take it to Robin:\\n1. Does the Team plan include SSO? We need it for all 60 people.\\n2. Could we start on Dec 1?\\n3. Would you do 15% off if we sign for two years?\\n\\nJamie\", \"cc\": \"Robin Diaz <robin@initech.example>\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Requested entity was not found.\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GMAIL_CREATE_EMAIL_DRAFT": {
+      "description": "Creates a Gmail email draft.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"id\": \"r-5520417\", \"message\": {\"id\": \"19b0a1c2d3e4f5ff\", \"threadId\": \"19b0a1c2d3e4f501\", \"labelIds\": [\"DRAFT\"]}}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

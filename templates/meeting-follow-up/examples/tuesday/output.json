@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-17",
+  "cutoff": "2026-11-18T09:12:00Z",
+  "drafted": [
+    {
+      "event_id": "ev_globex_kickoff",
+      "title": "Globex pilot kickoff",
+      "start": "2026-11-17T09:00:00Z",
+      "url": "https://www.google.com/calendar/event?eid=ev_globex_kickoff",
+      "recipient_email": "kim@globex.example",
+      "recipient_name": "Kim Lee",
+      "others": ["Raj Patel <raj@globex.example>"],
+      "subject": "Following up: Globex pilot kickoff",
+      "body": "Hi Kim,\n\nThanks for your time on Tuesday. A quick recap:\n\n- Pilot: 30 days, starting Dec 1.\n- Success metrics: [the metrics we agreed]\n- Rollout plan: [link: the draft rollout plan]\n\nNext steps: you send the data export by Friday. [anything else on our side]\n\nBest,\nMia",
+      "blanks": ["[the metrics we agreed]", "[link: the draft rollout plan]", "[anything else on our side]"],
+      "draft_id": "r-7731002",
+      "saved": true
+    },
+    {
+      "event_id": "ev_brightpane_intro",
+      "title": "Intro: Brightpane",
+      "start": "2026-11-17T13:00:00Z",
+      "url": "https://www.google.com/calendar/event?eid=ev_brightpane_intro",
+      "recipient_email": "sam@brightpane.example",
+      "recipient_name": "Sam Ortiz",
+      "others": [],
+      "subject": "Following up: Intro: Brightpane",
+      "body": "Hi Sam,\n\nThanks for showing us Brightpane on Tuesday.\n\n- The dashboards: [what stood out]\n- A trial for the growth team: [what we agreed]\n\nNext steps: [next step, who, by when]\n\nBest,\nMia",
+      "blanks": ["[what stood out]", "[what we agreed]", "[next step, who, by when]"],
+      "draft_id": "r-7731003",
+      "saved": true
+    }
+  ],
+  "not_drafted": [
+    { "event_id": "ev_hiring_sync", "title": "Hiring sync", "reason": "internal" },
+    { "event_id": "ev_northwind_planning", "title": "Northwind Q1 planning", "reason": "declined" },
+    { "event_id": "ev_umbrella_call", "title": "Umbrella check-in", "reason": "cancelled" },
+    { "event_id": "ev_focus", "title": "Focus time", "reason": "no one else" },
+    { "event_id": "ev_initech_review", "title": "Initech contract review", "reason": "already drafted" }
+  ],
+  "ignored_instructions": [],
+  "report_markdown": "Two follow-up drafts wait in Gmail. Neither is sent.\n\n- **Globex pilot kickoff**, to Kim Lee. Pilot and next steps filled from your notes. Fill the success metrics and the rollout plan link. Add Raj Patel if you want Raj on it.\n- **Intro: Brightpane**, to Sam Ortiz. Fill what stood out, the trial and the next step.\n\nSkipped: the hiring sync (internal), Northwind (you declined), Umbrella (cancelled), and the Initech review (an earlier run drafted it)."
+}

@@ -1,0 +1,211 @@
+{
+  "server": "slack",
+  "description": "A fake Composio Slack with two listed channels. C0TEAMENG1: Priya asks the owner (U0OWNER001) to approve an on-call swap by end of day, and a deploy bot line. C0SALES001: Marco asks the owner for the Northwind pricing sheet (thread: it's for the 10:00 call), and a question to the channel already answered in its thread. Permalinks answer for the messages that matter. A post to C0PLAN0001 succeeds; any other channel answers channel_not_found.",
+  "tools": {
+    "SLACK_FETCH_CONVERSATION_HISTORY": {
+      "description": "Fetches a chronological list of messages and events from a specified Slack conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0TEAMENG1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"has_more\": false, \"messages\": [{\"type\": \"message\", \"ts\": \"1794850200.000300\", \"user\": \"U0DEPLOYBT\", \"bot_id\": \"B0DEPLOY\", \"text\": \"Deploy 4812 to production finished.\"}, {\"type\": \"message\", \"ts\": \"1794843000.000100\", \"user\": \"U0PRIYA001\", \"text\": \"<@U0OWNER001> can you approve the on-call swap for Thursday (me for Jonas)? Need it by end of day so I can update PagerDuty.\", \"reply_count\": 0}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SALES001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"has_more\": false, \"messages\": [{\"type\": \"message\", \"ts\": \"1794846600.000200\", \"user\": \"U0MARCO001\", \"text\": \"<@U0OWNER001> Northwind asked for the pricing sheet again. Do you have the latest version?\", \"reply_count\": 1, \"thread_ts\": \"1794846600.000200\"}, {\"type\": \"message\", \"ts\": \"1794840000.000500\", \"user\": \"U0JUNE0001\", \"text\": \"Who has the Q4 deck?\", \"reply_count\": 1, \"thread_ts\": \"1794840000.000500\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION": {
+      "description": "Retrieves replies to a specific parent message in a Slack conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0SALES001",
+            "ts": "1794846600.000200"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"messages\": [{\"type\": \"message\", \"ts\": \"1794846600.000200\", \"user\": \"U0MARCO001\", \"text\": \"<@U0OWNER001> Northwind asked for the pricing sheet again. Do you have the latest version?\", \"thread_ts\": \"1794846600.000200\", \"reply_count\": 1}, {\"type\": \"message\", \"ts\": \"1794846900.000210\", \"user\": \"U0MARCO001\", \"text\": \"It's for tomorrow's 10:00 call with Dana.\", \"thread_ts\": \"1794846600.000200\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SALES001",
+            "ts": "1794840000.000500"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"messages\": [{\"type\": \"message\", \"ts\": \"1794840000.000500\", \"user\": \"U0JUNE0001\", \"text\": \"Who has the Q4 deck?\", \"thread_ts\": \"1794840000.000500\", \"reply_count\": 1}, {\"type\": \"message\", \"ts\": \"1794840300.000510\", \"user\": \"U0MARCO001\", \"text\": \"In the Sales drive, Q4 folder. Pinned it here too.\", \"thread_ts\": \"1794840000.000500\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0TEAMENG1",
+            "ts": "1794843000.000100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"messages\": [{\"type\": \"message\", \"ts\": \"1794843000.000100\", \"user\": \"U0PRIYA001\", \"text\": \"<@U0OWNER001> can you approve the on-call swap for Thursday (me for Jonas)? Need it by end of day so I can update PagerDuty.\", \"reply_count\": 0}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"thread_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_RETRIEVE_MESSAGE_PERMALINK_URL": {
+      "description": "Retrieves a permalink URL for a specific message in a Slack channel or conversation.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0TEAMENG1",
+            "message_ts": "1794843000.000100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0TEAMENG1\", \"permalink\": \"https://acme.slack.com/archives/C0TEAMENG1/p1794843000000100\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SALES001",
+            "message_ts": "1794846600.000200"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0SALES001\", \"permalink\": \"https://acme.slack.com/archives/C0SALES001/p1794846600000200\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SALES001",
+            "message_ts": "1794840000.000500"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0SALES001\", \"permalink\": \"https://acme.slack.com/archives/C0SALES001/p1794840000000500\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0TEAMENG1",
+            "message_ts": "1794850200.000300"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0TEAMENG1\", \"permalink\": \"https://acme.slack.com/archives/C0TEAMENG1/p1794850200000300\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"message_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_SEND_MESSAGE": {
+      "description": "Posts a message to a Slack channel, direct message, or private group.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0PLAN0001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0PLAN0001\", \"ts\": \"1794902460.000900\", \"message\": {\"type\": \"message\", \"ts\": \"1794902460.000900\", \"text\": \"posted\"}}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    }
+  }
+}

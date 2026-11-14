@@ -1,0 +1,21 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail. The 7-day search returns mail from 2026-11-10 to 15. Three messages are older than the last digest (Thursday 2026-11-12 15:00 UTC): a CSV export complaint, an SSO loop, and Grace's lockout, reported urgent then. Newer: three CSV export threads, a billing question, and Grace writing again that she is still locked out.",
+  "tools": {
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Fetches a list of email messages from a Gmail account, supporting filtering by Gmail search query.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"messages\": [{\"messageId\": \"19d2c00000000101\", \"threadId\": \"19d2c00000000001\", \"sender\": \"Priya Nair <priya@hooli.example>\", \"to\": \"support@acme.example\", \"subject\": \"CSV export never finishes\", \"messageTimestamp\": \"2026-11-10T10:04:00Z\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageText\": \"Exporting our orders to CSV fails with 'request timed out'.\"}, {\"messageId\": \"19d2c00000000102\", \"threadId\": \"19d2c00000000002\", \"sender\": \"Omar Haddad <omar@soylent.example>\", \"to\": \"support@acme.example\", \"subject\": \"SSO keeps redirecting\", \"messageTimestamp\": \"2026-11-11T13:00:00Z\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageText\": \"Logging in with Okta sends me back to the login page in a loop.\"}, {\"messageId\": \"19d2c00000000103\", \"threadId\": \"19d2c00000000003\", \"sender\": \"Grace Liu <grace.liu@initrode.example>\", \"to\": \"support@acme.example\", \"subject\": \"URGENT: whole company locked out\", \"messageTimestamp\": \"2026-11-11T07:40:00Z\", \"labelIds\": [\"INBOX\", \"IMPORTANT\", \"Label_support\"], \"messageText\": \"None of our 200 people can log in through SSO. We can't work.\"}, {\"messageId\": \"19d2c00000000113\", \"threadId\": \"19d2c00000000003\", \"sender\": \"Grace Liu <grace.liu@initrode.example>\", \"to\": \"support@acme.example\", \"subject\": \"Re: URGENT: whole company locked out\", \"messageTimestamp\": \"2026-11-14T08:00:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"IMPORTANT\", \"Label_support\"], \"messageText\": \"Day four and we're still locked out. Nobody has called us back.\"}, {\"messageId\": \"19d2c00000000104\", \"threadId\": \"19d2c00000000004\", \"sender\": \"Wes Kim <wes@stark.example>\", \"to\": \"support@acme.example\", \"subject\": \"export broken?\", \"messageTimestamp\": \"2026-11-13T16:45:00Z\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageText\": \"CSV export just hangs. Smaller exports work.\"}, {\"messageId\": \"19d2c00000000105\", \"threadId\": \"19d2c00000000005\", \"sender\": \"Lena Ortiz <lena@wayne.example>\", \"to\": \"support@acme.example\", \"subject\": \"Report export timeout\", \"messageTimestamp\": \"2026-11-14T11:10:00Z\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageText\": \"Our weekly CSV export failed again.\"}, {\"messageId\": \"19d2c00000000106\", \"threadId\": \"19d2c00000000006\", \"sender\": \"Ana Silva <ana@pied.example>\", \"to\": \"support@acme.example\", \"subject\": \"Can't download my data\", \"messageTimestamp\": \"2026-11-15T09:00:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"Label_support\"], \"messageText\": \"Download as CSV gives a 504 error every time.\"}, {\"messageId\": \"19d2c00000000107\", \"threadId\": \"19d2c00000000007\", \"sender\": \"Ivy Moss <ivy@umbrella.example>\", \"to\": \"support@acme.example\", \"subject\": \"Which plan are we on?\", \"messageTimestamp\": \"2026-11-13T17:00:00Z\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageText\": \"Can you tell me which plan we're billed on and when it renews?\"}], \"resultSizeEstimate\": 8}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

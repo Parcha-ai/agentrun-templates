@@ -1,0 +1,22 @@
+{
+  "window": { "from": "2026-11-17", "to": "2026-11-18" },
+  "timezone": "UTC",
+  "meetings": [
+    { "start": "Tue 2026-11-17 09:00", "end": "09:45", "title": "Globex pilot kickoff", "url": "https://www.google.com/calendar/event?eid=ev_globex_kickoff", "status": "organizer", "prep": "\"Please bring the draft rollout plan.\"", "outside_domains": ["globex.example"], "conflict": true },
+    { "start": "Tue 2026-11-17 09:30", "end": "10:00", "title": "Hiring sync", "url": "https://www.google.com/calendar/event?eid=ev_hiring_sync", "status": "accepted", "prep": null, "outside_domains": [], "conflict": true },
+    { "start": "Tue 2026-11-17 13:00", "end": "13:30", "title": "Intro: Brightpane", "url": "https://www.google.com/calendar/event?eid=ev_brightpane_intro", "status": "not_answered", "prep": null, "outside_domains": ["brightpane.example"], "conflict": false },
+    { "start": "Wed 2026-11-18 11:00", "end": "12:00", "title": "Advisor catch-up", "url": "https://www.google.com/calendar/event?eid=ev_advisor", "status": "organizer", "prep": null, "outside_domains": ["gmail.com"], "conflict": false }
+  ],
+  "conflicts": [
+    { "events": ["Globex pilot kickoff 09:00-09:45", "Hiring sync 09:30-10:00"], "overlap": "Tue 09:30-09:45", "suggestion": "Suggestion: keep the kickoff (external, you organize it) and join the hiring sync at 09:45." }
+  ],
+  "companies": [
+    { "domain": "globex.example", "name": "Globex", "note": "Inventory software for mid-size retailers. Raised a $40M Series B on 2026-10-21 and plans a London office in 2027.", "sources": ["https://globex.example/", "https://retailwire.example/2026/10/21/globex-series-b"], "found": true, "repeat": false },
+    { "domain": "brightpane.example", "name": "Brightpane", "note": "Product analytics dashboards for SaaS teams. Launched anomaly alerts that post to Slack on 2026-11-10.", "sources": ["https://brightpane.example/", "https://saasweekly.example/2026/11/10/brightpane-launches-alerts"], "found": true, "repeat": false },
+    { "domain": "gmail.com", "name": null, "note": "Personal email address: company unknown.", "sources": [], "found": false, "repeat": false }
+  ],
+  "coverage": { "calendar": "read", "events_read": 5, "left_out": ["Team offsite planning, Wed 15:00: you declined it"] },
+  "delivery": { "via": "slack", "to": "C0BRIEF001", "status": "posted" },
+  "ignored_instructions": [],
+  "report_markdown": "*Calendar, Tue 2026-11-17 to Wed 2026-11-18* (UTC)\n*Clash:* Globex pilot kickoff 09:00-09:45 and Hiring sync 09:30-10:00 overlap 09:30-09:45. Suggestion: keep the kickoff, join the sync at 09:45.\n\n*Tue 2026-11-17*\n• 09:00-09:45 Globex pilot kickoff <https://www.google.com/calendar/event?eid=ev_globex_kickoff|event>\n    Prep: \"Please bring the draft rollout plan.\"\n    Globex: inventory software for mid-size retailers; $40M Series B on 2026-10-21. <https://retailwire.example/2026/10/21/globex-series-b|RetailWire>\n• 09:30-10:00 Hiring sync <https://www.google.com/calendar/event?eid=ev_hiring_sync|event>\n• 13:00-13:30 Intro: Brightpane (not answered) <https://www.google.com/calendar/event?eid=ev_brightpane_intro|event>\n    Brightpane: product analytics for SaaS teams; launched anomaly alerts on 2026-11-10. <https://saasweekly.example/2026/11/10/brightpane-launches-alerts|SaaS Weekly>\n\n*Wed 2026-11-18*\n• 11:00-12:00 Advisor catch-up <https://www.google.com/calendar/event?eid=ev_advisor|event>\n    Jo Smith uses a personal address: company unknown.\n\n_Left out: Team offsite planning (declined)._"
+}

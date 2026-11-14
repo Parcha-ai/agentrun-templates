@@ -1,0 +1,64 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail for 2026-11-18: the search finds only a newsletter. Dana's redlines thread (listed in yesterday's plan) now holds the owner's reply.",
+  "tools": {
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Fetches a list of email messages from a Gmail account, supporting filtering by Gmail search query.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"messages\": [{\"messageId\": \"19a1d0c0aa000031\", \"threadId\": \"19a1d0c0aa000031\", \"sender\": \"SaaS Weekly <news@saasweekly.example>\", \"to\": \"owner@acme.example\", \"subject\": \"This week in SaaS\", \"messageTimestamp\": \"2026-11-18T06:00:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"CATEGORY_PROMOTIONS\"], \"messageText\": \"Five onboarding flows we loved.\"}], \"resultSizeEstimate\": 1}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_FETCH_MESSAGE_BY_THREAD_ID": {
+      "description": "Retrieves messages from a Gmail thread using its thread_id.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [
+        {
+          "when": {
+            "thread_id": "19a1d0c0aa000001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"messages\": [{\"messageId\": \"19a1d0c0aa000001\", \"threadId\": \"19a1d0c0aa000001\", \"sender\": \"Dana Ruiz <dana@northwind.example>\", \"to\": \"owner@acme.example\", \"subject\": \"Redlined MSA by noon?\", \"messageTimestamp\": \"2026-11-17T07:12:00Z\", \"labelIds\": [\"INBOX\", \"IMPORTANT\"], \"messageText\": \"Hi, could you send back the redlined MSA by 12:00 UTC today? Our legal team signs off this afternoon. Thanks, Dana\"}, {\"messageId\": \"19a1d0c0aa000021\", \"threadId\": \"19a1d0c0aa000001\", \"sender\": \"Owner <owner@acme.example>\", \"to\": \"dana@northwind.example\", \"subject\": \"Re: Redlined MSA by noon?\", \"messageTimestamp\": \"2026-11-17T11:30:00Z\", \"labelIds\": [\"SENT\"], \"messageText\": \"Attached, with our redlines on sections 4 and 9.\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "thread_id": "19a1d0c0aa000031"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"messages\": [{\"messageId\": \"19a1d0c0aa000031\", \"threadId\": \"19a1d0c0aa000031\", \"sender\": \"SaaS Weekly <news@saasweekly.example>\", \"to\": \"owner@acme.example\", \"subject\": \"This week in SaaS\", \"messageTimestamp\": \"2026-11-18T06:00:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"CATEGORY_PROMOTIONS\"], \"messageText\": \"Five onboarding flows we loved.\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Requested entity was not found.\"}"
+          }
+        ],
+        "isError": true
+      }
+    }
+  }
+}

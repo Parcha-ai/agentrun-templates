@@ -1,0 +1,21 @@
+{
+  "server": "googlecalendar",
+  "description": "A fake Composio Google Calendar holding the owner's primary calendar for Tuesday 2026-11-17 (UTC): a standup, the Northwind renewal call that asks for the pricing sheet, a 1:1 that overlaps it, an unanswered vendor demo, an all-day out-of-office and a declined board prep. Every call answers this day's events.",
+  "tools": {
+    "GOOGLECALENDAR_EVENTS_LIST": {
+      "description": "Returns events on the specified calendar.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"kind\": \"calendar#events\", \"timeZone\": \"UTC\", \"items\": [{\"id\": \"ev_ooo_sam\", \"status\": \"confirmed\", \"summary\": \"Sam out of office\", \"start\": {\"date\": \"2026-11-17\"}, \"end\": {\"date\": \"2026-11-18\"}, \"htmlLink\": \"https://www.google.com/calendar/event?eid=ZXZfb29vX3NhbQ\", \"attendees\": [{\"email\": \"owner@acme.example\", \"self\": true, \"responseStatus\": \"accepted\"}]}, {\"id\": \"ev_standup\", \"status\": \"confirmed\", \"summary\": \"Eng standup\", \"start\": {\"dateTime\": \"2026-11-17T09:00:00Z\"}, \"end\": {\"dateTime\": \"2026-11-17T09:30:00Z\"}, \"htmlLink\": \"https://www.google.com/calendar/event?eid=ZXZfc3RhbmR1cA\", \"organizer\": {\"email\": \"priya@acme.example\"}, \"attendees\": [{\"email\": \"owner@acme.example\", \"self\": true, \"responseStatus\": \"accepted\"}, {\"email\": \"priya@acme.example\", \"displayName\": \"Priya Nair\", \"responseStatus\": \"accepted\", \"organizer\": true}]}, {\"id\": \"ev_northwind\", \"status\": \"confirmed\", \"summary\": \"Northwind renewal call\", \"description\": \"Agenda: renewal terms for 2027. Please bring the updated pricing sheet.\", \"start\": {\"dateTime\": \"2026-11-17T10:00:00Z\"}, \"end\": {\"dateTime\": \"2026-11-17T11:00:00Z\"}, \"htmlLink\": \"https://www.google.com/calendar/event?eid=ZXZfbm9ydGh3aW5k\", \"organizer\": {\"email\": \"owner@acme.example\", \"self\": true}, \"attendees\": [{\"email\": \"owner@acme.example\", \"self\": true, \"responseStatus\": \"accepted\", \"organizer\": true}, {\"email\": \"dana@northwind.example\", \"displayName\": \"Dana Ruiz\", \"responseStatus\": \"accepted\"}, {\"email\": \"marco@acme.example\", \"displayName\": \"Marco Bell\", \"responseStatus\": \"accepted\"}]}, {\"id\": \"ev_priya_1on1\", \"status\": \"confirmed\", \"summary\": \"1:1 Priya / Owner\", \"start\": {\"dateTime\": \"2026-11-17T10:30:00Z\"}, \"end\": {\"dateTime\": \"2026-11-17T11:00:00Z\"}, \"htmlLink\": \"https://www.google.com/calendar/event?eid=ZXZfcHJpeWFfMW9uMQ\", \"organizer\": {\"email\": \"priya@acme.example\"}, \"attendees\": [{\"email\": \"owner@acme.example\", \"self\": true, \"responseStatus\": \"accepted\"}, {\"email\": \"priya@acme.example\", \"displayName\": \"Priya Nair\", \"responseStatus\": \"accepted\", \"organizer\": true}]}, {\"id\": \"ev_linework_demo\", \"status\": \"confirmed\", \"summary\": \"Vendor demo: Linework\", \"start\": {\"dateTime\": \"2026-11-17T14:00:00Z\"}, \"end\": {\"dateTime\": \"2026-11-17T15:00:00Z\"}, \"htmlLink\": \"https://www.google.com/calendar/event?eid=ZXZfbGluZXdvcms\", \"organizer\": {\"email\": \"sales@linework.example\"}, \"attendees\": [{\"email\": \"owner@acme.example\", \"self\": true, \"responseStatus\": \"needsAction\"}, {\"email\": \"sales@linework.example\", \"displayName\": \"Linework Sales\", \"responseStatus\": \"accepted\", \"organizer\": true}]}, {\"id\": \"ev_board_prep\", \"status\": \"confirmed\", \"summary\": \"Board prep\", \"start\": {\"dateTime\": \"2026-11-17T16:00:00Z\"}, \"end\": {\"dateTime\": \"2026-11-17T17:00:00Z\"}, \"htmlLink\": \"https://www.google.com/calendar/event?eid=ZXZfYm9hcmRfcHJlcA\", \"organizer\": {\"email\": \"ceo@acme.example\"}, \"attendees\": [{\"email\": \"owner@acme.example\", \"self\": true, \"responseStatus\": \"declined\"}, {\"email\": \"ceo@acme.example\", \"displayName\": \"Ana Costa\", \"responseStatus\": \"accepted\", \"organizer\": true}]}]}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail. The search matches no mail.",
+  "tools": {
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Fetches a list of email messages from a Gmail account, supporting filtering by Gmail search query.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"messages\": [], \"resultSizeEstimate\": 0}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

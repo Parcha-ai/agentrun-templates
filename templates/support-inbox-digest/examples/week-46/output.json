@@ -1,0 +1,68 @@
+{
+  "window": { "from": "2026-11-09T09:00:00Z", "to": "2026-11-16T09:00:00Z" },
+  "coverage": {
+    "messages_read": 15,
+    "threads_kept": 11,
+    "dropped": [
+      { "reason": "team", "messages": 1 },
+      { "reason": "automated", "messages": 2 }
+    ],
+    "more_than_read": false,
+    "search_failed": false
+  },
+  "urgent": [
+    {
+      "thread_id": "19d2a00000000007",
+      "subject": "URGENT: whole company locked out",
+      "company": "initrode.example",
+      "why": "200 people can't log in through SSO",
+      "last_message_at": "2026-11-16T07:40:00Z",
+      "url": "https://mail.google.com/mail/u/0/#all/19d2a00000000007",
+      "still_open": false,
+      "first_reported": null
+    },
+    {
+      "thread_id": "19d2a00000000010",
+      "subject": "Double charge, need refund this week",
+      "company": "massive.example",
+      "why": "charged twice, chargeback threatened by Friday",
+      "last_message_at": "2026-11-15T19:25:00Z",
+      "url": "https://mail.google.com/mail/u/0/#all/19d2a00000000010",
+      "still_open": false,
+      "first_reported": null
+    }
+  ],
+  "themes": [
+    {
+      "name": "CSV export times out",
+      "threads": 5,
+      "last_week": 3,
+      "quotes": ["Our weekly CSV export has failed three weeks running. We're evaluating alternatives if this keeps up."],
+      "examples": ["https://mail.google.com/mail/u/0/#all/19d2a00000000001", "https://mail.google.com/mail/u/0/#all/19d2a00000000005"]
+    },
+    {
+      "name": "SSO login loop",
+      "threads": 3,
+      "last_week": 1,
+      "quotes": ["Logging in with Okta sends me back to the login page in a loop."],
+      "examples": ["https://mail.google.com/mail/u/0/#all/19d2a00000000006", "https://mail.google.com/mail/u/0/#all/19d2a00000000008"]
+    },
+    {
+      "name": "Double charge",
+      "threads": 2,
+      "last_week": null,
+      "quotes": ["We were billed twice for November."],
+      "examples": ["https://mail.google.com/mail/u/0/#all/19d2a00000000009"]
+    },
+    {
+      "name": "Dark mode request",
+      "threads": 1,
+      "last_week": null,
+      "quotes": ["Any plans for a dark mode? Our night shift would love it."],
+      "examples": ["https://mail.google.com/mail/u/0/#all/19d2a00000000012"]
+    }
+  ],
+  "delivery": { "posted": true, "channel": "C0SUPPORT1", "ts": "1795251600.000100", "error": null },
+  "ignored_instructions": [],
+  "report_markdown": "*Support, Nov 9 to 16:* 11 customer threads. Top theme: CSV export times out (5).\n\n*Urgent*\n- SSO lockout at initrode.example: 200 people can't log in. <https://mail.google.com/mail/u/0/#all/19d2a00000000007|thread>\n- Double charge at massive.example, chargeback threatened by Friday. <https://mail.google.com/mail/u/0/#all/19d2a00000000010|thread>\n\n*Themes*\n1. CSV export times out: 5 (last week: 3). \"Our weekly CSV export has failed three weeks running. We're evaluating alternatives if this keeps up.\"\n2. SSO login loop: 3 (last week: 1). \"Logging in with Okta sends me back to the login page in a loop.\"\n3. Double charge: 2 (new). \"We were billed twice for November.\"\n4. Dark mode request: 1 (new). \"Our night shift would love it.\""
+}

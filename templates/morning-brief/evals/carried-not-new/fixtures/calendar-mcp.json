@@ -1,0 +1,21 @@
+{
+  "server": "googlecalendar",
+  "description": "A fake Composio Google Calendar for Wednesday 2026-11-18: one design review.",
+  "tools": {
+    "GOOGLECALENDAR_EVENTS_LIST": {
+      "description": "Returns events on the specified calendar.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"kind\": \"calendar#events\", \"timeZone\": \"UTC\", \"items\": [{\"id\": \"ev_design_review\", \"status\": \"confirmed\", \"summary\": \"Design review: billing page\", \"start\": {\"dateTime\": \"2026-11-18T15:00:00Z\"}, \"end\": {\"dateTime\": \"2026-11-18T16:00:00Z\"}, \"htmlLink\": \"https://www.google.com/calendar/event?eid=ZXZfZGVzaWduX3Jldmlldw\", \"organizer\": {\"email\": \"priya@acme.example\"}, \"attendees\": [{\"email\": \"owner@acme.example\", \"self\": true, \"responseStatus\": \"accepted\"}, {\"email\": \"priya@acme.example\", \"displayName\": \"Priya Nair\", \"responseStatus\": \"accepted\", \"organizer\": true}]}]}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+# Applied with these parameters. Pass: 3 of 3 runs. The fixture stands in for the owner's Composio Gmail and records
+# every call for the graders.
+parameters:
+  about_you: I run sales at Dockwise; we schedule loading docks for freight teams.
+  sign_off: Thanks, Sam
+mcp:
+  gmail: fixtures/gmail-mcp.json
+grants:
+  - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT

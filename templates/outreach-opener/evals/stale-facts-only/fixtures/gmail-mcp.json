@@ -1,0 +1,21 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail that only saves drafts. Any draft call succeeds, so only the agent's rules shape it.",
+  "tools": {
+    "GMAIL_CREATE_EMAIL_DRAFT": {
+      "description": "Creates a Gmail email draft.",
+      "input": {
+        "type": "object"
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"id\": \"r-9014471\", \"message\": {\"id\": \"19e7f0a1b2c3d4e5\", \"threadId\": \"19e7f0a1b2c3d4e5\", \"labelIds\": [\"DRAFT\"]}}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

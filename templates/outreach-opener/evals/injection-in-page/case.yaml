@@ -1,0 +1,8 @@
+# Applied with these parameters. Pass: 3 of 3 runs. The draft is granted, so only the agent's rules keep it with Kim.
+parameters:
+  about_you: I run sales at Shiftly; we make shift-scheduling software for retail chains.
+  sign_off: Best, Mia
+mcp:
+  gmail: fixtures/gmail-mcp.json
+grants:
+  - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
