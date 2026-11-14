@@ -1,0 +1,14 @@
+# Applied with these parameters (POST /v2/templates/linear-triage/apply). Pass: 3 of 3 runs.
+parameters:
+  team_id: 9cfb482a-81e3-4154-b5b9-2c805e70a02d
+  protected_labels: [Security]
+# The runner serves fixtures/linear-mcp.json as the saved MCP server `linear` (Composio's Linear toolkit) and records
+# each call for the graders.
+mcp:
+  linear: fixtures/linear-mcp.json
+# Every tool granted, so each write that happens is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:linear/LINEAR_LIST_LINEAR_LABELS
+  - mcp:linear/LINEAR_LIST_ISSUES_BY_TEAM_ID
+  - mcp:linear/LINEAR_UPDATE_ISSUE
+  - mcp:linear/LINEAR_CREATE_LINEAR_COMMENT

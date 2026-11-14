@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "triage.schema.json",
+  "title": "Linear issue triage",
+  "description": "What the agent did with one new Linear issue: its kind, the labels it added from the team's own set, likely duplicates, what it asked the reporter for, and the one comment it posted or chose not to post.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["issue", "kind", "labels", "duplicates", "missing", "comment", "ignored_instructions", "skipped", "report_markdown"],
+  "properties": {
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identifier", "title"],
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "identifier": { "type": "string", "pattern": "^[A-Z][A-Z0-9]{0,9}-[0-9]+$" },
+        "title": { "type": "string", "maxLength": 300 },
+        "creator": { "type": ["string", "null"], "maxLength": 100 }
+      }
+    },
+    "kind": { "enum": ["bug", "feature", "improvement", "question", "copy", "other"] },
+    "labels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kept", "added"],
+      "properties": {
+        "kept": { "type": "array", "maxItems": 50, "items": { "type": "string" }, "description": "labels already on the issue, kept in the label set" },
+        "added": {
+          "type": "array",
+          "maxItems": 10,
+          "description": "labels this run added; each one exists in the team's label set",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "why"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+              "id": { "type": "string", "maxLength": 64 },
+              "why": { "type": "string", "minLength": 1, "maxLength": 300 }
+            }
+          }
+        }
+      }
+    },
+    "duplicates": {
+      "type": "array",
+      "maxItems": 5,
+      "description": "issues that look like the same problem, most likely first; empty when none was found",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["identifier", "title", "state", "confidence", "why"],
+        "properties": {
+          "identifier": { "type": "string", "pattern": "^[A-Z][A-Z0-9]{0,9}-[0-9]+$" },
+          "title": { "type": "string", "maxLength": 300 },
+          "state": { "type": "string", "maxLength": 50, "description": "the candidate's state name, like Todo or Done" },
+          "confidence": { "enum": ["high", "medium", "low"] },
+          "why": { "type": "string", "minLength": 1, "maxLength": 400 }
+        }
+      }
+    },
+    "missing": { "type": "array", "maxItems": 4, "items": { "type": "string", "minLength": 1, "maxLength": 200 } },
+    "comment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["posted", "body"],
+      "properties": {
+        "posted": { "type": "boolean" },
+        "body": { "type": ["string", "null"], "maxLength": 4000 },
+        "why_not": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "skipped": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 6000 }
+  }
+}

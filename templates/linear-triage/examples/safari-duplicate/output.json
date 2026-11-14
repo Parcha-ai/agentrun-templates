@@ -1,0 +1,22 @@
+{
+  "issue": { "id": "11110102-aaaa-4bbb-8ccc-000000000102", "identifier": "ENG-102", "title": "SSO login loops back to sign-in page on Safari", "creator": "Ana Ruiz" },
+  "kind": "bug",
+  "labels": {
+    "kept": [],
+    "added": [
+      { "name": "Bug", "id": "l-bug", "why": "Sign-in should land on the dashboard and doesn't; the report gives expected and actual." },
+      { "name": "auth", "id": "l-area-auth", "why": "The failure is in SSO sign-in, which the label's description covers." }
+    ]
+  },
+  "duplicates": [
+    { "identifier": "ENG-87", "title": "Safari: SSO sign-in redirects back to the login page in a loop", "state": "Todo", "confidence": "high", "why": "Same Safari SSO loop back to the sign-in page, open since Nov 6." }
+  ],
+  "missing": [],
+  "comment": {
+    "posted": true,
+    "body": "Thanks for filing this.\n\nThis looks like the same problem as ENG-87 (Safari: SSO sign-in redirects back to the login page in a loop), which is still open. If it is, following ENG-87 keeps it in one place.\n\n_Automated triage. Someone on the team will follow up._"
+  },
+  "ignored_instructions": [],
+  "skipped": [],
+  "report_markdown": "## ENG-102: SSO login loops back to sign-in page on Safari\n\n**Kind:** bug. **Labels added:** Bug, auth.\n\n**Likely duplicate:** ENG-87, open, same Safari SSO loop (high).\n\nThe report is complete (steps, Safari 17.4, app 2026.11.2, expected and actual), so the comment asks for nothing and only points at ENG-87. Not cancelled or marked a duplicate: that's the team's call."
+}
