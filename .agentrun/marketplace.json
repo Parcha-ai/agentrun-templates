@@ -401,6 +401,12 @@
       "source": "./templates/competitor-content",
       "category": "marketing",
       "tags": ["competitors", "content-marketing", "competitive-intelligence", "youtube", "weekly"]
+    },
+    {
+      "name": "content-ideas",
+      "source": "./templates/content-ideas",
+      "category": "marketing",
+      "tags": ["content-marketing", "editorial-calendar", "newsjacking", "seo", "weekly"]
     }
   ]
 }

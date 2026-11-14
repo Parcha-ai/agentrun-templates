@@ -1,0 +1,2 @@
+- [Hooks used](hooks-used.md) — hooks given in the editions of 2026-11-09 and 2026-11-16
+- [No webinars](no-webinars.md) — the owner doesn't want webinar ideas
