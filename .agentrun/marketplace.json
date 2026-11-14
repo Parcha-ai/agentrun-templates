@@ -413,6 +413,12 @@
       "source": "./templates/enforcement-digest",
       "category": "compliance",
       "tags": ["enforcement", "regulators", "fines", "aml", "compliance", "weekly"]
+    },
+    {
+      "name": "brand-mentions",
+      "source": "./templates/brand-mentions",
+      "category": "marketing",
+      "tags": ["brand-monitoring", "mentions", "reputation", "pr", "daily"]
     }
   ]
 }

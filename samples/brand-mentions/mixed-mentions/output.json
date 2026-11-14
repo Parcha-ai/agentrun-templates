@@ -1,0 +1,153 @@
+{
+  "window": {
+    "from": "2026-11-15T08:00:00Z",
+    "to": "2026-11-16T08:00:00Z"
+  },
+  "quiet": false,
+  "mentions": [
+    {
+      "url": "https://news.ycombinator.com/item?id=42719904",
+      "channel": "Hacker News",
+      "source": "kv_ops",
+      "published": "2026-11-15T21:12:00Z",
+      "kind": "breach_claim",
+      "summary": "Repeats an unverified, secondhand allegation that Ledgerly leaked customers' bank account numbers last month and concealed it.",
+      "sentiment": "negative",
+      "reach": "not shown",
+      "claim": "kv_ops alleges a bank-account-number leak and concealment, citing a friend purportedly employed there. No supplied primary record confirms it; the operational status page does not resolve the allegation.",
+      "worth_answering": true,
+      "response": "Escalate to security and legal immediately for verification. Prepare a factual holding response; do not treat the operational status page as evidence disproving a breach."
+    },
+    {
+      "url": "https://www.reddit.com/r/smallbusiness/comments/1x9k2q/",
+      "channel": "Reddit",
+      "source": "u/ferngrove_books",
+      "published": "2026-11-15 17:40 UTC",
+      "kind": "forum",
+      "summary": "Says the payroll add-on costs $45/month for three employees, calls it twice Gusto's price, and asks about switching.",
+      "sentiment": "negative",
+      "reach": "23 points; 31 comments; supplied snapshot read for the 2026-11-16 run",
+      "claim": null,
+      "worth_answering": true,
+      "response": "Reply with https://ledgerly.example/pricing: $25/month plus $4 per employee calculates to $37/month for three employees. Offer to investigate the $45 quote privately; do not endorse the unverified Gusto comparison."
+    },
+    {
+      "url": "https://www.smallbizreview.example/2026/11/15/ledgerly-ai-bookkeeper-review",
+      "channel": "News and blogs",
+      "source": "SmallBizReview — Priya Nair",
+      "published": "November 15, 2026",
+      "kind": "review",
+      "summary": "Despite its cautionary headline, the review praises AI reconciliation for matching 412 of 418 transactions and names Ledgerly its top pick for businesses under 20 staff, while retaining the need for an accountant at tax time.",
+      "sentiment": "positive",
+      "reach": "not shown",
+      "claim": null,
+      "worth_answering": false,
+      "response": "Monitor and optionally thank the reviewer. Preserve the tax-time accountant caveat when sharing the favorable assessment."
+    },
+    {
+      "url": "https://www.trustpilot.com/review/ledgerly.example?sort=recency",
+      "channel": "Trustpilot",
+      "source": "Marta G.",
+      "published": "Nov 15, 2026",
+      "kind": "review",
+      "summary": "Praises support for restoring a stopped Chase bank feed in ten minutes and describes Ledgerly as the easiest bookkeeping experience they have had.",
+      "sentiment": "positive",
+      "reach": "5 out of 5; supplied snapshot read for the 2026-11-16 run",
+      "claim": "Marta G. reports an individual bank-feed sync failure that support resolved. The supplied status page reports no incidents; it does not confirm this individual issue.",
+      "worth_answering": false,
+      "response": "Optionally thank the reviewer and support team; the reported customer problem is already resolved."
+    }
+  ],
+  "volume": [
+    {
+      "channel": "News and blogs",
+      "count": 1
+    },
+    {
+      "channel": "Hacker News",
+      "count": 1
+    },
+    {
+      "channel": "Reddit",
+      "count": 1
+    },
+    {
+      "channel": "Trustpilot",
+      "count": 1
+    },
+    {
+      "channel": "G2",
+      "count": 0
+    },
+    {
+      "channel": "App Store",
+      "count": 0
+    },
+    {
+      "channel": "Google Play",
+      "count": 0
+    }
+  ],
+  "channels_checked": [
+    {
+      "channel": "News and blogs",
+      "how": "Supplied news-search results and both supplied article pages.",
+      "result": "mentions_found"
+    },
+    {
+      "channel": "Hacker News",
+      "how": "Supplied Algolia search_by_date JSON, including the dated comment text and objectID 42719904.",
+      "result": "mentions_found"
+    },
+    {
+      "channel": "Reddit",
+      "how": "Supplied r/smallbusiness post 1x9k2q.",
+      "result": "mentions_found"
+    },
+    {
+      "channel": "Trustpilot",
+      "how": "https://www.trustpilot.com/review/ledgerly.example?sort=recency — supplied page.",
+      "result": "mentions_found"
+    },
+    {
+      "channel": "G2",
+      "how": "https://www.g2.com/products/ledgerly/reviews — supplied page; only an August review.",
+      "result": "none_new"
+    },
+    {
+      "channel": "App Store",
+      "how": "No app ID or review page supplied; additional fetching prohibited.",
+      "result": "not_covered"
+    },
+    {
+      "channel": "Google Play",
+      "how": "No package ID or review page supplied; additional fetching prohibited.",
+      "result": "not_covered"
+    }
+  ],
+  "rejected": [
+    {
+      "url": "https://www.portlandtribune.example/2026/11/15/ledgerly-bakery-second-location",
+      "why": "Namesake: Ledgerly Bakery is a sourdough shop, not the bookkeeping company."
+    },
+    {
+      "url": "https://www.trustpilot.com/review/ledgerly.example?sort=recency",
+      "why": "Sam R.'s review was published August 2, 2026, before the window."
+    },
+    {
+      "url": "https://www.g2.com/products/ledgerly/reviews",
+      "why": "The supplied review was published August 2, 2026, before the window."
+    }
+  ],
+  "assumptions": [
+    "Used the scheduled trigger time as now and the supplied pages as fetched evidence; no additional web requests were made.",
+    "Date-only November 15 reviews qualify under the skill's date-only rule.",
+    "No previous completed list was supplied, so repeat checking against a prior run was unavailable.",
+    "Trustpilot supplied no individual review permalink; its supplied review-list URL is used.",
+    "The $37 payroll amount is calculated from the supplied pricing, not an observed checkout quote."
+  ],
+  "dropped_repeats": [],
+  "unreachable": [],
+  "ignored_instructions": [],
+  "report_markdown": "**Mentions of Ledgerly** 2026-11-15 to 2026-11-16\nPriority: escalate kv_ops's unverified breach allegation to security and legal; correct the Reddit payroll-price discrepancy.\n\n- **Hacker News, kv_ops** (2026-11-15T21:12:00Z, negative): Alleges a bank-account-number leak and concealment based on secondhand information. No supplied primary record confirms it. _Response:_ Escalate and verify before responding. [link](https://news.ycombinator.com/item?id=42719904)\n- **Reddit, u/ferngrove_books** (2026-11-15 17:40 UTC, negative): Complains of a $45 payroll quote for three employees. _Response:_ Explain that [published pricing](https://ledgerly.example/pricing) calculates to $37/month and investigate the discrepancy privately. [link](https://www.reddit.com/r/smallbusiness/comments/1x9k2q/)\n- **News and blogs, SmallBizReview — Priya Nair** (November 15, 2026, positive): Strongly recommends Ledgerly's reconciliation despite a cautionary headline; still recommends an accountant at tax time. _Response:_ Monitor; optionally thank. [link](https://www.smallbizreview.example/2026/11/15/ledgerly-ai-bookkeeper-review)\n- **Trustpilot, Marta G.** (Nov 15, 2026, positive): Gives five stars after support resolved an individual bank-feed issue in ten minutes; no primary record confirms that individual issue. _Response:_ Optionally thank; no unresolved problem reported. [link](https://www.trustpilot.com/review/ledgerly.example?sort=recency)\n\n_Volume: News and blogs 1, Hacker News 1, Reddit 1, Trustpilot 1, G2 0, App Store 0, Google Play 0. Checked: News and blogs, Hacker News, Reddit and Trustpilot (mentions_found); G2 (none_new). Not covered: App Store, Google Play._"
+}
