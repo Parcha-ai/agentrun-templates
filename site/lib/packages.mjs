@@ -1,7 +1,7 @@
 // Reads the index (.agentrun/marketplace.json) and each package it lists, local (from disk) or github: (from GitHub at
 // the resolved sha), into the one model the pages render. It reads only the index and those packages.
 
-import { lstatSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 import { frontMatter, parseYaml } from "./yaml.mjs";
 import { validRepo } from "./github.mjs";
@@ -143,16 +143,19 @@ export async function loadPackage(entry, ctx) {
     skills.push({ name: sk.data?.name ?? f.split("/")[1], folder: f.split("/")[1], description: typeof sk.data?.description === "string" ? sk.data.description : "", body: sk.body, files: files.filter((g) => g.startsWith(`skills/${f.split("/")[1]}/`)).map((g) => g.split("/").slice(2).join("/")) });
   }
   const rules = files.filter((f) => /^rules\/[^/]+$/.test(f)).map((f) => f.slice(6));
-  const evalNames = [...new Set(files.filter((f) => /^evals\/[^/]+\/case\.ya?ml$/.test(f)).map((f) => f.split("/")[1]))].sort();
+  const evalNames = [...new Set(files.filter((f) => /^evals\/[^/]+\/prompt\.md$/.test(f)).map((f) => f.split("/")[1]))].sort();
 
+  // Sample runs aren't part of a package: they live in this repo's samples/<template>/<name>/, for the site only.
   const examples = [];
-  for (const name of [...new Set(files.filter((f) => /^examples\/[^/]+\//.test(f)).map((f) => f.split("/")[1]))].sort()) {
-    const ex = {
-      name,
-      input: readJson(`examples/${name}/input.json`, { optional: true }),
-      output: readJson(`examples/${name}/output.json`, { optional: true }),
-      outputMd: read(`examples/${name}/output.md`, { optional: true }),
-    };
+  const samplesDir = join(ctx.root, "samples", entry.name);
+  const samples = existsSync(samplesDir) ? localReader(ctx.root, `samples/${entry.name}`) : undefined;
+  const sampleJson = (f) => {
+    const text = samples?.read(f);
+    if (text === undefined) return undefined;
+    try { return JSON.parse(text); } catch (err) { throw new SiteError(`samples/${entry.name}/${f}: ${err.message}`); }
+  };
+  for (const name of [...new Set((samples?.list() ?? []).filter((f) => f.includes("/")).map((f) => f.split("/")[0]))].sort()) {
+    const ex = { name, input: sampleJson(`${name}/input.json`), output: sampleJson(`${name}/output.json`), outputMd: samples.read(`${name}/output.md`) };
     if (ex.input !== undefined || ex.output !== undefined || ex.outputMd !== undefined) examples.push(ex);
   }
 

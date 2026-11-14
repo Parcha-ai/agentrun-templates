@@ -28,8 +28,8 @@ one does.
   the API is rate-limited or down the build uses the last cached numbers, or shows none. It never fails on them.
 - `measured.json` beside a template's agent.md (`{median_usd, runs, model, harness, measured_on}`) sets the cost per
   run. Without it the page says "Not measured yet" and shows the budget cap.
-- The sample output is `examples/<name>/output.md` when there is one, else the `contentMediaType: text/markdown`
-  field (`report_markdown`) of `examples/<name>/output.json`.
+- The sample output is `samples/<template>/<name>/output.md` when there is one, else the `contentMediaType: text/markdown`
+  field (`report_markdown`) of `samples/<template>/<name>/output.json`.
 
 `--offline` builds from the cache only. A broken manifest or index entry fails the build with the file and the line.
 
