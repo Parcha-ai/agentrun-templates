@@ -2,7 +2,7 @@
 name: pipeline-goal
 display_name: "Pipeline goal: ${parameters.goal_amount} in HubSpot"
 version: 0.1.0
-description: Checks your HubSpot pipeline every morning and posts one Slack message the first time the open deals add up past the goal you set. You choose the plain total or one weighted by each stage's win probability. Closed deals, other pipelines and deals with no amount don't count, and a missing amount is never guessed. It posts once per goal, never twice, and only reads HubSpot.
+description: Checks your HubSpot pipeline every morning and posts one Slack message the first time the open deals add up past the goal you set. You choose the plain total or one weighted by each stage's win probability. Closed deals, other pipelines and deals with no amount don't count, and a missing amount is never guessed. It posts once per goal, never twice, and only reads HubSpot. It posts on its own only if you pick Never for approvals at install; it stays held to your pipeline and channel either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -45,7 +45,8 @@ inputs:
   goal_amount: { type: number, required: false, minimum: 1, title: "Goal", description: "The schedule passes your saved goal. By hand, check against another figure.", examples: [500000] }
 budget: { per_run_usd: 0.25, tool_calls: 40 }
 learning: true
-# Runs unattended (its job runs on a schedule): no tool asks. Its one write is the pinned Slack post.
+# Suggested: never, so the scheduled post goes out unattended. The owner makes that choice at install; under ask the
+# post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
 approvals: never
 triggers:
   # HubSpot's deal events through Composio need a HubSpot developer app; a daily check needs nothing more.

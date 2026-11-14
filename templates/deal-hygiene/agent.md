@@ -2,7 +2,7 @@
 name: deal-hygiene
 display_name: "Deal hygiene: ${parameters.pipeline_id} pipeline"
 version: 0.1.0
-description: Once a week, a Slack post listing the open HubSpot deals that need a look, biggest first. A deal is listed when it has had no activity for longer than you allow, has no next step, or is past its close date. Each line says which of the three, the amount, the stage and the owner. A deal still listed from last week is marked as such. It only reads HubSpot and posts to one channel.
+description: Once a week, a Slack post listing the open HubSpot deals that need a look, biggest first. A deal is listed when it has had no activity for longer than you allow, has no next step, or is past its close date. Each line says which of the three, the amount, the stage and the owner. A deal still listed from last week is marked as such. It only reads HubSpot and posts to one channel. It posts on its own only if you pick Never for approvals at install; it stays held to your pipeline and channel either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -45,7 +45,8 @@ inputs:
   stale_days: { type: integer, required: false, minimum: 1, maximum: 180, title: "Days with no activity", description: "The schedule passes your saved setting. Blank: 14.", examples: [14] }
 budget: { per_run_usd: 0.40, tool_calls: 40 }
 learning: true
-# Runs unattended (its job runs on a schedule): no tool asks. Its one write is the pinned Slack post.
+# Suggested: never, so the scheduled post goes out unattended. The owner makes that choice at install; under ask the
+# post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
 approvals: never
 triggers:
   - name: weekly-hygiene

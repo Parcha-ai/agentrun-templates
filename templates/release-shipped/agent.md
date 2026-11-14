@@ -2,7 +2,7 @@
 name: release-shipped
 display_name: "Release shipped: ${parameters.owner}/${parameters.repo}"
 version: 0.1.0
-description: When you publish a release on GitHub, posts one short celebration to your team's Slack channel. It says what shipped in plain words, taken from the release notes and the pull requests merged for it, links the release and thanks the people who wrote it, by name and without pinging anyone. Drafts and pre-releases stay quiet unless you want them, and a release is never announced twice.
+description: When you publish a release on GitHub, posts one short celebration to your team's Slack channel. It says what shipped in plain words, taken from the release notes and the pull requests merged for it, links the release and thanks the people who wrote it, by name and without pinging anyone. Drafts and pre-releases stay quiet unless you want them, and a release is never announced twice. It posts on its own only if you pick Never for approvals at install; it stays held to your repository and channel either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -43,7 +43,8 @@ inputs:
   tag: { type: string, required: false, maxLength: 100, pattern: "^[^\\s]+$", title: "Release tag", description: "Announce one release by hand, by its tag. Leave it out on the trigger's runs: the event names the release.", examples: ["v2.4.0"] }
 budget: { per_run_usd: 0.40, tool_calls: 40 }
 learning: true
-# Runs unattended (its job runs on a trigger): no tool asks. Its one write is the pinned Slack post.
+# Suggested: never, so the triggered post goes out unattended. The owner makes that choice at install; under ask the
+# post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
 approvals: never
 triggers:
   - name: release-published

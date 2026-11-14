@@ -2,7 +2,7 @@
 name: failed-payments
 display_name: "Failed payments to ${parameters.channel}"
 version: 0.1.0
-description: Posts one Slack alert each time a Stripe card payment fails. The alert says who it was, how much, why the bank or Stripe declined it in plain words, and how the customer's payments have gone lately (paid and failed charges, an open invoice and Stripe's next retry). It ends with the next step that fits the decline. It only reads Stripe and never emails the customer. Stripe's events through Composio are not yet tested end to end.
+description: Posts one Slack alert each time a Stripe card payment fails. The alert says who it was, how much, why the bank or Stripe declined it in plain words, and how the customer's payments have gone lately (paid and failed charges, an open invoice and Stripe's next retry). It ends with the next step that fits the decline. It only reads Stripe and never emails the customer. It posts on its own only if you pick Never for approvals at install; it stays held to your channel either way. Stripe's events through Composio are not yet tested end to end.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -36,7 +36,8 @@ inputs:
 budget: { per_run_usd: 0.20, tool_calls: 20 }
 # Each event is one failed charge with one alert, and the history comes from Stripe: nothing to carry between runs.
 learning: false
-# Runs unattended (its job runs on Stripe's events): no tool asks. Its one write is the pinned Slack post.
+# Suggested: never, so the alert on Stripe's events goes out unattended. The owner makes that choice at install;
+# under ask the alert waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
 approvals: never
 triggers:
   - name: charge-failed

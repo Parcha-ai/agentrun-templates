@@ -2,7 +2,7 @@
 name: linear-triage
 display_name: Linear triage
 version: 0.1.0
-description: Triages each new issue in one Linear team as it arrives. It labels the issue from the team's own labels, checks the team's open and recent issues for likely duplicates, and posts one comment that links them and asks for whatever is missing (steps to reproduce, the version or browser, the error). It never closes, assigns, moves, prioritizes or creates anything, and each write waits for your approval until you trust it. Connects through Composio's Linear toolkit.
+description: Triages each new issue in one Linear team as it arrives. It labels the issue from the team's own labels, checks the team's open and recent issues for likely duplicates, and posts one comment that links them and asks for whatever is missing (steps to reproduce, the version or browser, the error). It never closes, assigns, moves, prioritizes or creates anything. Connects through Composio's Linear toolkit. Each label and comment waits for your OK unless you pick Never for approvals at install; it stays held to your team either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -36,8 +36,8 @@ parameters:
   protected_labels: { type: array, items: { type: string, maxLength: 50 }, required: false, description: "optional: labels only a person applies, one per entry (\"Security\", \"Customer escalation\"). The agent never adds these" }
 budget: { per_run_usd: 0.40, tool_calls: 20 }
 learning: true
-# Writes ask the owner first by default: neither can be pinned to the new issue. Once the owner trusts it, setting
-# approvals to never lets it run unattended; the pins above hold either way.
+# Writes ask the owner first by default: neither can be pinned to the new issue. Once the owner trusts it, picking
+# Never for approvals at install lets it run unattended; the pins above hold either way.
 approvals: ask
 triggers:
   - name: issue-created

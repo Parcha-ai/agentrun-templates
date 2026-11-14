@@ -2,7 +2,7 @@
 name: stale-pr-digest
 display_name: "Stale PR digest: ${parameters.owner}/${parameters.repo}"
 version: 0.1.0
-description: Once a week, a Slack post listing the open pull requests in one GitHub repository that have sat with no review or no activity for longer than you allow, oldest wait first. Each line says who is waiting on whom (a requested reviewer who hasn't looked, an author who hasn't answered a change request, an approved PR nobody merged), how long, and a link. Drafts stay out. A PR still stuck from last week is marked as such instead of reported fresh. It only reads GitHub, through Composio's GitHub toolkit, and posts to one channel.
+description: Once a week, a Slack post listing the open pull requests in one GitHub repository that have sat with no review or no activity for longer than you allow, oldest wait first. Each line says who is waiting on whom (a requested reviewer who hasn't looked, an author who hasn't answered a change request, an approved PR nobody merged), how long, and a link. Drafts stay out. A PR still stuck from last week is marked as such instead of reported fresh. It only reads GitHub, through Composio's GitHub toolkit, and posts to one channel. It posts on its own only if you pick Never for approvals at install; it stays held to your repository and channel either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -46,7 +46,8 @@ inputs:
   stale_days: { type: integer, required: false, minimum: 1, maximum: 90, title: "Days before a PR counts as stale", description: "The schedule passes your saved setting. Blank: 3.", examples: [3] }
 budget: { per_run_usd: 0.60, tool_calls: 80 }
 learning: true
-# Runs unattended (its job runs on a schedule): no tool asks. Its one write is the pinned Slack post.
+# Suggested: never, so the scheduled post goes out unattended. The owner makes that choice at install; under ask the
+# post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
 approvals: never
 triggers:
   - name: weekly-digest

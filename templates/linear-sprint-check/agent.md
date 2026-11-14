@@ -2,7 +2,7 @@
 name: linear-sprint-check
 display_name: Linear sprint check
 version: 0.1.0
-description: Twice a week, a Slack post on how your Linear team's current cycle is going. It lists the issues that are slipping (past their due date, stuck in progress, not started with half the cycle gone), the work added after the cycle started, and the issues whose linked GitHub pull request is waiting on a review or has gone quiet. Every line names the issue, who has it and why it's flagged, and things already flagged at the last check are collected on one line instead of repeated. It only reads Linear and GitHub.
+description: Twice a week, a Slack post on how your Linear team's current cycle is going. It lists the issues that are slipping (past their due date, stuck in progress, not started with half the cycle gone), the work added after the cycle started, and the issues whose linked GitHub pull request is waiting on a review or has gone quiet. Every line names the issue, who has it and why it's flagged, and things already flagged at the last check are collected on one line instead of repeated. It only reads Linear and GitHub. It posts on its own only if you pick Never for approvals at install; it stays held to your team and channel either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -56,7 +56,8 @@ inputs:
   stale_days: { type: integer, required: false, minimum: 1, maximum: 30, title: "Days before work counts as stale", description: "The schedule passes your saved setting. Blank: 3.", examples: [3] }
 budget: { per_run_usd: 0.80, tool_calls: 80 }
 learning: true
-# Runs unattended (its job runs on a schedule): no tool asks. Its one write is the pinned Slack post.
+# Suggested: never, so the scheduled post goes out unattended. The owner makes that choice at install; under ask the
+# post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
 approvals: never
 triggers:
   - name: sprint-check

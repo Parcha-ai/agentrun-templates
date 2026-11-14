@@ -2,7 +2,7 @@
 name: revenue-goal
 display_name: "Revenue goal: ${parameters.goal_amount} ${parameters.currency} a ${parameters.period}"
 version: 0.1.0
-description: Watches your Stripe payments and posts one celebration in Slack the moment this month's (or quarter's, or year's) collected revenue passes the goal you set. Each paid charge or invoice wakes it; it adds up the period from Stripe's balance transactions (charges and payments, less refunds, before fees), and posts once per goal and period, never twice. It only reads Stripe. Stripe's events through Composio are not yet tested end to end.
+description: Watches your Stripe payments and posts one celebration in Slack the moment this month's (or quarter's, or year's) collected revenue passes the goal you set. Each paid charge or invoice wakes it; it adds up the period from Stripe's balance transactions (charges and payments, less refunds, before fees), and posts once per goal and period, never twice. It only reads Stripe. It posts on its own only if you pick Never for approvals at install; it stays held to your channel either way. Stripe's events through Composio are not yet tested end to end.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -38,7 +38,8 @@ inputs:
   as_of: { type: string, format: date-time, required: false, title: "Check as of", description: "Check the period that holds this moment, by hand. Blank: now.", examples: ["2026-11-18T15:00:00Z"] }
 budget: { per_run_usd: 0.20, tool_calls: 40 }
 learning: true
-# Runs unattended (its job runs on Stripe's events): no tool asks. Its one write is the pinned Slack post.
+# Suggested: never, so the post on Stripe's events goes out unattended. The owner makes that choice at install; under
+# ask the post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
 approvals: never
 triggers:
   - name: payment-received
