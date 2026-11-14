@@ -18,11 +18,15 @@ Read it before step 2.
   block under "The result of this trigger's last completed run". Its `incidents` are the **reported** list for step 5.
 - Your `# Learned` notes: status page URLs you found, and the owner's preferences ("ignore Azure regions outside West
   Europe", "we don't use Stripe Terminal"). They win over this file where they differ.
-- Today's date: from the input (the trigger's time) or the message.
+- Today's date: from the input (the trigger's time) or the message, never the clock.
+- Pages the message gives as what their URLs return are those pages: read them there, do not fetch them again, and when
+  the message says the search tools are not reachable, search nothing.
 
 ## Steps
 
-1. **Window.** `to` is today, `from` is today minus `lookback_days`; an event is in it when `from` < date <= `to`. The
+1. **Window.** `to` is today, `from` is today minus `lookback_days`; an event is in it when `from` < date <= `to`,
+   comparing UTC calendar dates, not times: fired 2026-11-16, an incident that started 2026-11-09 at 22:00 is last
+   week's. The
    date that counts is the incident's start, or a postmortem's publication: a postmortem published this week for an
    incident three weeks ago is new.
 
@@ -43,13 +47,17 @@ Read it before step 2.
    - a postmortem or root-cause analysis published in the window;
    - a security incident that took a service down or made customers act (rotate credentials, revoke tokens);
    - a third-party outage (DNS, CDN, a cloud) that took a listed vendor down;
-   - a pattern: three or more incidents on one component in the window, or a changed SLA or status-page policy.
+   - a pattern: three or more incidents on one component in the window that are each in by the rules above, or a
+     changed SLA or status-page policy.
    Out: planned maintenance that ran as announced; an incident resolved within 15 minutes with no stated customer
-   impact; an incident outside the entry's scope (another region, another product); anything a learned note rules out.
+   impact; an incident outside the entry's scope (another region, another product: "GitHub Actions" leaves out
+   Codespaces and Pages); anything a learned note rules out. What is out never appears in `incidents`, and never
+   counts toward a pattern. An incident that started before `from` or after `to` is out, however it was found.
 
-5. **No repeats.** Drop an incident on the reported list unless it developed: it was ongoing and is now resolved, a
+5. **No repeats.** Before writing any incident, look it up on the reported list by vendor, service and start date.
+   Drop an incident on the reported list unless it developed: it was ongoing and is now resolved, a
    postmortem or root cause came out, its impact was restated. A kept development says what changed. Each one you drop
-   goes in `dropped_repeats` in one line.
+   goes in `dropped_repeats` in one line and nowhere else: not in `incidents`, not in the report's list.
 
 6. **Write each incident.** Vendor, service and region exactly as the status page names them. Start and end in UTC
    with "per status page" or "per postmortem" (`time_source`); no end posted: `status` ongoing, `resolved_at` null.

@@ -1,0 +1,7 @@
+{
+  "median_usd": 0.0468,
+  "runs": 15,
+  "model": "openrouter/particle-ai/particle-1",
+  "harness": "pi",
+  "measured_on": "2026-11-14"
+}

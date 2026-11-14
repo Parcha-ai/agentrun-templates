@@ -1,0 +1,28 @@
+{
+  "window": {
+    "from": "2026-11-09",
+    "to": "2026-11-16"
+  },
+  "sector": "industrial robotics",
+  "quiet": false,
+  "deals": [
+    {
+      "company": "Aster Robotics",
+      "deal_type": "acquisition",
+      "status": "closed",
+      "date": "2026-11-13",
+      "amount": "$220 million",
+      "lead": "Titan Automation",
+      "terms": "all cash, after regulatory clearance",
+      "so_what": "A signed deal from last week now cleared and closed at the same $220M — the first firm exit pricing in this sector since the window opened, and a cash-only benchmark for sellers of automation assets.",
+      "source_url": "https://titan.example/news/aster-closed",
+      "confidence": "high"
+    }
+  ],
+  "dropped_repeats": [
+    "Gripworks $40M Series B (announced 2026-11-04) — trade.example piece is a follow-up on the same round, not a new event."
+  ],
+  "unreachable": [],
+  "watch_next": null,
+  "report_markdown": "# Industrial robotics deal flow — 9 to 16 November 2026\n\n## M&A\n\n- **Aster Robotics — closed, $220 million, all cash.** Titan Automation completed its acquisition of Aster Robotics on 13 November after regulatory clearance, in cash, at the price announced 6 November ([Titan Automation release](https://titan.example/news/aster-closed)).\n\nChair: Titan now owns Aster outright; the cash-only terms and unchanged price are the clearest exit benchmark in this sector this week.\n\n_Repeats checked by date: Gripworks' $40M Series B left out (announced 4 November, before the window)._"
+}

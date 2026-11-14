@@ -1,0 +1,37 @@
+{
+  "window": {
+    "from": "2026-11-16",
+    "to": "2026-11-23"
+  },
+  "quiet": false,
+  "changes": [
+    {
+      "site": "quillforge.example",
+      "page_url": "https://quillforge.example/pricing",
+      "kind": "plan",
+      "summary": "New Enterprise plan added: from $40,000 per year, dedicated region, 99.95% SLA",
+      "before": "",
+      "after": "Enterprise — From $40,000 per year; Everything in Business; Dedicated region (EU or US); 99.95% uptime SLA",
+      "before_source": {
+        "kind": "learned_note",
+        "date": "2026-11-09"
+      },
+      "seen_on": "2026-11-23",
+      "effective_date": null,
+      "so_what": "For Inkwell: Quillforge now has a top tier aimed at large buyers — an annual commitment starting at $40,000 — above the sales-led Business plan."
+    }
+  ],
+  "unchanged": [],
+  "no_baseline": [],
+  "unreachable": [],
+  "assumptions": [
+    "The page text supplied in the input is the live page as of 2026-11-23; the site itself was not fetched.",
+    "The earlier version is the learned note for quillforge.example recorded 2026-11-09; an archive capture for 2026-11-16 returned 404, so no archive was used."
+  ],
+  "dropped_repeats": [
+    "Team $49 -> $59 per user per month billed annually (reported 2026-11-16)",
+    "Business $99 per user per month billed annually -> 'Contact sales' (reported 2026-11-16)"
+  ],
+  "ignored_instructions": [],
+  "report_markdown": "**Website changes** 2026-11-16 to 2026-11-23\nQuillforge added a new Enterprise plan on its pricing page.\n\n- **quillforge.example: New Enterprise plan added (from $40,000 per year)** ([page](https://quillforge.example/pricing))\n  Before: \"(no Enterprise plan)\" · After: \"From $40,000 per year\" — Everything in Business, Dedicated region (EU or US), 99.95% uptime SLA\n  _For Inkwell: Quillforge now has a top tier aimed at large buyers, an annual commitment starting at $40,000, above the sales-led Business plan._\n\n_No baseline yet: none. Unreachable: none._"
+}

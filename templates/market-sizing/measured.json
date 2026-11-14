@@ -1,0 +1,7 @@
+{
+  "median_usd": 0.361,
+  "runs": 12,
+  "model": "openrouter/openai/gpt-6.1-sol",
+  "harness": "pi",
+  "measured_on": "2026-11-14"
+}

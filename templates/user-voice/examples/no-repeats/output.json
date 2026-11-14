@@ -1,0 +1,73 @@
+{
+  "window": {
+    "from": "2026-11-10",
+    "to": "2026-11-16"
+  },
+  "subject": "Quillforge",
+  "quiet": false,
+  "themes": [
+    {
+      "theme": "Subscription price rose from $4 to $6 with no notice; users charged the new rate and cancel",
+      "product": "Quillforge",
+      "kind": "complaint",
+      "status": "new",
+      "volume": "3 of 5 App Store reviews read, Nov 10 to 14",
+      "sample_size": 5,
+      "severity": "high",
+      "version_link": "unconfirmed",
+      "vendor_response": null,
+      "quotes": [
+        {
+          "text": "Subscription price went from $4 to $6 with no notice.",
+          "url": "https://apps.apple.example/review/9202",
+          "source": "app store",
+          "date": "2026-11-13"
+        },
+        {
+          "text": "Charged $6 after the $4 plan I signed up for. Where is the notice?",
+          "url": "https://apps.apple.example/review/9203",
+          "source": "app store",
+          "date": "2026-11-12"
+        },
+        {
+          "text": "Price hike without warning. Cancelling.",
+          "url": "https://apps.apple.example/review/9204",
+          "source": "app store",
+          "date": "2026-11-11"
+        }
+      ]
+    },
+    {
+      "theme": "Notes still lost on sync after 4.2.1; the update did not fix 4.2",
+      "product": "Quillforge",
+      "kind": "complaint",
+      "status": "continuing",
+      "volume": "1 of 5 App Store reviews read, Nov 10 to 14; one post describing data loss counts on severity",
+      "sample_size": 5,
+      "severity": "high",
+      "version_link": "4.2.1 (date unconfirmed)",
+      "vendor_response": null,
+      "quotes": [
+        {
+          "text": "Still losing notes on sync. 4.2.1 did not fix it.",
+          "url": "https://apps.apple.example/review/9201",
+          "source": "app store",
+          "date": "2026-11-14"
+        }
+      ]
+    }
+  ],
+  "contrast": null,
+  "suspected_fake": [],
+  "dropped_repeats": [
+    "Last week's quotes on sync loss (reviews 9002 and 9003) were used before and are not repeated; review 9201 carries the theme this week."
+  ],
+  "sources": [
+    {
+      "source": "app store",
+      "status": "read",
+      "detail": "5 reviews in the window, supplied in place of the feed; web unreachable this run (HN, Reddit not tried)"
+    }
+  ],
+  "report_markdown": "**Quillforge — week of Nov 10 to 16, 2026.** 5 first-hand App Store reviews read (the feed was supplied in place of a fetch; the web was unreachable this run, so HN and Reddit were not read). Ranked by volume first: billing 3 posts against sync 1, with sync kept high on severity because it describes data loss.\n\n**1. Unannounced price rise from $4 to $6 — new, high severity, 3 of 5 reviews (Nov 10–14).** Users say they were charged the higher rate with no notice; one is cancelling. \"Subscription price went from $4 to $6 with no notice.\" (Nov 13) · \"Charged $6 after the $4 plan I signed up for. Where is the notice?\" (Nov 12) · \"Price hike without warning. Cancelling.\" (Nov 11). No vendor response seen. No release tie: version link unconfirmed.\n\n**2. Notes still lost on sync after 4.2.1 — continuing, high severity, 1 of 5 reviews.** A single post, counted on the data-loss rule rather than volume. \"Still losing notes on sync. 4.2.1 did not fix it.\" (Nov 14). This is the same problem reported last week against 4.2; the fix update did not resolve it for this user.\n\n**What is new:** the billing complaint is this week's largest theme and did not appear last week. Sync loss continues. One 5-star review praising widgets was the week's only praise and is too few to form a theme.\n\n**Not read:** Hacker News and Reddit were not reachable from this run."
+}

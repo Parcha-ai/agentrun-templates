@@ -14,7 +14,7 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
 2. **Baseline, not a trend.** larkspur-orm is `baseline`; `stars_delta` null; `downloads_trend` null; no word like
    "growing", "up" or "down" about any of its metrics.
 3. **Gaps named, not filled.** `contributors_30d`, `contributors_90d`, `top_author_share` and `open_prs` are null for
-   larkspur-orm; the answer says they were not counted because of GitHub's anonymous limit (in `how_counted` or
+   larkspur-orm (the schema makes each metric an object, so null means `value: null`); the answer says they were not counted because of GitHub's anonymous limit (in `how_counted` or
    `unreachable`), and `unreachable` names the daily series. No estimate of any of them appears anywhere.
 4. **Real values kept.** larkspur-orm's stars 640, open issues 23 and downloads 8204 (last week) appear with their
    sources.

@@ -1,5 +1,0 @@
-{
-  "package": "npm:request",
-  "version": "2.88.2",
-  "concern": "We still call request in three services. Keep it or move off?"
-}

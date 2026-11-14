@@ -1,0 +1,3 @@
+{
+  "content": "Scheduled weekly run, fired 2026-11-09T07:00:00Z (Monday). Check the search visibility of scanlane.example for the\nwatch list with your visibility skill. There is no previous report.\n\nThe search tools are not reachable from this run. What `web_search` returns today is below; use it in place of searching.\n\n--- web_search \"scanlane\" (2026-11-09) ---\n1. https://scanlane.example  Scanlane, invoice OCR.\n2. https://scanlane.example/docs  Docs.\n\n--- web_search \"invoice ocr api\" (2026-11-09) ---\n1. https://readwise-ocr.example/invoice-api  Invoice OCR API.\n2. https://scanlane.example/docs/invoice-ocr  Scanlane invoice OCR API reference.\n3. https://docparse.example/ocr  DocParse."
+}
