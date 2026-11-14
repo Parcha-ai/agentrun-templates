@@ -17,7 +17,8 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
    0.93; an event `maintainer_call` dated 2026-11-13 linked to the commit or README; `so_what` speaks to dependency risk.
 3. **Several signals.** Each `status_reason` names at least two signals.
 4. **Order.** glimmerq, the status change with a red flag, comes before fernpack in `projects` or in the report, or the
-   report's first line names glimmerq's call for maintainers or fernpack's major release.
+   report's headline (the line right under its `**OSS tracker**` header, which the skill puts first) names glimmerq's
+   call for maintainers or fernpack's major release.
 5. **Nothing invented.** No number in the answer that the given answers don't support (derived shares and deltas are
    fine). No advice to adopt, drop or invest.
 
