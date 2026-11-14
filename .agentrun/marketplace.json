@@ -613,6 +613,30 @@
         "nonprofits",
         "startups"
       ]
+    },
+    {
+      "name": "seo-audit",
+      "source": "./templates/seo-audit",
+      "category": "marketing",
+      "tags": [
+        "seo",
+        "technical-seo",
+        "lighthouse",
+        "rankings",
+        "site-audit"
+      ]
+    },
+    {
+      "name": "lead-list-builder",
+      "source": "./templates/lead-list-builder",
+      "category": "sales",
+      "tags": [
+        "lead-generation",
+        "prospecting",
+        "icp",
+        "account-research",
+        "apollo"
+      ]
     }
   ]
 }

@@ -1,0 +1,208 @@
+{
+  "checked_on": "2026-11-14",
+  "icp_reading": {
+    "criteria": [
+      "Company headquartered in the United States.",
+      "11–200 employees, using company-database size filters.",
+      "Sells software to dental practices.",
+      "Product supports practice management, scheduling, imaging, billing or patient communication."
+    ],
+    "titles": [
+      "CEO",
+      "Founder",
+      "Head of Sales"
+    ],
+    "locations": [
+      "United States"
+    ],
+    "search_filters": "Apollo company search: keyword 'dental software'; headquarters United States; employee ranges 11–50 and 51–200; page 1, 10 results."
+  },
+  "summary": "Found 5 of 5 requested accounts, each verified on its own website for dental-software product fit. US headquarters and 11–200 employees are supported by Apollo's search filters, not independently verified headcounts. Found 8 relevant contacts across all 5 accounts. No outreach performed.",
+  "accounts": [
+    {
+      "name": "AirPay",
+      "domain": "airpay.dental",
+      "location": "New York, United States",
+      "fit": "strong",
+      "why_it_fits": "Sells software that automatically verifies dental insurance coverage, supports front-desk workflows and flags issues before claims submission. Its About page confirms dental-practice workflows and a New York address. US, 11–200 staff per the company database.",
+      "source": "https://airpay.dental/",
+      "found_via": "monid:apollo/mixed_companies/search"
+    },
+    {
+      "name": "Practice by Numbers",
+      "domain": "practicenumbers.com",
+      "location": "United States",
+      "fit": "strong",
+      "why_it_fits": "Its dental software offers patient reminders, two-way patient texting and online appointment booking that reads available slots and writes appointments back to the practice management system. US, 11–200 staff per the company database.",
+      "source": "https://practicenumbers.com/",
+      "found_via": "monid:apollo/mixed_companies/search"
+    },
+    {
+      "name": "SOTA Cloud",
+      "domain": "sotacloud.com",
+      "location": "United States",
+      "fit": "strong",
+      "why_it_fits": "Offers cloud-based dental imaging software integrating sensors, practice management systems and AI tools, with workflows from image capture through patient communication and claim submission. US, 11–200 staff per the company database.",
+      "source": "https://sotacloud.com/",
+      "found_via": "monid:apollo/mixed_companies/search"
+    },
+    {
+      "name": "Oryx Dental",
+      "domain": "oryxdental.com",
+      "location": "United States",
+      "fit": "strong",
+      "why_it_fits": "Offers cloud dental practice management software with imaging and charting, automated patient messaging, online booking and revenue-cycle workflows for general, pediatric, specialty and multi-location practices. US, 11–200 staff per the company database.",
+      "source": "https://www.oryxdental.com/",
+      "found_via": "monid:apollo/mixed_companies/search"
+    },
+    {
+      "name": "tab32",
+      "domain": "tab32.com",
+      "location": "United States",
+      "fit": "strong",
+      "why_it_fits": "Sells cloud dental practice management software combining scheduling, X-rays, charting, treatment planning and billing, plus patient reminders, eligibility, claims and payment workflows. US, 11–200 staff per the company database.",
+      "source": "https://tab32.com/",
+      "found_via": "monid:apollo/mixed_companies/search"
+    }
+  ],
+  "contacts": [
+    {
+      "name": "Derek Giddon",
+      "title": "COFOUNDER / CEO",
+      "company": "AirPay",
+      "domain": "airpay.dental",
+      "source": "https://airpay.dental/about-us"
+    },
+    {
+      "name": "Austin Fr***k",
+      "title": "Head of Sales",
+      "company": "AirPay",
+      "domain": "airpay.dental",
+      "source": "monid:apollo/mixed_people/api_search"
+    },
+    {
+      "name": "Rohit Ga***g",
+      "title": "Founder and President",
+      "company": "Practice by Numbers",
+      "domain": "practicenumbers.com",
+      "source": "monid:apollo/mixed_people/api_search"
+    },
+    {
+      "name": "Aditi Ag***l",
+      "title": "Co-Founder",
+      "company": "Practice by Numbers",
+      "domain": "practicenumbers.com",
+      "source": "monid:apollo/mixed_people/api_search"
+    },
+    {
+      "name": "Albert Kim",
+      "title": "Chief Executive Officer",
+      "company": "SOTA Cloud",
+      "domain": "sotacloud.com",
+      "source": "monid:apollo/mixed_people/api_search"
+    },
+    {
+      "name": "Rania Sa***h",
+      "title": "Founder & CEO",
+      "company": "Oryx Dental",
+      "domain": "oryxdental.com",
+      "source": "monid:apollo/mixed_people/api_search"
+    },
+    {
+      "name": "Kellan An***w",
+      "title": "Head of Sales",
+      "company": "Oryx Dental",
+      "domain": "oryxdental.com",
+      "source": "monid:apollo/mixed_people/api_search"
+    },
+    {
+      "name": "Lonna Yen",
+      "title": "Co-founder",
+      "company": "tab32",
+      "domain": "tab32.com",
+      "source": "monid:apollo/mixed_people/api_search"
+    }
+  ],
+  "near_misses": [
+    {
+      "name": "Atomica AI",
+      "domain": "atomica.ai",
+      "reason": "Homepage emphasizes dental CAD design, implant planning, restorations and scanning hardware rather than a clearly established product in the requested operational-software or imaging categories; excluded under a narrow reading."
+    },
+    {
+      "name": "Dexis",
+      "domain": "dexisonline.com",
+      "reason": "Returned domain belongs to a national-security and program-delivery business, not a dental software vendor. Database keyword match was misleading."
+    },
+    {
+      "name": "3Sixty",
+      "domain": "3sixtydental.com",
+      "reason": "Homepage emphasizes treatment-planning services, surgical guides, restorative solutions and radiology reports; it did not clearly establish a software product in the requested categories."
+    }
+  ],
+  "gaps": [
+    "Interpreted 'US companies' as US-headquartered and the product categories as scope boundaries; dental CAD and services-led businesses were not included without clear qualifying software.",
+    "No seller offering or contact titles were supplied. CEO, Founder and Head of Sales were selected as general executive and commercial entry points, not confirmed buyers for an unspecified offering.",
+    "Employee range and US headquarters rely on Apollo's company-search filters. Exact headcounts were not returned or independently corroborated; AirPay's own site additionally confirms a New York address.",
+    "Most contact titles have only Apollo support and masked surnames are preserved exactly. Only one matching contact was returned for SOTA Cloud and tab32.",
+    "Apollo returned conflicting CEO records for AirPay. Its own leadership page names Derek Giddon as COFOUNDER / CEO; that page was used, and the conflicting CEO record was omitted."
+  ],
+  "sources": [
+    {
+      "where": "monid:apollo/mixed_companies/search — keyword dental software; US HQ; 11–50 or 51–200 employees; page 1; per_page 10",
+      "what": "Returned 10 candidates filtered to the requested location and employee bands.",
+      "found": true
+    },
+    {
+      "where": "https://atomica.ai/",
+      "what": "Dental design, implant-planning and scanner offerings; excluded under narrow product scope.",
+      "found": true
+    },
+    {
+      "where": "https://airpay.dental/",
+      "what": "Dental insurance verification, front-desk workflows and pre-claim warnings.",
+      "found": true
+    },
+    {
+      "where": "https://dexisonline.com/",
+      "what": "National-security and program-delivery business; does not match dental software ICP.",
+      "found": true
+    },
+    {
+      "where": "https://practicenumbers.com/",
+      "what": "Dental patient reminders, two-way texting and PMS-integrated appointment booking.",
+      "found": true
+    },
+    {
+      "where": "https://sotacloud.com/",
+      "what": "Cloud dental imaging platform, sensor/PMS integrations and capture-to-claim workflows.",
+      "found": true
+    },
+    {
+      "where": "https://www.oryxdental.com/",
+      "what": "Dental practice management, imaging, patient engagement and revenue-cycle software.",
+      "found": true
+    },
+    {
+      "where": "https://3sixtydental.com/",
+      "what": "Treatment planning, surgical guides and radiology services; qualifying software unclear.",
+      "found": true
+    },
+    {
+      "where": "https://tab32.com/",
+      "what": "Cloud dental practice management, scheduling, imaging, billing and patient communication.",
+      "found": true
+    },
+    {
+      "where": "monid:apollo/mixed_people/api_search — five qualified domains; CEO, Founder, Head of Sales; similar titles included",
+      "what": "Returned 11 people; selected relevant contacts, preserving returned names and masked surnames.",
+      "found": true
+    },
+    {
+      "where": "https://airpay.dental/about-us",
+      "what": "Confirmed Derek Giddon's leadership title, dental software workflows and New York address.",
+      "found": true
+    }
+  ],
+  "report_markdown": "# Dental software lead list\n\nChecked: 2026-11-14. **5 of 5 accounts found; 8 contacts.** Each account's own site confirms product fit. US headquarters and 11–200 employees are per Apollo search filters; exact headcounts are not independently verified. No outreach performed.\n\n## Accounts\n\n| Company | Domain | Why it fits | Source |\n|---|---|---|---|\n| AirPay | airpay.dental | Dental insurance verification and pre-claim workflow software. | [Website](https://airpay.dental/) |\n| Practice by Numbers | practicenumbers.com | Patient reminders, two-way texting and PMS-integrated online booking. | [Website](https://practicenumbers.com/) |\n| SOTA Cloud | sotacloud.com | Cloud dental imaging integrating sensors, PMS and capture-to-claim workflows. | [Website](https://sotacloud.com/) |\n| Oryx Dental | oryxdental.com | Dental practice management, imaging, messaging, booking and revenue-cycle software. | [Website](https://www.oryxdental.com/) |\n| tab32 | tab32.com | Cloud dental scheduling, imaging, charting, billing and patient communication. | [Website](https://tab32.com/) |\n\n## Contacts\n\n| Name | Title | Company | Source |\n|---|---|---|---|\n| Derek Giddon | COFOUNDER / CEO | AirPay | [Leadership page](https://airpay.dental/about-us) |\n| Austin Fr***k | Head of Sales | AirPay | monid:apollo/mixed_people/api_search |\n| Rohit Ga***g | Founder and President | Practice by Numbers | monid:apollo/mixed_people/api_search |\n| Aditi Ag***l | Co-Founder | Practice by Numbers | monid:apollo/mixed_people/api_search |\n| Albert Kim | Chief Executive Officer | SOTA Cloud | monid:apollo/mixed_people/api_search |\n| Rania Sa***h | Founder & CEO | Oryx Dental | monid:apollo/mixed_people/api_search |\n| Kellan An***w | Head of Sales | Oryx Dental | monid:apollo/mixed_people/api_search |\n| Lonna Yen | Co-founder | tab32 | monid:apollo/mixed_people/api_search |\n\n## Near misses\n\n- **Atomica AI:** Site emphasizes CAD, implant planning, restorations and scanner hardware; excluded under a narrow reading of the requested categories.\n- **Dexis:** Returned domain is a national-security/program-delivery business, not dental software.\n- **3Sixty:** Site emphasizes treatment-planning services, guides and radiology reports; qualifying software was not clear.\n\n## Gaps and assumptions\n\n- US means US-headquartered; listed product categories were treated as scope boundaries.\n- CEO, Founder and Head of Sales were inferred because no offering or titles were provided; they are entry points rather than confirmed buyers.\n- Size and headquarters depend on Apollo filters, with no exact headcounts independently verified. AirPay's site also confirms New York.\n- Most contacts are supported only by Apollo. Masked surnames are unchanged. SOTA Cloud and tab32 each had one matching contact.\n- AirPay had conflicting CEO records in Apollo; its own leadership page supports Derek Giddon, so the conflicting record was omitted."
+}

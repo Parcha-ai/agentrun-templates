@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "lead-list.schema.json",
+  "title": "Lead list",
+  "description": "Accounts that match an ideal customer profile, each checked against the company's own site, and up to two contacts per account by title. Every account and contact names where it came from. Nothing is invented: a company that could not be checked is a near miss, not an account; a contact's name is written as the data returned it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "icp_reading", "summary", "accounts", "contacts", "near_misses", "gaps", "sources", "report_markdown"],
+  "properties": {
+    "checked_on": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "icp_reading": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criteria", "titles", "locations", "search_filters"],
+      "properties": {
+        "criteria": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "type": "string", "maxLength": 200 }, "description": "the ICP as checkable criteria" },
+        "titles": { "type": "array", "maxItems": 8, "items": { "type": "string" }, "description": "the titles searched for, given or derived" },
+        "locations": { "type": "array", "maxItems": 8, "items": { "type": "string" } },
+        "search_filters": { "type": "string", "maxLength": 600, "description": "the filters the company search used" }
+      }
+    },
+    "summary": { "type": "string", "minLength": 1, "maxLength": 700, "description": "how many accounts were found against how many asked for, and why any shortfall" },
+    "accounts": {
+      "type": "array",
+      "maxItems": 25,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "domain", "fit", "why_it_fits", "source", "found_via"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "domain": { "type": "string", "minLength": 3 },
+          "location": { "type": ["string", "null"] },
+          "fit": { "enum": ["strong", "good"] },
+          "why_it_fits": { "type": "string", "minLength": 1, "maxLength": 400, "description": "what the company's own site shows, against the ICP criteria" },
+          "source": { "type": "string", "description": "the URL on the company's own site that shows the fit" },
+          "found_via": { "type": "string", "description": "the tool or page that surfaced the company (monid:apollo/mixed_companies/search, or a URL)" }
+        }
+      }
+    },
+    "contacts": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "title", "company", "domain", "source"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "description": "as the source gives it, a masked last name included (Keith Bo***n)" },
+          "title": { "type": "string", "minLength": 1 },
+          "company": { "type": "string" },
+          "domain": { "type": "string", "description": "an account's domain" },
+          "source": { "type": "string", "description": "monid:apollo/mixed_people/api_search, or the URL of the company page naming the person" }
+        }
+      }
+    },
+    "near_misses": {
+      "type": "array",
+      "maxItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "reason"],
+        "properties": {
+          "name": { "type": "string" },
+          "domain": { "type": ["string", "null"] },
+          "reason": { "type": "string", "maxLength": 300, "description": "the criterion it failed, or why it could not be checked" }
+        }
+      }
+    },
+    "gaps": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 400 } },
+    "sources": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["where", "what", "found"],
+        "properties": {
+          "where": { "type": "string", "description": "a URL fetched, or a tool and its main filter" },
+          "what": { "type": "string", "maxLength": 200 },
+          "found": { "type": "boolean" }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "description": "the summary, the accounts table (name, domain, why it fits, source), the contacts table (name, title, company, source), near misses and gaps" }
+  }
+}
