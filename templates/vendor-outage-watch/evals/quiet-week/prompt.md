@@ -14,14 +14,3 @@ The sites below are not reachable from this run. The pages that follow are what 
 {"incidents":[{"id":"d1","name":"Delayed log ingestion in US1","status":"resolved","impact":"minor","created_at":"2026-10-28T13:00:00Z","resolved_at":"2026-10-28T13:50:00Z"}]}
 
 A web search for outages at either vendor this week returns nothing new.
-
-Input:
-```json
-{
-  "vendors": [
-    "Twilio",
-    "Datadog"
-  ],
-  "lookback_days": 7
-}
-```

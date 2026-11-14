@@ -3,9 +3,4 @@ description: "npm's request was deprecated in 2020 and its repository archived. 
 runs: 3
 max_cost_usd: 1.50
 ---
-Input:
-```json
-{
-  "package": "npm:request"
-}
-```
+Check the health of the dependency below.

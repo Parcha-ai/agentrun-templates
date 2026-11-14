@@ -3,10 +3,4 @@ description: "\"yaml\" with no ecosystem names several packages (npm yaml, PyYAM
 runs: 3
 max_cost_usd: 1.50
 ---
-Input:
-```json
-{
-  "package": "yaml",
-  "alternatives": false
-}
-```
+Check the health of the dependency below.

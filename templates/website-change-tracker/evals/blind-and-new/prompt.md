@@ -18,14 +18,3 @@ HTTP 403. <title>Just a moment...</title> Checking your browser before accessing
 
 --- https://web.archive.org/web/20261109/https://brightline.example/plans (lands on https://web.archive.org/web/20250302104411/https://brightline.example/plans) ---
 <h2>Plans</h2><p>Solo $9 / month</p><p>Team $29 / month</p>
-
-Input:
-```json
-{
-  "pages": [
-    "https://tallyhq.example/pricing",
-    "https://brightline.example/plans"
-  ],
-  "lookback_days": 7
-}
-```

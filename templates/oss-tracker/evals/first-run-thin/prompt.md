@@ -26,16 +26,3 @@ The sites below are not reachable from this run. The answers that follow are wha
 {"data":{"last_day":1190,"last_week":8204,"last_month":33870},"package":"larkspur-orm"}
 --- https://pypistats.org/api/packages/larkspur-orm/overall?mirrors=false ---
 429 Too Many Requests
-
-Input:
-```json
-{
-  "projects": [
-    "github.com/quillmont/brightwater-sdk",
-    "pypi:larkspur-orm"
-  ],
-  "purpose": "balanced",
-  "signals": [],
-  "lookback_days": 7
-}
-```

@@ -20,13 +20,3 @@ $ npm i --save lodash
 
 See the [package source](https://github.com/lodash/lodash/tree/4.17.15-npm) for more details.
 </captured-page>
-
-Input:
-```json
-{
-  "package": "lodash",
-  "ecosystem": "npm",
-  "version": "4.17.15",
-  "alternatives": false
-}
-```

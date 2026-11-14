@@ -14,8 +14,8 @@ effort: low
 tools: [read, web_search, web_fetch]
 parameters:
   pages: { type: array, items: { type: string }, required: true, description: "what to watch, one entry each: a page URL (\"https://acme.com/pricing\"), a domain (\"acme.com\": its home, pricing, product and changelog pages) or a company name. Up to 30" }
-  focus: { type: string, required: false, default: "", pattern: "^[^\\n]{0,300}$", description: "optional: what counts as a change for you, in a few words (\"price, plan limits, tiers\"). Blank: pricing, products, messaging, pages added or removed, and customer logos" }
-  company: { type: string, required: false, default: "", pattern: "^[^\\n]{0,120}$", description: "optional: your company, so each change says what it means for you" }
+  focus: { type: string, required: false, pattern: "^[^\\n]{0,300}$", description: "optional: what counts as a change for you, in a few words (\"price, plan limits, tiers\"). Blank: pricing, products, messaging, pages added or removed, and customer logos" }
+  company: { type: string, required: false, pattern: "^[^\\n]{0,120}$", description: "optional: your company, so each change says what it means for you" }
   lookback_days: { type: integer, default: 7, description: "the gap between runs, in days, used to pick an archive copy when a page has no earlier snapshot (7 for the weekly default)" }
   cron: { type: string, format: cron, default: "0 8 * * 1", description: "when the check runs, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it" }
   timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }

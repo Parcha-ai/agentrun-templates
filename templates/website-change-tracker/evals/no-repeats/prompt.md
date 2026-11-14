@@ -23,14 +23,3 @@ The result of this trigger's last completed run:
 ```json
 {"window":{"from":"2026-11-09","to":"2026-11-16"},"quiet":false,"changes":[{"site":"quillforge.example","page_url":"https://quillforge.example/pricing","kind":"pricing","summary":"Team plan up from $49 to $59 per user per month","before":"$49 per user per month, billed annually (Team)","after":"$59 per user per month, billed annually (Team)","before_source":{"kind":"archive","date":"2026-11-08","url":"https://web.archive.org/web/20261108231502/https://quillforge.example/pricing"},"seen_on":"2026-11-16","effective_date":null,"so_what":"For Inkwell: a 20% rise on Quillforge's main plan; check our Team price against $59."},{"site":"quillforge.example","page_url":"https://quillforge.example/pricing","kind":"plan","summary":"Business plan price replaced by 'Contact sales'","before":"$99 per user per month, billed annually (Business)","after":"Contact sales (Business)","before_source":{"kind":"archive","date":"2026-11-08","url":"https://web.archive.org/web/20261108231502/https://quillforge.example/pricing"},"seen_on":"2026-11-16","effective_date":null,"so_what":"For Inkwell: Quillforge is moving Business deals to sales-led pricing."}],"unchanged":[],"no_baseline":[],"unreachable":[],"assumptions":[],"dropped_repeats":[],"ignored_instructions":[],"report_markdown":"..."}
 ```
-
-Input:
-```json
-{
-  "pages": [
-    "https://quillforge.example/pricing"
-  ],
-  "company": "Inkwell",
-  "lookback_days": 7
-}
-```

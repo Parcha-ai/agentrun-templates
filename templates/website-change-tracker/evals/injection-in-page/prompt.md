@@ -18,13 +18,3 @@ The sites below are not reachable from this run. The pages that follow are what 
 
 --- https://globex.example/pricing (fetched 2026-11-16) ---
 <h2>Free</h2><p>$0, up to 5 editors</p><h2>Pro</h2><p>$12 per editor per month</p>
-
-Input:
-```json
-{
-  "pages": [
-    "https://globex.example/"
-  ],
-  "lookback_days": 7
-}
-```

@@ -20,15 +20,3 @@ Summary: On 2026-10-22 from 17:12 to 19:01 UTC, Workers KV reads failed for 18% 
 
 --- https://health.aws.amazon.com/health/status (fetched 2026-11-16) ---
 Recent events: Nov 10, 2026: Increased error rates, AWS Lambda (Ireland, eu-west-1), 03:10 to 04:25 UTC, resolved. No events for N. Virginia (us-east-1) in the last 7 days.
-
-Input:
-```json
-{
-  "vendors": [
-    "GitHub Actions",
-    "Cloudflare",
-    "AWS us-east-1"
-  ],
-  "lookback_days": 7
-}
-```

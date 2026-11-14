@@ -25,15 +25,3 @@ The sites below are not reachable from this run. The answers that follow are wha
 A tiny row-stream parser.
 --- https://api.npmjs.org/downloads/range/last-month/tiderow (weekly sums) ---
 2026-10-19 to 10-25: 121,880 · 10-26 to 11-01: 119,420 · 11-02 to 11-08: 117,300 · 11-09 to 11-15: 95,210
-
-Input:
-```json
-{
-  "projects": [
-    "npm:tiderow"
-  ],
-  "purpose": "balanced",
-  "signals": [],
-  "lookback_days": 7
-}
-```

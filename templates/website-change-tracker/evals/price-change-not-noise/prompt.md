@@ -26,14 +26,3 @@ The sites below are not reachable from this run. The pages that follow are what 
 </div>
 <blockquote>"Our docs finally have one home." (VP Engineering, Ramp)</blockquote>
 <footer>© 2025 Quillforge, Inc.</footer>
-
-Input:
-```json
-{
-  "pages": [
-    "https://quillforge.example/pricing"
-  ],
-  "company": "Inkwell",
-  "lookback_days": 7
-}
-```

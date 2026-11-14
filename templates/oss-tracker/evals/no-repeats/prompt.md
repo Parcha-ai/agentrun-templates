@@ -27,15 +27,3 @@ The result of this trigger's last completed run (2026-11-16), its projects only:
 ```json
 {"window":{"from":"2026-11-09","to":"2026-11-16"},"projects":[{"input":"fernpack/fernpack","package":"npm:@fernpack/core","status":"rising","metrics":{"stars":{"value":12950},"downloads":{"value":1402660,"period":"2026-11-09 to 2026-11-15","source":"https://api.npmjs.org/downloads/point/last-week/@fernpack%2Fcore"},"contributors_30d":{"value":21},"contributors_90d":{"value":44},"top_author_share":{"value":0.19},"open_issues":{"value":301},"open_prs":{"value":87},"last_release":{"version":"3.0.0","date":"2026-11-12"}},"events":[{"kind":"major_release","date":"2026-11-12","summary":"3.0.0: drops Node 18, new plugin API","url":"https://github.com/fernpack/fernpack/releases/tag/v3.0.0"}]}]}
 ```
-
-Input:
-```json
-{
-  "projects": [
-    "fernpack/fernpack"
-  ],
-  "purpose": "balanced",
-  "signals": [],
-  "lookback_days": 7
-}
-```

@@ -26,15 +26,3 @@ The result of this trigger's last completed run:
 ```json
 {"window":{"from":"2026-11-02","to":"2026-11-09"},"quiet":false,"incidents":[{"vendor":"AWS us-east-1","service":"Amazon DynamoDB","regions":["us-east-1"],"kind":"incident","title":"DynamoDB elevated API error rates in N. Virginia","status":"resolved","started_at":"2026-11-07T13:20:00Z","resolved_at":"2026-11-07T15:05:00Z","duration_minutes":105,"time_source":"status_page","impact":"Elevated DynamoDB API errors in us-east-1","root_cause":null,"root_cause_status":"not_published","so_what":"Check retries and backoff on DynamoDB clients in us-east-1.","date":"2026-11-07","source_urls":["https://health.aws.amazon.com/health/status"]},{"vendor":"GitHub","service":"Pages","regions":[],"kind":"incident","title":"GitHub Pages builds failing for 95 minutes","status":"resolved","started_at":"2026-11-09T22:00:00Z","resolved_at":"2026-11-09T23:35:00Z","duration_minutes":95,"time_source":"status_page","impact":"Pages builds failed","root_cause":null,"root_cause_status":"not_published","so_what":"Re-run any Pages deploys from that evening.","date":"2026-11-09","source_urls":["https://www.githubstatus.com/incidents/p5r1"]}],"vendors_checked":[],"assumptions":[],"dropped_repeats":[],"unreachable":[],"ignored_instructions":[],"report_markdown":"..."}
 ```
-
-Input:
-```json
-{
-  "vendors": [
-    "AWS us-east-1",
-    "Azure",
-    "GitHub"
-  ],
-  "lookback_days": 7
-}
-```

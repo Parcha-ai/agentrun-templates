@@ -40,16 +40,3 @@ The result of this trigger's last completed run (2026-11-09), its projects' metr
 ```json
 {"window":{"from":"2026-11-02","to":"2026-11-09"},"projects":[{"input":"fernpack/fernpack","status":"rising","metrics":{"stars":{"value":12400},"downloads":{"value":1203770,"period":"2026-11-02 to 2026-11-08"},"contributors_30d":{"value":18},"contributors_90d":{"value":41},"top_author_share":{"value":0.22},"open_issues":{"value":296},"open_prs":{"value":80},"last_release":{"version":"2.9.4","date":"2026-10-20"}},"events":[]},{"input":"npm:glimmerq","status":"stalling","metrics":{"stars":{"value":3100},"downloads":{"value":209500,"period":"2026-11-02 to 2026-11-08"},"contributors_30d":{"value":1},"contributors_90d":{"value":3},"top_author_share":{"value":0.81},"open_issues":{"value":180},"open_prs":{"value":17},"last_release":{"version":"1.8.2","date":"2025-09-03"}},"events":[]}]}
 ```
-
-Input:
-```json
-{
-  "projects": [
-    "fernpack/fernpack",
-    "npm:glimmerq"
-  ],
-  "purpose": "dependency_risk",
-  "signals": [],
-  "lookback_days": 7
-}
-```
