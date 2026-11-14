@@ -1,0 +1,427 @@
+{
+  "checked_on": "2026-11-14",
+  "scope": {
+    "industry": "Residential heat pumps, with emphasis on installation and aftercare",
+    "region": "European Union",
+    "interpretation": "Includes residential air-to-water, ground-source and air-to-air equipment, installation and aftercare. Excludes industrial and district-heating projects and standalone fossil-fuel boilers. For the installer roll-up angle, installed-project spending is more relevant than manufacturer revenue. Wider European company figures are explicitly labelled and are not EU market shares.",
+    "classification_codes": [
+      "NACE Rev. 2.1 43.22 — Plumbing, heat and air-conditioning installation; broader than heat pumps [S5]"
+    ]
+  },
+  "bottom_line": [
+    "This is both an equipment market and a local installation/service industry. For a roll-up, distinguish household project revenue from manufacturer sales: they are different revenue pools, not additive market segments. [S1][S2]",
+    "Published estimates span EUR 14.0bn for EU residential equipment in 2024 to EUR 22.5bn for equipment plus installation in 2025. This is a scope-and-year range, not competing estimates of the same market. [S1][S2]",
+    "Demand is recovering but policy-sensitive: the Commission reports 2.6m EU heat-pump sales in 2025, up 13%; that broader unit measure is not a verified residential installer revenue total. [S3]",
+    "Roll-up thesis—inference: local workforce capacity, installation quality and a simpler customer journey may matter more than purchasing scale alone. The Commission identifies installer shortages, complexity and installation costs as adoption barriers. [S3]",
+    "Fragmentation is reported, not independently established: the supplied Observatory page says most installer businesses have fewer than ten employees, without specifying the observation year or methodology. [S2]",
+    "Inference: recurring service and integrated home-energy offerings can extend the customer relationship, but financing, guarantees and manufacturing can introduce risks beyond a conventional installer acquisition. [S4][S6][S7]"
+  ],
+  "market_size": [
+    {
+      "definition": "EU residential heat-pump equipment: manufacturer sales of air-to-water, ground-source and air-to-air units; installation labour excluded",
+      "value": "EUR 14.0 billion",
+      "data_year": "2024",
+      "published": "2026-01-27",
+      "growth": "Down from EUR 15.3bn in 2023; source attributes the decline to subsidy changes in Germany and Italy.",
+      "basis": "estimate",
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "definition": "EU residential heat-pump equipment: same manufacturer-sales definition as the 2024 estimate",
+      "value": "EUR 15.3 billion",
+      "data_year": "2023",
+      "published": "2026-01-27",
+      "growth": null,
+      "basis": "estimate",
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "definition": "EU household spending on residential heat pumps, including equipment and installation",
+      "value": "EUR 22.5 billion",
+      "data_year": "2025",
+      "published": "2026-06-09",
+      "growth": null,
+      "basis": "estimate",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "definition": "EU heat-pump unit sales reported by the Commission; proxy for residential installation demand, not residential-only revenue",
+      "value": "2.6 million units",
+      "data_year": "2025",
+      "published": null,
+      "growth": "13% increase in 2025; Commission page reports 2.3m units installed in 2024.",
+      "basis": "proxy",
+      "sources": [
+        "S3"
+      ]
+    },
+    {
+      "definition": "EU investment in heat pumps, quoted by the Commission from BloombergNEF; broader than a verified residential installer market",
+      "value": "EUR 23 billion",
+      "data_year": "2023",
+      "published": "2024-03",
+      "growth": null,
+      "basis": "proxy",
+      "sources": [
+        "S3"
+      ]
+    },
+    {
+      "definition": "EU residential heat-pump installation labour and service revenue, excluding equipment pass-through",
+      "value": null,
+      "data_year": null,
+      "published": null,
+      "growth": null,
+      "basis": "not_found",
+      "sources": [
+        "S2",
+        "S3",
+        "S5"
+      ]
+    }
+  ],
+  "size_note": "The EUR 14.0bn–22.5bn headline span compares 2024 manufacturer equipment sales with 2025 household equipment-plus-installation spending; it is not a like-for-like valuation range. The EUR 23bn 2023 investment proxy has a broader, insufficiently specified boundary. None should be averaged or added. The Observatory's roughly 40% installation share describes a typical project, with no data year stated; it is not a verified EU-wide revenue allocation. [S1][S2][S3]",
+  "value_chain": [
+    {
+      "stage": "Equipment development and manufacturing",
+      "who": "Equipment producers; Aira illustrates an integrated model with R&D and manufacturing alongside consumer sales. [S6]",
+      "margin": null,
+      "sources": [
+        "S6"
+      ]
+    },
+    {
+      "stage": "Customer acquisition, advice and financing",
+      "who": "Installers and integrated providers convert household demand into projects; Aira offers monthly payments and end-to-end service.",
+      "margin": null,
+      "sources": [
+        "S3",
+        "S6"
+      ]
+    },
+    {
+      "stage": "Installation and commissioning",
+      "who": "Local installation businesses and integrated providers' installation teams. The Observatory reports a fragmented installer base; the Commission identifies skills shortages.",
+      "margin": null,
+      "sources": [
+        "S2",
+        "S3",
+        "S6"
+      ]
+    },
+    {
+      "stage": "Maintenance, repair and refrigerant handling",
+      "who": "Appropriately qualified or certified personnel; applicable F-gas obligations include emissions prevention, leak checks, records and recovery.",
+      "margin": null,
+      "sources": [
+        "S4"
+      ]
+    },
+    {
+      "stage": "Connected home-energy optimisation",
+      "who": "Integrated providers connect heat pumps with solar, storage and electricity-market services; 1KOMMA5° describes this through Heartbeat AI.",
+      "margin": null,
+      "sources": [
+        "S7"
+      ]
+    }
+  ],
+  "business_models": [
+    "Project installation: household spending combines equipment and installation. Diligence inference: separate equipment pass-through from labour contribution, then test technician productivity, subcontracting, customer-acquisition costs and remedial work. The reported typical installation cost share is not an installer profit margin. [S2][S3]",
+    "Service and aftercare: maintenance and repair create a continuing operational role. Inference: test service-contract attachment, renewal, route density and warranty reimbursement rather than assuming recurring revenue is automatically profitable. [S4][S6]",
+    "Integrated financed offering: Aira combines equipment, installation, monthly payments and a guarantee. Inference: establish who funds the receivable, bears credit risk and pays future guarantee costs; the commercial announcement does not settle those questions. [S6]",
+    "Home-energy bundle: 1KOMMA5° combines heat pumps with solar, batteries and intelligent electricity control. Inference: cross-selling may improve acquisition economics, but distinguish installation earnings from software and energy-service earnings. [S7]",
+    "Capital and cash: Aira's manufacturing and R&D demonstrate a more capital-intensive model than installation alone. Roll-up diligence inference: model acquisition spending, fleet/tools, training, inventory, deposits, subsidy-linked collections and warranty cash separately; no reliable sector working-capital benchmark was found. [S3][S6]"
+  ],
+  "key_players": [
+    {
+      "name": "Aira",
+      "ownership": "Investor-backed; named investors include Altor, Kinnevik, Lingotto and Temasek. [S6]",
+      "position": "Integrated residential heating provider operating in Germany, Italy and the UK. Relevant competitor/model comparator, not a verified EU market-share leader.",
+      "metric": "Company-reported EUR 200m annual sales run-rate as of August 2025, across its markets including the UK; not annual EU revenue.",
+      "sources": [
+        "S6"
+      ]
+    },
+    {
+      "name": "1KOMMA5°",
+      "ownership": null,
+      "position": "Integrated home-energy provider combining heat pumps, solar, storage and intelligent controls. Relevant German installer-platform comparator; no EU ranking verified.",
+      "metric": "Company says it sold over 10,000 heat pumps in Germany during 2024–2025; sales are not the same as completed installations.",
+      "sources": [
+        "S7"
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "metric": "Completed installations",
+      "definition": "Proposed diligence KPI: completed, accepted jobs by technology and country; reconcile orders and equipment sales to actual installations.",
+      "typical_range": null,
+      "sources": [
+        "S7"
+      ]
+    },
+    {
+      "metric": "Contribution per installation",
+      "definition": "Proposed diligence KPI: project revenue less equipment, direct labour, subcontractors and attributable remedial costs. Do not confuse installation's cost share with margin.",
+      "typical_range": null,
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "metric": "Crew productivity",
+      "definition": "Proposed diligence KPI: completed installations per crew working day, adjusted for project complexity; tests whether training and scheduling alleviate the skills bottleneck.",
+      "typical_range": null,
+      "sources": [
+        "S3",
+        "S6"
+      ]
+    },
+    {
+      "metric": "Quote-to-completion conversion",
+      "definition": "Proposed diligence KPI: completed jobs divided by quoted opportunities, tracked by acquisition channel and subsidy regime.",
+      "typical_range": null,
+      "sources": [
+        "S3"
+      ]
+    },
+    {
+      "metric": "Customer acquisition cost",
+      "definition": "Proposed diligence KPI: attributable selling and marketing expenditure per completed customer, not merely per lead or signed order.",
+      "typical_range": null,
+      "sources": [
+        "S3",
+        "S6"
+      ]
+    },
+    {
+      "metric": "Callbacks and warranty cost",
+      "definition": "Proposed diligence KPI: remedial visits per installation and lifetime guarantee expense by installation cohort.",
+      "typical_range": null,
+      "sources": [
+        "S4",
+        "S6"
+      ]
+    },
+    {
+      "metric": "Service attachment and renewal",
+      "definition": "Proposed diligence KPI: proportion of installed customers taking paid aftercare and subsequently renewing; distinguish paid service from included guarantee obligations.",
+      "typical_range": null,
+      "sources": [
+        "S4",
+        "S6"
+      ]
+    },
+    {
+      "metric": "Cash conversion",
+      "definition": "Proposed diligence KPI: timing of customer and financing receipts versus equipment and payroll payments; analyse cash tied up in incomplete projects.",
+      "typical_range": null,
+      "sources": [
+        "S3",
+        "S6"
+      ]
+    }
+  ],
+  "regulation": [
+    {
+      "item": "F-gas Regulation: applicable equipment must be handled by certified or appropriately qualified personnel; obligations include emissions prevention, applicable leak checks, records and refrigerant recovery.",
+      "regulator": "European Commission, DG Climate Action; applicable national enforcement authorities require local verification.",
+      "status": "Commission guidance references Regulation (EU) 2024/573; guidance is not a substitute for the legally binding text.",
+      "sources": [
+        "S4"
+      ]
+    },
+    {
+      "item": "Revised Energy Performance of Buildings Directive sets national residential energy-use reduction trajectories; it is not a blanket requirement for every household to install a heat pump.",
+      "regulator": "European Commission and EU Member States",
+      "status": "Directive (EU) 2024/1275 entered into force on 2024-05-28; national transposition deadline was 2026-05-29. Country implementation not checked.",
+      "sources": [
+        "S8"
+      ]
+    }
+  ],
+  "trends": [
+    {
+      "trend": "Demand recovery remains country- and policy-dependent",
+      "evidence": "The Commission reports EU heat-pump sales increased 13% to 2.6m in 2025 and associates faster uptake with stable, supportive policy and market conditions.",
+      "implication": "Inference: underwrite country-level demand and subsidy sensitivity rather than applying a single EU growth assumption.",
+      "sources": [
+        "S3"
+      ]
+    },
+    {
+      "trend": "Workforce development is part of the competitive model",
+      "evidence": "The Commission launched its Heat Pump Accelerator Platform in January 2025. Aira reported operating installer-training academies in its August 2025 financing announcement.",
+      "implication": "Inference: retaining skilled teams and building training capacity may create more durable integration benefits than procurement savings alone.",
+      "sources": [
+        "S3",
+        "S6"
+      ]
+    },
+    {
+      "trend": "Funded integrated providers compete beyond equipment price",
+      "evidence": "On 2025-08-11, Aira announced EUR 150m of equity financing and described monthly payments, end-to-end service and a 15-year guarantee.",
+      "implication": "Inference: a roll-up needs a clear response on affordability, service and trust, without taking financing or guarantee risk it cannot price.",
+      "sources": [
+        "S6"
+      ]
+    },
+    {
+      "trend": "Heat pumps are increasingly bundled into home-energy systems",
+      "evidence": "In January 2026, 1KOMMA5° described connecting heat pumps, solar and storage through Heartbeat AI and reported more than 10,000 German heat-pump sales during 2024–2025.",
+      "implication": "Inference: cross-selling and controls are potential differentiators, but require separate evidence of customer savings and incremental profitability.",
+      "sources": [
+        "S7"
+      ]
+    },
+    {
+      "trend": "Building-policy implementation moves to national execution",
+      "evidence": "The revised EPBD's national transposition deadline was 2026-05-29; the Commission describes country-specific residential renovation trajectories and flexibility over measures.",
+      "implication": "Inference: acquisition screening must be country-specific; an EU policy direction does not establish a target's immediate addressable backlog.",
+      "sources": [
+        "S8"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "term": "Heat pump",
+      "definition": "Equipment that transfers and upgrades ambient or ground heat rather than producing heat through combustion. [S3]"
+    },
+    {
+      "term": "Air-to-water",
+      "definition": "Heat-pump category transferring heat from outdoor air into a water-based heating system; included in the supplied equipment estimate. [S1][S3]"
+    },
+    {
+      "term": "Air-to-air",
+      "definition": "Heat-pump category transferring heat between outdoor and indoor air; included in the supplied residential equipment boundary. [S1][S3]"
+    },
+    {
+      "term": "Ground-source",
+      "definition": "Heat pump using heat from the ground or groundwater. [S3]"
+    },
+    {
+      "term": "Equipment market",
+      "definition": "Here, manufacturer equipment sales excluding installation labour, not the total household project bill. [S1]"
+    },
+    {
+      "term": "Installed-project spending",
+      "definition": "Household spending covering equipment and installation together; not an installation-only revenue measure. [S2]"
+    },
+    {
+      "term": "F-gases",
+      "definition": "Fluorinated greenhouse gases subject to EU equipment, emissions, handling and other obligations. [S4]"
+    },
+    {
+      "term": "EPBD",
+      "definition": "Energy Performance of Buildings Directive: the EU framework for improving building energy performance, implemented through national measures. [S8]"
+    },
+    {
+      "term": "Run-rate",
+      "definition": "An annualised trading measure, not necessarily recognised revenue for a completed financial year; Aira's cited measure is explicitly a run-rate. [S6]"
+    },
+    {
+      "term": "Virtual power plant",
+      "definition": "A connected portfolio of household energy devices coordinated with electricity markets; 1KOMMA5° describes this role for Heartbeat AI. [S7]"
+    }
+  ],
+  "go_deeper": [
+    "Commission heat-pump overview: demand barriers, policy initiatives and links to country-level JRC market fiches. [S3]",
+    "DG Climate Action stakeholder guidance: technician qualifications, equipment handling and operator obligations. [S4]",
+    "Commission EPBD overview: national renovation trajectories and the distinction between EU objectives and country implementation. [S8]",
+    "Eurostat NACE manual: classification boundary; installation statistics cover much more than residential heat pumps. PDF retrieval failed here; only the search excerpt was available. [S5]"
+  ],
+  "gaps": [
+    "The two supplied captured pages were used as provided, without refetching. Their market estimates were not independently corroborated; underlying methods, tax treatment and detailed coverage were unavailable. [S1][S2]",
+    "The Observatory's roughly 40% installation cost share and statement that most installers have fewer than ten employees have no stated data year. Neither establishes installer margins or a verified EU consolidation universe. [S2]",
+    "No installation-only EU residential revenue total was found. Commission statistics and the broad NACE installation class do not isolate that scope. No market size was calculated from the typical-project cost share. [S2][S3][S5]",
+    "No defensible typical installer, manufacturer or service margin, acquisition multiple, working-capital range or KPI benchmark was found; margins and ranges are null. Proposed diligence metrics are analytical recommendations, not sourced industry norms.",
+    "Player coverage is illustrative, not a ranked EU competitive landscape. Aira includes UK operations; 1KOMMA5° figures are company-reported. Its ownership and independent company-level corroboration were not established. [S6][S7]",
+    "The Eurostat classification PDF could not be fetched; the code is supported only by the explicitly identified search excerpt. [S5]",
+    "An EHPA page fetch exposed navigation rather than usable article evidence in the retrieved portion; it is not used for market figures. [S9]",
+    "Reuters returned HTTP 401, preventing page-level independent verification of Aira's announcement. [S10]",
+    "Country subsidies, trade licensing, electrical permissions, ground-source permits and actual EPBD transposition were not checked. EU-level rules do not replace acquisition-country regulatory diligence. [S4][S8]",
+    "Several trends rely on interested-party announcements. No verified installer transaction dataset or independent evidence of realised roll-up synergies was found."
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "EU residential heat pump equipment market — user-supplied captured page",
+      "url": "https://alderbank-insights.example/reports/eu-heat-pumps",
+      "published": "2026-01-27",
+      "found": true
+    },
+    {
+      "id": "S2",
+      "title": "What homes spent on heat pumps — user-supplied captured page",
+      "url": "https://heatpolicy-observatory.example/briefs/installed-market-2025",
+      "published": "2026-06-09",
+      "found": true
+    },
+    {
+      "id": "S3",
+      "title": "European Commission — Heat pumps",
+      "url": "https://energy.ec.europa.eu/topics/energy-efficiency/heat-pumps_en",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S4",
+      "title": "European Commission — F-gases in equipment and products",
+      "url": "https://climate.ec.europa.eu/areas-action/fluorinated-greenhouse-gases/stakeholder-obligations/f-gases-equipment-and-products_en",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S5",
+      "title": "Eurostat — NACE Rev. 2.1, 2025 edition; search excerpt only, PDF fetch refused",
+      "url": "https://ec.europa.eu/eurostat/documents/3859598/21633320/KS-GQ-24-007-EN-N.pdf",
+      "published": "2025-05-21",
+      "found": true
+    },
+    {
+      "id": "S6",
+      "title": "Aira announces EUR 150M equity financing to accelerate residential heating electrification",
+      "url": "https://www.airahome.com/en-gb/news/aira-150m-equity-financing-investment",
+      "published": "2025-08-11",
+      "found": true
+    },
+    {
+      "id": "S7",
+      "title": "Demand for heat pumps continues to rise: 1KOMMA5° reaches the 10,000 mark in two years",
+      "url": "https://1komma5.com/en/press/press-releases/demand-for-heat-pumps-continues-to-rise-1komma5-reaches-the-10-000-mark/",
+      "published": "2026-01-13",
+      "found": true
+    },
+    {
+      "id": "S8",
+      "title": "European Commission — Energy Performance of Buildings Directive",
+      "url": "https://energy.ec.europa.eu/topics/energy-efficiency/energy-performance-buildings/energy-performance-buildings-directive_en",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S9",
+      "title": "EHPA — Heat pumps replace Middle East gas imports twice over; retrieved portion not useful",
+      "url": "https://ehpa.org/news-and-resources/news/heat-pumps-replace-middle-east-gas-imports-twice-over/",
+      "published": null,
+      "found": false
+    },
+    {
+      "id": "S10",
+      "title": "Reuters — Sweden's Aira raises 150 million euros; fetch returned HTTP 401",
+      "url": "https://www.reuters.com/sustainability/climate-energy/swedens-aira-raises-150-million-euros-expand-heat-pump-rollout-europe-2025-08-11",
+      "published": "2025-08-11",
+      "found": false
+    }
+  ],
+  "report_markdown": "# EU residential heat pumps: installer roll-up primer\n\n## Bottom line\n- The acquisition thesis is a local installation-and-service business, not simply exposure to equipment growth. Customer complexity, installer shortages and installation costs are documented barriers. **Inference:** execution quality and workforce retention should lead the thesis. [S3]\n- Equipment and installed-project market estimates are different revenue measures. Do not add or average them. [S1][S2]\n- Fragmentation is reported, but its scale and achievable consolidation benefits remain unverified. [S2]\n\n## Definition and size\nIncludes residential air-to-water, ground-source and air-to-air systems, installation and aftercare; excludes industrial and district-heating projects. NACE Rev. 2.1 43.22 covers plumbing, heat and air-conditioning installation, substantially broader than this target market; code verified only through a search excerpt. [S1][S3][S5]\n\n| Value | Definition | Data year | Published | Source |\n|---|---|---|---|---|\n| EUR 15.3bn | EU residential manufacturer equipment sales | 2023 | 2026-01-27 | [S1] |\n| EUR 14.0bn | Same scope; installation labour excluded | 2024 | 2026-01-27 | [S1] |\n| EUR 22.5bn | EU household equipment plus installation spending | 2025 | 2026-06-09 | [S2] |\n| 2.6m units | Broader EU demand proxy; up 13% | 2025 | Not stated | [S3] |\n| EUR 23bn | Broader EU heat-pump investment proxy | 2023 | March 2024 underlying source | [S3] |\n| Not found | Residential installation-only revenue | — | — | [S2][S3] |\n\nThe headline EUR 14.0bn–22.5bn span changes both year and revenue boundary. The Observatory's typical-project installation share is not a sector margin or a valid basis for extracting an EU installation market. [S1][S2]\n\n## Value chain and margins\n| Stage | Participants | Typical margin |\n|---|---|---|\n| Equipment | Manufacturers; integrated Aira model | Not found [S6] |\n| Acquisition/finance | Installers and integrated providers | Not found [S3][S6] |\n| Installation | Local businesses and employed teams | Not found [S2][S6] |\n| Aftercare | Qualified service personnel | Not found [S4] |\n| Energy optimisation | Connected home-energy platforms | Not found [S7] |\n\n## Business models\nProject revenue combines equipment and installation. Service adds a continuing customer relationship; integrated providers also offer financing, guarantees and energy controls. **Diligence inference:** reconcile equipment pass-through, direct labour, acquisition costs and callbacks before attributing value to scale. Model inventory, project cash timing and guarantee liabilities separately. Manufacturing adds capital requirements beyond installation. [S2][S3][S4][S6][S7]\n\n## Key players\nIllustrative comparators, not an EU ranking:\n\n| Provider | Position and scale |\n|---|---|\n| Aira | Investor-backed integrated provider in Germany, Italy and UK; company-reported EUR 200m annual sales run-rate in August 2025, not EU annual revenue. [S6] |\n| 1KOMMA5° | Home-energy integrator; reports over 10,000 German heat-pump sales during 2024–2025, not equivalent completed installations. [S7] |\n\n## Metrics\nProposed diligence dashboard; no typical ranges verified:\n\n| KPI | Question |\n|---|---|\n| Completions/conversion | Do orders become accepted jobs? [S7] |\n| Contribution/job | What remains after direct project costs? [S2] |\n| Crew productivity | Is scarce labour deployed effectively? [S3] |\n| Acquisition cost | What does a completed customer cost? [S3][S6] |\n| Callbacks/aftercare | Are guarantees and service profitable? [S4][S6] |\n| Cash conversion | When are project receipts collected? [S3][S6] |\n\n## Regulation\nF-gas guidance addresses qualifications, emissions, applicable leak checks, records and recovery. The revised EPBD entered into force on 2024-05-28; national transposition was due 2026-05-29. It establishes national residential trajectories, not a universal household heat-pump mandate. Country implementation requires separate checking. [S4][S8]\n\n## Trends\nRecent evidence shows 2025 demand recovery, January 2025 workforce-policy coordination, Aira's August 2025 financing, January 2026 integrated-energy positioning and the May 2026 EPBD transposition deadline. **Inference:** prioritise country selection, technician retention, affordability and operational integration over a generic EU growth thesis. [S3][S6][S7][S8]\n\n## Glossary\n**Air-to-water:** heats a water circuit; **air-to-air:** heats indoor air; **ground-source:** draws ground heat; **installed spending:** equipment plus installation; **F-gases:** regulated fluorinated gases; **EPBD:** building-performance framework; **run-rate:** annualised trading measure; **virtual power plant:** coordinated connected energy devices. [S1][S2][S3][S4][S6][S7][S8]\n\n## Go deeper\nUse Commission heat-pump country-fiche links, F-gas guidance and the EPBD overview before country diligence. [S3][S4][S8]\n\n## Gaps\nSupplied valuations lack independent corroboration. Installer fragmentation has no stated observation year. Margins, transaction multiples, ownership details, realised synergies and national licensing/subsidies remain unverified. This is research, not investment, legal or regulatory advice."
+}

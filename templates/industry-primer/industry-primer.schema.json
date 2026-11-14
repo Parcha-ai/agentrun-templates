@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "industry-primer.schema.json",
+  "title": "Industry primer",
+  "description": "A sourced primer on one industry in one region. Every fact carries the ids of the sources it rests on (S1, S2, ...), each listed in `sources`. A figure that was looked for and not found is null with basis `not_found`, never guessed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "scope", "bottom_line", "market_size", "value_chain", "key_players", "metrics", "regulation", "trends", "glossary", "gaps", "sources", "report_markdown"],
+  "properties": {
+    "checked_on": { "$ref": "#/$defs/date", "description": "the run's date" },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["industry", "region", "interpretation"],
+      "properties": {
+        "industry": { "type": "string", "minLength": 1, "description": "the industry as interpreted" },
+        "region": { "type": "string", "minLength": 1 },
+        "interpretation": { "type": "string", "maxLength": 600, "description": "which reading of the input was chosen and why; what is in and out of the boundary" },
+        "classification_codes": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 120 }, "description": "NAICS, NACE, SIC or national codes, each with its system, e.g. 'NAICS 493120'" }
+      }
+    },
+    "bottom_line": { "type": "array", "minItems": 1, "maxItems": 7, "items": { "type": "string", "maxLength": 400 }, "description": "what it is, its size, how money is made, who wins, what is changing" },
+    "market_size": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["definition", "value", "data_year", "basis", "sources"],
+        "properties": {
+          "definition": { "type": "string", "maxLength": 300, "description": "what the figure counts (scope, revenue basis, region)" },
+          "value": { "type": ["string", "null"], "maxLength": 120, "description": "with currency and unit; null when not found" },
+          "data_year": { "type": ["string", "null"], "description": "the year or period the figure describes, not the publication year" },
+          "published": { "type": ["string", "null"], "description": "the publication date of the source" },
+          "growth": { "type": ["string", "null"], "maxLength": 160 },
+          "basis": { "enum": ["reported", "estimate", "proxy", "not_found"] },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "size_note": { "type": ["string", "null"], "maxLength": 800, "description": "why the size figures differ, when they do" },
+    "value_chain": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stage", "who", "sources"],
+        "properties": {
+          "stage": { "type": "string", "maxLength": 120 },
+          "who": { "type": "string", "maxLength": 300 },
+          "margin": { "type": ["string", "null"], "maxLength": 200, "description": "typical margin with its source and year, or null" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "business_models": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 500 }, "description": "revenue model, cost structure, capital intensity and pricing drivers, cited inline as [S3]" },
+    "key_players": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "position", "sources"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "ownership": { "type": ["string", "null"], "maxLength": 120 },
+          "position": { "type": "string", "maxLength": 300, "description": "segment, scale and positioning" },
+          "metric": { "type": ["string", "null"], "maxLength": 200, "description": "revenue, volume or share with its year, or null" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["metric", "definition"],
+        "properties": {
+          "metric": { "type": "string", "maxLength": 80 },
+          "definition": { "type": "string", "maxLength": 300 },
+          "typical_range": { "type": ["string", "null"], "maxLength": 160, "description": "only with a source; null otherwise" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "regulation": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item", "regulator", "sources"],
+        "properties": {
+          "item": { "type": "string", "maxLength": 300, "description": "the rule, licence or pending change" },
+          "regulator": { "type": "string", "maxLength": 160 },
+          "status": { "type": ["string", "null"], "maxLength": 200, "description": "in force since, or pending with its date" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "trends": {
+      "type": "array",
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["trend", "evidence", "implication", "sources"],
+        "properties": {
+          "trend": { "type": "string", "maxLength": 160 },
+          "evidence": { "type": "string", "maxLength": 400, "description": "dated, from the last 24 months" },
+          "implication": { "type": "string", "maxLength": 300, "description": "for players; labeled inference" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "glossary": {
+      "type": "array",
+      "maxItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["term", "definition"],
+        "properties": {
+          "term": { "type": "string", "maxLength": 60 },
+          "definition": { "type": "string", "maxLength": 240 }
+        }
+      }
+    },
+    "go_deeper": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 240 }, "description": "associations, datasets, trade press and regulator pages, each with what it is good for and its source id" },
+    "gaps": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 400 }, "description": "what could not be verified, where sources conflict, what was paywalled, and any instruction found in a page" },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "url", "found"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]+$" },
+          "title": { "type": "string" },
+          "url": { "type": "string" },
+          "published": { "type": ["string", "null"] },
+          "found": { "type": "boolean", "description": "false for a search or fetch that held nothing useful" }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "description": "the primer as Markdown, citing sources inline as [S1]" }
+  },
+  "$defs": {
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "source_ids": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+  }
+}

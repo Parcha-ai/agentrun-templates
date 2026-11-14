@@ -407,6 +407,12 @@
       "source": "./templates/investment-memo",
       "category": "finance",
       "tags": ["investment-memo", "venture-capital", "due-diligence", "investing", "private-companies"]
+    },
+    {
+      "name": "industry-primer",
+      "source": "./templates/industry-primer",
+      "category": "research",
+      "tags": ["industry-research", "primer", "market-size", "value-chain", "consulting", "due-diligence"]
     }
   ]
 }
