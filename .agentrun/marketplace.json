@@ -431,6 +431,12 @@
       "source": "./templates/country-risk",
       "category": "compliance",
       "tags": ["country-risk", "sanctions", "fatf", "aml", "kyc", "cross-border-payments"]
+    },
+    {
+      "name": "product-teardown",
+      "source": "./templates/product-teardown",
+      "category": "research",
+      "tags": ["product-teardown", "competitive-analysis", "pricing", "onboarding", "growth-loops", "product-management"]
     }
   ]
 }

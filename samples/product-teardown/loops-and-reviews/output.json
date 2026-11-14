@@ -1,0 +1,187 @@
+{
+  "checked_on": "2026-11-14",
+  "product": {
+    "name": "Slatebird",
+    "company": null,
+    "website": "https://slatebird.example",
+    "category": "Online whiteboard for product and design teams [S1]",
+    "positioning_line": "Whiteboards your whole team actually uses",
+    "business_model": "Freemium: free for up to 3 boards; Team costs $9 per editor per month, observed 2026-11-14. [S1]",
+    "identity_note": "The supplied website identifies this Slatebird as a team whiteboard. This teardown focuses on new-user acquisition through templates, referrals and shared boards. Legal company identity is not publicly available in the supplied evidence. [S1–S3]"
+  },
+  "bottom_line": "Slatebird combines a free whiteboard entry point with two explicit acquisition mechanisms: branded community templates that lead to signup, and rewards for referring teams that upgrade. Link sharing and account-free guest comments could extend distribution, but that growth effect is inferred. Team monetizes editors at $9/month each, observed 2026-11-14. Three supplied reviews independently praise speed; acquisition performance and conversion rates are not publicly available. [S1][S2][S3][S4]",
+  "target_user": "The homepage explicitly addresses product and design teams; templates cover retrospectives, user story maps and roadmaps. Company size and buyer seniority are not publicly available. Guest commenting accommodates collaborators outside the editor group, though their conversion into users is unverified. [S1][S3]",
+  "onboarding": {
+    "steps": [
+      "Template entry: browse the gallery, which advertises 1,400 community templates. [S3]",
+      "Click “Use this template”; the documented destination is free signup. [S3]",
+      "Signup fields, verification and the first authenticated screen are not publicly available.",
+      "Separate guest entry: follow a shared board link and comment without an account. [S1]"
+    ],
+    "time_to_value": "Not publicly available. Account-free commenting removes a registration step for guests, but no measured activation time or complete creator walkthrough is available. [S1]",
+    "friction": [
+      "Template use routes through signup; whether the template is preserved afterward is not publicly available. [S3]",
+      "Inference: requiring signup before template use may interrupt exploration; abandonment is unmeasured. [S3]",
+      "One reviewer reports a clunky mobile app and tablet crashes; this is an anecdote, not an established onboarding pattern. [S4]"
+    ],
+    "sources": [
+      "S1",
+      "S3",
+      "S4"
+    ]
+  },
+  "core_workflow": [
+    "Choose a template for a retrospective, user story map or roadmap; the gallery exposes a signup entry point. [S3]",
+    "Inferred next step: work on a whiteboard. Board creation, editing tools and template application are not publicly documented in the available evidence. [S1][S3]",
+    "Share a board using a link. [S1]",
+    "Guests comment without creating accounts. Guest editing permissions and subsequent conversion prompts are not publicly available. [S1]"
+  ],
+  "pricing": {
+    "public": true,
+    "observed_on": "2026-11-14",
+    "tiers": [
+      {
+        "name": "Free",
+        "price": "Free; observed 2026-11-14",
+        "billing_unit": null,
+        "limits_and_gates": "Up to 3 boards. Other limits and permissions are not publicly available. [S1]",
+        "sources": [
+          "S1"
+        ]
+      },
+      {
+        "name": "Team",
+        "price": "$9 per editor per month; observed 2026-11-14",
+        "billing_unit": "editor/month",
+        "limits_and_gates": "Team board limits, minimum seats and additional feature gates are not publicly available. [S1]",
+        "sources": [
+          "S1"
+        ]
+      }
+    ],
+    "notes": "Only the homepage price is available; currency denomination beyond “$”, annual terms and pricing history are not publicly available. Referral terms offer a friend's team one free Team month and the referrer one free month when that team upgrades, up to 12 months. Terms observed 2026-11-14. [S1][S2]"
+  },
+  "growth_loops": [
+    {
+      "loop": "Upgrade-triggered team referrals",
+      "how": "A referred team receives one free Team month; its upgrade earns the referrer one free month too, up to 12 months. The mechanism is observed; participation and incremental upgrades are not publicly available. [S2]",
+      "basis": "observed",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "loop": "Branded templates lead to signup",
+      "how": "The gallery advertises 1,400 community templates. Every template page displays “Made with Slatebird” and a “Use this template” button opening free signup. Distribution is documented; traffic and conversion are not. [S3]",
+      "basis": "observed",
+      "sources": [
+        "S3"
+      ]
+    },
+    {
+      "loop": "Shared boards expose guests to the product",
+      "how": "Board links and account-free comments likely let existing teams introduce collaborators with little initial friction. Exposure-to-signup conversion is inferred; no guest conversion prompt or metric is documented. [S1]",
+      "basis": "inferred",
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "loop": "Free usage may lead to paid expansion",
+      "how": "The free allowance likely attracts initial projects, with the 3-board cap creating a potential upgrade moment. Team charges per editor, but the actual paywall and reasons teams upgrade are not documented. [S1]",
+      "basis": "inferred",
+      "sources": [
+        "S1"
+      ]
+    }
+  ],
+  "integrations": "Integrations, API/SDK access and marketplace listings are not publicly available in the supplied pages. Additional searches did not identify a matching Slatebird source; unrelated products were excluded.",
+  "releases": {
+    "public_changelog": false,
+    "items": [],
+    "summary": "No matching public changelog was located. Release dates, recent changes and shipping cadence are not publicly available in the evidence reviewed; this does not establish that no changelog exists."
+  },
+  "does_well": [
+    {
+      "point": "Speed is repeated praise within this small sample: three separate reviews dated 2026-08-30, 2026-09-18 and 2026-10-02 praise performance. These are perceptions, not benchmarks. [S4]",
+      "sources": [
+        "S4"
+      ]
+    },
+    {
+      "point": "Account-free guest commenting removes a registration requirement from participation—an observed capability with a plausible acquisition benefit, not proven conversion lift. [S1]",
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "point": "Templates connect concrete jobs to a branded signup entry point; referrals explicitly tie the referrer's reward to a paid upgrade. These are clear acquisition mechanisms, not evidence of effectiveness. [S2][S3]",
+      "sources": [
+        "S2",
+        "S3"
+      ]
+    }
+  ],
+  "complaints": [
+    {
+      "theme": "Clunky mobile experience and tablet crashes. [S4]",
+      "voices": 1,
+      "note": "One review dated 2026-08-11: anecdote only. Device, app version, reproducibility and resolution are not publicly available.",
+      "sources": [
+        "S4"
+      ]
+    }
+  ],
+  "takeaways": [
+    "Analysis: offer separate entry paths for creators and collaborators. Templates solicit signup; guests can participate without it. Measure both paths before concluding which acquires retained teams. [S1][S3]",
+    "Analysis: reward referrals at a meaningful commercial event. Slatebird uses upgrade rather than signup; whether this improves acquisition economics is unproven. [S2]",
+    "Analysis: attach acquisition to a concrete task. Retrospectives, story maps and roadmaps give templates more intent than a generic blank-canvas pitch. [S3]",
+    "Analysis: validate the handoff from template signup to first useful board. That transition is not documented and could determine whether the gallery delivers activation rather than registrations. [S3]",
+    "Analysis: performance may support word of mouth, given three positive reviews, but mobile reliability warrants investigation rather than a broad negative conclusion from one report. [S4]"
+  ],
+  "gaps": [
+    "Evidence consists of four supplied page captures dated 2026-11-14. They were treated as fetched pages; their unreachable URLs were not fetched again.",
+    "Two additional searches for onboarding/documentation and integrations/releases returned unrelated products, not corroborating Slatebird pages. Key claims lack independent cross-site verification.",
+    "Legal company identity, company size and buyer seniority are not publicly available in the reviewed evidence.",
+    "Onboarding: signup fields, authentication choices, first-run screens, template carry-through and measured time to value are not publicly available.",
+    "Product documentation: board creation/editing, collaboration permissions and the full creator workflow are not publicly available.",
+    "Pricing: detailed Team gates, annual terms, minimum seats, currency denomination beyond “$” and historical changes are not publicly available.",
+    "Growth: channel traffic, template conversion, referral participation, acquisition cost, retention and guest-to-editor conversion are not publicly available.",
+    "The gallery documents a template-to-signup mechanism, not a complete contribution loop. Template submission incentives, search traffic and creator recruitment are not publicly available.",
+    "Referral eligibility, attribution window, abuse controls and precise interpretation of the 12-month cap are not publicly available beyond the supplied wording.",
+    "Integrations, API/SDK documentation and marketplace presence are not publicly available in the reviewed evidence.",
+    "Changelog and release cadence are not publicly available in the reviewed evidence; no matching source was located.",
+    "Reviews: only four supplied reviews were available. Three praise speed and one reports mobile problems; representativeness, reviewer verification and current issue status are not publicly available."
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Slatebird homepage — supplied capture, observed 2026-11-14",
+      "url": "https://slatebird.example/",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S2",
+      "title": "Refer a team — supplied capture, observed 2026-11-14",
+      "url": "https://slatebird.example/refer",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S3",
+      "title": "Template gallery — supplied capture, observed 2026-11-14",
+      "url": "https://slatebird.example/templates",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S4",
+      "title": "Slatebird reviews (4), dated 2026-08-11–2026-10-02 — supplied capture, observed 2026-11-14",
+      "url": "https://reviewhub.example/products/slatebird/reviews",
+      "published": null,
+      "found": true
+    }
+  ],
+  "report_markdown": "## Bottom line\nSlatebird's clearest acquisition mechanisms are branded templates leading to signup and referrals rewarded when another team upgrades. Shared boards offer another plausible distribution path, but guest-to-user conversion is inferred, not observed. Three reviews praise speed; none establishes acquisition effectiveness. [S1][S2][S3][S4]\n\n## Snapshot\n| Item | Finding |\n|---|---|\n| Company | Legal identity not publicly available |\n| Category | Online team whiteboard [S1] |\n| Website | https://slatebird.example/ [S1] |\n| Target user | Product and design teams [S1] |\n| Model | Free entry; paid editor subscriptions [S1] |\n| Evidence date | All supplied pages observed 2026-11-14 |\n\n## Target user and positioning\n“Whiteboards your whole team actually uses” emphasizes participation. The homepage names product and design teams; retrospectives, user story maps and roadmaps make the gallery's use cases concrete. Company size is not publicly available. [S1][S3]\n\n## Onboarding\nTwo entry paths are documented. A template visitor clicks “Use this template” and reaches free signup. A board guest can comment without an account. Signup details, the first authenticated screen and whether the chosen template survives signup are not publicly available. No activation time can be substantiated. [S1][S3]\n\n## Core workflow\nThe visible outline is choose a template, work on a board, share its link and receive guest comments. Working on the board is an inferred middle step: editing controls and template application are undocumented in the available material. Link sharing and account-free commenting are explicit. [S1][S3]\n\n## Pricing\nObserved **2026-11-14**; prices come from the homepage, not a detailed pricing page. [S1]\n\n| Tier | Published price | Known limit |\n|---|---|---|\n| Free | Free | Up to 3 boards |\n| Team | $9 per editor per month | Other gates not publicly available |\n\nThe free cap suggests a potential expansion trigger, but the actual upgrade experience is unknown. Annual terms and price history are not publicly available. [S1]\n\n## Growth loops\n- **Observed—referrals:** give another team one free Team month; its upgrade earns the referrer one free month, up to 12 months. The reward targets a commercial event rather than mere registration. [S2]\n- **Observed—template acquisition:** the gallery advertises 1,400 community templates. Every template page carries “Made with Slatebird” and a signup button. A complete creator-contribution loop is not documented. [S3]\n- **Inferred—collaboration exposure:** shared links likely introduce guests to Slatebird without registration friction. Subsequent signup prompts and conversion are unknown. [S1]\n- **Inferred—free-to-paid expansion:** free boards likely encourage initial use, with the cap creating upgrade opportunities. Conversion evidence is unavailable. [S1]\n\n## Integrations\nIntegrations, API access and marketplace listings are not publicly available in the reviewed evidence. Additional searches found no matching source.\n\n## Releases\n| Period checked | Finding |\n|---|---|\n| Recent public release history | No matching changelog located; cadence not publicly available |\n\n## What it does unusually well\nSpeed receives three separate positive mentions between 2026-08-30 and 2026-10-02. This is repeated praise within four supplied reviews, not a benchmark. Account-free commenting and task-specific template entry points also reduce identifiable participation and discovery friction. [S1][S3][S4]\n\n## Complaints\nOne review, dated 2026-08-11, reports clunky mobile use and tablet crashes. Treat this as an investigation lead, not a recurring complaint pattern. [S4]\n\n## Takeaways\nSeparate creator signup from collaborator participation. Tie referral rewards to meaningful outcomes. Connect templates to specific jobs, then measure the signup-to-useful-board handoff rather than celebrating registrations alone. These are analytical lessons from the documented mechanisms, not proven Slatebird results. [S1][S2][S3]\n\n## Assumptions and gaps\nThe supplied captures are the evidence base; additional searches returned unrelated products. Independent verification, acquisition metrics, detailed onboarding, product documentation, complete pricing terms, integrations and release history are not publicly available in the reviewed material. The review sample is small and its representativeness unknown."
+}
