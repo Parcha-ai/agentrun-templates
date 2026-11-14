@@ -2,7 +2,7 @@
 name: issue-triage
 display_name: "Issue triage: ${parameters.owner}/${parameters.repo}"
 version: 0.1.0
-description: Triages each new issue on your GitHub repository the moment it is opened. It labels the issue from the labels your repo already has, checks your open and closed issues for likely duplicates and links them, and asks the author in one comment for whatever a maintainer would need first (steps to reproduce, the version, the error). It can't close, edit or mark an issue a duplicate, and never creates a label. Connects through Composio's GitHub toolkit.
+description: Triages each new issue on your GitHub repository the moment it is opened. It labels the issue from the labels your repo already has, checks your open and closed issues for likely duplicates and links them, and asks the author in one comment for whatever a maintainer would need first (steps to reproduce, the version, the error). It can't close, edit or mark an issue a duplicate, and never creates a label. Connects through Composio's GitHub toolkit. Each label and comment waits for your OK unless you pick Never for approvals at install; it stays held to your repository either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
