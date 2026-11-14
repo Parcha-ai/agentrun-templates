@@ -407,6 +407,12 @@
       "source": "./templates/terms-change-watch",
       "category": "compliance",
       "tags": ["terms-of-service", "privacy-policy", "dpa", "vendor-risk", "legal", "weekly"]
+    },
+    {
+      "name": "enforcement-digest",
+      "source": "./templates/enforcement-digest",
+      "category": "compliance",
+      "tags": ["enforcement", "regulators", "fines", "aml", "compliance", "weekly"]
     }
   ]
 }
