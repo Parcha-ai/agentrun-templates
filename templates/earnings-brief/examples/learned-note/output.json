@@ -1,0 +1,52 @@
+{
+  "window": {
+    "from": "2026-11-02",
+    "to": "2026-11-09"
+  },
+  "quiet": false,
+  "reports": [
+    {
+      "ticker": "NYSE:GLBX",
+      "company": "Globex Inc",
+      "period": "Q3 FY2026, quarter ended September 30, 2026",
+      "reported_on": "2026-11-05",
+      "headline": "Q3 FY2026 reported revenue was $640 million, up 8% year over year; GAAP EPS was $0.12.",
+      "vs_expectations": [
+        {
+          "metric": "Q3 FY2026 revenue",
+          "actual": "$640 million; up 8% year over year",
+          "expected": null,
+          "expected_source": "consensus not verified",
+          "verdict": "not_verified"
+        },
+        {
+          "metric": "Q3 FY2026 GAAP EPS",
+          "actual": "$0.12",
+          "expected": null,
+          "expected_source": "consensus not verified",
+          "verdict": "not_verified"
+        }
+      ],
+      "guidance": {
+        "change": "maintained",
+        "metric": "FY2026 revenue",
+        "old_range": "$2.5 billion–$2.6 billion",
+        "new_range": "$2.5 billion–$2.6 billion"
+      },
+      "quotes": [],
+      "qa_themes": [],
+      "stock_reaction": null,
+      "changed_since_prior": null,
+      "so_what": "Q3 FY2026 revenue grew 8% year over year, while the company maintained its FY2026 revenue outlook. A consensus comparison could not be verified.",
+      "source_urls": [
+        "https://ir.globex.example/news/q3-fy2026"
+      ],
+      "confidence": "medium"
+    }
+  ],
+  "moves": [],
+  "not_reported": [],
+  "unresolved": [],
+  "dropped_repeats": [],
+  "report_markdown": "## Globex: revenue rose 8%; full-year outlook maintained\n**Window:** November 2–9, 2026; releases after November 2 through November 9 included.\n\n### Globex Inc (NYSE: GLBX) — Q3 FY2026\n**Release summary:** For the quarter ended September 30, 2026, reported revenue was **$640 million, up 8% year over year**, and **GAAP EPS was $0.12**. Globex released results on November 5, 2026. FY2026 revenue guidance was maintained: the prior and current ranges are both **$2.5–$2.6 billion**. [Source: supplied investor-relations release](https://ir.globex.example/news/q3-fy2026).\n\n**Expectations:** consensus not verified for revenue or GAAP EPS; no beat or miss is assigned. The release supplies the year-over-year revenue comparison but no comparable prior-year GAAP EPS.\n\n**Verification limits:** The supplied release was the only available source; web access was unavailable, so independent corroboration was not possible. No transcript or replay was available to read, so management quotes and analyst Q&A themes are omitted. Stock reaction was not verified.\n\n**Watched companies without results in the window:** None.\n\n_Repeats checked by date: no previous brief given._"
+}
