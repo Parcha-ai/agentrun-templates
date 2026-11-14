@@ -1,0 +1,205 @@
+{
+  "checked_on": "2026-11-14",
+  "scope": {
+    "subject": "Open banking",
+    "purpose": "policy",
+    "region": "United Kingdom",
+    "window_start": "2026-11-14",
+    "window_end": "2027-02-12",
+    "interpretation": "UK open-banking policy, including adjacent open-finance data-sharing standards and payment-system access where relevant. Consultation rows use response deadlines, not publication dates. The window ends 90 days after the start."
+  },
+  "events": [
+    {
+      "name": "Innovate Finance Payments Forum 2026",
+      "type": "conference",
+      "date_start": "2026-12-02",
+      "date_end": "2026-12-02",
+      "date_status": "confirmed",
+      "date_note": "Organizer event listing identifies the 2026 edition; event page confirms 2 December. No page update date displayed.",
+      "location": "30 Fenchurch Street, London, United Kingdom",
+      "format": "in_person",
+      "organizer": "Innovate Finance",
+      "audience_size": null,
+      "cost": "Complimentary for members; general ticket price not established.",
+      "key_deadline": null,
+      "fit": 4,
+      "relevance": "A focused opportunity to discuss open-banking payments, modernising regulation and payments infrastructure with the policy ecosystem.",
+      "official_url": "https://www.innovatefinance.com/paymentsforum/",
+      "sources": [
+        "S4",
+        "S5"
+      ]
+    },
+    {
+      "name": "CP26/3: Regulatory framework for access to payment systems — response deadline",
+      "type": "comment_deadline",
+      "date_start": "2026-12-10",
+      "date_end": null,
+      "date_status": "confirmed",
+      "date_note": "PSR page dated 2026-10-15 confirms responses by 17:00 on 2026-12-10.",
+      "location": null,
+      "format": "unknown",
+      "organizer": "Payment Systems Regulator",
+      "audience_size": null,
+      "cost": null,
+      "key_deadline": "2026-12-10 17:00: consultation responses close; timezone not stated on the page.",
+      "fit": 4,
+      "relevance": "Adjacent but material to open-banking payment providers: proposed consolidation of direct and indirect payment-system access requirements.",
+      "official_url": "https://www.psr.org.uk/publications/consultations/cp263-regulatory-framework-for-access-to-payment-systems/",
+      "sources": [
+        "S6",
+        "S7"
+      ]
+    },
+    {
+      "name": "CP26/14: Open finance data sharing standards — response deadline",
+      "type": "comment_deadline",
+      "date_start": "2027-01-22",
+      "date_end": null,
+      "date_status": "confirmed",
+      "date_note": "Supplied authority-page capture, published 2026-10-30, confirms the closing date; no closing time stated.",
+      "location": "online",
+      "format": "virtual",
+      "organizer": "Regulator identified in the supplied capture; formal name not stated",
+      "audience_size": null,
+      "cost": null,
+      "key_deadline": "2027-01-22: consultation closes; responses through the online form.",
+      "fit": 5,
+      "relevance": "Direct opportunity to influence proposed open-finance data-sharing standards and their implications for the open-banking ecosystem.",
+      "official_url": "https://finreg-uk.example/consultations/cp26-14-open-finance",
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "name": "Open Banking Policy Summit 2027",
+      "type": "summit",
+      "date_start": "2027-01-28",
+      "date_end": null,
+      "date_status": "tbc",
+      "date_note": "2027-01-28 appears only in Confwatch. Organizer page updated 2026-08-01 says 2027 details will be announced soon.",
+      "location": null,
+      "format": "unknown",
+      "organizer": "Open Banking Policy Summit; legal organizer not stated",
+      "audience_size": null,
+      "cost": null,
+      "key_deadline": null,
+      "fit": 4,
+      "relevance": "Potentially strong policy engagement opportunity, but the 2027 date, location and programme require an organizer announcement.",
+      "official_url": "https://obpolicysummit.example/",
+      "sources": [
+        "S2",
+        "S3"
+      ]
+    }
+  ],
+  "top_actions": [
+    {
+      "event": "CP26/14: Open finance data sharing standards — response deadline",
+      "action": "Prepare a policy response for internal approval and filing through the authority's online form.",
+      "deadline": "2027-01-22",
+      "why": "Highest direct policy fit: a stated opportunity to influence data-sharing standards. Confirm the authority's identity and submission details before filing."
+    },
+    {
+      "event": "CP26/3: Regulatory framework for access to payment systems — response deadline",
+      "action": "Prepare and, following internal approval, file a response on access requirements affecting relevant payment providers.",
+      "deadline": "2026-12-10 17:00; timezone not stated",
+      "why": "The earliest confirmed response deadline concerns continuity and consolidation of payment-system access rules."
+    },
+    {
+      "event": "Innovate Finance Payments Forum 2026",
+      "action": "Prepare an open-banking policy briefing and arrange attendance, subject to the team's approval.",
+      "deadline": null,
+      "why": "The 2 December forum offers a timely setting for regulatory and infrastructure discussions. No dated booking cutoff was established."
+    }
+  ],
+  "open_items": [
+    "Recheck the Open Banking Policy Summit organizer announcement: 2027-01-28 and London are listing-only claims, not confirmed 2027 arrangements.",
+    "Payments Regulation & Innovation Summit 2027: Innovate Finance lists 2027-02-11 in London, but the fetched organizer agenda contains no event date. Retain as a lead, not a confirmed calendar row. [S8][S9]",
+    "The supplied CP26/14 capture does not identify the regulator formally or state a closing time. Verify these before any response is filed. [S1]"
+  ],
+  "coverage_note": "Used all three supplied captures without refetching. Searched FCA, PSR, Treasury, OBL and UK event sources; fetched selected official pages within the five-search/eight-fetch cap. Some pages exposed only navigation or partial content. Parliament, CMA, Bank of England and dedicated standards calendars were not separately checked; coverage is selective.",
+  "gaps": [
+    "CP26/14 is confirmed against the supplied authority-page capture, not an independently authenticated regulator website. Its formal authority identity and deadline lack independent corroboration.",
+    "The summit listing and organizer page do not establish the same 2027 details. Its provisional date remains TBC; no 2027 venue, price or attendance figure is asserted.",
+    "Independent checking was incomplete within the research cap. PSR consultation context was corroborated by legal commentary; several event and deadline claims remain single-origin.",
+    "No publication or update date was visible on several event pages; their source dates are null rather than inferred from search metadata.",
+    "Excluded the listed Payments Forum Autumn 2026 because 2026-10-20 is past, and Open Banking Expo 2027 because its listed June dates fall outside the window with no in-window deadline established.",
+    "Recommendations require human approval. No registration, purchase, response submission or contact was made. Regulatory dates are information, not legal advice."
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "CP26/14: Open finance data sharing standards — supplied authority-page capture",
+      "url": "https://finreg-uk.example/consultations/cp26-14-open-finance",
+      "published": "2026-10-30",
+      "official": true,
+      "found": true
+    },
+    {
+      "id": "S2",
+      "title": "UK fintech events — supplied Confwatch capture",
+      "url": "https://confwatch.example/uk/fintech",
+      "published": null,
+      "official": false,
+      "found": true
+    },
+    {
+      "id": "S3",
+      "title": "Open Banking Policy Summit — supplied organizer-page capture",
+      "url": "https://obpolicysummit.example/",
+      "published": "2026-08-01",
+      "official": true,
+      "found": true
+    },
+    {
+      "id": "S4",
+      "title": "Innovate Finance Payments Forum 2026",
+      "url": "https://www.innovatefinance.com/paymentsforum/",
+      "published": null,
+      "official": true,
+      "found": true
+    },
+    {
+      "id": "S5",
+      "title": "Innovate Finance Payments Forum — organizer event listing returned in search",
+      "url": "https://www.innovatefinance.com/events/innovate-finance-payments-forum",
+      "published": null,
+      "official": true,
+      "found": true
+    },
+    {
+      "id": "S6",
+      "title": "CP26/3 — Regulatory framework for access to payment systems",
+      "url": "https://www.psr.org.uk/publications/consultations/cp263-regulatory-framework-for-access-to-payment-systems/",
+      "published": "2026-10-15",
+      "official": true,
+      "found": true
+    },
+    {
+      "id": "S7",
+      "title": "PSR publishes consultation on the regulatory framework for access to payment systems",
+      "url": "https://www.regulationtomorrow.com/2026/10/psr-publishes-consultation-on-the-regulatory-framework-for-access-to-payment-systems/",
+      "published": "2026-10-15",
+      "official": false,
+      "found": true
+    },
+    {
+      "id": "S8",
+      "title": "Payments Regulation & Innovation Summit 2027 — partner listing; fetched page lacked event content",
+      "url": "https://www.innovatefinance.com/events/payments-regulation-innovation-summit-2027/",
+      "published": null,
+      "official": false,
+      "found": false
+    },
+    {
+      "id": "S9",
+      "title": "Payments Regulation & Innovation Summit 2027 — organizer agenda",
+      "url": "https://www.cityandfinancialglobal.com/payments-regulation-and-innovation-summit-2027/agenda",
+      "published": null,
+      "official": true,
+      "found": true
+    }
+  ],
+  "report_markdown": "Open banking | Policy | United Kingdom | 2026-11-14–2027-02-12\n\n| Date / status | Event / type | Location / format | Organizer | Audience | Cost | Key deadline | Fit / policy relevance | Official link |\n|---|---|---|---|---|---|---|---|---|\n| 2026-12-02 — confirmed | Innovate Finance Payments Forum 2026 / conference | 30 Fenchurch Street, London / in person | Innovate Finance | Not established | Complimentary for members; general price not established | No dated booking cutoff established | 4/5 — open-banking payments, regulation and infrastructure | [Organizer](https://www.innovatefinance.com/paymentsforum/) [S4][S5] |\n| 2026-12-10 — confirmed | CP26/3 response deadline / comment deadline | Not applicable / format not established | Payment Systems Regulator | Not applicable | Not stated | 17:00; timezone not stated | 4/5 — payment-system access requirements relevant to payment providers | [Authority](https://www.psr.org.uk/publications/consultations/cp263-regulatory-framework-for-access-to-payment-systems/) [S6][S7] |\n| 2027-01-22 — confirmed from supplied capture | CP26/14 response deadline / comment deadline | Online / virtual | Regulator; formal name not supplied | Not applicable | Not stated | Comments close; online form; time not stated | 5/5 — direct influence on open-finance data-sharing standards | [Authority capture](https://finreg-uk.example/consultations/cp26-14-open-finance) [S1] |\n| 2027-01-28 — TBC, listing only | Open Banking Policy Summit 2027 / summit | 2027 location and format unconfirmed | Open Banking Policy Summit; legal organizer unstated | Not stated | Not stated | None confirmed | 4/5 — potentially strong policy engagement; await announcement | [Organizer](https://obpolicysummit.example/) [S2][S3] |\n\n### Top 3 to act on now\n1. **CP26/14:** prepare a response for approval and filing by **2027-01-22**. First verify the authority's identity and submission details. [S1]\n2. **CP26/3:** prepare a response on relevant access requirements for approval and filing by **2026-12-10, 17:00**; the page does not specify timezone. [S6]\n3. **Payments Forum:** prepare a policy briefing and arrange attendance, subject to approval, for **2026-12-02**. No dated booking cutoff was established. [S4][S5]\n\nFit scores are analyst judgments, not organizer facts. Actions are recommendations for human approval.\n\n### Open items\n- Policy Summit: organizer page updated **2026-08-01** announces no 2027 details; **2027-01-28** comes only from the listing. Do not book against it yet. [S2][S3]\n- Payments Regulation & Innovation Summit: partner search listing gives **2027-02-11, London**, but the fetched organizer agenda supplies no event date. Kept outside the calendar pending confirmation. [S8][S9]\n- CP26/14: capture published **2026-10-30** confirms the closing date but not the formal regulator identity or closing time. [S1]\n\n### Coverage note\nSelective UK policy scan within five searches and eight fetches; supplied captures were not refetched. PSR's page is dated **2026-10-15**. Event-page update dates were not established. Parliament, CMA, Bank of England and dedicated standards calendars were not separately checked. The past October forum and out-of-window June Expo were excluded. [S2] No external actions were taken. Regulatory dates are information, not legal advice."
+}

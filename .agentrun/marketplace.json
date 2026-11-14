@@ -413,6 +413,12 @@
       "source": "./templates/industry-primer",
       "category": "research",
       "tags": ["industry-research", "primer", "market-size", "value-chain", "consulting", "due-diligence"]
+    },
+    {
+      "name": "industry-events",
+      "source": "./templates/industry-events",
+      "category": "marketing",
+      "tags": ["events", "conferences", "calendar", "deadlines", "trade-shows", "field-marketing"]
     }
   ]
 }
