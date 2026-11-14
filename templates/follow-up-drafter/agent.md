@@ -2,7 +2,7 @@
 name: follow-up-drafter
 display_name: "Follow-up drafter: ${parameters.label}"
 version: 0.1.0
-description: When a new email lands in a Gmail label you pick (say, follow-up), it reads the whole thread and writes your next reply as a Gmail draft in that thread, in your own voice. It answers each question from what the thread already says and leaves a bracketed blank for anything only you know (a price, a date, a yes). It never sends; you review and press send. It skips threads where you wrote last, a draft already waits, or the sender asked not to be contacted.
+description: When a new email lands in a Gmail label you pick (say, follow-up), it reads the whole thread and writes your next reply as a Gmail draft in that thread, in your own voice. It answers each question from what the thread already says and leaves a bracketed blank for anything only you know (a price, a date, a yes). It never sends. Each draft waits for your yes before it's saved, and you press send. It skips threads where you wrote last, a draft already waits, or the sender asked not to be contacted.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -35,9 +35,10 @@ inputs:
   notes: { type: string, required: false, maxLength: 1000, title: "What to say", description: "Facts or decisions the reply should carry that the thread doesn't hold (\"yes to Dec 1, no discount\"). Blank: unknowns become bracketed blanks.", examples: ["Yes to a Dec 1 start. No multi-year discount."] }
 budget: { per_run_usd: 0.25, tool_calls: 10 }
 learning: true
-# Runs unattended (its job runs on a trigger): the thread read is allowed, and the draft runs once the owner ticks it at
-# apply. Its pins (no cc, bcc, extra recipients, other mailbox or attachment) hold either way; it has no send tool.
-approvals: never
+# It drafts, so ask: each run's draft waits for the owner's yes, where they see the recipient before it is saved; the
+# thread read runs where the owner turned on Allow reads. Its pins (no cc, bcc, extra recipients, other mailbox or
+# attachment) hold either way; it has no send tool.
+approvals: ask
 triggers:
   - name: new-mail-in-label
     # Each new mail in the label is one run. In Composio, create the Gmail trigger GMAIL_NEW_GMAIL_MESSAGE (a poll

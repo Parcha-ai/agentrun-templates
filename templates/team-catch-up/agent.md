@@ -2,7 +2,7 @@
 name: team-catch-up
 display_name: Team catch-up
 version: 0.1.0
-description: A short Slack post with what happened in your team's channels since the last one. Decisions people actually agreed on (not proposals), requests to you that nobody has answered, and blockers with who is waiting on what, each linked to the message. It reads replies before it calls anything open, never reports the same item twice, and says which channel it couldn't read. It reads only the channels you list and posts to one.
+description: A short Slack post with what happened in your team's channels since the last one. Decisions people actually agreed on (not proposals), requests to you that nobody has answered, and blockers with who is waiting on what, each linked to the message. It reads replies before it calls anything open, never reports the same item twice, and says which channel it couldn't read. It reads only the channels you list and posts to one. It runs on its own only if you pick Never for approvals at install, and stays held to its pins either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -38,8 +38,9 @@ inputs:
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "Topics or people to put first. Blank: everything, ranked by deadline and who is waiting.", examples: ["the v2 pricing launch"] }
 budget: { per_run_usd: 0.60, tool_calls: 60 }
 learning: true
-# Runs unattended (its job runs on a schedule): reads are allowed, and the post runs once the owner ticks it at apply.
-# Its pin holds either way.
+# Suggested never: its job is an unattended pinned post on a schedule. A ticked tool is granted, not allowed, so it
+# runs on its own only if the owner picks Never at install; under ask each read and the post wait for a yes. Its pins
+# hold either way.
 approvals: never
 triggers:
   - name: weekday-catch-up

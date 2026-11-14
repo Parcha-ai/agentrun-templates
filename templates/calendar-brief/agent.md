@@ -2,7 +2,7 @@
 name: calendar-brief
 display_name: Calendar brief
 version: 0.1.0
-description: Your next few days of meetings, posted to Slack each morning. It lists every meeting in order, flags the ones that overlap, says what each meeting asks you to prepare (a deck, a doc to read, numbers to bring) in the invite's own words, and adds a short note from the public web on each outside company you're meeting, with links. It never accepts, declines or moves anything, and a company it can't verify gets "nothing found", not a guess.
+description: Your next few days of meetings, posted to Slack each morning. It lists every meeting in order, flags the ones that overlap, says what each meeting asks you to prepare (a deck, a doc to read, numbers to bring) in the invite's own words, and adds a short note from the public web on each outside company you're meeting, with links. It never accepts, declines or moves anything, and a company it can't verify gets "nothing found", not a guess. It runs on its own only if you pick Never for approvals at install, and stays held to its pins either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -41,7 +41,9 @@ inputs:
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "Meetings, people or companies to go deeper on. Blank: every meeting.", examples: ["the Globex pilot kickoff"] }
 budget: { per_run_usd: 1.20, tool_calls: 60 }
 learning: true
-# Runs unattended (its job runs on a schedule): the post runs once the owner ticks it at apply; its pin holds either way.
+# Suggested never: its job is an unattended pinned post on a schedule. A ticked tool is granted, not allowed, so it
+# runs on its own only if the owner picks Never at install; under ask each read and the post wait for a yes. Its pins
+# hold either way.
 approvals: never
 triggers:
   - name: weekday-morning

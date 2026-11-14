@@ -2,7 +2,7 @@
 name: morning-brief
 display_name: Morning brief
 version: 0.1.0
-description: Each weekday morning, one plan for your day in Slack. It reads today's calendar, the unread and starred mail that waits on you, and the Slack channels you pick, then says what needs you, in what order, and links each item to the meeting, email or message behind it. It flags clashing meetings, keeps requests to you apart from its own suggestions, and says which source it couldn't read rather than calling it quiet. It reads only; its one write is the post to your channel.
+description: Each weekday morning, one plan for your day in Slack. It reads today's calendar, the unread and starred mail that waits on you, and the Slack channels you pick, then says what needs you, in what order, and links each item to the meeting, email or message behind it. It flags clashing meetings, keeps requests to you apart from its own suggestions, and says which source it couldn't read rather than calling it quiet. It reads only; its one write is the post to your channel. It runs on its own only if you pick Never for approvals at install, and stays held to its pins either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -59,8 +59,9 @@ inputs:
   date: { type: string, format: date, required: false, title: "Date", description: "Plan a day other than today (YYYY-MM-DD), for a run by hand. Blank: today in your time zone." }
 budget: { per_run_usd: 0.60, tool_calls: 50 }
 learning: true
-# Runs unattended (its job runs on a schedule): reads are allowed, and the post runs once the owner ticks it at apply.
-# Its pin holds either way.
+# Suggested never: its job is an unattended pinned post on a schedule. A ticked tool is granted, not allowed, so it
+# runs on its own only if the owner picks Never at install; under ask each read and the post wait for a yes. Its pins
+# hold either way.
 approvals: never
 triggers:
   - name: weekday-morning

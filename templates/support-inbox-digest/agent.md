@@ -2,7 +2,7 @@
 name: support-inbox-digest
 display_name: Support inbox digest
 version: 0.1.0
-description: Once a week it reads the support mail that matches one Gmail search you set (a label, or mail to your support address) and posts a digest to one Slack channel. Themes are ranked by how many threads raised them, each with a count, the change from last week, and a short quote with no names, emails or phone numbers. Urgent threads (outages, lockouts, double charges, churn or chargeback threats) come first with Gmail links. It reads only from Gmail and never replies to anyone.
+description: Once a week it reads the support mail that matches one Gmail search you set (a label, or mail to your support address) and posts a digest to one Slack channel. Themes are ranked by how many threads raised them, each with a count, the change from last week, and a short quote with no names, emails or phone numbers. Urgent threads (outages, lockouts, double charges, churn or chargeback threats) come first with Gmail links. It reads only from Gmail and never replies to anyone. It runs on its own only if you pick Never for approvals at install, and stays held to its pins either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -40,8 +40,9 @@ inputs:
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "A product area or customer to call out. Blank: every theme.", examples: ["billing"] }
 budget: { per_run_usd: 0.80, tool_calls: 25 }
 learning: true
-# Runs unattended (its job runs on a schedule): the search is allowed, and the post runs once the owner ticks it at
-# apply. Both pins hold either way; it has no write to Gmail.
+# Suggested never: its job is an unattended pinned post on a schedule. A ticked tool is granted, not allowed, so it
+# runs on its own only if the owner picks Never at install; under ask the search and the post wait for a yes. Both pins
+# hold either way; it has no write to Gmail.
 approvals: never
 triggers:
   - name: weekly

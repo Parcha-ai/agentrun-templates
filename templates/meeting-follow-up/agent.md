@@ -2,7 +2,7 @@
 name: meeting-follow-up
 display_name: Meeting follow-up
 version: 0.1.0
-description: At the end of each workday it goes through the meetings that ended today with people from outside your company and saves a follow-up email for each one as a Gmail draft. Each draft thanks them, lists the invite's agenda with a bracketed blank for each outcome, and leaves a blank for the next step. It never invents what was agreed and never sends; you fill the blanks and press send. Internal meetings, ones you declined, cancelled ones and ones it already drafted are skipped.
+description: At the end of each workday it goes through the meetings that ended today with people from outside your company and saves a follow-up email for each one as a Gmail draft. Each draft thanks them, lists the invite's agenda with a bracketed blank for each outcome, and leaves a blank for the next step. It never invents what was agreed and never sends. Each draft waits for your yes before it's saved, then you fill the blanks and press send. Internal meetings, ones you declined, cancelled ones and ones it already drafted are skipped.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -42,10 +42,10 @@ inputs:
   notes: { type: string, required: false, maxLength: 2000, title: "What happened", description: "What was agreed, per meeting, to fill in instead of blanks (\"Globex: 30-day pilot from Dec 1, Kim sends the data export\"). Blank: every outcome is a bracketed blank.", examples: ["Globex: 30-day pilot from Dec 1; Kim sends the data export by Friday."] }
 budget: { per_run_usd: 0.40, tool_calls: 15 }
 learning: true
-# Runs unattended (its job runs on a schedule): the calendar read is allowed, and the drafts run once the owner ticks
-# them at apply. Their pins (no cc, bcc, extra recipients, other mailbox, attachment or thread) hold either way; it has
-# no send tool.
-approvals: never
+# It drafts, so ask: each draft waits for the owner's yes, where they see the recipient before it is saved; the calendar
+# read runs where the owner turned on Allow reads. Its pins (no cc, bcc, extra recipients, other mailbox, attachment or
+# thread) hold either way; it has no send tool.
+approvals: ask
 triggers:
   - name: end-of-day
     source: { kind: schedule, cron: "${parameters.cron}", timezone: "${parameters.timezone}" }
