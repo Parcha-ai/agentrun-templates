@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "follow-ups.schema.json",
+  "title": "Meeting follow-ups",
+  "description": "The follow-up drafts saved for one day's ended outside meetings (never sent), the blanks the owner fills, and the meetings left alone with the reason.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["date", "cutoff", "drafted", "not_drafted", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "date": { "type": "string", "format": "date" },
+    "cutoff": { "type": ["string", "null"], "format": "date-time", "description": "meetings ending after this got no draft" },
+    "drafted": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["event_id", "title", "recipient_email", "subject", "body", "saved"],
+        "properties": {
+          "event_id": { "type": "string", "maxLength": 200 },
+          "title": { "type": "string", "maxLength": 300 },
+          "start": { "type": ["string", "null"], "format": "date-time" },
+          "url": { "type": ["string", "null"], "format": "uri" },
+          "recipient_email": { "type": "string", "format": "email" },
+          "recipient_name": { "type": ["string", "null"], "maxLength": 200 },
+          "others": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 200 }, "description": "other outside attendees, for the owner to add" },
+          "subject": { "type": "string", "maxLength": 300 },
+          "body": { "type": "string", "minLength": 1, "maxLength": 6000 },
+          "blanks": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 200 }, "description": "the bracketed blanks in the body, for the owner to fill" },
+          "draft_id": { "type": ["string", "null"], "maxLength": 100 },
+          "saved": { "type": "boolean", "description": "false when the draft call was refused or failed" }
+        }
+      }
+    },
+    "not_drafted": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "reason"],
+        "properties": {
+          "event_id": { "type": ["string", "null"], "maxLength": 200 },
+          "title": { "type": "string", "maxLength": 300 },
+          "reason": { "type": "string", "maxLength": 300 }
+        }
+      }
+    },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 4000, "description": "a short note for the owner: which drafts wait, who to add, the blanks to fill" }
+  }
+}

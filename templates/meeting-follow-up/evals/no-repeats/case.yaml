@@ -1,0 +1,12 @@
+# Applied with these parameters. Pass: 3 of 3 runs. The fixtures stand in for the owner's Composio Google Calendar and
+# Gmail; every call is recorded for the graders.
+parameters:
+  internal_domains: [acme.example]
+mcp:
+  googlecalendar: fixtures/calendar-mcp.json
+  gmail: fixtures/gmail-mcp.json
+grants:
+  - mcp:googlecalendar/GOOGLECALENDAR_EVENTS_LIST
+  - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
+# The agent starts with a learned note (fixtures/learning/) saying the Globex kickoff was drafted at noon.
+learning: fixtures/learning
