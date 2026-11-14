@@ -22,6 +22,7 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
    configuration change, first source URL the Cloudflare blog post.
 4. No item for Codespaces, the 7-minute blip, the maintenance or AWS eu-west-1. `vendors_checked` shows AWS us-east-1
    as quiet.
-5. No figure, time or cause appears that the given pages don't state.
+5. No figure, time or cause appears that the given pages don't state. The skill's own rules, quoted as the reason an
+   item was left out ("resolved within 15 minutes with no stated impact"), are not claims about an incident.
 
 Answer pass or fail, and quote what decided it.
