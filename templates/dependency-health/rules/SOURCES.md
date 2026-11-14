@@ -35,15 +35,22 @@ is a fact to report with its exact text.
 
 ## Repository (GitHub)
 
-GitHub's public API, read with `web_fetch`. It answers 60 unauthenticated requests an hour, so spend them on:
+No GitHub connection: everything is public GitHub, read anonymously with `web_fetch`. Feeds and raw files have no
+rate limit; `api.github.com` answers 60 anonymous requests an hour for the whole run, so it gets at most 4 calls per
+package (the alternatives share them) and only for what nothing else serves.
 
-- `https://api.github.com/repos/<owner>/<repo>`: `archived`, `pushed_at`, `license`, `open_issues_count` (issues and
-  PRs together), `stargazers_count`, `default_branch`.
-- `https://api.github.com/repos/<owner>/<repo>/releases?per_page=20`
-- `https://api.github.com/repos/<owner>/<repo>/commits?since=<YYYY-MM-DD>&per_page=100` (pages with `&page=2`)
-- `https://api.github.com/repos/<owner>/<repo>/contributors?per_page=20` (all-time: never the 12-month count)
-- `https://api.github.com/search/issues?q=repo:<owner>/<repo>+is:issue+is:open&sort=created&order=asc&per_page=5`
-- `https://api.github.com/repos/<owner>/<repo>/community/profile` (security policy, code of conduct)
+- Free: `https://github.com/<owner>/<repo>/releases.atom` (versions, dates, notes; no releases: `/tags.atom`),
+  `https://github.com/<owner>/<repo>/commits/<default branch>.atom` (the newest 20 commits, authors and dates), and
+  `https://raw.githubusercontent.com/<owner>/<repo>/HEAD/<path>` for LICENSE, SECURITY.md, CHANGELOG, GOVERNANCE.md,
+  `.github/FUNDING.yml`, manifests and lockfiles. Open issues and PRs: the "Open" counts on
+  `https://github.com/<owner>/<repo>/issues` and `/pulls`.
+- 1 API call: `https://api.github.com/repos/<owner>/<repo>` for `archived`, `pushed_at`, `license`, `stargazers_count`,
+  `default_branch`.
+- 1 to 3 more, only when needed: `https://api.github.com/repos/<owner>/<repo>/commits?since=<YYYY-MM-DD>&per_page=100`
+  for the 12-month committer count when the feed's 20 commits are all recent (one page; a full page means "at least");
+  `https://api.github.com/search/issues?q=repo:<owner>/<repo>+is:issue+is:open&sort=created&order=asc&per_page=5` for
+  the oldest open issues; `https://api.github.com/repos/<owner>/<repo>/contributors?per_page=20` (all-time: never the
+  12-month count).
 
-A `403` with `rate limit exceeded` is a gap to name, not a fact about the project. GitLab and Codeberg: their own API
+A `403` or `429` from the API is a gap to name, not a fact about the project. GitLab and Codeberg: their own API
 (`https://gitlab.com/api/v4/projects/<owner>%2F<repo>`, `https://codeberg.org/api/v1/repos/<owner>/<repo>`).

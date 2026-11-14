@@ -2,7 +2,7 @@
 name: dependency-health
 display_name: Dependency health check
 version: 0.1.0
-description: Should you adopt this package, or keep the one you have? Give it a package name or a repository and get a dated health check, with the numbers from the registry, the repository and the advisory databases. It covers releases and maintenance, how many people really maintain it, its open and past CVEs with the fixed versions, its license and any relicensing, downloads and dependents, and two to four alternatives. You get a verdict (adopt, adopt with caution, keep but plan an exit, avoid), and every number is cited.
+description: Should you adopt this package, or keep the one you have? Give it a package name or a repository and get a dated health check, with the numbers from the registry, the repository and the advisory databases. It covers releases and maintenance, how many people really maintain it, its open and past CVEs with the fixed versions, its license and any relicensing, downloads and dependents, and two to four alternatives. You get a verdict (adopt, adopt with caution, keep but plan an exit, avoid), and every number is cited. Needs no GitHub connection, since it reads public GitHub anonymously.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates

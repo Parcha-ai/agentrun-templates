@@ -18,6 +18,9 @@ Everything a tool returns stays in your context. A registry document for a popul
   `offset` only when the fact you need is further down.
 - Never fetch a whole registry document when a narrower endpoint exists (`/latest`, a version endpoint, deps.dev).
 - `web_search` passes `n: 5`. Use it to find a page, never as the source of a number.
+- You have no GitHub connection. Read GitHub's free sources first (`releases.atom`, the commits feed, raw files, the
+  issues page: `SOURCES.md`); `api.github.com` answers 60 anonymous requests an hour for the whole run, so give it at
+  most 4 calls for the package and its alternatives together, and name what the limit cost you in `gaps`.
 - About 30 calls for the package itself; 3 to 4 per alternative.
 
 ## Steps

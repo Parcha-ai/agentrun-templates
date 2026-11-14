@@ -2,7 +2,7 @@
 name: oss-tracker
 display_name: Open-source project tracker
 version: 0.1.0
-description: A weekly health snapshot of the open-source projects you depend on or compete with. For each repository or package you get stars and their change, downloads and their trend, active contributors over 30 and 90 days, how concentrated the commits are (bus factor), issue and pull request health, the last release and the release pace, and anything that changed the picture this week (a major release, a CVE, a relicense, an archive, a call for maintainers). Each project is marked rising, stalling or fading on several signals, never one, and every number names its source and period.
+description: A weekly health snapshot of the open-source projects you depend on or compete with. For each repository or package you get stars and their change, downloads and their trend, active contributors over 30 and 90 days, how concentrated the commits are (bus factor), issue and pull request health, the last release and the release pace, and anything that changed the picture this week (a major release, a CVE, a relicense, an archive, a call for maintainers). Each project is marked rising, stalling or fading on several signals, never one, and every number names its source and period. Needs no GitHub connection, since it reads public GitHub anonymously.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates

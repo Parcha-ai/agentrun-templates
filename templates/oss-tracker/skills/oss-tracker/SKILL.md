@@ -22,10 +22,11 @@ you write nothing anywhere.
 
 ## Context
 
-GitHub's API answers 60 unauthenticated requests an hour. Budget about 8 calls per project: the repo, releases, one or
-two commit pages, one issue search, one PR search, the registry's downloads, and one search for news. Pass `max_chars`
-(4000) on every fetch. More than 10 projects: the ten with the most change get the full set; the rest get the repo,
-releases and downloads, and the report names them as lightly checked.
+You have no GitHub connection. Read GitHub's free sources first (`releases.atom`, the commits feed, raw files, the
+issues and pulls pages: `ENDPOINTS.md`); `api.github.com` answers 60 anonymous requests an hour for the whole run, so
+give it at most 3 calls per project (the repo, one commits page, one search) and only for what the free sources don't
+serve. Pass `max_chars` (4000) on every fetch. More than 10 projects: the ten with the most change get the full set;
+the rest get the feeds and downloads, and the report names them as lightly checked.
 
 ## Steps
 
