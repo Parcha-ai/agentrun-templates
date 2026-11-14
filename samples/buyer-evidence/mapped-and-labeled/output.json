@@ -1,0 +1,146 @@
+{
+  "checked_on": "2026-11-14",
+  "interpretation": "Prepare Ledgerly for a CFO at a 400-person US manufacturer, comparing against the buyer’s current AP process. Use only the six supplied test-page captures; no incumbent or current-process baseline was specified.",
+  "coverage": "Cost has customer results, an independent benchmark and commissioned ROI evidence, but no buyer-specific economics. Audit evidence supports conditional acceptance, not a guarantee. Independent sources do not verify Ledgerly’s savings or its claimed SOC reports.",
+  "objections": [
+    {
+      "objection": "It costs too much for what we'd save",
+      "buyer_words": "Show me net savings after subscription, implementation and internal effort—not a headline ROI from a different business.",
+      "evidence": [
+        {
+          "claim": "Median fully loaded cost per invoice: $9.87 for mostly manual teams, $2.36 for the top quartile of automated teams.",
+          "context": "March 2026 survey of 410 US companies; 96 manufacturing respondents. These are aggregate benchmarks, not manufacturing-only results or a before-and-after comparison.",
+          "source": "AP Benchmarks — Cost per invoice benchmark 2026",
+          "url": "https://apbenchmarks.example/2026/cost-per-invoice",
+          "date": "2026-03",
+          "segment_fit": "partial",
+          "fit_reason": "US sample includes manufacturing, but no manufacturing-specific or company-size results are supplied.",
+          "independence": "third_party"
+        },
+        {
+          "claim": "Cost per invoice fell from $9.40 to $3.10 over the 12 months after going live on Ledgerly.",
+          "context": "Tern Logistics, a 600-person US freight company processing 9,000 invoices monthly; measured by Tern’s finance team and published by Ledgerly in April 2026.",
+          "source": "Ledgerly — Tern Logistics customer story",
+          "url": "https://ledgerly.example/customers/tern-logistics",
+          "date": "2026-04",
+          "segment_fit": "partial",
+          "fit_reason": "Similar company size and same country, but freight rather than manufacturing; measurement definitions are not supplied.",
+          "independence": "vendor"
+        },
+        {
+          "claim": "A manufacturing controller reported: “Implementation took five months, not the six weeks we were promised.”",
+          "context": "One August 2026 review from a controller at a 250–500-employee manufacturer; no implementation cost is disclosed.",
+          "source": "Ledgerly reviews — manufacturing controller",
+          "url": "https://reviews.example/products/ledgerly",
+          "date": "2026-08",
+          "segment_fit": "strong",
+          "fit_reason": "Same industry and a company-size range containing the buyer; geography is unspecified.",
+          "independence": "third_party"
+        },
+        {
+          "claim": "Reports a 212% return on investment over three years and payback in under 7 months.",
+          "context": "September 2025 Northfield Research study commissioned by Ledgerly; interviews with four customers combined into one composite organization of 1,000 employees.",
+          "source": "Northfield Research — Ledgerly-commissioned TEI study",
+          "url": "https://ledgerly.example/resources/tei-study",
+          "date": "2025-09",
+          "segment_fit": "weak",
+          "fit_reason": "Larger composite with no stated industry or geography; retained as the only supplied ROI/payback evidence, not a buyer forecast.",
+          "independence": "vendor"
+        }
+      ],
+      "talking_points": [
+        "Suggest using AP Benchmarks to frame the opportunity, not predict savings: it compares different groups. Tern supplies a Ledgerly before-and-after result, but neither source verifies the buyer’s baseline or net savings.",
+        "Suggest treating Northfield’s Ledgerly-commissioned ROI as a hypothesis to test, not an independent forecast. Its composite cannot establish this manufacturer’s return.",
+        "Acknowledge the manufacturing controller’s five-month implementation versus six weeks promised. Ask for a scoped rollout and full implementation costs before committing to a payback claim."
+      ],
+      "question": "Tern reported cost per invoice falling from $9.40 to $3.10; what are your current fully loaded cost per invoice and monthly invoice volume, using a consistent cost definition?"
+    },
+    {
+      "objection": "Our auditors won't accept automated approvals",
+      "buyer_words": "Can our auditors rely on the approval controls and evidence, or will we still need a parallel manual process?",
+      "evidence": [
+        {
+          "claim": "A manufacturing controller reported: “The approval audit trail made our audit easy.”",
+          "context": "One August 2026 review from a controller at a 250–500-employee manufacturer; no auditor opinion, control scope or testing details are supplied.",
+          "source": "Ledgerly reviews — manufacturing controller",
+          "url": "https://reviews.example/products/ledgerly",
+          "date": "2026-08",
+          "segment_fit": "strong",
+          "fit_reason": "Same industry and similar size; one reviewer’s experience is not assurance that this buyer’s auditor will accept the controls.",
+          "independence": "third_party"
+        },
+        {
+          "claim": "An auditor may rely on an automated control when general IT controls have been tested and are effective, and the control is tested once in the period.",
+          "context": "November 2025 Auditing Standards Board staff Q&A; system-enforced approval is the example. This is conditional guidance, not a Ledgerly assessment.",
+          "source": "Auditing Standards Board staff — automated-controls Q&A",
+          "url": "https://asb.example/staff-qa/automated-controls",
+          "date": "2025-11",
+          "segment_fit": "weak",
+          "fit_reason": "No industry or size match is stated; retained as the only supplied standards guidance directly addressing auditor reliance.",
+          "independence": "third_party"
+        },
+        {
+          "claim": "Ledgerly says it holds SOC 1 Type II and SOC 2 Type II reports; every approval records the approver, timestamp and policy rule applied.",
+          "context": "Undated trust page captured November 14, 2026. SOC 1 period ended June 30, 2026; SOC 2 period unspecified. Reports available under NDA but not supplied.",
+          "source": "Ledgerly — Trust center",
+          "url": "https://ledgerly.example/trust",
+          "date": "2026-11-14",
+          "segment_fit": "weak",
+          "fit_reason": "No manufacturing or size-specific scope is supplied; retained as the only direct statement about Ledgerly’s reports and approval records.",
+          "independence": "vendor"
+        }
+      ],
+      "talking_points": [
+        "Suggest citing the ASB staff Q&A to challenge a blanket rejection, not to promise acceptance: reliance is conditional on effective tested IT controls and control testing. The buyer’s auditor confirms applicability.",
+        "Use Ledgerly’s trust page to request the actual SOC reports and sample approval records. The buyer’s auditor confirms scope, exceptions, coverage periods and required customer controls; the page alone is not assurance.",
+        "Offer the manufacturing controller’s audit-trail comment as a relevant peer experience, not an audit opinion. Acknowledge that the same reviewer also reported a longer-than-promised implementation."
+      ],
+      "question": "Given the ASB Q&A’s testing conditions, how many approval controls would your auditor need to assess, and how many currently have documented IT-control and in-period testing evidence?"
+    }
+  ],
+  "against": [
+    {
+      "objection": "It costs too much for what we'd save",
+      "finding": "A controller at a 250–500-employee manufacturer reported implementation taking five months rather than the six weeks promised. This challenges rollout assumptions; the review does not quantify the cost impact.",
+      "source": "Ledgerly reviews — manufacturing controller",
+      "url": "https://reviews.example/products/ledgerly",
+      "date": "2026-08"
+    },
+    {
+      "objection": "Our auditors won't accept automated approvals",
+      "finding": "ASB staff guidance makes reliance conditional on tested, effective general IT controls and testing the automated control once in the period. It does not support unconditional auditor acceptance.",
+      "source": "Auditing Standards Board staff — automated-controls Q&A",
+      "url": "https://asb.example/staff-qa/automated-controls",
+      "date": "2025-11"
+    }
+  ],
+  "gaps": [
+    {
+      "objection": "It costs too much for what we'd save",
+      "why": "The supplied case study and commissioned study are vendor evidence. AP Benchmarks supports category-level potential, not Ledgerly-specific savings. No pricing, buyer baseline, manufacturing-only savings or independent Ledgerly ROI verification is supplied.",
+      "what_would_close_it": "Obtain a scoped quote, implementation and internal-effort estimates, the buyer’s invoice volume and fully loaded baseline, plus a comparable manufacturer’s documented costs and realized results."
+    },
+    {
+      "objection": "Our auditors won't accept automated approvals",
+      "why": "The trust-page capture asserts reports exist, but neither report was supplied. The ASB Q&A and single review do not independently verify report scope, exceptions, approval-record integrity or acceptance by this buyer’s auditor.",
+      "what_would_close_it": "Obtain current SOC reports, relevant coverage updates, approval-control documentation and sample records. Have the buyer’s auditor confirm applicable guidance, customer controls and the testing needed for reliance."
+    }
+  ],
+  "do_next": [
+    "For Tuesday’s call, prepare a baseline worksheet covering invoice volume, fully loaded processing cost, exceptions and current approval effort; leave savings uncalculated until definitions align.",
+    "Request a scoped Ledgerly quote and rollout plan with implementation fees, internal effort, dependencies and acceptance criteria; explicitly test the manufacturing review’s delay concern.",
+    "Request the actual SOC reports, coverage updates and sample approval evidence for review by the buyer’s auditor; do not present the trust page as auditor acceptance.",
+    "Request a comparable manufacturing reference and the commissioned study’s assumptions; distinguish verified customer outcomes from composite projections."
+  ],
+  "near_misses": [],
+  "unreachable": [
+    "https://ledgerly.example/customers/tern-logistics — user-designated unreachable test site; used supplied 2026-11-14 capture, without fetching.",
+    "https://ledgerly.example/resources/tei-study — user-designated unreachable test site; used supplied 2026-11-14 capture, without fetching.",
+    "https://apbenchmarks.example/2026/cost-per-invoice — user-designated unreachable test site; used supplied 2026-11-14 capture, without fetching.",
+    "https://ledgerly.example/trust — user-designated unreachable test site; used supplied 2026-11-14 capture, without fetching.",
+    "https://asb.example/staff-qa/automated-controls — user-designated unreachable test site; used supplied 2026-11-14 capture, without fetching.",
+    "https://reviews.example/products/ledgerly — user-designated unreachable test site; used supplied 2026-11-14 capture, without fetching."
+  ],
+  "ignored_instructions": [],
+  "report_markdown": "**Evidence pack: Ledgerly AP automation for a CFO at a 400-person US manufacturer**\nCompare against the buyer’s current AP process; no incumbent or baseline was specified. Checked 2026-11-14 using only the six supplied test-page captures. Cost evidence supports investigation, not a buyer-specific return. Audit evidence supports conditional reliance, not guaranteed acceptance. Independent sources do not verify Ledgerly’s savings or claimed SOC reports.\n\n### It costs too much for what we'd save\n_In the buyer's words:_ \"Show me net savings after subscription, implementation and internal effort—not a headline ROI from a different business.\"\n\n| Claim | Source | Fit | Date | Independence |\n|---|---|---|---|---|\n| Median fully loaded cost per invoice: $9.87 for mostly manual teams; $2.36 for the top quartile of automated teams. Survey of 410 US companies, including 96 manufacturing respondents; no manufacturing-only breakout or before-and-after comparison. | [AP Benchmarks](https://apbenchmarks.example/2026/cost-per-invoice) | partial: US sample includes manufacturing, but aggregate results and no size breakdown | 2026-03 | third_party |\n| Cost per invoice fell from $9.40 to $3.10 over 12 months after go-live. Tern Logistics: 600-person US freight company, 9,000 invoices monthly; measured by its finance team. | [Ledgerly — Tern Logistics](https://ledgerly.example/customers/tern-logistics) | partial: similar size and same country, different industry | 2026-04 | vendor |\n| “Implementation took five months, not the six weeks we were promised.” One controller review from a 250–500-employee manufacturer; cost impact undisclosed. | [Ledgerly reviews — manufacturing controller](https://reviews.example/products/ledgerly) | strong: same industry and similar size; geography unspecified | 2026-08 | third_party |\n| 212% ROI over three years and payback in under 7 months. Ledgerly-commissioned Northfield Research study; four customer interviews combined into a 1,000-employee composite. | [Northfield Research — commissioned TEI](https://ledgerly.example/resources/tei-study) | weak: larger composite, industry and geography unspecified; only supplied ROI/payback source | 2025-09 | vendor |\n\n- Suggest using AP Benchmarks to frame opportunity, not predict savings: it compares different groups. Tern offers a Ledgerly before-and-after result, but neither establishes this buyer’s baseline or net savings.\n- Treat Northfield’s commissioned ROI as a hypothesis to test, not an independent forecast or a result for this manufacturer.\n- Acknowledge the manufacturing controller’s five-month implementation versus six weeks promised. Seek a scoped rollout and all implementation costs before claiming payback.\n\n**Ask:** Tern reported cost per invoice falling from $9.40 to $3.10; what are your current fully loaded cost per invoice and monthly invoice volume, using a consistent cost definition?\n\n### Our auditors won't accept automated approvals\n_In the buyer's words:_ \"Can our auditors rely on the approval controls and evidence, or will we still need a parallel manual process?\"\n\n| Claim | Source | Fit | Date | Independence |\n|---|---|---|---|---|\n| “The approval audit trail made our audit easy.” One controller review from a 250–500-employee manufacturer; no auditor opinion or testing details supplied. | [Ledgerly reviews — manufacturing controller](https://reviews.example/products/ledgerly) | strong: same industry and similar size; one experience, not assurance | 2026-08 | third_party |\n| An auditor may rely on an automated control when general IT controls have been tested and are effective, and the control is tested once in the period. System-enforced approval is the example. | [ASB staff Q&A](https://asb.example/staff-qa/automated-controls) | weak: no segment match; only supplied standards guidance on reliance | 2025-11 | third_party |\n| Ledgerly says it holds SOC 1 Type II and SOC 2 Type II reports; approval records include approver, timestamp and policy rule. SOC 1 period ended June 30, 2026; SOC 2 period unspecified. Reports under NDA, not supplied. | [Ledgerly Trust center](https://ledgerly.example/trust) | weak: no segment-specific scope; only direct report and record statement | 2026-11-14, capture date; page undated | vendor |\n\n- Cite the ASB staff Q&A against a blanket rejection, not as a guarantee: reliance requires effective tested IT controls and control testing. The buyer’s auditor confirms applicability.\n- Use Ledgerly’s trust page to request the actual reports and sample approval records. The buyer’s auditor confirms scope, exceptions, coverage and required customer controls; the page is not assurance.\n- Offer the manufacturing controller’s audit-trail comment as a relevant peer experience, not an audit opinion. The same reviewer reported a longer-than-promised implementation.\n\n**Ask:** Given the ASB Q&A’s testing conditions, how many approval controls would your auditor need to assess, and how many currently have documented IT-control and in-period testing evidence?\n\n### What cuts against you\n- A manufacturing controller reported five months to implement versus six weeks promised. This challenges rollout assumptions, though no cost impact is quantified. ([Ledgerly reviews](https://reviews.example/products/ledgerly), 2026-08)\n- Auditor reliance is conditional on tested, effective general IT controls and in-period automated-control testing—not automatic acceptance. ([ASB staff Q&A](https://asb.example/staff-qa/automated-controls), 2025-11)\n\n### Gaps\n- **Cost:** The supplied customer result and ROI study are vendor evidence. The independent benchmark does not verify Ledgerly-specific savings. Pricing, buyer baseline and independently verified manufacturing savings are missing. Close with a scoped quote, all-in implementation estimates, consistent buyer baseline and a comparable manufacturer's documented results.\n- **Audit:** The trust page is not the underlying SOC reports. The Q&A and one review do not verify Ledgerly’s report scope, exceptions, approval-record integrity or this buyer’s auditor acceptance. Close with the reports, coverage updates, control documentation and sample records; the buyer’s auditor confirms reliance requirements.\n\n### Do next\n- Prepare an invoice-cost and approval-effort baseline worksheet for Tuesday; do not calculate savings before definitions align.\n- Request a scoped quote and rollout plan, including internal effort, dependencies and acceptance criteria; test the reported delay concern.\n- Obtain SOC reports, coverage updates and sample approval evidence for the buyer’s auditor.\n- Request a comparable manufacturing reference and the commissioned study’s assumptions; separate customer outcomes from composite projections."
+}

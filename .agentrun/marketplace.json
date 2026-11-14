@@ -425,6 +425,12 @@
       "source": "./templates/supplier-discovery",
       "category": "operations",
       "tags": ["sourcing", "procurement", "suppliers", "manufacturing", "supply-chain", "rfq"]
+    },
+    {
+      "name": "buyer-evidence",
+      "source": "./templates/buyer-evidence",
+      "category": "sales",
+      "tags": ["sales-enablement", "objection-handling", "case-studies", "roi", "proof-points"]
     }
   ]
 }
