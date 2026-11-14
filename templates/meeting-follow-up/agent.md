@@ -35,8 +35,8 @@ parameters:
   calendar_id: { type: string, required: false, default: primary, description: "the Google calendar to read: primary (your main calendar) unless you set another calendar's id" }
   internal_domains: { type: array, items: { type: string, pattern: "^[a-z0-9.-]+\\.[a-z]{2,}$" }, required: false, description: "the email domains of your own company (acme.com, acme.co.uk). A meeting with only these people gets no draft. Blank: your own address's domain" }
   voice: { type: string, required: false, pattern: "^[^\\n]{0,600}$", description: "how you write, in a line: \"short, first names, sign off 'Best, Mia'\". Blank: plain and short, signed with your first name" }
-  cron: { type: string, format: cron, default: "0 17 * * 1-5", description: "when it runs, as a cron line (minute hour day-of-month month day-of-week): weekdays at 17:00 unless you set it. Only meetings that ended before the run get a draft" }
-  timezone: { type: string, format: timezone, default: UTC, description: "your IANA time zone (Europe/Madrid, America/New_York): the cron line and \"today\" are read in it. UTC unless you set it" }
+  cron: { type: string, format: cron, default: "0 17 * * 1-5", required: false, description: "when it runs, as a cron line (minute hour day-of-month month day-of-week): weekdays at 17:00 unless you set it. Only meetings that ended before the run get a draft" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "your IANA time zone (Europe/Madrid, America/New_York): the cron line and \"today\" are read in it. UTC unless you set it" }
 inputs:
   date: { type: string, format: date, required: false, title: "Day", description: "Draft follow-ups for this day's meetings instead of today's, for a run by hand.", examples: ["2026-11-17"] }
   notes: { type: string, required: false, maxLength: 2000, title: "What happened", description: "What was agreed, per meeting, to fill in instead of blanks (\"Globex: 30-day pilot from Dec 1, Kim sends the data export\"). Blank: every outcome is a bracketed blank.", examples: ["Globex: 30-day pilot from Dec 1; Kim sends the data export by Friday."] }

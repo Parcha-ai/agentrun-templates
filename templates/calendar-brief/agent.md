@@ -35,12 +35,12 @@ mcp:
     allow: []
     pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
 parameters:
-  channel: { type: string, required: true, pattern: "^[CDG][A-Z0-9]{8,12}$", description: "where the brief is posted, by id: a channel (C0123ABCD: in Slack, the channel's details, at the bottom) or your direct-message channel with the app (D0123ABCD). The only place it posts" }
+  channel: { type: string, pattern: "^[CDG][A-Z0-9]{8,12}$", description: "where the brief is posted, by id: a channel (C0123ABCD: in Slack, the channel's details, at the bottom) or your direct-message channel with the app (D0123ABCD). The only place it posts" }
   calendar_id: { type: string, required: false, default: primary, description: "the Google calendar to read: primary (your main calendar) unless you set another calendar's id" }
   days: { type: integer, required: false, default: 1, description: "how many days ahead each brief covers, from the run's start, 1 to 14: 1 (today) unless you set it" }
   internal_domains: { type: array, items: { type: string, pattern: "^[a-z0-9.-]+\\.[a-z]{2,}$" }, required: false, description: "the email domains of your own company (acme.com, acme.co.uk). Attendees from them are internal and get no company note. Blank: your own address's domain" }
-  cron: { type: string, format: cron, default: "0 7 * * 1-5", description: "when the brief runs, as a cron line (minute hour day-of-month month day-of-week): weekdays at 07:00 unless you set it" }
-  timezone: { type: string, format: timezone, default: UTC, description: "your IANA time zone (Europe/Madrid, America/New_York): the cron line and every time in the brief are read in it. UTC unless you set it" }
+  cron: { type: string, format: cron, default: "0 7 * * 1-5", required: false, description: "when the brief runs, as a cron line (minute hour day-of-month month day-of-week): weekdays at 07:00 unless you set it" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "your IANA time zone (Europe/Madrid, America/New_York): the cron line and every time in the brief are read in it. UTC unless you set it" }
 inputs:
   days: { type: integer, required: false, minimum: 1, maximum: 14, title: "Days ahead", description: "How many days to cover from now. Blank: the days setting.", examples: [3] }
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "Meetings, people or companies to go deeper on. Blank: every meeting.", examples: ["the Globex pilot kickoff"] }

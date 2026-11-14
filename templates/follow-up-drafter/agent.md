@@ -27,8 +27,8 @@ mcp:
       GMAIL_FETCH_MESSAGE_BY_THREAD_ID: { user_id: null }
       GMAIL_CREATE_EMAIL_DRAFT: { cc: null, bcc: null, extra_recipients: null, user_id: null, attachment: null }
 parameters:
-  label: { type: string, required: true, pattern: "^[^\\n]{1,100}$", description: "the Gmail label whose new mail gets a draft reply, as you see it in Gmail (follow-up, Clients/Active). Create the Composio trigger with the query label:<this label>" }
-  gmail_trigger_id: { type: string, required: true, pattern: "^[A-Za-z0-9_-]{4,64}$", description: "the id Composio shows for the Gmail trigger you created for this label (ti_...). Only that trigger's events start a run" }
+  label: { type: string, pattern: "^[^\\n]{1,100}$", description: "the Gmail label whose new mail gets a draft reply, as you see it in Gmail (follow-up, Clients/Active). Create the Composio trigger with the query label:<this label>" }
+  gmail_trigger_id: { type: string, pattern: "^[A-Za-z0-9_-]{4,64}$", description: "the id Composio shows for the Gmail trigger you created for this label (ti_...). Only that trigger's events start a run" }
   voice: { type: string, required: false, pattern: "^[^\\n]{0,600}$", description: "how you write, in a line: \"short, first names, no exclamation marks, sign off 'Best, Mia'\". Blank: it copies the tone of your own messages in each thread" }
 inputs:
   thread_id: { type: string, required: false, pattern: "^[0-9a-f]{10,24}$", title: "Thread id", description: "Draft a reply in this Gmail thread, for a run by hand (the long hex id in the thread's URL). Leave it out on the trigger's runs: the event names the thread.", examples: ["19a2b3c4d5e6f708"] }

@@ -47,13 +47,13 @@ mcp:
       SLACK_RETRIEVE_MESSAGE_PERMALINK_URL: { channel: "${parameters.channels}" }
       SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null }
 parameters:
-  channels: { type: array, items: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$" }, required: true, description: "the Slack channels to read, by id (C0123ABCD: in Slack, the channel's details, at the bottom), at most 10. These are the only channels it can read" }
-  channel: { type: string, required: true, pattern: "^[CDG][A-Z0-9]{8,12}$", description: "where the plan is posted, by id: a channel (C0123ABCD) or your own direct-message channel with the app (D0123ABCD). The only place it posts" }
+  channels: { type: array, items: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$" }, description: "the Slack channels to read, by id (C0123ABCD: in Slack, the channel's details, at the bottom), at most 10. These are the only channels it can read" }
+  channel: { type: string, pattern: "^[CDG][A-Z0-9]{8,12}$", description: "where the plan is posted, by id: a channel (C0123ABCD) or your own direct-message channel with the app (D0123ABCD). The only place it posts" }
   slack_user_id: { type: string, required: false, pattern: "^[UW][A-Z0-9]{8,12}$", description: "your Slack member id (U0123ABCD: your profile, the three dots, Copy member ID). With it the plan knows which messages ask you; without it, it lists requests that name no one" }
   calendar_id: { type: string, required: false, default: primary, description: "the Google calendar to read: primary (your main calendar) unless you set another calendar's id" }
   mail_query: { type: string, required: false, default: "in:inbox (is:unread OR is:starred) newer_than:1d", description: "the Gmail search that finds mail for the plan, in Gmail's search syntax. Unread or starred inbox mail from the last day unless you set another; keep newer_than equal to the gap between runs" }
-  cron: { type: string, format: cron, default: "0 8 * * 1-5", description: "when the plan runs, as a cron line (minute hour day-of-month month day-of-week): weekdays at 08:00 unless you set it" }
-  timezone: { type: string, format: timezone, default: UTC, description: "your IANA time zone (Europe/Madrid, America/New_York): the cron line and every time in the plan are read in it. UTC unless you set it" }
+  cron: { type: string, format: cron, default: "0 8 * * 1-5", required: false, description: "when the plan runs, as a cron line (minute hour day-of-month month day-of-week): weekdays at 08:00 unless you set it" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "your IANA time zone (Europe/Madrid, America/New_York): the cron line and every time in the plan are read in it. UTC unless you set it" }
 inputs:
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "Projects, people or topics to put first today. Blank: everything that waits on you, ranked by when it is due.", examples: ["the Northwind renewal and anything from legal"] }
   date: { type: string, format: date, required: false, title: "Date", description: "Plan a day other than today (YYYY-MM-DD), for a run by hand. Blank: today in your time zone." }

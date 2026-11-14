@@ -35,10 +35,10 @@ mcp:
     # channel_id is the name the action also takes a channel by: held absent, so the pinned channel is the only one.
     pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
 parameters:
-  owner: { type: string, required: true, pattern: "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", description: "the GitHub account or organization that owns the repository, like Parcha-ai" }
-  repo: { type: string, required: true, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "the repository's name without the owner, like agentrun" }
-  channel: { type: string, required: true, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the celebration goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
-  include_prereleases: { type: boolean, default: false, description: "also celebrate releases GitHub marks as pre-release (betas, release candidates); off unless you turn it on" }
+  owner: { type: string, pattern: "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", description: "the GitHub account or organization that owns the repository, like Parcha-ai" }
+  repo: { type: string, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "the repository's name without the owner, like agentrun" }
+  channel: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the celebration goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
+  include_prereleases: { type: boolean, default: false, required: false, description: "also celebrate releases GitHub marks as pre-release (betas, release candidates); off unless you turn it on" }
 inputs:
   tag: { type: string, required: false, maxLength: 100, pattern: "^[^\\s]+$", title: "Release tag", description: "Announce one release by hand, by its tag. Leave it out on the trigger's runs: the event names the release.", examples: ["v2.4.0"] }
 budget: { per_run_usd: 0.40 }

@@ -31,7 +31,7 @@ mcp:
       LINEAR_LIST_ISSUES_BY_TEAM_ID: { team_id: "${parameters.team_id}" }
       LINEAR_UPDATE_ISSUE: { stateId: null, assigneeId: null, teamId: null, cycleId: null, projectId: null, priority: null, title: null, description: null }
 parameters:
-  team_id: { type: string, required: true, pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", description: "your Linear team's ID, a UUID like 9cfb482a-81e3-4154-b5b9-2c805e70a02d, as Linear's API and Composio's LINEAR_LIST_LINEAR_TEAMS show it. Not the team key like ENG" }
+  team_id: { type: string, pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", description: "your Linear team's ID, a UUID like 9cfb482a-81e3-4154-b5b9-2c805e70a02d, as Linear's API and Composio's LINEAR_LIST_LINEAR_TEAMS show it. Not the team key like ENG" }
   max_labels: { type: integer, required: false, default: 3, description: "the most labels the agent adds to one issue; 3 unless you set it" }
   protected_labels: { type: array, items: { type: string, maxLength: 50 }, required: false, description: "optional: labels only a person applies, one per entry (\"Security\", \"Customer escalation\"). The agent never adds these" }
 budget: { per_run_usd: 0.40 }

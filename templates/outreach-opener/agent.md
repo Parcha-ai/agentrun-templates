@@ -25,7 +25,7 @@ mcp:
     pin:
       GMAIL_CREATE_EMAIL_DRAFT: { cc: null, bcc: null, extra_recipients: null, user_id: null, attachment: null, thread_id: null }
 parameters:
-  about_you: { type: string, required: true, pattern: "^[^\\n]{10,600}$", description: "who you are and what you offer, in a line or two: \"I run sales at Shiftly; we make shift scheduling for retail chains.\" Every opener says why you're writing from this" }
+  about_you: { type: string, pattern: "^[^\\n]{10,600}$", description: "who you are and what you offer, in a line or two: \"I run sales at Shiftly; we make shift scheduling for retail chains.\" Every opener says why you're writing from this" }
   sign_off: { type: string, required: false, pattern: "^[^\\n]{0,200}$", description: "how you sign: \"Best, Mia\" or \"Mia Torres, Shiftly\". Blank: no name, so add your own" }
 inputs:
   person: { type: string, minLength: 2, maxLength: 120, title: "Person", description: "Their full name.", examples: ["Kim Lee"] }

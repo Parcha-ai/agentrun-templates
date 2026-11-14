@@ -30,8 +30,8 @@ mcp:
       GITHUB_ADD_LABELS_TO_AN_ISSUE: { owner: "${parameters.owner}", repo: "${parameters.repo}" }
       GITHUB_CREATE_AN_ISSUE_COMMENT: { owner: "${parameters.owner}", repo: "${parameters.repo}" }
 parameters:
-  owner: { type: string, required: true, pattern: "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", description: "the GitHub account or organization that owns the repository, like Parcha-ai" }
-  repo: { type: string, required: true, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "the repository's name without the owner, like agentrun" }
+  owner: { type: string, pattern: "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", description: "the GitHub account or organization that owns the repository, like Parcha-ai" }
+  repo: { type: string, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "the repository's name without the owner, like agentrun" }
   max_labels: { type: integer, required: false, default: 3, description: "the most labels the agent adds to one issue; 3 unless you set it" }
   protected_labels: { type: array, items: { type: string, maxLength: 50 }, required: false, description: "optional: labels only a person applies, one per entry (\"release-blocker\", \"good first issue\"). The agent never adds these" }
 inputs:

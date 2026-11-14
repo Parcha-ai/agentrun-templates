@@ -17,13 +17,13 @@ inputs:
   deal_types: { type: array, items: { type: string }, required: false, title: "Deal types", description: "Deal types to include this run, instead of the setup's." }
   focus: { type: string, required: false, maxLength: 300, title: "Focus", description: "A one-off angle for this run, such as \"only deals over $100M\"." }
 parameters:
-  sector: { type: string, required: true, pattern: "^[^\\n]{2,200}$", description: "the sector, with a geography if you want one: \"industrial robotics\", \"US healthcare services\". Only deals where the company operates in it are covered" }
-  stage: { type: string, pattern: "^[^\\n]{0,200}$", description: "a round or size band (\"seed to Series B\", \"deals over $50M\"). Deals outside it are dropped. Leave out for all" }
+  sector: { type: string, pattern: "^[^\\n]{2,200}$", description: "the sector, with a geography if you want one: \"industrial robotics\", \"US healthcare services\". Only deals where the company operates in it are covered" }
+  stage: { type: string, pattern: "^[^\\n]{0,200}$", required: false, description: "a round or size band (\"seed to Series B\", \"deals over $50M\"). Deals outside it are dropped. Leave out for all" }
   deal_types: { type: array, items: { type: string }, required: false, default: [], description: "deal types to include, one per item, from: funding rounds, new funds, acquisitions, mergers, divestitures, buyouts, IPO filings and listings, shutdowns. Leave out for all" }
-  angle: { type: string, default: dealmakers, enum: [founder, investor, corp_dev, dealmakers], description: "who reads it: founder stresses active investors and terms, investor stresses new companies and exits, corp_dev stresses rationale and multiples. dealmakers unless you set it" }
-  lookback_days: { type: integer, description: "how many days back a run looks; leave it out for 7. Keep it equal to the gap between runs" }
-  cron: { type: string, format: cron, default: "0 8 * * 1", description: "when the run starts, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it; set lookback_days to its gap" }
-  timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
+  angle: { type: string, default: dealmakers, enum: [founder, investor, corp_dev, dealmakers], required: false, description: "who reads it: founder stresses active investors and terms, investor stresses new companies and exits, corp_dev stresses rationale and multiples. dealmakers unless you set it" }
+  lookback_days: { type: integer, required: false, description: "how many days back a run looks; leave it out for 7. Keep it equal to the gap between runs" }
+  cron: { type: string, format: cron, default: "0 8 * * 1", required: false, description: "when the run starts, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it; set lookback_days to its gap" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 budget: { per_run_usd: 4.00 }
 learning: true
 triggers:

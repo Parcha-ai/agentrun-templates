@@ -29,12 +29,12 @@ mcp:
     # channel_id is the name the action also takes a channel by: held absent, so the pinned channel is the only one.
     pin: { SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null } }
 parameters:
-  goal_amount: { type: number, required: true, description: "the revenue goal for each period, in whole currency units (100000 for $100,000), counted before Stripe's fees and after refunds" }
-  currency: { type: string, default: usd, pattern: "^[a-z]{3}$", description: "the currency the goal is in, as Stripe writes it (usd, eur, gbp); only money moved in this currency counts, nothing is converted" }
-  period: { type: string, enum: [month, quarter, year], default: month, description: "the period the goal is for: month, quarter or year; it starts over at the start of each" }
-  timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone your periods start in and the cron line is read in (America/New_York): UTC unless you set it" }
-  cron: { type: string, format: cron, default: "0 * * * *", description: "when the check runs, as a cron line (minute hour day-of-month month day-of-week): every hour on the hour unless you set it" }
-  channel: { type: string, required: true, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the celebration goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
+  goal_amount: { type: number, description: "the revenue goal for each period, in whole currency units (100000 for $100,000), counted before Stripe's fees and after refunds" }
+  currency: { type: string, default: usd, pattern: "^[a-z]{3}$", required: false, description: "the currency the goal is in, as Stripe writes it (usd, eur, gbp); only money moved in this currency counts, nothing is converted" }
+  period: { type: string, enum: [month, quarter, year], default: month, required: false, description: "the period the goal is for: month, quarter or year; it starts over at the start of each" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone your periods start in and the cron line is read in (America/New_York): UTC unless you set it" }
+  cron: { type: string, format: cron, default: "0 * * * *", required: false, description: "when the check runs, as a cron line (minute hour day-of-month month day-of-week): every hour on the hour unless you set it" }
+  channel: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the celebration goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
 inputs:
   as_of: { type: string, format: date-time, required: false, title: "Check as of", description: "Check the period that holds this moment, by hand. Blank: now.", examples: ["2026-11-18T15:00:00Z"] }
 # One run an hour, capped at $0.10, however many payments come in.

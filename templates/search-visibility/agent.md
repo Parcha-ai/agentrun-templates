@@ -17,13 +17,13 @@ inputs:
   competitors: { type: array, items: { type: string }, required: false, title: "Competitor domains", description: "Competitor domains for this run, instead of the setup's list." }
   focus: { type: string, required: false, maxLength: 300, title: "Focus", description: "A one-off angle for this run, such as \"only queries about pricing\" or \"one country\"." }
 parameters:
-  queries: { type: array, items: { type: string }, required: true, description: "the queries to track, one per item, for example \"kyb software\" and \"business verification api\". At most 25 items; each is checked once per engine" }
-  domain: { type: string, required: true, pattern: "^[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", description: "your domain, without https:// or a path: example.com. A result on it or any subdomain is yours" }
-  brand: { type: string, pattern: "^[^\\n]{0,120}$", description: "your brand name when it differs from the domain; leave out otherwise" }
+  queries: { type: array, items: { type: string }, description: "the queries to track, one per item, for example \"kyb software\" and \"business verification api\". At most 25 items; each is checked once per engine" }
+  domain: { type: string, pattern: "^[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", description: "your domain, without https:// or a path: example.com. A result on it or any subdomain is yours" }
+  brand: { type: string, pattern: "^[^\\n]{0,120}$", required: false, description: "your brand name when it differs from the domain; leave out otherwise" }
   competitors: { type: array, items: { type: string }, required: false, default: [], description: "competitor domains to compare against, one per item (acme.com). Leave out to report the top three domains per query instead" }
-  locale: { type: string, default: "en-US", pattern: "^[a-z]{2}-[A-Z]{2}$", description: "the language and country the searches are read in (en-GB, de-DE). en-US unless you set it" }
-  cron: { type: string, format: cron, default: "0 7 * * 1", description: "when the check runs, as a cron line (minute hour day-of-month month day-of-week): Monday 07:00 unless you set it" }
-  timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
+  locale: { type: string, default: "en-US", pattern: "^[a-z]{2}-[A-Z]{2}$", required: false, description: "the language and country the searches are read in (en-GB, de-DE). en-US unless you set it" }
+  cron: { type: string, format: cron, default: "0 7 * * 1", required: false, description: "when the check runs, as a cron line (minute hour day-of-month month day-of-week): Monday 07:00 unless you set it" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 budget: { per_run_usd: 3.00 }
 learning: true
 triggers:

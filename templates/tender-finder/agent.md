@@ -18,12 +18,12 @@ inputs:
   holdings: { type: array, items: { type: string }, required: false, title: "Holdings", description: "Certifications, set-asides or status held, for this run, instead of the setup's." }
   focus: { type: string, required: false, maxLength: 300, title: "Focus", description: "A one-off angle for this run, such as \"only single contracts\" or \"development-funded work\"." }
 parameters:
-  offering: { type: string, required: true, pattern: "^[^\\n]{2,300}$", description: "what you sell, in the words a buyer would use: \"penetration testing services\", \"school meal catering\"" }
-  regions: { type: array, items: { type: string }, required: true, description: "countries or regions to search, one per item: \"Germany\", \"Netherlands\" or \"EU\". A bloc covers its member countries and the bloc's own journal. At most 10 items" }
+  offering: { type: string, pattern: "^[^\\n]{2,300}$", description: "what you sell, in the words a buyer would use: \"penetration testing services\", \"school meal catering\"" }
+  regions: { type: array, items: { type: string }, description: "countries or regions to search, one per item: \"Germany\", \"Netherlands\" or \"EU\". A bloc covers its member countries and the bloc's own journal. At most 10 items" }
   holdings: { type: array, items: { type: string }, required: false, default: [], description: "certifications, set-asides or status you hold, one per item (\"ISO 27001\", \"SME\", \"8(a)\"). Each notice is marked qualifies, does not qualify or unclear. Leave out and no eligibility call is made" }
-  min_value: { type: string, pattern: "^[^\\n]{0,60}$", description: "the smallest contract value you want, with its currency: \"EUR 100000\". Notices with no stated value are kept. Leave out for no filter" }
-  cron: { type: string, format: cron, default: "0 7 * * 1", description: "when the search runs, as a cron line (minute hour day-of-month month day-of-week): Monday 07:00 unless you set it" }
-  timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
+  min_value: { type: string, pattern: "^[^\\n]{0,60}$", required: false, description: "the smallest contract value you want, with its currency: \"EUR 100000\". Notices with no stated value are kept. Leave out for no filter" }
+  cron: { type: string, format: cron, default: "0 7 * * 1", required: false, description: "when the search runs, as a cron line (minute hour day-of-month month day-of-week): Monday 07:00 unless you set it" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 budget: { per_run_usd: 6.00 }
 learning: true
 triggers:

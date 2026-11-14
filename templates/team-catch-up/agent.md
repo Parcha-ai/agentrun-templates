@@ -27,12 +27,12 @@ mcp:
       SLACK_RETRIEVE_MESSAGE_PERMALINK_URL: { channel: "${parameters.channels}" }
       SLACK_SEND_MESSAGE: { channel: "${parameters.channel}", channel_id: null }
 parameters:
-  channels: { type: array, items: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$" }, required: true, description: "the Slack channels to catch up on, by id (C0123ABCD: in Slack, the channel's details, at the bottom), at most 10. These are the only channels it can read" }
-  channel: { type: string, required: true, pattern: "^[CDG][A-Z0-9]{8,12}$", description: "where the catch-up is posted, by id: a channel (C0123ABCD) or your direct-message channel with the app (D0123ABCD). The only place it posts" }
-  slack_user_id: { type: string, required: true, pattern: "^[UW][A-Z0-9]{8,12}$", description: "your Slack member id (U0123ABCD: your profile, the three dots, Copy member ID), so it knows which requests are to you" }
+  channels: { type: array, items: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$" }, description: "the Slack channels to catch up on, by id (C0123ABCD: in Slack, the channel's details, at the bottom), at most 10. These are the only channels it can read" }
+  channel: { type: string, pattern: "^[CDG][A-Z0-9]{8,12}$", description: "where the catch-up is posted, by id: a channel (C0123ABCD) or your direct-message channel with the app (D0123ABCD). The only place it posts" }
+  slack_user_id: { type: string, pattern: "^[UW][A-Z0-9]{8,12}$", description: "your Slack member id (U0123ABCD: your profile, the three dots, Copy member ID), so it knows which requests are to you" }
   lookback_hours: { type: integer, required: false, default: 24, description: "how far back the first run reads, in hours; later runs start where the last one ended. 24 unless you set it" }
-  cron: { type: string, format: cron, default: "0 9 * * 1-5", description: "when the catch-up runs, as a cron line (minute hour day-of-month month day-of-week): weekdays at 09:00 unless you set it" }
-  timezone: { type: string, format: timezone, default: UTC, description: "your IANA time zone (Europe/Madrid, America/New_York): the cron line and every time in the post are read in it. UTC unless you set it" }
+  cron: { type: string, format: cron, default: "0 9 * * 1-5", required: false, description: "when the catch-up runs, as a cron line (minute hour day-of-month month day-of-week): weekdays at 09:00 unless you set it" }
+  timezone: { type: string, format: timezone, default: UTC, required: false, description: "your IANA time zone (Europe/Madrid, America/New_York): the cron line and every time in the post are read in it. UTC unless you set it" }
 inputs:
   since: { type: string, format: date-time, required: false, title: "Since", description: "Read from this time instead of where the last run ended (a run by hand). RFC 3339, with the offset.", examples: ["2026-11-16T09:00:00Z"] }
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "Topics or people to put first. Blank: everything, ranked by deadline and who is waiting.", examples: ["the v2 pricing launch"] }
