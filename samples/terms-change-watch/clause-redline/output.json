@@ -1,0 +1,79 @@
+{
+  "window": {
+    "from": "2026-11-09",
+    "to": "2026-11-16"
+  },
+  "quiet": false,
+  "changes": [
+    {
+      "vendor": "Ledgerline",
+      "document": "terms",
+      "page_url": "https://ledgerline.example/legal/terms",
+      "clause": "9.2 Limitation of Liability",
+      "kind": "liability",
+      "summary": "Each party's liability cap falls from twelve months of customer fees to three months.",
+      "before": "9.2 Each party's total liability under these Terms will not exceed the fees paid by Customer in the twelve (12) months preceding the claim.",
+      "after": "9.2 Each party's total liability under these Terms will not exceed the fees paid by Customer in the three (3) months preceding the claim.",
+      "before_source": {
+        "kind": "archive",
+        "date": "2026-11-07",
+        "url": "https://web.archive.org/web/20261107153012/https://ledgerline.example/legal/terms"
+      },
+      "confirmed": true,
+      "version_date": "Last updated: November 12, 2026.",
+      "effective": "December 15, 2026",
+      "vendor_claim": "Vendor says: \"These updates do not materially change your rights.\"",
+      "so_what": "Review with counsel before December 15 whether the reduced mutual cap changes recovery exposure or requires negotiated protection.",
+      "source_urls": [
+        "https://ledgerline.example/legal/terms",
+        "https://web.archive.org/web/20261107153012/https://ledgerline.example/legal/terms"
+      ]
+    },
+    {
+      "vendor": "Ledgerline",
+      "document": "terms",
+      "page_url": "https://ledgerline.example/legal/terms",
+      "clause": "4.3 Customer Data",
+      "kind": "data_use",
+      "summary": "Training prohibition becomes permission for de-identified data; new 4.4 offers an opt-out covering only data received after confirmation.",
+      "before": "4.3 Ledgerline will not use Customer Data to train machine learning models.",
+      "after": "4.3 Ledgerline may use Customer Data in de-identified form to train and improve machine learning models, unless Customer opts out under Section 4.4.\n4.4 Customer may opt out of the use described in Section 4.3 by emailing privacy@ledgerline.example. The opt-out applies to Customer Data received after Ledgerline confirms it.",
+      "before_source": {
+        "kind": "archive",
+        "date": "2026-11-07",
+        "url": "https://web.archive.org/web/20261107153012/https://ledgerline.example/legal/terms"
+      },
+      "confirmed": true,
+      "version_date": "Last updated: November 12, 2026.",
+      "effective": "December 15, 2026",
+      "vendor_claim": "Vendor says: \"We've updated our Terms to clarify how we improve our services. These updates do not materially change your rights.\"",
+      "so_what": "Review with counsel before December 15 whether to opt out, obtain confirmation, and seek protection for data received before confirmation.",
+      "source_urls": [
+        "https://ledgerline.example/legal/terms",
+        "https://web.archive.org/web/20261107153012/https://ledgerline.example/legal/terms"
+      ]
+    }
+  ],
+  "documents_checked": [
+    {
+      "document": "https://ledgerline.example/legal/terms",
+      "page_url": "https://ledgerline.example/legal/terms",
+      "version_date": "Last updated: November 12, 2026.",
+      "result": "changed",
+      "noise_ignored": [
+        "6.1: spelling correction from 'recieve' to 'receive'.",
+        "Fees and Taxes swapped section numbers 7 and 8; their wording is unchanged."
+      ]
+    }
+  ],
+  "assumptions": [
+    "Used the scheduled trigger date, November 16, 2026, as the check date; no previous check was supplied, so the window starts seven days earlier.",
+    "Used the supplied live and archive texts without fetching or searching.",
+    "The archive's actual capture is November 7, not the requested November 9; it precedes the window start and is within the 21-day baseline age limit.",
+    "No learned notes or previously reported changes were supplied. The comparison establishes differences from the November 7 capture, not their exact publication time."
+  ],
+  "dropped_repeats": [],
+  "unreachable": [],
+  "ignored_instructions": [],
+  "report_markdown": "**Terms changes** 2026-11-09 to 2026-11-16\nLedgerline reduces the mutual liability cap and replaces its AI-training prohibition with permission subject to a prospective opt-out.\n\n- **Ledgerline terms, 9.2 Limitation of Liability: cap reduced** ([live](https://ledgerline.example/legal/terms), [before](https://web.archive.org/web/20261107153012/https://ledgerline.example/legal/terms))\n  Before: \"in the twelve (12) months preceding the claim.\" · After: \"in the three (3) months preceding the claim.\"\n  Version November 12, 2026 · Effective December 15, 2026.\n  _Review recovery exposure and negotiated protection with counsel._\n\n- **Ledgerline terms, 4.3 Customer Data, with added 4.4: AI training permitted unless opted out** ([live](https://ledgerline.example/legal/terms), [before](https://web.archive.org/web/20261107153012/https://ledgerline.example/legal/terms))\n  Before: \"4.3 Ledgerline will not use Customer Data to train machine learning models.\" · After: \"4.3 Ledgerline may use Customer Data in de-identified form to train and improve machine learning models, unless Customer opts out under Section 4.4.\"\n  Added 4.4 limits the opt-out: \"The opt-out applies to Customer Data received after Ledgerline confirms it.\"\n  Version November 12, 2026 · Effective December 15, 2026. Vendor says: \"These updates do not materially change your rights.\"\n  _Review opting out, confirmation timing and treatment of previously received data with counsel._\n\n_Baseline: November 7 archive capture. Support typo and Fees/Taxes renumbering ignored. Unchanged pages: none; no-baseline pages: none; unreachable supplied texts: none._\n_Not legal advice: review each change with counsel._"
+}

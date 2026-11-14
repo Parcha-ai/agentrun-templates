@@ -401,6 +401,12 @@
       "source": "./templates/platform-changes",
       "category": "engineering",
       "tags": ["deprecations", "breaking-changes", "changelogs", "apis", "pricing", "weekly"]
+    },
+    {
+      "name": "terms-change-watch",
+      "source": "./templates/terms-change-watch",
+      "category": "compliance",
+      "tags": ["terms-of-service", "privacy-policy", "dpa", "vendor-risk", "legal", "weekly"]
     }
   ]
 }
