@@ -6,14 +6,6 @@ max_cost_usd: 2.00
 Today is 2026-11-14. Size this market bottom-up. The three inputs below come from pages you can treat as read; cite them
 by the URLs given. You do not need to search for other inputs. A short top-down check is enough.
 
-Input:
-```json
-{
-  "market": "Appointment-reminder software for independent veterinary clinics",
-  "region": "United States"
-}
-```
-
 <captured-page url="https://vetassociation.example/stats/clinics-2025" captured="2026-11-14T13:00:00Z" untrusted>
 <h1>Independent veterinary clinics in the US, 2025</h1>
 <p>Published 2026-02-10. There were 40,000 independent (non-corporate) veterinary clinics in the United States at the

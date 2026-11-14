@@ -5,11 +5,3 @@ max_cost_usd: 1.50
 ---
 Today is 2026-11-14. Research this company for me.
 
-Input:
-```json
-{
-  "company": "Zephyrine Coil Works",
-  "website": "https://zephyrine-coilworks.example",
-  "lens": "investing"
-}
-```

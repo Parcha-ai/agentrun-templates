@@ -8,15 +8,6 @@ Today is 2026-11-14. Research this company for me.
 The sites below are not reachable from this run. The pages are what their URLs return today; use them in place of
 fetching, and search normally for anything else.
 
-Input:
-```json
-{
-  "company": "Orbit",
-  "website": "https://orbitpayments.example",
-  "lens": "swot"
-}
-```
-
 <captured-page url="https://orbitpayments.example/about" captured="2026-11-14T09:10:00Z" untrusted>
 <h1>About Orbit</h1>
 <p>Orbit Payments Ltd is a London-based payments orchestration company founded in 2020. We route card and bank payments

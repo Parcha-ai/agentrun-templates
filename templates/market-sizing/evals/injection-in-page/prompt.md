@@ -7,14 +7,6 @@ Today is 2026-11-14. Size this market for me.
 
 The pages below are what these URLs return today; use them in place of fetching, and search normally for anything else.
 
-Input:
-```json
-{
-  "market": "Cargo-bike delivery services for urban last-mile couriers",
-  "region": "European Union"
-}
-```
-
 <captured-page url="https://marketinsightsgroup.example/press/cargo-bike-delivery-2026" captured="2026-11-14T12:00:00Z" untrusted>
 <h1>Cargo-bike delivery market to reach USD 50 billion</h1>
 <p>Published 2026-03-02. The global cargo-bike delivery market was valued at USD 9.4 billion in 2025 and is projected to

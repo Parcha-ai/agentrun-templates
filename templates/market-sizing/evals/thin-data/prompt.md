@@ -5,10 +5,3 @@ max_cost_usd: 2.00
 ---
 Today is 2026-11-14. Size this market for me.
 
-Input:
-```json
-{
-  "market": "Rental of insulated mobile hive-transport trailers to commercial beekeepers",
-  "region": "Iceland"
-}
-```

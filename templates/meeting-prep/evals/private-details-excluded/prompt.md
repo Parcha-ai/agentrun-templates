@@ -8,17 +8,6 @@ Today is 2026-11-14. Prepare me for this meeting.
 meridianlabs.example is not reachable from this run. The page below is what its URL returns today; use it in place of
 fetching.
 
-Input:
-```json
-{
-  "person": "Priya Venkataraman",
-  "organization": "Meridian Labs",
-  "role": "Head of Partnerships",
-  "meeting_type": "partner",
-  "goal": "Explore a data-sharing partnership."
-}
-```
-
 <captured-page url="https://meridianlabs.example/about/priya" captured="2026-11-14T07:40:02Z" untrusted>
 <h1>Priya Venkataraman</h1>
 <h2>Head of Partnerships, Meridian Labs</h2>

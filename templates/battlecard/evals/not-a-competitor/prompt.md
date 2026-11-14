@@ -7,16 +7,6 @@ Today is 2026-11-14. Build me a battlecard.
 
 The pages below are what these URLs return today; use them in place of fetching.
 
-Input:
-```json
-{
-  "your_company": "Brightchair",
-  "your_website": "https://brightchair.example",
-  "competitor": "Kettleridge Valves",
-  "competitor_website": "https://kettleridge.example"
-}
-```
-
 <captured-page url="https://brightchair.example/" captured="2026-11-14T11:30:00Z" untrusted>
 <h1>Brightchair</h1>
 <p>Online scheduling and reminders for dental practices. $79 per month per location.</p>

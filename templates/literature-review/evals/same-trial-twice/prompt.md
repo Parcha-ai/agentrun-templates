@@ -8,13 +8,6 @@ Today is 2026-11-14. Review the evidence on this question.
 The pages below are what these URLs return today for the studies of this (fictional) program; treat them as the only two
 papers found. Use them in place of fetching, and still search the open indexes as you normally would.
 
-Input:
-```json
-{
-  "question": "Does the SleepWell online CBT-I program reduce insomnia severity in adults?"
-}
-```
-
 <captured-page url="https://sleepresearch.example/articles/sleepwell-primary-2023" captured="2026-11-14T15:30:00Z" untrusted>
 <h1>SleepWell online CBT-I for insomnia: a randomized trial</h1>
 <p>Authors: E. Rask, O. Daniels. Sleep Interventions, 2023. DOI 10.0000/si.2023.0071. Registration SW-2022-014. Public

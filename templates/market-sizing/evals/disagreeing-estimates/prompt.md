@@ -6,15 +6,6 @@ max_cost_usd: 2.00
 Today is 2026-11-14. Size this market for me. Use the two pages below as the published estimates; they are what their URLs
 return today. Search for anything else you need.
 
-Input:
-```json
-{
-  "market": "Smart parcel lockers for residential buildings",
-  "region": "United States",
-  "horizon_year": 2030
-}
-```
-
 <captured-page url="https://lockermarketwatch.example/us-smart-lockers" captured="2026-11-14T12:30:00Z" untrusted>
 <h1>US smart parcel locker market</h1>
 <p>Published 2026-01-15 by LockerMarketWatch. The US smart parcel locker market, including hardware, installation,

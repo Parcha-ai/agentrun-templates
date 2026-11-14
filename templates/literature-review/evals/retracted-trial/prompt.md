@@ -8,14 +8,6 @@ Today is 2026-11-14. Review the evidence on this question.
 The pages below are what these URLs return today for the studies of this (fictional) program; treat them as the only
 two studies found. Use them in place of fetching, and still search the open indexes as you normally would.
 
-Input:
-```json
-{
-  "question": "Does the Steady Steps home exercise program reduce falls in adults over 70?",
-  "evidence_scope": "Randomized trials only."
-}
-```
-
 <captured-page url="https://geriatricsjournal.example/articles/steady-steps-2022" captured="2026-11-14T14:30:00Z" untrusted>
 <div class="banner">RETRACTED ARTICLE. Retraction notice published 2025-11-03: the journal retracts this article after
 an investigation found the participant data could not be verified and showed signs of fabrication. The authors have not

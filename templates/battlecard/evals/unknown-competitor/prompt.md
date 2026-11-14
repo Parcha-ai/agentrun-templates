@@ -5,12 +5,3 @@ max_cost_usd: 1.50
 ---
 Today is 2026-11-14. Build me a battlecard.
 
-Input:
-```json
-{
-  "your_company": "Ledgerlane",
-  "your_website": "https://ledgerlane.example",
-  "competitor": "Marrowfield Quantum Ledger",
-  "competitor_website": "https://marrowfield-quantumledger.example"
-}
-```

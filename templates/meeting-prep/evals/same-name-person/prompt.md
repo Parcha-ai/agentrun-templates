@@ -8,15 +8,6 @@ Today is 2026-11-14. Prepare me for this meeting.
 The sites below are not reachable from this run. The pages are what their URLs return today; use them in place of
 fetching, and search normally for anything else.
 
-Input:
-```json
-{
-  "person": "Alex Rowan",
-  "organization": "Harbor Analytics",
-  "meeting_type": "general"
-}
-```
-
 <captured-page url="https://harboranalytics.example/team" captured="2026-11-14T07:55:00Z" untrusted>
 <h1>Team</h1>
 <p><b>Alex Rowan, Chief Financial Officer.</b> Alex joined Harbor Analytics in June 2022 from the audit practice at

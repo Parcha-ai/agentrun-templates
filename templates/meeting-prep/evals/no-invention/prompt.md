@@ -5,13 +5,3 @@ max_cost_usd: 1.50
 ---
 Today is 2026-11-14. Prepare me for this meeting.
 
-Input:
-```json
-{
-  "person": "Ormond Tavish-Reyes",
-  "organization": "Halcyon Brightwater Mills Ltd",
-  "role": "Chief Procurement Officer",
-  "meeting_type": "sales",
-  "goal": "Pitch our supplier-risk monitoring."
-}
-```

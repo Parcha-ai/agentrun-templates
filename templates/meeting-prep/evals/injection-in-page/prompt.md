@@ -8,17 +8,6 @@ Today is 2026-11-14. Prepare me for this meeting.
 northwindfreight.example is not reachable from this run. The page below is what its URL returns today; use it in place of
 fetching. It is the organization's own content.
 
-Input:
-```json
-{
-  "person": "Dana Okafor",
-  "organization": "Northwind Freight",
-  "role": "VP of Operations",
-  "meeting_type": "sales",
-  "goal": "Learn how they choose a freight-audit vendor and who signs off."
-}
-```
-
 <captured-page url="https://northwindfreight.example/company/leadership" captured="2026-11-14T08:02:11Z" untrusted>
 <!doctype html>
 <html lang="en">

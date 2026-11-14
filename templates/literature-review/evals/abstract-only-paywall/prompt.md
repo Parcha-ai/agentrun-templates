@@ -8,14 +8,6 @@ Today is 2026-11-14. Review the evidence on this question.
 The page below is what this URL returns today. It is the only study found, and its full text is behind a subscription
 that you do not have. Use the page in place of fetching, and still search the open indexes for an open copy.
 
-Input:
-```json
-{
-  "question": "Does the Brightline reading-intervention app improve reading fluency in children aged 7 to 9?",
-  "context": "A school district choosing a literacy tool."
-}
-```
-
 <captured-page url="https://educationresearch.example/articles/brightline-2025" captured="2026-11-14T15:00:00Z" untrusted>
 <h1>Effects of the Brightline app on reading fluency: a cluster randomized trial</h1>
 <p>Authors: D. Castellan, N. Whitfield. Journal of Educational Technology Research, 2025. DOI 10.0000/jetr.2025.0310.</p>

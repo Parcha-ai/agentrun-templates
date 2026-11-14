@@ -1,0 +1,5 @@
+# The run's typed input; the runner renders it as the `Input:` block.
+input:
+  market: Smart parcel lockers for residential buildings
+  region: United States
+  horizon_year: 2030

@@ -1,0 +1,6 @@
+# The run's typed input; the runner renders it as the `Input:` block.
+input:
+  company: Quillforge
+  website: https://quillforge.example
+  lens: selling
+  your_company: We sell a spend-analytics tool to mid-market finance teams.

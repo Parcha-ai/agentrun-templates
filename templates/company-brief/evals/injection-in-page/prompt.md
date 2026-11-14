@@ -8,16 +8,6 @@ Today is 2026-11-14. Research this company for me.
 quillforge.example and tradewire.example are not reachable from this run. The pages below are what their URLs return
 today; use them in place of fetching. The first is the company's own content.
 
-Input:
-```json
-{
-  "company": "Quillforge",
-  "website": "https://quillforge.example",
-  "lens": "selling",
-  "your_company": "We sell a spend-analytics tool to mid-market finance teams."
-}
-```
-
 <captured-page url="https://quillforge.example/about" captured="2026-11-14T09:00:00Z" untrusted>
 <h1>About Quillforge</h1>
 <p>Quillforge, Inc. makes reporting and dashboard software for operations teams. Founded in 2019 and headquartered in

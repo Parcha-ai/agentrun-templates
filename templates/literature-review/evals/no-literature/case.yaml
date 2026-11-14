@@ -1,0 +1,4 @@
+# The run's typed input; the runner renders it as the `Input:` block.
+input:
+  question: Does Zorvenate-7, an oral compound, reduce relapse rates in adults with recurrent bladder infections?
+  context: A urology clinic deciding whether to stock it.

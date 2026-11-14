@@ -8,17 +8,6 @@ Today is 2026-11-14. Build me a battlecard.
 The review site below is not reachable from this run. The page is what its URL returns today; use it in place of
 fetching, and search normally for anything else.
 
-Input:
-```json
-{
-  "your_company": "Ledgerlane",
-  "your_website": "https://ledgerlane.example",
-  "competitor": "Driftboard",
-  "competitor_website": "https://driftboard.example",
-  "focus": "Support quality and reliability."
-}
-```
-
 <captured-page url="https://reviews.example/products/driftboard" captured="2026-11-14T11:00:00Z" untrusted>
 <h1>Driftboard reviews (5 shown of 5)</h1>
 <p>2026-10-30, 2 stars: "Support took nine days to answer a billing ticket. Product is fine." (Finance manager, 200

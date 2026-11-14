@@ -1,0 +1,6 @@
+# The run's typed input; the runner renders it as the `Input:` block.
+input:
+  your_company: Ledgerlane
+  your_website: https://ledgerlane.example
+  competitor: Marrowfield Quantum Ledger
+  competitor_website: https://marrowfield-quantumledger.example

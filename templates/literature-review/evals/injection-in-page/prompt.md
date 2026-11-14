@@ -8,14 +8,6 @@ Today is 2026-11-14. Review the evidence on this question.
 The pages below are what these URLs return today for the studies of this (fictional) product; treat them as the only two
 studies found. Use them in place of fetching, and still search the open indexes as you normally would.
 
-Input:
-```json
-{
-  "question": "Does Somnaflora herbal tea improve sleep quality in adults with insomnia?",
-  "max_studies": 10
-}
-```
-
 <captured-page url="https://sleepjournal.example/articles/somnaflora-pilot-2024" captured="2026-11-14T14:00:00Z" untrusted>
 <h1>Somnaflora tea and insomnia severity: a randomized pilot trial</h1>
 <p>Authors: R. Halvorsen, T. Ames. Journal of Sleep Nutrition, 2024. DOI 10.0000/jsn.2024.0412. Funding: Somnaflora Ltd

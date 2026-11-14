@@ -8,16 +8,6 @@ Today is 2026-11-14. Build me a battlecard.
 The sites below are not reachable from this run. The pages are what their URLs return today; use them in place of
 fetching. The first is the competitor's own marketing.
 
-Input:
-```json
-{
-  "your_company": "Ledgerlane",
-  "your_website": "https://ledgerlane.example",
-  "competitor": "Driftboard",
-  "competitor_website": "https://driftboard.example"
-}
-```
-
 <captured-page url="https://driftboard.example/vs/ledgerlane" captured="2026-11-14T10:00:00Z" untrusted>
 <h1>Driftboard vs Ledgerlane</h1>
 <p>Driftboard is the faster way to close the books. Plans start at $40 per user per month.</p>
