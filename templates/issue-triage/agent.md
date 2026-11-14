@@ -36,7 +36,7 @@ parameters:
   protected_labels: { type: array, items: { type: string, maxLength: 50 }, required: false, description: "optional: labels only a person applies, one per entry (\"release-blocker\", \"good first issue\"). The agent never adds these" }
 inputs:
   issue_number: { type: integer, minimum: 1, required: false, title: "Issue number", description: "Triage one issue by hand. Leave it out on the trigger's runs: the event names the issue.", examples: [482] }
-budget: { per_run_usd: 0.50, tool_calls: 30 }
+budget: { per_run_usd: 0.50 }
 learning: true
 # Writes ask the owner first by default. Once the owner trusts it, setting approvals to never lets it run unattended;
 # the pins above hold either way.

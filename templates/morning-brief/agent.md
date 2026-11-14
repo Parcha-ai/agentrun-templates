@@ -57,7 +57,7 @@ parameters:
 inputs:
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "Projects, people or topics to put first today. Blank: everything that waits on you, ranked by when it is due.", examples: ["the Northwind renewal and anything from legal"] }
   date: { type: string, format: date, required: false, title: "Date", description: "Plan a day other than today (YYYY-MM-DD), for a run by hand. Blank: today in your time zone." }
-budget: { per_run_usd: 0.60, tool_calls: 50 }
+budget: { per_run_usd: 0.60 }
 learning: true
 # Suggested never: its job is an unattended pinned post on a schedule. A ticked tool is granted, not allowed, so it
 # runs on its own only if the owner picks Never at install; under ask each read and the post wait for a yes. Its pins

@@ -44,7 +44,7 @@ parameters:
 inputs:
   days: { type: integer, required: false, minimum: 1, maximum: 14, title: "Days ahead", description: "How many days to cover from now. Blank: the days setting.", examples: [3] }
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "Meetings, people or companies to go deeper on. Blank: every meeting.", examples: ["the Globex pilot kickoff"] }
-budget: { per_run_usd: 1.20, tool_calls: 60 }
+budget: { per_run_usd: 1.20 }
 learning: true
 # Suggested never: its job is an unattended pinned post on a schedule. A ticked tool is granted, not allowed, so it
 # runs on its own only if the owner picks Never at install; under ask each read and the post wait for a yes. Its pins

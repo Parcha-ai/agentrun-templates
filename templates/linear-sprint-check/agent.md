@@ -54,7 +54,7 @@ parameters:
   timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
   stale_days: { type: integer, required: false, minimum: 1, maximum: 30, title: "Days before work counts as stale", description: "The schedule passes your saved setting. Blank: 3.", examples: [3] }
-budget: { per_run_usd: 0.80, tool_calls: 80 }
+budget: { per_run_usd: 0.80 }
 learning: true
 # Suggested: never, so the scheduled post goes out unattended. The owner makes that choice at install; under ask the
 # post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.

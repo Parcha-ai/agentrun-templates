@@ -27,7 +27,7 @@ inputs:
   signals: { type: array, items: { type: string, maxLength: 60 }, required: false, title: "Signals to weigh most", description: "One per entry, up to 10. Empty: all signals weigh the same.", examples: [["bus factor", "releases"]] }
   lookback_days: { type: integer, required: false, minimum: 1, maximum: 60, title: "Days to look back", description: "Blank: 7." }
 # The commits feed gives 20 commits a page, so a busy repository takes up to 25 fetches: hence the call budget.
-budget: { per_run_usd: 4.00, tool_calls: 250 }
+budget: { per_run_usd: 4.00 }
 learning: true
 # Runs unattended (its job runs on a schedule): no tool asks. It has no write tool.
 approvals: never

@@ -33,7 +33,7 @@ parameters:
 inputs:
   thread_id: { type: string, required: false, pattern: "^[0-9a-f]{10,24}$", title: "Thread id", description: "Draft a reply in this Gmail thread, for a run by hand (the long hex id in the thread's URL). Leave it out on the trigger's runs: the event names the thread.", examples: ["19a2b3c4d5e6f708"] }
   notes: { type: string, required: false, maxLength: 1000, title: "What to say", description: "Facts or decisions the reply should carry that the thread doesn't hold (\"yes to Dec 1, no discount\"). Blank: unknowns become bracketed blanks.", examples: ["Yes to a Dec 1 start. No multi-year discount."] }
-budget: { per_run_usd: 0.25, tool_calls: 10 }
+budget: { per_run_usd: 0.25 }
 learning: true
 # It drafts, so ask: each run's draft waits for the owner's yes, where they see the recipient before it is saved; the
 # thread read runs where the owner turned on Allow reads. Its pins (no cc, bcc, extra recipients, other mailbox or

@@ -36,7 +36,7 @@ parameters:
 inputs:
   since: { type: string, format: date-time, required: false, title: "Since", description: "Read from this time instead of where the last run ended (a run by hand). RFC 3339, with the offset.", examples: ["2026-11-16T09:00:00Z"] }
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "Topics or people to put first. Blank: everything, ranked by deadline and who is waiting.", examples: ["the v2 pricing launch"] }
-budget: { per_run_usd: 0.60, tool_calls: 60 }
+budget: { per_run_usd: 0.60 }
 learning: true
 # Suggested never: its job is an unattended pinned post on a schedule. A ticked tool is granted, not allowed, so it
 # runs on its own only if the owner picks Never at install; under ask each read and the post wait for a yes. Its pins

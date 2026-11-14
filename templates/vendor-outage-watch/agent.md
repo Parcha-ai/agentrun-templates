@@ -20,7 +20,7 @@ parameters:
 inputs:
   vendors: { type: array, items: { type: string }, title: "Vendors", description: "Vendors or components to check. The schedule passes your saved list; a run by hand can check others.", examples: [["AWS us-east-1", "GitHub Actions", "Cloudflare", "Stripe"]] }
   lookback_days: { type: integer, required: false, minimum: 1, maximum: 60, title: "Days to look back", description: "Blank: 7." }
-budget: { per_run_usd: 1.50, tool_calls: 60 }
+budget: { per_run_usd: 1.50 }
 learning: true
 # Runs unattended (its job runs on a schedule): no tool asks. It has no write tool.
 approvals: never

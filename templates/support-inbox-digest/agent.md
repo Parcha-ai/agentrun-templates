@@ -38,7 +38,7 @@ parameters:
 inputs:
   since: { type: string, format: date-time, required: false, title: "Since", description: "Count only mail after this time. Blank: since the last digest, or everything the search returns on the first run.", examples: ["2026-11-09T09:00:00Z"] }
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "A product area or customer to call out. Blank: every theme.", examples: ["billing"] }
-budget: { per_run_usd: 0.80, tool_calls: 25 }
+budget: { per_run_usd: 0.80 }
 learning: true
 # Suggested never: its job is an unattended pinned post on a schedule. A ticked tool is granted, not allowed, so it
 # runs on its own only if the owner picks Never at install; under ask the search and the post wait for a yes. Both pins

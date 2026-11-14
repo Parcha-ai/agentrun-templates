@@ -40,7 +40,7 @@ parameters:
 inputs:
   date: { type: string, format: date, required: false, title: "Day", description: "Draft follow-ups for this day's meetings instead of today's, for a run by hand.", examples: ["2026-11-17"] }
   notes: { type: string, required: false, maxLength: 2000, title: "What happened", description: "What was agreed, per meeting, to fill in instead of blanks (\"Globex: 30-day pilot from Dec 1, Kim sends the data export\"). Blank: every outcome is a bracketed blank.", examples: ["Globex: 30-day pilot from Dec 1; Kim sends the data export by Friday."] }
-budget: { per_run_usd: 0.40, tool_calls: 15 }
+budget: { per_run_usd: 0.40 }
 learning: true
 # It drafts, so ask: each draft waits for the owner's yes, where they see the recipient before it is saved; the calendar
 # read runs where the owner turned on Allow reads. Its pins (no cc, bcc, extra recipients, other mailbox, attachment or

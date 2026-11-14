@@ -22,7 +22,7 @@ inputs:
   version: { type: string, required: false, title: "Version you use or plan to use", maxLength: 64, description: "Advisories are checked against this version. Blank: the latest stable release.", examples: ["4.17.15"] }
   concern: { type: string, required: false, title: "What you need to know", maxLength: 500, description: "One line on the decision behind the check. Blank: the full check.", examples: ["Can we ship this in a closed-source product?", "Is upgrading to v5 safe?"] }
   alternatives: { type: boolean, required: false, default: true, title: "Compare alternatives", description: "Also check two to four alternatives in less depth. On unless you turn it off." }
-budget: { per_run_usd: 2.50, tool_calls: 80 }
+budget: { per_run_usd: 2.50 }
 learning: false
 output: { schema: health.schema.json }
 ---

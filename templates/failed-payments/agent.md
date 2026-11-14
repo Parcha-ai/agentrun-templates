@@ -33,7 +33,7 @@ parameters:
   min_amount: { type: number, default: 0, description: "skip failed payments smaller than this, in whole currency units (50 for $50.00); 0 alerts on every one" }
 inputs:
   charge_id: { type: string, required: false, pattern: "^ch_[A-Za-z0-9]+$", title: "Charge", description: "Explain one failed charge by hand: its Stripe ID, starting ch_.", examples: ["ch_3QfailNSF01"] }
-budget: { per_run_usd: 0.20, tool_calls: 20 }
+budget: { per_run_usd: 0.20 }
 # Each event is one failed charge with one alert, and the history comes from Stripe: nothing to carry between runs.
 learning: false
 # Suggested: never, so the alert on Stripe's events goes out unattended. The owner makes that choice at install;

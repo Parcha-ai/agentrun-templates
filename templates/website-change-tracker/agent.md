@@ -24,7 +24,7 @@ inputs:
   focus: { type: string, required: false, maxLength: 300, title: "What counts as a change", description: "Blank: pricing, products, messaging, pages added or removed, customer logos." }
   company: { type: string, required: false, maxLength: 120, title: "Your company", description: "Frames what each change means for you." }
   lookback_days: { type: integer, required: false, minimum: 1, maximum: 90, title: "Days since the last check", description: "Blank: 7." }
-budget: { per_run_usd: 1.50, tool_calls: 70 }
+budget: { per_run_usd: 1.50 }
 learning: true
 # Runs unattended (its job runs on a schedule): no tool asks. It has no write tool.
 approvals: never

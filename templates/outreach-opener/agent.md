@@ -34,7 +34,7 @@ inputs:
   website: { type: string, format: uri, required: false, title: "Company website", description: "Tells the company apart from others with a similar name. Blank: the domain of their email.", examples: ["https://globex.example"] }
   profile_url: { type: string, format: uri, required: false, title: "Their profile", description: "A public page about them (a bio, a team page, a talk). Blank: it searches.", examples: ["https://globex.example/team/kim-lee"] }
   reason: { type: string, required: false, maxLength: 600, title: "Why them", description: "Why you're writing to this person now, if you know. Blank: it works it out from what it finds and your about_you.", examples: ["They're growing the retail ops team and we sell shift scheduling."] }
-budget: { per_run_usd: 1.00, tool_calls: 30 }
+budget: { per_run_usd: 1.00 }
 learning: true
 # By hand and it drafts, so ask: the draft call waits for the owner's yes, where they see the address before it is
 # saved. Its pins hold either way; it has no send tool and no mailbox read.

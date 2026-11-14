@@ -43,7 +43,7 @@ parameters:
   timezone: { type: string, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
   goal_amount: { type: number, required: false, minimum: 1, title: "Goal", description: "The schedule passes your saved goal. By hand, check against another figure.", examples: [500000] }
-budget: { per_run_usd: 0.25, tool_calls: 40 }
+budget: { per_run_usd: 0.25 }
 learning: true
 # Suggested: never, so the scheduled post goes out unattended. The owner makes that choice at install; under ask the
 # post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.

@@ -38,7 +38,7 @@ parameters:
 inputs:
   as_of: { type: string, format: date-time, required: false, title: "Check as of", description: "Check the period that holds this moment, by hand. Blank: now.", examples: ["2026-11-18T15:00:00Z"] }
 # One run an hour, capped at $0.10, however many payments come in.
-budget: { per_run_usd: 0.10, tool_calls: 40 }
+budget: { per_run_usd: 0.10 }
 learning: true
 # Suggested: never, so the scheduled post goes out unattended. The owner makes that choice at install; under ask the
 # post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.

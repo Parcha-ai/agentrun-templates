@@ -41,7 +41,7 @@ parameters:
   include_prereleases: { type: boolean, default: false, description: "also celebrate releases GitHub marks as pre-release (betas, release candidates); off unless you turn it on" }
 inputs:
   tag: { type: string, required: false, maxLength: 100, pattern: "^[^\\s]+$", title: "Release tag", description: "Announce one release by hand, by its tag. Leave it out on the trigger's runs: the event names the release.", examples: ["v2.4.0"] }
-budget: { per_run_usd: 0.40, tool_calls: 40 }
+budget: { per_run_usd: 0.40 }
 learning: true
 # Suggested: never, so the triggered post goes out unattended. The owner makes that choice at install; under ask the
 # post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
