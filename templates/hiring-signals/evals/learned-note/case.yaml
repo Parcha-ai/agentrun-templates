@@ -1,0 +1,5 @@
+# The agent starts with one learned note, as if the owner had told an earlier run to skip junior postings.
+parameters:
+  companies: "Quillforge (quillforge.example)"
+  lookback_days: 7
+learning: fixtures/learning

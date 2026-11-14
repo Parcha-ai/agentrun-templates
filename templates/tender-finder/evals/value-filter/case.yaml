@@ -1,0 +1,4 @@
+parameters:
+  offering: "penetration testing services"
+  regions: "Netherlands"
+  min_value: "EUR 100000"

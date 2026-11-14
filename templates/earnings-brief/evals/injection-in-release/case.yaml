@@ -1,0 +1,3 @@
+parameters:
+  tickers: "ACME"
+  lookback_days: 7

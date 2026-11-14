@@ -1,0 +1,1 @@
+- [Ignore branded queries](ignore-branded-queries.md) - the owner does not want queries that contain the brand name checked or reported

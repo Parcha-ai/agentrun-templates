@@ -1,0 +1,1 @@
+- [Skip rounds under $10M](skip-small-rounds.md) - the owner does not want funding rounds under $10M in the digest

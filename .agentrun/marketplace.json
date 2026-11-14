@@ -6,6 +6,12 @@
     { "name": "kyb", "source": "github:Parcha-ai/agentrun/packages/serve/templates/kyb", "category": "compliance", "tags": ["due-diligence", "sanctions"] },
     { "name": "market-monitor", "source": "github:Parcha-ai/agentrun/packages/serve/templates/market-monitor", "category": "marketing", "tags": ["competitors", "weekly"] },
     { "name": "inbound-lead", "source": "github:Parcha-ai/agentrun/packages/serve/templates/inbound-lead", "category": "sales", "tags": ["leads", "webhook"] },
-    { "name": "release-notes", "source": "github:Parcha-ai/agentrun/packages/serve/templates/release-notes", "category": "engineering", "tags": ["github", "releases"] }
+    { "name": "release-notes", "source": "github:Parcha-ai/agentrun/packages/serve/templates/release-notes", "category": "engineering", "tags": ["github", "releases"] },
+    { "name": "search-visibility", "source": "./templates/search-visibility", "category": "marketing", "tags": ["seo", "search", "ranking", "competitors", "weekly"] },
+    { "name": "hiring-signals", "source": "./templates/hiring-signals", "category": "research", "tags": ["hiring", "competitors", "leadership", "jobs", "weekly"] },
+    { "name": "deal-flow", "source": "./templates/deal-flow", "category": "finance", "tags": ["funding", "m-and-a", "ipo", "venture", "weekly"] },
+    { "name": "tender-finder", "source": "./templates/tender-finder", "category": "sales", "tags": ["tenders", "rfp", "public-sector", "procurement", "weekly"] },
+    { "name": "user-voice", "source": "./templates/user-voice", "category": "marketing", "tags": ["reviews", "feedback", "voice-of-customer", "app-store", "weekly"] },
+    { "name": "earnings-brief", "source": "./templates/earnings-brief", "category": "finance", "tags": ["earnings", "stocks", "guidance", "watchlist", "weekly"] }
   ]
 }

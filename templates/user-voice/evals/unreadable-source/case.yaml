@@ -1,0 +1,4 @@
+parameters:
+  subject: "Quillforge"
+  sources: "G2, Google Play"
+  lookback_days: 7

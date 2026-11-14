@@ -1,0 +1,1 @@
+- [Skip junior postings](skip-junior-postings.md) - the owner does not want junior, entry-level or intern roles in the digest

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "voice.schema.json",
+  "title": "User voice report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "subject", "quiet", "themes", "sources", "report_markdown"],
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "to": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    },
+    "subject": { "type": "string", "description": "what was covered, and which products when the subject was a company or a category" },
+    "quiet": { "type": "boolean", "description": "true when there were too few first-hand posts to form a theme: themes is then empty" },
+    "themes": {
+      "type": "array",
+      "maxItems": 12,
+      "description": "ranked by volume first, then severity",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["theme", "kind", "status", "volume", "severity", "quotes"],
+        "properties": {
+          "theme": { "type": "string", "minLength": 1, "maxLength": 200, "description": "the issue, praise or need in one line" },
+          "product": { "type": ["string", "null"], "description": "which product it is about, when the subject covers several" },
+          "kind": { "enum": ["complaint", "praise", "unmet_need", "release_reaction", "switching"] },
+          "status": { "enum": ["new", "growing", "continuing", "fading"], "description": "against the previous report's themes; new when there is none" },
+          "volume": { "type": "string", "maxLength": 200, "description": "an approximate count with its basis, such as about 6 of 40 App Store reviews read, Nov 2 to 9. Never a census" },
+          "sample_size": { "type": ["integer", "null"], "minimum": 0, "description": "how many posts you read for this source or theme" },
+          "severity": { "enum": ["high", "medium", "low"], "description": "data loss, billing errors and lockouts are high at any volume" },
+          "version_link": { "type": ["string", "null"], "maxLength": 200, "description": "the release this ties to when dates support it, else the words unconfirmed" },
+          "vendor_response": { "type": ["string", "null"], "maxLength": 300, "description": "what the vendor said, labelled as the vendor's claim; null when nothing" },
+          "quotes": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["text", "url", "source"],
+              "properties": {
+                "text": { "type": "string", "minLength": 1, "maxLength": 400, "description": "verbatim, never paraphrased inside the quote" },
+                "url": { "type": "string", "description": "that post or review's own link, not the listing page" },
+                "source": { "type": "string", "maxLength": 80, "description": "such as app store, hacker news, reddit, trustpilot" },
+                "date": { "type": ["string", "null"], "format": "date" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "contrast": { "type": ["string", "null"], "maxLength": 600, "description": "one paragraph comparing against the competitors given, from the same sources and window; null when none were given" },
+    "suspected_fake": { "type": "array", "items": { "type": "string", "maxLength": 300 }, "description": "bursts of near-identical text, disclosed free products, review gating; excluded from every count" },
+    "dropped_repeats": { "type": "array", "items": { "type": "string", "maxLength": 300 } },
+    "sources": {
+      "type": "array",
+      "description": "every source tried, with what was read",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "status"],
+        "properties": {
+          "source": { "type": "string" },
+          "status": { "enum": ["read", "partial", "unreadable"] },
+          "detail": { "type": "string", "maxLength": 200, "description": "posts read, or why it could not be read: blocked, needs javascript, error" }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 40, "maxLength": 4500, "description": "what a person reads: the top themes with their quotes and volumes, what is new, the contrast if any, and one line on sources not read" }
+  }
+}

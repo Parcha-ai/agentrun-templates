@@ -1,0 +1,4 @@
+parameters:
+  tickers: "ACME, GLOBEX"
+  recap: true
+  lookback_days: 7

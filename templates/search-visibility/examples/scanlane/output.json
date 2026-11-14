@@ -1,0 +1,45 @@
+{
+  "run_date": "2026-11-16",
+  "domain": "scanlane.example",
+  "locale": "en-US",
+  "quiet": false,
+  "engines": [
+    { "engine": "web_search", "status": "checked" },
+    { "engine": "bing", "status": "unchecked", "reason": "consent wall returned instead of results" },
+    { "engine": "perplexity", "status": "unchecked", "reason": "needs a browser: the page is a JavaScript shell" }
+  ],
+  "results": [
+    {
+      "query": "invoice ocr api",
+      "engine": "web_search",
+      "status": "ranked",
+      "position": 9,
+      "url": "https://scanlane.example/docs/invoice-ocr",
+      "features": [],
+      "top_domains": [
+        { "domain": "readwise-ocr.example", "url": "https://readwise-ocr.example/invoice-api", "position": 1 },
+        { "domain": "docparse.example", "url": "https://docparse.example/ocr", "position": 2 }
+      ],
+      "change": "down",
+      "change_by": 4,
+      "evidence_url": "web_search:invoice ocr api"
+    },
+    {
+      "query": "invoice ocr pricing",
+      "engine": "web_search",
+      "status": "ranked",
+      "position": 3,
+      "url": "https://scanlane.example/pricing",
+      "features": [],
+      "top_domains": [
+        { "domain": "readwise-ocr.example", "url": "https://readwise-ocr.example/pricing", "position": 1 }
+      ],
+      "change": "no_change",
+      "evidence_url": "web_search:invoice ocr pricing"
+    }
+  ],
+  "movers": ["invoice ocr api: down from 5 to 9; the API reference page is now below the blog roundups."],
+  "gaps": [],
+  "next_actions": ["invoice ocr api: the reference page fell 4 places; check what the three pages that passed it added."],
+  "report_markdown": "**Search visibility for scanlane.example, en-US, 2026-11-16.** Engines read: web_search. Bing and Perplexity were unchecked (consent wall; needs a browser).\n\n| Query | Position | Change |\n| --- | --- | --- |\n| invoice ocr api | 9 | down 4 |\n\n**Movers.** invoice ocr api fell from 5 to 9.\n\n**Do next.** Compare the reference page with the three pages that passed it.\n\nOne other query: no change."
+}

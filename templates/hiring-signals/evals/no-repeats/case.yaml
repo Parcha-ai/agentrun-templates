@@ -1,0 +1,3 @@
+parameters:
+  companies: "Quillforge (quillforge.example)"
+  lookback_days: 7
