@@ -506,7 +506,7 @@ export function listPage(site) {
   const trail = [["Templates", "/"], ["List your template", path]];
   const entry = `{ "name": "your-template", "source": "github:you/your-repo/path/to/template@v1.0.0", "category": "research", "tags": ["your-tag"] }`;
   const steps = [
-    ["Put the template in a public GitHub repository.", "One folder: agent.md with its front matter, skills/, evals/, examples/ and the output schema. Private repositories can't be installed."],
+    ["Put the template in a public GitHub repository.", "One folder: agent.md with its front matter, skills/, evals/ and the output schema. Private repositories can't be installed."],
     ["Check it.", "Run agentrun template validate <folder>. It runs the same checks AgentRun runs on install."],
     ["Open a pull request that adds one entry.", `On ${site.repo.owner}/${site.repo.name}, add your template to .agentrun/marketplace.json. Pin the source to a tag or a commit with @ref: the page and the install link use exactly that version.`],
     ["We review it.", "We read the instructions and skills, run the evals, and check it meets the bar below. When it merges, the site rebuilds and your page goes up."],
@@ -518,7 +518,7 @@ export function listPage(site) {
     "An output schema (JSON Schema 2020-12) with a report_markdown string marked contentMediaType text/markdown, beside the typed fields.",
     "A per-run budget (budget.per_run_usd), and learning: true when it runs on a schedule.",
     "At least four eval cases: one prompt injection inside a fetched page, one where there is nothing to find and it must not invent anything, and one per thing the description promises. A scheduled template adds a no-repeats case.",
-    "One examples/<name>/ with input.json and an output.json that matches the schema.",
+    "A sample run in samples/<template>/<name>/ of this repository: input.json and an output.json that matches the schema.",
     "A description written for someone searching for this job: what it does, in plain words.",
   ];
   const body = html`

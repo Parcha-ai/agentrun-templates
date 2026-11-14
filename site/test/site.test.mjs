@@ -142,6 +142,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     }
     const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
     assert.match(md, /^# Sample watch\n/);
+    assert.match(md, /2 eval cases: injection, thin-data\./);
     const llms = readFileSync(join(out, "llms.txt"), "utf8");
     assert.match(llms, /\[Sample watch\]\(https:\/\/marketplace\.agentrun\.ai\/templates\/sample-watch\.md\)/);
     const search = JSON.parse(readFileSync(join(out, "search.json"), "utf8"));
