@@ -1,12 +1,16 @@
 **OSS tracker** 2026-11-09 to 2026-11-16 · balanced
-Archival and npm deprecation lead the set: tiderow (8,120 stars) was archived on 2026-11-10 and deprecated in favour of tiderow-next, with downloads falling four weeks running.
+**tiderow is fading: archival and deprecation coincide with falling weekly downloads.**
 
 ### npm:tiderow · fading
-8,120 stars (no previous) · 95,210 downloads/week 2026-11-09..11-15 (dated series 121,880 → 119,420 → 117,300 → 95,210 over four weeks; no prior snapshot) · 1/1 contributors (30d/90d) · top author 100% · 64 open issues incl. PRs (deps.dev) / open PRs not read · last release v4.2.0 (2026-03-14), 0 releases in 90 days
-- 2026-11-10 · archived: repository read-only; commit 91ac0de by mlopez, "Deprecate in favour of tiderow-next; archive" ([commit](https://github.com/tiderow/tiderow/commit/91ac0de))
-- 2026-11-10 · deprecated: npm tiderow @4.2.0 notice, no longer maintained, points to tiderow-next ([registry](https://registry.npmjs.org/tiderow/latest))
-_For dependency risk: upstream is archived and npm-deprecated, so this line gets no further fixes; the successor package named in the notice is not yet checked here._
+[8,120 stars](https://api.deps.dev/v3/projects/github.com%2Ftiderow%2Ftiderow) as supplied for 2026-11-16; star delta unavailable. [95,210 downloads during November 9–15 versus 117,300 during November 2–8](https://api.npmjs.org/downloads/range/last-month/tiderow), a decline of 18.83%. This is a dated-series comparison, not a prior-snapshot comparison.
 
-_Unresolved: none. Unreachable: npm last-week point endpoint (404), deps.dev npm package (404), pulls page and issues API (not supplied this run). Lightly checked: none._
+[1 contributor over October 17–November 16 / 1 over August 18–November 16; top-author share 100%](https://github.com/tiderow/tiderow/commits/main.atom), excluding the starting boundary and including the ending boundary. The sole in-window commit records deprecation and archival; these counts do not establish a contributor trend. [64 open issues/PRs combined](https://api.deps.dev/v3/projects/github.com%2Ftiderow%2Ftiderow), supplied for November 16; issue-only and PR-only counts and first-response time are unavailable.
 
-A maintainer's reason for the change is taken only from commit 91ac0de; nothing about downloads or popularity in the README is used as a measure.
+[Last supplied release: v4.2.0, feed updated March 14, 2026](https://github.com/tiderow/tiderow/releases.atom); no release falls in August 18–November 16 in the supplied feed. The feed's update date is not independently verified as the publication date.
+
+- **November 10 — [Archived](https://github.com/tiderow/tiderow):** the repository banner says it is read-only, corroborated by the dated closure commit.
+- **November 10 — [Deprecated](https://github.com/tiderow/tiderow/commit/91ac0de):** the commit names tiderow-next; [npm metadata](https://registry.npmjs.org/tiderow/latest) and the [README](https://raw.githubusercontent.com/tiderow/tiderow/main/README.md) corroborate the deprecation.
+
+_The original package retains download traffic, but its public maintenance lifecycle has ended. The named successor was not assessed._
+
+_Unresolved: none. Unreachable coverage: separate issue/PR counts, response times, advisories and changelog. All evidence came from supplied responses; no live requests were made. Lightly checked: none._
