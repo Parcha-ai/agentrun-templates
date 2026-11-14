@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "positioning-review.schema.json",
+  "title": "Positioning review",
+  "description": "A sourced review of one company's positioning against its competitors. Every fact carries the ids of the sources it rests on (S1, S2, ...), each listed in `sources`. Quotes are verbatim.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "company", "scope_note", "bottom_line", "current_positioning", "competitors", "customer_language", "differentiators", "options", "next_steps", "gaps", "sources", "report_markdown"],
+  "properties": {
+    "checked_on": { "$ref": "#/$defs/date" },
+    "company": { "type": "string", "minLength": 1 },
+    "scope_note": { "type": "string", "maxLength": 600, "description": "the company as interpreted, how competitors were chosen, the date range of reviews read, any ambiguity resolved" },
+    "bottom_line": { "type": "string", "minLength": 1, "maxLength": 900, "description": "how clear and distinct the positioning is, the biggest gap, the recommended direction" },
+    "current_positioning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["headline", "audience", "claims", "sources"],
+      "properties": {
+        "headline": { "type": ["string", "null"], "maxLength": 300, "description": "verbatim" },
+        "subhead": { "type": ["string", "null"], "maxLength": 400, "description": "verbatim" },
+        "audience": { "type": "string", "maxLength": 300 },
+        "claims": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 300 }, "description": "verbatim or closely quoted core claims" },
+        "proof_points": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 300 }, "description": "numbers, logos, awards as the page states them" },
+        "sources": { "$ref": "#/$defs/source_ids" }
+      }
+    },
+    "competitors": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "headline", "audience", "core_claim", "sources"],
+        "properties": {
+          "name": { "type": "string" },
+          "website": { "type": ["string", "null"] },
+          "headline": { "type": ["string", "null"], "maxLength": 300, "description": "verbatim, or null when the page could not be read" },
+          "audience": { "type": ["string", "null"], "maxLength": 200 },
+          "core_claim": { "type": ["string", "null"], "maxLength": 300 },
+          "proof": { "type": ["string", "null"], "maxLength": 300 },
+          "pricing_posture": { "type": ["string", "null"], "maxLength": 200 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "overlap_note": { "type": ["string", "null"], "maxLength": 600, "description": "where the messaging overlaps" },
+    "customer_language": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["theme", "quotes", "confidence"],
+        "properties": {
+          "theme": { "type": "string", "maxLength": 160 },
+          "quotes": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["text", "platform", "source"],
+              "properties": {
+                "text": { "type": "string", "maxLength": 400, "description": "verbatim from one review or post" },
+                "platform": { "type": "string", "maxLength": 60 },
+                "date": { "type": ["string", "null"] },
+                "about": { "type": ["string", "null"], "maxLength": 80, "description": "which vendor the review is about" },
+                "source": { "type": "string", "pattern": "^S[0-9]+$" }
+              }
+            }
+          },
+          "confidence": { "enum": ["high", "medium", "low"] }
+        }
+      }
+    },
+    "customer_sample_note": { "type": ["string", "null"], "maxLength": 400, "description": "how many reviews or posts were read, where, and their date range; or that none were found" },
+    "phrase_map": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["customer_phrase", "company_phrase", "match"],
+        "properties": {
+          "customer_phrase": { "type": "string", "maxLength": 160 },
+          "company_phrase": { "type": ["string", "null"], "maxLength": 160 },
+          "match": { "enum": ["matches", "partly", "missing"] }
+        }
+      }
+    },
+    "differentiators": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim", "class", "evidence", "sources"],
+        "properties": {
+          "claim": { "type": "string", "maxLength": 300 },
+          "class": { "enum": ["real", "shared", "unsupported"] },
+          "evidence": { "type": "string", "maxLength": 400, "description": "who else claims it, and what outside evidence says" },
+          "needs_substantiation": { "type": "boolean", "description": "a '#1', 'only', compliance or award claim the reader's legal team should check" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "options": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["angle", "statement", "headlines", "evidence", "risk"],
+        "properties": {
+          "angle": { "type": "string", "maxLength": 80, "description": "audience-led, problem-led, outcome-led, or another" },
+          "statement": { "type": "string", "maxLength": 500, "description": "for whom, the problem, the category, the key difference, the proof" },
+          "headlines": { "type": "array", "minItems": 1, "maxItems": 3, "items": { "type": "string", "maxLength": 120 } },
+          "subhead": { "type": ["string", "null"], "maxLength": 200 },
+          "evidence": { "type": "string", "maxLength": 400, "description": "the differentiator and customer words it rests on, with source ids" },
+          "risk": { "type": "string", "maxLength": 300 }
+        }
+      }
+    },
+    "next_steps": { "type": "array", "maxItems": 6, "items": { "type": "string", "maxLength": 300 } },
+    "gaps": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 400 } },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "url", "found"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]+$" },
+          "title": { "type": "string" },
+          "url": { "type": "string" },
+          "published": { "type": ["string", "null"] },
+          "found": { "type": "boolean" }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "description": "the review as Markdown, citing sources inline as [S1]" }
+  },
+  "$defs": {
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "source_ids": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+  }
+}

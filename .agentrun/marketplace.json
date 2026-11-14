@@ -437,6 +437,12 @@
       "source": "./templates/product-teardown",
       "category": "research",
       "tags": ["product-teardown", "competitive-analysis", "pricing", "onboarding", "growth-loops", "product-management"]
+    },
+    {
+      "name": "positioning-review",
+      "source": "./templates/positioning-review",
+      "category": "marketing",
+      "tags": ["positioning", "messaging", "competitors", "customer-language", "product-marketing"]
     }
   ]
 }
