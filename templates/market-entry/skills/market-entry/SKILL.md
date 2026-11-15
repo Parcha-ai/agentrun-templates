@@ -74,7 +74,8 @@ list a firm you did not see on a page.
 Sector licences, product standards, data protection, foreign ownership limits, tax registration, employment rules.
 Go to primary sources: the regulator's site, the official gazette or statute, the investment promotion agency. Each row
 names the body or law and cites it. A timeline only as a source states it. A licence that gates the activity is a
-condition of the view and the first next step. Anything unclear is an `open_question` for local counsel.
+condition of the view, in `would_change`, and the first next step, each naming the body and the route (apply to that
+body, or work through a firm it already authorises). Anything unclear is an `open_question` for local counsel.
 
 ### 6. Costs
 
@@ -85,7 +86,9 @@ known. Never invent a fee.
 ### 7. Partners and channels
 
 Distributors, resellers, marketplaces, integrators, trade bodies, chambers of commerce, embassy trade services. List
-only partners a page shows exist and do this kind of work. Acquisition targets only if publicly verifiable.
+only partners a page shows exist and do this kind of work. Acquisition targets only if publicly verifiable. With
+`company.profile` null, list only what any entrant needs whatever it sells (counsel, incorporation, a chamber of
+commerce, the trade promotion agency): a distributor, reseller or competitor presumes a product you could not find.
 
 ### 8. Options and the view
 
@@ -111,7 +114,7 @@ keep each string under its limit. Every array the schema requires is present, `[
 - `sources`: every page you relied on, once, with ids `S1`, `S2`, and `found: false` for searches or fetches that held
   nothing. A source's URL is one you fetched, one handed to you, or a result URL a search returned; a search with no
   useful result is recorded by its query in `title` with the URL of a page you tried, never a made-up search-engine URL.
-- `report_markdown`: Bottom line (the view, confidence, main reasons, interpretation), Company and fit, Market size
+- `report_markdown` opens with its first section, never a plan or process notes: Bottom line (the view, confidence, main reasons, interpretation), Company and fit, Market size
   (table), Customer needs, Competitors (table), Regulation and licensing, Costs (table, budget band), Partners,
   Risks (table), Entry options (table), Recommendation and what would change it, Next steps, Gaps. Cite `[S1]` inline.
   Aim for 450 to 800 words: the JSON holds the detail, and the report reads it out in short tables and lines. Say
