@@ -275,7 +275,8 @@ export function templatePage(site, pkg, stats) {
   const cost = costWords(pkg);
   const keys = keyWords(pkg);
   const triggers = triggerLines(pkg);
-  const cli = `agentrun template install ${pkg.installSource}`;
+  // npx: a stranger has no global `agentrun`. --trust: a server's first package from a publisher is refused without it.
+  const cli = `npx @parcha/agentrun template install ${pkg.installSource} --trust`;
   const shortSha = pkg.sha.slice(0, 7);
   const body = html`
 ${crumbNav(trail)}
@@ -292,9 +293,9 @@ ${crumbNav(trail)}
   <h2 id="install" class="caps section-label">Install</h2>
   <p><button type="button" class="btn btn-solid" data-install="${pkg.installSource}" hidden>Install on your AgentRun</button> <button type="button" class="btn btn-ghost" data-install-forget hidden>Change address</button></p>
   <p class="meta" data-install-address></p>
-  <p>Or from a terminal:</p>
+  <p>Or from a terminal on the machine where your AgentRun runs:</p>
   <div class="cmd"><pre class="code"><code>${cli}</code></pre><button type="button" class="btn btn-sm" data-copy="${cli}" hidden>Copy</button></div>
-  <p class="meta">Pinned to commit <a href="${pkg.treeUrl}"><code>${shortSha}</code></a>, the version this page describes. The apply screen shows every instruction and skill before anything is saved, and nothing is granted until you tick it.</p>
+  <p class="meta">Pinned to commit <a href="${pkg.treeUrl}"><code>${shortSha}</code></a>, the version this page describes. <code>--trust</code> says you trust ${pkg.owner}, its publisher; AgentRun asks once per publisher. It prints the console page that applies the template. The apply screen shows every instruction and skill before anything is saved, and nothing is granted until you tick it.</p>
 </section>
 
 <dialog class="card" data-install-dialog aria-labelledby="ask-title">

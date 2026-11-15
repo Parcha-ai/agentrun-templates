@@ -115,7 +115,7 @@ export async function build(options = {}) {
     "",
     "> Templates for AgentRun, an open-source platform for running agents. Each template is a working agent (instructions, skills, tools, an output schema and eval cases) that installs with one command. Every page here has a Markdown twin at the same path with .md.",
     "",
-    `Install any template with \`agentrun template install <source>\`, or open \`<your AgentRun address>/#/templates/install?src=<source>\`. The index these pages come from: ${site.repoUrl}/blob/main/.agentrun/marketplace.json`,
+    `Install any template with \`npx @parcha/agentrun template install <source> --trust\` (--trust: you trust its publisher, asked once per publisher), or open \`<your AgentRun address>/#/templates/install?src=<source>\`. The index these pages come from: ${site.repoUrl}/blob/main/.agentrun/marketplace.json`,
     "",
     ...byCat.flatMap((c) => [
       `## ${CATEGORY_TEXT[c].title}`,

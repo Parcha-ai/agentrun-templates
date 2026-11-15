@@ -133,7 +133,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.deepEqual(problems, []);
     const page = readFileSync(join(out, "templates", "sample-watch", "index.html"), "utf8");
     assert.match(page, new RegExp(`data-install="github:Parcha-ai/agentrun-templates/templates/sample-watch@${SHA}"`));
-    assert.match(page, /agentrun template install github:Parcha-ai\/agentrun-templates\/templates\/sample-watch@/);
+    assert.match(page, /npx @parcha\/agentrun template install github:Parcha-ai\/agentrun-templates\/templates\/sample-watch@[0-9a-f]{40} --trust/);
     assert.match(page, /<code>company<\/code>/);
     assert.match(page, /integer, 1 to 50/);
     assert.match(page, /\$0\.084 median per run/);

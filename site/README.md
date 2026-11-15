@@ -60,7 +60,7 @@ and every page below the home has a `BreadcrumbList`.
 
 It asks once for the reader's AgentRun address (kept in this browser's localStorage under
 `agentrun.marketplace.address`, sent nowhere) and opens `<address>/#/templates/install?src=<source>@<sha>`. Without
-JavaScript the page still shows `agentrun template install <source>@<sha>`.
+JavaScript the page still shows `npx @parcha/agentrun template install <source>@<sha> --trust`.
 
 ## Deploy
 
