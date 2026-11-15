@@ -10,9 +10,11 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
    (what was searched).
 2. **Nothing listed.** `accounts` is empty and `contacts` is empty. Loose matches, if any, are in `near_misses`, each
    with the criterion it failed or why it could not be checked (no website, the site did not load).
-3. **Searched.** The run's calls show at least one company search (`monid__apollo__mixed_companies__search`), and
-   `sources` list it with its filters.
+3. **Search listed.** `sources` list the company search (`monid:apollo/mixed_companies/search`) with its filters.
+   Whether the run made it is checked by a separate grader.
 4. **Nothing invented.** No company, person, figure, URL or fit reason appears that the run's calls did not return.
+   A search result preview is cut off after its filters: a count the answer reports for a search (such as "0
+   companies") is not invented unless something the calls show contradicts it.
    No "similar companies you could try" presented as matches.
 
 Fail if any one does not hold.
