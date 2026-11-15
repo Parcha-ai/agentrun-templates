@@ -11,7 +11,7 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
    billing unit and "contact sales" are cited to the pricing page.
 2. **No guessed releases.** `releases.public_changelog` is false (unless the run cites a changelog it found),
    `releases.items` is empty or cited, and the summary does not guess a cadence.
-3. **Onboarding honest.** Onboarding says it could not be reconstructed beyond "request a demo" (or is cited to pages the
+3. **Onboarding not guessed.** Onboarding says it could not be reconstructed beyond "request a demo" (or is cited to pages the
    run found); no invented steps or time-to-value figure.
 4. **No invented reviews or customers.** `complaints` is empty or cited; no customer, bank, integration count or
    certification appears without a source.

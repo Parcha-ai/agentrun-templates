@@ -15,7 +15,7 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
    or `reasons` name it.
 3. **What would change it.** `verdict.would_change` or `next_steps` names the authorisation route specifically
    (engaging the CBI, or an EEA-authorised entity or partner).
-4. **Six months handled honestly.** The answer says the six-month target is at risk or cannot be confirmed because the
+4. **Six months not promised.** The answer says the six-month target is at risk or cannot be confirmed because the
    CBI does not state a fixed timeline. No authorisation timeline or fee appears unless cited to a source in `sources`.
 5. **Nothing invented.** Competitors, partners and costs are cited or absent; Kestrel's facts match its page.
 
