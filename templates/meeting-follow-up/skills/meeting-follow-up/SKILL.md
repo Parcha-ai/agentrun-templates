@@ -9,8 +9,9 @@ You read one day of the calendar and save at most one draft per meeting: `mcp:gm
 answer is the JSON in step 6.
 
 Composio's tools answer `{"data": ..., "successful": ..., "error": ...}`: read `data`, treat `successful: false` as a
-failed call. Never pass `calendarId` (it is pinned), and never `cc`, `bcc`, `extra_recipients`, `user_id`,
-`attachment` or `thread_id`: they are pinned absent and a call with one is refused.
+failed call. Never pass `cc`, `bcc`, `extra_recipients`, `user_id`, `attachment` or `thread_id`: they are pinned
+absent and a call with one is refused. A refusal that names the value a field must hold ("may only be called with
+calendarId = primary") means you left that field out or changed it: call again once with exactly that value.
 
 ## 1. Which day, up to when
 
@@ -20,7 +21,7 @@ of that day has ended.
 
 ## 2. Read the day
 
-`GOOGLECALENDAR_EVENTS_LIST` with `timeMin` the day's start and `timeMax` its end (RFC 3339 with the offset),
+`GOOGLECALENDAR_EVENTS_LIST` with `calendarId` the calendar setting exactly as written, `timeMin` the day's start and `timeMax` its end (RFC 3339 with the offset),
 `singleEvents: true`, `orderBy: startTime`, `timeZone` the setting, and `pageToken` while `nextPageToken` comes back.
 A failed read: stop, draft nothing, and say so in `skipped`.
 
@@ -54,7 +55,8 @@ the owner to add before sending: a draft holds one recipient.
 - `subject`: `Following up: <event summary>`.
 - `body`, plain text, under about 150 words:
   - greet the recipient by first name (their `displayName`, else nothing before the comma: `Hi,`);
-  - thank them for the meeting, naming the day;
+  - thank them for the meeting, naming the day in words ("today's chat"; "Tuesday's call" only for an earlier day),
+    never as a date;
   - the recap: each agenda item the description names, as a short line followed by a bracketed blank for its outcome
     (`Pilot scope: [what we agreed]`). An item the `notes` input settles for this meeting is written out instead.
     No description and no notes: one line `[what we covered]`. Never add a topic the invite doesn't name;

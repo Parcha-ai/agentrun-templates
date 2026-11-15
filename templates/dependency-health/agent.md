@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: engineering
 tags: [dependencies, open-source, cve, license, supply-chain]
 harness: [pi, claude-agent, codex]
-model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
+model: { tier: balanced }
 effort: medium
 tools: [read, web_search, web_fetch]
 # No GitHub connection: the repository changes every run, so its tools can't be pinned to one, and a hostile README

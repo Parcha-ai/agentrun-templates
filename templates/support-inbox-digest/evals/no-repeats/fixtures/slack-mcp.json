@@ -5,7 +5,30 @@
     "SLACK_SEND_MESSAGE": {
       "description": "Posts a message to a Slack channel, direct message, or private group.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "markdown_text": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "thread_ts": {
+            "type": "string"
+          },
+          "blocks": {
+            "type": "array"
+          },
+          "unfurl_links": {
+            "type": "boolean"
+          },
+          "mrkdwn": {
+            "type": "boolean"
+          }
+        }
       },
       "answers": [
         {

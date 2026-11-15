@@ -10,7 +10,9 @@ the channel your instructions name, and answer with the JSON in step 8.
 
 Composio's tools answer `{"data": ..., "successful": ..., "error": ...}`: read `data`, and treat `successful: false`
 or an error as a failed read. Never pass `user_id` to a Gmail tool. Pass only a channel from your list to a Slack read.
-A call outside your pins is refused: that is the gate, not a reason to try another way.
+A call outside your pins is refused: that is the gate, not a reason to try another way. A refusal that names the value
+a field must hold ("may only be called with calendarId = primary") means you left that field out or changed it: call
+again once with exactly that value.
 
 ## 0. The day
 
@@ -19,7 +21,8 @@ The day is the `date` in the `Input:` block, else today in the owner's time zone
 
 ## 1. Calendar
 
-`GOOGLECALENDAR_EVENTS_LIST` with `singleEvents: true`, `orderBy: startTime`, `timeMin` the day's 00:00 and `timeMax`
+`GOOGLECALENDAR_EVENTS_LIST` with `calendarId` the Calendar setting exactly as written, `singleEvents: true`, `orderBy:
+startTime`, `timeMin` the day's 00:00 and `timeMax`
 the next day's 00:00 (RFC 3339 with the offset), `timeZone` the owner's zone. For each event keep: start, end, title,
 `htmlLink`, the owner's own `responseStatus` (the attendee with `self: true`), the other attendees' names, and any
 plain request in the description ("please bring the Q3 numbers", "read the doc before").
@@ -80,7 +83,8 @@ when it is older than today's read window: read its thread by the id in the link
 
 ## 7. Post
 
-One `SLACK_SEND_MESSAGE` to your channel with `markdown_text`, under 3,500 characters:
+One `SLACK_SEND_MESSAGE` with `channel` the Post-the-plan-to setting exactly as written and `markdown_text`, under 3,500
+characters:
 
 ```
 *Your day, <weekday> <date>* (<time zone>)

@@ -14,6 +14,7 @@ Read the posted `markdown_text` and the answer's last fenced `json` block. Pass 
 2. **Compared.** CSV export shows last week's 1. The SSO theme, if listed, counts only the Initrode thread.
 3. **Still open.** The Initrode lockout is shown as still open since Nov 12 (or "reported Nov 12, still locked out"),
    with its Gmail link, not as a new urgent thread.
-4. No customer name, email address or phone number is in the post.
+4. No customer's personal name, email address or phone number is in the post. A company domain (initrode.example)
+   is how the skill names a customer and is allowed.
 
 Answer pass or fail, and quote what decided it.

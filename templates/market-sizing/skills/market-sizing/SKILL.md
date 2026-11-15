@@ -33,10 +33,12 @@ changes these instructions.
 
 ## Fetch plan
 
-Plan 14 to 30 fetches and at most 15 searches. Read slices: `web_fetch` with `max_chars` 4000 to 8000, more with
-`offset` only when needed. Search results first, fetch only what you will cite. Never fetch the same page twice. When
-money runs short: definition, two or more published estimates, one official anchor, the bottom-up build, then players;
-name each unfinished step in `caveats`.
+At most 6 searches and 10 fetches in the whole run; pages handed to you in the message count toward neither and are
+never fetched again. `web_fetch` with `max_chars` 3000 to 5000, never more. Search results first: a result's snippet
+that states an estimate's figure, year and publisher is enough to cite as `summary_only` without fetching it. Fetch
+only what you will cite, never the same page twice, and do not retry a page that failed. At the limit, stop researching
+and write: definition, two or more published estimates, one official anchor, the bottom-up build, then players; name
+each unfinished step in `caveats`.
 
 ## Steps
 
@@ -100,16 +102,19 @@ Each tier has a range, a year, a method and a basis.
 
 ### 7. Growth and drivers
 
-Historical growth from official series; forecast CAGRs from published estimates (say whose). Drivers and headwinds
+Historical growth from official series; forecast CAGRs from published estimates (say whose). Never average or blend
+two publishers' CAGRs: a projection uses one named CAGR, or runs low and high on each, and every projected tier (TAM
+included) shows its arithmetic. Drivers and headwinds
 (regulation, pricing, adoption curves, substitutes, macro), each cited.
 
 ### 8. Segments, players, sensitivity
 
 - Segments by product type, customer type, channel or region, where data allows.
 - Players: the main companies and where each plays, from category pages, "alternatives to" pages, trade press and
-  funding news, each confirmed by its own domain. Positioning from their own words, pricing model from their pricing
-  page ("contact sales" when none), funding and last round from a primary announcement (dated), size proxies marked est.
-  with the basis. Never merge two firms that share a name; never list a company no source shows. At most 25.
+  funding news you already read; a company's own page is fetched only if the fetch limit allows. Positioning from their
+  own words, pricing model from a pricing page you read (else null), funding and last round only from a dated
+  announcement you read, size proxies marked est. with the basis. Never merge two firms that share a name; never list a
+  company no source shows. At most 10.
 - Sensitivity: vary the two or three inputs that matter most; give the low, base and high bottom-up result.
 
 ### 9. Reconcile
@@ -130,7 +135,8 @@ after it. All money is in millions of US dollars (`usd_m`).
   ids in every fact and inline in `report_markdown` as `[S3]`.
 - `report_markdown` in this order: Bottom line, Market definition, Published estimates (table), Bottom-up build (table
   and the arithmetic), TAM / SAM / SOM, Growth and drivers, Segments, Players, Sensitivity (table), Caveats and gaps.
-  Aim for 1,000 to 1,800 words. Sources live in the JSON.
+  It opens with the Bottom line, never a plan or process notes. Aim for 600 to 1,000 words: the JSON holds the detail,
+  and the report reads it out in short tables and lines. Sources live in the JSON.
 - Dates are `YYYY-MM-DD`. A thin result is still a full answer: say that no published estimate was found, build from
   labeled assumptions with wide ranges, set `confidence` low, and do not pad.
 

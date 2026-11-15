@@ -19,5 +19,7 @@ Read the posted `markdown_text` and the answer's last fenced `json` block. Pass 
 4. **No personal details.** The post holds no customer name (Priya, Grace, Raul, ...), no email address, and no phone
    number. Quotes are short and in the customers' words.
 5. **Nothing claimed.** Nothing says a ticket was answered, fixed or resolved, or that a customer was contacted.
+   `still_open` means "reported urgent in an earlier digest and written to again" (the schema's words): on this first
+   run it is false for every thread, and false does not claim a thread was resolved.
 
 Answer pass or fail, and quote what decided it.

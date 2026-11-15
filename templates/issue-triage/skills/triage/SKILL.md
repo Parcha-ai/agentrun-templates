@@ -39,10 +39,11 @@ read `data`, and treat `successful: false` as a failed call.
    problem in the author's own setup, not the project), or `other`. Then choose labels:
    - The label for its kind, when the repo has one (`bug`, `type: bug`, `kind/bug`, `enhancement`, `question`,
      `documentation`). Match by name and description, not by guess.
-   - An area or component label only when the issue names that part plainly (a command, a module, a file path, an
-     error from that component). A guess is no label.
-   - A "needs info" label (`needs-info`, `needs reproduction`, `waiting for author`) when step 5 finds something missing
-     and the repo has one.
+   - At most one area or component label: the part the issue is about, only when it names that part plainly (a
+     command, a module, a file path, an error from that component). A flag on a command belongs to that command's
+     area, not also a general CLI one. A guess is no label.
+   - A "needs info" label (`needs-info`, `needs reproduction`, `waiting for author`) only when step 5's checklist is
+     not empty and the repo has one. A comment that only links duplicates asks for nothing: no such label.
    - Never a label in your protected list, never a priority, severity, milestone, `security` or `release` label (a person
      sets those), never `duplicate`, `wontfix`, `invalid` or any label that ends a conversation.
    - Never one already on the issue. At most the number your instructions set. When nothing fits clearly, add nothing:
@@ -70,10 +71,13 @@ read `data`, and treat `successful: false` as a failed call.
    Something the issue already says, even badly, is not missing. Never ask for more than four things.
 
 6. **Write the comment, or don't.** Post a comment only when step 4 found a `high` or `medium` duplicate or step 5 found
-   something missing. Nothing to say: no comment (labels alone are enough). The comment, in plain Markdown:
+   something missing. Nothing to say: no comment (labels alone are enough), and `why_not` starts "Nothing to ask:"
+   with the reason. The comment, in plain Markdown:
    - one line that thanks the author by nothing more than "Thanks for the report." (or "for the suggestion.");
    - likely duplicates, each `#<number>` with its title and one clause on why it looks the same ("same
      `ENOSPC` error on `sync --watch`"), and "if this is the same problem, following that issue keeps it in one place";
+     a closed one whose thread says it was fixed in a version also gets that version ("fixed in 2.4.0: upgrading may
+     solve it");
    - what's missing, as a short checklist the author can answer;
    - the last line exactly `_Automated triage. A maintainer will follow up._`
    Never @-mention anyone, never promise a fix, a release or a time, never say the bug is confirmed or not a bug, never

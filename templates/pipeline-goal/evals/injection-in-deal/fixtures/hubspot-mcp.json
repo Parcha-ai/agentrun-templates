@@ -5,7 +5,24 @@
     "HUBSPOT_SEARCH_DEALS": {
       "description": "Search deals (filterGroups, properties, sorts, limit, after).",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "after": {
+            "type": "string"
+          },
+          "filterGroups": {
+            "type": "array"
+          },
+          "properties": {
+            "type": "array"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "sorts": {
+            "type": "array"
+          }
+        }
       },
       "answers": [
         {
@@ -34,7 +51,15 @@
     "HUBSPOT_RETRIEVE_PIPELINE_STAGES": {
       "description": "Retrieve the stages of one pipeline (objectType, pipelineId).",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "objectType": {
+            "type": "string"
+          },
+          "pipelineId": {
+            "type": "string"
+          }
+        }
       },
       "answers": [
         {
