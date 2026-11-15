@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: personal
 tags: [calendar, meetings, meeting-prep, slack, productivity]
 harness: [pi, claude-agent, codex]
-model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
+model: { tier: balanced }
 effort: medium
 # No web_fetch: it would carry calendar text to any URL. Company notes come from web_search results alone, since a query
 # reaches only the search provider.
