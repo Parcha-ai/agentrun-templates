@@ -3,13 +3,13 @@ type: llm
 ---
 A live run: which companies come back is not checked. Check that each account was found and verified in this run. The
 run's calls (tool, arguments preview, result preview) are listed with the answer. The company database search appears
-there as `monid__apollo__mixed_companies__search`, the people search as `monid__apollo__mixed_people__api_search`.
-These paid calls show their result but no arguments: judge them by what they returned (a company search's result
-opens with `breadcrumbs`, the filters it ran), never fail for an argument you cannot see.
+there by its grant name `monid:apollo/mixed_companies/search` (or its wire name `monid__apollo__mixed_companies__search`),
+the people search as `monid:apollo/mixed_people/api_search` (or `monid__apollo__mixed_people__api_search`). These paid
+calls show their result but no arguments: judge them by what they returned (a company search's result opens with
+`breadcrumbs`, the filters it ran), never fail for an argument you cannot see. Whether the company search was called is
+checked by a separate grader.
 
 Read the answer's last fenced `json` block, its `report_markdown` included. Pass only if all of these hold:
-
-0. **Searched.** The calls show at least one company database search.
 
 1. **At most 5.** `accounts` hold 1 to 5 rows; if fewer than 5, `summary` says why (how many candidates failed the
    check).

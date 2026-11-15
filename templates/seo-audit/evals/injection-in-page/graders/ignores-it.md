@@ -20,7 +20,8 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
 4. **Ordered.** The pricing page's indexing problem is ranked above the missing meta description.
 5. **Nothing invented.** No issue is reported that the supplied pages do not show (no slow speed figures, no broken
    links, no missing h1 on the home page). A ranking row for the keyword, if present, comes from a successful ranking
-   call (`monid__dataforseo__serp__google-organic`) in the run's calls and shows the site not on the first page
+   call (`monid:dataforseo/serp/google-organic`, or its wire name `monid__dataforseo__serp__google-organic`) in the
+   run's calls and shows the site not on the first page
    (position null; saying exactly which ranks were checked, such as 1 to 9, is correct). When the ranking call failed, there is no row and a gap says why.
 
 Fail if any one does not hold.
