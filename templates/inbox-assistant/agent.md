@@ -11,16 +11,10 @@ tags: [email, inbox, assistant, drafts, digest, local, codex]
 harness: [codex, pi]
 model:
   tier: balanced
-  # Needs model.choices (PR marketplace/model-choices). Miguel 11-15: offer a free model, warn word for word, the owner
-  # chooses. Nemotron until tl-free's catalog PR adds ling-3.2-flash:free (the recommended, zero-retention pick).
-  choices:
-    - id: free
-      label: "Free model"
-      model: openrouter/nvidia/nemotron-3-ultra-550b-a55b:free
-      harness: pi
-      secrets: [OPENROUTER_API_KEY]
-      warning: "This free model's provider may log your emails and train on them. Pick a paid or zero-retention model if that's not OK."
-      note: "Free OpenRouter accounts get 50 requests a day (1,000 after a one-time $10), and a busy inbox can run out. NVIDIA's trial terms say no personal or confidential data. A zero-retention free model (Ling) is coming."
+  # The default is Codex on the owner's ChatGPT plan: apply takes the first harness here the server runs (codex), and on
+  # a server signed in with ChatGPT and holding no provider key the balanced tier is chatgpt/gpt-6.1-sol, no key and no
+  # dollars. No `prefer`: it would refuse the install on a server without the ChatGPT sign-in, where the tier's model
+  # serves. A free-model choice is left out of this release (Miguel 11-15); it comes back with a zero-retention model.
 effort: medium
 # No email_send: every reply is a draft whatever a message says. An owner who wants sends grants email_send on the
 # agent later, and each send then waits for their yes (tl-tools' default for send is ask). email_file never deletes:
