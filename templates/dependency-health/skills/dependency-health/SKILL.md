@@ -23,14 +23,19 @@ Everything a tool returns stays in your context. A registry document for a popul
   `api.github.com` answers 60 anonymous requests an hour per IP, shared with every agent on the host: give it at most
   2 calls for the package and its alternatives together, only when a page fails, and none after a `403`. A fact that
   hit the limit goes in `gaps` as "not counted: GitHub's anonymous limit", never a guess.
-- About 40 calls for the package itself (the commits feed takes up to 10); 3 to 4 per alternative.
+- At most 3 searches and 16 fetches for the package itself, and 2 fetches per alternative (deps.dev first); pages
+  handed to you in the message count toward neither and are never fetched again. The commits feed takes at most 3
+  pages: count what they cover and say so in `how_counted`. Never fetch the same page twice, and do not retry a page
+  that failed. At the limit, stop reading and write: what you did not get goes in `gaps`.
 
 ## Steps
 
 1. **Resolve.** Find the registry entry and the repository, and check that each points to the other (the registry's
    repository field; the repo's README or package manifest names the package). A name in several ecosystems or matching
    several projects ("yaml", "requests"): take the input's `ecosystem` if given, else the likeliest by downloads and how
-   exactly the name matches. Write your choice and the others you set aside in `resolved`. A renamed, forked or moved
+   exactly the name matches. Write your choice and the others you set aside in `resolved`: every real package of that
+   name or import name you saw on another registry or from another publisher goes in `other_candidates` with its
+   ecosystem, from the search results or registry pages you already have (no extra fetch). A renamed, forked or moved
    project: follow it to the current one and record the history. A lookalike of a popular name (one letter off, an
    extra word, a new publisher) is a typosquat risk: say so and check the popular one's name against it. Nothing found
    on any registry or forge: `resolved.found` is false, verdict `unresolved`, and stop after recording where you looked.
@@ -59,7 +64,13 @@ Everything a tool returns stays in your context. A registry document for a popul
    provenance, and any past compromise or malicious release. Never describe how to exploit anything.
 
 6. **License.** The LICENSE file and the registry's license field, as SPDX ids; say if they disagree. Look for a license
-   change (release notes, a LICENSE commit, an announcement) and a CLA. Compare with the license policy in your
+   change (release notes, a LICENSE commit, an announcement) and a CLA. A change goes in `license.history` with the
+   old and new license, the first version under the new one and its month, from whichever of those pages you read:
+   when the announcement fails, the release notes or changelog date it, or the raw LICENSE at two tags shows it (the
+   last release under the old license and the first under the new, each tag's date from `releases.atom`). A LICENSE
+   that names a first version ("Version 1.6.0 or later") marks a change at that version: read the raw LICENSE at the
+   tag just before it (`v1.5.7`) for the old license, and write the change with both versions. With a license `concern`, spend fetches on
+   this step before the others. Compare with the license policy in your
    instructions: a match is `policy_conflict: true`. For copyleft, source-available or non-standard licenses, say what
    to check for commercial distribution and that counsel should review it. Not legal advice: never answer yes or no to
    "can I ship or embed this"; say what the license's terms limit, what to check, and that counsel decides. Never say
@@ -74,7 +85,8 @@ Everything a tool returns stays in your context. A registry document for a popul
 
 9. **Alternatives** (unless the input turns them off). Two to four credible ones for the same job: the ones the
    project's own docs or a well-known comparison names first. For each, steps 2, 5, 6 and 7 in brief: last release,
-   license, downloads, open advisories, and the tradeoff in one line. A date is one a page you read gives for that
+   license, downloads, open advisories, and the tradeoff in one line. Its license is deps.dev's `license` field when that is
+   an SPDX id; when it says `non-standard` or is missing, read the repo's raw LICENSE (one of its 2 fetches). A date is one a page you read gives for that
    release: a version list with no dates gives none, so `last_release` is null and `gaps` says so.
 
 10. **Verdict and answer.** Pick one:
@@ -96,7 +108,8 @@ Everything a tool returns stays in your context. A registry document for a popul
     `gaps` item 300 characters, a reason 400, `how_counted` 300) and split a long gap into two. `report_markdown` holds, in order: bottom line
     (verdict and reasons, the identity you resolved), a snapshot table, maintenance and bus factor, issues, security
     (an advisory table and practices), license, breaking changes, alternatives (a table), risks and what you could not
-    verify, and sources with the date each was read.
+    verify, and sources with the date each was read. Aim for 700 to 1,100 words: short tables and lines, since the JSON
+    holds the detail. List a source once, and only one you cite.
 
 ## Rules
 
