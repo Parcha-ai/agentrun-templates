@@ -17,3 +17,4 @@ grants:
   - mcp:slack/SLACK_SEND_MESSAGE
 # The agent starts with the releases already announced as a learned note (MEMORY.md and its note).
 learning: fixtures/learning
+now: 2026-11-14T16:00:00Z
