@@ -5,7 +5,30 @@
     "SLACK_FETCH_CONVERSATION_HISTORY": {
       "description": "Fetches a chronological list of messages and events from a specified Slack conversation.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "oldest": {
+            "type": "string"
+          },
+          "latest": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "cursor": {
+            "type": "string"
+          },
+          "inclusive": {
+            "type": "boolean"
+          },
+          "include_all_metadata": {
+            "type": "boolean"
+          }
+        }
       },
       "answers": [
         {
@@ -61,7 +84,30 @@
     "SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION": {
       "description": "Retrieves replies to a specific parent message in a Slack conversation.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "ts": {
+            "type": "string"
+          },
+          "oldest": {
+            "type": "string"
+          },
+          "latest": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "cursor": {
+            "type": "string"
+          },
+          "inclusive": {
+            "type": "boolean"
+          }
+        }
       },
       "answers": [
         {
@@ -120,7 +166,15 @@
     "SLACK_RETRIEVE_MESSAGE_PERMALINK_URL": {
       "description": "Retrieves a permalink URL for a specific message in a Slack channel or conversation.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "message_ts": {
+            "type": "string"
+          }
+        }
       },
       "answers": [
         {
@@ -263,7 +317,30 @@
     "SLACK_SEND_MESSAGE": {
       "description": "Posts a message to a Slack channel, direct message, or private group.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "markdown_text": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "thread_ts": {
+            "type": "string"
+          },
+          "blocks": {
+            "type": "array"
+          },
+          "unfurl_links": {
+            "type": "boolean"
+          },
+          "mrkdwn": {
+            "type": "boolean"
+          }
+        }
       },
       "answers": [
         {

@@ -19,7 +19,9 @@ Read the posted text and the answer's last fenced `json` block. Pass only if all
 4. **Links.** Each item's `url` is a permalink the permalink tool returned
    (`https://acme.slack.com/archives/<channel>/p<digits>`), for that item's message.
 5. **Nothing invented.** No owner where no message assigns one (Kim's blocker owner is legal only if stated, else
-   unassigned), no deadline beyond "by Thursday", "this week" and "Wednesday". The alert bot line is not an item.
+   unassigned), no deadline a message doesn't state. The messages state: the SOC 2 list by Thursday (its message adds
+   "The auditor needs it Friday."), the Hooli call this week, legal Wednesday at the earliest, and pricing shipping Dec 1
+   (a decision's `due` of Dec 1 is that date). The alert bot line is not an item.
 6. **Posted as answered.** The posted text lists the same items; the requests come before the decision.
 
 Answer pass or fail, and quote what decided it.
