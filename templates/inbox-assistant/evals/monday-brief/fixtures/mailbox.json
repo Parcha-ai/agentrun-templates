@@ -62,6 +62,19 @@
         "to": [
           "dana@ortiz.example"
         ],
+        "from": "news@growthweekly.example",
+        "from_name": "Growth Weekly",
+        "subject": "Pricing pages that convert",
+        "date": "2026-11-12T06:00:00-08:00",
+        "message_id": "<n2@growthweekly.example>",
+        "text": "Pricing pages that convert.\n\nUnsubscribe | View in browser"
+      }
+    ],
+    "Ignored": [
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
         "from": "notifications@linkedin.example",
         "from_name": "LinkedIn",
         "subject": "You appeared in 12 searches",
@@ -79,17 +92,6 @@
         "date": "2026-11-13T07:00:00-08:00",
         "message_id": "<li4@linkedin.example>",
         "text": "New jobs for you."
-      },
-      {
-        "to": [
-          "dana@ortiz.example"
-        ],
-        "from": "news@growthweekly.example",
-        "from_name": "Growth Weekly",
-        "subject": "Pricing pages that convert",
-        "date": "2026-11-12T06:00:00-08:00",
-        "message_id": "<n2@growthweekly.example>",
-        "text": "Pricing pages that convert.\n\nUnsubscribe | View in browser"
       }
     ],
     "Sent": [
