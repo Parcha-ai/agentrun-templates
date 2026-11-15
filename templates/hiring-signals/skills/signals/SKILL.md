@@ -55,7 +55,9 @@ Careers pages are huge. Read slices.
       window. A leadership move needs the company's announcement, a filing (SEC 8-K Item 5.02, a registry change) or
       named reporting. Layoffs need a filing, a company statement or named reporting, with the period and place.
    3. **Optional third read**: one filing or notice (a state WARN notice, an 8-K) when the news names one.
-4. **Keep only signals.** Inside the window, in `SIGNALS.md`'s list, and not ruled out by a learned note. What a
+4. **Keep only signals.** Inside the window, in `SIGNALS.md`'s list, and not ruled out by a learned note. A role whose
+   posted date falls in the window is a signal on its own, even one or two of them: the earlier pattern only shapes
+   its `inference`. What a
    learned note rules out is not named anywhere in the answer, not as a role, a location or a market entry ("first hire
    in Germany" from a left-out role is that role): at most one footer line says how many were left out and by which
    preference ("1 junior role left out, as you asked"). Do not count or rank the page's roles ("the second open
