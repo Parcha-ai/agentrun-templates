@@ -33,12 +33,12 @@ parameters:
   vip_senders: { type: array, required: false, items: { type: string, pattern: "^[^\\s@]*@[^\\s@]+$" }, description: "addresses (ana@acme.com) or whole domains (@acme.com) whose mail is never ignored" }
   ignore_rules: { type: array, required: false, items: { type: string, maxLength: 200 }, description: "plain rules for mail to ignore, one per line: \"newsletters\", \"anything from @linkedin.com\", \"CI notifications\"" }
   cron: { type: string, format: cron, required: false, default: "0 18 * * *", description: "when the digest runs, as a cron line: 18:00 every day unless you set it" }
-  weekly: { type: boolean, required: false, default: false, description: "Monday brief: Monday's digest also covers the week (what needs a reply, what waits on others, what's coming up). Email only for now; the calendar comes with Settings → Calendar" }
+  weekly: { type: boolean, required: false, default: false, description: "Monday brief: every Monday at 08:00 your time, a note on the week ahead (what needs a reply, what waits on others, what's coming up). Email only for now; the calendar comes with Settings → Calendar" }
   timezone: { type: string, format: timezone, required: false, default: UTC, description: "your IANA time zone (Europe/Madrid, America/Los_Angeles): the cron line and the digest's times are read in it" }
 inputs:
   message_id: { type: string, required: false, maxLength: 300, title: "Message-ID", description: "Sort and draft for this one message, for a run by hand (its Message-ID header). Leave it out on the trigger's runs: the email comes with the run.", examples: ["<CAF3x9Q@mail.example.com>"] }
   digest: { type: boolean, required: false, title: "Digest now", description: "Write the digest now, for a run by hand." }
-  weekly: { type: boolean, required: false, title: "Monday brief", description: "With digest: on a Monday (your time zone), the digest adds the week's brief. The schedule's run sets it from your Monday brief setting." }
+  weekly: { type: boolean, required: false, title: "Monday brief", description: "Write the Monday brief now (the week ahead) instead of the day's digest, for a run by hand." }
 budget: { per_run_usd: 0.10 }
 learning: true
 approvals: ask
@@ -59,15 +59,23 @@ triggers:
       input:
         content: "Scheduled run: write today's digest with your digest skill."
         digest: true
-        weekly: "${parameters.weekly}"
+  - name: monday-brief
+    # On only when you tick Monday brief (needs trigger `enabled` from a parameter: marketplace/trigger-enabled-param).
+    enabled: "${parameters.weekly}"
+    source: { kind: schedule, cron: "0 8 * * 1", timezone: "${parameters.timezone}" }
+    target:
+      kind: start_run
+      input:
+        content: "Scheduled run: write the Monday brief with your digest skill."
+        weekly: true
 output: { schema: inbox.schema.json }
 ---
 You are ${parameters.owner_name}'s inbox assistant. A run is one of two things:
 
 - **One email** (from the trigger, or the `message_id` input): sort it, file it, and, when it needs the owner, draft
   the reply, with your triage skill (`triage/SKILL.md`).
-- **The digest** (`digest: true`): today's mail in one short note to the owner, with your digest skill
-  (`digest/SKILL.md`). With `weekly: true` on a Monday in the owner's time zone, it opens with the week's brief.
+- **The digest** (`digest: true`): today's mail in one short note to the owner, or **the Monday brief**
+  (`weekly: true`): the week ahead. Both with your digest skill (`digest/SKILL.md`).
 
 Read that skill first and follow it.
 
