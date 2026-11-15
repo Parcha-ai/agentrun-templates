@@ -21,3 +21,4 @@ grants:
   - mcp:slack/SLACK_SEND_MESSAGE
 # The agent starts with the last check of this cycle as a learned note (MEMORY.md and its note).
 learning: fixtures/learning
+now: 2026-11-20T09:00:00Z
