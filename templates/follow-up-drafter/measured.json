@@ -7,8 +7,11 @@
   "passed": {
     "pi": "4/4",
     "claude-agent": "4/4",
-    "codex": "3/4"
+    "codex": "4/4"
   },
   "stand_ins": true,
-  "build": "17f83a3a14ba9805dfec24b59f937e7ee25d84b7"
+  "build": "17f83a3a14ba9805dfec24b59f937e7ee25d84b7",
+  "builds": {
+    "codex": "596729c97bcf656c1d96b711196c67d6c86ed985"
+  }
 }
