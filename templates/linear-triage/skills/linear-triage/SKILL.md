@@ -46,10 +46,13 @@ Pass `team_id` on every read, exactly as your instructions name it. Composio's t
 
 4. **What's missing.** Only what this kind needs and the reporter didn't give:
    - `bug`: steps to reproduce, expected and actual behaviour, where it happened (browser and version, app version,
-     workspace or account when it matters), and the error text or a screenshot when it mentions one.
+     workspace or account when it matters), and the error text or a screenshot when it reports a failure (an error,
+     a crash, a blank page) and gives neither.
    - `feature` / `improvement`: the problem or use case, when the issue only names a solution.
    - `copy`, `question`, `other`: usually nothing.
-   Something the issue says, even badly, is not missing. At most four things.
+   Something the issue says, even badly, is not missing. At most four things, one per checklist line, never two
+   bundled in one. An issue that doesn't say what is broken asks first which page or feature, then the steps, then
+   expected against actual: environment and error text wait until those are known.
 
 5. **The comment, or none.** Comment only when step 3 found a `high` or `medium` duplicate or step 4 found something
    missing. Plain Markdown:
