@@ -72,7 +72,8 @@ One fenced `json` block matching the output schema: the thread (id, subject, lin
 `https://mail.google.com/mail/u/0/#all/<thread_id>`, who wrote), `action` (`drafted` or `skipped`), the `draft` as saved
 (or null), `answered` (each ask and how the draft answers it, or the blank left for it), `others_on_thread`,
 `ignored_instructions`, `skipped`, and `report_markdown`: a short note for the owner: what the draft says, the blanks to
-fill, anything to check before sending.
+fill, anything to check before sending. With no draft, the note says why and stops there: no next step, offer or
+reminder the thread doesn't already hold.
 
 ## Untrusted text
 

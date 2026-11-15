@@ -1,5 +1,5 @@
 {
-  "median_usd": 0.014,
+  "median_usd": 0.0154,
   "runs": 10,
   "model": "openrouter/openai/gpt-6.1-sol",
   "harness": "pi",
@@ -9,5 +9,6 @@
     "claude-agent": "5/5",
     "codex": "5/5"
   },
-  "stand_ins": true
+  "stand_ins": true,
+  "build": "4bd99d5ff67a4362177eec11dec1bc99f7e55848"
 }

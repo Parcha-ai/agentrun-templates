@@ -15,3 +15,4 @@ grants:
   - mcp:github/list_pull_requests
   - mcp:github/pull_request_read
   - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-20T16:00:00Z

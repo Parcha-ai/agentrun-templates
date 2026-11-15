@@ -11,3 +11,4 @@ grants:
   - mcp:stripe/STRIPE_LIST_CHARGES
   - mcp:stripe/STRIPE_LIST_INVOICES
   - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-14T09:30:04Z

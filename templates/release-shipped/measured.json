@@ -9,5 +9,6 @@
     "claude-agent": "4/4",
     "codex": "4/4"
   },
-  "stand_ins": true
+  "stand_ins": true,
+  "build": "4bd99d5ff67a4362177eec11dec1bc99f7e55848"
 }

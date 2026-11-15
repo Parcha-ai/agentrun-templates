@@ -16,3 +16,4 @@ grants:
   - mcp:hubspot/HUBSPOT_RETRIEVE_PIPELINE_STAGES
   - mcp:hubspot/HUBSPOT_RETRIEVE_OWNERS
   - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-16T09:00:00Z

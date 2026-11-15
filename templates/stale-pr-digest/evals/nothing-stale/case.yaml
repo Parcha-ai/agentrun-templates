@@ -16,3 +16,4 @@ grants:
   - mcp:github/GITHUB_LIST_ISSUE_COMMENTS
   - mcp:github/GITHUB_LIST_COMMITS_ON_A_PULL_REQUEST
   - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-16T09:00:00Z

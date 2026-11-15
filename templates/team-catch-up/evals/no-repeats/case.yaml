@@ -14,3 +14,4 @@ grants:
   - mcp:slack/SLACK_SEND_MESSAGE
 # The agent starts with a learned note (fixtures/learning/): where the last catch-up ended and what it reported.
 learning: fixtures/learning
+now: 2026-11-17T09:00:00Z

@@ -15,3 +15,4 @@ grants:
   - mcp:slack/SLACK_SEND_MESSAGE
 # The agent starts with last week's list as a learned note (MEMORY.md and its note, in the learning folder's format).
 learning: fixtures/learning
+now: 2026-11-16T09:00:00Z

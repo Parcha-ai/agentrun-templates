@@ -8,3 +8,4 @@ mcp:
 grants:
   - mcp:gmail/GMAIL_FETCH_EMAILS
   - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-16T09:00:00Z

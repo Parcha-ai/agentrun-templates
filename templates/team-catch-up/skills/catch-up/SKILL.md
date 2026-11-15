@@ -17,8 +17,7 @@ means you left that field out or changed it: call again once with exactly that v
 
 Your `# Learned` notes hold, per channel, the `ts` the last catch-up read up to (`covered C0123ABCD to 1794819600.000000`)
 and the items it reported, by permalink. Start each channel there. The `since` input, when given, wins for every
-channel. No note and no `since`: start `lookback_hours` before now (24 when blank). Now is the firing time your
-message states, else your clock: a firing time in the message wins.
+channel. No note and no `since`: start `lookback_hours` before now (24 when blank).
 
 ## 2. Read
 
