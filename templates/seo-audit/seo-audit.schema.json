@@ -5,7 +5,7 @@
   "description": "A technical and on-page SEO audit of one site: crawl checks, sampled pages, one Lighthouse run, the backlink profile, Google rankings for the given keywords, and a prioritized fix list. Every finding names the page and the evidence; every score or position comes from a tool result in this run. What could not be checked is null or `unknown`, never guessed.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["checked_on", "site", "bottom_line", "checks", "pages", "lighthouse", "backlinks", "rankings", "fixes", "gaps", "sources", "report_markdown"],
+  "required": ["checked_on", "site", "bottom_line", "checks", "pages", "lighthouse", "backlinks", "keywords", "rankings", "fixes", "gaps", "sources", "report_markdown"],
   "properties": {
     "checked_on": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "the run's date" },
     "site": {
@@ -28,7 +28,7 @@
         "additionalProperties": false,
         "required": ["area", "check", "status", "evidence", "source"],
         "properties": {
-          "area": { "enum": ["crawl", "indexing", "on_page", "structured_data", "speed", "links", "rankings"] },
+          "area": { "enum": ["crawl", "indexing", "on_page", "structured_data", "speed", "links", "keywords", "rankings"] },
           "check": { "type": "string", "maxLength": 160 },
           "status": { "enum": ["pass", "warn", "fail", "unknown"] },
           "evidence": { "type": "string", "maxLength": 400, "description": "what was seen, quoted or measured; for unknown, why it could not be checked" },
@@ -99,6 +99,26 @@
         "broken_backlinks": { "type": ["integer", "null"], "minimum": 0, "description": "links from other sites to pages of this site that answer an error" },
         "broken_pages": { "type": ["integer", "null"], "minimum": 0 },
         "note": { "type": "string", "maxLength": 400, "description": "what the figures mean for this site; or why the call did not run (declined, failed, site not fetched)" },
+        "source": { "type": ["string", "null"] }
+      }
+    },
+    "keywords": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "the site's Google keyword footprint from one keyword overview call (DataForSEO estimates from past rankings); every figure as the call returned it, null when not run",
+      "required": ["ran", "location", "count", "pos_1", "pos_2_3", "pos_4_10", "pos_11_20", "etv", "is_new", "is_lost", "note", "source"],
+      "properties": {
+        "ran": { "type": "boolean" },
+        "location": { "type": ["string", "null"], "maxLength": 120 },
+        "count": { "type": ["integer", "null"], "minimum": 0, "description": "keywords the site ranks for in Google's top 100" },
+        "pos_1": { "type": ["integer", "null"], "minimum": 0 },
+        "pos_2_3": { "type": ["integer", "null"], "minimum": 0 },
+        "pos_4_10": { "type": ["integer", "null"], "minimum": 0 },
+        "pos_11_20": { "type": ["integer", "null"], "minimum": 0 },
+        "etv": { "type": ["number", "null"], "minimum": 0, "description": "estimated monthly visits from those positions, modeled, not measured" },
+        "is_new": { "type": ["integer", "null"], "minimum": 0 },
+        "is_lost": { "type": ["integer", "null"], "minimum": 0 },
+        "note": { "type": "string", "maxLength": 300, "description": "labels the figures as DataForSEO estimates; or why the call did not run (declined, failed, site not fetched)" },
         "source": { "type": ["string", "null"] }
       }
     },

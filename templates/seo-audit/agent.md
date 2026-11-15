@@ -1,8 +1,8 @@
 ---
 name: seo-audit
 display_name: SEO audit
-version: 0.2.0
-description: Give it your site and up to five keywords, and it checks robots.txt, the sitemap and your key pages, runs Lighthouse on the home page, sums up who links to you, looks up where you rank on Google, and hands back a prioritized fix list with the page and evidence for each fix. It needs a monid key for the page checks, Lighthouse, the backlink summary and Google rankings.
+version: 0.3.0
+description: Give it your site and up to five keywords, and it checks robots.txt, the sitemap and your key pages, runs Lighthouse on the home page, sums up who links to you and how many Google keywords you rank for, looks up where you rank for your keywords, and hands back a prioritized fix list with the page and evidence for each fix. It needs a monid key for the page checks, Lighthouse, the backlink summary, the keyword overview and Google rankings.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -12,7 +12,7 @@ harness: [pi, claude-agent]
 model: { tier: balanced }
 effort: medium
 approvals: ask
-tools: [read, web_search, web_fetch, "monid:dataforseo/onpage/instant-pages", "monid:dataforseo/onpage/lighthouse", "monid:dataforseo/serp/google-organic", "monid:dataforseo/backlinks/summary"]
+tools: [read, web_search, web_fetch, "monid:dataforseo/onpage/instant-pages", "monid:dataforseo/onpage/lighthouse", "monid:dataforseo/serp/google-organic", "monid:dataforseo/backlinks/summary", "monid:dataforseo/labs/domain-rank-overview"]
 inputs:
   site: { type: string, format: uri, title: "Website", description: "The site to audit, as a URL. A subpath audits that section.", examples: ["https://quillforge.example"] }
   keywords: { type: array, items: { type: string, minLength: 2, maxLength: 120 }, required: false, title: "Keywords", description: "Up to five searches you want to rank for. Without them, the run checks your brand name only.", examples: [["dashboard software", "ops reporting tool"]] }

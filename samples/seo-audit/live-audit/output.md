@@ -1,60 +1,57 @@
-## Plan
-1. Check reachability, robots and sitemap discovery.
-2. Inspect four key pages, run one mobile Lighthouse test and summarize backlinks.
-3. Check both UK keywords and prioritize evidenced fixes.
+## Plan and scope
+1. Check homepage reachability, robots and sitemap discovery.
+2. Sample four key pages, run one mobile Lighthouse audit, and collect link and UK keyword data.
+3. Check the two requested Google queries and prioritize supported fixes.
 
 ## Bottom line
-The sampled pages load successfully and the homepage is fast: mobile Lighthouse performance **100**, SEO **83**, LCP **1,260 ms** [S3–S7, S12–S14]. There is no observed homepage indexing block. The clearest actionable gaps are missing descriptions, missing primary headings and provider-reported broken backlink destinations. Start with a small metadata/heading patch; investigate broken destinations next. Neither supplied keyword included sqlite.org in the eight conventional organic results returned, but the unusual brand result also cited SQLite in an AI overview. Do not infer sustained ranking loss from this snapshot [S9–S10].
+SQLite's homepage is reachable and fast: mobile Lighthouse performance **100**, SEO **83**, LCP **1,260 ms** [S1, S3, S13, S14]. There is no demonstrated sitewide crawl block. The clearest first-pass opportunities are homepage presentation, preferred-URL signals and externally linked error destinations. Three secondary-page checks failed, limiting conclusions.
+
+**Next step:** ship the homepage title, description and H1 update, then investigate broken backlink destinations. Do not treat the lab SEO score as an overall ranking score.
 
 ## Prioritized fixes
 | Priority | Fix | Pages | Impact | Effort |
 |---|---|---|---|---|
-| 1 | Add unique, useful meta descriptions | /, /about.html, /docs.html, /download.html | Medium | Low |
-| 2 | Add descriptive H1s; clarify homepage product title | /, /docs.html, /download.html | Medium | Low |
-| 3 | Verify and recover externally linked error destinations | sqlite.org; exact URLs not supplied | Medium | Medium |
-| 4 | Publish and advertise an XML sitemap | /sitemap.xml, /robots.txt | Medium | Medium |
-| 5 | Declare preferred canonical URLs after confirming host policy | All four sampled pages | Low | Low |
-| 6 | Use buttons for interface actions; repair nested anchors | /, /docs.html | Low | Low |
-| 7 | Improve versioned static-asset caching | / and its CSS/images | Low | Medium |
+| 1 | Replace generic title; add a useful description and one descriptive H1 [S3] | / | Medium | Low |
+| 2 | Export and verify broken backlink destinations; redirect only to equivalent replacements [S8] | Affected URLs not supplied | Medium | Medium |
+| 3 | Add homepage canonical; verify alternate URLs before consolidation [S1, S3] | / | Medium | Low |
+| 4 | Make embedded-database intent clearer in the existing use-case introduction [S11, S15] | /whentouse.html, / | Medium | Medium |
+| 5 | Locate or publish an XML sitemap and advertise it in robots.txt [S2, S12] | /robots.txt, /sitemap.xml | Low | Low |
+| 6 | Repair nested anchors and mismatched end tags [S3] | / | Low | Low |
 
-Descriptions were absent on all four pages; Lighthouse independently confirms the homepage omission [S3–S6, S14]. Suggested homepage title/H1: **SQLite — A Serverless, Embedded SQL Database**. Documentation and Download already have suitable main labels, but at H2 rather than H1 [S3, S5–S6]. These changes improve clarity; neither descriptions nor H1 counts guarantee higher rankings.
+Suggested homepage title: **SQLite — Embedded, Serverless SQL Database Engine**. Suggested H1: **SQLite: an embedded SQL database engine**. Draft description: **SQLite is a self-contained, serverless SQL database engine for applications and devices. Explore documentation, downloads and guidance on when to use SQLite.** These are proposed copy, not observed tags.
 
-For broken backlinks, first obtain destination URLs and verify current responses. Restore useful content or redirect genuinely replaced pages to close equivalents, not indiscriminately to home [S8]. Missing canonicals and a missing fallback sitemap are opportunities, not proof of duplicate indexing or failed discovery [S1–S6, S11].
-
-## Crawl and indexing checks
-- **HTTPS:** homepage returned 200, independently confirmed by the page checker. HTTP/www redirects remain unknown [S1, S3].
-- **Robots:** blocks repository-related paths, not the sampled public pages. Lighthouse independently found valid robots.txt [S2, S14].
-- **Sitemap:** no directive in robots.txt; /sitemap.xml returned 404. No sitemap contents or lastmod values were available [S2, S11].
-- **Indexability:** homepage Lighthouse passed with no blocking directives. Other pages returned 200 and follow=true, but their explicit index/header directives were not supplied, so their indexability remains unknown [S3–S6, S14].
-- **Canonicals:** none detected on the four pages. Root and an index.html home link were observed, but alias duplication was not tested [S1, S3–S6].
+## Crawl and indexing
+- HTTPS homepage returned 200 in two independent mechanisms [S1, S3]. HTTP and www redirect behavior remain unknown.
+- robots.txt blocks repository-related prefixes, not the sampled public documentation pages [S2]. Do not remove these blocks without understanding their purpose.
+- No sitemap is advertised in robots.txt; /sitemap.xml returned 404. Another sitemap may exist elsewhere [S2, S12].
+- Homepage canonical is absent in the returned metadata; navigation points Home to index.html. Duplicate content or duplicate indexation was not proven [S1, S3].
+- Full homepage indexability remains unknown because explicit noindex and HTTP robot-header values were not returned [S3].
 
 ## Sampled pages
-| Page | Title (characters) | H1 count | Description | Canonical | On-page tool score |
-|---|---|---:|---|---|---:|
-| / | SQLite Home Page (16) | 0 | Missing | Not detected | 93.41 |
-| /about.html | About SQLite (12) | 1 | Missing | Not detected | 96.34 |
-| /docs.html | SQLite Documentation (20) | 0 | Missing | Not detected | 91.95 |
-| /download.html | SQLite Download Page (20) | 0 | Missing | Not detected | 94.51 |
-
-Titles are distinct; there are no present descriptions to compare for duplication. Short title flags alone do not justify padding titles. No structured data was detected; this is not an indexing blocker and is not a priority over the observed basics [S3–S6]. Home and Documentation also have parser-reported nested anchors [S3, S5].
+- **/**: title `SQLite Home Page`; tool-reported title length 16; missing description; zero H1s; canonical null; no micromarkup detected. Tool on-page score **93.41**. Nested anchor errors at lines 127 and 186 [S3]. The direct fetch corroborates the title and section-only headings [S1].
+- **/about.html**: provider page check failed with HTTP 400; tags and indexability unknown [S4].
+- **/docs.html**: provider page check failed with HTTP 502; this is not proof of a website 502 [S5].
+- **/whentouse.html**: provider check failed with HTTP 400 [S6]. A separate text fetch returned 200, title `Appropriate Uses For SQLite`, client/server comparisons and an embedded-devices section. Head metadata and complete heading count remain unknown [S15].
+- Cross-page duplicate titles and descriptions could not be evaluated. No structured-data ranking penalty is inferred from its absence on the homepage.
 
 ## Lighthouse
-One simulated mobile run: performance **100/100**, SEO **83/100**, FCP **960 ms**, LCP **1,260 ms**. Numeric CLS was outside the inspected report slices and remains unknown [S7, S12–S14]. This is lab data, not field Core Web Vitals or a ranking score.
-
-The failed SEO audits were missing description and uncrawlable Menu/Search anchors using javascript:void(0). These are interface controls; actual content links were present, so this does not show that all navigation is undiscoverable. Use buttons for actions and real links for destinations [S1, S14]. Static assets had 120-second cache lifetimes, with an estimated 81 KiB cache opportunity; render-blocking CSS had estimated savings of 170 ms. Performance work is secondary here [S13–S14].
+One simulated mobile run: **performance 100/100**, **SEO 83/100**, **LCP 1,260 ms**, **FCP 960 ms** [S7, S13, S14]. CLS was not read. The report identifies sqlite.css as render-blocking with displayed estimated savings of 160 ms [S14]. Given the fast LCP, speed tuning is lower priority than the observed content and link issues. Individual failing SEO audit results were not read; the 83 score is not attributed to a guessed cause. These are lab results, not real-user Core Web Vitals.
 
 ## Links
-DataForSEO returned domain rank **539/1000**, **3,797,804 backlinks**, **30,397 referring domains**, **26,346 referring main domains**, and backlinks spam score **8/100**. It also reported **4,986 broken backlinks** and **1,955 broken pages** [S8]. These are provider-index counts; the summary did not list destination URLs. No competitor comparison supports labeling the profile strong or weak, and this evidence does not warrant buying or disavowing links.
+DataForSEO reports **3,797,804 backlinks**, **30,397 referring domains**, **26,346 referring main domains**, domain rank **539/1000**, and backlink spam score **8/100** [S8]. There is no competitor benchmark. It also reports **4,986 broken backlinks** and **1,955 broken pages**. Obtain destination URLs and verify them before choosing redirects; the summary did not supply those URLs.
+
+## UK keyword footprint
+DataForSEO estimates **535** Google top-100 keywords: **48** at position 1, **21** at positions 2–3, **88** at positions 4–10 and **122** at positions 11–20. Modeled monthly organic visits: **1,775.03**, not measured traffic. New keywords: **308**; lost: **309**. That small difference does not demonstrate sustained decline [S9].
 
 ## UK Google rankings
-| Keyword | SQLite conventional organic result | Leaders at ranks 1–3 |
-|---|---|---|
-| sqlite | Not on the first page; organic ranks 1–8 checked | infinite.education; nationalarchives.gov.uk; capterra.co.uk |
-| embedded database | Not on the first page; organic ranks 1–8 checked | rxdb.info; hackernoon.com; Substack/Arpit’s Newsletter |
+| Keyword | Best organic position | Observed page or scope | Leaders 1–3 |
+|---|---|---|---|
+| sqlite | 2 | SQLite WASM documentation; organic ranks 1–8 checked [S10] | wiki.archlinux.org; sqlite.org; reddit.com |
+| embedded database | Not on first page | Organic ranks 1–9 checked [S11] | html.it; slashdot.org; appcoding.com |
 
-The brand query separately cited www.sqlite.org in its AI overview; this is not an organic position. The exact Substack publication host was not exposed. Google redirect URLs were attributed using site labels/breadcrumbs rather than treating google.com as the ranking site [S9–S10]. These results cannot establish a trend, traffic loss or its cause.
+These are single desktop snapshots. Google redirect links were identified using website names and breadcrumbs, not incorrectly classified as google.com ranking pages. SQLite's homepage was referenced in the returned AI overview for the brand query, but that is not an organic homepage ranking [S10].
 
 ## Sources and limitations
-[S1] Homepage fetch. [S2] robots.txt. [S3–S6] Individual DataForSEO page checks. [S7] Single mobile Lighthouse invocation. [S8] Backlink summary. [S9–S10] UK keyword SERPs. [S11] Failed sitemap fetch. [S12–S14] Three bounded reads of the Lighthouse JSON report.
+[S1] Homepage direct fetch. [S2] robots.txt. [S3] Homepage on-page check. [S4–S6] Failed secondary-page checks. [S7] Mobile Lighthouse execution. [S8] Backlink summary. [S9] UK domain keyword overview. [S10–S11] UK Google results. [S12] Default sitemap 404. [S13–S14] Lighthouse report slices. [S15] Use-cases page text.
 
-This was a four-page first pass with no crawl, Search Console or analytics access. Homepage findings were cross-checked across independent fetch/check mechanisms where possible; secondary-page head tags, backlink counts and rankings rely on their respective provider responses. Full source locators and remaining unknowns are recorded in the structured sources and gaps.
+Homepage availability, title and heading findings were cross-checked through independent mechanisms. Rankings and domain estimates were not independently replicated. No Search Console, analytics, full crawl, forms or logins were used.

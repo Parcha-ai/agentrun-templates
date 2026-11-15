@@ -1,131 +1,110 @@
 {
-  "checked_on": "2026-11-14",
+  "checked_on": "2026-11-15",
   "site": {
     "requested": "https://sqlite.org",
     "audited_url": "https://sqlite.org/",
     "reachable": true,
-    "note": "Interpreted this as a first-pass audit of the public SQLite website, with UK English Google results for both supplied keywords. HTTPS returned 200 on the non-www host without a host redirect. HTTP and www variants were not separately fetched. Sampled the homepage, About, Documentation and Download pages."
+    "note": "Fetched the HTTPS, non-www homepage successfully (200); no redirect was reported. HTTP and www redirect behavior was not separately tested. Audited the two supplied keywords in United Kingdom, in English. Used the run date, 2026-11-15 UTC, rather than the date in the message."
   },
-  "bottom_line": "The sampled site is accessible and the homepage is fast: mobile Lighthouse performance 100, SEO 83. The clearest opportunities are missing descriptions on all four pages, missing H1s on three, and recovery of externally linked error URLs reported by the backlink provider. Neither keyword returned sqlite.org in the eight conventional organic results supplied, although the brand query cited SQLite in its AI overview; treat this unusual brand result as a snapshot, not proof of a sustained ranking problem. Start with a small homepage/template patch for descriptive metadata and headings, then investigate broken backlink destinations.",
+  "bottom_line": "The homepage is reachable and fast: mobile Lighthouse returned performance 100 and SEO 83. The clearest opportunities are homepage search presentation, missing URL consolidation signals, and recovering externally linked error pages. SQLite ranked organically at position 2 for 'sqlite' via its WASM documentation, but was absent from the first page for 'embedded database'. Start with a homepage title, description and H1 update; then investigate broken backlink destinations. Three secondary-page checks failed, so this is a limited first pass, not a sitewide diagnosis.",
   "checks": [
     {
       "area": "crawl",
-      "check": "HTTPS homepage availability",
+      "check": "Homepage HTTPS availability",
       "status": "pass",
-      "evidence": "https://sqlite.org/ returned HTTP 200; the independent on-page check also returned 200.",
+      "evidence": "https://sqlite.org/ returned 200 in both the direct fetch and the independent on-page check (S3).",
       "source": "S1"
     },
     {
       "area": "crawl",
-      "check": "HTTP-to-HTTPS and www consolidation",
+      "check": "HTTP and www redirect consolidation",
       "status": "unknown",
-      "evidence": "https://sqlite.org/ stayed on the non-www HTTPS host. HTTP and www variants were not requested, so their redirects are unknown.",
+      "evidence": "https://sqlite.org/ remained the final URL. HTTP and www variants were not separately fetched within this first-pass budget.",
       "source": "S1"
     },
     {
       "area": "crawl",
-      "check": "robots.txt restrictions",
+      "check": "Robots access to sampled public pages",
       "status": "pass",
-      "evidence": "https://sqlite.org/robots.txt disallows /cvstrac, /src, /docsrc, /cgi and /contrib for *. None matches the four sampled HTML pages. Lighthouse independently found robots.txt valid.",
+      "evidence": "https://sqlite.org/robots.txt disallows /cvstrac, /src, /docsrc, /cgi and /contrib for User-agent: *. It does not block /, /about.html, /docs.html or /whentouse.html.",
       "source": "S2"
     },
     {
       "area": "crawl",
-      "check": "Sitemap discovery and availability",
+      "check": "Sitemap discovery",
       "status": "warn",
-      "evidence": "https://sqlite.org/robots.txt has no Sitemap directive; the fallback https://sqlite.org/sitemap.xml returned 404. No sitemap URL list or lastmod values could be inspected.",
-      "source": "S11"
+      "evidence": "https://sqlite.org/sitemap.xml returned 404. robots.txt contains no Sitemap directive (S2). This does not establish that no sitemap exists elsewhere.",
+      "source": "S12"
     },
     {
       "area": "indexing",
-      "check": "Homepage blocking directives",
-      "status": "pass",
-      "evidence": "https://sqlite.org/: Lighthouse is-crawlable scored 1, with no blocking directives listed; on-page HTTP status was 200.",
-      "source": "S14"
+      "check": "Homepage canonical",
+      "status": "warn",
+      "evidence": "https://sqlite.org/ has meta.canonical=null in the page check. Its fetched navigation links Home to index.html (S1); that alternate URL was not tested.",
+      "source": "S3"
     },
     {
       "area": "indexing",
-      "check": "Explicit canonical declarations",
-      "status": "warn",
-      "evidence": "https://sqlite.org/, /about.html, /docs.html and /download.html all returned meta.canonical=null. Homepage Lighthouse marked canonical not applicable. This is not evidence of a wrong canonical or confirmed duplication.",
+      "check": "Homepage indexability",
+      "status": "unknown",
+      "evidence": "https://sqlite.org/ returned 200 and is not robots-blocked, but the page-check output does not explicitly expose a noindex value or X-Robots-Tag. meta.follow=true alone does not prove indexability.",
       "source": "S3"
     },
     {
       "area": "on_page",
-      "check": "Titles and sample duplicates",
-      "status": "pass",
-      "evidence": "Titles were distinct: / 'SQLite Home Page' (16 characters); /about.html 'About SQLite' (12); /docs.html 'SQLite Documentation' (20); /download.html 'SQLite Download Page' (20). Short-title flags alone are not failures.",
+      "check": "Homepage title, description and main heading",
+      "status": "warn",
+      "evidence": "https://sqlite.org/: title='SQLite Home Page'; title_length=16 as reported by the tool; description=null; no_h1_tag=true. The independent text fetch also shows only H3 section headings (S1).",
       "source": "S3"
     },
     {
       "area": "on_page",
-      "check": "Meta descriptions",
+      "check": "Homepage HTML link validity",
       "status": "warn",
-      "evidence": "https://sqlite.org/, /about.html, /docs.html and /download.html each returned description=null and no_description=true. Homepage Lighthouse independently failed meta-description.",
-      "source": "S14"
-    },
-    {
-      "area": "on_page",
-      "check": "Primary headings",
-      "status": "warn",
-      "evidence": "No H1 was found on https://sqlite.org/, /docs.html or /download.html. /about.html has one H1, 'About SQLite'. Homepage extracted text also starts its sections at H3.",
+      "evidence": "https://sqlite.org/ page check reports 'Anchor elements cannot be nested' at lines 127 and 186, with mismatched end tags at lines 126 and 185.",
       "source": "S3"
-    },
-    {
-      "area": "on_page",
-      "check": "Homepage navigation controls and HTML",
-      "status": "warn",
-      "evidence": "https://sqlite.org/: Lighthouse identified Menu and Search anchors using href='javascript:void(0)'. The page checker also reported nested anchors at lines 127 and 186; these are separate markup issues, not proof that all navigation is inaccessible.",
-      "source": "S14"
     },
     {
       "area": "structured_data",
-      "check": "Detected markup on sampled pages",
+      "check": "Homepage structured data",
       "status": "warn",
-      "evidence": "https://sqlite.org/, /about.html, /docs.html and /download.html each returned has_micromarkup=false; no schema.org types were supplied. This is not an indexing blocker or a guaranteed rich-result opportunity.",
+      "evidence": "https://sqlite.org/: has_micromarkup=false. No schema.org types were returned. Missing structured data alone is not evidence of a ranking penalty.",
       "source": "S3"
     },
     {
       "area": "speed",
-      "check": "Homepage mobile lab performance",
+      "check": "Homepage mobile Lighthouse",
       "status": "pass",
-      "evidence": "https://sqlite.org/: Lighthouse performance score 1 × 100 = 100; LCP 1260 ms and FCP 960 ms. The non-rendered page checker independently did not flag high loading time.",
-      "source": "S13"
-    },
-    {
-      "area": "speed",
-      "check": "Secondary delivery improvements",
-      "status": "warn",
-      "evidence": "https://sqlite.org/: Lighthouse reported render-blocking sqlite.css with estimated savings of 170 ms, plus 120-second cache lifetimes for listed static assets and estimated cache savings of 81 KiB.",
+      "evidence": "https://sqlite.org/: performance category score=1 (100/100), SEO=0.83 (83/100). LCP=1260 ms in the metric slice (S13). One simulated mobile run, not field data.",
       "source": "S14"
     },
     {
       "area": "links",
-      "check": "Broken externally linked destinations",
+      "check": "Externally linked error destinations",
       "status": "warn",
-      "evidence": "For sqlite.org, the backlink summary reported 4,986 broken backlinks and 1,955 broken pages. It did not identify their destination URLs; individual errors were not verified.",
+      "evidence": "sqlite.org backlink summary reports 4,986 broken backlinks and 1,955 broken pages. Destination URLs are not included, so individual error pages remain unverified.",
       "source": "S8"
     },
     {
-      "area": "links",
-      "check": "Referring domains and provider spam metric",
-      "status": "pass",
-      "evidence": "sqlite.org: 30,397 referring domains, 26,346 referring main domains, 3,797,804 backlinks and backlinks_spam_score=8. No competitor benchmark was collected.",
-      "source": "S8"
-    },
-    {
-      "area": "rankings",
-      "check": "UK Google: sqlite",
+      "area": "keywords",
+      "check": "UK estimated keyword movement",
       "status": "warn",
-      "evidence": "sqlite.org was not on the first page of conventional organic results returned (organic ranks 1 to 8 checked). The same response cited www.sqlite.org in the AI overview; that is not an organic rank.",
+      "evidence": "For sqlite.org in United Kingdom, DataForSEO estimates 535 top-100 keywords; is_lost=309 versus is_new=308: more keywords left the top 100 than entered. This one-keyword difference is not proof of a sustained decline.",
       "source": "S9"
     },
     {
       "area": "rankings",
-      "check": "UK Google: embedded database",
-      "status": "warn",
-      "evidence": "sqlite.org was not on the first page of organic results returned (organic ranks 1 to 8 checked). Leaders were RxDB, HackerNoon and Substack/Arpit’s Newsletter.",
+      "check": "UK organic ranking: sqlite",
+      "status": "pass",
+      "evidence": "sqlite.org appears at organic rank_group=2, titled 'sqlite3 WebAssembly & JavaScript Documentation Index', identified by its SQLite website name and sqlite.org/wasm breadcrumb. Organic ranks 1–8 checked.",
       "source": "S10"
+    },
+    {
+      "area": "rankings",
+      "check": "UK organic ranking: embedded database",
+      "status": "warn",
+      "evidence": "sqlite.org was not on the first page (organic ranks 1 to 9 checked). Leaders were html.it, slashdot.org and appcoding.com. This does not establish its position beyond that page.",
+      "source": "S11"
     }
   ],
   "pages": [
@@ -135,69 +114,63 @@
       "meta_description": null,
       "h1_count": 0,
       "canonical": null,
-      "indexable": true,
+      "indexable": null,
       "structured_data": [],
       "onpage_score": 93.41,
       "issues": [
-        "Missing meta description; independently confirmed by Lighthouse.",
-        "No H1; title is 16 characters and generic rather than product-descriptive.",
-        "No explicit canonical detected; duplication has not been established.",
-        "No structured data detected.",
-        "Parser reported nested anchors at lines 127 and 186."
+        "Missing meta description: description=null and no_description=true.",
+        "No H1: no_h1_tag=true; returned heading list contains H3s only.",
+        "No canonical URL returned: meta.canonical=null.",
+        "Generic title; tool reports title_length=16 and title_too_short=true.",
+        "Nested anchor errors reported at lines 127 and 186.",
+        "has_micromarkup=false; no structured-data types detected.",
+        "Indexability not fully established: explicit noindex and HTTP robot-header values were not returned."
       ],
       "source": "S3"
     },
     {
       "url": "https://sqlite.org/about.html",
-      "title": "About SQLite",
+      "title": null,
       "meta_description": null,
-      "h1_count": 1,
+      "h1_count": null,
       "canonical": null,
       "indexable": null,
       "structured_data": [],
-      "onpage_score": 96.34,
+      "onpage_score": null,
       "issues": [
-        "Missing meta description.",
-        "No explicit canonical or structured data detected.",
-        "HTTP 200 and follow=true; explicit index directive/header status was not supplied.",
-        "Title is 12 characters; shortness alone is not a reason to rewrite it."
+        "Page-check provider returned HTTP 400 with no message; page tags, indexability and structured data are unknown, not missing."
       ],
       "source": "S4"
     },
     {
       "url": "https://sqlite.org/docs.html",
-      "title": "SQLite Documentation",
+      "title": null,
       "meta_description": null,
-      "h1_count": 0,
+      "h1_count": null,
       "canonical": null,
       "indexable": null,
       "structured_data": [],
-      "onpage_score": 91.95,
+      "onpage_score": null,
       "issues": [
-        "Missing meta description.",
-        "No H1; 'Documentation' is an H2.",
-        "No explicit canonical or structured data detected.",
-        "HTTP 200 and follow=true; explicit index directive/header status was not supplied.",
-        "Parser reported a nested anchor at line 128."
+        "Page-check provider returned HTTP 502 with no message; this is not evidence that the website page returns 502.",
+        "Page tags, indexability and structured data could not be verified."
       ],
       "source": "S5"
     },
     {
-      "url": "https://sqlite.org/download.html",
-      "title": "SQLite Download Page",
+      "url": "https://sqlite.org/whentouse.html",
+      "title": "Appropriate Uses For SQLite",
       "meta_description": null,
-      "h1_count": 0,
+      "h1_count": null,
       "canonical": null,
       "indexable": null,
       "structured_data": [],
-      "onpage_score": 94.51,
+      "onpage_score": null,
       "issues": [
-        "Missing meta description.",
-        "No H1; 'SQLite Download Page' is an H2.",
-        "No explicit canonical or structured data detected.",
-        "HTTP 200 and follow=true; explicit index directive/header status was not supplied."
+        "Page check failed with provider HTTP 400 (S6); description, canonical, total H1 count, indexability and schema remain unknown.",
+        "Text fetch returned 200 and confirms an embedded-devices section; only the opening portion was read."
       ],
-      "source": "S6"
+      "source": "S15"
     }
   ],
   "lighthouse": {
@@ -210,24 +183,12 @@
     "cls": null,
     "top_issues": [
       {
-        "audit": "meta-description",
-        "detail": "Homepage audit scored 0: document does not have a meta description. The on-page checker independently reported the same omission."
-      },
-      {
-        "audit": "crawlable-anchors",
-        "detail": "Scored 0 for Menu and Search controls using javascript:void(0). Real content links are present; this does not establish a sitewide discovery failure."
-      },
-      {
-        "audit": "cache-insight",
-        "detail": "Listed static assets use 120-second cache lifetimes; estimated savings 81 KiB. This concerns repeat-visit efficiency, not evidence of poor measured LCP."
-      },
-      {
         "audit": "render-blocking-insight",
-        "detail": "sqlite.css was identified as render-blocking; estimated savings 170 ms. Lower priority given the performance score of 100."
+        "detail": "https://sqlite.org/sqlite.css is render-blocking; report displays estimated savings of 160 ms. Low priority given the 100 performance score and 1260 ms LCP."
       }
     ],
-    "note": "One simulated mobile lab run, not field Core Web Vitals or a ranking score. Category scores were read from the downloaded report and multiplied by 100. CLS's numeric metric was outside the three inspected report slices, so it remains null.",
-    "source": "S13"
+    "note": "One simulated mobile lab run, fetched 2026-11-15. Category scores were read from the report and multiplied by 100. LCP came from S13; CLS and individual failing SEO audit results were not read. These are not real-user Core Web Vitals.",
+    "source": "S14"
   },
   "backlinks": {
     "ran": true,
@@ -239,21 +200,35 @@
     "spam_score": 8,
     "broken_backlinks": 4986,
     "broken_pages": 1955,
-    "note": "Provider reports a substantial set of referring domains and externally linked error destinations. These are provider-index counts, not a fresh crawl of each link. The summary gives no broken destination URLs. No competitor comparison supports calling the profile strong or weak.",
+    "note": "DataForSEO reports links from 30,397 referring domains, including 4,986 broken backlinks. The summary supplies counts, not broken destination URLs; verify destinations before redirecting. No competitor benchmark was collected.",
     "source": "S8"
+  },
+  "keywords": {
+    "ran": true,
+    "location": "United Kingdom",
+    "count": 535,
+    "pos_1": 48,
+    "pos_2_3": 21,
+    "pos_4_10": 88,
+    "pos_11_20": 122,
+    "etv": 1775.0317867817648,
+    "is_new": 308,
+    "is_lost": 309,
+    "note": "DataForSEO estimates from past Google rankings, not a live inventory or measured visits. ETV models monthly organic visits. Lost exceeds new by only one; do not infer a sustained traffic decline.",
+    "source": "S9"
   },
   "rankings": [
     {
       "keyword": "sqlite",
       "location": "United Kingdom",
-      "position": null,
-      "ranking_url": null,
+      "position": 2,
+      "ranking_url": "https://google.com/goto?url=CAESVAHEIkXXshTdvRemEmzjpDLecOAuJiDHl4VCxBClgocgq16K7FPc4tPol7hVrTDHRaMyl6PpHIQgfFGRq3B6yHNKf6R3mun_wFdW1NeKrb9rP_v7rw&gsessionid=GiXq3pcyJeSDi6czGTPlZ9lSScARFyPjhBSskVqSxnjVOP0IDoPAbg",
       "leaders": [
-        "infinite.education",
-        "www.nationalarchives.gov.uk",
-        "www.capterra.co.uk"
+        "wiki.archlinux.org",
+        "sqlite.org",
+        "reddit.com"
       ],
-      "source": "S9"
+      "source": "S10"
     },
     {
       "keyword": "embedded database",
@@ -261,216 +236,198 @@
       "position": null,
       "ranking_url": null,
       "leaders": [
-        "rxdb.info",
-        "hackernoon.com",
-        "substack.com"
+        "html.it",
+        "slashdot.org",
+        "appcoding.com"
       ],
-      "source": "S10"
+      "source": "S11"
     }
   ],
   "fixes": [
     {
       "priority": 1,
-      "fix": "Add unique meta descriptions to all four sampled pages. Describe SQLite's serverless SQL library on home/About, API and SQL reference material on Documentation, and source/binary downloads on Download. Implement a per-page description field in the template.",
+      "fix": "Update the homepage title, add a meta description and introduce one descriptive H1. Suggested title: 'SQLite — Embedded, Serverless SQL Database Engine'; H1: 'SQLite: an embedded SQL database engine'.",
       "pages": [
-        "https://sqlite.org/",
-        "https://sqlite.org/about.html",
-        "https://sqlite.org/docs.html",
-        "https://sqlite.org/download.html"
+        "https://sqlite.org/"
       ],
-      "evidence": "All four page checks returned description=null and no_description=true (S3–S6). Homepage Lighthouse independently scored meta-description=0.",
-      "why": "Gives search engines a relevant snippet option and users a clearer reason to click. Descriptions are not a direct ranking fix and Google may rewrite them.",
-      "impact": "medium",
-      "effort": "low",
-      "owner": "content",
-      "source": "S14"
-    },
-    {
-      "priority": 2,
-      "fix": "Add one descriptive H1 to home and promote the main Documentation and Download headings to H1. Suggested homepage title/H1: 'SQLite — A Serverless, Embedded SQL Database'. Keep About's existing single H1 and avoid keyword repetition.",
-      "pages": [
-        "https://sqlite.org/",
-        "https://sqlite.org/docs.html",
-        "https://sqlite.org/download.html"
-      ],
-      "evidence": "Homepage has no H1 and title 'SQLite Home Page'; Documentation and Download have no H1, with their primary labels at H2 (S3, S5, S6). Homepage fetched text independently shows H3 sections (S1).",
-      "why": "Makes the page topic and hierarchy clearer to readers and search engines, and better explains the product category without treating short titles as an automatic defect.",
+      "evidence": "Page check: title='SQLite Home Page', description=null, no_h1_tag=true. The direct fetch independently confirms the generic title and section-only headings (S1).",
+      "why": "Makes the product category clearer and improves control over search presentation. A description may improve snippet usefulness; it is not a direct ranking boost.",
       "impact": "medium",
       "effort": "low",
       "owner": "content",
       "source": "S3"
     },
     {
-      "priority": 3,
-      "fix": "Obtain the broken destination URL list, verify current responses, and prioritize URLs with relevant referring links. Restore useful content or 301 redirect each genuinely replaced page to its closest live equivalent; do not redirect every error to the homepage.",
+      "priority": 2,
+      "fix": "Export broken backlink destinations, verify their current responses, then add permanent redirects only where a genuinely equivalent live replacement exists. Preserve intentional removals without equivalents.",
       "pages": [
-        "sqlite.org — broken destination URLs not supplied by the summary"
+        "sqlite.org — affected destination URLs not supplied by the summary"
       ],
-      "evidence": "Backlink summary for sqlite.org reports 4,986 broken backlinks and 1,955 broken pages. It supplies counts only, so exact URLs and suitable replacements remain unverified.",
-      "why": "Recovers useful referral journeys and potentially preserves signals from existing links where equivalent replacement content exists.",
+      "evidence": "Domain summary reports 4,986 broken backlinks and 1,955 broken pages. It does not identify destination URLs or verify them live in this audit.",
+      "why": "Recover useful referral journeys and link signals currently pointing to errors. Do not redirect every missing page indiscriminately to the homepage.",
       "impact": "medium",
       "effort": "medium",
       "owner": "dev",
       "source": "S8"
     },
     {
-      "priority": 4,
-      "fix": "Publish an XML sitemap of preferred, indexable documentation and landing-page URLs at /sitemap.xml and reference it in robots.txt. Use accurate lastmod values when available; exclude blocked repository paths, errors and redirects.",
+      "priority": 3,
+      "fix": "Add a homepage canonical to https://sqlite.org/. Before changing redirects, verify whether /index.html and www variants serve equivalent content, then align internal Home links and redirects with the chosen URL.",
       "pages": [
-        "https://sqlite.org/sitemap.xml",
-        "https://sqlite.org/robots.txt"
+        "https://sqlite.org/"
       ],
-      "evidence": "/sitemap.xml returned 404; robots.txt contains five Disallow lines but no Sitemap directive. Another unadvertised sitemap may exist and was not checked.",
-      "why": "Provides an explicit discovery and change-notification mechanism. The existing internal links mean this is not evidence that Google cannot discover the site.",
+      "evidence": "Homepage meta.canonical=null (S3); fetched Home navigation points to index.html (S1). Equivalent content or duplicate indexation on alternate URLs was not established.",
+      "why": "Provides an explicit preferred homepage URL. This is consolidation hygiene, not evidence that duplicate URLs are currently causing ranking loss.",
       "impact": "medium",
-      "effort": "medium",
-      "owner": "dev",
-      "source": "S11"
-    },
-    {
-      "priority": 5,
-      "fix": "Declare absolute preferred canonical URLs on the four sampled pages after confirming host policy. For the homepage, explicitly choose the root URL rather than /index.html; keep internal links consistent. Do not change host redirects without testing them.",
-      "pages": [
-        "https://sqlite.org/",
-        "https://sqlite.org/about.html",
-        "https://sqlite.org/docs.html",
-        "https://sqlite.org/download.html"
-      ],
-      "evidence": "All four checks returned meta.canonical=null. Homepage links Home to index.html (S1), while the fetched homepage is /. Lighthouse canonical was not applicable (S14).",
-      "why": "Makes preferred URLs explicit where aliases may exist. Missing canonicals alone do not establish duplicate indexing or a ranking penalty.",
-      "impact": "low",
       "effort": "low",
       "owner": "dev",
       "source": "S3"
     },
     {
-      "priority": 6,
-      "fix": "Replace Menu and Search javascript:void(0) anchors with buttons using appropriate expanded-state attributes; retain real href URLs for content destinations. Correct nested anchors in the homepage/common-links template and Documentation page.",
+      "priority": 4,
+      "fix": "Strengthen the opening of the existing use-cases page with a concise embedded-database definition, SQLite's application-local role and its client/server trade-offs. Link to it from a descriptive homepage reference.",
       "pages": [
-        "https://sqlite.org/",
-        "https://sqlite.org/docs.html"
+        "https://sqlite.org/whentouse.html",
+        "https://sqlite.org/"
       ],
-      "evidence": "Lighthouse lists Menu and Search as uncrawlable anchors. Page checks report nested anchors on home at lines 127/186 and Documentation at line 128; fetched home text also shows both javascript controls.",
-      "why": "Separates interface actions from navigation and removes invalid markup that can confuse interaction and link parsing. Existing content links remain discoverable in the sample.",
+      "evidence": "The page opens with client/server comparisons and has an 'Embedded devices and the internet of things' section. UK 'embedded database' results contain no sqlite.org listing at organic ranks 1–9 (S11).",
+      "why": "Builds on relevant existing content to answer category-level search intent. Absence from one results page is an opportunity signal, not proof that the current wording caused it.",
+      "impact": "medium",
+      "effort": "medium",
+      "owner": "content",
+      "source": "S15"
+    },
+    {
+      "priority": 5,
+      "fix": "Locate any existing XML sitemap and advertise its URL in robots.txt. If none exists, publish one containing only canonical, indexable 200-response public pages; use accurate lastmod values where available.",
+      "pages": [
+        "https://sqlite.org/robots.txt",
+        "https://sqlite.org/sitemap.xml"
+      ],
+      "evidence": "robots.txt has no Sitemap directive (S2), and the default /sitemap.xml endpoint returns 404 (S12). No other sitemap location was checked.",
+      "why": "Makes the sitemap discoverable and helps communicate preferred documentation URLs. A missing default sitemap is not itself an indexing blocker.",
       "impact": "low",
       "effort": "low",
       "owner": "dev",
-      "source": "S14"
+      "source": "S12"
     },
     {
-      "priority": 7,
-      "fix": "Lengthen cache lifetimes for versioned static CSS and images, with cache-busting on change. Review critical CSS only if further performance work is justified; preserve the currently fast homepage.",
+      "priority": 6,
+      "fix": "Correct the homepage's nested anchors and mismatched closing tags, then validate the resulting navigation and common-links markup.",
       "pages": [
-        "https://sqlite.org/",
-        "https://sqlite.org/sqlite.css",
-        "https://sqlite.org/images/sqlite370_banner.svg"
+        "https://sqlite.org/"
       ],
-      "evidence": "Homepage Lighthouse lists static assets with cacheLifetimeMs=120000 and estimated cache savings of 81 KiB. sqlite.css has estimated render-blocking savings of 170 ms; performance already scores 100.",
-      "why": "Reduces repeat downloads and modest rendering overhead, but this is not the leading constraint in the measured homepage run.",
+      "evidence": "The page checker reports nested anchors at lines 127 and 186 and mismatched end tags at lines 126 and 185.",
+      "why": "Prevents browser HTML repair from producing unexpected link targets or navigation behavior. No specific lost ranking was attributed to these errors.",
       "impact": "low",
-      "effort": "medium",
+      "effort": "low",
       "owner": "dev",
-      "source": "S14"
+      "source": "S3"
     }
   ],
   "gaps": [
-    "This was a four-page sample, not a crawl. No Search Console, analytics, index coverage, query history or conversion data was available; the audit cannot establish traffic-loss causes.",
-    "HTTP and www redirects were not tested separately. HTTPS availability does not establish correct protocol/host consolidation.",
-    "The sitemap fallback returned 404 and robots.txt advertised none. Sitemap contents, lastmod accuracy and possible alternative sitemap locations remain unknown.",
-    "The three non-homepage checks expose follow=true but no explicit index directive or X-Robots-Tag field. Their indexable values remain null; follow is not the same as index. Homepage indexability was independently checked by Lighthouse.",
-    "Empty structured_data arrays mean no markup detected by the page checker, not a full raw-HTML schema validation. Missing markup was not treated as a high-priority ranking defect.",
-    "No broken destination URL list was returned. The backlink error counts cannot be mapped to individual URLs or verified within this first pass.",
-    "The brand SERP is unusual: sqlite.org appears in AI-overview references but not conventional organic ranks 1–8. Results are a single UK snapshot, not proof of deindexing or sustained brand-ranking loss.",
-    "Google redirect links were attributed using website_name and breadcrumb, not google.com. The third embedded-database leader is identifiable only as Substack/Arpit’s Newsletter; its exact publication subdomain was unavailable.",
-    "Numeric CLS was not read from the bounded Lighthouse report slices; the non-rendered page check's CLS value was not substituted for the Lighthouse metric.",
-    "The sqlite SERP's AI overview included conversational instructions, 'If you'd like, tell me', followed by programming-platform questions. This tool-answer text was treated as data, not an instruction to ask the user.",
-    "Key homepage findings were cross-checked between fetched text, the page checker and Lighthouse where available. Backlink counts, secondary-page head tags and ranking positions have only their respective provider result as evidence."
+    "Secondary-page checks failed without useful provider messages: /about.html HTTP 400, /docs.html HTTP 502 and /whentouse.html HTTP 400. These tool errors do not establish website outages; failed checks were not retried.",
+    "Cross-page title and description duplication could not be assessed because three page checks failed. Empty structured_data arrays on those pages mean unknown, not confirmed absence.",
+    "Explicit noindex and X-Robots-Tag values were not exposed for the homepage. Robots permission and a 200 response alone do not prove full indexability or actual Google indexation.",
+    "HTTP, www and /index.html behavior were not tested. The HTTPS non-www homepage was the only homepage variant fetched.",
+    "The sitemap returned 404 at the default path, and robots.txt did not advertise another location. Sitemap contents, lastmod values and listed-URL health therefore remain unknown.",
+    "Broken backlink destinations were not supplied by the summary. Counts are provider observations, not individually verified error URLs from this run.",
+    "Rankings are one UK desktop Google snapshot: organic ranks 1–8 for 'sqlite' and 1–9 for 'embedded database'. Google redirect URLs were preserved; ranking sites were identified using website names and breadcrumbs.",
+    "The 'sqlite' result identified SQLite's WASM documentation rather than its homepage. The returned Google redirect was not resolved, so its exact destination URL remains unknown.",
+    "Lighthouse category scores and LCP were read; CLS and individual failing SEO audit results were not. No field-performance data, Search Console or analytics were available.",
+    "Key homepage availability, title and heading observations were cross-checked with independent fetch and page-check mechanisms. Rankings, backlinks and keyword estimates each have only one provider source and were not independently replicated."
   ],
   "sources": [
     {
       "id": "S1",
-      "where": "https://sqlite.org",
-      "what": "Homepage fetch: final HTTPS URL, 200, visible copy, headings and navigation.",
+      "where": "https://sqlite.org/",
+      "what": "Direct homepage fetch: final HTTPS non-www URL, 200 response, title, navigation and visible headings.",
       "found": true
     },
     {
       "id": "S2",
       "where": "https://sqlite.org/robots.txt",
-      "what": "Robots rules; no Sitemap directive.",
+      "what": "Robots rules: five disallowed path prefixes and no Sitemap directive.",
       "found": true
     },
     {
       "id": "S3",
       "where": "monid:dataforseo/onpage/instant-pages https://sqlite.org/",
-      "what": "Homepage status, head metadata, headings, markup flags, parser errors and on-page score.",
+      "what": "Homepage tags, heading list, canonical, markup checks, HTML errors and on-page score.",
       "found": true
     },
     {
       "id": "S4",
       "where": "monid:dataforseo/onpage/instant-pages https://sqlite.org/about.html",
-      "what": "About page status, metadata, H1, markup flags and on-page score.",
-      "found": true
+      "what": "Provider error HTTP 400, no message; no page facts returned.",
+      "found": false
     },
     {
       "id": "S5",
       "where": "monid:dataforseo/onpage/instant-pages https://sqlite.org/docs.html",
-      "what": "Documentation page metadata, headings, parser errors and on-page score.",
-      "found": true
+      "what": "Provider error HTTP 502, no message; no page facts returned.",
+      "found": false
     },
     {
       "id": "S6",
-      "where": "monid:dataforseo/onpage/instant-pages https://sqlite.org/download.html",
-      "what": "Download page metadata, headings, markup flags and on-page score.",
-      "found": true
+      "where": "monid:dataforseo/onpage/instant-pages https://sqlite.org/whentouse.html",
+      "what": "Provider error HTTP 400, no message; no page facts returned.",
+      "found": false
     },
     {
       "id": "S7",
       "where": "monid:dataforseo/onpage/lighthouse https://sqlite.org/",
-      "what": "One mobile performance/SEO run; returned downloadable JSON report.",
+      "what": "Completed one mobile performance and SEO audit; returned report download link.",
       "found": true
     },
     {
       "id": "S8",
       "where": "monid:dataforseo/backlinks/summary sqlite.org",
-      "what": "Domain rank, link/domain counts, backlinks spam score and broken-link summary.",
+      "what": "Domain backlink counts, referring domains, rank, spam score and broken-link totals.",
       "found": true
     },
     {
       "id": "S9",
-      "where": "monid:dataforseo/serp/google-organic sqlite | United Kingdom | en",
-      "what": "First-page organic ranks 1–8 and AI-overview references; sqlite.org absent from organic items.",
+      "where": "monid:dataforseo/labs/domain-rank-overview sqlite.org; United Kingdom; en",
+      "what": "Estimated organic keyword footprint, position bands, modeled visits and keyword movement.",
       "found": true
     },
     {
       "id": "S10",
-      "where": "monid:dataforseo/serp/google-organic embedded database | United Kingdom | en",
-      "what": "First-page organic ranks 1–8; sqlite.org absent.",
+      "where": "monid:dataforseo/serp/google-organic sqlite; United Kingdom; en",
+      "what": "First-page Google snapshot: eight organic results; SQLite WASM documentation at organic position 2.",
       "found": true
     },
     {
       "id": "S11",
-      "where": "https://sqlite.org/sitemap.xml",
-      "what": "Fallback sitemap fetch returned HTTP 404.",
-      "found": false
-    },
-    {
-      "id": "S12",
-      "where": "web_fetch S7 output.data.download_link | offset 0 | max_chars 3000",
-      "what": "Lighthouse report: homepage final URL, mobile environment, FCP 960 ms and LCP 1260 ms.",
+      "where": "monid:dataforseo/serp/google-organic embedded database; United Kingdom; en",
+      "what": "First-page Google snapshot: nine organic results; no sqlite.org organic listing.",
       "found": true
     },
     {
+      "id": "S12",
+      "where": "https://sqlite.org/sitemap.xml",
+      "what": "Default sitemap URL returned HTTP 404.",
+      "found": false
+    },
+    {
       "id": "S13",
-      "where": "web_fetch S7 output.data.download_link | offset 351538 | max_chars 10000",
-      "what": "Lighthouse category scores: performance 1, SEO 0.83; render-blocking CSS insight.",
+      "where": "web_fetch Lighthouse download link returned by S7; offset 0",
+      "what": "Report opening: Lighthouse 13.4.0, mobile environment, FCP 960 ms and LCP 1260 ms.",
       "found": true
     },
     {
       "id": "S14",
-      "where": "web_fetch S7 output.data.download_link | offset 331538 | max_chars 10000",
-      "what": "Failed description/anchor audits, passed crawlability/robots, canonical not applicable, static-asset cache details.",
+      "where": "web_fetch Lighthouse download link returned by S7; offset 355594",
+      "what": "Report slice: performance score 1, SEO score 0.83 and render-blocking stylesheet insight.",
+      "found": true
+    },
+    {
+      "id": "S15",
+      "where": "https://sqlite.org/whentouse.html",
+      "what": "Direct 200-response text fetch: title, opening client/server comparison and embedded-device use case; partial text read.",
       "found": true
     }
   ],
-  "report_markdown": "## Plan\n1. Check reachability, robots and sitemap discovery.\n2. Inspect four key pages, run one mobile Lighthouse test and summarize backlinks.\n3. Check both UK keywords and prioritize evidenced fixes.\n\n## Bottom line\nThe sampled pages load successfully and the homepage is fast: mobile Lighthouse performance **100**, SEO **83**, LCP **1,260 ms** [S3–S7, S12–S14]. There is no observed homepage indexing block. The clearest actionable gaps are missing descriptions, missing primary headings and provider-reported broken backlink destinations. Start with a small metadata/heading patch; investigate broken destinations next. Neither supplied keyword included sqlite.org in the eight conventional organic results returned, but the unusual brand result also cited SQLite in an AI overview. Do not infer sustained ranking loss from this snapshot [S9–S10].\n\n## Prioritized fixes\n| Priority | Fix | Pages | Impact | Effort |\n|---|---|---|---|---|\n| 1 | Add unique, useful meta descriptions | /, /about.html, /docs.html, /download.html | Medium | Low |\n| 2 | Add descriptive H1s; clarify homepage product title | /, /docs.html, /download.html | Medium | Low |\n| 3 | Verify and recover externally linked error destinations | sqlite.org; exact URLs not supplied | Medium | Medium |\n| 4 | Publish and advertise an XML sitemap | /sitemap.xml, /robots.txt | Medium | Medium |\n| 5 | Declare preferred canonical URLs after confirming host policy | All four sampled pages | Low | Low |\n| 6 | Use buttons for interface actions; repair nested anchors | /, /docs.html | Low | Low |\n| 7 | Improve versioned static-asset caching | / and its CSS/images | Low | Medium |\n\nDescriptions were absent on all four pages; Lighthouse independently confirms the homepage omission [S3–S6, S14]. Suggested homepage title/H1: **SQLite — A Serverless, Embedded SQL Database**. Documentation and Download already have suitable main labels, but at H2 rather than H1 [S3, S5–S6]. These changes improve clarity; neither descriptions nor H1 counts guarantee higher rankings.\n\nFor broken backlinks, first obtain destination URLs and verify current responses. Restore useful content or redirect genuinely replaced pages to close equivalents, not indiscriminately to home [S8]. Missing canonicals and a missing fallback sitemap are opportunities, not proof of duplicate indexing or failed discovery [S1–S6, S11].\n\n## Crawl and indexing checks\n- **HTTPS:** homepage returned 200, independently confirmed by the page checker. HTTP/www redirects remain unknown [S1, S3].\n- **Robots:** blocks repository-related paths, not the sampled public pages. Lighthouse independently found valid robots.txt [S2, S14].\n- **Sitemap:** no directive in robots.txt; /sitemap.xml returned 404. No sitemap contents or lastmod values were available [S2, S11].\n- **Indexability:** homepage Lighthouse passed with no blocking directives. Other pages returned 200 and follow=true, but their explicit index/header directives were not supplied, so their indexability remains unknown [S3–S6, S14].\n- **Canonicals:** none detected on the four pages. Root and an index.html home link were observed, but alias duplication was not tested [S1, S3–S6].\n\n## Sampled pages\n| Page | Title (characters) | H1 count | Description | Canonical | On-page tool score |\n|---|---|---:|---|---|---:|\n| / | SQLite Home Page (16) | 0 | Missing | Not detected | 93.41 |\n| /about.html | About SQLite (12) | 1 | Missing | Not detected | 96.34 |\n| /docs.html | SQLite Documentation (20) | 0 | Missing | Not detected | 91.95 |\n| /download.html | SQLite Download Page (20) | 0 | Missing | Not detected | 94.51 |\n\nTitles are distinct; there are no present descriptions to compare for duplication. Short title flags alone do not justify padding titles. No structured data was detected; this is not an indexing blocker and is not a priority over the observed basics [S3–S6]. Home and Documentation also have parser-reported nested anchors [S3, S5].\n\n## Lighthouse\nOne simulated mobile run: performance **100/100**, SEO **83/100**, FCP **960 ms**, LCP **1,260 ms**. Numeric CLS was outside the inspected report slices and remains unknown [S7, S12–S14]. This is lab data, not field Core Web Vitals or a ranking score.\n\nThe failed SEO audits were missing description and uncrawlable Menu/Search anchors using javascript:void(0). These are interface controls; actual content links were present, so this does not show that all navigation is undiscoverable. Use buttons for actions and real links for destinations [S1, S14]. Static assets had 120-second cache lifetimes, with an estimated 81 KiB cache opportunity; render-blocking CSS had estimated savings of 170 ms. Performance work is secondary here [S13–S14].\n\n## Links\nDataForSEO returned domain rank **539/1000**, **3,797,804 backlinks**, **30,397 referring domains**, **26,346 referring main domains**, and backlinks spam score **8/100**. It also reported **4,986 broken backlinks** and **1,955 broken pages** [S8]. These are provider-index counts; the summary did not list destination URLs. No competitor comparison supports labeling the profile strong or weak, and this evidence does not warrant buying or disavowing links.\n\n## UK Google rankings\n| Keyword | SQLite conventional organic result | Leaders at ranks 1–3 |\n|---|---|---|\n| sqlite | Not on the first page; organic ranks 1–8 checked | infinite.education; nationalarchives.gov.uk; capterra.co.uk |\n| embedded database | Not on the first page; organic ranks 1–8 checked | rxdb.info; hackernoon.com; Substack/Arpit’s Newsletter |\n\nThe brand query separately cited www.sqlite.org in its AI overview; this is not an organic position. The exact Substack publication host was not exposed. Google redirect URLs were attributed using site labels/breadcrumbs rather than treating google.com as the ranking site [S9–S10]. These results cannot establish a trend, traffic loss or its cause.\n\n## Sources and limitations\n[S1] Homepage fetch. [S2] robots.txt. [S3–S6] Individual DataForSEO page checks. [S7] Single mobile Lighthouse invocation. [S8] Backlink summary. [S9–S10] UK keyword SERPs. [S11] Failed sitemap fetch. [S12–S14] Three bounded reads of the Lighthouse JSON report.\n\nThis was a four-page first pass with no crawl, Search Console or analytics access. Homepage findings were cross-checked across independent fetch/check mechanisms where possible; secondary-page head tags, backlink counts and rankings rely on their respective provider responses. Full source locators and remaining unknowns are recorded in the structured sources and gaps."
+  "report_markdown": "## Plan and scope\n1. Check homepage reachability, robots and sitemap discovery.\n2. Sample four key pages, run one mobile Lighthouse audit, and collect link and UK keyword data.\n3. Check the two requested Google queries and prioritize supported fixes.\n\n## Bottom line\nSQLite's homepage is reachable and fast: mobile Lighthouse performance **100**, SEO **83**, LCP **1,260 ms** [S1, S3, S13, S14]. There is no demonstrated sitewide crawl block. The clearest first-pass opportunities are homepage presentation, preferred-URL signals and externally linked error destinations. Three secondary-page checks failed, limiting conclusions.\n\n**Next step:** ship the homepage title, description and H1 update, then investigate broken backlink destinations. Do not treat the lab SEO score as an overall ranking score.\n\n## Prioritized fixes\n| Priority | Fix | Pages | Impact | Effort |\n|---|---|---|---|---|\n| 1 | Replace generic title; add a useful description and one descriptive H1 [S3] | / | Medium | Low |\n| 2 | Export and verify broken backlink destinations; redirect only to equivalent replacements [S8] | Affected URLs not supplied | Medium | Medium |\n| 3 | Add homepage canonical; verify alternate URLs before consolidation [S1, S3] | / | Medium | Low |\n| 4 | Make embedded-database intent clearer in the existing use-case introduction [S11, S15] | /whentouse.html, / | Medium | Medium |\n| 5 | Locate or publish an XML sitemap and advertise it in robots.txt [S2, S12] | /robots.txt, /sitemap.xml | Low | Low |\n| 6 | Repair nested anchors and mismatched end tags [S3] | / | Low | Low |\n\nSuggested homepage title: **SQLite — Embedded, Serverless SQL Database Engine**. Suggested H1: **SQLite: an embedded SQL database engine**. Draft description: **SQLite is a self-contained, serverless SQL database engine for applications and devices. Explore documentation, downloads and guidance on when to use SQLite.** These are proposed copy, not observed tags.\n\n## Crawl and indexing\n- HTTPS homepage returned 200 in two independent mechanisms [S1, S3]. HTTP and www redirect behavior remain unknown.\n- robots.txt blocks repository-related prefixes, not the sampled public documentation pages [S2]. Do not remove these blocks without understanding their purpose.\n- No sitemap is advertised in robots.txt; /sitemap.xml returned 404. Another sitemap may exist elsewhere [S2, S12].\n- Homepage canonical is absent in the returned metadata; navigation points Home to index.html. Duplicate content or duplicate indexation was not proven [S1, S3].\n- Full homepage indexability remains unknown because explicit noindex and HTTP robot-header values were not returned [S3].\n\n## Sampled pages\n- **/**: title `SQLite Home Page`; tool-reported title length 16; missing description; zero H1s; canonical null; no micromarkup detected. Tool on-page score **93.41**. Nested anchor errors at lines 127 and 186 [S3]. The direct fetch corroborates the title and section-only headings [S1].\n- **/about.html**: provider page check failed with HTTP 400; tags and indexability unknown [S4].\n- **/docs.html**: provider page check failed with HTTP 502; this is not proof of a website 502 [S5].\n- **/whentouse.html**: provider check failed with HTTP 400 [S6]. A separate text fetch returned 200, title `Appropriate Uses For SQLite`, client/server comparisons and an embedded-devices section. Head metadata and complete heading count remain unknown [S15].\n- Cross-page duplicate titles and descriptions could not be evaluated. No structured-data ranking penalty is inferred from its absence on the homepage.\n\n## Lighthouse\nOne simulated mobile run: **performance 100/100**, **SEO 83/100**, **LCP 1,260 ms**, **FCP 960 ms** [S7, S13, S14]. CLS was not read. The report identifies sqlite.css as render-blocking with displayed estimated savings of 160 ms [S14]. Given the fast LCP, speed tuning is lower priority than the observed content and link issues. Individual failing SEO audit results were not read; the 83 score is not attributed to a guessed cause. These are lab results, not real-user Core Web Vitals.\n\n## Links\nDataForSEO reports **3,797,804 backlinks**, **30,397 referring domains**, **26,346 referring main domains**, domain rank **539/1000**, and backlink spam score **8/100** [S8]. There is no competitor benchmark. It also reports **4,986 broken backlinks** and **1,955 broken pages**. Obtain destination URLs and verify them before choosing redirects; the summary did not supply those URLs.\n\n## UK keyword footprint\nDataForSEO estimates **535** Google top-100 keywords: **48** at position 1, **21** at positions 2–3, **88** at positions 4–10 and **122** at positions 11–20. Modeled monthly organic visits: **1,775.03**, not measured traffic. New keywords: **308**; lost: **309**. That small difference does not demonstrate sustained decline [S9].\n\n## UK Google rankings\n| Keyword | Best organic position | Observed page or scope | Leaders 1–3 |\n|---|---|---|---|\n| sqlite | 2 | SQLite WASM documentation; organic ranks 1–8 checked [S10] | wiki.archlinux.org; sqlite.org; reddit.com |\n| embedded database | Not on first page | Organic ranks 1–9 checked [S11] | html.it; slashdot.org; appcoding.com |\n\nThese are single desktop snapshots. Google redirect links were identified using website names and breadcrumbs, not incorrectly classified as google.com ranking pages. SQLite's homepage was referenced in the returned AI overview for the brand query, but that is not an organic homepage ranking [S10].\n\n## Sources and limitations\n[S1] Homepage direct fetch. [S2] robots.txt. [S3] Homepage on-page check. [S4–S6] Failed secondary-page checks. [S7] Mobile Lighthouse execution. [S8] Backlink summary. [S9] UK domain keyword overview. [S10–S11] UK Google results. [S12] Default sitemap 404. [S13–S14] Lighthouse report slices. [S15] Use-cases page text.\n\nHomepage availability, title and heading findings were cross-checked through independent mechanisms. Rankings and domain estimates were not independently replicated. No Search Console, analytics, full crawl, forms or logins were used."
 }
