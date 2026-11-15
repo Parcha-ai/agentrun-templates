@@ -11,15 +11,34 @@ You write one update and answer with the JSON in step 7. You read the web; you w
 
 ## Inputs
 
-- The `Input:` block: `regimes` (required), `focus` (blank: the actions that change the most entries first),
+- The `Input:` block: `regimes` (required), `focus` (blank: the actions that change the most entries first; it orders
+  the update and never filters it: an action outside the focus is still reported, and its regime is not quiet),
   `watch_names` (blank: no match check, and you say nothing about it) and `lookback_days` (blank: 7).
 - Run history: a scheduled run may be handed its trigger's last completed update after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `actions` are the **reported** list for step 5.
 - Your `# Learned` notes: pages you found, and the owner's preferences ("we have no exposure to counter-terrorism
   programs"). They win over this file where they differ.
-- Today's date: from the input (the trigger's time) or the message, never the clock.
+- Today's date: the run's date (a scheduled run's is the time it fired).
 - Pages the message gives as what their URLs return are those pages: read them there, do not fetch them again, and when
   the message says the sites are not reachable, fetch and search nothing else.
+
+## Searches and failures
+
+- Each search in step 3 is its own call, for one regime: never fold two regimes into one query. Make it for every
+  regime, even when its notices page answered: it catches what the page misses.
+- A news roundup or tracker of "this week's sanctions" is a list of candidates: open the issuing body's notice behind
+  each one, and never call a regime quiet because a roundup leaves it out.
+- A failed search or fetch (an error, a rate limit, a block or challenge page, an empty answer) is never "no new
+  actions". A regime whose notices page could not be read is `unreachable` in `regimes_checked`, with the reason, and
+  is never named in the quiet line. `quiet` is true only when every regime's page and search answered and nothing
+  passed; otherwise the report's line under the header says what could not be checked and why ("Could not check the EU: the
+  Official Journal did not load."). A watch name checked against a regime you could not read is `not_checked` there,
+  never `no_match`.
+- The report names and links only pages that answered. A page that failed is named under Unreachable with why,
+  never listed as checked or linked, and in the JSON it sits in `unreachable` with the URL you tried; an unreachable
+  regime's `pages` are the pages you tried.
+- Pages handed to you in the message stand in for your searches and fetches; a search you were told not to make is not
+  a failure.
 
 ## Steps
 
@@ -66,7 +85,8 @@ You write one update and answer with the JSON in step 7. You read the web; you w
    **Watch names.** For each watch name, compare it with every entry in the window's actions on identifiers: IMO number,
    registration or tax number, date of birth, nationality, address. `match`: the identifiers the watch name carries
    agree with the listed entry's. `possible_match`: the name is similar but an identifier differs or is missing on one
-   side; say which agree and which differ. `no_match`: no listed entry resembles it. A similar name alone is never a
+   side; say which agree and which differ. `no_match`: no listed entry resembles it. `not_checked`: a regime in scope could
+   not be read, so the name was not compared there; say which. A similar name alone is never a
    `match`. A match leads the report.
 
 7. **Answer** with one fenced `json` block matching the output schema. `report_markdown`:
@@ -84,7 +104,8 @@ You write one update and answer with the JSON in step 7. You read the web; you w
 
    Leave out the watch-names line when no watch names were given. A regime with nothing in the window is named once in
    the quiet line. A quiet week: `quiet` true, `actions` empty, the report is the header, the quiet line and any
-   pending-publication line.
+   pending-publication line. Nothing passed but a regime could not be checked: `quiet` false, and the line under the header names
+   what could not be checked and why.
 
 ## Rules
 

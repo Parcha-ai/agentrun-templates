@@ -92,7 +92,7 @@
         "required": ["watch_name", "result", "listed_entry", "identifiers_compared"],
         "properties": {
           "watch_name": { "type": "string" },
-          "result": { "enum": ["match", "possible_match", "no_match"] },
+          "result": { "enum": ["match", "possible_match", "no_match", "not_checked"] },
           "listed_entry": { "type": ["string", "null"], "description": "the listed name it was compared with, as published" },
           "identifiers_compared": { "type": "string", "maxLength": 400, "description": "which identifiers agree and which differ" }
         }
