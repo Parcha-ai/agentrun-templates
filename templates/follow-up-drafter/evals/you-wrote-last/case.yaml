@@ -9,3 +9,4 @@ mcp:
 grants:
   - mcp:gmail/GMAIL_FETCH_MESSAGE_BY_THREAD_ID
   - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
+now: 2026-11-16T16:10:30Z
