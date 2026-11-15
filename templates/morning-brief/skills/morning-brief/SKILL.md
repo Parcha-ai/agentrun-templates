@@ -16,7 +16,8 @@ again once with exactly that value.
 
 ## 0. The day
 
-The day is the `date` in the `Input:` block, else today in the owner's time zone. Write every time in that zone, as
+The day is the `date` in the `Input:` block, else the day the run fired (the firing time your message states), else
+today in the owner's time zone. A firing time in the message wins over your own clock. Write every time in that zone, as
 `09:30`, and name the zone once in the plan. "Today" below means that day.
 
 ## 1. Calendar
