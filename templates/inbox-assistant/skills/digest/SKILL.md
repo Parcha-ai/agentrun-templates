@@ -7,9 +7,13 @@ description: Write the owner's evening digest of today's mail, needs me first wi
 
 ## 1. Today's mail
 
-`since` is the run's now minus 24 hours, never now itself: a run at 2026-11-15T18:00:00-08:00 searches since
-2026-11-14T18:00:00-08:00 (the same as 2026-11-15T02:00:00Z). Write it with its offset, and check it is earlier than now
-before you search. The week's searches (step 2b) go back 7 days the same way.
+Now is the time your run's opening message gives ("Started by the schedule ... for Nov 15, 2026, 6:00 PM PST"), date,
+time and zone together. "Today is <date> (UTC)" is the UTC date alone, a day ahead of the owner's evening west of UTC:
+never put its date with the schedule's time. On a run by hand with no such line, now is the start of today in UTC.
+
+`since` is now minus 24 hours, never now itself: a run for Nov 15, 2026, 6:00 PM PST searches since
+2026-11-14T18:00:00-08:00 (the same as 2026-11-15T02:00:00Z), and its subject's day is Sun 15 Nov. Write it with its
+offset, and check it is earlier than now before you search. The week's searches (step 2b) go back 7 days the same way.
 
 `email_search {since: <that>, mailbox: "INBOX", limit: 50}`. Use its headers and
 snippets, and never `email_read` a message for the digest. Leave out mail from the owner's own address. When 50 come
@@ -36,8 +40,9 @@ Only when the input has `weekly: true`. Then this step replaces steps 1 to 3: th
     "draft waiting" when Drafts holds one.
   - **Waiting on others**: a Sent message that asks something (a question, a request, a date) with no reply in INBOX
     after it. Name who and what, and how many days.
-  - **Coming up**: dates and deadlines this week (Monday to Sunday) that last week's mail names ("signature by
-    Friday", "call Thursday"). Only dates the mail states; never guess one.
+  - **Coming up**: dates and deadlines this week (Monday to Sunday) that any of last week's mail names, FYI mail too
+    ("signature by Friday", "call Thursday", a VIP's "the deck goes out Thursday"). Only dates the mail states; never
+    guess one. A date in mail that needs nothing from the owner is still coming up.
 - No calendar: this brief is email only. Never ask for or fetch a calendar address.
 
 ## 3. Sort
