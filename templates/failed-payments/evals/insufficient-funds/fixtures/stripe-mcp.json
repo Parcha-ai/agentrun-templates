@@ -5,7 +5,12 @@
     "STRIPE_RETRIEVE_CHARGE": {
       "description": "Retrieve a charge by charge_id.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "charge_id": {
+            "type": "string"
+          }
+        }
       },
       "answers": [
         {
@@ -35,7 +40,12 @@
     "STRIPE_RETRIEVE_CUSTOMER": {
       "description": "Retrieve a customer by customer_id.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
       },
       "answers": [
         {
@@ -65,7 +75,15 @@
     "STRIPE_LIST_CHARGES": {
       "description": "List charges, newest first (customer, created, limit, starting_after).",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "customer": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          }
+        }
       },
       "answers": [
         {
@@ -94,7 +112,18 @@
     "STRIPE_LIST_INVOICES": {
       "description": "List invoices, newest first (customer, status, limit).",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "customer": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
       },
       "answers": [
         {
