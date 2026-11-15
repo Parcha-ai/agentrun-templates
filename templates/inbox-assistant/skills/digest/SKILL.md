@@ -7,9 +7,14 @@ description: Write the owner's evening digest of today's mail, needs me first wi
 
 ## 1. Today's mail
 
-`email_search {since: <24 hours before now, as a date-time>, mailbox: "INBOX", limit: 50}`. Use its headers and
+`since` is the run's now minus 24 hours, never now itself: a run at 2026-11-15T18:00:00-08:00 searches since
+2026-11-14T18:00:00-08:00 (the same as 2026-11-15T02:00:00Z). Write it with its offset, and check it is earlier than now
+before you search. The week's searches (step 2b) go back 7 days the same way.
+
+`email_search {since: <that>, mailbox: "INBOX", limit: 50}`. Use its headers and
 snippets, and never `email_read` a message for the digest. Leave out mail from the owner's own address. When 50 come
-back, say in the digest that it shows the newest 50.
+back, say in the digest that it shows the newest 50. `messages: []` means no mail in that window, whatever note comes
+with it: search each mailbox once, never again with a smaller limit.
 
 Then `email_search {since: <same>, mailbox: "Ignored", limit: 50}`: the mail triage filed out of the inbox. Each of
 those is ignored, whatever its text. When the folder doesn't exist yet, none was. A message both searches return counts
