@@ -8,7 +8,9 @@ a cut preview of the result).
 
 A link is "in the calls" only when it appears there: a search result's url, a fetch's url or final url, or a link
 in a fetched page's `links`. Wherever this rubric says a page the run fetched or a URL a search shows, it means that.
-A link that differs from a call's URL only by its #fragment is that page and passes. A link on the same site as a
+A link that differs from a call's URL only by its #fragment, a trailing slash or the order of its query parameters is
+that page and passes. The calls show query values redacted to "…": a "…" value matches any value for that key, but the
+keys must match. A link on the same site as a
 fetched page that appears nowhere in the calls fails. When a page's links were cut
 (`links_cut`), say so; a link from that page passes only when the answer quotes text that is in the page.
 
