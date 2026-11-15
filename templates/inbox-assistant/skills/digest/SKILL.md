@@ -38,7 +38,10 @@ Only when the input has `weekly: true`. Then this step replaces steps 1 to 3: th
 ## 3. Sort
 
 Sort each inbox email with the triage skill's rules (`triage/SKILL.md`, step 3), from its sender, subject and snippet.
-Don't draft or file anything here: the digest's only write is its own draft.
+Don't draft or file anything here: the digest's only write is its own draft. Two settle before those rules:
+- An email a draft waits for (step 2) is needs me: the owner owes it a reply.
+- A VIP's email that asks nothing ("no action needed", "for your reference", "nothing needed from you") is FYI. Being
+  a VIP keeps mail out of Ignored; it never makes it needs me, and "in doubt" does not apply when it says no ask.
 
 ## 4. The note
 
@@ -50,7 +53,7 @@ One `email_draft`:
   at most 30 lines.
 - `text` of the day's digest, plain, in this order, each part left out when empty:
   1. **Needs you (N)**: a line each: sender name, subject, the ask in a few words, and "draft waiting" with the draft's
-     first line when one is.
+     first line when one is. Those with a draft waiting come first, then the rest, each newest first.
   2. **FYI (N)**: a line each: sender name and what changed.
   3. **Ignored**: the count, and the senders behind most of it ("12 ignored, mostly LinkedIn and GitHub").
   4. A last line when the search hit 50.
