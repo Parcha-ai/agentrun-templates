@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: marketing
 tags: [website-monitoring, competitors, pricing, change-detection, weekly]
 harness: [pi, claude-agent, codex]
-model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
+model: { tier: balanced }
 effort: low
 tools: [read, web_search, web_fetch]
 parameters:
