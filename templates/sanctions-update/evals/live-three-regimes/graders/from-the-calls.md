@@ -10,8 +10,8 @@ Read the answer's last fenced `json` block, `report_markdown` included. Pass onl
 
 1. **One search per regime.** OFAC, the UK and the EU each have a `web_search` of their own. One query that names two or more regimes counts for none of them.
 2. **Links from the calls.** Every entry in `actions` has a `source_urls` link that matches a call: read the link check, which matched each cited link against the calls in code. A link it
-   marks `no matching call` fails. Where it says a page's links were cut, say so in your reason, and pass such a link
-   only when the answer quotes text that is in that page.
+   marks `matches call N` passes. One it marks `no matching call` fails, unless the check adds that a page's links were
+   cut: then say so in your reason, and pass that unmatched link only when the answer quotes text that is in that page.
 3. **Dates in the window.** Every action's `published` date is inside the window, or the action is an older one that
    changed inside the window (a licence amended or extended, an entry corrected, a delisting), dated by a page in the
    calls.

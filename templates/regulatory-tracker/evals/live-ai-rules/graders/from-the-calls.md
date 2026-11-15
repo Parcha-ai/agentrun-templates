@@ -13,8 +13,8 @@ Read the answer's last fenced `json` block, `report_markdown` included. Pass onl
 1. **One search per jurisdiction.** The US federal level, the EU
    and California each have a `web_search` of their own. One query that names two or more jurisdictions counts for none of them.
 2. **Links from the calls.** Every entry in `items` has a `source_urls` link that matches a call: read the link check, which matched each cited link against the calls in code. A link it
-   marks `no matching call` fails. Where it says a page's links were cut, say so in your reason, and pass such a link
-   only when the answer quotes text that is in that page.
+   marks `matches call N` passes. One it marks `no matching call` fails, unless the check adds that a page's links were
+   cut: then say so in your reason, and pass that unmatched link only when the answer quotes text that is in that page.
 3. **Dates in the window.** Every item is dated inside the window by the development that put it there (published,
    adopted, signed, effective, comment period opened or closed), as a page in the calls shows it.
 4. **Nothing invented.** No item, document number, stage, date or body in the answer contradicts what the calls
