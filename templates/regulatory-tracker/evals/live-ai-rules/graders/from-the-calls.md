@@ -12,13 +12,9 @@ Read the answer's last fenced `json` block, `report_markdown` included. Pass onl
 
 1. **One search per jurisdiction.** The US federal level, the EU
    and California each have a `web_search` of their own. One query that names two or more jurisdictions counts for none of them.
-2. **Links from the calls.** Every entry in `items` has a `source_urls` link that appears in the calls. A link appears in the calls only as a search row's url, a fetch's url or final url, or a link
-   listed in a fetched page's `links`. A link that differs from a call's URL only by its #fragment, a trailing slash or the
-   order of its query parameters is that page and passes. The calls show query values redacted to "…": a "…"
-   value matches any value for that key, but the keys must match. A link on the same site as a fetched page that appears nowhere in the calls
-   fails: a made-up path on a real domain is invented. Where a call's links were cut (`links_cut` on the row, or the
-   list's first line says the cut reached URL lists), say so in your reason, and pass a link from that same page only
-   when the answer quotes text that is in the page.
+2. **Links from the calls.** Every entry in `items` has a `source_urls` link that matches a call: read the link check, which matched each cited link against the calls in code. A link it
+   marks `no matching call` fails. Where it says a page's links were cut, say so in your reason, and pass such a link
+   only when the answer quotes text that is in that page.
 3. **Dates in the window.** Every item is dated inside the window by the development that put it there (published,
    adopted, signed, effective, comment period opened or closed), as a page in the calls shows it.
 4. **Nothing invented.** No item, document number, stage, date or body in the answer contradicts what the calls

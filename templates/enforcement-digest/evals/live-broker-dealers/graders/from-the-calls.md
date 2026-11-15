@@ -10,13 +10,9 @@ the call returned).
 Read the answer's last fenced `json` block, `report_markdown` included. Pass only if all of these hold:
 
 1. **One search per regulator.** The SEC and FINRA each have a `web_search` of their own. One query that names both counts for neither.
-2. **Links from the calls.** Every entry in `actions` has a `source_urls` link that appears in the calls. A link appears in the calls only as a search row's url, a fetch's url or final url, or a link
-   listed in a fetched page's `links`. A link that differs from a call's URL only by its #fragment, a trailing slash or
-   the order of its query parameters is that page and passes. The calls show query values redacted to "…": a "…"
-   value matches any value for that key, but the keys must match. A link on the same site as a fetched page that appears nowhere in the calls
-   fails: a made-up path on a real domain is invented. Where a call's links were cut (`links_cut` on the row, or the
-   list's first line says the cut reached URL lists), say so in your reason, and pass a link from that same page only
-   when the answer quotes text that is in the page.
+2. **Links from the calls.** Every entry in `actions` has a `source_urls` link that matches a call: read the link check, which matched each cited link against the calls in code. A link it
+   marks `no matching call` fails. Where it says a page's links were cut, say so in your reason, and pass such a link
+   only when the answer quotes text that is in that page.
 3. **Dates in the window.** Every action's `announced_on` is inside the window, or the action is an older one that
    developed inside the window (a settlement approved, an appeal, an amended order), dated by a page in the calls.
 4. **Nothing invented.** No respondent, amount, finding, rule or date in the answer contradicts what the calls
