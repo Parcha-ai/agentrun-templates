@@ -5,7 +5,24 @@
     "GMAIL_CREATE_EMAIL_DRAFT": {
       "description": "Creates a Gmail email draft.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "recipient_email": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "thread_id": {
+            "type": "string"
+          },
+          "is_html": {
+            "type": "boolean"
+          }
+        }
       },
       "answers": [],
       "default": {
