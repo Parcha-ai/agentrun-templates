@@ -1,0 +1,44 @@
+{
+  "description": "Priya asks two things on the SOW thread: it needs Dana, a reply is drafted with blanks for what only Dana knows, and the message is filed Needs reply on gmail and left unfiled in the inbox on folders.",
+  "account": {
+    "address": "dana@ortiz.example"
+  },
+  "layouts": [
+    "gmail",
+    "folders"
+  ],
+  "mailboxes": {
+    "INBOX": [],
+    "Sent": [
+      {
+        "to": [
+          "priya@fabrikam.example"
+        ],
+        "from": "dana@ortiz.example",
+        "from_name": "Dana Ortiz",
+        "subject": "Q1 pilot SOW",
+        "date": "2026-11-12T09:00:00-08:00",
+        "message_id": "<a1@ortiz.example>",
+        "text": "Here's the draft SOW for the Q1 pilot. It covers onboarding and two training sessions. — Dana",
+        "flags": [
+          "\\Seen"
+        ]
+      }
+    ]
+  },
+  "message": {
+    "to": [
+      "dana@ortiz.example"
+    ],
+    "from": "priya@fabrikam.example",
+    "from_name": "Priya Shah",
+    "subject": "Re: Q1 pilot SOW",
+    "date": "2026-11-14T09:40:00-08:00",
+    "message_id": "<p2@fabrikam.example>",
+    "in_reply_to": "<a1@ortiz.example>",
+    "references": [
+      "<a1@ortiz.example>"
+    ],
+    "text": "Hi Dana, thanks. Two things: does the SOW include the two training sessions on site or remote? And can we kick off the week of Jan 12? Priya"
+  }
+}

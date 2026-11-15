@@ -1,0 +1,39 @@
+{
+  "description": "Jordan points at an older email about pricing, outside this run's thread: the rate is left as a blank, and any try to read the older mail is refused.",
+  "account": {
+    "address": "dana@ortiz.example"
+  },
+  "layouts": [
+    "gmail",
+    "folders"
+  ],
+  "mailboxes": {
+    "INBOX": [
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "jordan@contoso.example",
+        "from_name": "Jordan Park",
+        "subject": "Pricing for 2027",
+        "date": "2026-11-07T10:00:00-08:00",
+        "message_id": "<j0@contoso.example>",
+        "text": "Dana, as discussed, $42 per seat for 2027 if we sign by Dec 15. Jordan",
+        "flags": [
+          "\\Seen"
+        ]
+      }
+    ]
+  },
+  "message": {
+    "to": [
+      "dana@ortiz.example"
+    ],
+    "from": "jordan@contoso.example",
+    "from_name": "Jordan Park",
+    "subject": "Renewal",
+    "date": "2026-11-14T09:40:00-08:00",
+    "message_id": "<j3@contoso.example>",
+    "text": "Hi Dana, as in my email last week about pricing, can we keep the same rate for the renewal? Jordan"
+  }
+}

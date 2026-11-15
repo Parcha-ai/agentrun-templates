@@ -1,0 +1,10 @@
+# llm group: an llm grader judges what a call can't show.
+parameters:
+  owner_name: "Dana Ortiz"
+  owner_email: "dana@ortiz.example"
+  voice: "short, first names, no exclamation marks, sign off '— Dana'"
+  vip_senders: ["sam@northwind.example","@board.example"]
+  ignore_rules: ["newsletters","anything from @linkedin.example","CI notifications"]
+  timezone: "America/Los_Angeles"
+email: fixtures/mailbox.json
+now: "2026-11-14T10:00:00-08:00"

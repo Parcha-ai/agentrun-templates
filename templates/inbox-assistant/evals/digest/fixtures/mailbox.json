@@ -1,0 +1,167 @@
+{
+  "description": "The evening digest on Sunday 15 Nov: one draft to Dana, needs-you first with the draft waiting, FYI a line each, the ignored count naming LinkedIn; nothing read, nothing filed.",
+  "account": {
+    "address": "dana@ortiz.example"
+  },
+  "layouts": [
+    "gmail",
+    "folders"
+  ],
+  "trigger": "evening-digest",
+  "mailboxes": {
+    "INBOX": [
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "priya@fabrikam.example",
+        "from_name": "Priya Shah",
+        "subject": "Re: Q1 pilot SOW",
+        "date": "2026-11-15T09:10:00-08:00",
+        "message_id": "<p2@fabrikam.example>",
+        "in_reply_to": "<a1@ortiz.example>",
+        "text": "Hi Dana, does the SOW include the two training sessions on site or remote? And can we kick off the week of Jan 12? Priya"
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "jordan@contoso.example",
+        "from_name": "Jordan Park",
+        "subject": "Quick question on renewal",
+        "date": "2026-11-15T11:30:00-08:00",
+        "message_id": "<j1@contoso.example>",
+        "text": "Hi Dana, are you open to a call Thursday about the renewal? Jordan"
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "sam@northwind.example",
+        "from_name": "Sam Lee",
+        "subject": "Board deck is up",
+        "date": "2026-11-15T08:05:00-08:00",
+        "message_id": "<s1@northwind.example>",
+        "text": "Dana, the Q4 board deck is in the shared folder. Nothing needed from you before Thursday. Sam"
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "no-reply@stripe.example",
+        "from_name": "Stripe",
+        "subject": "Payment failed for invoice 2291",
+        "date": "2026-11-15T13:20:00-08:00",
+        "message_id": "<st1@stripe.example>",
+        "text": "A payment of $1,200.00 from Northwind failed. We'll retry in 3 days. Manage your account settings."
+      },
+      {
+        "from": "lee@ortiz.example",
+        "from_name": "Lee Chen",
+        "to": [
+          "maria@fabrikam.example"
+        ],
+        "cc": [
+          "dana@ortiz.example"
+        ],
+        "subject": "Invoice timing",
+        "date": "2026-11-15T10:45:00-08:00",
+        "message_id": "<l1@ortiz.example>",
+        "text": "Maria, invoices go out on the 1st; I'll send November's on Dec 1. Lee"
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "news@growthweekly.example",
+        "from_name": "Growth Weekly",
+        "subject": "10 growth loops for Q1",
+        "date": "2026-11-15T06:00:00-08:00",
+        "message_id": "<n1@growthweekly.example>",
+        "text": "This week: 10 growth loops for Q1.\n\nUnsubscribe | View in browser"
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "ci@builds.ortiz.example",
+        "from_name": "CI",
+        "subject": "Build #4821 passed on main",
+        "date": "2026-11-15T15:02:00-08:00",
+        "message_id": "<ci1@builds.ortiz.example>",
+        "text": "Build #4821 passed on main in 6m 12s."
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "bo@example.com",
+        "from_name": "Bo",
+        "subject": "Lunch last week",
+        "date": "2026-11-12T12:00:00-08:00",
+        "message_id": "<old1@example.com>",
+        "text": "Thanks for lunch last week, Dana. Bo",
+        "flags": [
+          "\\Seen"
+        ]
+      }
+    ],
+    "Ignored": [
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "notifications@linkedin.example",
+        "from_name": "LinkedIn",
+        "subject": "You appeared in 9 searches this week",
+        "date": "2026-11-15T07:00:00-08:00",
+        "message_id": "<li1@linkedin.example>",
+        "text": "You appeared in 9 searches this week."
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "notifications@linkedin.example",
+        "from_name": "LinkedIn",
+        "subject": "Jamie Fox wants to connect",
+        "date": "2026-11-15T12:00:00-08:00",
+        "message_id": "<li2@linkedin.example>",
+        "text": "Jamie Fox wants to connect."
+      }
+    ],
+    "Drafts": [
+      {
+        "from": "dana@ortiz.example",
+        "from_name": "Dana Ortiz",
+        "to": [
+          "priya@fabrikam.example"
+        ],
+        "subject": "Re: Q1 pilot SOW",
+        "date": "2026-11-15T09:30:00-08:00",
+        "message_id": "<d1@ortiz.example>",
+        "in_reply_to": "<p2@fabrikam.example>",
+        "text": "Hi Priya, the two sessions: [confirm: on site or remote?]. Jan 12: [confirm]. — Dana",
+        "flags": [
+          "\\Draft",
+          "\\Seen"
+        ]
+      },
+      {
+        "from": "dana@ortiz.example",
+        "from_name": "Dana Ortiz",
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "subject": "Inbox digest: Sat 14 Nov",
+        "date": "2026-11-14T18:00:00-08:00",
+        "message_id": "<d0@ortiz.example>",
+        "text": "Needs you (1): ... FYI (2): ... 3 ignored.",
+        "flags": [
+          "\\Draft",
+          "\\Seen"
+        ]
+      }
+    ]
+  }
+}

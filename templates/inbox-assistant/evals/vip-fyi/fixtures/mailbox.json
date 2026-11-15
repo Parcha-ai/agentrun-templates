@@ -1,0 +1,24 @@
+{
+  "description": "Sam (a VIP) shares the board deck and asks nothing: FYI, never ignored, no draft; filed FYI on gmail and left in the inbox on folders.",
+  "account": {
+    "address": "dana@ortiz.example"
+  },
+  "layouts": [
+    "gmail",
+    "folders"
+  ],
+  "mailboxes": {
+    "INBOX": []
+  },
+  "message": {
+    "to": [
+      "dana@ortiz.example"
+    ],
+    "from": "sam@northwind.example",
+    "from_name": "Sam Lee",
+    "subject": "Board deck is up",
+    "date": "2026-11-14T09:40:00-08:00",
+    "message_id": "<s1@northwind.example>",
+    "text": "Dana, the Q4 board deck is in the shared folder. Nothing needed from you before Thursday. Sam"
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "description": "The Monday brief on 16 Nov: one draft to Dana with the week alone: needs a reply (Priya with a draft waiting, Ana), waiting on others (Raj's NDA alone), coming up (Friday's signature, Thursday's deck); nothing read, nothing filed.",
+  "account": {
+    "address": "dana@ortiz.example"
+  },
+  "layouts": [
+    "gmail",
+    "folders"
+  ],
+  "trigger": "monday-brief",
+  "mailboxes": {
+    "INBOX": [
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "priya@fabrikam.example",
+        "from_name": "Priya Shah",
+        "subject": "Re: Q1 pilot SOW",
+        "date": "2026-11-12T09:10:00-08:00",
+        "message_id": "<p2@fabrikam.example>",
+        "text": "Hi Dana, does the SOW include the two training sessions on site or remote? And can we kick off the week of Jan 12? Priya"
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "ana@harbor.example",
+        "from_name": "Ana Ruiz",
+        "subject": "Lease renewal",
+        "date": "2026-11-15T10:00:00-08:00",
+        "message_id": "<h1@harbor.example>",
+        "text": "Hi Dana, the landlord needs your signature by Friday; can you sign if I send the PDF tonight? Ana"
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "sam@northwind.example",
+        "from_name": "Sam Lee",
+        "subject": "Board deck is up",
+        "date": "2026-11-13T08:05:00-08:00",
+        "message_id": "<s1@northwind.example>",
+        "text": "Dana, the Q4 board deck is in the shared folder. Nothing needed from you before Thursday. Sam"
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "kim@venues.example",
+        "from_name": "Kim Ito",
+        "subject": "Re: Venue",
+        "date": "2026-11-11T14:00:00-08:00",
+        "message_id": "<k1@venues.example>",
+        "in_reply_to": "<k0@ortiz.example>",
+        "text": "Hi Dana, yes, the venue is confirmed for the 4th. Kim",
+        "flags": [
+          "\\Seen"
+        ]
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "notifications@linkedin.example",
+        "from_name": "LinkedIn",
+        "subject": "You appeared in 12 searches",
+        "date": "2026-11-14T07:00:00-08:00",
+        "message_id": "<li3@linkedin.example>",
+        "text": "You appeared in 12 searches this week."
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "notifications@linkedin.example",
+        "from_name": "LinkedIn",
+        "subject": "New jobs for you",
+        "date": "2026-11-13T07:00:00-08:00",
+        "message_id": "<li4@linkedin.example>",
+        "text": "New jobs for you."
+      },
+      {
+        "to": [
+          "dana@ortiz.example"
+        ],
+        "from": "news@growthweekly.example",
+        "from_name": "Growth Weekly",
+        "subject": "Pricing pages that convert",
+        "date": "2026-11-12T06:00:00-08:00",
+        "message_id": "<n2@growthweekly.example>",
+        "text": "Pricing pages that convert.\n\nUnsubscribe | View in browser"
+      }
+    ],
+    "Sent": [
+      {
+        "from": "dana@ortiz.example",
+        "from_name": "Dana Ortiz",
+        "to": [
+          "kim@venues.example"
+        ],
+        "subject": "Venue",
+        "date": "2026-11-09T09:00:00-08:00",
+        "message_id": "<k0@ortiz.example>",
+        "text": "Hi Kim, can you confirm the venue? — Dana",
+        "flags": [
+          "\\Seen"
+        ]
+      },
+      {
+        "from": "dana@ortiz.example",
+        "from_name": "Dana Ortiz",
+        "to": [
+          "raj@legal.example"
+        ],
+        "subject": "NDA",
+        "date": "2026-11-10T09:00:00-08:00",
+        "message_id": "<r0@ortiz.example>",
+        "text": "Hi Raj, could you send the signed NDA by Wednesday? — Dana",
+        "flags": [
+          "\\Seen"
+        ]
+      },
+      {
+        "from": "dana@ortiz.example",
+        "from_name": "Dana Ortiz",
+        "to": [
+          "lee@ortiz.example"
+        ],
+        "subject": "Re: Invoice timing",
+        "date": "2026-11-13T16:00:00-08:00",
+        "message_id": "<le0@ortiz.example>",
+        "text": "Thanks, all good. — Dana",
+        "flags": [
+          "\\Seen"
+        ]
+      }
+    ],
+    "Drafts": [
+      {
+        "from": "dana@ortiz.example",
+        "from_name": "Dana Ortiz",
+        "to": [
+          "priya@fabrikam.example"
+        ],
+        "subject": "Re: Q1 pilot SOW",
+        "date": "2026-11-12T10:00:00-08:00",
+        "message_id": "<d1@ortiz.example>",
+        "in_reply_to": "<p2@fabrikam.example>",
+        "text": "Hi Priya, the two sessions: [confirm: on site or remote?]. Jan 12: [confirm]. — Dana",
+        "flags": [
+          "\\Draft",
+          "\\Seen"
+        ]
+      }
+    ]
+  }
+}

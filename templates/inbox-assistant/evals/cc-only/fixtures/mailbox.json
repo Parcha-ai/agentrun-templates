@@ -1,0 +1,27 @@
+{
+  "description": "Lee writes to Maria with Dana only in cc: FYI, no draft; filed FYI on gmail and left in the inbox on folders.",
+  "account": {
+    "address": "dana@ortiz.example"
+  },
+  "layouts": [
+    "gmail",
+    "folders"
+  ],
+  "mailboxes": {
+    "INBOX": []
+  },
+  "message": {
+    "from": "lee@ortiz.example",
+    "from_name": "Lee Chen",
+    "to": [
+      "maria@fabrikam.example"
+    ],
+    "cc": [
+      "dana@ortiz.example"
+    ],
+    "subject": "Invoice timing",
+    "date": "2026-11-14T09:40:00-08:00",
+    "message_id": "<l1@ortiz.example>",
+    "text": "Maria, invoices go out on the 1st; I'll send November's on Dec 1. Lee"
+  }
+}
