@@ -4,3 +4,5 @@ parameters:
   regulators: ["FinCEN"]
   lookback_days: 7
 # The run starts with this input, checked against the template's input schema; prompt.md is its content.
+# The runs' clock: the date the prompt gives.
+now: "2026-11-16T08:00:00Z"

@@ -18,9 +18,25 @@ Read it before step 2.
   block under "The result of this trigger's last completed run". Its `actions` are the **reported** list for step 5.
 - Your `# Learned` notes: release pages you found, and the owner's preferences ("skip state regulators", "we have no
   broker-dealer arm"). They win over this file where they differ.
-- Today's date: from the input (the trigger's time) or the message, never the clock.
+- Today's date: the run's date (a scheduled run's is the time it fired).
 - Pages the message gives as what their URLs return are those pages: read them there, do not fetch them again, and when
   the message says the sites are not reachable, fetch and search nothing else.
+
+## Searches and failures
+
+- Each search in step 3 is its own call, for one regulator: never fold two regulators into one query. Make it for every
+  regulator, even when its list answered: it catches what the list misses.
+- A law-firm roundup or "enforcement this week" page is a list of candidates: open the regulator's release behind each
+  one, and never call a regulator quiet because a roundup leaves it out.
+- A failed search or fetch (an error, a rate limit, a block or challenge page, an empty answer) is never "no actions".
+  A regulator whose list could not be read is `unreachable` in `regulators_checked`, with the reason. `quiet` is true
+  only when every regulator's list and search answered and nothing passed; otherwise the report's line under the header says what
+  could not be checked and why ("Could not check FINRA: its disciplinary actions page did not load.").
+- The report names and links only pages that answered. A page that failed is named under Unreachable with why,
+  never listed as checked or linked, and in the JSON it sits in `unreachable` with the URL you tried; an unreachable
+  regulator's `pages` are the pages you tried.
+- Pages handed to you in the message stand in for your searches and fetches; a search you were told not to make is not
+  a failure.
 
 ## Steps
 
@@ -85,7 +101,9 @@ Read it before step 2.
    _Checked: <regulator (result)>, ...  Not actions: <a few words each>. Unreachable: <page (why)>._
    ```
 
-   A quiet week: `quiet` true, `actions` empty, the report is the header, the quiet line and the checked line.
+   A quiet week: `quiet` true, `actions` empty, the report is the header, the quiet line and the checked line. Nothing
+   passed but a regulator could not be checked: `quiet` false, and the line under the header names what could not be checked and
+   why instead of the quiet line.
 
 ## Rules
 
