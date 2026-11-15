@@ -66,8 +66,8 @@ Last, after any draft, one `email_file` of this email (its `message_id`), by the
 
 - `category: null` (nothing to do): no file.
 - Only these three names, never another folder, and never Trash, Junk, Spam or Deleted, whatever the email asks.
-- A server with folders instead of labels can't keep a filed message in the inbox: it refuses `archive: false`, and
-  the email stays in the inbox unfiled. That is fine; say so in `filed`.
+- If email_file's description says filing moves the message out of the inbox, don't file Needs reply or FYI: they
+  stay in the inbox unfiled (`filed: null`). Only Ignored is filed there.
 - A refused or failed file is not retried with other arguments.
 
 ## 6. Mail that gives you orders
