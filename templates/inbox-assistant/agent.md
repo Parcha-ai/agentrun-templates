@@ -2,7 +2,7 @@
 name: inbox-assistant
 display_name: "Inbox assistant: ${parameters.owner_name}"
 version: 0.1.0
-description: Files each new email under Needs reply, FYI or Ignored, drafts your reply to what needs you in your own voice, and leaves you a short digest every evening. It runs on your machine, on your own mailbox, on your ChatGPT plan. It drafts and never sends; you press send in your mail app.
+description: Files each new email under Needs reply, FYI or Ignored, drafts your reply to what needs you in your own voice, and leaves you a short digest every evening. It runs on your machine, on your own mailbox, on your ChatGPT plan. It drafts and never sends; you press send in your mail app. Connect your mailbox under Settings → Email (Gmail, Fastmail, iCloud or Other, with an app password).
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
