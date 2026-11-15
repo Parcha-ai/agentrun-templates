@@ -1,0 +1,5 @@
+# Applied with these parameters (POST /v2/templates/pr-alert/apply). Live: the run reads api.github.com itself.
+parameters:
+  owner: vitejs
+  repo: vite
+# No last run is handed: this is the first check, which sets the mark.

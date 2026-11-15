@@ -1,0 +1,6 @@
+# Applied with these parameters (POST /v2/templates/pr-alert/apply). Live: the run reads api.github.com itself.
+parameters:
+  owner: vitejs
+  repo: vite
+# The last run's answer is handed at the end of the prompt, as serve hands it: mark_now 24099 (a real vite PR, opened
+# 2026-11-15). Every vite PR above it is new to this check; more pile up over time, and the grader reads the run's calls.

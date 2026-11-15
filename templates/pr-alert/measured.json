@@ -1,0 +1,25 @@
+{
+  "median_usd": 0,
+  "runs": 14,
+  "model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+  "harness": "pi",
+  "measured_on": "2026-11-16",
+  "passed": {
+    "pi": "3/5"
+  },
+  "free": {
+    "model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+    "limits": [
+      "OpenRouter free models: 50 requests a day with no credits, 1,000 a day after a one-time $10, 20 a minute",
+      "GitHub's anonymous API: 60 requests an hour per IP address; this template spends 1 a check, plus 1 or 2 per new PR",
+      "Free endpoints may log prompts, and NVIDIA's free endpoint is not on OpenRouter's zero-retention list: public repositories only"
+    ]
+  },
+  "live": {
+    "cases": 2,
+    "median_usd": 0,
+    "passed": {
+      "pi": "1/2"
+    }
+  }
+}

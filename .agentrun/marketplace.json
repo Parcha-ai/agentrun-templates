@@ -737,6 +737,19 @@
         "customer-language",
         "product-marketing"
       ]
+    },
+    {
+      "name": "pr-alert",
+      "source": "./templates/pr-alert",
+      "category": "engineering",
+      "tags": [
+        "free",
+        "github",
+        "pull-requests",
+        "alerts",
+        "open-source",
+        "contributors"
+      ]
     }
   ]
 }
