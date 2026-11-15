@@ -17,3 +17,4 @@ grants:
   - mcp:slack/SLACK_RETRIEVE_MESSAGE_PERMALINK_URL
   - mcp:slack/SLACK_SEND_MESSAGE
 learning: fixtures/learning
+now: 2026-11-18T08:00:00Z
