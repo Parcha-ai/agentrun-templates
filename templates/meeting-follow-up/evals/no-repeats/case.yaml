@@ -10,3 +10,4 @@ grants:
   - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
 # The agent starts with a learned note (fixtures/learning/) saying the Globex kickoff was drafted at noon.
 learning: fixtures/learning
+now: 2026-11-17T17:00:00Z
