@@ -54,7 +54,8 @@ read `data`, and treat `successful: false` as a failed call.
    unnarrowed, newest first; read a second page only when the first ends inside the last year. Results with
    `pull_request` are pull requests: skip them. Compare titles and bodies against the issue's most distinctive terms:
    the exact error text, a function, command or config key, the feature's name. Ignore the new issue itself. For the 3
-   to 5 most promising results, read the candidate (`GITHUB_GET_AN_ISSUE`) before you judge it. Then rate each:
+   to 5 most promising results, read the candidate (`GITHUB_GET_AN_ISSUE`) before you judge it: a candidate you did not
+   open is never `high` or `medium`, however close the list makes it look. Then rate each:
    - `high`: the same failure or request: the same error and trigger, or the same feature asked for the same reason.
    - `medium`: very likely the same root problem, described differently (same component and symptom, different words).
    - `low`: the same area only. Low ones are not duplicates: leave them out of the comment, and out of `duplicates`

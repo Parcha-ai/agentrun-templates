@@ -5,7 +5,26 @@
     "GITHUB_GET_AN_ISSUE": {
       "description": "Get an issue by owner, repo and issue_number.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository"
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository"
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "The number that identifies the issue"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number"
+        ]
       },
       "answers": [
         {
@@ -100,7 +119,38 @@
     "GITHUB_LIST_ISSUE_COMMENTS": {
       "description": "List an issue's comments.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository"
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository"
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "The number that identifies the issue"
+          },
+          "since": {
+            "type": "string",
+            "description": "Only comments updated at or after this ISO 8601 time"
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Results per page (max 100)"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number"
+        ]
       },
       "answers": [
         {
@@ -194,7 +244,29 @@
     "GITHUB_LIST_LABELS_FOR_A_REPOSITORY": {
       "description": "List the repository's labels.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository"
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository"
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Results per page (max 100)"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results"
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ]
       },
       "answers": [],
       "default": {
@@ -209,7 +281,65 @@
     "GITHUB_LIST_REPOSITORY_ISSUES": {
       "description": "List the repository's issues, newest first (state, labels, since, creator filters). Asked for open or closed only, it returns those; otherwise every issue.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository"
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository"
+          },
+          "milestone": {
+            "type": "string",
+            "description": "A milestone number, or none, or *"
+          },
+          "state": {
+            "type": "string",
+            "description": "open, closed or all"
+          },
+          "assignee": {
+            "type": "string",
+            "description": "A login, or none, or *"
+          },
+          "creator": {
+            "type": "string",
+            "description": "The user that created the issue"
+          },
+          "mentioned": {
+            "type": "string",
+            "description": "A user mentioned in the issue"
+          },
+          "labels": {
+            "type": "string",
+            "description": "A comma-separated list of label names"
+          },
+          "sort": {
+            "type": "string",
+            "description": "created, updated or comments"
+          },
+          "direction": {
+            "type": "string",
+            "description": "asc or desc"
+          },
+          "since": {
+            "type": "string",
+            "description": "Only issues updated at or after this ISO 8601 time"
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Results per page (max 100)"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results"
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ]
       },
       "answers": [
         {
@@ -251,7 +381,34 @@
     "GITHUB_ADD_LABELS_TO_AN_ISSUE": {
       "description": "Add labels to an issue (appends to its set).",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository"
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository"
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "The number that identifies the issue"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The names of the labels to add"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number",
+          "labels"
+        ]
       },
       "answers": [],
       "default": {
@@ -266,7 +423,31 @@
     "GITHUB_CREATE_AN_ISSUE_COMMENT": {
       "description": "Create a comment on an issue.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository"
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository"
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "The number that identifies the issue"
+          },
+          "body": {
+            "type": "string",
+            "description": "The contents of the comment"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number",
+          "body"
+        ]
       },
       "answers": [],
       "default": {
