@@ -466,7 +466,7 @@ function templateMd(site, pkg, { cost, keys, triggers, cli, stats }) {
     `- Harness: ${pkg.harness.join(", ") || "any"}`,
     `- Model: ${modelWords(pkg.model)}${pkg.effort ? `, ${pkg.effort} effort` : ""}`,
     ...(choices.length ? ["- Model choices, picked at install instead:", ...choices.map((c) => `  - ${mdText(c.label)}: ${mdCode(c.model)}${c.harness ? ` on ${mdCode(c.harness)}` : ""}${c.secrets.length ? `, needs ${c.secrets.map(mdCode).join(", ")}` : ""}.${c.warning ? ` Warning: ${mdText(c.warning)}` : ""}${c.note ? ` ${mdText(c.note)}` : ""}`)] : []),
-    `- Tools:${pkg.tools.join(", ") || "none"}`,
+    `- Tools: ${pkg.tools.join(", ") || "none"}`,
     ...pkg.mcp.map((n) => `- ${mcpWords(n)} tools${n.required ? "" : " (optional)"}: ${n.tools.join(", ")}${n.reason ? `. ${n.reason}` : ""}`),
     `- Computer: ${computerWords(pkg.computer)}`,
     `- Keys: ${keys.model}${keys.secrets.length ? `, plus ${keys.secrets.join(", ")}` : ""}`,

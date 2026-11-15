@@ -49,7 +49,7 @@ export function triggerLines(pkg) {
       const events = (Array.isArray(src.accept) ? src.accept : []).map((a) => a?.event).filter(Boolean);
       out.push({ kind: "webhook", text: `A signed webhook${events.length ? ` (event ${events.join(", ")})` : ""}, sent by your form, CRM or any service that signs Standard Webhooks.` });
     } else if (src.kind) {
-      out.push({ kind: String(src.kind), text: `A ${src.kind} trigger.` });
+      out.push({ kind: String(src.kind), text: `${/^[aeiou]/i.test(String(src.kind)) ? "An" : "A"} ${src.kind} trigger.` });
     }
     const cap = t.max_active_runs;
     if (Number.isInteger(cap) && out.length) out[out.length - 1].text += ` At most ${cap} at once.`;
@@ -115,9 +115,13 @@ export function keyWords(pkg) {
   if (monidProviders(pkg).length && !keys.includes("MONID_API_KEY")) keys.push("MONID_API_KEY");
   const provider = pkg.model?.prefer?.split("/")[0];
   const name = PROVIDERS[provider] ?? provider;
-  const model = provider ? `A model key for the ${pkg.model.tier ?? "default"} tier; the preferred model runs with a key for ${name}` : "A model key";
+  const model = provider ? `A model key for the ${pkg.model.tier ?? "default"} tier; the preferred model runs with a key for ${name}` : onPlan(pkg) ? "A ChatGPT sign-in (Codex runs on your plan), or a model key" : "A model key";
   return { model, secrets: keys };
 }
+
+/** A package whose default harness (its first) is Codex and that prefers no model: on a server signed in with ChatGPT it
+ *  runs on the owner's plan with no model key. */
+const onPlan = (pkg) => pkg.harness?.[0] === "codex" && !pkg.model?.prefer;
 
 const TOOLKIT_NAMES = { github: "GitHub", gmail: "Gmail", googlecalendar: "Google Calendar", slack: "Slack", linear: "Linear", hubspot: "HubSpot", stripe: "Stripe" };
 
@@ -162,7 +166,8 @@ export function factsLine(pkg) {
   const web = pkg.tools.some((t) => t === "web_search" || t === "web_fetch");
   const monid = monidProviders(pkg);
   const paid = [...required, ...(monid.length ? [`a monid key (for ${listWords(monid)})`] : [])];
-  let needs = paid.length ? `Needs ${listWords(paid)}` : `Needs only a model key${web ? " and the web" : ""}`;
+  const key = onPlan(pkg) ? "a ChatGPT sign-in or a model key" : "a model key";
+  let needs = paid.length ? `Needs ${listWords(paid)}` : `Needs only ${key}${web ? " and the web" : ""}`;
   if (optional.length) needs += ` (${listWords(optional)} optional)`;
   const cap = pkg.budget?.per_run_usd;
   const cost = pkg.measured ? `costs about ${usd(pkg.measured.median_usd)} a run` : typeof cap === "number" ? `stops each run at ${usd(cap)}` : null;

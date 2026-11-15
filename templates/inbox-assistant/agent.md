@@ -1,6 +1,6 @@
 ---
 name: inbox-assistant
-display_name: "Inbox assistant for ${parameters.owner_name}"
+display_name: "Inbox assistant: ${parameters.owner_name}"
 version: 0.1.0
 description: Files each new email under Needs reply, FYI or Ignored, drafts your reply to what needs you in your own voice, and leaves you a short digest every evening. It runs on your machine, on your own mailbox, on your ChatGPT plan. It drafts and never sends; you press send in your mail app.
 license: Apache-2.0
@@ -14,7 +14,7 @@ model:
   # The default is Codex on the owner's ChatGPT plan: apply takes the first harness here the server runs (codex), and on
   # a server signed in with ChatGPT and holding no provider key the balanced tier is chatgpt/gpt-6.1-sol, no key and no
   # dollars. No `prefer`: it would refuse the install on a server without the ChatGPT sign-in, where the tier's model
-  # serves. A free-model choice is left out of this release (Miguel 11-15); it comes back with a zero-retention model.
+  # serves. A free-model choice comes in a later release, with a zero-retention model.
 effort: medium
 # No email_send: every reply is a draft whatever a message says. An owner who wants sends grants email_send on the
 # agent later, and each send then waits for their yes (tl-tools' default for send is ask). email_file never deletes:

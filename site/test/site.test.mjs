@@ -112,6 +112,15 @@ test("a package granting monid endpoints says it needs a monid key, and for whic
   assert.equal(factsLine({ ...pkg, tools: ["web_search"] }), "Needs only a model key and the web, stops each run at $0.50, and is tested by 3 eval cases.");
 });
 
+test("a package whose default harness is Codex, preferring no model, says a ChatGPT sign-in runs it", () => {
+  const pkg = { tools: ["read"], mcp: [], secrets: [], evals: ["a"], budget: { per_run_usd: 0.1 }, measured: null, model: { tier: "balanced" }, harness: ["codex", "pi"] };
+  assert.equal(factsLine(pkg), "Needs only a ChatGPT sign-in or a model key, stops each run at $0.10, and is tested by 1 eval case.");
+  assert.equal(keyWords(pkg).model, "A ChatGPT sign-in (Codex runs on your plan), or a model key");
+  // Codex second, or a preferred model: a model key, as before.
+  assert.equal(keyWords({ ...pkg, harness: ["pi", "codex"] }).model, "A model key");
+  assert.match(keyWords({ ...pkg, model: { tier: "balanced", prefer: "openrouter/x/y" } }).model, /^A model key for the balanced tier/);
+});
+
 test("a web template's facts keep its live-web results apart from its fixture cases", () => {
   const measured = { median_usd: 0.05, runs: 8, passed: { pi: "4/4", codex: "2/2" } };
   const pkg = { tools: ["web_search", "read"], mcp: [], secrets: [], evals: ["a", "b", "live-week"], budget: { per_run_usd: 0.5 }, model: { tier: "balanced" }, measured: { ...measured, live: { cases: 1, median_usd: 0.12, passed: { pi: "1/1", codex: "0/1" } } } };

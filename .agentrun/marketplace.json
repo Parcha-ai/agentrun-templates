@@ -737,6 +737,20 @@
         "customer-language",
         "product-marketing"
       ]
+    },
+    {
+      "name": "inbox-assistant",
+      "source": "./templates/inbox-assistant",
+      "category": "personal",
+      "tags": [
+        "email",
+        "inbox",
+        "assistant",
+        "drafts",
+        "digest",
+        "local",
+        "codex"
+      ]
     }
   ]
 }
