@@ -15,3 +15,4 @@ grants:
 # The agent starts with the goals it already reached as a learned note (MEMORY.md and its note, in the learning
 # folder's format).
 learning: fixtures/learning
+now: 2026-11-16T09:00:00Z
