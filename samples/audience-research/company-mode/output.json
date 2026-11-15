@@ -1,0 +1,285 @@
+{
+  "checked_on": "2026-11-14",
+  "mode": "company",
+  "interpretation": "Company mode. Tallyhive's supplied homepage defines the offer: central recipe, ingredient and allergen data with label printing, from GBP 350 per site per month. Geography is the UK. Priorities below are research recommendations, not confirmed customer segments. Supplied pages are treated as captured sources; their claims are attributed where independent verification is unavailable.",
+  "summary": "Prioritise UK food manufacturers with multi-site technical responsibility, followed by bakery groups and central kitchens supplying multiple outlets. Lead with the Technical Manager: the supplied vacancy explicitly assigns allergen management, label approval, BRCGS readiness and technical budget ownership [S2]. Competitor case studies support manual data handling and central-control/local-printing needs, but no accessible independent buyer reviews were obtained [S5][S6]. Recommend targeted technical-team outreach and educational distribution through the Food & Drink Federation's food-safety and labelling ecosystem [S8]. Treat the supplied 2027-01-01 PAL application date as an uncorroborated planning signal, not a verified legal deadline [S3][S7].",
+  "segments": [
+    {
+      "name": "Food manufacturers with multi-site technical ownership",
+      "description": "UK manufacturers coordinating ingredients, recipes and approved labels across production sites. A two-site Leeds operation is evidenced in the supplied vacancy. Specification-system experience is required; actual installed software and headcount are unknown.",
+      "estimated_size": null,
+      "priority_reason": "Recommended first priority: unusually direct evidence connects the problem and technical budget to one role. Tallyhive explicitly targets manufacturers; the vacancy independently establishes the operational responsibilities, though both pages were supplied.",
+      "sources": [
+        "S1",
+        "S2"
+      ]
+    },
+    {
+      "name": "Bakery groups supplying multiple shops",
+      "description": "UK bakery businesses with changing sandwich, savoury and confectionery ranges, central product information and outlet-level printing. Jenkins Bakery's own site confirms daily supply to branches across South Wales.",
+      "estimated_size": null,
+      "priority_reason": "Recommended second priority: a competitor case study describes central data control, local printing, short-notice product changes and avoiding obsolete label stock. Company existence and geographic fit are independently supported.",
+      "sources": [
+        "S6",
+        "S9"
+      ]
+    },
+    {
+      "name": "Central kitchens and multi-site contract caterers",
+      "description": "UK catering operations managing recipe information centrally while accommodating local products, prices and label formats. A competitor describes a historical rollout to more than 200 UK catering sites; this is not a current market-size estimate.",
+      "estimated_size": null,
+      "priority_reason": "Recommended third priority: competitor evidence supports substantial data-handling and integration needs. Qualify integration complexity before pursuing large accounts; Tallyhive's integration capabilities are not evidenced.",
+      "sources": [
+        "S1",
+        "S5"
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "role": "Technical Manager",
+      "part": "budget_holder",
+      "evidence": "Supplied vacancy, posted 2026-10-20, explicitly assigns technical budget management, allergen management, label approval and BRCGS readiness across two sites. Strong role evidence, but one employer only.",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "role": "Technical Manager",
+      "part": "champion",
+      "evidence": "Inference: ownership of label approval and allergen management makes this the strongest initial champion. The same vacancy requires specification-system experience.",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "role": "Operations Director",
+      "part": "decision_maker",
+      "evidence": "Inference: likely executive sponsor or escalation point because the Technical Manager reports to this role. Final purchasing authority is not stated.",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "role": "General Manager",
+      "part": "champion",
+      "evidence": "A bakery competitor case study presents this role discussing software usability, central information control, local printing and packaging-stock implications; purchasing authority is not established.",
+      "sources": [
+        "S6"
+      ]
+    },
+    {
+      "role": "Recipe/menu systems product manager",
+      "part": "champion",
+      "evidence": "Inference from a competitor's RME product-manager case study discussing menu-system integration, central data management and permissions.",
+      "sources": [
+        "S5"
+      ]
+    },
+    {
+      "role": "Site chefs and label-printing staff",
+      "part": "end_user",
+      "evidence": "Competitor case studies describe chefs making permitted local changes and labels being printed in individual stores. Exact user titles vary and are not fully documented.",
+      "sources": [
+        "S5",
+        "S6"
+      ]
+    }
+  ],
+  "jobs_to_be_done": [
+    "Recommendation: keep recipe, ingredient and allergen information together so approved labels use the intended data [S1][S2].",
+    "Recommendation: control product information centrally while enabling daily label printing at outlets [S6].",
+    "Recommendation: reduce manual transfer and matching of ingredient data into label fields [S5].",
+    "Recommendation: support technical-team label approval and audit preparation; validate required evidence exports before promising them [S2].",
+    "Recommendation: preserve risk-assessment-based PAL decisions rather than treating a label generator as a substitute for allergen controls [S7]."
+  ],
+  "pains": [],
+  "pain_sample_note": "No accessible independent buyer posts or reviews were read. Searches targeted Nutritics and food-labelling reviews; Capterra returned 403. Two undated Planglow customer case studies were read as vendor-selected context, not counted as review/forum voices. No buyer-pain quotes are reported.",
+  "triggers": [
+    {
+      "trigger": "Recruitment into cross-site technical responsibility",
+      "evidence": "The supplied 2026-10-20 Technical Manager vacancy combines two-site allergen ownership, label approval, BRCGS readiness and budget management. Inference: a new remit creates a useful discovery moment, not proof of purchase intent.",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "trigger": "Precautionary allergen labelling review",
+      "evidence": "Supplied notice dated 2026-07-01 reports expected application from 2027-01-01 in England, Wales and Northern Ireland. The official PAL page supports risk-assessment-led decisions but does not corroborate that timetable in the text inspected.",
+      "sources": [
+        "S3",
+        "S7"
+      ]
+    },
+    {
+      "trigger": "New products, ingredient changes or label-stock obsolescence",
+      "evidence": "Inference from an undated bakery case study discussing short-notice information changes and obsolete preprinted packaging. Use discovery questions rather than claiming this is a current incident.",
+      "sources": [
+        "S6"
+      ]
+    },
+    {
+      "trigger": "Expansion of centrally controlled labelling",
+      "evidence": "A competitor describes a rollout beginning in 2019 across more than 200 UK catering sites with menu-system integration. Inference: new sites and dispersed printing increase coordination needs.",
+      "sources": [
+        "S5"
+      ]
+    },
+    {
+      "trigger": "BRCGS audit preparation",
+      "evidence": "Inference: audit preparation can prompt workflow review because the supplied vacancy explicitly links allergen management and label approval to BRCGS readiness. No upcoming audit date is known.",
+      "sources": [
+        "S2"
+      ]
+    }
+  ],
+  "objections": [
+    "Inference: GBP 350 per site per month needs a site-level business case; willingness to pay, implementation fees and contract terms are unverified [S1].",
+    "Inference: existing specification or menu systems may make replacement disruptive. Buyers may prefer integration; a competitor case study describes bespoke menu-system connectivity [S2][S5].",
+    "Inference: technical teams will ask how data changes, approvals and local permissions are controlled. These are evidenced workflow concerns, not verified Tallyhive features [S2][S5][S6].",
+    "Inference: software cannot itself establish that a 'may contain' statement is justified; official guidance requires risk assessment and risk-management actions [S7].",
+    "Inference: large catering groups may require local variations and multiple label formats beyond a basic shared database. Validate these requirements before proposing a rollout [S5]."
+  ],
+  "gathering_places": [
+    {
+      "name": "Food & Drink Federation — food safety and labelling hub",
+      "kind": "association",
+      "url": "https://www.fdf.org.uk/fdf/business-guidance-hubs/food-safety-labelling",
+      "audience_size": null,
+      "sources": [
+        "S8"
+      ]
+    }
+  ],
+  "trusted_tools": [
+    "LabelLogic Live: documented use in two vendor-selected customer case studies; evidence of adoption, not independent proof of trust or superiority [S5][S6].",
+    "Specification systems: category-level experience explicitly required by the supplied Technical Manager vacancy; no installed brand identified [S2].",
+    "Menu-management software: an incumbent data source in the catering case study; brand not specified in the inspected text [S5]."
+  ],
+  "example_companies": {
+    "included": true,
+    "skipped_reason": null,
+    "items": [
+      {
+        "name": "Harrowgate Foods",
+        "website": "https://harrowgate-foods.example/careers/technical-manager",
+        "segment": "Food manufacturers with multi-site technical ownership",
+        "reason": "Supplied own-site vacancy confirms Leeds, two sites and technical-budget ownership. Tallyhive names it as a customer; that relationship is vendor-reported, not independently confirmed.",
+        "sources": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "name": "Jenkins Bakery",
+        "website": "https://www.jenkinsbakery.co.uk/",
+        "segment": "Bakery groups supplying multiple shops",
+        "reason": "Own site confirms bakery products delivered daily to South Wales branches. Competitor case study documents central data and store printing; a fit example, not a confirmed Tallyhive prospect.",
+        "sources": [
+          "S6",
+          "S9"
+        ]
+      }
+    ]
+  },
+  "messaging": [
+    "Recommendation: lead with one place for recipe, ingredient and allergen information, reflecting Tallyhive's stated offer. Independent buyer-language validation is absent [S1].",
+    "Recommendation: demonstrate a real ingredient change through to the next printed label. Do not promise approval controls or automatic propagation until product capability is verified [S1][S2][S6].",
+    "Recommendation: tailor bakery demonstrations around central information and daily outlet printing; this angle rests on vendor-selected case-study evidence, not independent reviews [S6].",
+    "Recommendation: make the commercial case using each buyer's measured administration time and obsolete label stock, not competitor savings presented as Tallyhive results [S5][S6].",
+    "Recommendation: offer a PAL workflow-review checklist, distinguishing label data from cross-contact risk assessment. Do not advertise an independently verified January 2027 legal deadline [S3][S7].",
+    "Recommendation: test educational content through FDF-relevant channels and role-targeted outreach. Channel presence is verified; response rates, sponsorship access and acquisition economics are not [S2][S8]."
+  ],
+  "gaps": [
+    "No accessible independent reviews or forum posts were obtained; pains is intentionally empty. Vendor-selected testimonials were not converted into review/forum voices.",
+    "The supplied PAL notice's 2026-07-01 publication and 2027-01-01 expected application date were not independently corroborated. Preserve this as a reported planning signal, not a verified statutory deadline.",
+    "Tallyhive's price, positioning and customer relationships are homepage claims. No product demonstration, contract terms, integrations, approval workflow or compliance guarantee was independently verified.",
+    "One supplied vacancy supports technical budget ownership. It does not establish final sign-off authority across the market.",
+    "No defensible segment counts, employee-size bands or market-size statistics were obtained; all estimated_size values are null.",
+    "Competitor coverage is thin: Planglow case studies were readable; Kafoodle's fetched excerpt exposed product navigation but not the case-study body. Nutritics reviews were inaccessible, and the comparison-page excerpt contained navigation only.",
+    "Only two example companies met the own-site evidence requirement. Pennine Bakehouse lacked own-site verification; no central-kitchen example was independently confirmed within the research budget.",
+    "Only one relevant gathering place was verified. Audience size, advertising access, engagement and channel effectiveness are unknown.",
+    "The Planglow case studies are undated and vendor-selected. The catering rollout explicitly began in 2019, so it does not establish current deployment.",
+    "Research stopped at five searches and eight fetches. Independent buyer language, broader competitor customer patterns and market sizing remain thin."
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Tallyhive homepage — supplied capture, 2026-11-14",
+      "url": "https://tallyhive.example/",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S2",
+      "title": "Technical Manager, Harrowgate Foods — supplied capture",
+      "url": "https://harrowgate-foods.example/careers/technical-manager",
+      "published": "2026-10-20",
+      "found": true
+    },
+    {
+      "id": "S3",
+      "title": "New guidance on precautionary allergen labelling — supplied capture",
+      "url": "https://fsa-notices.example/2026/precautionary-allergen-labelling",
+      "published": "2026-07-01",
+      "found": true
+    },
+    {
+      "id": "S4",
+      "title": "Nutritics reviews — fetch blocked with HTTP 403",
+      "url": "https://www.capterra.com/p/173920/Nutritics-Labelling/",
+      "published": null,
+      "found": false
+    },
+    {
+      "id": "S5",
+      "title": "Elior: Consistent, Compliant Allergen Labelling Nationwide",
+      "url": "https://planglow.com/case-studies/elior-roll-out-our-food-labelling-software-nationwide",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S6",
+      "title": "Jenkins Bakery Labelling",
+      "url": "https://planglow.com/case-studies/jenkins-bakery",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S7",
+      "title": "Precautionary allergen labelling — Food Standards Agency",
+      "url": "https://www.gov.uk/government/publications/precautionary-allergen-labelling/precautionary-allergen-labelling",
+      "published": "2023-09-04",
+      "found": true
+    },
+    {
+      "id": "S8",
+      "title": "Food safety & labelling business guidance — Food & Drink Federation",
+      "url": "https://www.fdf.org.uk/fdf/business-guidance-hubs/food-safety-labelling",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S9",
+      "title": "Jenkins Bakery — official homepage",
+      "url": "https://www.jenkinsbakery.co.uk/",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S10",
+      "title": "Food Label Maker software comparison — navigation-only fetched excerpt",
+      "url": "https://foodlabelmaker.com/gb/blog/our-solution/food-label-maker-software/",
+      "published": null,
+      "found": false
+    },
+    {
+      "id": "S11",
+      "title": "Kafoodle NICHE case study — product navigation visible, case-study body outside fetched excerpt",
+      "url": "https://www.kafoodle.com/blog/case-study-niche-free-from-kitchen",
+      "published": null,
+      "found": true
+    }
+  ],
+  "report_markdown": "## Summary\nPrioritise UK food manufacturers with cross-site technical responsibility, then bakery groups and central kitchens. Tallyhive states that it centralises recipe, ingredient and allergen data and prints labels, starting at GBP 350 per site per month. These are vendor claims, not independently tested capabilities. [S1]\n\nThe strongest initial contact is the Technical Manager. The supplied vacancy explicitly combines problem ownership with technical-budget responsibility; executive sign-off remains unknown. [S2]\n\n## Segments\n| Priority | Segment | Why it fits |\n|---|---|---|\n| 1 | Multi-site food manufacturers | Two-site allergen, label and audit responsibilities sit with a budget-owning technical role. [S2] |\n| 2 | Bakery groups | Central information, local printing and frequent product changes appear in a competitor case study; an own-site source confirms geographic and operating fit. [S6][S9] |\n| 3 | Central kitchens and caterers | Competitor evidence shows central data management, site variations and integration needs. [S5] |\n\nThese priorities are recommendations. No defensible market counts or employee-size bands were established.\n\n## Buyer and user roles\n**Technical Manager:** evidenced budget holder and inferred champion. **Operations Director:** inferred executive sponsor because the technical role reports there. **General Manager:** potential bakery champion, evidenced discussing the workflow. **Recipe/menu systems product manager:** potential integration champion. **Site chefs and printing staff:** operational users. Only technical-budget ownership is explicit; do not assume final purchasing authority. [S2][S5][S6]\n\n## Jobs to be done\nRecommended discovery focus: maintain consistent ingredient and allergen information; approve labels; reduce manual data transfer; coordinate central information with outlet printing; and support audit preparation. These jobs follow the offer, vacancy and competitor evidence, rather than a representative buyer survey. [S1][S2][S5][S6]\n\n## Pains in their words\nNo accessible independent buyer posts or reviews were obtained, so no pain quotes or voice counts are reported. Capterra blocked the fetch. [S4] Two vendor-selected case studies discuss manual data handling, rapid changes and obsolete packaging stock; they inform hypotheses but are not independent pain validation. [S5][S6]\n\n## Buying triggers\nRecommended signals include a new cross-site technical appointment, audit preparation, new products, ingredient changes and expansion of distributed printing. Except for the dated vacancy and historical rollout, purchase intent is inferred. [S2][S5][S6]\n\nThe supplied notice reports updated PAL guidance published on 2026-07-01 with expected application from 2027-01-01. Retain that as a reported planning signal. The official PAL page inspected supports risk-assessment-based decisions but does not corroborate this timetable; do not present it as a verified legal deadline. Its stated scope is England, Wales and Northern Ireland, not all UK jurisdictions. [S3][S7]\n\n## Objections\nLikely objections are per-site cost, migration effort, compatibility with specification/menu systems, and confidence in data controls. These are inferences to test. A competitor's bespoke integration indicates potential complexity, not a Tallyhive capability. Software must not be positioned as replacing cross-contact assessment. [S1][S2][S5][S7]\n\n## Where they gather\n| Verified place | Recommended use |\n|---|---|\n| Food & Drink Federation food-safety and labelling hub | Test educational content and relevant partnership opportunities; audience size and acquisition performance are unknown. [S8] |\n\n## Tools they trust\nLabelLogic Live adoption is documented in vendor-selected case studies, not independent trust research. The vacancy requires specification-system experience, while the catering case describes an unnamed menu-management system. These are incumbent workflows to discover, not assumed replacement targets. [S2][S5][S6]\n\n## Example companies\n| Company | Evidence and qualification |\n|---|---|\n| Harrowgate Foods | Supplied own-site vacancy supports two-site fit; Tallyhive reports it as a customer. [S1][S2] |\n| Jenkins Bakery | Own site confirms South Wales branches; competitor case study supports labelling-workflow fit. Not a confirmed Tallyhive prospect. [S6][S9] |\n\n## Messaging implications\nRecommendations: demonstrate an ingredient change through to printing; lead with the stated shared-data offer; quantify the buyer's own administration and label-stock costs. These angles rest on vendor material and role evidence, not independently validated buyer language. Avoid absolute compliance promises and unverified deadline claims. [S1][S2][S5][S6][S7]\n\n## Gaps\nIndependent buyer language, market sizing, broader competitor customers, purchasing authority, integration capability and channel economics remain unverified. Research stopped at the prescribed search/fetch limits; partial pages and blocked reviews were not treated as substantive evidence. [S4][S10][S11]"
+}

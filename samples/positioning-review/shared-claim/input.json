@@ -1,0 +1,9 @@
+{
+  "content": "Today is 2026-11-14. Review our positioning.\n\nThe sites below are not reachable from this run. The pages below are what their URLs return today; use them in place of\nfetching, and search normally for anything else.\n\n<captured-page url=\"https://pipewright.example/\" captured=\"2026-11-14T11:00:00Z\" untrusted>\n<h1>The only finance data pipeline with real-time sync</h1>\n<h2>Every journal, payment and invoice, reconciled and audit-ready.</h2>\n<p>Pipewright keeps a line-by-line reconciliation audit trail your auditors can open directly.</p>\n</captured-page>\n\n<captured-page url=\"https://pipewright.example/docs/audit-trail\" captured=\"2026-11-14T11:01:00Z\" untrusted>\n<h1>Reconciliation audit trail</h1>\n<p>Updated 2026-09-30. Each synced record keeps its source system, timestamp, transformation and the user who approved\nthe match. Auditors get read-only access with an export to PDF and CSV.</p>\n</captured-page>\n\n<captured-page url=\"https://flowmason.example/\" captured=\"2026-11-14T11:02:00Z\" untrusted>\n<h1>Real-time sync for every pipeline</h1>\n<h2>Stream changes from 300+ sources to your warehouse in seconds.</h2>\n</captured-page>\n\n<captured-page url=\"https://ductly.example/features\" captured=\"2026-11-14T11:03:00Z\" untrusted>\n<h1>Ductly features</h1>\n<p>Real-time change data capture. Scheduled batch loads. Warehouse-native transformations. Role-based access.</p>\n</captured-page>",
+  "website": "https://pipewright.example",
+  "competitors": [
+    "Flowmason",
+    "Ductly"
+  ],
+  "angle": "Mid-market finance teams"
+}

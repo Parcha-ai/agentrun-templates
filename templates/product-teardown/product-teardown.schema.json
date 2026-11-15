@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "product-teardown.schema.json",
+  "title": "Product teardown",
+  "description": "A sourced teardown of one product from public material. Every fact carries the ids of the sources it rests on (S1, S2, ...), each listed in `sources`. What is not public is said to be not publicly available.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "product", "bottom_line", "target_user", "onboarding", "core_workflow", "pricing", "growth_loops", "integrations", "releases", "does_well", "complaints", "takeaways", "gaps", "sources", "report_markdown"],
+  "properties": {
+    "checked_on": { "$ref": "#/$defs/date" },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "company", "website", "category", "identity_note"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "company": { "type": ["string", "null"] },
+        "website": { "type": ["string", "null"] },
+        "category": { "type": ["string", "null"], "maxLength": 120 },
+        "positioning_line": { "type": ["string", "null"], "maxLength": 300, "description": "verbatim from its homepage" },
+        "business_model": { "type": ["string", "null"], "maxLength": 300 },
+        "identity_note": { "type": "string", "maxLength": 400, "description": "which product this is, how it was decided, and the angle taken" }
+      }
+    },
+    "bottom_line": { "type": "string", "minLength": 1, "maxLength": 900, "description": "what it is, who it is for, how it makes money, the one or two things it does unusually well" },
+    "target_user": { "type": "string", "maxLength": 600, "description": "role, company size and use case the copy addresses, cited" },
+    "onboarding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["steps", "sources"],
+      "properties": {
+        "steps": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 240 } },
+        "time_to_value": { "type": ["string", "null"], "maxLength": 300 },
+        "friction": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 240 } },
+        "sources": { "$ref": "#/$defs/source_ids" }
+      }
+    },
+    "core_workflow": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 300 }, "description": "the main job, step by step, cited inline" },
+    "pricing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["public", "tiers"],
+      "properties": {
+        "public": { "type": "boolean" },
+        "observed_on": { "type": ["string", "null"], "description": "the date the pricing page was seen" },
+        "tiers": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "price", "sources"],
+            "properties": {
+              "name": { "type": "string", "maxLength": 60 },
+              "price": { "type": ["string", "null"], "maxLength": 120, "description": "as published, with billing unit; null for contact sales" },
+              "billing_unit": { "type": ["string", "null"], "maxLength": 60 },
+              "limits_and_gates": { "type": ["string", "null"], "maxLength": 300 },
+              "sources": { "$ref": "#/$defs/source_ids" }
+            }
+          }
+        },
+        "notes": { "type": ["string", "null"], "maxLength": 500, "description": "packaging strategy and past changes with dates" }
+      }
+    },
+    "growth_loops": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["loop", "how", "basis", "sources"],
+        "properties": {
+          "loop": { "type": "string", "maxLength": 120 },
+          "how": { "type": "string", "maxLength": 300 },
+          "basis": { "enum": ["observed", "inferred"] },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "integrations": { "type": "string", "maxLength": 600, "description": "key integrations, API and marketplace presence, cited" },
+    "releases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["public_changelog", "items", "summary"],
+      "properties": {
+        "public_changelog": { "type": "boolean" },
+        "items": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["date", "title", "sources"],
+            "properties": {
+              "date": { "type": "string" },
+              "title": { "type": "string", "maxLength": 200 },
+              "sources": { "$ref": "#/$defs/source_ids" }
+            }
+          }
+        },
+        "summary": { "type": "string", "maxLength": 400 }
+      }
+    },
+    "does_well": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["point", "sources"],
+        "properties": {
+          "point": { "type": "string", "maxLength": 300 },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "complaints": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["theme", "voices", "sources"],
+        "properties": {
+          "theme": { "type": "string", "maxLength": 240 },
+          "voices": { "type": "integer", "minimum": 1, "description": "separate reviews or posts that raise it" },
+          "note": { "type": ["string", "null"], "maxLength": 240, "description": "e.g. 'one review: anecdote'" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "takeaways": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 300 }, "description": "lessons for product teams, your analysis" },
+    "gaps": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 400 } },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "url", "found"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]+$" },
+          "title": { "type": "string" },
+          "url": { "type": "string" },
+          "published": { "type": ["string", "null"] },
+          "found": { "type": "boolean" }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "description": "the teardown as Markdown, citing sources inline as [S1]" }
+  },
+  "$defs": {
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "source_ids": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+  }
+}

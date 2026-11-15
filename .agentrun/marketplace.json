@@ -637,6 +637,106 @@
         "account-research",
         "apollo"
       ]
+    },
+    {
+      "name": "market-entry",
+      "source": "./templates/market-entry",
+      "category": "research",
+      "tags": [
+        "market-entry",
+        "expansion",
+        "regulation",
+        "competitors",
+        "go-no-go"
+      ]
+    },
+    {
+      "name": "investment-memo",
+      "source": "./templates/investment-memo",
+      "category": "finance",
+      "tags": [
+        "investment-memo",
+        "venture-capital",
+        "due-diligence",
+        "investing",
+        "private-companies"
+      ]
+    },
+    {
+      "name": "industry-primer",
+      "source": "./templates/industry-primer",
+      "category": "research",
+      "tags": [
+        "industry-research",
+        "primer",
+        "market-size",
+        "value-chain",
+        "consulting",
+        "due-diligence"
+      ]
+    },
+    {
+      "name": "industry-events",
+      "source": "./templates/industry-events",
+      "category": "marketing",
+      "tags": [
+        "events",
+        "conferences",
+        "calendar",
+        "deadlines",
+        "trade-shows",
+        "field-marketing"
+      ]
+    },
+    {
+      "name": "audience-research",
+      "source": "./templates/audience-research",
+      "category": "marketing",
+      "tags": [
+        "audience-research",
+        "icp",
+        "buyer-personas",
+        "customer-research",
+        "go-to-market"
+      ]
+    },
+    {
+      "name": "country-risk",
+      "source": "./templates/country-risk",
+      "category": "compliance",
+      "tags": [
+        "country-risk",
+        "sanctions",
+        "fatf",
+        "aml",
+        "kyc",
+        "cross-border-payments"
+      ]
+    },
+    {
+      "name": "product-teardown",
+      "source": "./templates/product-teardown",
+      "category": "research",
+      "tags": [
+        "product-teardown",
+        "competitive-analysis",
+        "pricing",
+        "onboarding",
+        "growth-loops",
+        "product-management"
+      ]
+    },
+    {
+      "name": "positioning-review",
+      "source": "./templates/positioning-review",
+      "category": "marketing",
+      "tags": [
+        "positioning",
+        "messaging",
+        "competitors",
+        "customer-language",
+        "product-marketing"
+      ]
     }
   ]
 }

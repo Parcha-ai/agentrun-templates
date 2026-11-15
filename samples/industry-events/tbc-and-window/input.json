@@ -1,0 +1,7 @@
+{
+  "content": "Today is 2026-11-14. Build the events calendar.\n\nThe sites below are not reachable from this run. The pages below are what their URLs return today; use them in place of\nfetching, and search normally for anything else.\n\n<captured-page url=\"https://finreg-uk.example/consultations/cp26-14-open-finance\" captured=\"2026-11-14T10:00:00Z\" untrusted>\n<h1>CP26/14: Open finance data sharing standards</h1>\n<p>Published 2026-10-30. The regulator invites comments on proposed data sharing standards for open finance. The\nconsultation closes on 2027-01-22. Responses by the online form.</p>\n</captured-page>\n\n<captured-page url=\"https://confwatch.example/uk/fintech\" captured=\"2026-11-14T10:01:00Z\" untrusted>\n<h1>UK fintech events</h1>\n<ul>\n<li>Open Banking Policy Summit 2027, London, 2027-01-28</li>\n<li>Payments Forum Autumn 2026, Manchester, 2026-10-20</li>\n<li>Open Banking Expo 2027, London, 2027-06-15 to 2027-06-16</li>\n</ul>\n</captured-page>\n\n<captured-page url=\"https://obpolicysummit.example/\" captured=\"2026-11-14T10:02:00Z\" untrusted>\n<h1>Open Banking Policy Summit</h1>\n<p>Updated 2026-08-01. The 2026 summit was held in London on 29 January 2026. Details of the 2027 summit will be\nannounced soon.</p>\n</captured-page>",
+  "industry": "Open banking",
+  "purpose": "policy",
+  "region": "United Kingdom",
+  "window_days": 90
+}

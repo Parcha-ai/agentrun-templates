@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "industry-events.schema.json",
+  "title": "Industry events calendar",
+  "description": "A dated forward calendar for one industry and region. Every row carries the ids of the sources it rests on (S1, S2, ...), each listed in `sources`. Dates not confirmed on the organizer's own page are TBC.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked_on", "scope", "events", "top_actions", "open_items", "coverage_note", "gaps", "sources", "report_markdown"],
+  "properties": {
+    "checked_on": { "$ref": "#/$defs/date" },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject", "purpose", "region", "window_start", "window_end", "interpretation"],
+      "properties": {
+        "subject": { "type": "string", "minLength": 1 },
+        "purpose": { "enum": ["attend", "sponsor", "speak", "editorial", "policy"] },
+        "region": { "type": "string" },
+        "window_start": { "$ref": "#/$defs/date" },
+        "window_end": { "$ref": "#/$defs/date" },
+        "interpretation": { "type": "string", "maxLength": 500 }
+      }
+    },
+    "events": {
+      "type": "array",
+      "maxItems": 25,
+      "description": "sorted by date_start ascending; TBC rows last",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "type", "date_start", "date_status", "organizer", "fit", "relevance", "official_url", "sources"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 160, "description": "the official name with edition or year" },
+          "type": { "enum": ["conference", "summit", "trade_show", "cfp_deadline", "award_deadline", "consultation", "comment_deadline", "effective_date", "hearing", "multilateral_meeting", "earnings", "product_event", "other"] },
+          "date_start": { "type": ["string", "null"], "description": "YYYY-MM-DD; null when TBC with no date" },
+          "date_end": { "type": ["string", "null"] },
+          "date_status": { "enum": ["confirmed", "tbc"], "description": "confirmed only from the organizer's or authority's own page" },
+          "date_note": { "type": ["string", "null"], "maxLength": 200, "description": "for tbc: where the date came from, e.g. 'listing site only' or 'expected, based on the 2025 edition'" },
+          "location": { "type": ["string", "null"], "maxLength": 120, "description": "city and country, or 'online'" },
+          "format": { "enum": ["in_person", "virtual", "hybrid", "unknown"] },
+          "organizer": { "type": "string", "maxLength": 120 },
+          "audience_size": { "type": ["string", "null"], "maxLength": 120, "description": "only as the organizer publishes it" },
+          "cost": { "type": ["string", "null"], "maxLength": 160, "description": "published ticket or sponsor price with currency; null when not published" },
+          "key_deadline": { "type": ["string", "null"], "maxLength": 160, "description": "the nearest actionable date with its label (early-bird, CFP close, comment close)" },
+          "fit": { "type": "integer", "minimum": 1, "maximum": 5, "description": "your judgment: 1 marginal, 5 must act" },
+          "relevance": { "type": "string", "maxLength": 240, "description": "one line tied to the purpose" },
+          "official_url": { "type": "string" },
+          "sources": { "$ref": "#/$defs/source_ids" }
+        }
+      }
+    },
+    "top_actions": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["event", "action", "deadline", "why"],
+        "properties": {
+          "event": { "type": "string" },
+          "action": { "type": "string", "maxLength": 160 },
+          "deadline": { "type": ["string", "null"] },
+          "why": { "type": "string", "maxLength": 240 }
+        }
+      }
+    },
+    "open_items": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "TBC dates to recheck and plausible events that could not be confirmed" },
+    "coverage_note": { "type": "string", "maxLength": 400, "description": "calendars that could not be reached, and what was checked" },
+    "gaps": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 400 } },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "url", "found"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]+$" },
+          "title": { "type": "string" },
+          "url": { "type": "string" },
+          "published": { "type": ["string", "null"], "description": "the page's publish or update date" },
+          "official": { "type": "boolean", "description": "the organizer's or authority's own page" },
+          "found": { "type": "boolean" }
+        }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "description": "the calendar as Markdown, citing sources inline as [S1]" }
+  },
+  "$defs": {
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "source_ids": { "type": "array", "items": { "type": "string", "pattern": "^S[0-9]+$" } }
+  }
+}

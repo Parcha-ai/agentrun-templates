@@ -1,0 +1,322 @@
+{
+  "checked_on": "2026-11-14",
+  "company": {
+    "name": "Kestrel Remit",
+    "website": "https://kestrelremit.example",
+    "profile": "Kestrel Remit Ltd describes itself as a London money-transfer app serving UK senders transferring to Poland, Romania and Lithuania, with fees from GBP 0.99 per transfer. It states that it is FCA-authorised as a payment institution; that authorisation was not independently verified. [S1]",
+    "identity_note": "Identified from the supplied About page captured on 2026-11-14. The website was not fetched, as instructed. Corporate identity, FCA register status and any existing EEA entity remain unverified.",
+    "sources": [
+      "S1"
+    ]
+  },
+  "target": {
+    "market": "Ireland",
+    "interpretation": "Republic of Ireland, serving Irish-resident retail senders to Kestrel's existing destination countries. The six-month objective means launch by 2027-05-14. Assess a limited partner-led launch rather than assume UK authorisation permits Irish business."
+  },
+  "verdict": {
+    "view": "conditional_go",
+    "confidence": "low",
+    "reasons": [
+      "Approve gated validation, not an unconditional launch commitment. UK authorisation cannot be passported into Ireland; an Irish authorisation or appropriately passported EEA provider is required. [S2]",
+      "There is a plausible customer base: CSO counted 631,785 non-Irish citizens in 2022, and identifies Polish, Romanian and Lithuanian citizens among the largest groups. This is a demographic proxy, not measured remittance demand. [S3][S4]",
+      "Competition is established: Wise explicitly offers Ireland-to-Poland transfers; a March 2026 Wise article also documents Remitly's Irish service. Differentiation is unproven. [S5][S6]",
+      "Inference: a partner route deserves testing against the deadline, but neither partner acceptance, a lawful operating structure nor a six-month implementation schedule has been established."
+    ],
+    "conditions": [
+      "Local payments counsel confirms the legal operating model, provider permissions, Irish passport coverage and any required agent registration before taking customer funds.",
+      "Confirm Kestrel's corporate identity, FCA permissions, financial resources and any existing EEA establishment.",
+      "Obtain a signed, costed partner proposal covering Irish retail customers and the intended corridors, with a credible delivery plan before 2027-05-14.",
+      "Demonstrate positive contribution after partner, funding, FX, compliance, fraud and support costs, plus acceptable customer acquisition payback.",
+      "Complete operational testing and compliance sign-off; postpone launch if any regulatory or safeguarding gate remains unresolved."
+    ],
+    "would_change": [
+      "Move toward go if a verified EEA principal accepts the Irish retail proposition, the legal route is confirmed, and pilot economics and delivery milestones pass.",
+      "Move to no_go for the six-month objective if the only available route is a fresh authorisation without a credible schedule meeting 2027-05-14.",
+      "Move to no_go if matched competitor quotes and customer tests show no sustainable service advantage or positive contribution.",
+      "Move to insufficient_evidence if Kestrel's identity or stated permissions cannot be substantiated."
+    ]
+  },
+  "fit": "Inference: existing destination-country experience could help Kestrel reuse product knowledge and support capabilities. However, the supplied offering starts with UK senders; Irish customer acquisition, funding arrangements, legal permissions and economics cannot be assumed transferable. Wise already serves the Ireland-to-Poland corridor. [S1][S2][S5]",
+  "market_size": [
+    {
+      "metric": "Non-Irish citizens usually resident and present in Ireland: broad demographic context",
+      "value": "631,785; 12% of the relevant population",
+      "as_of": "2022",
+      "basis": "reported",
+      "method": "CSO census count. Includes people outside Kestrel's corridors and people who do not remit; not a count of buyers.",
+      "sources": [
+        "S4"
+      ]
+    },
+    {
+      "metric": "Presence of existing destination-country communities",
+      "value": "Polish, Romanian and Lithuanian citizens identified among the largest non-Irish groups",
+      "as_of": "2022",
+      "basis": "reported",
+      "method": "Qualitative corridor-fit indicator from the CSO summary; not transaction demand.",
+      "sources": [
+        "S3"
+      ]
+    },
+    {
+      "metric": "Annual addressable Irish-origin transfer volume and revenue for the three corridors",
+      "value": null,
+      "as_of": null,
+      "basis": "not_found",
+      "method": "Need current eligible adult senders × active-remitter share × transfers per year × average principal; revenue additionally needs realised net pricing.",
+      "sources": []
+    }
+  ],
+  "customer_needs": [
+    "Inference: transparent recipient amounts and convenient digital transfers are baseline requirements, given Wise's explicit Irish corridor offering and Remitly's documented digital service. Validate rather than assume willingness to switch. [S5][S6]",
+    "Inference: test Polish-, Romanian- and Lithuanian-language onboarding and support with the relevant communities; the census establishes community presence, not language preferences or purchase intent. [S3]",
+    "Inference: prioritise observed transfer frequency, all-in price sensitivity, trust and onboarding friction in interviews; no independent Irish remitter survey was established in this run."
+  ],
+  "competitors": [
+    {
+      "name": "Wise",
+      "type": "international",
+      "operates_in_target": "confirmed",
+      "offering": "Its Ireland website explicitly offers euro-to-Polish-zloty transfers from Ireland to Poland. [S5]",
+      "scale": "Irish customer count and corridor market share not established.",
+      "sources": [
+        "S5"
+      ]
+    },
+    {
+      "name": "Remitly",
+      "type": "international",
+      "operates_in_target": "confirmed",
+      "offering": "A Wise article dated 2026-03-13 documents sending from Ireland through Remitly's website or app, with account deposit and cash pickup options. Secondary, competitor-authored evidence. [S6]",
+      "scale": "Irish scale and availability on each Kestrel corridor not independently established.",
+      "sources": [
+        "S6"
+      ]
+    }
+  ],
+  "regulation": [
+    {
+      "requirement": "Irish payment services, including money remittance, require Central Bank authorisation unless provided by a suitably authorised EEA institution passported into Ireland. UK-authorised firms can no longer passport into Ireland. [S2]",
+      "body": "Central Bank of Ireland; European Union (Payment Services) Regulations 2018",
+      "timeline": null,
+      "open_question": "Counsel must establish the contracting provider, permissions, Irish passport coverage and any agent or outsourcing requirements for the proposed model.",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "requirement": "Applicants should engage with the Central Bank before submitting an application. Assessment depends on application quality and completeness; the supplied regulator page does not promise a six-month authorisation. [S2]",
+      "body": "Central Bank of Ireland",
+      "timeline": "Assessment period depends on the quality and completeness of the application.",
+      "open_question": "Can Kestrel meet the required operating model and application standards within its deadline? No firm-specific assessment exists.",
+      "sources": [
+        "S2"
+      ]
+    }
+  ],
+  "costs": [
+    {
+      "item": "Irish financial-sector earnings benchmark",
+      "range": "EUR 1,086.76 median gross weekly earnings in Financial, Insurance & Real Estate, 2025",
+      "basis": "reported",
+      "sources": [
+        "S8"
+      ]
+    },
+    {
+      "item": "Illustrative annual gross pay per employment",
+      "range": "Estimate: EUR 56,511.52 = EUR 1,086.76 × 52; excludes employer costs and specialist-role premiums",
+      "basis": "estimate",
+      "sources": [
+        "S8"
+      ]
+    },
+    {
+      "item": "Partner onboarding, minimum commitments, FX, funding and transaction charges",
+      "range": null,
+      "basis": "not_found",
+      "sources": []
+    },
+    {
+      "item": "Legal, authorisation, regulatory capital, audit and compliance setup",
+      "range": null,
+      "basis": "not_found",
+      "sources": []
+    },
+    {
+      "item": "Integration, fraud losses, customer support and acquisition",
+      "range": null,
+      "basis": "not_found",
+      "sources": []
+    },
+    {
+      "item": "Entity formation, premises, employer costs and tax compliance",
+      "range": null,
+      "basis": "not_found",
+      "sources": []
+    }
+  ],
+  "first_year_budget_band": null,
+  "partners": [
+    {
+      "name": "Wise Platform",
+      "role": "Technical integration candidate: Wise's page describes a network for banks, financial institutions and enterprises. Not evidence of acceptance or provision of a licensing umbrella. [S5]",
+      "sources": [
+        "S5"
+      ]
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Inference: launching on UK permissions alone would conflict with the Irish authorisation gate. [S2]",
+      "likelihood": "high",
+      "impact": "high",
+      "mitigation": "Make verified legal permissions and any registration or passport requirements the first launch gate.",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "risk": "Inference: the six-month deadline may be missed; no fixed approval or partner delivery schedule is evidenced. [S2]",
+      "likelihood": "high",
+      "impact": "high",
+      "mitigation": "Set a dated legal-route and partner-selection checkpoint; defer customer launch rather than compress compliance testing.",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "risk": "Inference: an existing digital competitor may make acquisition uneconomic without differentiation. [S5][S6]",
+      "likelihood": "medium",
+      "impact": "high",
+      "mitigation": "Compare matched quotes and test switching intent, retention and contribution before scaling marketing.",
+      "sources": [
+        "S5",
+        "S6"
+      ]
+    },
+    {
+      "risk": "Inference: census community size may overstate active remitters and is stale for a 2026 decision. [S3][S4]",
+      "likelihood": "high",
+      "impact": "medium",
+      "mitigation": "Validate adult sender counts, frequency and transfer amounts through current corridor research.",
+      "sources": [
+        "S3",
+        "S4"
+      ]
+    },
+    {
+      "risk": "Inference: unknown partner charges and compliance costs could eliminate contribution.",
+      "likelihood": "medium",
+      "impact": "high",
+      "mitigation": "Require binding commercial quotes and downside economics, including fraud and support, before investment approval.",
+      "sources": []
+    }
+  ],
+  "entry_options": [
+    {
+      "mode": "Direct: Irish-authorised payment institution",
+      "cost": "Unknown; requires a fully costed standalone operating model.",
+      "speed": "No six-month commitment supported; assessment is application-dependent. [S2]",
+      "control": "Inference: highest operating and product control.",
+      "risk": "Inference: authorisation and execution risk make this unsuitable as the assumed deadline route. [S2]",
+      "preferred": false
+    },
+    {
+      "mode": "Partner: authorised EEA principal with confirmed Irish coverage",
+      "cost": "Unknown; obtain setup, minimum, per-transfer and compliance charges.",
+      "speed": "Inference: worth testing first; no verified end-to-end launch timeline.",
+      "control": "Inference: shared control over onboarding, compliance, pricing and customer experience.",
+      "risk": "Must verify principal permissions, Irish coverage and Kestrel's role; an API integration alone is not permission. [S2]",
+      "preferred": true
+    },
+    {
+      "mode": "Acquisition: authorised EEA provider",
+      "cost": "Unknown; no target or valuation verified.",
+      "speed": "Unknown; no transaction or approval schedule established.",
+      "control": "Inference: potentially high after completion and integration.",
+      "risk": "Inference: diligence and integration make this an unsubstantiated six-month shortcut.",
+      "preferred": false
+    }
+  ],
+  "next_steps": [
+    "First, have Irish payments counsel confirm the authorisation route and verify the proposed principal's permissions, Irish passport coverage and any required registration. Do not accept customer funds before clearance. [S2]",
+    "Verify Kestrel's corporate identity, FCA register entry, permissions, existing EEA entities and financial capacity against the supplied company claims. [S1]",
+    "Within a proposed four-week decision gate, obtain partner proposals and a dated implementation plan; distinguish technical providers from regulated principals.",
+    "Interview proposed samples of 15–20 senders per corridor and collect matched competitor quotes at identical amounts, funding methods and delivery speeds.",
+    "Build a quoted budget and per-transfer contribution model, separating regulatory capital from expenditure; obtain local accounting advice on entity, payroll and tax treatment.",
+    "Approve only a limited pilot after permissions, safeguarding, onboarding, fraud controls, reconciliation, complaints and operational testing are signed off; otherwise reset the deadline."
+  ],
+  "gaps": [
+    "Company identity and FCA authorisation are supported only by the supplied 2026-11-14 capture, not an independent register check. This materially limits confidence.",
+    "Census demand evidence relates to 2022 and is older than 18 months. Current corridor-specific adult populations, remitter incidence, transfer volumes and revenue were not established.",
+    "No independent second-source validation of key demand figures or the earnings benchmark was completed; these rest on official CSO evidence.",
+    "Remitly's Irish presence is evidenced by a competitor-authored March 2026 article; its primary page, corridor coverage and live prices were not checked.",
+    "Only two competitors were substantiated; this is not a complete competitive map. No Irish market shares or matched live-price comparison were established.",
+    "Currencycloud's Outsourced KYC FAQ returned HTTP 403. Its search snippet was not used to establish eligibility, registration timing or a partner route. [S7]",
+    "Wise Platform is verified only as an integration offering. No willing regulated principal, commercial proposal, Irish coverage verification or implementation commitment was established.",
+    "The regulatory review establishes the core authorisation gate, not a complete compliance opinion. AML, safeguarding, data protection, operational resilience, consumer rules and agent requirements need local review.",
+    "Licence fees, required capital, legal costs, partner economics, marketing costs, premises and employer costs remain unpriced; a defensible first-year budget cannot be stated.",
+    "Tax registration, foreign ownership, incorporation and employment requirements were not verified at primary sources within this bounded review.",
+    "Six-month feasibility is unproven. The recommendation authorises conditional validation, not a forecast that a lawful launch will occur by 2027-05-14."
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "About Kestrel Remit — supplied capture dated 2026-11-14",
+      "url": "https://kestrelremit.example/about",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S2",
+      "title": "Payment institutions — Central Bank of Ireland; supplied capture dated 2026-11-14",
+      "url": "https://www.centralbank.ie/regulation/industry-market-sectors/payment-institutions",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S3",
+      "title": "CSO: Census of Population 2022 — Migration and Diversity",
+      "url": "https://www.cso.ie/en/releasesandpublications/ep/p-cpsr/censusofpopulation2022-summaryresults/migrationanddiversity/",
+      "published": "2023-05-30",
+      "found": true
+    },
+    {
+      "id": "S4",
+      "title": "CSO: Census of Population 2022 Profile 5 — Citizenship",
+      "url": "https://www.cso.ie/en/releasesandpublications/ep/p-cpp5/censusofpopulation2022profile5-diversitymigrationethnicityirishtravellersreligion/citizenship/",
+      "published": "2023-10-26",
+      "found": true
+    },
+    {
+      "id": "S5",
+      "title": "Wise: Send money to Poland from Ireland — accessed 2026-11-14",
+      "url": "https://wise.com/ie/send-money/send-money-to-poland",
+      "published": null,
+      "found": true
+    },
+    {
+      "id": "S6",
+      "title": "Wise: How does Remitly work in Ireland?",
+      "url": "https://wise.com/ie/blog/how-does-remitly-work-ireland",
+      "published": "2026-03-13",
+      "found": true
+    },
+    {
+      "id": "S7",
+      "title": "Currencycloud: Outsourced KYC FAQ — fetch returned HTTP 403 on 2026-11-14",
+      "url": "https://support.currencycloud.com/hc/en-gb/articles/360018656320-Outsourced-KYC-FAQ",
+      "published": null,
+      "found": false
+    },
+    {
+      "id": "S8",
+      "title": "CSO: Earnings Analysis using Administrative Data Sources 2025 — Economic Sector",
+      "url": "https://www.cso.ie/en/releasesandpublications/ep/p-eaads/earningsanalysisusingadministrativedatasources2025/economicsector/",
+      "published": "2026-10-06",
+      "found": true
+    }
+  ],
+  "report_markdown": "# Ireland entry assessment\n\n## Bottom line\n**Conditional go, low confidence: approve validation of a partner-led pilot, not an unconditional six-month launch.** Interpret Ireland as the Republic, serving retail senders to Poland, Romania and Lithuania, with a target date of 14 May 2027. UK authorisation cannot be passported into Ireland. The regulatory route must precede customer launch. [S2]\n\n## Company and fit\nKestrel's supplied capture, dated 14 November 2026, describes a London transfer app serving UK senders to those three countries, charging from GBP 0.99. Its claimed FCA authorisation remains independently unverified. Existing corridor experience could help, but Irish funding, customer acquisition and permissions are separate execution questions. [S1][S2]\n\n## Market size\n| Indicator | Evidence | Interpretation |\n|---|---|---|\n| Non-Irish citizens | 631,785 in 2022; 12% of the relevant population | Broad context, not buyers [S4] |\n| Corridor communities | Polish, Romanian and Lithuanian citizens among the largest groups | Plausible segment fit [S3] |\n| Corridor transfer volume/revenue | Not established | No defensible revenue TAM |\n\nThe census is older than 18 months. Do not multiply all non-Irish residents by an assumed transfer spend: many are outside the corridors or do not remit. [S3][S4]\n\n## Customer needs\nInference: test transparent recipient amounts, convenient onboarding, trust and multilingual support. Existing digital offerings establish the competitive context, not willingness to switch to Kestrel. Customer interviews must establish frequency, ticket size and unmet needs. [S5][S6]\n\n## Competitors\n| Provider | Irish activity evidenced | Limitation |\n|---|---|---|\n| Wise | Explicit Ireland-to-Poland offering | Irish share and matched prices unknown [S5] |\n| Remitly | Irish digital service documented in March 2026 | Competitor-authored secondary evidence; corridor coverage unverified [S6] |\n\n## Regulation and licensing\nThe supplied Central Bank page requires Irish authorisation or an appropriately authorised, passported EEA provider. Applicants should engage before application; assessment depends on completeness and quality. It supplies no six-month promise. Counsel must confirm Kestrel's contractual role, principal permissions, Irish coverage and any registration requirements. A technology contract alone does not establish a lawful route. [S2]\n\nThis is decision-support research, not legal or tax advice; use local counsel and accountants.\n\n## Costs\n| Item | Evidence or gap |\n|---|---|\n| Labour benchmark | 2025 financial/insurance/real-estate median: EUR 1,086.76 weekly [S8] |\n| Annual illustration | Estimate: weekly benchmark × 52 = EUR 56,511.52 gross, excluding employer costs [S8] |\n| Partner, legal, compliance, integration and acquisition | Unpriced |\n\n**First-year budget: unavailable.** A broad sector median is not a specialist compliance salary quote or a staffing plan.\n\n## Partners\nWise's page describes Wise Platform integrations for financial institutions and enterprises. Treat it as a technical candidate, not a verified regulated principal willing to support this launch. Currencycloud's relevant FAQ could not be read. [S5][S7]\n\n## Risks\n| Risk — analyst judgment | Response |\n|---|---|\n| High deadline risk | Gate the legal route before launch spending [S2] |\n| Competitive acquisition pressure | Test switching and contribution [S5][S6] |\n| Stale demographic proxy | Validate current corridor behaviour [S3][S4] |\n| Unknown unit economics | Obtain commercial quotes before approval |\n\n## Entry options\n| Mode | Cost/speed | Control and risk |\n|---|---|---|\n| Direct authorisation | Unknown cost; deadline unsupported | More control; approval execution risk [S2] |\n| EEA principal partnership — preferred | Quote and schedule required | Shared control; permissions must be verified [S2] |\n| Acquisition | No target, price or schedule established | Unproven shortcut; diligence risk |\n\n## Recommendation and next steps\nFirst confirm the legal route and company permissions. Then obtain a costed partner proposal, interview corridor users, benchmark matched quotes and build contribution economics. Release launch funding only after compliance and operational testing pass. Move toward go if these gates clear; reject or postpone the six-month objective if no lawful, commercially viable route meets it.\n\n## Gaps\nThe view rests materially on unverified company permissions, stale demand proxies, incomplete competitor coverage and unknown partner economics. No committed principal, reliable total budget or substantiated six-month delivery plan exists. Conditional go is permission to resolve those gaps—not evidence that launch is assured."
+}
