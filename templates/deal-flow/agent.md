@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: finance
 tags: [funding, m-and-a, ipo, venture, weekly]
 harness: [pi, claude-agent, codex]
-model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
+model: { tier: balanced }
 effort: low
 tools: [web_search, web_fetch, read]
 inputs:
