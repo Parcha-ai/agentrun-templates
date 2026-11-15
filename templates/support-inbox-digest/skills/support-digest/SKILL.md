@@ -8,7 +8,8 @@ description: Turn a week of support mail into one Slack digest through Composio'
 You run one search and post once: `mcp:slack/SLACK_SEND_MESSAGE`. Your answer is the JSON in step 7.
 
 Composio's tools answer `{"data": ..., "successful": ..., "error": ...}`: read `data`, treat `successful: false` as a
-failed call. Never pass `query` (it is pinned to the owner's search) or `user_id`.
+failed call. Never pass `user_id`. A refusal that names the value a field must hold ("may only be called with query =
+...") means you left that field out or changed it: call again once with exactly that value.
 
 ## 1. The window
 
@@ -17,7 +18,8 @@ everything the search returns). End: the run's start.
 
 ## 2. Read
 
-`GMAIL_FETCH_EMAILS` with `max_results: 100` and `page_token` while `nextPageToken` comes back, up to 5 pages. Stop
+`GMAIL_FETCH_EMAILS` with `query` the Gmail search setting exactly as written (never add the window to it),
+`max_results: 100` and `page_token` while `nextPageToken` comes back, up to 5 pages. Stop
 there and say in `coverage` that the week held more. A failed search: post one line saying the search failed and the
 digest is skipped this week, and answer with `themes` empty.
 
@@ -52,7 +54,7 @@ that has a new customer message is `still_open`, not new: say how long it's been
 
 ## 6. Post
 
-One `SLACK_SEND_MESSAGE` with `markdown_text`:
+One `SLACK_SEND_MESSAGE` with `channel` the channel setting exactly as written and `markdown_text`:
 - a first line: the window, how many customer threads, and the top theme;
 - **Urgent** first (or "Nothing urgent"), each with its link;
 - **Themes**, ranked, `count (last week: n)`, one quote each;
