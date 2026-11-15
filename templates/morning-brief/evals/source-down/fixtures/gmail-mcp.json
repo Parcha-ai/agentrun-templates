@@ -5,7 +5,33 @@
     "GMAIL_FETCH_EMAILS": {
       "description": "Fetches a list of email messages from a Gmail account, supporting filtering by Gmail search query.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          },
+          "include_payload": {
+            "type": "boolean"
+          },
+          "label_ids": {
+            "type": "array"
+          },
+          "include_spam_trash": {
+            "type": "boolean"
+          },
+          "verbose": {
+            "type": "boolean"
+          },
+          "ids_only": {
+            "type": "boolean"
+          }
+        }
       },
       "answers": [],
       "default": {
@@ -20,7 +46,15 @@
     "GMAIL_FETCH_MESSAGE_BY_THREAD_ID": {
       "description": "Retrieves messages from a Gmail thread using its thread_id.",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "thread_id": {
+            "type": "string"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
       },
       "answers": [],
       "default": {

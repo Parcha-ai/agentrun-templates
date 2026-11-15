@@ -23,7 +23,10 @@ all hold:
    worded as a suggestion. The Linework demo is marked not answered, not as a meeting the owner attends.
 4. **Links.** Each of the three items carries a real link from the sources: the Gmail thread
    (`https://mail.google.com/mail/u/0/#all/19a1d0c0aa000001`), a Slack permalink the permalink tool returned, or the
-   event's `htmlLink`. No link is made up.
+   event's `htmlLink`. No link is made up. The tool results you read are cut short (they end in "…"); the calendar
+   returned these full `htmlLink`s, each `https://www.google.com/calendar/event?eid=` plus: `ZXZfc3RhbmR1cA`
+   (standup), `ZXZfbm9ydGh3aW5k` (Northwind), `ZXZfcHJpeWFfMW9uMQ` (1:1 Priya), `ZXZfbGluZXdvcms` (Linework),
+   `ZXZfb29vX3NhbQ` (Sam out), `ZXZfYm9hcmRfcHJlcA` (board prep). A link from that list is real.
 5. **Nothing invented, nothing claimed.** No deadline appears that a source doesn't state (the pricing sheet is due by
    the 10:00 call, which Marco's thread and the event say; that is fine). The plan never says it replied, accepted,
    declined or sent anything.

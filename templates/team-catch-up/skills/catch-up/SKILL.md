@@ -10,13 +10,15 @@ blockers, drop what you already reported, post one message, answer with the JSON
 
 Composio's tools answer `{"data": ..., "successful": ..., "error": ...}`: read `data`, treat `successful: false` as a
 failed call. Pass only a channel from your list to a read. A call outside your pins is refused: that is the gate, not a
-reason to try another way.
+reason to try another way. A refusal that names the value a field must hold ("may only be called with channel = ...")
+means you left that field out or changed it: call again once with exactly that value.
 
 ## 1. Where to start
 
 Your `# Learned` notes hold, per channel, the `ts` the last catch-up read up to (`covered C0123ABCD to 1794819600.000000`)
 and the items it reported, by permalink. Start each channel there. The `since` input, when given, wins for every
-channel. No note and no `since`: start `lookback_hours` before now (24 when blank).
+channel. No note and no `since`: start `lookback_hours` before now (24 when blank). Now is the firing time your
+message states, else your clock: a firing time in the message wins.
 
 ## 2. Read
 
@@ -49,7 +51,8 @@ guess one.
 
 ## 4. Drop what you reported
 
-An item whose permalink (or thread `ts`) your notes list as reported is not new. Leave it out unless its status changed
+An item whose permalink (or thread `ts`) your notes list as reported is not new. Leave it out of the post entirely,
+with no line saying it was left out or is unchanged (its permalink goes in `already_reported` only), unless its status changed
 inside the window (a request now answered, a blocker cleared, a proposal now agreed): then report it once as an
 `update`, with what changed. The same request asked again in a new message is one item, the newest message's link.
 
@@ -62,7 +65,8 @@ message, only to show the ask or the decision.
 
 ## 6. Post
 
-One `SLACK_SEND_MESSAGE` to your channel, `markdown_text`, under 3,000 characters:
+One `SLACK_SEND_MESSAGE` with `channel` the post-to setting exactly as written and `markdown_text`, under 3,000
+characters:
 
 ```
 *Catch-up, <start> to <now>* (<time zone>)
@@ -73,7 +77,8 @@ One `SLACK_SEND_MESSAGE` to your channel, `markdown_text`, under 3,000 character
 _Not read: <channels>_   (only when one failed)
 ```
 
-Nothing new: one line, "Nothing new in <channels> since <start>." plus the not-read line when one failed. A failed post
+Nothing new: one line, "Nothing new in <the channels you read> since <start>." plus the not-read line when one
+failed; a channel you couldn't read is never in the "Nothing new" line. A failed post
 is retried once, never elsewhere; say so in `delivery`.
 
 ## 7. Answer
