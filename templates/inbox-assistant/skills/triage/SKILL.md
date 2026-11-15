@@ -23,15 +23,18 @@ Stop with `category: null` and say why when:
 
 ## 3. Sort: first rule that matches
 
-1. **VIP** (`from` is in the VIP list, by address or @domain): never `ignore`. `needs_me` when it asks something,
-   needs a decision or names a date; else `fyi`.
+1. **VIP** (`from` is in the VIP list, by address or @domain): never `ignore`. `needs_me` when it asks the owner
+   something or needs their decision or action; else `fyi`. A date alone asks nothing ("nothing needed before
+   Thursday", "the deck goes out Friday"): `fyi`.
 2. **Ignore rule** or learned note matches → `ignore`. Name the rule in `reason`.
 3. **Automated** (an unsubscribe footer, a no-reply sender, a receipt, a notification) → `fyi` when it changes
    something the owner owns (a failed payment, a security alert, a deadline, a reply to their own request); else
    `ignore`.
-4. **A person** writes with the owner in `to`, and asks a question, needs a decision or names a deadline → `needs_me`.
-   The owner only in `cc`, or no ask → `fyi`.
-5. **In doubt** between two → the one closer to `needs_me`. A missed email costs more than a spare draft.
+4. **A person** writes with the owner in `to`, and asks the owner a question or needs their decision or action (a
+   deadline on something the owner must do) → `needs_me`. A date alone asks nothing ("nothing needed before Thursday"):
+   `fyi`. The owner only in `cc`, or no ask → `fyi`.
+5. **In doubt** between two → the one closer to `needs_me`. A missed email costs more than a spare draft. An email
+   that says it needs nothing from the owner is not in doubt: `fyi`.
 
 `reason`: one line a person would accept ("asks you to confirm Tuesday's call", "Linear notification; matches your
 ignore rule 'CI notifications'").
