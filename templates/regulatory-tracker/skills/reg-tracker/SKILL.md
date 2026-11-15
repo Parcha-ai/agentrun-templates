@@ -18,9 +18,25 @@ step 2.
   block under "The result of this trigger's last completed run". Its `items` are the **reported** list for step 5.
 - Your `# Learned` notes: source URLs and feeds that worked, and the owner's preferences ("skip EFRAG Q&As"). They win
   over this file where they differ.
-- Today's date: from the input (the trigger's time) or the message, never the clock.
+- Today's date: the run's date (a scheduled run's is the time it fired).
 - Pages the message gives as what their URLs return are those pages: read them there and do not fetch them again.
   When the message says the sites are not reachable, fetch and search nothing.
+
+## Searches and failures
+
+- Each search in step 2 is its own call, for one jurisdiction: never fold two jurisdictions into one query.
+- A tracker, newsletter, law-firm roundup or a register's search results are a list of candidates: judge each in-window
+  hit on its own document before it becomes an item or is left out, and never call a jurisdiction quiet because a
+  roundup leaves it out. A source whose in-window hits you all left out is `quiet`, with why in `assumptions`.
+- A failed search or fetch (an error, a rate limit, a block or challenge page, an empty answer) is never "no new acts".
+  A source that could not be read is `unreachable` in `sources_checked`, with the reason. `quiet` is true only when
+  every jurisdiction's search and main sources answered and nothing passed; otherwise the report's line under the header says what
+  could not be checked and why ("Could not check California: web search was rate-limited.").
+- The report names and links only pages that answered. A page that failed is named under Unreachable with why,
+  never listed as checked or linked, and in the JSON it sits in `unreachable` with the URL you tried; an unreachable
+  source's `url` in `sources_checked` is null.
+- Pages handed to you in the message stand in for your searches and fetches; a search you were told not to make is not
+  a failure.
 
 ## Steps
 
@@ -79,7 +95,8 @@ step 2.
    ```
 
    A quiet week: `quiet` true, `items` empty, the report is the header, the quiet line, any leads line and the checked
-   line.
+   line. Nothing passed but a source could not be checked: `quiet` false, and the line under the header names what could not be
+   checked and why instead of the quiet line.
 
 ## Rules
 

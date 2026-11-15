@@ -1,0 +1,7 @@
+# Applied with these parameters (POST /v2/templates/regulatory-tracker/apply). Live: no pages are handed to the run.
+parameters:
+  topic: "artificial intelligence"
+  jurisdictions: ["United States (federal)", "European Union", "California"]
+  exposure: "SaaS company selling an AI screening tool for job applicants to employers in the US and the EU"
+  lookback_days: 7
+# The run starts with this input, checked against the template's input schema; prompt.md is its content.

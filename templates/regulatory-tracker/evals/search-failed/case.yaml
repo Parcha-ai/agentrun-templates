@@ -1,0 +1,7 @@
+# The shared failed-search case (evals-shared/search-failed): every web_search answers the rate-limited free search's
+# own words and every web_fetch fails. The input is the commentary-only case's.
+web: unavailable
+parameters:
+  topic: "non-compete agreements"
+  jurisdictions: ["United Kingdom"]
+  lookback_days: 7
