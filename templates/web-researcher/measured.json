@@ -1,0 +1,27 @@
+{
+  "median_usd": 0,
+  "runs": 12,
+  "model": "openrouter/baidu/ernie-5.5-flash-preview:free",
+  "harness": "pi",
+  "measured_on": "2026-11-16",
+  "passed": {
+    "pi": "3/5"
+  },
+  "free": {
+    "model": "openrouter/baidu/ernie-5.5-flash-preview:free",
+    "limits": [
+      "OpenRouter free models: 50 requests a day with no credits, 1,000 a day after a one-time $10, 20 a minute",
+      "Exa keyless search: about 150 searches a day per IP address and 3 a second (Exa changelog, 2026-02-02); one machine was rate-limited after about 170 on 2026-11-15",
+      "Free endpoints may log prompts, and this one is not on OpenRouter's zero-retention list: public questions only",
+      "ERNIE 5.5 Flash Preview is a preview model and needs an AgentRun server newer than 0.1.0-beta.39",
+      "Measured with free search rate-limited for the day: the live case passed 0 of 1, so open each finding's link before you rely on it"
+    ]
+  },
+  "live": {
+    "cases": 1,
+    "median_usd": 0,
+    "passed": {
+      "pi": "0/1"
+    }
+  }
+}

@@ -737,6 +737,17 @@
         "customer-language",
         "product-marketing"
       ]
+    },
+    {
+      "name": "web-researcher",
+      "source": "./templates/web-researcher",
+      "category": "research",
+      "tags": [
+        "free",
+        "web-research",
+        "citations",
+        "fact-finding"
+      ]
     }
   ]
 }
