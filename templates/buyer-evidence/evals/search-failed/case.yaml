@@ -1,0 +1,3 @@
+# The shared failed-search case (evals-shared/search-failed): every web_search answers rate-limited and every
+# web_fetch fails. prompt.md's input is evals/thin-evidence's.
+web: unavailable
