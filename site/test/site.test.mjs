@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { frontMatter, parseYaml } from "../lib/yaml.mjs";
 import { fillParameters, parseGithubSource, readIndex } from "../lib/packages.mjs";
 import { markdownToHtml } from "../lib/markdown.mjs";
-import { cronWords, factsLine, keyWords, unprovenWords } from "../lib/describe.mjs";
+import { cronWords, factsLine, factsShort, keyWords, unprovenWords } from "../lib/describe.mjs";
 import { build } from "../build.mjs";
 import { check } from "../check.mjs";
 import { CSP, SECURITY_HEADERS, siteServer } from "../lib/server.mjs";
@@ -112,6 +112,18 @@ test("a package granting monid endpoints says it needs a monid key, and for whic
   assert.equal(factsLine({ ...pkg, tools: ["web_search"] }), "Needs only a model key and the web, stops each run at $0.50, and is tested by 3 eval cases.");
 });
 
+test("a web template's facts keep its live-web results apart from its fixture cases", () => {
+  const measured = { median_usd: 0.05, runs: 8, passed: { pi: "4/4", codex: "2/2" } };
+  const pkg = { tools: ["web_search", "read"], mcp: [], secrets: [], evals: ["a", "b", "live-week"], budget: { per_run_usd: 0.5 }, model: { tier: "balanced" }, measured: { ...measured, live: { cases: 1, median_usd: 0.12, passed: { pi: "1/1", codex: "0/1" } } } };
+  assert.equal(factsLine(pkg), "Needs only a model key and the web, costs about $0.050 a run, passes 4 of 4 eval cases on pi and 2 of 2 on Codex, and on the live web passes 1 of 1 on pi and 0 of 1 on Codex.");
+  assert.equal(factsShort(pkg), "About $0.050 a run; passes 4 of 4 eval cases and 1 of 1 on the live web.");
+  // Measured on fixtures alone: the page says the live web is untried, never lets the fixture count stand for it.
+  assert.equal(factsLine({ ...pkg, measured }), "Needs only a model key and the web, costs about $0.050 a run, passes 4 of 4 eval cases on pi and 2 of 2 on Codex, and has not been tried on the live web yet.");
+  assert.equal(factsShort({ ...pkg, measured }), "About $0.050 a run; passes 4 of 4 eval cases; not yet tried on the live web.");
+  // No web tools: nothing about the live web.
+  assert.equal(factsLine({ ...pkg, tools: ["read"], measured }), "Needs only a model key, costs about $0.050 a run, and passes 4 of 4 eval cases on pi and 2 of 2 on Codex.");
+});
+
 test("the index is checked", () => {
   const dir = mkdtempSync(join(tmpdir(), "site-index-"));
   try {
@@ -151,8 +163,8 @@ test("builds the fixture into pages that pass the checker", async () => {
     const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
     assert.match(md, /^# Sample watch\n/);
     assert.match(md, /2 eval cases: injection, thin-data\./);
-    assert.match(md, /Needs only a model key and the web \(GitHub optional\), costs about \$0\.084 a run, and passes 2 of 2 eval cases on pi and 1 of 2 on Claude Code\./);
-    assert.match(page, /<meta name="description" content="Watches one topic every week and answers with what changed, each item dated and linked\. About \$0\.084 a run; passes 2 of 2 eval cases\."/);
+    assert.match(md, /Needs only a model key and the web \(GitHub optional\), costs about \$0\.084 a run, passes 2 of 2 eval cases on pi and 1 of 2 on Claude Code, and has not been tried on the live web yet\./);
+    assert.match(page, /<meta name="description" content="Watches one topic every week and answers with what changed, each item dated and… About \$0\.084 a run; passes 2 of 2 eval cases; not yet tried on the live web\."/);
     const llms = readFileSync(join(out, "llms.txt"), "utf8");
     assert.match(llms, /\[Sample watch\]\(https:\/\/marketplace\.agentrun\.ai\/templates\/sample-watch\.md\)/);
     const search = JSON.parse(readFileSync(join(out, "search.json"), "utf8"));

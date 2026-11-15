@@ -542,6 +542,7 @@ ${crumbNav(trail)}
   <h2 id="cost-note" class="caps section-label">Cost per run</h2>
   <p>Add a <code>measured.json</code> beside agent.md once you have run your evals, and the page shows the median cost instead of "not measured yet":</p>
   <pre class="code"><code>{ "median_usd": 0.42, "runs": 12, "model": "openrouter/particle-ai/particle-1", "harness": "pi", "measured_on": "2026-11-14", "passed": { "pi": "5/5", "claude-agent": "4/5", "codex": "5/5" } }</code></pre>
+  <p>A template that searches or reads the web adds <code>"live": { "cases": 1, "median_usd": 0.12, "passed": { "pi": "2/2" } }</code>: its cases named <code>live-*</code>, which give it no pages and run on the real web. <code>passed</code> counts the other cases. Without <code>live</code>, the page says it has not been tried on the live web.</p>
 </section>`;
   return {
     path,
@@ -570,7 +571,7 @@ ${crumbNav(trail)}
       "",
       "## Cost per run",
       "",
-      "Add a `measured.json` beside agent.md: `{ \"median_usd\": 0.42, \"runs\": 12, \"model\": \"...\", \"harness\": \"pi\", \"measured_on\": \"2026-11-14\", \"passed\": { \"pi\": \"5/5\" } }` (passed: cases passed per harness, from your latest runs).",
+      "Add a `measured.json` beside agent.md: `{ \"median_usd\": 0.42, \"runs\": 12, \"model\": \"...\", \"harness\": \"pi\", \"measured_on\": \"2026-11-14\", \"passed\": { \"pi\": \"5/5\" } }` (passed: cases passed per harness, from your latest runs). A template that uses the web adds `\"live\": { \"cases\": 1, \"median_usd\": 0.12, \"passed\": { \"pi\": \"2/2\" } }` from its `live-*` cases, which give it no pages and run on the real web; `passed` counts the other cases. Without `live`, the page says it has not been tried on the live web.",
       "",
     ].join("\n"),
   };

@@ -129,8 +129,8 @@ function listWords(items) {
 }
 
 /** The eval results measured.json records per harness, as [harness name, passed, total]; a non-count ("cap hold") is left out. */
-function passCounts(pkg) {
-  const passed = pkg.measured?.passed;
+function passCounts(pkg, live = false) {
+  const passed = live ? pkg.measured?.live?.passed : pkg.measured?.passed;
   if (!passed || typeof passed !== "object") return [];
   return Object.entries(passed).flatMap(([h, v]) => {
     const m = /^(\d+)\/(\d+)$/.exec(String(v));
@@ -154,14 +154,24 @@ export function factsLine(pkg) {
   const evals = counts.length
     ? `passes ${listWords(counts.map(([h, p, t], k) => (k ? `${p} of ${t} on ${h}` : `${p} of ${t} eval cases on ${h}`)))}`
     : pkg.evals.length ? `is tested by ${pkg.evals.length} eval case${pkg.evals.length === 1 ? "" : "s"}` : null;
-  const parts = [needs, cost, evals].filter(Boolean);
+  // A web template's eval cases hand it its pages; only a live case shows it searching the real web, so the two
+  // counts are never merged, and a measured web template without one says so.
+  const live = passCounts(pkg, true);
+  const liveWords = !web || !pkg.measured ? null
+    : live.length ? `on the live web passes ${listWords(live.map(([h, p, t]) => `${p} of ${t} on ${h}`))}`
+    : "has not been tried on the live web yet";
+  const parts = [needs, cost, evals, liveWords].filter(Boolean);
   return `${parts.length > 1 ? `${parts.slice(0, -1).join(", ")}, and ${parts[parts.length - 1]}` : parts[0]}.`;
 }
 
 /** The short form for a search snippet: "About $0.06 a run; passes 5 of 5 eval cases." (pi's count when measured). */
 export function factsShort(pkg) {
   const [first] = passCounts(pkg);
-  const parts = [pkg.measured ? `About ${usd(pkg.measured.median_usd)} a run` : null, first ? `passes ${first[1]} of ${first[2]} eval cases` : null].filter(Boolean);
+  const [live] = passCounts(pkg, true);
+  const web = pkg.tools.some((t) => t === "web_search" || t === "web_fetch");
+  const evals = first ? `passes ${first[1]} of ${first[2]} eval cases${live ? ` and ${live[1]} of ${live[2]} on the live web` : ""}` : null;
+  const untried = web && pkg.measured && !live ? "not yet tried on the live web" : null;
+  const parts = [pkg.measured ? `About ${usd(pkg.measured.median_usd)} a run` : null, evals, untried].filter(Boolean);
   return parts.length ? `${parts.join("; ")}.` : "";
 }
 
