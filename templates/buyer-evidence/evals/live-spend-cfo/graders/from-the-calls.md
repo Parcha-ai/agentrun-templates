@@ -8,7 +8,8 @@ run's own calls, listed with the answer (tool, arguments, a cut preview of the r
 
 A link is "in the calls" only when it appears there: a search result's url, a fetch's url or final url, or a link
 in a fetched page's `links`. Wherever this rubric says a page the run fetched or a URL a search shows, it means that.
-A link on the same site as a fetched page that appears nowhere in the calls fails. When a page's links were cut
+A link that differs from a call's URL only by its #fragment is that page and passes. A link on the same site as a
+fetched page that appears nowhere in the calls fails. When a page's links were cut
 (`links_cut`), say so; a link from that page passes only when the answer quotes text that is in the page.
 
 Read the answer's last fenced `json` block, `report_markdown` included. Pass only if all of these hold:
