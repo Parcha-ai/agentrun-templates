@@ -34,7 +34,21 @@
     "HUBSPOT_RETRIEVE_PIPELINE_STAGES": {
       "description": "Retrieve the stages of one pipeline (objectType, pipelineId).",
       "input": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "objectType": {
+            "type": "string",
+            "description": "The object type whose pipeline it is: deals"
+          },
+          "pipelineId": {
+            "type": "string",
+            "description": "The pipeline ID, like default"
+          }
+        },
+        "required": [
+          "objectType",
+          "pipelineId"
+        ]
       },
       "answers": [
         {
