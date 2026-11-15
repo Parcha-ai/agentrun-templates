@@ -1,0 +1,24 @@
+{
+  "description": "A Growth Weekly newsletter matches the 'newsletters' rule: ignored, filed out of the inbox into Ignored on both layouts, no draft, no read.",
+  "account": {
+    "address": "dana@ortiz.example"
+  },
+  "layouts": [
+    "gmail",
+    "folders"
+  ],
+  "mailboxes": {
+    "INBOX": []
+  },
+  "message": {
+    "to": [
+      "dana@ortiz.example"
+    ],
+    "from": "news@growthweekly.example",
+    "from_name": "Growth Weekly",
+    "subject": "10 growth loops for Q1",
+    "date": "2026-11-14T09:40:00-08:00",
+    "message_id": "<n1@growthweekly.example>",
+    "text": "This week: 10 growth loops for Q1, from referral credits to usage-based nudges. Read the full issue online.\n\nUnsubscribe | View in browser"
+  }
+}

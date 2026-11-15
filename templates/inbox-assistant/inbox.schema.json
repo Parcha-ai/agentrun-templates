@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "inbox.schema.json",
+  "title": "Inbox assistant run",
+  "description": "One email sorted (and its reply drafted when it needs the owner), or the evening digest drafted to the owner.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "email", "category", "reason", "draft", "filed", "digest", "ignored_instructions"],
+  "properties": {
+    "kind": { "enum": ["triage", "digest"] },
+    "email": {
+      "type": ["object", "null"],
+      "description": "triage: the email sorted. digest: null.",
+      "additionalProperties": false,
+      "required": ["from", "subject", "message_id"],
+      "properties": {
+        "from": { "type": "string", "maxLength": 320 },
+        "subject": { "type": "string", "maxLength": 300 },
+        "message_id": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "category": { "enum": ["needs_me", "fyi", "ignore", null], "description": "triage: the sort, or null when there was nothing to do. digest: null." },
+    "reason": { "type": "string", "maxLength": 300, "description": "triage: why, in one line. digest: one line on the day." },
+    "draft": {
+      "type": ["object", "null"],
+      "description": "The one draft saved: a reply to the sender (triage), or the digest to the owner. null when none.",
+      "additionalProperties": false,
+      "required": ["to", "subject", "text", "in_reply_to", "saved"],
+      "properties": {
+        "to": { "type": "string", "format": "email" },
+        "subject": { "type": "string", "maxLength": 300 },
+        "text": { "type": "string", "minLength": 1, "maxLength": 6000 },
+        "in_reply_to": { "type": ["string", "null"], "maxLength": 300 },
+        "saved": { "type": "boolean", "description": "what email_draft answered; false when it was refused or failed" },
+        "blanks": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 200 }, "description": "the bracketed blanks the owner fills before sending" }
+      }
+    },
+    "filed": {
+      "type": ["object", "null"],
+      "description": "triage: what email_file answered for this email. null when it wasn't filed (nothing to do) and on a digest.",
+      "additionalProperties": false,
+      "required": ["to", "filed", "archived"],
+      "properties": {
+        "to": { "enum": ["Needs reply", "FYI", "Ignored"] },
+        "filed": { "type": "boolean", "description": "false when email_file refused or failed" },
+        "archived": { "type": "boolean", "description": "true when the email left the inbox" },
+        "note": { "type": "string", "maxLength": 200, "description": "why it wasn't filed, when it wasn't" }
+      }
+    },
+    "digest": {
+      "type": ["object", "null"],
+      "description": "digest: the day's counts and lines. triage: null.",
+      "additionalProperties": false,
+      "required": ["since", "needs_me", "fyi", "ignored_count", "capped"],
+      "properties": {
+        "since": { "type": "string", "format": "date-time" },
+        "needs_me": {
+          "type": "array", "maxItems": 50,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["from", "subject", "ask", "draft_waiting"],
+            "properties": {
+              "from": { "type": "string", "maxLength": 320 },
+              "subject": { "type": "string", "maxLength": 300 },
+              "ask": { "type": "string", "maxLength": 200 },
+              "draft_waiting": { "type": "boolean" }
+            }
+          }
+        },
+        "fyi": {
+          "type": "array", "maxItems": 50,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["from", "line"],
+            "properties": { "from": { "type": "string", "maxLength": 320 }, "line": { "type": "string", "maxLength": 200 } }
+          }
+        },
+        "week": {
+          "type": ["object", "null"],
+          "description": "The Monday brief's week (weekly on, a Monday); else null.",
+          "additionalProperties": false,
+          "required": ["needs_reply", "waiting_on_others", "coming_up"],
+          "properties": {
+            "needs_reply": { "type": "array", "maxItems": 25, "items": { "type": "string", "maxLength": 200 } },
+            "waiting_on_others": { "type": "array", "maxItems": 25, "items": { "type": "string", "maxLength": 200 } },
+            "coming_up": { "type": "array", "maxItems": 25, "items": { "type": "string", "maxLength": 200 } }
+          }
+        },
+        "ignored_count": { "type": "integer", "minimum": 0 },
+        "capped": { "type": "boolean", "description": "true when the search returned its limit of 50" }
+      }
+    },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } }
+  }
+}
