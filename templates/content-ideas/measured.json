@@ -1,12 +1,22 @@
 {
-  "median_usd": 0.0344,
-  "runs": 12,
+  "median_usd": 0.0268,
+  "runs": 10,
   "model": "openrouter/openai/gpt-6.1-sol",
   "harness": "pi",
-  "measured_on": "2026-11-14",
+  "measured_on": "2026-11-15",
+  "build": "17f83a3a14",
   "passed": {
-    "pi": "4/4",
-    "claude-agent": "1/4",
-    "codex": "3/4"
+    "pi": "5/5",
+    "claude-agent": "3/5",
+    "codex": "5/5"
+  },
+  "live": {
+    "cases": 1,
+    "median_usd": 0.1426,
+    "passed": {
+      "pi": "1/1",
+      "claude-agent": "1/1",
+      "codex": "1/1"
+    }
   }
 }

@@ -1,0 +1,6 @@
+# The shared failed-search case (evals-shared/search-failed): every web_search answers rate-limited and every
+# web_fetch fails. Parameters of quiet-week.
+web: unavailable
+parameters:
+  company: "Tidewell Marine Supply (tidewell.example)"
+  audience: "Owners of small commercial fishing boats in Maine"
