@@ -163,6 +163,9 @@ test("builds the fixture into pages that pass the checker", async () => {
     const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
     assert.match(md, /^# Sample watch\n/);
     assert.match(md, /2 eval cases: injection, thin-data\./);
+    // model.choices: each choice, its keys, and its warning word for word, escaped on the page.
+    assert.match(page, /<dt>Model choices<\/dt><dd>At install you can keep that, or pick one of these:<ul class="choices"><li><strong>Free model<\/strong>: <code>openrouter\/example\/free-1:free<\/code> on <code>pi<\/code>, needs <code>OPENROUTER_API_KEY<\/code>\. <strong>Warning:<\/strong> Its provider may log what it reads &lt;script&gt;alert\(1\)&lt;\/script&gt;\. Free accounts get 50 requests a day\.<\/li><\/ul><\/dd>/);
+    assert.match(md, /^- Model choices, picked at install instead:\n {2}- Free model: `openrouter\/example\/free-1:free` on `pi`, needs `OPENROUTER_API_KEY`\. Warning: Its provider may log what it reads \\<script\\>alert\(1\)\\<\/script\\>\. Free accounts get 50 requests a day\.$/m);
     assert.match(md, /Needs only a model key and the web \(GitHub optional\), costs about \$0\.084 a run, passes 2 of 2 eval cases on pi and 1 of 2 on Claude Code, and has not been tried on the live web yet\./);
     assert.match(page, /<meta name="description" content="Watches one topic every week and answers with what changed, each item dated and… About \$0\.084 a run; passes 2 of 2 eval cases; not yet tried on the live web\."/);
     const llms = readFileSync(join(out, "llms.txt"), "utf8");

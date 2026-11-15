@@ -11,7 +11,17 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: research
 tags: [fixture]
 harness: [pi, claude-agent, codex]
-model: { tier: fast, prefer: openrouter/particle-ai/particle-1 }
+model:
+  tier: fast
+  prefer: openrouter/particle-ai/particle-1
+  choices:
+    - id: free
+      label: Free model
+      model: openrouter/example/free-1:free
+      harness: pi
+      secrets: [OPENROUTER_API_KEY]
+      warning: "Its provider may log what it reads <script>alert(1)</script>."
+      note: "Free accounts get 50 requests a day."
 effort: low
 tools: [web_search, web_fetch, read]
 mcp:

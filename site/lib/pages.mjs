@@ -1,6 +1,6 @@
 // The pages: each is real HTML a crawler reads (no client-side rendering), plus a Markdown twin with the same content.
 
-import { CATEGORY_TEXT, computerWords, costWords, factsLine, factsShort, keyWords, mcpWords, modelWords, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
+import { CATEGORY_TEXT, computerWords, costWords, factsLine, factsShort, keyWords, mcpWords, modelChoices, modelWords, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
 import { markdownToHtml } from "./markdown.mjs";
 import { clip, html, mdCode, mdText, plural, raw, upperFirst } from "./util.mjs";
 
@@ -274,6 +274,7 @@ export function templatePage(site, pkg, stats) {
   const trail = [["Templates", "/"], [cat.title, `/categories/${pkg.category}/`], [pkg.displayName, path]];
   const cost = costWords(pkg);
   const keys = keyWords(pkg);
+  const choices = modelChoices(pkg.model);
   const triggers = triggerLines(pkg);
   // npx: a stranger has no global `agentrun`. --trust: a server's first package from a publisher is refused without it.
   const cli = `npx @parcha/agentrun template install ${pkg.installSource} --trust`;
@@ -335,6 +336,7 @@ ${crumbNav(trail)}
   <dl class="facts">
     <dt>Harness</dt><dd>${pkg.harness.length ? pkg.harness.map((h, k) => html`${k ? ", " : ""}<code>${h}</code>`) : "Any"}</dd>
     <dt>Model</dt><dd>${upperFirst(modelWords(pkg.model))}${pkg.effort ? `, ${pkg.effort} effort` : ""}</dd>
+    ${choices.length ? html`<dt>Model choices</dt><dd>At install you can keep that, or pick one of these:<ul class="choices">${choices.map((c) => html`<li><strong>${c.label}</strong>: <code>${c.model}</code>${c.harness ? html` on <code>${c.harness}</code>` : ""}${c.secrets.length ? html`, needs ${c.secrets.map((s, k) => html`${k ? ", " : ""}<code>${s}</code>`)}` : ""}.${c.warning ? html` <strong>Warning:</strong> ${c.warning}` : ""}${c.note ? html` ${c.note}` : ""}</li>`)}</ul></dd>` : ""}
     <dt>Tools</dt><dd>${pkg.tools.length ? pkg.tools.map((t, k) => html`${k ? ", " : ""}<code>${t}</code>`) : "None"}${pkg.toolPolicy?.bash ? ` (bash is ${pkg.toolPolicy.bash})` : ""}</dd>
     ${pkg.mcp.map((need) => html`<dt>${mcpWords(need)} tools${need.required ? "" : " (optional)"}</dt><dd>${need.reason ? html`${need.reason} ` : ""}${need.tools.map((t, k) => html`${k ? ", " : ""}<code>${t}</code>`)}${need.allow.length ? html`. Runs without asking: ${need.allow.map((t, k) => html`${k ? ", " : ""}<code>${t}</code>`)}` : ""}.</dd>`)}
     <dt>Computer</dt><dd>${upperFirst(computerWords(pkg.computer))}${pkg.checkout === "pull_request" ? ", with the pull request checked out read-only" : ""}</dd>
@@ -426,6 +428,7 @@ function mdTable(rows) {
 }
 
 function templateMd(site, pkg, { cost, keys, triggers, cli, stats }) {
+  const choices = modelChoices(pkg.model);
   const out = [
     `# ${pkg.displayName}`,
     "",
@@ -462,7 +465,8 @@ function templateMd(site, pkg, { cost, keys, triggers, cli, stats }) {
     "",
     `- Harness: ${pkg.harness.join(", ") || "any"}`,
     `- Model: ${modelWords(pkg.model)}${pkg.effort ? `, ${pkg.effort} effort` : ""}`,
-    `- Tools: ${pkg.tools.join(", ") || "none"}`,
+    ...(choices.length ? ["- Model choices, picked at install instead:", ...choices.map((c) => `  - ${mdText(c.label)}: ${mdCode(c.model)}${c.harness ? ` on ${mdCode(c.harness)}` : ""}${c.secrets.length ? `, needs ${c.secrets.map(mdCode).join(", ")}` : ""}.${c.warning ? ` Warning: ${mdText(c.warning)}` : ""}${c.note ? ` ${mdText(c.note)}` : ""}`)] : []),
+    `- Tools:${pkg.tools.join(", ") || "none"}`,
     ...pkg.mcp.map((n) => `- ${mcpWords(n)} tools${n.required ? "" : " (optional)"}: ${n.tools.join(", ")}${n.reason ? `. ${n.reason}` : ""}`),
     `- Computer: ${computerWords(pkg.computer)}`,
     `- Keys: ${keys.model}${keys.secrets.length ? `, plus ${keys.secrets.join(", ")}` : ""}`,

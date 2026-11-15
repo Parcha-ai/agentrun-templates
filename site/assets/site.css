@@ -181,8 +181,8 @@ dialog p { font-family: var(--font-sans); font-size: 15px; }
 .facts dd { margin: 0; }
 @media (max-width: 640px) { .facts { grid-template-columns: 1fr; gap: 2px; } .facts dd { margin-bottom: 10px; } }
 
-ul.plain, ol.steps { padding-left: 20px; margin: 0 0 12px; }
-ul.plain li, ol.steps li { margin: 0 0 6px; max-width: 80ch; }
+ul.plain, ol.steps, ul.choices { padding-left: 20px; margin: 0 0 12px; }
+ul.plain li, ol.steps li, ul.choices li { margin: 0 0 6px; max-width: 80ch; }
 
 .table-wrap { overflow-x: auto; border: 1px solid hsl(var(--border)); border-radius: var(--ar-card-radius); }
 table { border-collapse: collapse; width: 100%; font-size: 13px; }

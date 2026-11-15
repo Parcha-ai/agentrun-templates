@@ -78,6 +78,22 @@ export function modelWords(model) {
   return `${model.tier ?? "default"} tier${prefer}`;
 }
 
+/** The models an owner may pick instead at install (model.choices), each as the package wrote it: label, model,
+ *  harness, the keys it needs, and its warning and note word for word. Empty when the package offers none. */
+export function modelChoices(model) {
+  const list = Array.isArray(model?.choices) ? model.choices : [];
+  return list
+    .filter((c) => c && typeof c.label === "string" && typeof c.model === "string")
+    .map((c) => ({
+      label: c.label,
+      model: c.model,
+      harness: typeof c.harness === "string" ? c.harness : undefined,
+      secrets: Array.isArray(c.secrets) ? c.secrets.filter((s) => typeof s === "string") : [],
+      warning: typeof c.warning === "string" ? c.warning : undefined,
+      note: typeof c.note === "string" ? c.note : undefined,
+    }));
+}
+
 export function computerWords(computer) {
   if (!computer || computer[0] === "default") return "Wherever your AgentRun puts a new agent";
   return computer.map((c) => (c === "shell" ? "a computer with a shell" : c === "none" ? "no computer (file tools only)" : c)).join(", else ");
