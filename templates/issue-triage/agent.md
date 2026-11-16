@@ -43,19 +43,18 @@ learning: true
 approvals: ask
 triggers:
   - name: issue-created
-    # Each new issue is one run. In Composio, create the GitHub trigger GITHUB_ISSUE_CREATED_TRIGGER with config owner
-    # and repo set to this repository (Composio polls GitHub: a new issue arrives in about 30 seconds), register this
-    # trigger's hook_url as the Composio project's webhook and give it the secret Composio shows. Composio sends every
-    # trigger of a project to that one URL, so the where keeps this agent to its own repository's issues, and never a
-    # pull request.
+    # Each new issue is one run. The apply makes this trigger on Composio for the saved GitHub server, watching this
+    # repository (Composio polls GitHub: a new issue arrives in about 30 seconds). A server with no public address or
+    # no connected GitHub account skips it with a warning; make it later from Triggers → New app trigger. The where
+    # keeps out pull requests, which GitHub lists as issues.
     source:
-      kind: webhook
-      signature: composio
+      kind: composio
+      server: github
+      event: GITHUB_ISSUE_CREATED_TRIGGER
+      config: { owner: "${parameters.owner}", repo: "${parameters.repo}" }
       accept:
         - event: GITHUB_ISSUE_CREATED_TRIGGER
           where:
-            - { pointer: /data/repository_owner, in: ["${parameters.owner}"] }
-            - { pointer: /data/repository_name, in: ["${parameters.repo}"] }
             - { pointer: /data/is_pull_request, in: [false] }
     max_active_runs: 3
     target:

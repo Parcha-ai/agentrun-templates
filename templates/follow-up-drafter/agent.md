@@ -27,8 +27,7 @@ mcp:
       GMAIL_FETCH_MESSAGE_BY_THREAD_ID: { user_id: null }
       GMAIL_CREATE_EMAIL_DRAFT: { cc: null, bcc: null, extra_recipients: null, user_id: null, attachment: null }
 parameters:
-  label: { type: string, pattern: "^[^\\n]{1,100}$", description: "the Gmail label whose new mail gets a draft reply, as you see it in Gmail (follow-up, Clients/Active). Create the Composio trigger with the query label:<this label>" }
-  gmail_trigger_id: { type: string, pattern: "^[A-Za-z0-9_-]{4,64}$", description: "the id Composio shows for the Gmail trigger you created for this label (ti_...). Only that trigger's events start a run" }
+  label: { type: string, pattern: "^[^\\n]{1,100}$", description: "the Gmail label whose new mail gets a draft reply, as you see it in Gmail (follow-up, Clients/Active)" }
   voice: { type: string, required: false, pattern: "^[^\\n]{0,600}$", description: "how you write, in a line: \"short, first names, no exclamation marks, sign off 'Best, Mia'\". Blank: it copies the tone of your own messages in each thread" }
 inputs:
   thread_id: { type: string, required: false, pattern: "^[0-9a-f]{10,24}$", title: "Thread id", description: "Draft a reply in this Gmail thread, for a run by hand (the long hex id in the thread's URL). Leave it out on the trigger's runs: the event names the thread.", examples: ["19a2b3c4d5e6f708"] }
@@ -43,19 +42,15 @@ learning: true
 approvals: ask
 triggers:
   - name: new-mail-in-label
-    # Each new mail in the label is one run. In Composio, create the Gmail trigger GMAIL_NEW_GMAIL_MESSAGE (a poll
-    # trigger: no Google setup) with config query "label:<your label>" and userId "me", register this trigger's
-    # hook_url as the Composio project's webhook and give it the secret Composio shows, then set gmail_trigger_id to
-    # the trigger's id. Composio sends every trigger of a project to that one URL, so the where keeps this agent to its
-    # own trigger. It fires on mail that arrives with the label (a Gmail filter applies it); a label you add later by
-    # hand may not fire it: start a run by hand with the thread_id for that.
+    # Each new mail in the label is one run. The apply makes this trigger on Composio for the saved Gmail server, a
+    # poll of the label (no Google setup). A server with no public address or no connected Gmail account skips it with
+    # a warning; make it later from Triggers → New app trigger. It fires on mail that arrives with the label (a Gmail
+    # filter applies it); a label you add later by hand may not fire it: start a run by hand with the thread_id for that.
     source:
-      kind: webhook
-      signature: composio
-      accept:
-        - event: GMAIL_NEW_GMAIL_MESSAGE
-          where:
-            - { pointer: /metadata/trigger_id, in: ["${parameters.gmail_trigger_id}"] }
+      kind: composio
+      server: gmail
+      event: GMAIL_NEW_GMAIL_MESSAGE
+      config: { query: 'label:"${parameters.label}"', userId: me }
     max_active_runs: 3
     target:
       kind: start_run

@@ -40,15 +40,15 @@ learning: false
 approvals: never
 triggers:
   - name: charge-failed
-    # Untested: Composio's Stripe triggers are WEBHOOK-type and have not been proven end to end yet. In Composio, create
-    # the Stripe trigger STRIPE_CHARGE_FAILED (it needs no config), register this trigger's hook_url as the Composio
-    # project's webhook and give it the secret Composio shows. Every failed charge on the account comes through: use
-    # min_amount to skip small ones.
+    # The apply makes this trigger on Composio for the saved Stripe server (STRIPE_CHARGE_FAILED takes no config). A
+    # server with no public address or no connected Stripe account skips it with a warning; make it later from Triggers
+    # → New app trigger. Untested end to end: Composio's Stripe triggers are webhook-type. Every failed charge on the
+    # account comes through: use min_amount to skip small ones.
     source:
-      kind: webhook
-      signature: composio
-      accept:
-        - event: STRIPE_CHARGE_FAILED
+      kind: composio
+      server: stripe
+      event: STRIPE_CHARGE_FAILED
+      config: {}
     max_active_runs: 3
     target:
       kind: start_run

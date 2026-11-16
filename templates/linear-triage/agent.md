@@ -41,17 +41,14 @@ learning: true
 approvals: ask
 triggers:
   - name: issue-created
-    # Each new issue in the team is one run. In Composio, create the Linear trigger LINEAR_PRIVATE_TEAM_ISSUE_CREATED
-    # with config team_id set to this team (Composio polls Linear every 2 minutes by default), register this
-    # trigger's hook_url as the Composio project's webhook and give it the secret Composio shows. Composio sends every
-    # trigger of a project to that one URL, so the where keeps this agent to its own team's issues.
+    # Each new issue in the team is one run. The apply makes this trigger on Composio for the saved Linear server,
+    # watching this team (Composio polls Linear every 2 minutes by default). A server with no public address or no
+    # connected Linear account skips it with a warning; make it later from Triggers → New app trigger.
     source:
-      kind: webhook
-      signature: composio
-      accept:
-        - event: LINEAR_PRIVATE_TEAM_ISSUE_CREATED
-          where:
-            - { pointer: /data/team/id, in: ["${parameters.team_id}"] }
+      kind: composio
+      server: linear
+      event: LINEAR_PRIVATE_TEAM_ISSUE_CREATED
+      config: { team_id: "${parameters.team_id}" }
     max_active_runs: 3
     target:
       kind: start_run
