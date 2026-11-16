@@ -50,7 +50,7 @@ triggers:
       kind: composio
       server: gmail
       event: GMAIL_NEW_GMAIL_MESSAGE
-      config: { query: "label:${parameters.label}", userId: me }
+      config: { query: 'label:"${parameters.label}"', userId: me }
     max_active_runs: 3
     target:
       kind: start_run
