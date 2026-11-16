@@ -174,7 +174,9 @@ export async function loadPackage(entry, ctx) {
   if (entry.category && m.category && m.category !== entry.category) ctx.log(`warn: ${where}: category ${entry.category} in the index, ${m.category} in agent.md; the index wins`);
   const tags = [...new Set([...(entry.tags ?? []), ...(Array.isArray(m.tags) ? m.tags.filter((t) => typeof t === "string" && TAG.test(t)) : [])])].slice(0, 8);
 
-  const displayName = fill(typeof m.display_name === "string" ? m.display_name : entry.name) || entry.name;
+  // The site names a template without its setup: "KYB due diligence (${parameters.risk_appetite} risk appetite)" is
+  // "KYB due diligence" here, whatever the default.
+  const displayName = fillParameters(typeof m.display_name === "string" ? m.display_name : entry.name, {}) || entry.name;
   const description = fill(typeof m.description === "string" ? m.description.trim() : "");
   if (!description) throw new SiteError(`${where}: agent.md has no description`);
 
