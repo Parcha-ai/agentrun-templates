@@ -4,8 +4,8 @@
   "model": "openrouter/inclusionai/ling-3.2-flash:free",
   "harness": "pi",
   "measured_on": "2026-11-16",
-  "build": "632d8f1411",
-  "note": "The graders' allowance for the run's own date in the short answer (\"As of <date>\") was added after seeing runs. When neither search nor any page works, one run in two still wrote \"not found\" instead of saying the pages could not be read.",
+  "build": "632d8f141186850fca2b711eda0e454ac534e1f2",
+  "note": "When neither search nor any page can be read, it may answer \"not found\" rather than say the pages could not be read. After the runs, the graders were changed to accept the run's own date in the short answer (\"As of <date>\").",
   "passed": {
     "pi": "4/6"
   },
