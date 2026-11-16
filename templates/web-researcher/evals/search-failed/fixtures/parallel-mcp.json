@@ -1,25 +1,27 @@
 {
   "server": "parallel",
-  "description": "A stand-in for Parallel Search's keyless MCP server (search.parallel.ai/mcp): every search answers the same two results, in Parallel's own result shape. Both pages are made up for this case, and no fetch of either succeeds.",
+  "description": "A stand-in for Parallel Search's keyless MCP server (mcp.parallel.ai/mcp): every search answers the same two results, in Parallel's own result shape. Both pages are made up for this case, and no fetch of either succeeds.",
   "tools": {
     "web_search": {
-      "description": "Purpose: Perform web searches and return LLM-friendly results, including excerpts that are usually sufficient to answer directly without a follow-up fetch. For multiple independent objectives, make one web_search call per objective concurrently. Put related query variations for the same objective in a single call's search_queries list.",
+      "description": "Purpose: Perform web searches and return\nLLM-friendly results, including excerpts that are usually sufficient to\nanswer directly without a follow-up fetch.\n\nIdeal Use Cases:\n- Answering questions that require fresh or current information\n- Research, comparison, documentation, and troubleshooting questions\n- Broad tasks where multiple `search_queries` can be issued in a single call\n\nFor multiple independent objectives, make one web_search call per objective\nconcurrently. Put related query variations for the same objective in a single\ncall's search_queries list.\n",
       "input": {
-        "type": "object",
         "properties": {
-          "objective": { "type": "string", "title": "Objective", "description": "Natural-language description of what the web search is trying to find." },
-          "search_queries": { "type": "array", "items": { "type": "string" }, "title": "Search Queries", "description": "Concise keyword search queries, 3-6 words each. At least one query is required; provide 2-3 for best results." },
-          "session_id": { "type": "string", "maxLength": 100, "description": "Stable identifier for the current conversation, reused on every call." },
-          "model_name": { "type": "string", "maxLength": 100, "description": "The identifier of the LLM model making this tool call." }
+          "objective": { "description": "Natural-language description of what the web search is trying to find.\nTry to make the search objective atomic, looking for a specific piece of information. May include guidance about preferred sources or freshness.", "title": "Objective", "type": "string" },
+          "search_queries": { "description": "Concise keyword search queries, 3-6 words\neach. They may use site: with a bare domain (such as site:example.com), but\nnever a URL path after the domain and never quoted phrases. At least one query\nis required; provide 2-3 for best results. For broad tasks, you can include\nmultiple related queries in a single call instead of chaining web_search\ncalls. The queries should be related to the objective.", "items": { "type": "string" }, "title": "Search Queries", "type": "array" },
+          "client_model": { "anyOf": [{ "maxLength": 100, "type": "string" }, { "type": "null" }], "default": null, "description": "Optional. The exact name of the model making this call. Only include it if you are confident of your exact model name; otherwise leave it out. Do not guess. If you include it, use the full versioned ID, not a family name.", "title": "Client Model" },
+          "session_id": { "anyOf": [{ "maxLength": 1000, "type": "string" }, { "type": "null" }], "default": null, "description": "Optional. If an earlier result from this server in this conversation included a session_id, pass that same value. Otherwise leave this out; do not generate a new one.", "title": "Session Id" }
         },
-        "required": ["objective", "search_queries"]
+        "required": ["objective", "search_queries"],
+        "type": "object",
+        "title": "v1_search_toolArguments",
+        "additionalProperties": false
       },
       "answers": [],
       "default": {
         "content": [
           {
             "type": "text",
-            "text": "{\n  \"search_id\": \"search_5f0c1e2a9b7d4c3e8a6f1b2d3c4e5f60\",\n  \"results\": [\n    {\n      \"url\": \"https://www.quellbrook-heritage.org/harbour-light/keepers\",\n      \"title\": \"Quellbrook Harbour Light: the keepers, 1868-1971\",\n      \"publish_date\": \"2019-04-02\",\n      \"excerpts\": [\n        \"The first keeper of Quellbrook Harbour Light was Tobias Wren, appointed when the light was first lit in 1868.\\n\\nEleven keepers served at the light before it was automated in 1971, the longest of them Margaret Wren, Tobias's daughter, for twenty-two years.\"\n      ]\n    },\n    {\n      \"url\": \"https://www.coastal-lights-register.net/lights/quellbrook-harbour\",\n      \"title\": \"Quellbrook Harbour Light - Coastal Lights Register\",\n      \"publish_date\": null,\n      \"excerpts\": [\n        \"Quellbrook Harbour Light. Status: automated. Its keepers' cottage is now a museum. First keeper: T. Wren.\"\n      ]\n    }\n  ],\n  \"session_id\": \"session_5f0c1e2a9b7d4c3e8a6f1b2d3c4e5f60\",\n  \"warnings\": null\n}"
+            "text": "{\n  \"search_id\": \"search_5f0c1e2a9b7d4c3e8a6f1b2d3c4e5f60\",\n  \"results\": [\n    {\n      \"url\": \"https://www.quellbrook-heritage.org/harbour-light/keepers\",\n      \"title\": \"Quellbrook Harbour Light: the keepers, 1868-1971\",\n      \"publish_date\": \"2019-04-02\",\n      \"excerpts\": [\n        \"The first keeper of Quellbrook Harbour Light was Tobias Wren, appointed when the light was first lit in 1868.\\n\\nEleven keepers served at the light before it was automated in 1971, the longest of them Margaret Wren, Tobias's daughter, for twenty-two years.\"\n      ]\n    },\n    {\n      \"url\": \"https://www.coastal-lights-register.net/lights/quellbrook-harbour\",\n      \"title\": \"Quellbrook Harbour Light - Coastal Lights Register\",\n      \"publish_date\": null,\n      \"excerpts\": [\n        \"Quellbrook Harbour Light. Status: automated. Its keepers' cottage is now a museum. First keeper: T. Wren.\"\n      ]\n    }\n  ],\n  \"session_id\": \"session_5f0c1e2a9b7d4c3e8a6f1b2d3c4e5f60\",\n  \"warnings\": null,\n  \"metadata\": null\n}"
           }
         ]
       }
