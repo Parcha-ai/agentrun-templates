@@ -3,7 +3,10 @@ parameters:
   owner: acme
   repo: lantern
   channel: C0SHIPIT1
-# The runner serves each fixture as the saved MCP server for its toolkit (GitHub's MCP on the App, Composio's Slack)
+# A fake of acme/lantern's releases.atom on loopback: the trigger's first poll reads the feed's items, then its next
+# poll fires on the fixture's item.
+feed: fixtures/feed.json
+# The runner serves each fixture as the saved MCP server for its toolkit (GitHub's MCP on a token, Composio's Slack)
 # and records each call for the graders.
 mcp:
   github: fixtures/github-mcp.json
