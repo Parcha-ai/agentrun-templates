@@ -51,6 +51,8 @@ export function readIndex(root) {
     // said once in the Install section.
     if (typeof t.summary !== "string" || t.summary.length < 20 || t.summary.length > 140 || /\n/.test(t.summary)) problems.push(`${at}.summary is required: one line of 20 to 140 characters saying what it does`);
     if (t.setup !== undefined && (typeof t.setup !== "string" || !t.setup.trim() || t.setup.length > 400)) problems.push(`${at}.setup, when given, is up to 400 characters`);
+    // guide: a step-by-step setup page, linked under the setup line. https only, and nothing that would end a Markdown link.
+    if (t.guide !== undefined && !(typeof t.guide === "string" && t.guide.length <= 300 && /^https:\/\/[^\s()<>"'`]+$/.test(t.guide))) problems.push(`${at}.guide, when given, is one https URL`);
     if (t.tags !== undefined && !(Array.isArray(t.tags) && t.tags.length <= 8 && t.tags.every((tag) => typeof tag === "string" && TAG.test(tag)))) problems.push(`${at}.tags: at most 8, each ${TAG}`);
   }
   if (problems.length) throw new SiteError(`${file}:\n  ${problems.join("\n  ")}`);
@@ -194,6 +196,7 @@ export async function loadPackage(entry, ctx) {
     description,
     summary: entry.summary,
     setup: entry.setup,
+    guide: entry.guide,
     version: str(m.version),
     license: str(m.license),
     author: isObj(m.author) ? { name: str(m.author.name), url: str(m.author.url) } : typeof m.author === "string" ? { name: m.author } : undefined,

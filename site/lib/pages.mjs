@@ -297,6 +297,7 @@ ${crumbNav(trail)}
 <section class="card install" aria-labelledby="install">
   <h2 id="install" class="caps section-label">Install</h2>
   ${pkg.setup ? html`<p class="setup">${pkg.setup}</p>` : ""}
+  ${pkg.guide ? html`<p class="guide"><a href="${pkg.guide}">The setup guide</a> walks you through it step by step.</p>` : ""}
   ${unprovenWords(pkg) ? html`<p class="unproven">${unprovenWords(pkg)}</p>` : ""}
   <p><button type="button" class="btn btn-solid" data-install="${pkg.installSource}" hidden>Install on your AgentRun</button> <button type="button" class="btn btn-ghost" data-install-forget hidden>Change address</button></p>
   <p class="meta" data-install-address></p>
@@ -442,6 +443,7 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
     "## Install",
     "",
     ...(pkg.setup ? [mdText(pkg.setup), ""] : []),
+    ...(pkg.guide ? [`[The setup guide](${pkg.guide}) walks you through it step by step.`, ""] : []),
     ...(unprovenWords(pkg) ? [unprovenWords(pkg), ""] : []),
     "```sh",
     cli,
@@ -513,7 +515,8 @@ export function listPage(site) {
   const trail = [["Templates", "/"], ["List your template", path]];
   const entry = `{ "name": "your-template", "source": "github:you/your-repo/path/to/template@v1.0.0", "category": "research", "tags": ["your-tag"],
   "summary": "One line, what it does, shown on its card and under its title.",
-  "setup": "Optional. What to do before installing, shown once in Install." }`;
+  "setup": "Optional. What to do before installing, shown once in Install.",
+  "guide": "Optional. An https link to a step-by-step setup guide, linked under setup." }`;
   const steps = [
     ["Put the template in a public GitHub repository.", "One folder: agent.md with its front matter, skills/, evals/ and the output schema. Private repositories can't be installed."],
     ["Check it.", "Run agentrun template validate <folder>. It runs the same checks AgentRun runs on install."],

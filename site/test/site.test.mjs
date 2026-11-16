@@ -192,9 +192,10 @@ test("the index is checked", () => {
   const dir = mkdtempSync(join(tmpdir(), "site-index-"));
   try {
     mkdirSync(join(dir, ".agentrun"));
-    writeFileSync(join(dir, ".agentrun", "marketplace.json"), JSON.stringify({ templates: [{ name: "x", source: "./templates/x", category: "toys", tags: ["Bad Tag"], summary: "Short." }, { name: "x", source: "ftp:nope", setup: "" }] }));
+    writeFileSync(join(dir, ".agentrun", "marketplace.json"), JSON.stringify({ templates: [{ name: "x", source: "./templates/x", category: "toys", tags: ["Bad Tag"], summary: "Short.", guide: "javascript:alert(1)" }, { name: "x", source: "ftp:nope", setup: "", guide: "http://example.com/guide" }] }));
     assert.throws(() => readIndex(dir), (err) => /category "toys"/.test(err.message) && /tags/.test(err.message) && /listed twice/.test(err.message)
-      && /templates\[0\]\.summary/.test(err.message) && /templates\[1\]\.summary/.test(err.message) && /templates\[1\]\.setup/.test(err.message));
+      && /templates\[0\]\.summary/.test(err.message) && /templates\[1\]\.summary/.test(err.message) && /templates\[1\]\.setup/.test(err.message)
+      && /templates\[0\]\.guide/.test(err.message) && /templates\[1\]\.guide/.test(err.message));
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -221,6 +222,8 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.match(page, /<h2 id="does"[^>]*>What it does<\/h2>\s*<p>Watches one topic every week and answers with what changed/);
     assert.equal(page.match(/Connect GitHub first/g)?.length, 1);
     assert.match(page, /<section class="card install"[\s\S]*?<p class="setup">Connect GitHub first if you want it to read your issues\. It runs &lt;script&gt;alert\(1\)&lt;\/script&gt; nothing else\.<\/p>/);
+    // The index's guide link sits right under the setup line, its URL escaped.
+    assert.match(page, /<p class="setup">Connect GitHub first[^<]*<\/p>\s*<p class="guide"><a href="https:\/\/github\.com\/Parcha-ai\/agentrun\/blob\/main\/docs\/sample-quickstart\.md\?a=1&amp;b=2">The setup guide<\/a> walks you through it step by step\.<\/p>/);
     // Eval counts: one small Tested line in the details. Version and license sit in Source.
     assert.match(page, /<h2 id="evals"[^>]*>Tested<\/h2>\s*<p class="tested">Passes 2 of 2 eval cases on pi and 1 of 2 on Claude Code\. Not yet tried on the live web\.<\/p>/);
     assert.match(page, /<dt>Version<\/dt><dd>0\.2\.0<\/dd>/);
@@ -252,6 +255,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     }
     const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
     assert.match(md, /^# Sample watch\n/);
+    assert.match(md, /^\[The setup guide\]\(https:\/\/github\.com\/Parcha-ai\/agentrun\/blob\/main\/docs\/sample-quickstart\.md\?a=1&b=2\) walks you through it step by step\.$/m);
     assert.match(md, /2 eval cases: injection, thin-data\./);
     // model.choices: each choice, its keys, and its warning word for word, escaped on the page.
     assert.match(page, /<dt>Model choices<\/dt><dd>At install you can keep that, or pick one of these:<ul class="choices"><li><strong>Free model<\/strong>: <code>openrouter\/example\/free-1:free<\/code> on <code>pi<\/code>, needs <code>OPENROUTER_API_KEY<\/code>\. <strong>Warning:<\/strong> Its provider may log what it reads &lt;script&gt;alert\(1\)&lt;\/script&gt;\. Free accounts get 50 requests a day\.<\/li><\/ul><\/dd>/);
