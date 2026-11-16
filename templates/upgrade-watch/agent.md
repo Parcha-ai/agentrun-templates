@@ -5,7 +5,7 @@ version: 0.1.0
 description: Every Monday, reads what a project you depend on released since the version you run, checks each breaking or behavior change against the list of what your project uses from it, and answers safe to upgrade or names what breaks and what to do, each finding quoted from the release notes and linked. Notes it could not read are said, never guessed.
 license: Apache-2.0
 author: { name: Parcha Labs }
-repository: https://github.com/Parcha-ai/agentrun
+repository: https://github.com/Parcha-ai/agentrun-templates
 category: engineering
 tags: [upgrades, dependencies, releases, github]
 harness: [pi]
