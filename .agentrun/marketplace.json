@@ -134,6 +134,20 @@
       "summary": "What each ticker you watch reported since the last run, set against a named consensus."
     },
     {
+      "name": "failed-payments",
+      "source": "./templates/failed-payments",
+      "category": "finance",
+      "tags": [
+        "stripe",
+        "payments",
+        "dunning",
+        "billing",
+        "slack",
+        "alerts"
+      ],
+      "summary": "Posts a Slack alert for each failed Stripe payment with who, how much, why and the next step."
+    },
+    {
       "name": "hiring-signals",
       "source": "./templates/hiring-signals",
       "category": "research",
@@ -145,6 +159,19 @@
         "weekly"
       ],
       "summary": "Every Monday, the new roles and leadership moves at the companies you track, and what they suggest."
+    },
+    {
+      "name": "issue-triage",
+      "source": "./templates/issue-triage",
+      "category": "engineering",
+      "tags": [
+        "github",
+        "issues",
+        "triage",
+        "duplicates",
+        "labels"
+      ],
+      "summary": "Labels each new GitHub issue, links likely duplicates and asks the author for what's missing."
     },
     {
       "name": "linear-sprint-check",
@@ -159,6 +186,19 @@
         "slack"
       ],
       "summary": "Twice a week, posts which issues in your Linear cycle are slipping and what was added since it started."
+    },
+    {
+      "name": "linear-triage",
+      "source": "./templates/linear-triage",
+      "category": "engineering",
+      "tags": [
+        "linear",
+        "issues",
+        "triage",
+        "duplicates",
+        "labels"
+      ],
+      "summary": "Labels each new Linear issue, links likely duplicates and asks for what's missing."
     },
     {
       "name": "literature-review",
@@ -382,6 +422,19 @@
         "catch-up"
       ],
       "summary": "A short Slack post on the decisions, unanswered requests and blockers in your team's channels."
+    },
+    {
+      "name": "follow-up-drafter",
+      "source": "./templates/follow-up-drafter",
+      "category": "sales",
+      "tags": [
+        "gmail",
+        "email",
+        "follow-up",
+        "drafts",
+        "replies"
+      ],
+      "summary": "Writes your next reply as a Gmail draft when an email lands in a label you pick."
     },
     {
       "name": "meeting-follow-up",
