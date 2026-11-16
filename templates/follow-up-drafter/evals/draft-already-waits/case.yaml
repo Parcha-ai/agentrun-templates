@@ -2,7 +2,6 @@
 # every call for the graders.
 parameters:
   label: follow-up
-  gmail_trigger_id: ti_gmail_followup01
 mcp:
   gmail: fixtures/gmail-mcp.json
 # Both tools granted, as the owner ticks the draft at apply, so the draft that happens is the agent's choice.
