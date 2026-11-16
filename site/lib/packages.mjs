@@ -245,6 +245,7 @@ export function fillParameters(text, params) {
   });
   if (out.includes("\u0000")) {
     out = out
+      .replace(/\s*\/\s*\u0000|\u0000\s*\/\s*/g, "\u0000")
       .replace(/\s*\(\s*\u0000[^)]*\)/g, "")
       .replace(/\s*[:\-–]\s*\u0000/g, "")
       .replace(/\u0000/g, "")

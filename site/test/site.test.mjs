@@ -77,6 +77,10 @@ test("display names fill parameter defaults and drop the rest cleanly", () => {
   assert.equal(fillParameters("KYB due diligence (${parameters.risk_appetite} risk appetite)", params), "KYB due diligence (medium risk appetite)");
   assert.equal(fillParameters("Code review: ${parameters.repo}", params), "Code review");
   assert.equal(fillParameters("Notes (${parameters.repo} only)", params), "Notes");
+  // owner/repo with neither filled leaves no stray slash; with one filled, that one alone.
+  assert.equal(fillParameters("Code review: ${parameters.owner}/${parameters.repo}", { owner: {}, repo: {} }), "Code review");
+  assert.equal(fillParameters("Code review: ${parameters.owner}/${parameters.repo}", { owner: { default: "acme" }, repo: {} }), "Code review: acme");
+  assert.equal(fillParameters("Code review: ${parameters.owner}/${parameters.repo}", { owner: { default: "acme" }, repo: { default: "web" } }), "Code review: acme/web");
 });
 
 test("github sources parse, and traversal is refused", () => {
