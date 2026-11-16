@@ -1,0 +1,20 @@
+{
+  "median_usd": 0,
+  "runs": 10,
+  "model": "openrouter/inclusionai/ling-3.2-flash:free",
+  "harness": "pi",
+  "measured_on": "2026-11-16",
+  "passed": {
+    "pi": "4/5"
+  },
+  "note": "One grader was narrowed to its intent before this run: a quiet check may fetch the PR list, never a PR's files. Under the original grader it passes 3 of 5.",
+  "free": {
+    "model": "openrouter/inclusionai/ling-3.2-flash:free",
+    "limits": [
+      "OpenRouter free models: 50 requests a day with no credits, 1,000 a day after a one-time $10, 20 a minute",
+      "GitHub's anonymous API: 60 requests an hour per IP address; this template spends 1 a check, plus 1 or 2 per new PR",
+      "Free endpoints may log prompts: public repositories only",
+      "Tested 4 of 5 with the \"nothing new\" grader narrowed to its intent (no file or author fetch; the PR list fetch allowed); 3 of 5 under the original grader"
+    ]
+  }
+}

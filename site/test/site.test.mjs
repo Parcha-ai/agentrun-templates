@@ -154,6 +154,19 @@ test("a template's requirements come from its package (tools, MCP toolkits, trig
   assert.deepEqual(requirements({ tools: ["read", "bash", "subagent"], mcp: [], triggers: [{ source: { kind: "manual" } }] }), []);
 });
 
+test("a template that prefers a free model says so first, naming the model; its measured note follows the Tested line", () => {
+  const free = { tools: ["read", "web_fetch"], mcp: [], triggers: [{ source: { kind: "schedule", cron: "0 */2 * * *" } }], model: { tier: "fast", prefer: "openrouter/inclusionai/ling-3.2-flash:free" } };
+  assert.deepEqual(requirements(free).map((r) => [r.logo, r.text]), [
+    ["logo-free.svg", "Runs free, on Ling 3.2 Flash through OpenRouter"],
+    ["logo-web.svg", "Requires web fetch"],
+    ["logo-schedule.svg", "Runs on a schedule"],
+  ]);
+  // A paid preference is no free logo.
+  assert.deepEqual(requirements({ ...free, model: { prefer: "openrouter/inclusionai/ling-3.2-flash" } }).map((r) => r.logo), ["logo-web.svg", "logo-schedule.svg"]);
+  const note = "One grader was narrowed to its intent first. Under the original grader it passes 3 of 5.";
+  assert.equal(testedLine({ ...free, measured: { passed: { pi: "4/5" }, note } }), `Passes 4 of 5 eval cases on pi. Not yet tried on the live web. ${note}`);
+});
+
 test("a package whose default harness is Codex, preferring no model, says a ChatGPT sign-in runs it", () => {
   const pkg = { tools: ["read"], mcp: [], secrets: [], evals: ["a"], budget: { per_run_usd: 0.1 }, measured: null, model: { tier: "balanced" }, harness: ["codex", "pi"] };
   assert.equal(keyWords(pkg).model, "A ChatGPT sign-in (Codex runs on your plan), or a model key");

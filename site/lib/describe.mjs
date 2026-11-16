@@ -178,6 +178,9 @@ export function requirements(pkg) {
   const out = [];
   const add = (r) => { if (!out.some((o) => o.id === r.id)) out.push({ id: r.id, logo: r.logo, text: r.text }); };
 
+  // A free model it prefers ("openrouter/inclusionai/ling-3.2-flash:free"): first, as it is what the template costs.
+  const prefer = typeof pkg.model?.prefer === "string" ? pkg.model.prefer : "";
+  if (prefer.endsWith(":free")) add({ id: "free", logo: "logo-free.svg", text: `Runs free, on ${modelName(prefer)}${prefer.startsWith("openrouter/") ? " through OpenRouter" : ""}` });
   const emailTools = tools.some((t) => t.startsWith("email_"));
   if (triggers.includes("email")) add({ id: "email", logo: "logo-email.svg", text: "Requires your email account, through AgentRun's email trigger" });
   else if (emailTools) add({ id: "email", logo: "logo-email.svg", text: "Requires your email account, through AgentRun's email tools" });
@@ -190,6 +193,11 @@ export function requirements(pkg) {
   if (triggers.includes("schedule")) add({ id: "schedule", logo: "logo-schedule.svg", text: "Runs on a schedule" });
   for (const n of mcp.filter((m) => !m.required)) { const r = need(n); add({ ...r, text: line(r, true) }); }
   return out;
+}
+
+/** A model id's own name, from its last part: "openrouter/inclusionai/ling-3.2-flash:free" is "Ling 3.2 Flash". */
+function modelName(id) {
+  return id.split("/").pop().replace(/:free$/, "").split("-").map(upperFirst).join(" ");
 }
 
 /** An MCP need's toolkit or server as a name: "Gmail", "GitHub", "slack MCP server". */
@@ -206,9 +214,11 @@ export function testedLine(pkg) {
   const counts = passCounts(pkg);
   if (!counts.length) return null;
   const evals = `Passes ${listWords(counts.map(([h, p, t], k) => (k ? `${p} of ${t} on ${h}` : `${p} of ${t} eval cases on ${h}`)))}.`;
-  if (!pkg.tools.some((t) => t === "web_search" || t === "web_fetch")) return evals;
+  // measured.json's `note`: what a reader needs to read the counts right (a grader changed before the run).
+  const note = typeof pkg.measured?.note === "string" && pkg.measured.note.trim() ? ` ${pkg.measured.note.trim()}` : "";
+  if (!pkg.tools.some((t) => t === "web_search" || t === "web_fetch")) return `${evals}${note}`;
   const live = passCounts(pkg, true);
-  return live.length ? `${evals} On the live web, ${listWords(live.map(([h, p, t]) => `${p} of ${t} on ${h}`))}.` : `${evals} Not yet tried on the live web.`;
+  return `${live.length ? `${evals} On the live web, ${listWords(live.map(([h, p, t]) => `${p} of ${t} on ${h}`))}.` : `${evals} Not yet tried on the live web.`}${note}`;
 }
 
 /** The short form for a search snippet: "Passes 5 of 5 eval cases." (the first harness's count when measured). */

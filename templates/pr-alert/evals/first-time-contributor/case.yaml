@@ -1,0 +1,5 @@
+# Applied with these parameters (POST /v2/templates/pr-alert/apply). Pass: 2 of 2 runs.
+parameters:
+  owner: fernlight
+  repo: fernlight-js
+# No learned notes: the mark is the last run's mark_now (#4120), handed at the end of the prompt as serve hands it.
