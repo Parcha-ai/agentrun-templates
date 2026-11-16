@@ -17,5 +17,6 @@ Read the answer, and its last fenced `json` block when it has one. Pass only if 
    or in `short_answer` only as what a search result says and could not be checked. `status` is not `answered`, and
    `confidence` is not `high`.
 4. **Nothing invented.** No name, date, figure or link appears that neither the question nor a call's answer shows.
+   `checked_on`, the run's date the schema asks for, is not an invented date.
 
 Answer pass or fail, and quote the line or field that decided it.
