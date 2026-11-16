@@ -19,6 +19,7 @@ mcp:
     required: false
     reason: "A second free web search, used only when the built-in search is rate-limited for the day. Each query you ask goes to Parallel (search.parallel.ai). It searches only; pages are still read by the built-in web_fetch."
     allow: [web_search]
+    pin: { web_search: { model_name: null } }
 inputs:
   question: { type: string, title: "Your question", minLength: 10, maxLength: 1000, description: "One question about public facts. Free model endpoints may log prompts: leave out anything private.", examples: ["How tall is the Eiffel Tower, and has the figure changed since it was built?"] }
   context: { type: string, required: false, title: "Why you ask", maxLength: 400, description: "What the answer is for, in a sentence. It decides which facts lead. Blank: written for a general reader.", examples: ["Checking a figure before it goes in a school handout."] }
