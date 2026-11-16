@@ -1,3 +1,9 @@
-# The shared failed-search case (evals-shared/search-failed): every web_search answers the rate-limited free search's
-# own words and every web_fetch fails. The input is the thin case's (no-good-answer), with no page handed.
+# The built-in search is out and Parallel's takes over: every web_search answers the rate-limited free search's own
+# words and every web_fetch fails, while a stand-in for Parallel Search (fixtures/parallel-mcp.json) answers each search
+# with two results in Parallel's own shape (url, title, publish_date, excerpts). No page can be opened, so what those
+# results say is a lead, never a finding. The input is the thin case's (no-good-answer), with no page handed.
 web: unavailable
+mcp:
+  parallel: fixtures/parallel-mcp.json
+grants:
+  - mcp:parallel/web_search

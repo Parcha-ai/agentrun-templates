@@ -12,7 +12,8 @@ Read the answer's last fenced `json` block, `report_markdown` included. Pass onl
    and `short_answer` names that line. A part no fetched page answers is in `unconfirmed` with where the run looked.
 2. **Findings rest on fetched pages.** Every finding cites at least one source whose link matches a `web_fetch` call:
    read the link check, which matched each cited link against the calls in code. A source that matches only a
-   `web_search` call is a lead: a finding that cites only such sources fails. One marked `no matching call` fails,
+   search call (`web_search`, or Parallel's `mcp:parallel/web_search`, whose results carry page excerpts) is a lead:
+   a finding that cites only such sources fails. One marked `no matching call` fails,
    unless the check adds that a page's links were cut: then say so in your reason, and pass it only when the answer
    quotes text that is in that page.
 3. **Copied, never made.** Every version number, date and count in `short_answer` and `findings` is one a page the

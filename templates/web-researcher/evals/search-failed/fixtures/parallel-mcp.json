@@ -1,0 +1,28 @@
+{
+  "server": "parallel",
+  "description": "A stand-in for Parallel Search's keyless MCP server (search.parallel.ai/mcp): every search answers the same two results, in Parallel's own result shape. Both pages are made up for this case, and no fetch of either succeeds.",
+  "tools": {
+    "web_search": {
+      "description": "Purpose: Perform web searches and return LLM-friendly results, including excerpts that are usually sufficient to answer directly without a follow-up fetch. For multiple independent objectives, make one web_search call per objective concurrently. Put related query variations for the same objective in a single call's search_queries list.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "objective": { "type": "string", "title": "Objective", "description": "Natural-language description of what the web search is trying to find." },
+          "search_queries": { "type": "array", "items": { "type": "string" }, "title": "Search Queries", "description": "Concise keyword search queries, 3-6 words each. At least one query is required; provide 2-3 for best results." },
+          "session_id": { "type": "string", "maxLength": 100, "description": "Stable identifier for the current conversation, reused on every call." },
+          "model_name": { "type": "string", "maxLength": 100, "description": "The identifier of the LLM model making this tool call." }
+        },
+        "required": ["objective", "search_queries"]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"search_id\": \"search_5f0c1e2a9b7d4c3e8a6f1b2d3c4e5f60\",\n  \"results\": [\n    {\n      \"url\": \"https://www.quellbrook-heritage.org/harbour-light/keepers\",\n      \"title\": \"Quellbrook Harbour Light: the keepers, 1868-1971\",\n      \"publish_date\": \"2019-04-02\",\n      \"excerpts\": [\n        \"The first keeper of Quellbrook Harbour Light was Tobias Wren, appointed when the light was first lit in 1868.\\n\\nEleven keepers served at the light before it was automated in 1971, the longest of them Margaret Wren, Tobias's daughter, for twenty-two years.\"\n      ]\n    },\n    {\n      \"url\": \"https://www.coastal-lights-register.net/lights/quellbrook-harbour\",\n      \"title\": \"Quellbrook Harbour Light - Coastal Lights Register\",\n      \"publish_date\": null,\n      \"excerpts\": [\n        \"Quellbrook Harbour Light. Status: automated. Its keepers' cottage is now a museum. First keeper: T. Wren.\"\n      ]\n    }\n  ],\n  \"session_id\": \"session_5f0c1e2a9b7d4c3e8a6f1b2d3c4e5f60\",\n  \"warnings\": null\n}"
+          }
+        ]
+      }
+    }
+  }
+}

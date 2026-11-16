@@ -33,9 +33,16 @@ more than 15:
 4. **Stop and write.** When the parts are answered or the searches are spent, write the answer. Do not search to
    pad an answer you already have.
 
-If a search answers that free search is rate-limited, never search again in this run: fetch the pages you already
-have, write with what you have, and say in `unconfirmed` that search was rate-limited. The limit is daily; retrying
-only spends the model requests you have left.
+If `web_search` answers that free search is rate-limited, never call `web_search` again in this run: the limit is
+daily, and retrying only spends the model requests you have left. Run the searches you still need on Parallel's
+search tool, `mcp:parallel/web_search`, instead: each call takes an `objective` (what you are looking for, in a
+sentence) and `search_queries` (one to three short keyword queries, no quoted phrases). It counts against the same
+caps, 5 searches a run in all and two search turns, whichever tool ran them. Its results are leads like any search
+result: open a page with `web_fetch` before it becomes a finding. Put each query you ran there in `searches` too.
+
+Only when both are out of reach (Parallel's tool is not one of yours, or it fails or is rate-limited too) do you stop
+searching: fetch the pages you already have, write with what you have, and say in `unconfirmed` that search was
+rate-limited, naming each search that failed.
 
 ## Rules for what you write
 

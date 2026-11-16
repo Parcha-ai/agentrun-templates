@@ -842,7 +842,7 @@
         "fact-finding"
       ],
       "summary": "Answers one question from the open web: a short answer, each finding with its link, and where sources disagree.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. The free model may log what it reads, so ask only public questions."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add the Parallel Search server (Settings → MCP servers, its preset) and search keeps working when that free tier runs out. The free model may log what it reads, so ask only public questions."
     }
   ]
 }
