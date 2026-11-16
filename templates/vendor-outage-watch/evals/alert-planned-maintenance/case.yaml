@@ -1,0 +1,8 @@
+# Applied with these parameters. The incident-alert trigger reads the fake GitHub status feed in fixtures/feed.json in
+# place of the first URL; its first poll takes an old incident as read, and a completed maintenance window fires a run.
+parameters:
+  vendors: ["GitHub Actions"]
+  status_feeds: ["https://www.githubstatus.com/history.atom"]
+feed: fixtures/feed.json
+now: 2026-11-15T03:10:00Z
+web: unavailable

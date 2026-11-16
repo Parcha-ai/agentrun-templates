@@ -1,0 +1,31 @@
+{
+  "description": "GitHub's status history with two resolved incidents from earlier in November; a new Actions incident is posted.",
+  "format": "atom",
+  "title": "GitHub Status - Incident History",
+  "items": [
+    {
+      "id": "tag:www.githubstatus.com,2005:Incident/24790",
+      "link": "https://www.githubstatus.com/incidents/b8c3n5r2w6yd",
+      "title": "Disruption with some GitHub services",
+      "published": "2026-11-06T15:20:00Z",
+      "updated": "2026-11-06T16:05:00Z",
+      "content": "<p><small>Nov <var data-var='date'>6</var>, <var data-var='time'>16:05</var> UTC</small><br><strong>Resolved</strong> - This incident has been resolved.</p><p><small>Nov <var data-var='date'>6</var>, <var data-var='time'>15:20</var> UTC</small><br><strong>Investigating</strong> - We are investigating reports of degraded performance for Pages.</p>"
+    },
+    {
+      "id": "tag:www.githubstatus.com,2005:Incident/24771",
+      "link": "https://www.githubstatus.com/incidents/h2v7k9q4s1mx",
+      "title": "Incident with Git Operations",
+      "published": "2026-11-02T11:00:00Z",
+      "updated": "2026-11-02T11:48:00Z",
+      "content": "<p><small>Nov <var data-var='date'>2</var>, <var data-var='time'>11:48</var> UTC</small><br><strong>Resolved</strong> - This incident has been resolved.</p><p><small>Nov <var data-var='date'>2</var>, <var data-var='time'>11:00</var> UTC</small><br><strong>Investigating</strong> - We are investigating reports of degraded performance for Git Operations.</p>"
+    }
+  ],
+  "item": {
+    "id": "tag:www.githubstatus.com,2005:Incident/24811",
+    "link": "https://www.githubstatus.com/incidents/x4k9p2m7q1zt",
+    "title": "Incident with Actions",
+    "published": "2026-11-14T09:12:00Z",
+    "updated": "2026-11-14T09:41:00Z",
+    "content": "<p><small>Nov <var data-var='date'>14</var>, <var data-var='time'>09:41</var> UTC</small><br><strong>Identified</strong> - We have identified the cause of delays in starting Actions jobs on GitHub-hosted runners and are rolling out a fix. About 25% of jobs are queued for more than 5 minutes before they start.</p><p><small>Nov <var data-var='date'>14</var>, <var data-var='time'>09:12</var> UTC</small><br><strong>Investigating</strong> - We are investigating reports of degraded performance for Actions.</p>"
+  }
+}
