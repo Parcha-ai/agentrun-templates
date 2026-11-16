@@ -17,6 +17,7 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
    (no recall, cite only this page).
 4. **Sources.** `sources` lists the regulator's page, and every recall fact cites it.
 5. **Nothing invented.** No number, date or serial appears that the pages or the run's own fetches do not show.
-   `checked_on`, the run's date the schema asks for, is not an invented date.
+   `checked_on`, the run's date the schema asks for, is not an invented date, nor is that same date where the answer
+   dates itself with it ("As of <the run's date>" in `short_answer`).
 
 Fail if any one does not hold.

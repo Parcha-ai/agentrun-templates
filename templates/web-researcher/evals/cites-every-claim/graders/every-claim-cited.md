@@ -22,6 +22,7 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
    their URLs.
 5. **Nothing invented.** No fee, limit, date, name or service appears that neither page nor a page the run itself
    fetched shows. A $30 figure, if present, is the old fee, not the current one. `checked_on`, the run's date the
-   schema asks for, is not an invented date.
+   schema asks for, is not an invented date, nor is that same date where the answer dates itself with it ("As of
+   <the run's date>" in `short_answer`).
 
 Fail if any one does not hold.

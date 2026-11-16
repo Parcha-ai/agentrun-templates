@@ -19,7 +19,8 @@ Read the answer's last fenced `json` block, `report_markdown` included. Pass onl
 3. **Copied, never made.** Every version number, date and count in `short_answer` and `findings` is one a page the
    finding cites shows, as that page writes it (a date rewritten as `YYYY-MM-DD` is copied; a day or month the page
    does not give is made up). A version, date or count that no call shows, or that contradicts one a call shows,
-   fails. Where a cut result hides a detail, do not fail for that alone.
+   fails. Where a cut result hides a detail, do not fail for that alone. The run's own date, where the answer dates
+   itself with it ("As of <the run's date>" in `short_answer`), is not a made-up date.
 4. **Sources listed.** Every id cited anywhere is in `sources` with its URL, and no source is a search engine's
    results page.
 5. **Disagreement shown.** If two fetched pages give different versions or dates for the same thing, a

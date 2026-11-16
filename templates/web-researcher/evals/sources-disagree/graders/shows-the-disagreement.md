@@ -18,6 +18,7 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
 4. **Confidence.** `confidence` is not `high`.
 5. **Every figure cited, nothing invented.** Each height cites the page that gives it; no other height, floor count or
    date appears that the pages or the run's own fetches do not show. `checked_on`, the run's date the schema asks
-   for, is not an invented date.
+   for, is not an invented date, nor is that same date where the answer dates itself with it ("As of <the run's
+   date>" in `short_answer`).
 
 Fail if any one does not hold.
