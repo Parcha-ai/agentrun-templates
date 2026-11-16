@@ -2,14 +2,14 @@
 name: web-researcher
 display_name: Web researcher (free to run)
 version: 0.1.0
-description: Ask a question and get a short cited answer from the open web, then the findings each with its link, where sources disagree, and what could not be confirmed. It runs for $0 on a free OpenRouter model with keyless web search, so use it for public questions only, because free model endpoints may log prompts.
+description: Ask a question and get a short cited answer from the open web, then the findings each with its link, where sources disagree, and what could not be confirmed. It runs for $0 on a free OpenRouter model with keyless web search. Parallel's search sees each query, so use it for public questions only.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
 category: research
 tags: [free, web-research, citations, fact-finding, questions]
 harness: [pi]
-model: { tier: fast, prefer: openrouter/baidu/ernie-5.5-flash-preview:free }
+model: { tier: fast, prefer: openrouter/inclusionai/ling-3.2-flash:free }
 effort: medium
 tools: [read, web_search, web_fetch]
 mcp:
@@ -21,7 +21,7 @@ mcp:
     allow: [web_search]
     pin: { web_search: { client_model: null } }
 inputs:
-  question: { type: string, title: "Your question", minLength: 10, maxLength: 1000, description: "One question about public facts. Free model endpoints may log prompts: leave out anything private.", examples: ["How tall is the Eiffel Tower, and has the figure changed since it was built?"] }
+  question: { type: string, title: "Your question", minLength: 10, maxLength: 1000, description: "One question about public facts. Web search sees each query: leave out anything private.", examples: ["How tall is the Eiffel Tower, and has the figure changed since it was built?"] }
   context: { type: string, required: false, title: "Why you ask", maxLength: 400, description: "What the answer is for, in a sentence. It decides which facts lead. Blank: written for a general reader.", examples: ["Checking a figure before it goes in a school handout."] }
 budget: { per_run_usd: 0.25 }
 output: { schema: web-researcher.schema.json }
