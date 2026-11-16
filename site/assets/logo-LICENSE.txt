@@ -1,0 +1,5 @@
+logo-github.svg, logo-gmail.svg, logo-googlecalendar.svg, logo-hubspot.svg, logo-linear.svg and logo-stripe.svg are
+from Simple Icons 16.38.0 (https://simpleicons.org), released under CC0 1.0. The marks are trademarks of their owners
+and are shown only to say a template uses that service.
+
+The other logo-*.svg files are glyphs drawn for this site (Apache-2.0, as the rest of the repository).

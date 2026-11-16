@@ -36,11 +36,6 @@ export function clip(text, max) {
   return `${(at > max * 0.6 ? cut.slice(0, at) : cut).replace(/[\s,.;:]+$/, "")}…`;
 }
 
-export function usd(n) {
-  if (typeof n !== "number" || !Number.isFinite(n)) return "";
-  return n < 0.1 ? `$${n.toFixed(3)}` : `$${n.toFixed(2)}`;
-}
-
 export function plural(n, one, many = `${one}s`) {
   return `${n} ${n === 1 ? one : many}`;
 }

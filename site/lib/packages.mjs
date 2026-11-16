@@ -160,8 +160,8 @@ export async function loadPackage(entry, ctx) {
   }
 
   let measured = readJson("measured.json", { optional: true });
-  if (measured !== undefined && !(isObj(measured) && typeof measured.median_usd === "number" && Number.isInteger(measured.runs))) {
-    ctx.log(`warn: ${where}: measured.json is not {median_usd, runs, model, harness, measured_on}; ignored`);
+  if (measured !== undefined && !(isObj(measured) && isObj(measured.passed))) {
+    ctx.log(`warn: ${where}: measured.json has no passed: {<harness>: "<passed>/<cases>"}; ignored`);
     measured = undefined;
   }
 

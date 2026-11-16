@@ -1,6 +1,6 @@
 // The pages: each is real HTML a crawler reads (no client-side rendering), plus a Markdown twin with the same content.
 
-import { CATEGORY_TEXT, computerWords, costWords, factsLine, factsShort, keyWords, mcpWords, modelChoices, modelWords, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
+import { CATEGORY_TEXT, computerWords, factsLine, factsShort, keyWords, mcpWords, modelChoices, modelWords, requirements, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
 import { markdownToHtml } from "./markdown.mjs";
 import { clip, html, mdCode, mdText, plural, raw, upperFirst } from "./util.mjs";
 
@@ -83,12 +83,20 @@ function chip(text, tone = "plain") {
   return html`<span class="chip chip-${tone}">${text}</span>`;
 }
 
+/** What a template requires, as a row of logos with no heading. Each says its line on hover and on keyboard focus
+ *  (site.css), and a screen reader reads the line. Nothing when it needs nothing beyond a model. */
+function reqRow(site, pkg) {
+  const reqs = requirements(pkg);
+  if (!reqs.length) return "";
+  return html`<ul class="reqs" aria-label="What it requires">${reqs.map((r) => html`<li class="req" tabindex="0"><img src="/assets/${r.logo}?v=${site.assetVersion}" alt="" width="16" height="16"><span class="req-tip">${r.text}</span></li>`)}</ul>`;
+}
+
 function card(site, pkg) {
-  const cost = pkg.measured ? costWords(pkg).headline : null;
   return html`<li class="card tpl" data-name="${pkg.name}">
   <h3><a href="/templates/${pkg.name}/">${pkg.displayName}</a></h3>
   <p class="desc">${clip(pkg.description, 220)}</p>
-  <p class="row">${chip(CATEGORY_TEXT[pkg.category].title, "active")}${pkg.triggers.some((t) => t.source?.kind === "schedule") ? chip("scheduled") : ""}${pkg.local ? "" : chip("bundled", "muted")}${cost ? chip(cost) : ""}</p>
+  ${reqRow(site, pkg)}
+  <p class="row">${chip(CATEGORY_TEXT[pkg.category].title, "active")}${pkg.local ? "" : chip("bundled", "muted")}</p>
 </li>`;
 }
 
@@ -272,7 +280,6 @@ export function templatePage(site, pkg, stats) {
   const path = `/templates/${pkg.name}/`;
   const cat = CATEGORY_TEXT[pkg.category];
   const trail = [["Templates", "/"], [cat.title, `/categories/${pkg.category}/`], [pkg.displayName, path]];
-  const cost = costWords(pkg);
   const keys = keyWords(pkg);
   const choices = modelChoices(pkg.model);
   const triggers = triggerLines(pkg);
@@ -285,6 +292,7 @@ ${crumbNav(trail)}
   <p class="row">${chip(cat.title, "active")}${pkg.tags.map((t) => chip(t))}</p>
   <h1>${pkg.displayName}</h1>
   <p class="lead">${pkg.description}</p>
+  ${reqRow(site, pkg)}
   <p class="facts-line">${factsLine(pkg)}</p>
   ${unprovenWords(pkg) ? html`<p class="unproven">${unprovenWords(pkg)}</p>` : ""}
   <p class="meta">${[pkg.version ? `Version ${pkg.version}` : null, pkg.license, pkg.author?.name ? `by ${pkg.author.name}` : null, stats ? `${plural(stats.stars, "star")} and ${plural(stats.forks, "fork")} on ${pkg.owner}/${pkg.repo}` : null].filter(Boolean).join(" · ")}</p>
@@ -352,12 +360,6 @@ ${crumbNav(trail)}
   ${pkg.outputSchema ? html`<details><summary class="caps">Output schema (${pkg.outputSchemaPath})</summary>${jsonBlock(pkg.outputSchema)}</details>` : ""}
 </section>
 
-<section aria-labelledby="cost">
-  <h2 id="cost" class="caps section-label">Cost per run</h2>
-  <p class="big">${cost.headline}</p>
-  <p class="muted">${cost.detail}</p>
-</section>
-
 <section aria-labelledby="evals">
   <h2 id="evals" class="caps section-label">Tested by</h2>
   ${pkg.evals.length ? html`<p>${plural(pkg.evals.length, "eval case")}: ${pkg.evals.map((e, k) => html`${k ? ", " : ""}<code>${e}</code>`)}.</p>` : html`<p class="muted">No eval cases.</p>`}
@@ -405,7 +407,7 @@ ${crumbNav(trail)}
     ogType: "article",
     title: `${clip(pkg.displayName, 50)}: AgentRun template`,
     ogTitle: pkg.displayName,
-    // The search snippet: what it does (its first sentence), then the cost and eval line, inside 158 characters.
+    // The search snippet: what it does (its first sentence), then the eval line, inside 158 characters.
     description: (() => {
       const short = factsShort(pkg);
       const first = pkg.description.split(/(?<=\.)\s/)[0];
@@ -413,7 +415,7 @@ ${crumbNav(trail)}
     })(),
     jsonLd,
     body,
-    md: templateMd(site, pkg, { cost, keys, triggers, cli, stats }),
+    md: templateMd(site, pkg, { keys, triggers, cli, stats }),
   };
 }
 
@@ -427,13 +429,15 @@ function mdTable(rows) {
   return [head, ...rows.map((r) => `| ${mdCode(r.key)} | ${mdText(typeWords(r))} | ${r.required ? "yes" : "no"} | ${what(r)} |`)].join("\n");
 }
 
-function templateMd(site, pkg, { cost, keys, triggers, cli, stats }) {
+function templateMd(site, pkg, { keys, triggers, cli, stats }) {
   const choices = modelChoices(pkg.model);
+  const reqs = requirements(pkg);
   const out = [
     `# ${pkg.displayName}`,
     "",
     pkg.description,
     "",
+    ...(reqs.length ? [reqs.map((r) => `${mdText(r.text)}.`).join(" "), ""] : []),
     factsLine(pkg),
     "",
     ...(unprovenWords(pkg) ? [`**${unprovenWords(pkg)}**`, ""] : []),
@@ -483,10 +487,6 @@ function templateMd(site, pkg, { cost, keys, triggers, cli, stats }) {
     if (shown) out.push("Output:", "", shown.trim().replace(/^#{1,4} /gm, "#### "), "");
   }
   out.push(
-    "## Cost per run",
-    "",
-    `${cost.headline}. ${cost.detail}`,
-    "",
     "## Tested by",
     "",
     pkg.evals.length ? `${plural(pkg.evals.length, "eval case")}: ${pkg.evals.join(", ")}.` : "No eval cases.",
@@ -542,11 +542,12 @@ ${crumbNav(trail)}
   <p>The same one the bundled templates meet.</p>
   <ul class="plain">${bar.map((b) => html`<li>${b}</li>`)}</ul>
 </section>
-<section aria-labelledby="cost-note">
-  <h2 id="cost-note" class="caps section-label">Cost per run</h2>
-  <p>Add a <code>measured.json</code> beside agent.md once you have run your evals, and the page shows the median cost instead of "not measured yet":</p>
-  <pre class="code"><code>{ "median_usd": 0.42, "runs": 12, "model": "openrouter/particle-ai/particle-1", "harness": "pi", "measured_on": "2026-11-14", "passed": { "pi": "5/5", "claude-agent": "4/5", "codex": "5/5" } }</code></pre>
-  <p>A template that searches or reads the web adds <code>"live": { "cases": 1, "median_usd": 0.12, "passed": { "pi": "2/2" } }</code>: its cases named <code>live-*</code>, which give it no pages and run on the real web. <code>passed</code> counts the other cases. Without <code>live</code>, the page says it has not been tried on the live web.</p>
+<section aria-labelledby="eval-note">
+  <h2 id="eval-note" class="caps section-label">Eval results</h2>
+  <p>Add a <code>measured.json</code> beside agent.md once you have run your evals, and the page shows how many cases pass on each harness:</p>
+  <pre class="code"><code>{ "runs": 12, "model": "openrouter/particle-ai/particle-1", "harness": "pi", "measured_on": "2026-11-14", "passed": { "pi": "5/5", "claude-agent": "4/5", "codex": "5/5" } }</code></pre>
+  <p>What a template requires (its integrations, web search, a schedule) comes from its agent.md: its tools, MCP toolkits and triggers. There is nothing to write for it.</p>
+  <p>A template that searches or reads the web adds <code>"live": { "cases": 1, "passed": { "pi": "2/2" } }</code>: its cases named <code>live-*</code>, which give it no pages and run on the real web. <code>passed</code> counts the other cases. Without <code>live</code>, the page says it has not been tried on the live web.</p>
 </section>`;
   return {
     path,
@@ -573,9 +574,9 @@ ${crumbNav(trail)}
       "",
       ...bar.map((b) => `- ${b}`),
       "",
-      "## Cost per run",
+      "## Eval results",
       "",
-      "Add a `measured.json` beside agent.md: `{ \"median_usd\": 0.42, \"runs\": 12, \"model\": \"...\", \"harness\": \"pi\", \"measured_on\": \"2026-11-14\", \"passed\": { \"pi\": \"5/5\" } }` (passed: cases passed per harness, from your latest runs). A template that uses the web adds `\"live\": { \"cases\": 1, \"median_usd\": 0.12, \"passed\": { \"pi\": \"2/2\" } }` from its `live-*` cases, which give it no pages and run on the real web; `passed` counts the other cases. Without `live`, the page says it has not been tried on the live web.",
+      "Add a `measured.json` beside agent.md: `{ \"runs\": 12, \"model\": \"...\", \"harness\": \"pi\", \"measured_on\": \"2026-11-14\", \"passed\": { \"pi\": \"5/5\" } }` (passed: cases passed per harness, from your latest runs). What a template requires comes from its agent.md (tools, MCP toolkits, triggers); there is nothing to write for it. A template that uses the web adds `\"live\": { \"cases\": 1, \"passed\": { \"pi\": \"2/2\" } }` from its `live-*` cases, which give it no pages and run on the real web; `passed` counts the other cases. Without `live`, the page says it has not been tried on the live web.",
       "",
     ].join("\n"),
   };

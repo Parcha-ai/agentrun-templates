@@ -1,6 +1,6 @@
 // Turns manifest fields into the plain sentences the pages show. Each function returns text (the page escapes it).
 
-import { usd } from "./util.mjs";
+import { upperFirst } from "./util.mjs";
 
 const DAYS = ["Sundays", "Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays", "Sundays"];
 
@@ -158,8 +158,50 @@ function passCounts(pkg, live = false) {
   });
 }
 
-/** One plain sentence for a template's page and its search snippet: what it needs, what a run costs, how its evals went.
- *  "Needs only a model key and the web, costs about $0.06 a run, and passes 5 of 5 eval cases on pi and 4 of 5 on Codex." */
+const LOGO_TOOLKITS = new Set(["github", "gmail", "googlecalendar", "hubspot", "linear", "slack", "stripe"]);
+
+/** What a template requires beyond a model, read off the package itself (its tools, MCP needs and triggers) so the
+ *  page can't drift from it: one {id, logo, text} each, logo a file in site/assets. Required things come first, then
+ *  the schedule or webhook that starts it, then optional tools. Empty when it needs nothing more. */
+export function requirements(pkg) {
+  const triggers = (pkg.triggers ?? []).map((t) => t?.source?.kind);
+  const mcp = pkg.mcp ?? [];
+  const tools = pkg.tools ?? [];
+  const toolkitLogo = (toolkit) => (LOGO_TOOLKITS.has(toolkit) ? `logo-${toolkit}.svg` : "logo-plug.svg");
+  const need = (n) => {
+    const name = mcpName(n);
+    if (n.source === "github") return { id: "github-app", logo: "logo-github.svg", what: "GitHub", how: "the AgentRun GitHub App" };
+    if (n.source === "composio") return { id: `composio-${n.toolkit}`, logo: toolkitLogo(n.toolkit), what: name, how: "Composio" };
+    return { id: `mcp-${n.server ?? n.toolkit ?? "server"}`, logo: "logo-plug.svg", what: `the ${name}`, how: null };
+  };
+  const line = ({ what, how }, optional) => optional ? `Can use ${what}${how ? `, through ${how}` : ""} (optional)` : `Requires ${what}${how ? `, through ${how}` : ""}`;
+  const out = [];
+  const add = (r) => { if (!out.some((o) => o.id === r.id)) out.push({ id: r.id, logo: r.logo, text: r.text }); };
+
+  const emailTools = tools.some((t) => t.startsWith("email_"));
+  if (triggers.includes("email")) add({ id: "email", logo: "logo-email.svg", text: "Requires your email account, through AgentRun's email trigger" });
+  else if (emailTools) add({ id: "email", logo: "logo-email.svg", text: "Requires your email account, through AgentRun's email tools" });
+  if (triggers.includes("github")) add({ id: "github-app", logo: "logo-github.svg", text: line({ what: "GitHub", how: "the AgentRun GitHub App" }) });
+  for (const n of mcp.filter((m) => m.required)) { const r = need(n); add({ ...r, text: line(r) }); }
+  for (const p of monidProviders(pkg)) add({ id: `monid-${p}`, logo: "logo-plug.svg", text: line({ what: p, how: "monid" }) });
+  if (tools.includes("web_search")) add({ id: "web_search", logo: "logo-exa.svg", text: "Requires web search, through Exa" });
+  if (tools.includes("web_fetch")) add({ id: "web_fetch", logo: "logo-web.svg", text: "Requires web fetch" });
+  if (triggers.includes("webhook")) add({ id: "webhook", logo: "logo-webhook.svg", text: "Starts from a signed webhook your service sends" });
+  if (triggers.includes("schedule")) add({ id: "schedule", logo: "logo-schedule.svg", text: "Runs on a schedule" });
+  for (const n of mcp.filter((m) => !m.required)) { const r = need(n); add({ ...r, text: line(r, true) }); }
+  return out;
+}
+
+/** An MCP need's toolkit or server as a name: "Gmail", "GitHub", "slack MCP server". */
+function mcpName(need) {
+  if (need.source === "github") return "GitHub";
+  if (need.source === "composio") return TOOLKIT_NAMES[need.toolkit] ?? need.toolkit ?? "a Composio toolkit";
+  return need.server || need.toolkit ? `${need.server ?? need.toolkit} MCP server` : "MCP server";
+}
+
+/** One plain sentence for a template's page and its search snippet: what it needs and how its evals went. No cost: a
+ *  run's cost is the owner's model and plan, which the page can't know.
+ *  "Needs only a model key and the web, and passes 5 of 5 eval cases on pi and 4 of 5 on Codex." */
 export function factsLine(pkg) {
   const required = pkg.mcp.filter((n) => n.required).map(mcpWords);
   const optional = pkg.mcp.filter((n) => !n.required).map(mcpWords);
@@ -169,8 +211,6 @@ export function factsLine(pkg) {
   const key = onPlan(pkg) ? "a ChatGPT sign-in or a model key" : "a model key";
   let needs = paid.length ? `Needs ${listWords(paid)}` : `Needs only ${key}${web ? " and the web" : ""}`;
   if (optional.length) needs += ` (${listWords(optional)} optional)`;
-  const cap = pkg.budget?.per_run_usd;
-  const cost = pkg.measured ? `costs about ${usd(pkg.measured.median_usd)} a run` : typeof cap === "number" ? `stops each run at ${usd(cap)}` : null;
   const counts = passCounts(pkg);
   const evals = counts.length
     ? `passes ${listWords(counts.map(([h, p, t], k) => (k ? `${p} of ${t} on ${h}` : `${p} of ${t} eval cases on ${h}`)))}`
@@ -181,29 +221,19 @@ export function factsLine(pkg) {
   const liveWords = !web || !pkg.measured ? null
     : live.length ? `on the live web passes ${listWords(live.map(([h, p, t]) => `${p} of ${t} on ${h}`))}`
     : "has not been tried on the live web yet";
-  const parts = [needs, cost, evals, liveWords].filter(Boolean);
+  const parts = [needs, evals, liveWords].filter(Boolean);
   return `${parts.length > 1 ? `${parts.slice(0, -1).join(", ")}, and ${parts[parts.length - 1]}` : parts[0]}.`;
 }
 
-/** The short form for a search snippet: "About $0.06 a run; passes 5 of 5 eval cases." (pi's count when measured). */
+/** The short form for a search snippet: "Passes 5 of 5 eval cases." (the first harness's count when measured). */
 export function factsShort(pkg) {
   const [first] = passCounts(pkg);
   const [live] = passCounts(pkg, true);
   const web = pkg.tools.some((t) => t === "web_search" || t === "web_fetch");
   const evals = first ? `passes ${first[1]} of ${first[2]} eval cases${live ? ` and ${live[1]} of ${live[2]} on the live web` : ""}` : null;
   const untried = web && pkg.measured && !live ? "not yet tried on the live web" : null;
-  const parts = [pkg.measured ? `About ${usd(pkg.measured.median_usd)} a run` : null, evals, untried].filter(Boolean);
-  return parts.length ? `${parts.join("; ")}.` : "";
-}
-
-export function costWords(pkg) {
-  const cap = typeof pkg.budget?.per_run_usd === "number" ? `Each run stops at ${usd(pkg.budget.per_run_usd)}.` : "";
-  if (pkg.measured) {
-    const m = pkg.measured;
-    const how = [m.model, m.harness].filter(Boolean).join(" on ");
-    return { measured: true, headline: `${usd(m.median_usd)} median per run`, detail: `Median of ${m.runs} eval runs${how ? ` with ${how}` : ""}${m.measured_on ? `, measured ${m.measured_on}` : ""}. ${cap}`.trim() };
-  }
-  return { measured: false, headline: "Not measured yet", detail: `No measured eval report ships with this template yet. ${cap}`.trim() };
+  const parts = [evals, untried].filter(Boolean);
+  return parts.length ? `${upperFirst(parts.join("; "))}.` : "";
 }
 
 export const CATEGORY_TEXT = {

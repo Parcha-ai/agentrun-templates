@@ -26,8 +26,12 @@ one does.
 - Stars and forks come from the GitHub API at build time, with `GITHUB_TOKEN` when set (the workflow passes it),
   anonymously otherwise. Results are cached in `site/.cache/` for six hours; when
   the API is rate-limited or down the build uses the last cached numbers, or shows none. It never fails on them.
-- `measured.json` beside a template's agent.md (`{median_usd, runs, model, harness, measured_on}`) sets the cost per
-  run. Without it the page says "Not measured yet" and shows the budget cap.
+- `measured.json` beside a template's agent.md (`{runs, model, harness, measured_on, passed, live}`) gives the eval
+  pass counts per harness. The site shows no cost: a run's cost depends on the owner's model and plan.
+- What a template requires (the logo row on its card and page) is read off its agent.md by `requirements()` in
+  `lib/describe.mjs`: email tools or an email trigger, Composio toolkits, the GitHub App, monid endpoints, web search
+  (Exa), web fetch, a webhook, a schedule. Each logo is a file in `assets/` (`logo-*.svg`, black on transparent; the
+  dark theme inverts it). A new toolkit with no logo file shows the generic plug.
 - `site/proven-live.json` (`{"<template>": "YYYY-MM-DD"}`) lists the templates someone has run against real accounts.
   A template whose tools come through Composio and that isn't listed says "Integration not yet proven live" on its
   page. A name not in the index fails the build.
@@ -41,7 +45,7 @@ one does.
 | Path | Page |
 | --- | --- |
 | `/` | every template, with search, and the categories |
-| `/templates/<name>/` | one template: what it does, what starts it, inputs, setup, what it needs, sample output, cost, evals, source, install |
+| `/templates/<name>/` | one template: what it does, what starts it, inputs, setup, what it needs, sample output, evals, source, install |
 | `/categories/<category>/` | the templates in one category (only categories with templates get a page) |
 | `/list-your-template/` | how the one-line index pull request works, and the bar |
 | `<path>.md` | the Markdown twin of each page |

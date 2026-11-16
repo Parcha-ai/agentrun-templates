@@ -206,3 +206,14 @@ summary:hover { color: hsl(var(--foreground)); }
 .prose pre, .report pre { background: hsl(var(--muted)); padding: 12px; border-radius: var(--ar-control-radius); overflow-x: auto; font-size: 13px; }
 .prose blockquote, .report blockquote { margin: 0 0 16px; border-left: 2px solid hsl(var(--primary)); padding-left: 12px; color: hsl(var(--muted-foreground)); }
 .prose blockquote p, .report blockquote p { font-size: 14px; margin: 4px 0; }
+
+/* What a template requires: a row of logos, each with its line on hover and on keyboard focus. The logos are black
+   on transparent; the dark theme inverts them. The line stays in the page for a screen reader. */
+.reqs { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0 0 12px; }
+.tpl .reqs { margin: 0; }
+.req { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 1px solid hsl(var(--border)); border-radius: var(--ar-control-radius); }
+.req img { width: 16px; height: 16px; filter: invert(1); opacity: 0.85; }
+@media (prefers-color-scheme: light) { .req img { filter: none; opacity: 0.8; } }
+.req:hover, .req:focus-visible { border-color: hsl(var(--border-strong)); }
+.req-tip { position: absolute; left: 0; bottom: calc(100% + 6px); z-index: 10; width: max-content; max-width: min(280px, 80vw); padding: 6px 8px; font-family: var(--font-sans); font-size: 12px; line-height: 1.35; background: hsl(var(--foreground)); color: hsl(var(--background)); border-radius: var(--ar-control-radius); opacity: 0; pointer-events: none; }
+.req:hover .req-tip, .req:focus .req-tip { opacity: 1; }

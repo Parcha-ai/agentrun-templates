@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { frontMatter, parseYaml } from "../lib/yaml.mjs";
 import { fillParameters, parseGithubSource, readIndex } from "../lib/packages.mjs";
 import { markdownToHtml } from "../lib/markdown.mjs";
-import { cronWords, factsLine, factsShort, keyWords, unprovenWords } from "../lib/describe.mjs";
+import { cronWords, factsLine, factsShort, keyWords, requirements, unprovenWords } from "../lib/describe.mjs";
 import { build } from "../build.mjs";
 import { check } from "../check.mjs";
 import { CSP, SECURITY_HEADERS, siteServer } from "../lib/server.mjs";
@@ -107,14 +107,40 @@ test("cron lines in words", () => {
 
 test("a package granting monid endpoints says it needs a monid key, and for which providers", () => {
   const pkg = { tools: ["read", "web_fetch", "monid:dataforseo/onpage/lighthouse", "monid:dataforseo/serp/google-organic", "monid:apollo/mixed_companies/search"], mcp: [], secrets: [], evals: ["a", "b", "c"], budget: { per_run_usd: 0.5 }, measured: null, model: { tier: "balanced" } };
-  assert.equal(factsLine(pkg), "Needs a monid key (for DataForSEO and Apollo), stops each run at $0.50, and is tested by 3 eval cases.");
+  assert.equal(factsLine(pkg), "Needs a monid key (for DataForSEO and Apollo), and is tested by 3 eval cases.");
   assert.deepEqual(keyWords(pkg).secrets, ["MONID_API_KEY"]);
-  assert.equal(factsLine({ ...pkg, tools: ["web_search"] }), "Needs only a model key and the web, stops each run at $0.50, and is tested by 3 eval cases.");
+  assert.equal(factsLine({ ...pkg, tools: ["web_search"] }), "Needs only a model key and the web, and is tested by 3 eval cases.");
+});
+
+test("a template's requirements come from its package (tools, MCP toolkits, triggers), each a logo and one line", () => {
+  const inbox = { tools: ["read", "email_search", "email_read", "email_draft", "email_file"], mcp: [], triggers: [{ source: { kind: "email", mailbox: "INBOX" } }, { source: { kind: "schedule", cron: "0 18 * * *" } }] };
+  assert.deepEqual(requirements(inbox).map((r) => [r.logo, r.text]), [
+    ["logo-email.svg", "Requires your email account, through AgentRun's email trigger"],
+    ["logo-schedule.svg", "Runs on a schedule"],
+  ]);
+  assert.deepEqual(requirements({ ...inbox, triggers: [] }).map((r) => r.text), ["Requires your email account, through AgentRun's email tools"]);
+  const web = {
+    tools: ["web_search", "web_fetch", "read"],
+    mcp: [{ source: "composio", toolkit: "gmail", required: true }, { source: "composio", toolkit: "slack", required: false }, { source: "github", toolkit: "github", required: true }, { source: "github", required: false }],
+    triggers: [{ source: { kind: "github" } }, { source: { kind: "webhook" } }],
+  };
+  assert.deepEqual(requirements(web).map((r) => [r.logo, r.text]), [
+    ["logo-github.svg", "Requires GitHub, through the AgentRun GitHub App"],
+    ["logo-gmail.svg", "Requires Gmail, through Composio"],
+    ["logo-exa.svg", "Requires web search, through Exa"],
+    ["logo-web.svg", "Requires web fetch"],
+    ["logo-webhook.svg", "Starts from a signed webhook your service sends"],
+    ["logo-slack.svg", "Can use Slack, through Composio (optional)"],
+  ]);
+  assert.deepEqual(requirements({ tools: [], mcp: [{ source: "composio", toolkit: "github", required: true }], triggers: [] }).map((r) => r.text), ["Requires GitHub, through Composio"]);
+  assert.deepEqual(requirements({ tools: ["monid:dataforseo/a/b", "monid:apollo/c"], mcp: [], triggers: [] }).map((r) => r.text), ["Requires DataForSEO, through monid", "Requires Apollo, through monid"]);
+  // Nothing beyond a model: no logos.
+  assert.deepEqual(requirements({ tools: ["read", "bash", "subagent"], mcp: [], triggers: [{ source: { kind: "manual" } }] }), []);
 });
 
 test("a package whose default harness is Codex, preferring no model, says a ChatGPT sign-in runs it", () => {
   const pkg = { tools: ["read"], mcp: [], secrets: [], evals: ["a"], budget: { per_run_usd: 0.1 }, measured: null, model: { tier: "balanced" }, harness: ["codex", "pi"] };
-  assert.equal(factsLine(pkg), "Needs only a ChatGPT sign-in or a model key, stops each run at $0.10, and is tested by 1 eval case.");
+  assert.equal(factsLine(pkg), "Needs only a ChatGPT sign-in or a model key, and is tested by 1 eval case.");
   assert.equal(keyWords(pkg).model, "A ChatGPT sign-in (Codex runs on your plan), or a model key");
   // Codex second, or a preferred model: a model key, as before.
   assert.equal(keyWords({ ...pkg, harness: ["pi", "codex"] }).model, "A model key");
@@ -124,13 +150,14 @@ test("a package whose default harness is Codex, preferring no model, says a Chat
 test("a web template's facts keep its live-web results apart from its fixture cases", () => {
   const measured = { median_usd: 0.05, runs: 8, passed: { pi: "4/4", codex: "2/2" } };
   const pkg = { tools: ["web_search", "read"], mcp: [], secrets: [], evals: ["a", "b", "live-week"], budget: { per_run_usd: 0.5 }, model: { tier: "balanced" }, measured: { ...measured, live: { cases: 1, median_usd: 0.12, passed: { pi: "1/1", codex: "0/1" } } } };
-  assert.equal(factsLine(pkg), "Needs only a model key and the web, costs about $0.050 a run, passes 4 of 4 eval cases on pi and 2 of 2 on Codex, and on the live web passes 1 of 1 on pi and 0 of 1 on Codex.");
-  assert.equal(factsShort(pkg), "About $0.050 a run; passes 4 of 4 eval cases and 1 of 1 on the live web.");
+  // No cost anywhere: a user's cost isn't known (their model, their plan), so the page never guesses it.
+  assert.equal(factsLine(pkg), "Needs only a model key and the web, passes 4 of 4 eval cases on pi and 2 of 2 on Codex, and on the live web passes 1 of 1 on pi and 0 of 1 on Codex.");
+  assert.equal(factsShort(pkg), "Passes 4 of 4 eval cases and 1 of 1 on the live web.");
   // Measured on fixtures alone: the page says the live web is untried, never lets the fixture count stand for it.
-  assert.equal(factsLine({ ...pkg, measured }), "Needs only a model key and the web, costs about $0.050 a run, passes 4 of 4 eval cases on pi and 2 of 2 on Codex, and has not been tried on the live web yet.");
-  assert.equal(factsShort({ ...pkg, measured }), "About $0.050 a run; passes 4 of 4 eval cases; not yet tried on the live web.");
+  assert.equal(factsLine({ ...pkg, measured }), "Needs only a model key and the web, passes 4 of 4 eval cases on pi and 2 of 2 on Codex, and has not been tried on the live web yet.");
+  assert.equal(factsShort({ ...pkg, measured }), "Passes 4 of 4 eval cases; not yet tried on the live web.");
   // No web tools: nothing about the live web.
-  assert.equal(factsLine({ ...pkg, tools: ["read"], measured }), "Needs only a model key, costs about $0.050 a run, and passes 4 of 4 eval cases on pi and 2 of 2 on Codex.");
+  assert.equal(factsLine({ ...pkg, tools: ["read"], measured }), "Needs only a model key, and passes 4 of 4 eval cases on pi and 2 of 2 on Codex.");
 });
 
 test("the index is checked", () => {
@@ -157,7 +184,16 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.match(page, /npx @parcha\/agentrun template install github:Parcha-ai\/agentrun-templates\/templates\/sample-watch@[0-9a-f]{40} --trust/);
     assert.match(page, /<code>company<\/code>/);
     assert.match(page, /integer, 1 to 50/);
-    assert.match(page, /\$0\.084 median per run/);
+    assert.doesNotMatch(page, /median|\$0\.084|Cost per run/, "no cost on a template page");
+    // The requirements row, read off the package: web search, web fetch, the schedule, the optional GitHub tools. Each a
+    // self-hosted logo with its line, shown on hover and on keyboard focus (CSS), and read by a screen reader.
+    const reqs = /<ul class="reqs" aria-label="What it requires">([\s\S]*?)<\/ul>/.exec(page)?.[1] ?? "";
+    assert.match(reqs, /<li class="req" tabindex="0"><img src="\/assets\/logo-exa\.svg\?v=[0-9a-f]+" alt="" width="16" height="16"><span class="req-tip">Requires web search, through Exa<\/span><\/li>/);
+    assert.deepEqual([...reqs.matchAll(/<span class="req-tip">([^<]*)<\/span>/g)].map((m) => m[1]), ["Requires web search, through Exa", "Requires web fetch", "Runs on a schedule", "Can use GitHub, through the AgentRun GitHub App (optional)"]);
+    assert.doesNotMatch(page, /Dependencies/);
+    const home = readFileSync(join(out, "index.html"), "utf8");
+    assert.match(home, /<li class="card tpl" data-name="sample-watch">[\s\S]*?<ul class="reqs" aria-label="What it requires"><li class="req" tabindex="0"><img src="\/assets\/logo-exa\.svg/);
+    assert.doesNotMatch(home, /median|\$0\.0/, "no cost on a card");
     assert.match(page, /Reads open issues on the repository you name\./);
     assert.match(page, /weekdays at 09:00 \(Europe\/Madrid\)/);
     assert.match(page, /Acme this week/, "output.json's report_markdown renders when there is no output.md");
@@ -175,8 +211,10 @@ test("builds the fixture into pages that pass the checker", async () => {
     // model.choices: each choice, its keys, and its warning word for word, escaped on the page.
     assert.match(page, /<dt>Model choices<\/dt><dd>At install you can keep that, or pick one of these:<ul class="choices"><li><strong>Free model<\/strong>: <code>openrouter\/example\/free-1:free<\/code> on <code>pi<\/code>, needs <code>OPENROUTER_API_KEY<\/code>\. <strong>Warning:<\/strong> Its provider may log what it reads &lt;script&gt;alert\(1\)&lt;\/script&gt;\. Free accounts get 50 requests a day\.<\/li><\/ul><\/dd>/);
     assert.match(md, /^- Model choices, picked at install instead:\n {2}- Free model: `openrouter\/example\/free-1:free` on `pi`, needs `OPENROUTER_API_KEY`\. Warning: Its provider may log what it reads \\<script\\>alert\(1\)\\<\/script\\>\. Free accounts get 50 requests a day\.$/m);
-    assert.match(md, /Needs only a model key and the web \(GitHub optional\), costs about \$0\.084 a run, passes 2 of 2 eval cases on pi and 1 of 2 on Claude Code, and has not been tried on the live web yet\./);
-    assert.match(page, /<meta name="description" content="Watches one topic every week and answers with what changed, each item dated and… About \$0\.084 a run; passes 2 of 2 eval cases; not yet tried on the live web\."/);
+    assert.match(md, /Needs only a model key and the web \(GitHub optional\), passes 2 of 2 eval cases on pi and 1 of 2 on Claude Code, and has not been tried on the live web yet\./);
+    assert.match(md, /^Requires web search, through Exa\. Requires web fetch\. Runs on a schedule\. Can use GitHub, through the AgentRun GitHub App \(optional\)\.$/m);
+    assert.doesNotMatch(md, /median|\$0\.084|Cost per run/);
+    assert.match(page, /<meta name="description" content="Watches one topic every week and answers with what changed, each item dated and linked\.[^"]*Passes 2 of 2 eval cases; not yet tried on the live web\."/);
     const llms = readFileSync(join(out, "llms.txt"), "utf8");
     assert.match(llms, /\[Sample watch\]\(https:\/\/marketplace\.agentrun\.ai\/templates\/sample-watch\.md\)/);
     const search = JSON.parse(readFileSync(join(out, "search.json"), "utf8"));
