@@ -762,6 +762,21 @@
       "summary": "Sorts each new email, drafts your replies to the ones that need you, and leaves you a digest every evening.",
       "setup": "Before you install, connect your mailbox under Settings → Email with an app password. Gmail, Fastmail and iCloud work, and so does any other mail provider. It runs on your machine and on your ChatGPT plan.",
       "guide": "https://github.com/Parcha-ai/agentrun/blob/main/docs/inbox-quickstart.md"
+    },
+    {
+      "name": "pr-alert",
+      "source": "./templates/pr-alert",
+      "category": "engineering",
+      "tags": [
+        "free",
+        "github",
+        "pull-requests",
+        "alerts",
+        "open-source",
+        "contributors"
+      ],
+      "summary": "Tells you about each new pull request on a public GitHub repo: who sent it, what it touches and what to watch.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. It checks every 4 hours on a free NVIDIA model that may log what it reads, so point it only at a public repository."
     }
   ]
 }

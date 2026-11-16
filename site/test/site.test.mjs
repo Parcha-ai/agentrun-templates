@@ -166,6 +166,8 @@ test("a template that prefers a free model says so first, naming the model; its 
   assert.equal(named("openrouter/google/gemma-4-31b-it:free"), "Runs free, on Gemma 4 31B through OpenRouter");
   assert.equal(named("openrouter/nvidia/nemotron-nano-9b-v2:free"), "Runs free, on Nemotron Nano 9B V2 through OpenRouter");
   assert.equal(named("openrouter/meta-llama/llama-4-70b-instruct:free"), "Runs free, on Llama 4 70B through OpenRouter");
+  // A mixture-of-experts size names its active parameters too: A55B, as NVIDIA writes it.
+  assert.equal(named("openrouter/nvidia/nemotron-3-ultra-550b-a55b:free"), "Runs free, on Nemotron 3 Ultra 550B A55B through OpenRouter");
   // A paid preference is no free logo.
   assert.deepEqual(requirements({ ...free, model: { prefer: "openrouter/inclusionai/ling-3.2-flash" } }).map((r) => r.logo), ["logo-web.svg", "logo-schedule.svg"]);
   const note = "One grader was narrowed to its intent first. Under the original grader it passes 3 of 5.";
