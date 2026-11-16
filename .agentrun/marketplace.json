@@ -277,7 +277,8 @@
         "celebrate",
         "changelog"
       ],
-      "summary": "Posts a short note to Slack when you publish a GitHub release, and thanks the people who built it."
+      "summary": "Posts a short note to Slack when you publish a GitHub release, and thanks the people who built it.",
+      "setup": "Public repositories only: it watches the repository's release feed, and a private repository's feed needs a login. Make one fine-grained GitHub token with Contents read-only on that repository, and add it as the GitHub (token) server in Settings → MCP servers with Read-only on."
     },
     {
       "name": "revenue-goal",

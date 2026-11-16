@@ -1,6 +1,6 @@
 {
   "server": "github",
-  "description": "A fake GitHub MCP server (the App's tool names) for acme/lantern: release v2.4.0, published 2026-11-14, whose generated notes name PRs #101 (PDF export), #104 (Safari login fix), #107 (drops Node 18: breaking) and #109 (a Dependabot bump); v2.3.0 before it. Every read answers from these; it never reaches GitHub.",
+  "description": "A fake GitHub MCP server (GitHub's own tool names) for acme/lantern: release v2.4.0, published 2026-11-14, whose generated notes name PRs #101 (PDF export), #104 (Safari login fix), #107 (drops Node 18: breaking) and #109 (a Dependabot bump); v2.3.0 before it. Every read answers from these; it never reaches GitHub.",
   "tools": {
     "get_release_by_tag": {
       "description": "Get a release by its tag.",
