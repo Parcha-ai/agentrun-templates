@@ -830,6 +830,19 @@
       ],
       "summary": "Tells you about each new pull request on a public GitHub repo: who sent it, what it touches and what to watch.",
       "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. It checks every 4 hours on a free NVIDIA model that may log what it reads, so point it only at a public repository."
+    },
+    {
+      "name": "web-researcher",
+      "source": "./templates/web-researcher",
+      "category": "research",
+      "tags": [
+        "free",
+        "web-research",
+        "citations",
+        "fact-finding"
+      ],
+      "summary": "Answers one question from the open web: a short answer, each finding with its link, and where sources disagree.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. The free model may log what it reads, so ask only public questions."
     }
   ]
 }

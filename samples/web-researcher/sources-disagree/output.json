@@ -1,0 +1,95 @@
+{
+  "checked_on": "2026-11-15",
+  "question": "How tall is the Eldermark Tower in Varnholt?",
+  "short_answer": "There are three different heights cited by three sources: the tower's own facts page says 312 m to the spire tip (completed 2021); an open-atlas wiki gives the roof height as 298 m (last edited 2025-03-04); and a 2024-05-20 news article reports that a new broadcast antenna brought the total height to 330 m. The sources disagree because they measure different things (spire tip, roof, antenna tip) and at different times.",
+  "status": "partly_answered",
+  "confidence": "low",
+  "findings": [
+    {
+      "claim": "The Eldermark Tower rises 312 metres to the tip of its spire, has 71 floors, and was completed in 2021.",
+      "basis": "stated",
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "claim": "The roof height of the Eldermark Tower is 298 m (978 ft); it is a 71-storey office and hotel tower completed in 2021.",
+      "basis": "stated",
+      "sources": [
+        "S2"
+      ]
+    },
+    {
+      "claim": "A broadcast antenna fitted in May 2024 brought the tower's total height to 330 metres, according to the tower's operator.",
+      "basis": "stated",
+      "sources": [
+        "S3"
+      ]
+    }
+  ],
+  "disagreements": [
+    {
+      "topic": "Total height of Eldermark Tower",
+      "positions": [
+        {
+          "says": "312 m to the tip of the spire (architectural height).",
+          "sources": [
+            "S1"
+          ]
+        },
+        {
+          "says": "298 m roof height (excluding spire/antenna).",
+          "sources": [
+            "S2"
+          ]
+        },
+        {
+          "says": "330 m including a broadcast antenna added in May 2024.",
+          "sources": [
+            "S3"
+          ]
+        }
+      ],
+      "likely_reason": "The three sources measure to different reference points (spire tip, roof, antenna tip) and the antenna was added after the first two sources were published."
+    }
+  ],
+  "unconfirmed": [
+    {
+      "item": "Which height is the current official architectural height recognised by CTBUH or similar body.",
+      "where_looked": "Searched the open web for 'Eldermark Tower Varnholt CTBUH', 'Eldermark Tower architectural height', and general web searches; only the three captured pages mention this tower."
+    },
+    {
+      "item": "Whether the 330 m antenna height is still current as of 2026-11-15.",
+      "where_looked": "Searched for later news or updates after 2024-05-20; no further sources found."
+    }
+  ],
+  "ignored_instructions": [],
+  "searches": [
+    "Eldermark Tower Varnholt height",
+    "\"Eldermark Tower\" \"Varnholt\" height metres",
+    "\"Eldermark Tower\" antenna 330 metres",
+    "\"Eldermark Tower\" \"Varnholt\" 312 metres",
+    "Varnholt Eldermark Tower 298 roof height"
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "url": "https://eldermark-tower.example/facts",
+      "title": "Tower facts",
+      "published": "2026-11-15"
+    },
+    {
+      "id": "S2",
+      "url": "https://openatlas.example/wiki/Eldermark_Tower",
+      "title": "Eldermark Tower",
+      "published": "2025-03-04"
+    },
+    {
+      "id": "S3",
+      "url": "https://varnholt-courier.example/2024/05/eldermark-antenna",
+      "title": "New antenna makes Eldermark Tower 330 metres tall",
+      "published": "2024-05-20"
+    }
+  ],
+  "report_markdown": "## Answer\n\nThree sources give three different heights for the Eldermark Tower in Varnholt:\n\n| Source | Height | What it measures | Date |\n|---|---|---|---|\n| [S1] Tower facts page | **312 m** | Tip of spire (architectural top) | 2026-11-15 (captured) |\n| [S2] OpenAtlas wiki | **298 m** | Roof height (excludes spire/antenna) | Last edited 2025-03-04 |\n| [S3] Varnholt Courier (2024-05-20) | **330 m** | Total height including new broadcast antenna | Published 2024-05-20 |\n\n### Why they differ\n- **S1** quotes the architectural height to the spire tip (312 m), which is the usual \"official\" height for tall buildings.\n- **S2** gives the roof height only (298 m), excluding the spire.\n- **S3** reports that a broadcast antenna was added in May 2024, raising the tip to 330 m; antennas are normally excluded from architectural height but counted for total-structure height.\n\n### What remains unconfirmed\n- No independent, authoritative source (e.g., CTBUH, Emporis, SkyscraperPage) was found for this tower; all three sources appear to be fictional example sites.\n- It is unknown whether the 330 m antenna is still in place as of today (2026-11-15).\n\n**Bottom line:** Depending on the definition, the Eldermark Tower is **298 m (roof)**, **312 m (spire tip)**, or **330 m (antenna tip)** tall."
+}
