@@ -197,7 +197,9 @@ export function requirements(pkg) {
 
 /** A model id's own name, from its last part: "openrouter/inclusionai/ling-3.2-flash:free" is "Ling 3.2 Flash". */
 function modelName(id) {
-  return id.split("/").pop().replace(/:free$/, "").split("-").map(upperFirst).join(" ");
+  // "gemma-4-31b-it:free" reads "Gemma 4 31B": the size as its maker writes it, the instruction-tuned suffix left off.
+  const words = id.split("/").pop().replace(/:free$/, "").replace(/-(it|instruct)$/i, "").split("-");
+  return words.map((w) => (/^\d+(\.\d+)?b$/i.test(w) ? w.toUpperCase() : upperFirst(w))).join(" ");
 }
 
 /** An MCP need's toolkit or server as a name: "Gmail", "GitHub", "slack MCP server". */

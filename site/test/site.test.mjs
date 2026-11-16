@@ -161,6 +161,11 @@ test("a template that prefers a free model says so first, naming the model; its 
     ["logo-web.svg", "Requires web fetch"],
     ["logo-schedule.svg", "Runs on a schedule"],
   ]);
+  // A model's size reads as its maker writes it (31B), and an instruction-tuned suffix (-it, -instruct) is left off.
+  const named = (prefer) => requirements({ ...free, model: { prefer } })[0].text;
+  assert.equal(named("openrouter/google/gemma-4-31b-it:free"), "Runs free, on Gemma 4 31B through OpenRouter");
+  assert.equal(named("openrouter/nvidia/nemotron-nano-9b-v2:free"), "Runs free, on Nemotron Nano 9B V2 through OpenRouter");
+  assert.equal(named("openrouter/meta-llama/llama-4-70b-instruct:free"), "Runs free, on Llama 4 70B through OpenRouter");
   // A paid preference is no free logo.
   assert.deepEqual(requirements({ ...free, model: { prefer: "openrouter/inclusionai/ling-3.2-flash" } }).map((r) => r.logo), ["logo-web.svg", "logo-schedule.svg"]);
   const note = "One grader was narrowed to its intent first. Under the original grader it passes 3 of 5.";
