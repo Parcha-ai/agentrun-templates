@@ -2,5 +2,4 @@
 parameters:
   vendors: ["Twilio", "Datadog"]
   lookback_days: 7
-  status_feeds: []
 # The run starts with this input, checked against the template's input schema; prompt.md is its content.

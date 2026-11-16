@@ -357,7 +357,7 @@
         "weekly"
       ],
       "summary": "A weekly brief on the outages at the vendors you depend on, read from their own status pages.",
-      "setup": "Optional: list your vendors' status feeds (a Statuspage page's is https://<status host>/history.atom) and it also alerts on each new incident and each change of its status, checking every 15 minutes. Leave the list empty ([]) and it is the weekly brief alone."
+      "setup": "Optional: list your vendors' status feeds (a Statuspage page's is https://<status host>/history.atom) and it also alerts on each new incident and each change of its status, checking every 15 minutes. Leave the list empty and it is the weekly brief alone."
     },
     {
       "name": "vulnerability-digest",

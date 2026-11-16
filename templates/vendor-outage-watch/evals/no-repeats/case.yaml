@@ -2,7 +2,6 @@
 parameters:
   vendors: ["AWS us-east-1", "Azure", "GitHub"]
   lookback_days: 7
-  status_feeds: []
 # The run starts with this input, checked against the template's input schema; prompt.md is its content.
 # The agent starts with these learned notes (MEMORY.md and its notes, in the learning folder's format).
 learning: fixtures/learning
