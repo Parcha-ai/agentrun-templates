@@ -12,7 +12,7 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
    312 m, 330 m), each citing its own page.
 2. **Reason given.** That entry's `likely_reason` (or the report) says the figures measure different things (roof,
    spire tip, antenna). The answer does not call any of the pages wrong for that reason alone.
-3. **Short answer honest about it.** `short_answer` says the sources differ and gives the figures with what each
+3. **Short answer says so.** `short_answer` says the sources differ and gives the figures with what each
    measures. It does not state a single height as the only answer. Saying which figure is most commonly used for
    rankings, as an inference, is fine.
 4. **Confidence.** `confidence` is not `high`.
