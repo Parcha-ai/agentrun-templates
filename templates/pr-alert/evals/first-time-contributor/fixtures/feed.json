@@ -1,0 +1,9 @@
+{
+  "description": "fernlight/fernlight-js's open PRs: #4120 and #4118 were open before; #4123 is new.",
+  "format": "json-list",
+  "items": [
+    {"id": 3104120, "number": 4120, "title": "chore: bump eslint to 9.31", "html_url": "https://github.com/fernlight/fernlight-js/pull/4120", "url": "https://api.github.com/repos/fernlight/fernlight-js/pulls/4120", "state": "open", "user": {"login": "ana-ruiz"}, "body": "Routine bump.", "created_at": "2026-11-15T09:30:02Z", "draft": false, "head": {"ref": "eslint-931"}, "author_association": "MEMBER"},
+    {"id": 3104118, "number": 4118, "title": "fix: keep code fences when the language tag has a dot", "html_url": "https://github.com/fernlight/fernlight-js/pull/4118", "url": "https://api.github.com/repos/fernlight/fernlight-js/pulls/4118", "state": "open", "user": {"login": "dkowalski"}, "body": "Fixes #4101.", "created_at": "2026-11-14T17:44:10Z", "draft": false, "head": {"ref": "fence-dot"}, "author_association": "CONTRIBUTOR"}
+  ],
+  "item": {"id": 3104123, "number": 4123, "title": "feat: support GitHub-style tables in the markdown parser", "html_url": "https://github.com/fernlight/fernlight-js/pull/4123", "url": "https://api.github.com/repos/fernlight/fernlight-js/pulls/4123", "state": "open", "user": {"login": "mira-okafor"}, "body": "Adds table parsing (pipes and alignment rows) to the markdown parser. Closes #3988.\n\nI used markdown-table-lite for the alignment row because writing it by hand got messy. Tests included.", "created_at": "2026-11-15T13:12:40Z", "draft": false, "head": {"ref": "tables"}, "author_association": "NONE"}
+}

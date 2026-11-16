@@ -829,7 +829,7 @@
         "contributors"
       ],
       "summary": "Tells you about each new pull request on a public GitHub repo: who sent it, what it touches and what to watch.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. It checks every 4 hours on a free NVIDIA model that may log what it reads, so point it only at a public repository."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed, and no GitHub token. It reads the repo's open pull requests every 30 minutes and sends one alert per new PR, on a free NVIDIA model that may log what it reads, so point it only at a public repository."
     },
     {
       "name": "web-researcher",

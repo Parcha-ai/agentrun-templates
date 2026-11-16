@@ -1,0 +1,9 @@
+{
+  "description": "fernlight/fernlight-js's open PRs: #4130 and #4127 were open before; #4131 is new and changes both CI workflows.",
+  "format": "json-list",
+  "items": [
+    {"id": 3104130, "number": 4130, "title": "docs: link the migration guide from the README", "html_url": "https://github.com/fernlight/fernlight-js/pull/4130", "url": "https://api.github.com/repos/fernlight/fernlight-js/pulls/4130", "state": "open", "user": {"login": "ana-ruiz"}, "body": "", "created_at": "2026-11-15T14:41:00Z", "draft": false, "head": {"ref": "readme-migration"}, "author_association": "MEMBER"},
+    {"id": 3104127, "number": 4127, "title": "fix: escape pipes inside inline code in tables", "html_url": "https://github.com/fernlight/fernlight-js/pull/4127", "url": "https://api.github.com/repos/fernlight/fernlight-js/pulls/4127", "state": "open", "user": {"login": "lu-chen"}, "body": "Fixes #4125.", "created_at": "2026-11-15T11:02:37Z", "draft": true, "head": {"ref": "pipe-escape"}, "author_association": "CONTRIBUTOR"}
+  ],
+  "item": {"id": 3104131, "number": 4131, "title": "ci: cache the pnpm store and test on Node 24", "html_url": "https://github.com/fernlight/fernlight-js/pull/4131", "url": "https://api.github.com/repos/fernlight/fernlight-js/pulls/4131", "state": "open", "user": {"login": "dkowalski"}, "body": "CI takes 9 minutes, mostly installing. This caches the pnpm store, adds Node 24 to the test matrix, and moves the publish step to the shared setup action so both workflows use the same Node version.", "created_at": "2026-11-15T15:20:11Z", "draft": false, "head": {"ref": "ci-cache"}, "author_association": "CONTRIBUTOR"}
+}

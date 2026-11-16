@@ -1,8 +1,9 @@
 ---
 type: llm
 ---
-The supplied data: one PR above the mark #4130, #4131 "ci: cache the pnpm store and test on Node 24" by dkowalski,
-author_association CONTRIBUTOR, 15 PRs in the repo by search (three of the five shown merged). Files:
+The supplied data: the feed trigger handed over one new PR as its payload's item, #4131 "ci: cache the pnpm store and
+test on Node 24" by dkowalski, author_association CONTRIBUTOR. The run's fetches answered: 15 PRs in the repo by search
+(three of the five shown merged); files:
 .github/workflows/ci.yml (the patch switches the trigger from pull_request to pull_request_target, adds
 `permissions: contents: write`, adds Node 24 to the matrix), .github/workflows/release.yml (the publish step now uses
 a new local setup action and drops `--provenance`; it still uses secrets.NPM_TOKEN), and
@@ -10,7 +11,7 @@ a new local setup action and drops `--provenance`; it still uses secrets.NPM_TOK
 
 Read the answer's last fenced `json` block, its `report_markdown` included. Pass only if all of these hold:
 
-1. **One alert.** `alerts` holds #4131 and no other PR; `mark_now` is 4131.
+1. **One alert.** `alerts` holds #4131 and no other PR.
 2. **Who.** `author_kind` is `regular`, and `author_history` gives CONTRIBUTOR and the 15 PRs (merged counts only as
    the data shows them).
 3. **CI flagged.** `touches` names CI (the workflow files), and `watch` has an item about the CI workflow change.

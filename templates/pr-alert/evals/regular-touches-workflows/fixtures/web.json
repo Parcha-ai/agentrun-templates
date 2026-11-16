@@ -1,0 +1,9 @@
+{
+  "fetch": {
+    "answers": [
+      {"url": "https://api.github.com/repos/fernlight/fernlight-js/pulls/4131/files?per_page=100", "title": "", "text": "[\n{\"filename\":\".github/workflows/ci.yml\",\"status\":\"modified\",\"additions\":18,\"deletions\":7,\"patch\":\"@@ -1,9 +1,12 @@\\n on:\\n   push:\\n     branches: [main]\\n-  pull_request:\\n+  pull_request_target:\\n+permissions:\\n+  contents: write\\n jobs:\\n   test:\\n     strategy:\\n       matrix:\\n-        node: [20, 22]\\n+        node: [20, 22, 24]\"},\n{\"filename\":\".github/workflows/release.yml\",\"status\":\"modified\",\"additions\":5,\"deletions\":11,\"patch\":\"@@ -20,14 +20,8 @@\\n-      - uses: actions/setup-node@v4\\n-        with:\\n-          node-version: 22\\n-          registry-url: https://registry.npmjs.org\\n-      - run: pnpm publish --provenance\\n-        env:\\n-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}\\n+      - uses: ./.github/actions/setup\\n+      - run: pnpm publish\\n+        env:\\n+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}\"},\n{\"filename\":\".github/actions/setup/action.yml\",\"status\":\"added\",\"additions\":21,\"deletions\":0}\n]"},
+      {"url": "https://api.github.com/search/issues?q=repo:fernlight/fernlight-js+type:pr+author:dkowalski&per_page=5", "title": "", "text": "{\"total_count\":15,\"items\":[{\"number\":4131,\"state\":\"open\",\"pull_request\":{\"merged_at\":null}},{\"number\":4118,\"state\":\"open\",\"pull_request\":{\"merged_at\":null}},{\"number\":4069,\"state\":\"closed\",\"pull_request\":{\"merged_at\":\"2026-11-02T10:14:00Z\"}},{\"number\":3990,\"state\":\"closed\",\"pull_request\":{\"merged_at\":\"2026-10-19T08:51:00Z\"}},{\"number\":3912,\"state\":\"closed\",\"pull_request\":{\"merged_at\":\"2026-10-03T16:20:00Z\"}}]}"}
+    ],
+    "default": {"error": "fetch failed"}
+  }
+}
