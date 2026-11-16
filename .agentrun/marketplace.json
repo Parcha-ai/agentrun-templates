@@ -814,18 +814,6 @@
       ],
       "summary": "Sorts each new email, drafts your replies to the ones that need you, and leaves you a digest every evening.",
       "setup": "Before you install, connect your mailbox under Settings → Email with an app password. Gmail, Fastmail and iCloud work, and so does any other mail provider. It runs on your machine and on your ChatGPT plan."
-    },
-    {
-      "name": "pr-alert",
-      "source": "./templates/pr-alert",
-      "category": "engineering",
-      "tags": [
-        "github",
-        "pull-requests",
-        "free"
-      ],
-      "summary": "Tells you about each new pull request on a public GitHub repo: who sent it, what it touches and what to watch. Runs free.",
-      "setup": "Put an OpenRouter key in your server's environment as OPENROUTER_API_KEY. It needs no credits. Free models allow 50 requests a day, or 1,000 after a one-time $10, and a check uses 2 to 6, so every 2 hours fits. Ling's endpoint is on OpenRouter's zero-retention list. Turn on ZDR only under Settings → Privacy in OpenRouter to keep it that way. Public repositories only."
     }
   ]
 }
