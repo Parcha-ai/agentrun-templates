@@ -17,7 +17,7 @@ model:
   # serves. A free-model choice comes in a later release, with a zero-retention model.
 effort: medium
 # No email_send: every reply is a draft whatever a message says. An owner who wants sends grants email_send on the
-# agent later, and each send then waits for their yes (tl-tools' default for send is ask). email_file never deletes:
+# agent later, and each send then waits for their yes (the server's default for send is ask). email_file never deletes:
 # a Trash, Junk or Spam target is refused.
 tools: [read, email_search, email_read, email_draft, email_file]
 parameters:

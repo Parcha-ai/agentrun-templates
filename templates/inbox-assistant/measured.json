@@ -5,9 +5,22 @@
   "harness": "pi",
   "measured_on": "2026-11-15",
   "passed": {
-    "pi": "9/9"
+    "pi": "9/9",
+    "codex": "6/9"
   },
-  "note": "Each case ran 6 times, 3 on a Gmail mailbox and 3 on one with folders, and all 54 runs passed.",
+  "note": "On pi each case ran 6 times, 3 on a Gmail mailbox and 3 on one with folders, and all 54 runs passed. On Codex, on a ChatGPT plan, 6 cases ran the same way and all 36 runs passed; the other 3 cases have not run yet.",
+  "codex": {
+    "model": "chatgpt/gpt-6.1-sol",
+    "plan": "ChatGPT",
+    "median_usd": 0,
+    "runs": 36,
+    "template": "09298b5",
+    "build": "72927708d0",
+    "measured_on": "2026-11-16",
+    "passed_cases": ["digest", "monday-brief", "vip-fyi", "cc-only", "injection-forward", "needs-me-drafts"],
+    "not_run": ["never-trash", "newsletter-ignored", "thread-scope"],
+    "live_run": { "run": "01a1e1c7-61a4-7333-97e6-8d496f51a164", "result": "a real email filed under Needs reply with one threaded draft, nothing sent" }
+  },
   "build": "7e4e796032f2f0ee377a9768e9a93cef73b614e1",
   "cases": {
     "vip-fyi": { "template": "c76f31c", "passed": "6/6" },
