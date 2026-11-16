@@ -12,7 +12,8 @@
       "tags": [
         "github",
         "pull-requests"
-      ]
+      ],
+      "summary": "Reviews a pull request against your CODEREVIEW.md with eight independent reviewers. Every finding quotes its line."
     },
     {
       "name": "inbound-lead",
@@ -21,7 +22,8 @@
       "tags": [
         "leads",
         "webhook"
-      ]
+      ],
+      "summary": "Researches each new lead, scores it against your ideal customer profile and posts the brief to your CRM or Slack."
     },
     {
       "name": "kyb",
@@ -30,7 +32,8 @@
       "tags": [
         "due-diligence",
         "sanctions"
-      ]
+      ],
+      "summary": "Checks who owns and runs a company, screens it against the sanctions lists and gives a cited verdict."
     },
     {
       "name": "market-monitor",
@@ -39,7 +42,8 @@
       "tags": [
         "competitors",
         "weekly"
-      ]
+      ],
+      "summary": "Every Monday, a short digest of what changed at the companies you watch, each item dated and linked."
     },
     {
       "name": "release-notes",
@@ -48,7 +52,8 @@
       "tags": [
         "github",
         "releases"
-      ]
+      ],
+      "summary": "Turns the pull requests merged since your last release into draft release notes for a person to edit."
     },
     {
       "name": "battlecard",
@@ -59,7 +64,8 @@
         "competitive-intelligence",
         "sales-enablement",
         "pricing"
-      ]
+      ],
+      "summary": "A sourced battlecard on one competitor that a seller can use in a deal."
     },
     {
       "name": "company-brief",
@@ -71,7 +77,8 @@
         "sales",
         "investing",
         "swot"
-      ]
+      ],
+      "summary": "A sourced, dated brief on one company before a sales call, renewal or investment."
     },
     {
       "name": "deal-flow",
@@ -83,7 +90,8 @@
         "ipo",
         "venture",
         "weekly"
-      ]
+      ],
+      "summary": "Every Monday, the funding rounds, acquisitions and exits in one sector, each linked to its source."
     },
     {
       "name": "deal-hygiene",
@@ -96,7 +104,8 @@
         "crm-hygiene",
         "slack",
         "weekly"
-      ]
+      ],
+      "summary": "Once a week, posts the open HubSpot deals that went quiet, have no next step or are past their close date."
     },
     {
       "name": "dependency-health",
@@ -108,7 +117,8 @@
         "cve",
         "license",
         "supply-chain"
-      ]
+      ],
+      "summary": "A dated health check on one package before you adopt it, from its registry, repository and advisories."
     },
     {
       "name": "earnings-brief",
@@ -120,7 +130,8 @@
         "guidance",
         "watchlist",
         "weekly"
-      ]
+      ],
+      "summary": "What each ticker you watch reported since the last run, set against a named consensus."
     },
     {
       "name": "failed-payments",
@@ -133,7 +144,8 @@
         "billing",
         "slack",
         "alerts"
-      ]
+      ],
+      "summary": "Posts a Slack alert for each failed Stripe payment with who, how much, why and the next step."
     },
     {
       "name": "hiring-signals",
@@ -145,7 +157,8 @@
         "leadership",
         "jobs",
         "weekly"
-      ]
+      ],
+      "summary": "Every Monday, the new roles and leadership moves at the companies you track, and what they suggest."
     },
     {
       "name": "issue-triage",
@@ -157,7 +170,8 @@
         "triage",
         "duplicates",
         "labels"
-      ]
+      ],
+      "summary": "Labels each new GitHub issue, links likely duplicates and asks the author for what's missing."
     },
     {
       "name": "linear-sprint-check",
@@ -170,7 +184,8 @@
         "standup",
         "github",
         "slack"
-      ]
+      ],
+      "summary": "Twice a week, posts which issues in your Linear cycle are slipping and what was added since it started."
     },
     {
       "name": "linear-triage",
@@ -182,7 +197,8 @@
         "triage",
         "duplicates",
         "labels"
-      ]
+      ],
+      "summary": "Labels each new Linear issue, links likely duplicates and asks for what's missing."
     },
     {
       "name": "literature-review",
@@ -194,7 +210,8 @@
         "systematic-review",
         "academic",
         "grade"
-      ]
+      ],
+      "summary": "A cited review of the open research on one question. It opens every paper it cites and checks for retractions."
     },
     {
       "name": "market-sizing",
@@ -206,7 +223,8 @@
         "market-map",
         "strategy",
         "investing"
-      ]
+      ],
+      "summary": "Sizes a market top-down and bottom-up, with every number sourced or marked as an assumption."
     },
     {
       "name": "meeting-prep",
@@ -218,7 +236,8 @@
         "sales",
         "hiring",
         "investor"
-      ]
+      ],
+      "summary": "A one-page brief on the person you're meeting and their organization, from public sources."
     },
     {
       "name": "oss-tracker",
@@ -230,7 +249,8 @@
         "dependencies",
         "competitors",
         "weekly"
-      ]
+      ],
+      "summary": "A weekly health check of the open-source projects you depend on or compete with."
     },
     {
       "name": "pipeline-goal",
@@ -243,7 +263,8 @@
         "goals",
         "slack",
         "daily"
-      ]
+      ],
+      "summary": "Posts in Slack the first time your open HubSpot pipeline passes the goal you set."
     },
     {
       "name": "release-shipped",
@@ -255,7 +276,8 @@
         "slack",
         "celebrate",
         "changelog"
-      ]
+      ],
+      "summary": "Posts a short note to Slack when you publish a GitHub release, and thanks the people who built it."
     },
     {
       "name": "revenue-goal",
@@ -268,7 +290,8 @@
         "slack",
         "celebrate",
         "hourly"
-      ]
+      ],
+      "summary": "Posts in Slack the first time this period's Stripe revenue passes your goal."
     },
     {
       "name": "search-visibility",
@@ -280,7 +303,8 @@
         "ranking",
         "competitors",
         "weekly"
-      ]
+      ],
+      "summary": "Every Monday, where your domain ranks for the queries you track and what moved since last week."
     },
     {
       "name": "stale-pr-digest",
@@ -292,7 +316,8 @@
         "code-review",
         "slack",
         "weekly"
-      ]
+      ],
+      "summary": "Once a week, posts the pull requests in one repository that have waited too long, and on whom."
     },
     {
       "name": "tender-finder",
@@ -304,7 +329,8 @@
         "public-sector",
         "procurement",
         "weekly"
-      ]
+      ],
+      "summary": "Every Monday, the open public tenders that match what you sell, each checked on the buyer's own notice."
     },
     {
       "name": "user-voice",
@@ -316,7 +342,8 @@
         "voice-of-customer",
         "app-store",
         "weekly"
-      ]
+      ],
+      "summary": "Every Monday, the themes users raise about your product in reviews and forums, with linked quotes."
     },
     {
       "name": "vendor-outage-watch",
@@ -328,7 +355,8 @@
         "sre",
         "incidents",
         "weekly"
-      ]
+      ],
+      "summary": "A weekly brief on the outages at the vendors you depend on, read from their own status pages."
     },
     {
       "name": "vulnerability-digest",
@@ -340,7 +368,8 @@
         "cisa-kev",
         "patching",
         "daily"
-      ]
+      ],
+      "summary": "Every morning, the new CVEs and security releases that hit the software you list, and what to do about each."
     },
     {
       "name": "website-change-tracker",
@@ -352,7 +381,8 @@
         "pricing",
         "change-detection",
         "weekly"
-      ]
+      ],
+      "summary": "Watches the pages you name and reports the changes that matter, with the old and new text."
     },
     {
       "name": "morning-brief",
@@ -364,7 +394,8 @@
         "gmail",
         "slack",
         "productivity"
-      ]
+      ],
+      "summary": "Each weekday morning, one plan for your day in Slack, built from your calendar, mail and channels."
     },
     {
       "name": "calendar-brief",
@@ -376,7 +407,8 @@
         "meeting-prep",
         "slack",
         "productivity"
-      ]
+      ],
+      "summary": "Your next few days of meetings in Slack each morning, with the clashes and what to prepare."
     },
     {
       "name": "team-catch-up",
@@ -388,7 +420,8 @@
         "decisions",
         "blockers",
         "catch-up"
-      ]
+      ],
+      "summary": "A short Slack post on the decisions, unanswered requests and blockers in your team's channels."
     },
     {
       "name": "follow-up-drafter",
@@ -400,7 +433,8 @@
         "follow-up",
         "drafts",
         "replies"
-      ]
+      ],
+      "summary": "Writes your next reply as a Gmail draft when an email lands in a label you pick."
     },
     {
       "name": "meeting-follow-up",
@@ -412,7 +446,8 @@
         "meetings",
         "follow-up",
         "drafts"
-      ]
+      ],
+      "summary": "Saves a follow-up email draft for each outside meeting that ended today."
     },
     {
       "name": "support-inbox-digest",
@@ -424,7 +459,8 @@
         "customer-feedback",
         "digest",
         "slack"
-      ]
+      ],
+      "summary": "Once a week, posts the themes in your support mail to Slack, ranked by how many threads raised them."
     },
     {
       "name": "outreach-opener",
@@ -436,7 +472,8 @@
         "cold-email",
         "prospecting",
         "drafts"
-      ]
+      ],
+      "summary": "Researches a person and their company, then saves a short first email to them as a Gmail draft."
     },
     {
       "name": "platform-changes",
@@ -449,7 +486,8 @@
         "apis",
         "pricing",
         "weekly"
-      ]
+      ],
+      "summary": "A weekly list of breaking changes, deprecations and price changes in the platforms you build on."
     },
     {
       "name": "terms-change-watch",
@@ -462,7 +500,8 @@
         "vendor-risk",
         "legal",
         "weekly"
-      ]
+      ],
+      "summary": "Sends a clause-by-clause redline when a vendor changes its terms or privacy policy."
     },
     {
       "name": "enforcement-digest",
@@ -475,7 +514,8 @@
         "aml",
         "compliance",
         "weekly"
-      ]
+      ],
+      "summary": "A weekly digest of the fines and enforcement actions your regulators took against firms like yours."
     },
     {
       "name": "brand-mentions",
@@ -487,7 +527,8 @@
         "reputation",
         "pr",
         "daily"
-      ]
+      ],
+      "summary": "A daily list of new public mentions of your company, and which ones need an answer."
     },
     {
       "name": "regulatory-tracker",
@@ -500,7 +541,8 @@
         "policy",
         "compliance",
         "weekly"
-      ]
+      ],
+      "summary": "A weekly brief on new and proposed rules in the area of law you track, with their key dates."
     },
     {
       "name": "sanctions-update",
@@ -513,7 +555,8 @@
         "kyc",
         "compliance",
         "weekly"
-      ]
+      ],
+      "summary": "A weekly update on sanctions list changes, checked against the names you hold."
     },
     {
       "name": "product-recall-watch",
@@ -525,7 +568,8 @@
         "compliance",
         "suppliers",
         "weekly"
-      ]
+      ],
+      "summary": "A weekly check of recalls and safety notices for the products and makers you care about."
     },
     {
       "name": "competitor-content",
@@ -537,7 +581,8 @@
         "competitive-intelligence",
         "youtube",
         "weekly"
-      ]
+      ],
+      "summary": "Every Monday, what your competitors published that week and the topics nobody covered."
     },
     {
       "name": "content-ideas",
@@ -549,7 +594,8 @@
         "newsjacking",
         "seo",
         "weekly"
-      ]
+      ],
+      "summary": "Every Monday, four or five content ideas, each tied to something that happened that week."
     },
     {
       "name": "job-watch",
@@ -561,7 +607,8 @@
         "careers",
         "remote-work",
         "daily"
-      ]
+      ],
+      "summary": "Every weekday morning, the new job postings that match your role, location and must-haves."
     },
     {
       "name": "research-field-weekly",
@@ -574,7 +621,8 @@
         "literature",
         "grants",
         "weekly"
-      ]
+      ],
+      "summary": "Every Monday, the week's notable papers, datasets and deadlines in one research field."
     },
     {
       "name": "supplier-discovery",
@@ -587,7 +635,8 @@
         "manufacturing",
         "supply-chain",
         "rfq"
-      ]
+      ],
+      "summary": "Describe what you need to buy and get a ranked shortlist of manufacturers that make it."
     },
     {
       "name": "buyer-evidence",
@@ -599,7 +648,8 @@
         "case-studies",
         "roi",
         "proof-points"
-      ]
+      ],
+      "summary": "Public proof for each objection a skeptical buyer may raise, every row dated and linked."
     },
     {
       "name": "grant-finder",
@@ -612,7 +662,8 @@
         "open-calls",
         "nonprofits",
         "startups"
-      ]
+      ],
+      "summary": "Finds the grants, fellowships and open calls you can still apply to, ranked by fit and deadline."
     },
     {
       "name": "seo-audit",
@@ -624,7 +675,8 @@
         "lighthouse",
         "rankings",
         "site-audit"
-      ]
+      ],
+      "summary": "Checks your site and up to five keywords, then hands back a ranked list of fixes."
     },
     {
       "name": "lead-list-builder",
@@ -636,7 +688,8 @@
         "icp",
         "account-research",
         "apollo"
-      ]
+      ],
+      "summary": "A list of companies that match your ideal customer, with up to two people at each."
     },
     {
       "name": "market-entry",
@@ -648,7 +701,8 @@
         "regulation",
         "competitors",
         "go-no-go"
-      ]
+      ],
+      "summary": "Whether to enter one new country or segment, with a go, conditional go or no-go call."
     },
     {
       "name": "investment-memo",
@@ -660,7 +714,8 @@
         "due-diligence",
         "investing",
         "private-companies"
-      ]
+      ],
+      "summary": "A cited first-draft investment memo on one company, for you to edit before committee."
     },
     {
       "name": "industry-primer",
@@ -673,7 +728,8 @@
         "value-chain",
         "consulting",
         "due-diligence"
-      ]
+      ],
+      "summary": "A sourced primer on one industry in one region, enough to talk about it tomorrow."
     },
     {
       "name": "industry-events",
@@ -686,7 +742,8 @@
         "deadlines",
         "trade-shows",
         "field-marketing"
-      ]
+      ],
+      "summary": "A dated calendar of the conferences and deadlines in your industry that are worth your time."
     },
     {
       "name": "audience-research",
@@ -698,7 +755,8 @@
         "buyer-personas",
         "customer-research",
         "go-to-market"
-      ]
+      ],
+      "summary": "Who buys what you sell, what they struggle with and where to reach them, each point cited."
     },
     {
       "name": "country-risk",
@@ -711,7 +769,8 @@
         "aml",
         "kyc",
         "cross-border-payments"
-      ]
+      ],
+      "summary": "A sourced risk profile of one country before you pay, onboard or operate there."
     },
     {
       "name": "product-teardown",
@@ -724,7 +783,8 @@
         "onboarding",
         "growth-loops",
         "product-management"
-      ]
+      ],
+      "summary": "A teardown of one product from its public pages, docs and reviews."
     },
     {
       "name": "positioning-review",
@@ -736,7 +796,8 @@
         "competitors",
         "customer-language",
         "product-marketing"
-      ]
+      ],
+      "summary": "How your positioning holds up against named competitors, with sharper options to try."
     },
     {
       "name": "inbox-assistant",
@@ -750,7 +811,9 @@
         "digest",
         "local",
         "codex"
-      ]
+      ],
+      "summary": "Sorts each new email, drafts your replies to the ones that need you, and leaves you a digest every evening.",
+      "setup": "Before you install, connect your mailbox under Settings → Email with an app password. Gmail, Fastmail and iCloud work, and so does any other mail provider. It runs on your machine and on your ChatGPT plan."
     }
   ]
 }

@@ -25,8 +25,8 @@
   --ring: 30 100% 50%;
   --destructive-text: 0 90.6% 70.8%;
   --success-text: 142 71% 45%;
-  --ar-control-radius: 8px;
-  --ar-card-radius: 12px;
+  --ar-control-radius: 0;
+  --ar-card-radius: 0;
   /* Orange words pass contrast on the dark surfaces only; on light ones brand words use the foreground and the
      orange stays in borders, washes and fills. */
   --brand-text: var(--primary);
@@ -76,7 +76,7 @@ a { color: inherit; text-decoration: underline; text-decoration-color: hsl(var(-
 a:hover { color: hsl(var(--brand-text)); text-decoration-thickness: 2px; }
 
 code, pre { font-family: var(--font-mono); }
-code { font-size: 0.92em; background: hsl(var(--muted)); padding: 0.05em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+code { font-size: 0.92em; background: hsl(var(--muted)); padding: 0.05em 0.35em; border-radius: 0; overflow-wrap: anywhere; }
 pre code { background: none; padding: 0; border-radius: 0; overflow-wrap: normal; }
 
 .wrap { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 20px; }
@@ -91,7 +91,7 @@ pre code { background: none; padding: 0; border-radius: 0; overflow-wrap: normal
 .top-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; flex-wrap: wrap; }
 .brand { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; font-size: 14px; }
 .brand:hover { color: inherit; }
-.brand-mark { width: 14px; height: 14px; border-radius: 4px; background: hsl(var(--primary)); }
+.brand-mark { width: 14px; height: 14px; border-radius: 0; background: hsl(var(--primary)); }
 .brand-sub { color: hsl(var(--muted-foreground)); font-weight: 400; }
 .top nav { display: flex; gap: 4px; flex-wrap: wrap; }
 .top nav a { text-decoration: none; padding: 10px 10px; min-height: 44px; display: inline-flex; align-items: center; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: hsl(var(--muted-foreground)); }
@@ -109,7 +109,10 @@ h2, h3 { font-weight: 600; }
 .sub { font-size: 12px; color: hsl(var(--muted-foreground)); margin: 24px 0 12px; }
 .eyebrow { font-size: 11px; color: hsl(var(--brand-text)); margin: 0 0 8px; }
 .lead { font-family: var(--font-sans); font-size: 17px; line-height: 1.6; max-width: 72ch; margin: 0 0 12px; }
-.facts-line { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; max-width: 72ch; margin: 0 0 12px; color: hsl(var(--muted-foreground)); }
+.tpl-hero h1 { margin: 0 0 12px; }
+.tpl-hero .lead { margin: 0 0 16px; }
+.setup { max-width: 72ch; margin: 0 0 12px; }
+.tested { margin: 0 0 8px; }
 .unproven { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; max-width: 72ch; margin: 0 0 12px; padding: 8px 12px; border-left: 2px solid hsl(var(--destructive-text)); background: hsl(var(--accent)); }
 .meta { font-size: 11px; color: hsl(var(--muted-foreground)); }
 .muted { color: hsl(var(--muted-foreground)); font-family: var(--font-sans); font-size: 15px; }
@@ -140,9 +143,6 @@ main > section { margin: 40px 0; }
 [data-name][hidden] { display: none; }
 
 .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0; }
-.chip { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; border: 1px solid hsl(var(--border)); border-radius: 999px; color: hsl(var(--muted-foreground)); white-space: nowrap; }
-.chip-active { border-color: hsl(var(--primary) / 0.5); color: hsl(var(--brand-text)); background: hsl(var(--primary) / 0.1); }
-.chip-muted { opacity: 0.8; }
 
 /* controls */
 input[type="search"], input[type="url"] {
@@ -209,11 +209,10 @@ summary:hover { color: hsl(var(--foreground)); }
 
 /* What a template requires: a row of logos, each with its line on hover and on keyboard focus. The logos are black
    on transparent; the dark theme inverts them. The line stays in the page for a screen reader. */
-.reqs { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0 0 12px; }
-.tpl .reqs { margin: 0; }
-.req { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 1px solid hsl(var(--border)); border-radius: var(--ar-control-radius); }
-.req img { width: 16px; height: 16px; filter: invert(1); opacity: 0.85; }
-@media (prefers-color-scheme: light) { .req img { filter: none; opacity: 0.8; } }
-.req:hover, .req:focus-visible { border-color: hsl(var(--border-strong)); }
+.reqs { list-style: none; display: flex; flex-wrap: wrap; gap: 12px; padding: 0; margin: 0; }
+.req { position: relative; display: inline-flex; padding: 2px; }
+.req img { display: block; width: 18px; height: 18px; filter: invert(1); opacity: 0.8; }
+@media (prefers-color-scheme: light) { .req img { filter: none; opacity: 0.75; } }
+.req:hover img, .req:focus-visible img { opacity: 1; }
 .req-tip { position: absolute; left: 0; bottom: calc(100% + 6px); z-index: 10; width: max-content; max-width: min(280px, 80vw); padding: 6px 8px; font-family: var(--font-sans); font-size: 12px; line-height: 1.35; background: hsl(var(--foreground)); color: hsl(var(--background)); border-radius: var(--ar-control-radius); opacity: 0; pointer-events: none; }
 .req:hover .req-tip, .req:focus .req-tip { opacity: 1; }

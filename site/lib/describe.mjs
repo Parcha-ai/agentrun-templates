@@ -138,7 +138,7 @@ export function mcpWords(need) {
 export function unprovenWords(pkg) {
   const toolkits = [...new Set(pkg.mcp.filter((n) => n.source === "composio").map((n) => TOOLKIT_NAMES[n.toolkit] ?? n.toolkit))];
   if (!toolkits.length || pkg.provenLive) return null;
-  return `Integration not yet proven live: no one has run it against real ${listWords(toolkits)} accounts through Composio yet; its eval cases run against stand-ins, not live accounts.`;
+  return `No one has run this against real ${listWords(toolkits)} accounts through Composio yet. Its eval cases use stand-ins.`;
 }
 
 const HARNESS_NAMES = { pi: "pi", "claude-agent": "Claude Code", codex: "Codex" };
@@ -199,30 +199,16 @@ function mcpName(need) {
   return need.server || need.toolkit ? `${need.server ?? need.toolkit} MCP server` : "MCP server";
 }
 
-/** One plain sentence for a template's page and its search snippet: what it needs and how its evals went. No cost: a
- *  run's cost is the owner's model and plan, which the page can't know.
- *  "Needs only a model key and the web, and passes 5 of 5 eval cases on pi and 4 of 5 on Codex." */
-export function factsLine(pkg) {
-  const required = pkg.mcp.filter((n) => n.required).map(mcpWords);
-  const optional = pkg.mcp.filter((n) => !n.required).map(mcpWords);
-  const web = pkg.tools.some((t) => t === "web_search" || t === "web_fetch");
-  const monid = monidProviders(pkg);
-  const paid = [...required, ...(monid.length ? [`a monid key (for ${listWords(monid)})`] : [])];
-  const key = onPlan(pkg) ? "a ChatGPT sign-in or a model key" : "a model key";
-  let needs = paid.length ? `Needs ${listWords(paid)}` : `Needs only ${key}${web ? " and the web" : ""}`;
-  if (optional.length) needs += ` (${listWords(optional)} optional)`;
+/** The page's small Tested line, from measured.json: "Passes 5 of 5 eval cases on pi and 4 of 5 on Codex." Null when
+ *  nothing is measured. A web template's eval cases hand it its pages; only a live case shows it on the real web, so
+ *  the two counts are never merged, and a measured web template without a live count says so. */
+export function testedLine(pkg) {
   const counts = passCounts(pkg);
-  const evals = counts.length
-    ? `passes ${listWords(counts.map(([h, p, t], k) => (k ? `${p} of ${t} on ${h}` : `${p} of ${t} eval cases on ${h}`)))}`
-    : pkg.evals.length ? `is tested by ${pkg.evals.length} eval case${pkg.evals.length === 1 ? "" : "s"}` : null;
-  // A web template's eval cases hand it its pages; only a live case shows it searching the real web, so the two
-  // counts are never merged, and a measured web template without one says so.
+  if (!counts.length) return null;
+  const evals = `Passes ${listWords(counts.map(([h, p, t], k) => (k ? `${p} of ${t} on ${h}` : `${p} of ${t} eval cases on ${h}`)))}.`;
+  if (!pkg.tools.some((t) => t === "web_search" || t === "web_fetch")) return evals;
   const live = passCounts(pkg, true);
-  const liveWords = !web || !pkg.measured ? null
-    : live.length ? `on the live web passes ${listWords(live.map(([h, p, t]) => `${p} of ${t} on ${h}`))}`
-    : "has not been tried on the live web yet";
-  const parts = [needs, evals, liveWords].filter(Boolean);
-  return `${parts.length > 1 ? `${parts.slice(0, -1).join(", ")}, and ${parts[parts.length - 1]}` : parts[0]}.`;
+  return live.length ? `${evals} On the live web, ${listWords(live.map(([h, p, t]) => `${p} of ${t} on ${h}`))}.` : `${evals} Not yet tried on the live web.`;
 }
 
 /** The short form for a search snippet: "Passes 5 of 5 eval cases." (the first harness's count when measured). */

@@ -1,4 +1,6 @@
 { "name": "agentrun", "owner": { "name": "Parcha", "url": "https://github.com/Parcha-ai" },
   "templates": [
-    { "name": "sample-watch", "source": "./templates/sample-watch", "category": "research", "tags": ["fixture", "weekly"] }
+    { "name": "sample-watch", "source": "./templates/sample-watch", "category": "research", "tags": ["fixture", "weekly"],
+      "summary": "Watches one topic every week and tells you what changed, each item dated and linked.",
+      "setup": "Connect GitHub first if you want it to read your issues. It runs <script>alert(1)</script> nothing else." }
   ] }

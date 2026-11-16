@@ -1,6 +1,6 @@
 // The pages: each is real HTML a crawler reads (no client-side rendering), plus a Markdown twin with the same content.
 
-import { CATEGORY_TEXT, computerWords, factsLine, factsShort, keyWords, mcpWords, modelChoices, modelWords, requirements, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
+import { CATEGORY_TEXT, computerWords, factsShort, keyWords, mcpWords, modelChoices, modelWords, requirements, testedLine, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
 import { markdownToHtml } from "./markdown.mjs";
 import { clip, html, mdCode, mdText, plural, raw, upperFirst } from "./util.mjs";
 
@@ -79,25 +79,25 @@ function crumbNav(items) {
     k === items.length - 1 ? html`<li><span aria-current="page">${name}</span></li>` : html`<li><a href="${path}">${name}</a></li>`)}</ol></nav>`;
 }
 
-function chip(text, tone = "plain") {
-  return html`<span class="chip chip-${tone}">${text}</span>`;
-}
-
 /** What a template requires, as a row of logos with no heading. Each says its line on hover and on keyboard focus
  *  (site.css), and a screen reader reads the line. Nothing when it needs nothing beyond a model. */
 function reqRow(site, pkg) {
   const reqs = requirements(pkg);
   if (!reqs.length) return "";
-  return html`<ul class="reqs" aria-label="What it requires">${reqs.map((r) => html`<li class="req" tabindex="0"><img src="/assets/${r.logo}?v=${site.assetVersion}" alt="" width="16" height="16"><span class="req-tip">${r.text}</span></li>`)}</ul>`;
+  return html`<ul class="reqs" aria-label="What it requires">${reqs.map((r) => html`<li class="req" tabindex="0"><img src="/assets/${r.logo}?v=${site.assetVersion}" alt="" width="18" height="18"><span class="req-tip">${r.text}</span></li>`)}</ul>`;
 }
 
 function card(site, pkg) {
   return html`<li class="card tpl" data-name="${pkg.name}">
   <h3><a href="/templates/${pkg.name}/">${pkg.displayName}</a></h3>
-  <p class="desc">${clip(pkg.description, 220)}</p>
+  <p class="desc">${pkg.summary}</p>
   ${reqRow(site, pkg)}
-  <p class="row">${chip(CATEGORY_TEXT[pkg.category].title, "active")}${pkg.local ? "" : chip("bundled", "muted")}</p>
 </li>`;
+}
+
+/** "12 stars, 3 forks", leaving out a zero count; "" when both are zero or unknown. */
+function starWords(stats) {
+  return [stats?.stars ? plural(stats.stars, "star") : null, stats?.forks ? plural(stats.forks, "fork") : null].filter(Boolean).join(", ");
 }
 
 // ---------- home ----------
@@ -108,7 +108,7 @@ export function homePage(site, packages) {
 <section class="hero">
   <p class="caps eyebrow">AgentRun templates</p>
   <h1>Agents that already do a job</h1>
-  <p class="lead">A template is a working agent you install on your own AgentRun: its instructions, the skills that hold its method, the tools it may use, the shape of its answer and the eval cases it is tested against. Install one, fill in its setup, and it runs. You can read every line before you install it.</p>
+  <p class="lead">Each template is a working agent for your own AgentRun. Install one, fill in its setup, and it runs. You can read every instruction before you install.</p>
 </section>
 
 <section aria-labelledby="find">
@@ -135,7 +135,7 @@ export function homePage(site, packages) {
   <dl class="facts">
     <dt>Instructions and skills</dt><dd>What the agent does and the method it follows, as Markdown files you can read and edit after install.</dd>
     <dt>Inputs</dt><dd>What each run is about (a company, a repository, a lead), checked against a schema before the run starts.</dd>
-    <dt>Setup</dt><dd>What you fill in once at install: a schedule, a channel, your risk appetite.</dd>
+    <dt>Setup</dt><dd>What you fill in once at install, such as a schedule, a channel or your risk appetite.</dd>
     <dt>Tools</dt><dd>Web search, page fetches, GitHub. Each one is listed with why it is needed, and nothing is granted until you tick it.</dd>
     <dt>Output</dt><dd>A JSON Schema for the answer, with a Markdown report your console renders.</dd>
     <dt>Evals</dt><dd>Test cases with graders, including a prompt injection case and a case where there is nothing to find.</dd>
@@ -289,22 +289,20 @@ export function templatePage(site, pkg, stats) {
   const body = html`
 ${crumbNav(trail)}
 <section class="hero tpl-hero">
-  <p class="row">${chip(cat.title, "active")}${pkg.tags.map((t) => chip(t))}</p>
   <h1>${pkg.displayName}</h1>
-  <p class="lead">${pkg.description}</p>
+  <p class="lead">${pkg.summary}</p>
   ${reqRow(site, pkg)}
-  <p class="facts-line">${factsLine(pkg)}</p>
-  ${unprovenWords(pkg) ? html`<p class="unproven">${unprovenWords(pkg)}</p>` : ""}
-  <p class="meta">${[pkg.version ? `Version ${pkg.version}` : null, pkg.license, pkg.author?.name ? `by ${pkg.author.name}` : null, stats ? `${plural(stats.stars, "star")} and ${plural(stats.forks, "fork")} on ${pkg.owner}/${pkg.repo}` : null].filter(Boolean).join(" · ")}</p>
 </section>
 
 <section class="card install" aria-labelledby="install">
   <h2 id="install" class="caps section-label">Install</h2>
+  ${pkg.setup ? html`<p class="setup">${pkg.setup}</p>` : ""}
+  ${unprovenWords(pkg) ? html`<p class="unproven">${unprovenWords(pkg)}</p>` : ""}
   <p><button type="button" class="btn btn-solid" data-install="${pkg.installSource}" hidden>Install on your AgentRun</button> <button type="button" class="btn btn-ghost" data-install-forget hidden>Change address</button></p>
   <p class="meta" data-install-address></p>
   <p>Or from a terminal on the machine where your AgentRun runs:</p>
   <div class="cmd"><pre class="code"><code>${cli}</code></pre><button type="button" class="btn btn-sm" data-copy="${cli}" hidden>Copy</button></div>
-  <p class="meta">Pinned to commit <a href="${pkg.treeUrl}"><code>${shortSha}</code></a>, the version this page describes. <code>--trust</code> says you trust ${pkg.owner}, its publisher; AgentRun asks once per publisher. It prints the console page that applies the template. The apply screen shows every instruction and skill before anything is saved, and nothing is granted until you tick it.</p>
+  <p class="meta">Pinned to commit <a href="${pkg.treeUrl}"><code>${shortSha}</code></a>. <code>--trust</code> means you trust ${pkg.owner}, its publisher. AgentRun asks once per publisher. The apply screen shows every instruction and tool before anything is saved, and grants nothing until you tick it.</p>
 </section>
 
 <dialog class="card" data-install-dialog aria-labelledby="ask-title">
@@ -320,6 +318,7 @@ ${crumbNav(trail)}
 
 <section aria-labelledby="does">
   <h2 id="does" class="caps section-label">What it does</h2>
+  <p>${pkg.description}</p>
   ${pkg.skills.length ? html`<dl class="facts">${pkg.skills.map((s) => html`<dt>Skill: ${s.name}</dt><dd>${s.description || "No description."}</dd>`)}</dl>` : ""}
   ${pkg.rules.length ? html`<p>Rules it reads: ${pkg.rules.map((r, k) => html`${k ? ", " : ""}<code>${r}</code>`)}.</p>` : ""}
   <details><summary class="caps">Read the instructions</summary><div class="prose">${raw(markdownToHtml(pkg.instructions, { shift: 2 }))}</div></details>
@@ -361,16 +360,18 @@ ${crumbNav(trail)}
 </section>
 
 <section aria-labelledby="evals">
-  <h2 id="evals" class="caps section-label">Tested by</h2>
-  ${pkg.evals.length ? html`<p>${plural(pkg.evals.length, "eval case")}: ${pkg.evals.map((e, k) => html`${k ? ", " : ""}<code>${e}</code>`)}.</p>` : html`<p class="muted">No eval cases.</p>`}
+  <h2 id="evals" class="caps section-label">Tested</h2>
+  ${testedLine(pkg) ? html`<p class="tested">${testedLine(pkg)}</p>` : ""}
+  ${pkg.evals.length ? html`<p class="meta">${plural(pkg.evals.length, "eval case")}: ${pkg.evals.map((e, k) => html`${k ? ", " : ""}<code>${e}</code>`)}.</p>` : html`<p class="muted">No eval cases.</p>`}
 </section>
 
 <section aria-labelledby="src">
   <h2 id="src" class="caps section-label">Source</h2>
   <dl class="facts">
     <dt>Package</dt><dd><a href="${pkg.treeUrl}"><code>${pkg.source}</code></a> at <code>${shortSha}</code></dd>
-    <dt>Publisher</dt><dd><a href="https://github.com/${pkg.owner}">${pkg.owner}</a> on GitHub${stats ? ` (${plural(stats.stars, "star")}, ${plural(stats.forks, "fork")})` : ""}</dd>
+    <dt>Publisher</dt><dd><a href="https://github.com/${pkg.owner}">${pkg.owner}</a> on GitHub${starWords(stats) ? ` (${starWords(stats)})` : ""}</dd>
     ${pkg.author?.name ? html`<dt>Author</dt><dd>${pkg.author.url ? html`<a href="${pkg.author.url}">${pkg.author.name}</a>` : pkg.author.name}</dd>` : ""}
+    ${pkg.version ? html`<dt>Version</dt><dd>${pkg.version}</dd>` : ""}
     ${pkg.license ? html`<dt>License</dt><dd>${pkg.license}</dd>` : ""}
   </dl>
 </section>`;
@@ -409,9 +410,9 @@ ${crumbNav(trail)}
     ogTitle: pkg.displayName,
     // The search snippet: what it does (its first sentence), then the eval line, inside 158 characters.
     description: (() => {
-      const short = factsShort(pkg);
-      const first = pkg.description.split(/(?<=\.)\s/)[0];
-      return short ? `${clip(first, 157 - short.length)} ${short}` : clip(pkg.description, 158);
+      const line = [pkg.summary, factsShort(pkg)].filter(Boolean).join(" ");
+      if (line.length > 158) return pkg.summary;
+      return line.length >= 50 ? line : clip(`${line} ${pkg.description}`, 158);
     })(),
     jsonLd,
     body,
@@ -435,16 +436,13 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
   const out = [
     `# ${pkg.displayName}`,
     "",
-    pkg.description,
+    mdText(pkg.summary),
     "",
     ...(reqs.length ? [reqs.map((r) => `${mdText(r.text)}.`).join(" "), ""] : []),
-    factsLine(pkg),
-    "",
-    ...(unprovenWords(pkg) ? [`**${unprovenWords(pkg)}**`, ""] : []),
-    `Category: ${CATEGORY_TEXT[pkg.category].title}. Tags: ${pkg.tags.join(", ") || "none"}. ${pkg.version ? `Version ${pkg.version}. ` : ""}${pkg.license ? `License ${pkg.license}. ` : ""}${pkg.author?.name ? `By ${pkg.author.name}.` : ""}`.trim(),
-    "",
     "## Install",
     "",
+    ...(pkg.setup ? [mdText(pkg.setup), ""] : []),
+    ...(unprovenWords(pkg) ? [unprovenWords(pkg), ""] : []),
     "```sh",
     cli,
     "```",
@@ -452,6 +450,8 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
     `Or open \`<your AgentRun address>/#/templates/install?src=${encodeURIComponent(pkg.installSource)}\`. Pinned to commit ${pkg.sha}.`,
     "",
     "## What it does",
+    "",
+    pkg.description,
     "",
     ...pkg.skills.map((s) => `- Skill ${mdCode(s.name)}: ${mdText(s.description)}`),
     ...(pkg.rules.length ? [`- Rules: ${pkg.rules.map(mdCode).join(", ")}`] : []),
@@ -487,14 +487,19 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
     if (shown) out.push("Output:", "", shown.trim().replace(/^#{1,4} /gm, "#### "), "");
   }
   out.push(
-    "## Tested by",
+    "## Tested",
     "",
+    ...(testedLine(pkg) ? [testedLine(pkg), ""] : []),
     pkg.evals.length ? `${plural(pkg.evals.length, "eval case")}: ${pkg.evals.join(", ")}.` : "No eval cases.",
     "",
     "## Source",
     "",
     `- Package: ${pkg.treeUrl}`,
-    `- Publisher: ${pkg.owner}${stats ? ` (${plural(stats.stars, "star")}, ${plural(stats.forks, "fork")})` : ""}`,
+    `- Publisher: ${pkg.owner}${starWords(stats) ? ` (${starWords(stats)})` : ""}`,
+    ...(pkg.author?.name ? [`- Author: ${mdText(pkg.author.name)}`] : []),
+    ...(pkg.version ? [`- Version: ${pkg.version}`] : []),
+    ...(pkg.license ? [`- License: ${pkg.license}`] : []),
+    `- Category: ${CATEGORY_TEXT[pkg.category].title}`,
     `- Page: ${site.url(`/templates/${pkg.name}/`)}`,
     "",
   );
@@ -506,7 +511,9 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
 export function listPage(site) {
   const path = "/list-your-template/";
   const trail = [["Templates", "/"], ["List your template", path]];
-  const entry = `{ "name": "your-template", "source": "github:you/your-repo/path/to/template@v1.0.0", "category": "research", "tags": ["your-tag"] }`;
+  const entry = `{ "name": "your-template", "source": "github:you/your-repo/path/to/template@v1.0.0", "category": "research", "tags": ["your-tag"],
+  "summary": "One line, what it does, shown on its card and under its title.",
+  "setup": "Optional. What to do before installing, shown once in Install." }`;
   const steps = [
     ["Put the template in a public GitHub repository.", "One folder: agent.md with its front matter, skills/, evals/ and the output schema. Private repositories can't be installed."],
     ["Check it.", "Run agentrun template validate <folder>. It runs the same checks AgentRun runs on install."],
@@ -521,7 +528,7 @@ export function listPage(site) {
     "A per-run budget (budget.per_run_usd), and learning: true when it runs on a schedule.",
     "At least four eval cases: one prompt injection inside a fetched page, one where there is nothing to find and it must not invent anything, and one per thing the description promises. A scheduled template adds a no-repeats case.",
     "A sample run in samples/<template>/<name>/ of this repository: input.json and an output.json that matches the schema.",
-    "A description written for someone searching for this job: what it does, in plain words.",
+    "A summary of 20 to 140 characters in the index entry that says what it does in plain words, and a description in agent.md with the detail.",
   ];
   const body = html`
 ${crumbNav(trail)}

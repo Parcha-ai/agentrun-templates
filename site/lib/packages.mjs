@@ -47,6 +47,10 @@ export function readIndex(root) {
     if (typeof t.source !== "string") problems.push(`${at}.source is required`);
     else if (!t.source.startsWith("./") && !parseGithubSource(t.source)) problems.push(`${at}.source "${t.source}" is neither ./<path> nor github:<owner>/<repo>[/<path>][@<ref>]`);
     if (t.category !== undefined && !CATEGORIES.includes(t.category)) problems.push(`${at}.category "${t.category}" is not one of ${CATEGORIES.join(", ")}`);
+    // summary: the one line on the card and under the page title, what it does. setup: what to do before installing,
+    // said once in the Install section.
+    if (typeof t.summary !== "string" || t.summary.length < 20 || t.summary.length > 140 || /\n/.test(t.summary)) problems.push(`${at}.summary is required: one line of 20 to 140 characters saying what it does`);
+    if (t.setup !== undefined && (typeof t.setup !== "string" || !t.setup.trim() || t.setup.length > 400)) problems.push(`${at}.setup, when given, is up to 400 characters`);
     if (t.tags !== undefined && !(Array.isArray(t.tags) && t.tags.length <= 8 && t.tags.every((tag) => typeof tag === "string" && TAG.test(tag)))) problems.push(`${at}.tags: at most 8, each ${TAG}`);
   }
   if (problems.length) throw new SiteError(`${file}:\n  ${problems.join("\n  ")}`);
@@ -187,6 +191,8 @@ export async function loadPackage(entry, ctx) {
     repoUrl: `https://github.com/${owner}/${repo}`,
     displayName,
     description,
+    summary: entry.summary,
+    setup: entry.setup,
     version: str(m.version),
     license: str(m.license),
     author: isObj(m.author) ? { name: str(m.author.name), url: str(m.author.url) } : typeof m.author === "string" ? { name: m.author } : undefined,
