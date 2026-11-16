@@ -1,6 +1,6 @@
 ---
 name: failed-payments
-display_name: "Failed payments to ${parameters.channel}"
+display_name: "Failed payments: ${parameters.channel}"
 version: 0.1.0
 description: Posts one Slack alert each time a Stripe card payment fails. The alert says who it was, how much, why the bank or Stripe declined it in plain words, and how the customer's payments have gone lately (paid and failed charges, an open invoice and Stripe's next retry). It ends with the next step that fits the decline. It only reads Stripe and never emails the customer. It posts on its own only if you pick Never for approvals at install; it stays held to your channel either way. Stripe's events through Composio are not yet tested end to end.
 license: Apache-2.0

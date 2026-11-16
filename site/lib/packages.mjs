@@ -174,9 +174,8 @@ export async function loadPackage(entry, ctx) {
   if (entry.category && m.category && m.category !== entry.category) ctx.log(`warn: ${where}: category ${entry.category} in the index, ${m.category} in agent.md; the index wins`);
   const tags = [...new Set([...(entry.tags ?? []), ...(Array.isArray(m.tags) ? m.tags.filter((t) => typeof t === "string" && TAG.test(t)) : [])])].slice(0, 8);
 
-  // The site names a template without its setup: "KYB due diligence (${parameters.risk_appetite} risk appetite)" is
-  // "KYB due diligence" here, whatever the default.
-  const displayName = fillParameters(typeof m.display_name === "string" ? m.display_name : entry.name, {}) || entry.name;
+  const displayName = siteName(typeof m.display_name === "string" ? m.display_name : entry.name);
+  if (!displayName) throw new SiteError(`${where}: display_name ${JSON.stringify(m.display_name)} starts with a parameter; write "Name: \${parameters.x}" or "Name (\${parameters.x} ...)"`);
   const description = fill(typeof m.description === "string" ? m.description.trim() : "");
   if (!description) throw new SiteError(`${where}: agent.md has no description`);
 
@@ -245,6 +244,15 @@ export function markdownProperty(schema) {
 }
 
 /** "${parameters.x}" as x's default when it has one; otherwise the placeholder goes, with the punctuation it leaves. */
+// The site names a template by the words before its setup: "Inbox assistant: ${parameters.owner_name}" and
+// "KYB due diligence (${parameters.risk_appetite} risk appetite)" are "Inbox assistant" and "KYB due diligence".
+// A parameter with no "Name:" or "Name (" before it has no name to show: undefined.
+export function siteName(displayName) {
+  const at = displayName.indexOf("${");
+  if (at < 0) return displayName.trim();
+  return /^(.*?\S)\s*[:(]/.exec(displayName.slice(0, at))?.[1];
+}
+
 export function fillParameters(text, params) {
   if (typeof text !== "string") return "";
   let out = text.replace(/\$\{parameters\.([a-z][a-z0-9_]*)\}/g, (_, key) => {

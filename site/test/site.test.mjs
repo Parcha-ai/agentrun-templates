@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { frontMatter, parseYaml } from "../lib/yaml.mjs";
-import { fillParameters, parseGithubSource, readIndex } from "../lib/packages.mjs";
+import { fillParameters, parseGithubSource, readIndex, siteName } from "../lib/packages.mjs";
 import { markdownToHtml } from "../lib/markdown.mjs";
 import { cronWords, factsShort, keyWords, requirements, testedLine, unprovenWords } from "../lib/describe.mjs";
 import { build } from "../build.mjs";
@@ -81,6 +81,17 @@ test("display names fill parameter defaults and drop the rest cleanly", () => {
   assert.equal(fillParameters("Code review: ${parameters.owner}/${parameters.repo}", { owner: {}, repo: {} }), "Code review");
   assert.equal(fillParameters("Code review: ${parameters.owner}/${parameters.repo}", { owner: { default: "acme" }, repo: {} }), "Code review: acme");
   assert.equal(fillParameters("Code review: ${parameters.owner}/${parameters.repo}", { owner: { default: "acme" }, repo: { default: "web" } }), "Code review: acme/web");
+});
+
+test("the site names a template by the words before its setup", () => {
+  assert.equal(siteName("Market monitor"), "Market monitor");
+  assert.equal(siteName("Inbox assistant: ${parameters.owner_name}"), "Inbox assistant");
+  assert.equal(siteName("KYB due diligence (${parameters.risk_appetite} risk appetite)"), "KYB due diligence");
+  assert.equal(siteName("Revenue goal: ${parameters.goal_amount} ${parameters.currency} a ${parameters.period}"), "Revenue goal");
+  assert.equal(siteName("Deal hygiene: ${parameters.pipeline_id} pipeline"), "Deal hygiene");
+  // A parameter with no "Name:" or "Name (" before it leaves no name to show.
+  assert.equal(siteName("Failed payments to ${parameters.channel}"), undefined);
+  assert.equal(siteName("${parameters.owner_name}'s inbox"), undefined);
 });
 
 test("github sources parse, and traversal is refused", () => {
