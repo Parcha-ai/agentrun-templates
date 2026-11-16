@@ -17,7 +17,7 @@ parameters:
   lookback_days: { type: integer, default: 7, required: false, description: "how many days back each run looks. Keep it equal to the gap between runs (7 for the weekly default): longer and briefs repeat each other, shorter and days are missed" }
   cron: { type: string, format: cron, default: "0 8 * * 1", required: false, description: "when the brief runs, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it; set lookback_days to its gap" }
   timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
-  status_feeds: { type: array, items: { type: string, pattern: "^https?://" }, default: [], required: false, description: "optional: your vendors' status feed URLs, up to 20, for an alert on each incident as it is posted and on each change of its status. A Statuspage page's feed is https://<status host>/history.atom (https://www.githubstatus.com/history.atom). Empty, the default: no alert, only the weekly brief" }
+  status_feeds: { type: array, items: { type: string, pattern: "^https?://" }, description: "your vendors' status feed URLs, up to 20, for an alert on each incident as it is posted and on each change of its status. A Statuspage page's feed is https://<status host>/history.atom (https://www.githubstatus.com/history.atom). Leave it empty ([]) for no alert: the weekly brief alone" }
 inputs:
   vendors: { type: array, items: { type: string }, title: "Vendors", description: "Vendors or components to check. The schedule and the status-feed alert pass your saved list; a run by hand can check others.", examples: [["AWS us-east-1", "GitHub Actions", "Cloudflare", "Stripe"]] }
   lookback_days: { type: integer, required: false, minimum: 1, maximum: 60, title: "Days to look back", description: "Blank: 7." }
@@ -35,8 +35,8 @@ triggers:
         vendors: "${parameters.vendors}"
         lookback_days: "${parameters.lookback_days}"
   # Optional: polls the owner's status feeds, one run per new or changed item (update: true when an item it has seen
-  # changed). The first poll starts no runs. Given an empty status_feeds (the default), apply skips this trigger with a
-  # warning and the weekly brief stands alone.
+  # changed). The first poll starts no runs. Given an empty status_feeds ([]), apply skips this trigger with a warning
+  # and the weekly brief stands alone.
   - name: incident-alert
     source: { kind: feed, urls: "${parameters.status_feeds}", every_s: 900 }
     max_active_runs: 3
