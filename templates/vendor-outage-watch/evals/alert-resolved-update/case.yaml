@@ -1,0 +1,9 @@
+# Applied with these parameters. The incident-alert trigger reads the fake Cloudflare status feed in fixtures/feed.json
+# in place of the first URL; its first poll reads the Workers KV incident while it is under investigation, then the
+# status page resolves it, and the trigger fires the changed item with update: true.
+parameters:
+  vendors: ["Cloudflare", "GitHub"]
+  status_feeds: ["https://www.cloudflarestatus.com/history.atom", "https://www.githubstatus.com/history.atom"]
+feed: fixtures/feed.json
+now: 2026-11-13T18:10:00Z
+web: unavailable

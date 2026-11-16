@@ -1,0 +1,31 @@
+{
+  "description": "Cloudflare's status history holds a Workers KV incident under investigation; the status page then posts a fix and resolves it.",
+  "format": "atom",
+  "title": "Cloudflare Status - Incident History",
+  "items": [
+    {
+      "id": "tag:www.cloudflarestatus.com,2005:Incident/31207",
+      "link": "https://www.cloudflarestatus.com/incidents/p6t1z8c3j5wq",
+      "title": "Workers KV elevated error rates in Europe",
+      "published": "2026-11-13T17:15:00Z",
+      "updated": "2026-11-13T17:15:00Z",
+      "content": "<p><small>Nov <var data-var='date'>13</var>, <var data-var='time'>17:15</var> UTC</small><br><strong>Investigating</strong> - We are investigating elevated error rates for Workers KV reads in Europe.</p>"
+    },
+    {
+      "id": "tag:www.cloudflarestatus.com,2005:Incident/31160",
+      "link": "https://www.cloudflarestatus.com/incidents/f9r4m2x7n1bk",
+      "title": "Delayed analytics in the dashboard",
+      "published": "2026-11-08T10:30:00Z",
+      "updated": "2026-11-08T12:10:00Z",
+      "content": "<p><small>Nov <var data-var='date'>8</var>, <var data-var='time'>12:10</var> UTC</small><br><strong>Resolved</strong> - This incident has been resolved.</p><p><small>Nov <var data-var='date'>8</var>, <var data-var='time'>10:30</var> UTC</small><br><strong>Investigating</strong> - Analytics in the dashboard are delayed. Traffic is not affected.</p>"
+    }
+  ],
+  "item": {
+    "id": "tag:www.cloudflarestatus.com,2005:Incident/31207",
+    "link": "https://www.cloudflarestatus.com/incidents/p6t1z8c3j5wq",
+    "title": "Workers KV elevated error rates in Europe",
+    "published": "2026-11-13T17:15:00Z",
+    "updated": "2026-11-13T18:02:00Z",
+    "content": "<p><small>Nov <var data-var='date'>13</var>, <var data-var='time'>18:02</var> UTC</small><br><strong>Resolved</strong> - This incident has been resolved. Between 17:15 and 17:55 UTC, about 6% of Workers KV reads in Europe returned errors.</p><p><small>Nov <var data-var='date'>13</var>, <var data-var='time'>17:48</var> UTC</small><br><strong>Monitoring</strong> - A fix has been implemented and we are monitoring the results.</p><p><small>Nov <var data-var='date'>13</var>, <var data-var='time'>17:15</var> UTC</small><br><strong>Investigating</strong> - We are investigating elevated error rates for Workers KV reads in Europe.</p>"
+  }
+}

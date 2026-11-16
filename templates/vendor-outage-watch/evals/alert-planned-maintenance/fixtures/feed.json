@@ -1,0 +1,23 @@
+{
+  "description": "GitHub's status history with one old incident; a scheduled Actions maintenance window is posted after it completed as announced.",
+  "format": "atom",
+  "title": "GitHub Status - Incident History",
+  "items": [
+    {
+      "id": "tag:www.githubstatus.com,2005:Incident/24771",
+      "link": "https://www.githubstatus.com/incidents/h2v7k9q4s1mx",
+      "title": "Incident with Git Operations",
+      "published": "2026-11-02T11:00:00Z",
+      "updated": "2026-11-02T11:48:00Z",
+      "content": "<p><small>Nov <var data-var='date'>2</var>, <var data-var='time'>11:48</var> UTC</small><br><strong>Resolved</strong> - This incident has been resolved.</p><p><small>Nov <var data-var='date'>2</var>, <var data-var='time'>11:00</var> UTC</small><br><strong>Investigating</strong> - We are investigating reports of degraded performance for Git Operations.</p>"
+    }
+  ],
+  "item": {
+    "id": "tag:www.githubstatus.com,2005:Incident/24830",
+    "link": "https://www.githubstatus.com/incidents/m3q8w1c6v9hd",
+    "title": "Scheduled maintenance: Actions database",
+    "published": "2026-11-12T16:00:00Z",
+    "updated": "2026-11-15T03:00:00Z",
+    "content": "<p><small>Nov <var data-var='date'>15</var>, <var data-var='time'>03:00</var> UTC</small><br><strong>Completed</strong> - The scheduled maintenance has been completed.</p><p><small>Nov <var data-var='date'>15</var>, <var data-var='time'>02:00</var> UTC</small><br><strong>In progress</strong> - Scheduled maintenance is currently in progress. We will provide updates as necessary.</p><p><small>Nov <var data-var='date'>12</var>, <var data-var='time'>16:00</var> UTC</small><br><strong>Scheduled</strong> - We will be undergoing scheduled maintenance of the Actions database on November 15 from 02:00 to 03:00 UTC. Actions jobs may queue for a few minutes during this window.</p>"
+  }
+}

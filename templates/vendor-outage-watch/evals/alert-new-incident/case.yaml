@@ -1,0 +1,10 @@
+# Applied with these parameters (POST /v2/templates/vendor-outage-watch/apply). The incident-alert trigger reads the
+# fake GitHub status feed in fixtures/feed.json in place of the first URL; its first poll takes the two old incidents
+# as read, and the new one fires a run.
+parameters:
+  vendors: ["GitHub Actions", "Cloudflare"]
+  status_feeds: ["https://www.githubstatus.com/history.atom", "https://www.cloudflarestatus.com/history.atom"]
+feed: fixtures/feed.json
+now: 2026-11-14T09:50:00Z
+# The item is the status page's own words: no run reads the web.
+web: unavailable

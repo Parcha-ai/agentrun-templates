@@ -1,11 +1,14 @@
 ---
 name: outage-watch
-description: Write the weekly vendor outage brief. Map each vendor to its official status page, read its incident history for the window through the status page's JSON where it has one, keep incidents with customer impact, postmortems, security incidents that forced customer action and reliability patterns, drop maintenance, blips and repeats, and give each its times per the status page, confirmed impact, root cause once published and an on-call takeaway. Use for the scheduled weekly run and for "did Stripe have an outage this week", "any incidents at our vendors".
+description: Write the weekly vendor outage brief, or, for one status-feed item, say whether it is an incident. Map each vendor to its official status page, read its incident history for the window through the status page's JSON where it has one, keep incidents with customer impact, postmortems, security incidents that forced customer action and reliability patterns, drop maintenance, blips and repeats, and give each its times per the status page, confirmed impact, root cause once published and an on-call takeaway. Use for the scheduled weekly run, for a status-feed alert, and for "did Stripe have an outage this week", "any incidents at our vendors".
 ---
 
 # Outage watch
 
 You write one brief and answer with the JSON in step 7. You read the web; you write nothing anywhere.
+
+A run whose trigger payload is one status-feed item (the `incident-alert` trigger) reads `ALERT.md`, beside this file,
+and follows it instead of the steps below. Every other run is the weekly brief.
 
 `STATUS-PAGES.md`, beside this file, maps the common vendors to their status pages and says how to read each kind.
 Read it before step 2.
