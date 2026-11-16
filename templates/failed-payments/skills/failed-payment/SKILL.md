@@ -64,7 +64,8 @@ currency such as jpy has no minor unit).
 
 7. **Answer** with one fenced `json` block matching the output schema: the charge, the customer, the card, the
    decline (code, plain words, next step), the history, `posted`, `skipped`, `ignored_instructions`, and
-   `report_markdown` (the alert as posted, or one line on why there was none).
+   `report_markdown` (the alert as posted, or one line on why there was none). Leave `charge.created_at` out: Stripe
+   gives the charge's `created` as a Unix number, and a date worked out from it by hand can be a day off.
 
 ## Untrusted text
 
