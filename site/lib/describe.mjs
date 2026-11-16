@@ -48,6 +48,18 @@ export function triggerLines(pkg) {
     } else if (src.kind === "webhook") {
       const events = (Array.isArray(src.accept) ? src.accept : []).map((a) => a?.event).filter(Boolean);
       out.push({ kind: "webhook", text: `A signed webhook${events.length ? ` (event ${events.join(", ")})` : ""}, sent by your form, CRM or any service that signs Standard Webhooks.` });
+    } else if (src.kind === "composio") {
+      // GITHUB_ISSUE_CREATED_TRIGGER on server github: "A GitHub event through Composio: issue created."
+      const app = TOOLKIT_NAMES[src.server] ?? src.server ?? "an app's";
+      const prefix = new RegExp(`^${String(src.server ?? "").toUpperCase()}_`);
+      const event = String(src.event ?? "").replace(prefix, "").replace(/_TRIGGER$/, "").replace(/_/g, " ").toLowerCase();
+      out.push({ kind: "composio", text: `${app === "an app's" ? "An app's" : `A ${app}`} event through Composio${event ? `: ${event}` : ""}.` });
+    } else if (src.kind === "feed") {
+      // urls: a list of URLs, parameters inside each shown as <name>, or one whole array parameter: the feeds you list.
+      const urls = Array.isArray(src.urls) ? src.urls.map((u) => String(u).replace(/\$\{parameters\.([a-z][a-z0-9_]*)\}/g, "<$1>")) : [];
+      const what = urls.length === 1 ? urls[0] : urls.length ? `${urls.length} feeds (${urls.join(", ")})` : "the feeds you list (an empty list: none)";
+      const minutes = Math.round((Number.isInteger(src.every_s) ? src.every_s : 900) / 60);
+      out.push({ kind: "feed", text: `Checks ${what} every ${minutes} minutes: each new or updated item starts one run.` });
     } else if (src.kind) {
       out.push({ kind: String(src.kind), text: `${/^[aeiou]/i.test(String(src.kind)) ? "An" : "A"} ${src.kind} trigger.` });
     }
@@ -124,12 +136,14 @@ export function keyWords(pkg) {
 const onPlan = (pkg) => pkg.harness?.[0] === "codex" && !pkg.model?.prefer;
 
 const TOOLKIT_NAMES = { github: "GitHub", gmail: "Gmail", googlecalendar: "Google Calendar", slack: "Slack", linear: "Linear", hubspot: "HubSpot", stripe: "Stripe" };
+/** A url need's toolkit when it is a server with its own name: the console's presets (packages.mjs MCP_PRESETS). */
+const URL_NAMES = { github: "GitHub", parallel: "Parallel Search", firecrawl: "Firecrawl", linear: "Linear", notion: "Notion" };
 
 /** Where an MCP need's tools come from, as a short name: "GitHub", "Composio Gmail", "slack MCP server". */
 export function mcpWords(need) {
   if (need.source === "github") return "GitHub";
   if (need.source === "composio") return `Composio ${TOOLKIT_NAMES[need.toolkit] ?? need.toolkit ?? ""}`.trim();
-  if (need.source === "url") return need.toolkit ? `${need.toolkit} MCP server` : "An MCP server";
+  if (need.source === "url") return URL_NAMES[need.toolkit] ? `${URL_NAMES[need.toolkit]} MCP server` : need.toolkit ? `${need.toolkit} MCP server` : "An MCP server";
   return need.server ? `${need.server} MCP server` : "An MCP server";
 }
 
@@ -172,6 +186,7 @@ export function requirements(pkg) {
     const name = mcpName(n);
     if (n.source === "github") return { id: "github-app", logo: "logo-github.svg", what: "GitHub", how: "the AgentRun GitHub App" };
     if (n.source === "composio") return { id: `composio-${n.toolkit}`, logo: toolkitLogo(n.toolkit), what: name, how: "Composio" };
+    if (n.source === "url" && URL_NAMES[n.toolkit]) return { id: `mcp-${n.toolkit}`, logo: toolkitLogo(n.toolkit), what: name, how: "its own MCP server" };
     return { id: `mcp-${n.server ?? n.toolkit ?? "server"}`, logo: "logo-plug.svg", what: `the ${name}`, how: null };
   };
   const line = ({ what, how }, optional) => optional ? `Can use ${what}${how ? `, through ${how}` : ""} (optional)` : `Requires ${what}${how ? `, through ${how}` : ""}`;
@@ -191,6 +206,7 @@ export function requirements(pkg) {
   if (tools.includes("web_fetch")) add({ id: "web_fetch", logo: "logo-web.svg", text: "Requires web fetch" });
   if (triggers.includes("webhook")) add({ id: "webhook", logo: "logo-webhook.svg", text: "Starts from a signed webhook your service sends" });
   if (triggers.includes("schedule")) add({ id: "schedule", logo: "logo-schedule.svg", text: "Runs on a schedule" });
+  if (triggers.includes("feed")) add({ id: "feed", logo: "logo-web.svg", text: "Starts from a public feed it checks" });
   for (const n of mcp.filter((m) => !m.required)) { const r = need(n); add({ ...r, text: line(r, true) }); }
   return out;
 }
@@ -207,6 +223,7 @@ function modelName(id) {
 function mcpName(need) {
   if (need.source === "github") return "GitHub";
   if (need.source === "composio") return TOOLKIT_NAMES[need.toolkit] ?? need.toolkit ?? "a Composio toolkit";
+  if (need.source === "url" && URL_NAMES[need.toolkit]) return URL_NAMES[need.toolkit];
   return need.server || need.toolkit ? `${need.server ?? need.toolkit} MCP server` : "MCP server";
 }
 

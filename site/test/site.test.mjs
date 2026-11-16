@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { frontMatter, parseYaml } from "../lib/yaml.mjs";
 import { fillParameters, parseGithubSource, readIndex, siteName } from "../lib/packages.mjs";
 import { markdownToHtml } from "../lib/markdown.mjs";
-import { cronWords, factsShort, keyWords, requirements, testedLine, unprovenWords } from "../lib/describe.mjs";
+import { cronWords, factsShort, keyWords, requirements, testedLine, triggerLines, unprovenWords } from "../lib/describe.mjs";
 import { build } from "../build.mjs";
 import { check } from "../check.mjs";
 import { CSP, SECURITY_HEADERS, siteServer } from "../lib/server.mjs";
@@ -152,6 +152,27 @@ test("a template's requirements come from its package (tools, MCP toolkits, trig
   assert.deepEqual(requirements({ tools: ["monid:dataforseo/a/b", "monid:apollo/c"], mcp: [], triggers: [] }).map((r) => r.text), ["Requires DataForSEO, through monid", "Requires Apollo, through monid"]);
   // Nothing beyond a model: no logos.
   assert.deepEqual(requirements({ tools: ["read", "bash", "subagent"], mcp: [], triggers: [{ source: { kind: "manual" } }] }), []);
+  // A url need on a server with its own name (a console preset) says that name and its logo; a feed trigger says it.
+  assert.deepEqual(requirements({ tools: [], mcp: [{ source: "url", toolkit: "github", required: true }, { source: "url", toolkit: "parallel", required: false }, { source: "url", toolkit: "acme", required: true }], triggers: [{ source: { kind: "feed" } }] }).map((r) => [r.logo, r.text]), [
+    ["logo-github.svg", "Requires GitHub, through its own MCP server"],
+    ["logo-plug.svg", "Requires the acme MCP server"],
+    ["logo-web.svg", "Starts from a public feed it checks"],
+    ["logo-plug.svg", "Can use Parallel Search, through its own MCP server (optional)"],
+  ]);
+});
+
+test("each trigger kind is said in words", () => {
+  const lines = (triggers, parameters = []) => triggerLines({ triggers, parameters }).map((l) => l.text).slice(0, -1);
+  assert.deepEqual(lines([{ source: { kind: "composio", server: "github", event: "GITHUB_ISSUE_CREATED_TRIGGER" }, max_active_runs: 3 }, { source: { kind: "composio", server: "stripe", event: "STRIPE_CHARGE_FAILED" } }]), [
+    "A GitHub event through Composio: issue created. At most 3 at once.",
+    "A Stripe event through Composio: charge failed.",
+  ]);
+  assert.deepEqual(lines([{ source: { kind: "feed", urls: ["https://github.com/${parameters.owner}/${parameters.repo}/releases.atom"] } }, { source: { kind: "feed", urls: "${parameters.status_feeds}", every_s: 1800 } }]), [
+    "Checks https://github.com/<owner>/<repo>/releases.atom every 15 minutes: each new or updated item starts one run.",
+    "Checks the feeds you list (an empty list: none) every 30 minutes: each new or updated item starts one run.",
+  ]);
+  // A kind the site doesn't know yet still gets a line.
+  assert.deepEqual(lines([{ source: { kind: "email" } }]), ["An email trigger."]);
 });
 
 test("a template that prefers a free model says so first, naming the model; its measured note follows the Tested line", () => {
