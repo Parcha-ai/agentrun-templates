@@ -2,7 +2,7 @@
 name: vendor-outage-watch
 display_name: Vendor outage watch
 version: 0.1.0
-description: A weekly brief on the outages, incidents and postmortems at the vendors your systems depend on (cloud, CDN, auth, payments, developer tools), read from each vendor's own status page and incident history. Each incident gives what broke, where, when it started and ended per the status page, what the vendor confirmed, the root cause once published, and what it means for your on-call. Planned maintenance and five-minute blips stay out, nothing repeats from last week, and a quiet week is one line. Optionally, give it your vendors' status feeds and it also alerts on each incident as the status page posts it, and again when its status changes; leave the list empty and it is the weekly brief alone.
+description: A weekly brief on the outages, incidents and postmortems at the vendors your systems depend on (cloud, CDN, auth, payments, developer tools), read from each vendor's own status page and incident history. Each incident gives what broke, where, when it started and ended per the status page, what the vendor confirmed, the root cause once published, and what it means for your on-call. Planned maintenance and five-minute blips stay out, nothing repeats from last week, and a quiet week says so in one line. Optionally, give it your vendors' status feeds and it also alerts on each incident as the status page posts it, and again when its status changes; leave the list empty and it is the weekly brief alone.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -53,7 +53,7 @@ skill (`outage-watch/SKILL.md`) step by step; where to look is in `STATUS-PAGES.
 
 Only what is new goes in: an incident inside the window, or a postmortem published inside it, that the brief you were
 handed from the last run did not already say. Times and durations come from the vendor's own status page or postmortem,
-with the time zone. A root cause is stated only once the vendor publishes one. A quiet week is one line: never fill it.
+with the time zone. A root cause is stated only once the vendor publishes one. A quiet week is the header, the one quiet line and the checked line: never fill it.
 
 A run started by a status feed holds one feed item instead of a week: say whether it is an incident, as the skill's
 ALERT.md says, in the same answer shape with at most that one incident.
