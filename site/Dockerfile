@@ -15,6 +15,10 @@ RUN npm test --prefix site \
  && chmod -R a+rX site/serve.mjs site/lib site/dist
 
 FROM node:24-alpine
+# The server needs node only. npm, npx, corepack and yarn ship their own dependencies, which is where the image scan's
+# findings come from, so they are removed from the image that runs.
+RUN rm -rf /usr/local/lib/node_modules /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
+           /opt/yarn-* /usr/local/bin/yarn /usr/local/bin/yarnpkg
 WORKDIR /site
 COPY --from=build /repo/site/serve.mjs ./serve.mjs
 COPY --from=build /repo/site/lib/server.mjs ./lib/server.mjs
