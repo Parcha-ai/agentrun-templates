@@ -125,7 +125,7 @@ h2, h3 { font-weight: 500; }
 /* Section headings are headings: sentence case, readable size. No small caps labels above content. */
 .section-label { font-size: 20px; font-weight: 500; line-height: 1.25; letter-spacing: -0.02em; text-transform: none; color: hsl(var(--foreground)); margin: 0 0 14px; }
 .sub { font-size: 12px; color: hsl(var(--muted-foreground)); margin: 24px 0 12px; }
-.lead { font-family: var(--font-sans); font-size: 17px; line-height: 1.65; max-width: 64ch; margin: 0 0 12px; color: hsl(var(--muted-foreground)); }
+.lead { font-family: var(--font-sans); font-size: 17px; line-height: 1.65; margin: 0 0 12px; color: hsl(var(--muted-foreground)); }
 .tpl-hero h1 { margin: 0 0 12px; }
 .tpl-hero .lead { margin: 0 0 16px; }
 .setup { max-width: 72ch; margin: 0 0 12px; }
