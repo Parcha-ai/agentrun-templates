@@ -15,7 +15,8 @@
       "OpenRouter free models: 50 requests a day with no credits, 1,000 a day after a one-time $10, 20 a minute",
       "Exa keyless search: about 150 searches a day per IP address and 3 a second (Exa changelog, 2026-02-02); one machine was rate-limited after about 170 on 2026-11-15",
       "Public questions only: the web searches, Parallel's included, see each query",
-      "Measured with the built-in search rate-limited for the day: both live runs went on through Parallel Search and passed. Parallel's free limit is not published"
+      "Measured with the built-in search rate-limited for the day: both live runs went on through Parallel Search and passed. Parallel's free limit is not published",
+      "Ling's free endpoint is often busy upstream: one run on 2026-11-17 took 24 minutes, waiting out 9 rate-limited replies before it answered"
     ]
   },
   "live": {
