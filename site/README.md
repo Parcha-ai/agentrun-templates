@@ -68,6 +68,9 @@ orange, mono headings and nav in sentence case, dark words on orange buttons, sq
 Light follows the system with the console's light tokens. Search matches a template's name, description, tags and what
 it requires ("slack", "free"); `/` focuses it and Escape clears it.
 
+No small caps label sits above a page title, and section headings are sentence case at a readable size. A template
+page keeps its breadcrumb; no other page has one.
+
 ## Install button
 
 It asks once for the reader's AgentRun address, with or without `https://` (kept in this browser's localStorage under

@@ -590,9 +590,7 @@ export function listPage(site) {
     "A summary of 20 to 140 characters in the index entry that says what it does in plain words, and a description in agent.md with the detail.",
   ];
   const body = html`
-${crumbNav(trail)}
 <section class="hero">
-  <p class="caps eyebrow">For template authors</p>
   <h1>List your template</h1>
   <p class="lead">The marketplace is one file, <code>.agentrun/marketplace.json</code> in <a href="${site.repoUrl}">${site.repo.owner}/${site.repo.name}</a>. Your template stays in your repository. Listing it is a pull request that adds one line.</p>
 </section>
