@@ -73,7 +73,7 @@ ${page.body}
           <li><a href="/">All templates</a></li>
           <li><a href="/list-your-template/">List your template</a></li>
           <li><a href="${site.repoUrl}">Templates on GitHub</a></li>
-          <li><a href="/llms.txt">llms.txt</a></li>
+          <li><a href="/llms.txt">For your agents</a></li>
         </ul></div>
         <div><h2>AgentRun</h2><ul>
           <li><a href="https://agentrun.ai/">agentrun.ai</a></li>
