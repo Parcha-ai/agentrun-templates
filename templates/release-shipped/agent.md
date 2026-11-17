@@ -43,7 +43,12 @@ parameters:
   include_prereleases: { type: boolean, default: false, required: false, description: "also celebrate releases GitHub marks as pre-release (betas, release candidates); off unless you turn it on" }
 inputs:
   tag: { type: string, required: false, maxLength: 100, pattern: "^[^\\s]+$", title: "Release tag", description: "Announce one release by hand, by its tag. Leave it out on the trigger's runs: the feed item names the release.", examples: ["v2.4.0"] }
-budget: { per_run_usd: 0.40 }
+# Sized from the 2026-11-17 live walk: cap >= 2 x the highest harness's spend + $0.40, the most one codex step on
+# gpt-6.1-sol held before it answered that day ($0.36), rounded up to $0.10; a cap under that stops a job halfway.
+# Live walk 2026-11-17 (v0.1.0-beta.41, 30-60 PR reads): claude-agent $0.16, codex $0.12, pi stopped at $0.20 when
+# its next step needed $0.25 under the old $0.40 cap. Sized: 2 x $0.20 + $0.40 = $0.80, plus $0.10 for the reads pi
+# had not reached when it stopped.
+budget: { per_run_usd: 0.90 }
 learning: true
 # Suggested: never, so the triggered post goes out unattended. The owner makes that choice at install; under ask the
 # post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.

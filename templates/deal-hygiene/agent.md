@@ -42,7 +42,10 @@ parameters:
   timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line and the dates are read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
   stale_days: { type: integer, required: false, minimum: 1, maximum: 180, title: "Days with no activity", description: "The schedule passes your saved setting. Blank: 14.", examples: [14] }
-budget: { per_run_usd: 0.40 }
+# Sized from the 2026-11-17 live walk: cap >= 2 x the highest harness's spend + $0.40, the most one codex step on
+# gpt-6.1-sol held before it answered that day ($0.36), rounded up to $0.10; a cap under that stops a job halfway.
+# Live walk 2026-11-17: pi $0.02, claude-agent $0.04, codex $0.04, all finished. Sized: 2 x $0.04 + $0.40, rounded up.
+budget: { per_run_usd: 0.50 }
 learning: true
 # Suggested: never, so the scheduled post goes out unattended. The owner makes that choice at install; under ask the
 # post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
