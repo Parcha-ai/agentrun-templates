@@ -8,11 +8,12 @@
   const box = document.querySelector("[data-search]");
   const list = document.querySelector("[data-search-list]");
   const status = document.querySelector("[data-search-status]");
+  const none = document.querySelector("[data-search-none]");
   if (box && list) {
     let index = null;
     const cards = [...list.querySelectorAll("[data-name]")];
     const words = (s) => String(s || "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
-    const haystack = (t) => [t.name, t.title, t.description, t.category, ...(t.tags || [])].join(" ").toLowerCase();
+    const haystack = (t) => [t.name, t.title, t.description, t.category, ...(t.tags || []), ...(t.needs || [])].join(" ").toLowerCase();
     const run = () => {
       const q = words(box.value);
       let shown = 0;
@@ -23,7 +24,13 @@
         card.hidden = !hit;
         if (hit) shown++;
       }
-      if (status) status.textContent = q.length ? `${shown} of ${cards.length} templates match.` : "";
+      if (status) status.textContent = q.length && shown ? `${shown} of ${cards.length} templates match.` : "";
+      if (none) {
+        none.hidden = !(q.length && !shown);
+        // "search all templates" carries the words over to the home page.
+        const all = none.querySelector("[data-search-all]");
+        if (all) all.href = `/?q=${encodeURIComponent(box.value)}`;
+      }
       const url = new URL(location.href);
       if (q.length) url.searchParams.set("q", box.value); else url.searchParams.delete("q");
       history.replaceState(null, "", url);
@@ -37,6 +44,16 @@
     box.addEventListener("input", run);
     box.form?.addEventListener("submit", (e) => { e.preventDefault(); run(); });
     if (q) run();
+    // "/" puts the cursor in the search box, as on GitHub; Escape clears it.
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName ?? "")) {
+        e.preventDefault();
+        box.focus();
+      }
+    });
+    box.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && box.value) { e.preventDefault(); box.value = ""; run(); }
+    });
   }
 
   // ---------- install ----------
@@ -70,6 +87,10 @@
       const a = read();
       forget.hidden = !a;
       where.textContent = a ? `Opens ${a}` : "";
+      // Once the address is known the button says where it goes.
+      let host = "";
+      try { host = a ? new URL(a).host : ""; } catch { host = ""; }
+      button.textContent = host ? `Install on ${host}` : "Install on your AgentRun";
     };
     const go = (address) => {
       const a = document.createElement("a");
@@ -100,9 +121,12 @@
       const a = normalize(input.value);
       if (!a) {
         e.preventDefault();
-        error.textContent = "Type your AgentRun's address, like https://agentrun.example.com.";
+        error.textContent = "That is not an address. Type the one you open your AgentRun at, like agentrun.example.com.";
+        input.setAttribute("aria-invalid", "true");
+        input.focus();
         return;
       }
+      input.removeAttribute("aria-invalid");
       save(a);
       show();
       go(a);

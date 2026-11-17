@@ -1,6 +1,7 @@
-/* marketplace.agentrun.ai. The AgentRun console's tokens (apps/console/src/styles.css): dark is the reference, light
-   follows the system. Colour only through the tokens below; mono for structure, sans for prose; 8px controls, 12px
-   cards, square tabs; shadow only on the dialog. */
+/* marketplace.agentrun.ai. It looks like agentrun.ai and the AgentRun console: dark is the reference and uses
+   agentrun.ai's surfaces (near-black page, #111113 panels, #2c2c30 lines, #ff8700 orange); light follows the system
+   with the console's light tokens (apps/console/src/tokens.css). Colour only through the tokens below; mono for
+   structure, sans for prose; square everywhere; orange fills carry dark words; shadow only on the dialog. */
 
 /* Self-hosted, as the console does: @fontsource latin subsets, 400 and 600, copied into /assets/fonts by build.mjs
    (SIL Open Font License 1.1, beside the files). */
@@ -11,18 +12,19 @@
 
 :root {
   color-scheme: dark;
-  --background: 240 6% 9%;
+  --background: 210 10% 4%;
   --foreground: 0 0% 95%;
-  --card: 240 5% 12%;
+  --card: 240 6% 7%;
   --card-foreground: 0 0% 95%;
-  --muted: 240 5% 18%;
+  --muted: 240 5% 13%;
   --muted-foreground: 240 5% 66%;
-  --accent: 240 5% 18%;
-  --primary: 30 100% 50%;
-  --primary-foreground: 0 0% 98%;
-  --border: 240 5% 18%;
-  --border-strong: 240 5% 45%;
-  --ring: 30 100% 50%;
+  --accent: 240 5% 13%;
+  --primary: 32 100% 50%;
+  --primary-hover: 32 100% 65%;
+  --primary-foreground: 240 10% 3.9%;
+  --border: 240 4% 18%;
+  --border-strong: 240 3% 31%;
+  --ring: 32 100% 50%;
   --destructive-text: 0 90.6% 70.8%;
   --success-text: 142 71% 45%;
   --ar-control-radius: 0;
@@ -44,7 +46,7 @@
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
     --accent: 240 4.8% 95.9%;
-    --primary-foreground: 0 0% 100%;
+    --primary-hover: 32 100% 58%;
     --border: 240 5.9% 90%;
     --border-strong: 216 12% 84%;
     --destructive-text: 0 72.2% 50.6%;
@@ -64,9 +66,10 @@ body {
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-:focus-visible { outline: 1px solid hsl(var(--ring)); outline-offset: 2px; }
+:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
@@ -79,36 +82,50 @@ code, pre { font-family: var(--font-mono); }
 code { font-size: 0.92em; background: hsl(var(--muted)); padding: 0.05em 0.35em; border-radius: 0; overflow-wrap: anywhere; }
 pre code { background: none; padding: 0; border-radius: 0; overflow-wrap: normal; }
 
-.wrap { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.wrap { width: min(1200px, calc(100% - 80px)); margin: 0 auto; }
+@media (max-width: 760px) { .wrap { width: calc(100% - 40px); } }
 
 .skip { position: absolute; left: -9999px; top: 8px; }
 .skip:focus { left: 8px; z-index: 50; background: hsl(var(--card)); padding: 8px 12px; border: 1px solid hsl(var(--border)); }
 
 .caps { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; }
 
-/* header and footer */
-.top { border-bottom: 1px solid hsl(var(--border)); }
-.top-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; flex-wrap: wrap; }
-.brand { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; font-size: 14px; }
+/* header and footer: agentrun.ai's. The wordmark with its play mark, a mono nav in sentence case, the rule under
+   the header inside the page's width; the footer's three columns over a small meta row. */
+.top-row { display: flex; align-items: center; justify-content: space-between; gap: 16px 32px; min-height: 88px; flex-wrap: wrap; border-bottom: 1px solid hsl(var(--border)); }
+.brand { display: inline-flex; align-items: center; text-decoration: none; font-family: var(--font-mono); font-weight: 500; font-size: 26px; letter-spacing: -0.06em; white-space: nowrap; }
 .brand:hover { color: inherit; }
-.brand-mark { width: 14px; height: 14px; border-radius: 0; background: hsl(var(--primary)); }
-.brand-sub { color: hsl(var(--muted-foreground)); font-weight: 400; }
-.top nav { display: flex; gap: 4px; flex-wrap: wrap; }
-.top nav a { text-decoration: none; padding: 10px 10px; min-height: 44px; display: inline-flex; align-items: center; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: hsl(var(--muted-foreground)); }
-.top nav a:hover { color: hsl(var(--foreground)); }
-.top nav a[aria-current="page"] { color: hsl(var(--brand-text)); font-weight: 600; box-shadow: inset 0 -2px 0 hsl(var(--primary)); }
+.brand-mark { display: block; width: 26px; height: 26px; margin-right: 11px; flex: none; }
+.brand-run { color: hsl(var(--primary)); }
+.brand-sub { margin-left: 14px; padding-left: 14px; border-left: 1px solid hsl(var(--border-strong)); color: hsl(var(--muted-foreground)); font-size: 12px; font-weight: 400; letter-spacing: 0; }
+.top nav { display: flex; align-items: center; gap: 4px 28px; flex-wrap: wrap; }
+.top nav a { text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; white-space: nowrap; }
+.top nav a:hover, .top nav a[aria-current="page"] { color: hsl(var(--brand-text)); }
+.top nav svg { width: 17px; height: 17px; flex: none; }
+@media (max-width: 760px) { .top-row { padding: 18px 0 6px; gap: 6px 16px; } .top nav { width: 100%; gap: 0 18px; flex-wrap: nowrap; } .top nav a { font-size: 11px; } .brand { font-size: 24px; } }
 
-.foot { border-top: 1px solid hsl(var(--border)); margin-top: 64px; padding: 24px 0 40px; }
-.foot p { margin: 0 0 8px; font-family: var(--font-sans); font-size: 14px; color: hsl(var(--muted-foreground)); max-width: 72ch; }
-.foot .meta { font-family: var(--font-mono); }
+.foot { border-top: 1px solid hsl(var(--border)); margin-top: 80px; background: hsl(var(--card)); }
+.foot-layout { display: grid; grid-template-columns: minmax(240px, 1.1fr) minmax(0, 2fr); gap: 72px; padding: 56px 0 48px; }
+.foot-brand p { margin: 18px 0 0; font-family: var(--font-sans); font-size: 15px; line-height: 1.7; color: hsl(var(--muted-foreground)); max-width: 44ch; }
+.foot-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.foot-cols h2 { margin: 0 0 16px; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: hsl(var(--muted-foreground)); }
+.foot-cols ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.foot-cols a { display: inline-block; padding: 4px 0; text-decoration: none; font-family: var(--font-sans); font-size: 14px; }
+.foot a:hover { color: hsl(var(--brand-text)); }
+.foot-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding: 20px 0 28px; border-top: 1px solid hsl(var(--border)); font-size: 11px; color: hsl(var(--muted-foreground)); }
+.foot-meta p { margin: 0; }
+.foot-meta a { text-decoration: none; padding: 4px 0; }
+.foot-meta nav { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+@media (max-width: 900px) { .foot-layout { grid-template-columns: 1fr; gap: 40px; padding: 44px 0 40px; } }
+@media (max-width: 560px) { .foot-cols { grid-template-columns: 1fr 1fr; } }
 
 /* type */
-h1 { font-size: 32px; line-height: 1.2; font-weight: 600; margin: 0 0 12px; letter-spacing: -0.01em; }
-h2, h3 { font-weight: 600; }
-.section-label { font-size: 12px; color: hsl(var(--muted-foreground)); margin: 0 0 12px; }
+h1 { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.15; font-weight: 500; margin: 0 0 16px; letter-spacing: -0.045em; text-wrap: balance; }
+h2, h3 { font-weight: 500; }
+.section-label { font-size: 11px; color: hsl(var(--muted-foreground)); margin: 0 0 14px; }
 .sub { font-size: 12px; color: hsl(var(--muted-foreground)); margin: 24px 0 12px; }
 .eyebrow { font-size: 11px; color: hsl(var(--brand-text)); margin: 0 0 8px; }
-.lead { font-family: var(--font-sans); font-size: 17px; line-height: 1.6; max-width: 72ch; margin: 0 0 12px; }
+.lead { font-family: var(--font-sans); font-size: 17px; line-height: 1.65; max-width: 64ch; margin: 0 0 12px; color: hsl(var(--muted-foreground)); }
 .tpl-hero h1 { margin: 0 0 12px; }
 .tpl-hero .lead { margin: 0 0 16px; }
 .setup { max-width: 72ch; margin: 0 0 12px; }
@@ -122,18 +139,30 @@ main p, main li, main dd { font-family: var(--font-sans); font-size: 15px; }
 main .meta, main .row, main .caps { font-family: var(--font-mono); }
 
 main > section { margin: 40px 0; }
-.hero { margin-top: 32px !important; }
+.hero { margin-top: 56px !important; }
+/* The home page's title sits on agentrun.ai's dotted field. */
+.hero-home { position: relative; }
+.hero-home::before { content: ""; position: absolute; inset: -56px -40px -24px; z-index: -1; opacity: 0.3; background-image: radial-gradient(hsl(var(--border-strong)) 1px, transparent 1px); background-size: 22px 22px; -webkit-mask-image: linear-gradient(to bottom, transparent, #000 45%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 45%, transparent); pointer-events: none; }
+@media (max-width: 760px) { .hero-home::before { inset: -40px -20px -16px; } }
 
-.crumbs ol { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 24px 0 0; font-size: 11px; color: hsl(var(--muted-foreground)); }
-.crumbs li + li::before { content: "/"; margin-right: 6px; }
+.crumbs ol { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 0; margin: 40px 0 0; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: hsl(var(--muted-foreground)); }
+.crumbs li { font-family: var(--font-mono); font-size: 10px; }
+.crumbs li + li::before { content: "/"; margin-right: 10px; }
+.crumbs + .hero { margin-top: 20px !important; }
 .crumbs a { text-decoration: none; }
 
 /* surfaces */
 .card { border: 1px solid hsl(var(--border)); background: hsl(var(--card)); color: hsl(var(--card-foreground)); border-radius: var(--ar-card-radius); }
 
-.cards, .cats { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
-.tpl { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
-.tpl h3 { margin: 0; font-size: 15px; font-family: var(--font-mono); }
+.cards, .cats { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+/* The whole card is its title's link; the logo row sits above that link so each logo still answers hover and focus. */
+.tpl { position: relative; padding: 22px 22px 18px; display: flex; flex-direction: column; gap: 10px; }
+.tpl h3 a::after { content: ""; position: absolute; inset: 0; }
+.tpl h3 a:focus-visible { outline: none; }
+.tpl:has(h3 a:focus-visible) { outline: 1px solid hsl(var(--ring)); outline-offset: 2px; }
+.tpl .reqs { z-index: 1; align-self: flex-start; }
+.tpl:hover h3 a { color: hsl(var(--brand-text)); }
+.tpl h3 { margin: 0; font-size: 15px; font-weight: 600; font-family: var(--font-mono); }
 .tpl h3 a { text-decoration: none; }
 .tpl .desc, .cats .desc { margin: 0; color: hsl(var(--muted-foreground)); font-size: 14px; flex: 1; }
 .tpl:hover, .cats .card:hover { border-color: hsl(var(--border-strong)); }
@@ -145,25 +174,43 @@ main > section { margin: 40px 0; }
 .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0; }
 
 /* controls */
-input[type="search"], input[type="url"] {
+input[type="search"], input[type="text"] {
   font: inherit; font-size: 14px; width: 100%; max-width: 520px; height: 40px; padding: 0 12px;
-  border: 1px solid hsl(var(--border)); border-radius: var(--ar-control-radius); background: hsl(var(--background)); color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border-strong)); border-radius: var(--ar-control-radius); background: hsl(var(--card)); color: hsl(var(--foreground));
 }
-input:focus-visible { outline: none; border-color: hsl(var(--ring)); box-shadow: 0 0 0 2px hsl(var(--primary) / 0.4); }
+input:focus-visible { outline: none; border-color: hsl(var(--ring)); box-shadow: 0 0 0 1px hsl(var(--ring)); }
 label.caps { display: block; font-size: 11px; color: hsl(var(--muted-foreground)); margin: 0 0 6px; }
-.search { margin: 0 0 4px; }
+.search { position: relative; margin: 0; max-width: 560px; }
+.search input { max-width: none; height: 44px; padding-right: 40px; }
+.key { position: absolute; right: 10px; top: 11px; font-family: var(--font-mono); font-size: 11px; line-height: 20px; width: 22px; text-align: center; color: hsl(var(--muted-foreground)); border: 1px solid hsl(var(--border)); }
+.search input:focus-visible + .key, .search input:not(:placeholder-shown) + .key { display: none; }
+@media (hover: none), (max-width: 760px) { .key { display: none; } .search input { padding-right: 12px; } }
+.status { min-height: 18px; margin: 6px 0 0; }
+.none { max-width: 60ch; margin: 8px 0 32px; }
+.none[hidden] { display: none; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* The tabs over a gallery: one row that scrolls sideways on a narrow screen. Square, the current one underlined. */
+.tabs { display: flex; gap: 0; margin: 0 0 16px; border-bottom: 1px solid hsl(var(--border)); overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs a { flex: none; display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0 14px; text-decoration: none; font-family: var(--font-mono); font-size: 12px; color: hsl(var(--muted-foreground)); }
+.tabs a:first-child { padding-left: 0; }
+.tabs a:hover { color: hsl(var(--foreground)); }
+.tabs a[aria-current="page"] { color: hsl(var(--foreground)); box-shadow: inset 0 -2px 0 hsl(var(--primary)); }
+.tabs .n { font-size: 10px; color: hsl(var(--muted-foreground)); }
+.gallery { margin-top: 24px !important; }
 
 .btn {
-  font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
-  height: 40px; padding: 0 16px; border-radius: var(--ar-control-radius); cursor: pointer;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+  height: 40px; padding: 0 17px; border-radius: var(--ar-control-radius); cursor: pointer;
   border: 1px solid hsl(var(--border-strong)); background: transparent; color: hsl(var(--foreground));
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
 }
-.btn:hover { background: hsl(var(--accent)); }
-.btn-solid { background: hsl(var(--primary)); border-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); font-weight: 600; }
-.btn-solid:hover { background: hsl(var(--primary) / 0.88); }
-.btn-ghost { border-color: transparent; color: hsl(var(--muted-foreground)); }
-.btn-sm { height: 32px; padding: 0 10px; }
+.btn:hover { border-color: hsl(var(--primary)); color: hsl(var(--brand-text)); }
+.btn-solid { background: hsl(var(--primary)); border-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+.btn-solid:hover { background: hsl(var(--primary-hover)); border-color: hsl(var(--primary-hover)); color: hsl(var(--primary-foreground)); }
+.btn-ghost { border-color: transparent; color: hsl(var(--muted-foreground)); padding: 0 8px; }
+.btn-sm { height: 32px; padding: 0 12px; font-size: 11px; }
 .btn[hidden] { display: none; }
 
 .install { padding: 20px; }
@@ -174,6 +221,9 @@ label.caps { display: block; font-size: 11px; color: hsl(var(--muted-foreground)
 dialog { max-width: min(520px, calc(100vw - 32px)); padding: 24px; box-shadow: 0 10px 30px hsl(var(--background) / 0.6); }
 dialog::backdrop { background: hsl(var(--background) / 0.7); }
 dialog p { font-family: var(--font-sans); font-size: 15px; }
+dialog .meta { font-family: var(--font-mono); font-size: 11px; margin: 16px 0 0; }
+dialog input { max-width: none; }
+dialog .row { margin-top: 12px; gap: 8px; }
 
 /* content */
 .facts { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 10px 20px; margin: 0 0 16px; }
@@ -203,16 +253,37 @@ summary:hover { color: hsl(var(--foreground)); }
 .report { padding: 20px 24px; margin: 12px 0; max-width: none; }
 .prose :is(h3, h4, h5, h6), .report :is(h3, h4, h5, h6) { font-family: var(--font-mono); font-size: 15px; margin: 20px 0 8px; }
 .prose table, .report table { display: block; overflow-x: auto; }
+/* A report's own table: every cell wraps and reads as prose (the nowrap, mono columns above are for the inputs table). */
+.prose td, .report td { white-space: normal; font-family: var(--font-sans); font-size: 14px; min-width: 96px; }
 .prose pre, .report pre { background: hsl(var(--muted)); padding: 12px; border-radius: var(--ar-control-radius); overflow-x: auto; font-size: 13px; }
 .prose blockquote, .report blockquote { margin: 0 0 16px; border-left: 2px solid hsl(var(--primary)); padding-left: 12px; color: hsl(var(--muted-foreground)); }
 .prose blockquote p, .report blockquote p { font-size: 14px; margin: 4px 0; }
 
 /* What a template requires: a row of logos, each with its line on hover and on keyboard focus. The logos are black
    on transparent; the dark theme inverts them. The line stays in the page for a screen reader. */
-.reqs { list-style: none; display: flex; flex-wrap: wrap; gap: 12px; padding: 0; margin: 0; }
-.req { position: relative; display: inline-flex; padding: 2px; }
-.req img { display: block; width: 18px; height: 18px; filter: invert(1); opacity: 0.8; }
-@media (prefers-color-scheme: light) { .req img { filter: none; opacity: 0.75; } }
-.req:hover img, .req:focus-visible img { opacity: 1; }
-.req-tip { position: absolute; left: 0; bottom: calc(100% + 6px); z-index: 10; width: max-content; max-width: min(280px, 80vw); padding: 6px 8px; font-family: var(--font-sans); font-size: 12px; line-height: 1.35; background: hsl(var(--foreground)); color: hsl(var(--background)); border-radius: var(--ar-control-radius); opacity: 0; pointer-events: none; }
-.req:hover .req-tip, .req:focus .req-tip { opacity: 1; }
+.reqs { position: relative; list-style: none; display: flex; flex-wrap: wrap; gap: 4px; padding: 0; margin: 0 0 0 -5px; }
+.req { display: inline-flex; padding: 5px; cursor: default; }
+.req img { display: block; width: 18px; height: 18px; filter: invert(1); opacity: 0.7; }
+@media (prefers-color-scheme: light) { .req img { filter: none; opacity: 0.7; } }
+.req:hover, .req:focus { box-shadow: inset 0 -2px 0 hsl(var(--primary)); outline: none; }
+.req:hover img, .req:focus img { opacity: 1; }
+/* The line sits over the row from its left edge, as wide as the card allows: it can't run off the card or the screen. */
+.req-tip { position: absolute; left: 5px; bottom: calc(100% + 4px); z-index: 10; width: max-content; max-width: min(320px, calc(100% - 5px), 86vw); padding: 6px 9px; font-family: var(--font-sans); font-size: 13px; line-height: 1.35; background: hsl(var(--foreground)); color: hsl(var(--background)); border-radius: var(--ar-control-radius); visibility: hidden; pointer-events: none; }
+.req:hover .req-tip, .req:focus .req-tip { visibility: visible; }
+.reqs:has(.req:hover) .req:focus:not(:hover) .req-tip { visibility: hidden; }
+.tpl .reqs { min-width: 100%; }
+
+/* A template page on a wide screen: the page reads down the left, Install stays in view on the right. The order in
+   the page is unchanged (title, summary, logos, Install), so a narrow screen and a screen reader get it as before. */
+@media (min-width: 1000px) {
+  .tpl-main { display: grid; grid-template-columns: minmax(0, 1fr) 352px; column-gap: 40px; align-items: start; }
+  .tpl-main > * { grid-column: 1; min-width: 0; }
+  .tpl-main > .crumbs { grid-column: 1 / -1; }
+  .tpl-main > .install { grid-column: 2; grid-row: 2 / span 40; position: sticky; top: 16px; margin: 32px 0 0; max-height: calc(100vh - 32px); overflow-y: auto; }
+  .tpl-main > .install .cmd { flex-direction: column; align-items: stretch; }
+  .tpl-main > .install .btn-solid { width: 100%; }
+  .tpl-main > section { margin: 32px 0; }
+}
+.install .btn-solid { height: 44px; }
+.install .or { color: hsl(var(--muted-foreground)); font-size: 14px; }
+.cmd pre { white-space: pre; }

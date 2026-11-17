@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { frontMatter, parseYaml } from "../lib/yaml.mjs";
 import { fillParameters, parseGithubSource, readIndex, siteName } from "../lib/packages.mjs";
 import { markdownToHtml } from "../lib/markdown.mjs";
-import { cronWords, factsShort, keyWords, requirements, testedLine, triggerLines, unprovenWords } from "../lib/describe.mjs";
+import { cronWords, factsShort, isFree, keyWords, provenWords, requirements, testedLine, triggerLines, unprovenWords } from "../lib/describe.mjs";
 import { build } from "../build.mjs";
 import { check } from "../check.mjs";
 import { CSP, SECURITY_HEADERS, siteServer } from "../lib/server.mjs";
@@ -265,6 +265,18 @@ test("builds the fixture into pages that pass the checker", async () => {
     // A card: title, summary, logos. No pills.
     assert.match(home, /<li class="card tpl" data-name="sample-watch">\s*<h3><a href="\/templates\/sample-watch\/">Sample watch<\/a><\/h3>\s*<p class="desc">Watches one topic every week and tells you what changed, each item dated and linked\.<\/p>\s*<ul class="reqs" aria-label="What it requires"><li class="req" tabindex="0"><img src="\/assets\/logo-exa\.svg[^>]*><span class="req-tip">[^<]*<\/span><\/li>[\s\S]*?<\/ul>\s*<\/li>/);
     assert.doesNotMatch(home, /median|\$0\.0|class="chip/, "no cost and no pills on a card");
+    // Over the cards: the tabs (all, then each category with templates, each a real page), then search. The fixture
+    // has no free template, so there is no Free tab and no /free/ page.
+    assert.match(home, /<nav class="tabs" id="categories" aria-label="Categories"><a href="\/" aria-current="page">All <span class="n">1<\/span><\/a><a href="\/categories\/research\/">Research <span class="n">1<\/span><\/a><\/nav>\s*<form class="search"/);
+    assert.doesNotMatch(home, /href="\/free\/"/);
+    const category = readFileSync(join(out, "categories", "research", "index.html"), "utf8");
+    assert.match(category, /<a href="\/categories\/research\/" aria-current="page">Research <span class="n">1<\/span><\/a>/);
+    assert.match(category, /<input id="q" name="q" type="search"[^>]*data-search>/, "a category page searches its own cards");
+    // The address box takes what people type ("agentrun.example.com"): the script adds https, the browser must not refuse it first.
+    assert.match(page, /<form method="dialog" data-install-form novalidate>/);
+    assert.match(page, /<input id="ar-address" name="address" type="text" inputmode="url"/);
+    // Sample output comes right after Install, before the details.
+    assert.ok(page.indexOf('id="sample"') < page.indexOf('id="does"') && page.indexOf('id="install"') < page.indexOf('id="sample"'));
     // Square corners everywhere: every radius in the stylesheet is 0.
     const css = readFileSync(join(out, "assets", "site.css"), "utf8");
     assert.deepEqual([...css.matchAll(/(?:border-radius|-radius):\s*([^;}]+)/g)].map((m) => m[1].trim()).filter((v) => v !== "0" && v !== "var(--ar-card-radius)" && v !== "var(--ar-control-radius)"), []);
@@ -297,6 +309,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.match(llms, /\[Sample watch\]\(https:\/\/marketplace\.agentrun\.ai\/templates\/sample-watch\.md\)/);
     const search = JSON.parse(readFileSync(join(out, "search.json"), "utf8"));
     assert.equal(search[0].name, "sample-watch");
+    assert.deepEqual(search[0].needs, ["Requires web search, through Exa", "Requires web fetch", "Runs on a schedule", "Can use GitHub, through the AgentRun GitHub App (optional)"], "search finds a template by what it requires");
   } finally {
     rmSync(out, { recursive: true, force: true });
     rmSync(cache, { recursive: true, force: true });
@@ -345,4 +358,16 @@ test("a template whose tools come through Composio says it is not yet proven liv
   assert.equal(unprovenWords({ ...pkg, provenLive: "2026-11-20" }), null);
   assert.equal(unprovenWords({ mcp: [{ source: "github", toolkit: "github" }], provenLive: null }), null);
   assert.equal(unprovenWords({ mcp: [], provenLive: null }), null);
+});
+
+test("a template proven live shows a logo saying against which accounts and when; a free one is on the Free tab", () => {
+  const pkg = { tools: [], triggers: [], mcp: [{ source: "composio", toolkit: "gmail", required: true }, { source: "composio", toolkit: "slack", required: true }], provenLive: "2026-11-20" };
+  assert.equal(provenWords(pkg), "Proven live against real Gmail and Slack accounts on 2026-11-20");
+  assert.equal(provenWords({ ...pkg, mcp: [] }), "Proven live against real accounts on 2026-11-20");
+  assert.equal(provenWords({ ...pkg, provenLive: null }), null);
+  assert.deepEqual(requirements(pkg).map((r) => r.logo), ["logo-proven.svg", "logo-gmail.svg", "logo-slack.svg"]);
+  assert.deepEqual(requirements({ ...pkg, provenLive: null }).map((r) => r.logo), ["logo-gmail.svg", "logo-slack.svg"]);
+  assert.equal(isFree({ model: { prefer: "openrouter/inclusionai/ling-3.2-flash:free" } }), true);
+  assert.equal(isFree({ model: { prefer: "openrouter/inclusionai/ling-3.2-flash" } }), false);
+  assert.equal(isFree({}), false);
 });
