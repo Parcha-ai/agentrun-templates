@@ -1,6 +1,6 @@
 // The pages: each is real HTML a crawler reads (no client-side rendering), plus a Markdown twin with the same content.
 
-import { CATEGORY_TEXT, computerWords, factsShort, keyWords, mcpWords, modelChoices, modelWords, requirements, testedLine, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
+import { CATEGORY_TEXT, computerWords, factsShort, isFree, keyWords, mcpWords, modelChoices, modelWords, requirements, testedLine, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
 import { markdownToHtml } from "./markdown.mjs";
 import { clip, html, mdCode, mdText, plural, raw, upperFirst } from "./util.mjs";
 
@@ -8,6 +8,10 @@ export const SITE_NAME = "AgentRun Marketplace";
 const PLATFORM = "AgentRun is an open-source platform for running agents: it adds learning, durable runs and a control plane on top of the agent harness you pick.";
 
 // ---------- shared frame ----------
+
+// agentrun.ai's product mark and the GitHub mark, inline so the header needs no image request.
+const MARK = '<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" fill="#ff8000"/><path d="M12 9l11 7-11 7z" fill="#000"/></svg>';
+const GITHUB_MARK = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297a12 12 0 0 0-3.793 23.385c.6.111.82-.261.82-.577 0-.285-.011-1.04-.017-2.04-3.338.724-4.043-1.61-4.043-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.839 1.237 1.839 1.237 1.07 1.835 2.807 1.305 3.492.998.108-.776.418-1.305.762-1.605-2.665-.303-5.467-1.334-5.467-5.931 0-1.31.469-2.381 1.236-3.221-.124-.303-.536-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.5 11.5 0 0 1 3.003-.404c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.652.243 2.873.119 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.625-5.479 5.922.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .319.216.694.825.576A12.001 12.001 0 0 0 12 .297Z"/></svg>';
 
 function jsonLdTag(data) {
   return raw(`<script type="application/ld+json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`);
@@ -45,22 +49,49 @@ ${page.jsonLd ? jsonLdTag(page.jsonLd) : ""}
 <a class="skip" href="#main">Skip to content</a>
 <header class="top">
   <div class="wrap top-row">
-    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><span>AgentRun</span><span class="brand-sub">Marketplace</span></a>
+    <a class="brand" href="/" aria-label="AgentRun Marketplace home">${raw(MARK)}agent<span class="brand-run">.run()</span><span class="brand-sub">Marketplace</span></a>
     <nav aria-label="Site">
       <a href="/"${page.nav === "home" ? raw(' aria-current="page"') : ""}>Templates</a>
-      <a href="/#categories">Categories</a>
       <a href="/list-your-template/"${page.nav === "list" ? raw(' aria-current="page"') : ""}>List your template</a>
-      <a href="${site.repoUrl}">GitHub</a>
+      <a href="https://agentrun.ai/docs">Docs</a>
+      <a href="${site.repoUrl}">${raw(GITHUB_MARK)}GitHub</a>
     </nav>
   </div>
 </header>
-<main id="main" class="wrap">
+<main id="main" class="wrap${page.mainClass ? ` ${page.mainClass}` : ""}">
 ${page.body}
 </main>
 <footer class="foot">
-  <div class="wrap foot-row">
-    <p>${PLATFORM} <a href="https://github.com/Parcha-ai/agentrun">Source on GitHub</a>.</p>
-    <p class="meta">Templates are Apache-2.0 unless their page says otherwise. Built from <a href="${site.repoUrl}/tree/${site.sha}">${site.sha.slice(0, 7)}</a>.${page.mdPath ? html` <a href="${page.mdPath}">This page as Markdown</a>.` : ""}</p>
+  <div class="wrap">
+    <div class="foot-layout">
+      <div class="foot-brand">
+        <a class="brand" href="https://agentrun.ai/" aria-label="AgentRun">${raw(MARK)}agent<span class="brand-run">.run()</span></a>
+        <p>${PLATFORM}</p>
+      </div>
+      <nav class="foot-cols" aria-label="Footer">
+        <div><h2>Marketplace</h2><ul>
+          <li><a href="/">All templates</a></li>
+          <li><a href="/list-your-template/">List your template</a></li>
+          <li><a href="${site.repoUrl}">Templates on GitHub</a></li>
+          <li><a href="/llms.txt">For your agents</a></li>
+        </ul></div>
+        <div><h2>AgentRun</h2><ul>
+          <li><a href="https://agentrun.ai/">agentrun.ai</a></li>
+          <li><a href="https://agentrun.ai/docs">Documentation</a></li>
+          <li><a href="https://agentrun.ai/docs/quickstart">Run your first agent</a></li>
+          <li><a href="https://github.com/Parcha-ai/agentrun">AgentRun on GitHub</a></li>
+        </ul></div>
+        <div><h2>Company</h2><ul>
+          <li><a href="https://grep.ai/">Grep AI</a></li>
+          <li><a href="https://grep.ai/privacy">Privacy</a></li>
+          <li><a href="https://grep.ai/terms">Terms of service</a></li>
+        </ul></div>
+      </nav>
+    </div>
+    <div class="foot-meta">
+      <p>© 2026 Parcha Labs, Inc. Templates are Apache-2.0 unless their page says otherwise.</p>
+      <nav aria-label="This page">${page.mdPath ? html`<a href="${page.mdPath}">This page as Markdown</a>` : ""}<a href="${site.repoUrl}/tree/${site.sha}">Built from ${site.sha.slice(0, 7)}</a></nav>
+    </div>
   </div>
 </footer>
 </body>
@@ -100,35 +131,48 @@ function starWords(stats) {
   return [stats?.stars ? plural(stats.stars, "star") : null, stats?.forks ? plural(stats.forks, "fork") : null].filter(Boolean).join(", ");
 }
 
-// ---------- home ----------
+// ---------- gallery (home, free, one category) ----------
+
+/** The tabs over every gallery page: all, free (when any template is), then each category that has templates. Each is
+ *  a real page, so they work without the script and a crawler follows them. */
+function tabs(packages, current) {
+  const cats = Object.keys(CATEGORY_TEXT).filter((c) => packages.some((p) => p.category === c));
+  const free = packages.filter(isFree).length;
+  const items = [
+    ["all", "/", "All", packages.length],
+    ...(free ? [["free", "/free/", "Free", free]] : []),
+    ...cats.map((c) => [c, `/categories/${c}/`, CATEGORY_TEXT[c].title, packages.filter((p) => p.category === c).length]),
+  ];
+  return html`<nav class="tabs" id="categories" aria-label="Categories">${items.map(([id, href, label, n]) =>
+    html`<a href="${href}"${id === current ? raw(' aria-current="page"') : ""}>${label} <span class="n">${n}</span></a>`)}</nav>`;
+}
+
+/** Title, one line, the tabs, search, and the cards: the same frame on the home page, the free page and each category. */
+function gallery(site, { title, lead, current, all, shown }) {
+  return html`
+<section class="hero${current === "all" ? " hero-home" : ""}">
+  <h1>${title}</h1>
+  <p class="lead">${lead}</p>
+</section>
+
+<section aria-label="Templates" class="gallery">
+  ${tabs(all, current)}
+  <form class="search" role="search" action="${current === "all" ? "/" : current === "free" ? "/free/" : `/categories/${current}/`}" method="get">
+    <label class="sr" for="q">Search ${plural(shown.length, "template")}</label>
+    <input id="q" name="q" type="search" autocomplete="off" placeholder="Search ${plural(shown.length, "template")}: slack, pull requests, competitors…" data-search>
+    <kbd class="key" aria-hidden="true">/</kbd>
+  </form>
+  <p class="meta status" role="status" data-search-status></p>
+  <ul class="cards" data-search-list>
+    ${shown.map((p) => card(site, p))}
+  </ul>
+  <p class="none" data-search-none hidden>No template matches. Try fewer words${current === "all" ? "" : html`, or <a href="/" data-search-all>search all ${all.length} templates</a>`}. Missing one you need? <a href="/list-your-template/">List your own</a>.</p>
+</section>`;
+}
 
 export function homePage(site, packages) {
   const cats = Object.keys(CATEGORY_TEXT).filter((c) => packages.some((p) => p.category === c));
-  const body = html`
-<section class="hero">
-  <p class="caps eyebrow">AgentRun templates</p>
-  <h1>Agents that already do a job</h1>
-  <p class="lead">Each template is a working agent for your own AgentRun. Install one, fill in its setup, and it runs. You can read every instruction before you install.</p>
-</section>
-
-<section aria-labelledby="find">
-  <h2 id="find" class="caps section-label">Find a template</h2>
-  <form class="search" role="search" action="/" method="get">
-    <label class="caps" for="q">Search ${plural(packages.length, "template")}</label>
-    <input id="q" name="q" type="search" autocomplete="off" placeholder="kyb, pull requests, competitors…" data-search>
-  </form>
-  <p class="meta" role="status" data-search-status></p>
-  <ul class="cards" data-search-list>
-    ${packages.map((p) => card(site, p))}
-  </ul>
-</section>
-
-<section aria-labelledby="categories">
-  <h2 id="categories" class="caps section-label">Categories</h2>
-  <ul class="cats">
-    ${cats.map((c) => html`<li class="card"><a href="/categories/${c}/"><span class="cat-title">${CATEGORY_TEXT[c].title}</span><span class="meta">${plural(packages.filter((p) => p.category === c).length, "template")}</span></a><p class="desc">${CATEGORY_TEXT[c].blurb}</p></li>`)}
-  </ul>
-</section>
+  const body = html`${gallery(site, { title: "Agents that already do a job", lead: "Working agents for your own AgentRun. Read every instruction, install one, and it runs.", current: "all", all: packages, shown: packages })}
 
 <section aria-labelledby="what" class="prose-block">
   <h2 id="what" class="caps section-label">What is in a template</h2>
@@ -160,6 +204,22 @@ export function homePage(site, packages) {
   };
 }
 
+/** The templates that prefer a free model, on their own page. */
+export function freePage(site, packages) {
+  const free = packages.filter(isFree);
+  const path = "/free/";
+  const lead = "These run on a free model, so a run costs nothing. Each page lists the free tier's limits.";
+  return {
+    path,
+    mdPath: "/free.md",
+    title: `Free agent templates | ${SITE_NAME}`,
+    description: clip(`${plural(free.length, "agent template")} for AgentRun that run on a free model: ${free.map((p) => p.displayName).join(", ")}.`, 160),
+    jsonLd: { "@context": "https://schema.org", "@graph": [{ "@type": "CollectionPage", name: "Free templates", url: site.url(path), mainEntity: itemList(site, free) }, crumbs(site, [["Templates", "/"], ["Free", path]])] },
+    body: gallery(site, { title: "Free templates", lead, current: "free", all: packages, shown: free }),
+    md: ["# Free templates", "", lead, "", ...free.map((p) => `- [${mdText(p.displayName)}](${site.url(`/templates/${p.name}.md`)}): ${mdText(p.description)}`), ""].join("\n"),
+  };
+}
+
 function itemList(site, packages) {
   return {
     "@type": "ItemList",
@@ -182,6 +242,7 @@ function homeMd(site, packages, cats) {
     "",
     ...cats.map((c) => `- [${CATEGORY_TEXT[c].title}](${site.url(`/categories/${c}.md`)}): ${CATEGORY_TEXT[c].blurb}`),
     "",
+    ...(packages.some(isFree) ? [`Free to run: ${site.url("/free.md")}`, ""] : []),
     `List your own: ${site.url("/list-your-template.md")}`,
     "",
   ].join("\n");
@@ -189,19 +250,11 @@ function homeMd(site, packages, cats) {
 
 // ---------- category ----------
 
-export function categoryPage(site, category, packages) {
+export function categoryPage(site, category, packages, all = packages) {
   const { title, blurb } = CATEGORY_TEXT[category];
   const path = `/categories/${category}/`;
   const trail = [["Templates", "/"], [title, path]];
-  const body = html`
-${crumbNav(trail)}
-<section class="hero">
-  <p class="caps eyebrow">Category</p>
-  <h1>${title} templates</h1>
-  <p class="lead">${blurb}</p>
-</section>
-<ul class="cards">${packages.map((p) => card(site, p))}</ul>
-<p class="meta">Looking for something else? <a href="/">See every template</a>, or <a href="/list-your-template/">list your own</a>.</p>`;
+  const body = gallery(site, { title: `${title} templates`, lead: blurb, current: category, all, shown: packages });
   return {
     path,
     mdPath: `/categories/${category}.md`,
@@ -301,21 +354,29 @@ ${crumbNav(trail)}
   ${unprovenWords(pkg) ? html`<p class="unproven">${unprovenWords(pkg)}</p>` : ""}
   <p><button type="button" class="btn btn-solid" data-install="${pkg.installSource}" hidden>Install on your AgentRun</button> <button type="button" class="btn btn-ghost" data-install-forget hidden>Change address</button></p>
   <p class="meta" data-install-address></p>
-  <p>Or from a terminal on the machine where your AgentRun runs:</p>
+  <p class="or">Or from a terminal on the machine where your AgentRun runs:</p>
   <div class="cmd"><pre class="code"><code>${cli}</code></pre><button type="button" class="btn btn-sm" data-copy="${cli}" hidden>Copy</button></div>
   <p class="meta">Pinned to commit <a href="${pkg.treeUrl}"><code>${shortSha}</code></a>. <code>--trust</code> means you trust ${pkg.owner}, its publisher. AgentRun asks once per publisher. The apply screen shows every instruction and tool before anything is saved, and grants nothing until you tick it.</p>
+  <p class="meta">No AgentRun yet? <code>npx @parcha/agentrun</code> starts one.</p>
 </section>
 
 <dialog class="card" data-install-dialog aria-labelledby="ask-title">
-  <form method="dialog" data-install-form>
+  <form method="dialog" data-install-form novalidate>
     <h2 id="ask-title" class="caps section-label">Your AgentRun address</h2>
     <p>The page opens your AgentRun's install screen for this template. This browser remembers the address, and it is sent nowhere else.</p>
     <label class="caps" for="ar-address">Address</label>
-    <input id="ar-address" name="address" type="url" required placeholder="https://agentrun.example.com" autocomplete="url">
-    <p class="error" role="alert" data-install-error></p>
+    <input id="ar-address" name="address" type="text" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="agentrun.example.com" autocomplete="url" aria-describedby="ar-address-error">
+    <p class="error" id="ar-address-error" role="alert" data-install-error></p>
     <p class="row"><button type="submit" class="btn btn-solid" value="ok">Open the install screen</button> <button type="button" class="btn" data-install-cancel>Cancel</button></p>
+    <p class="meta">No AgentRun yet? <code>npx @parcha/agentrun</code> starts one on your machine.</p>
   </form>
 </dialog>
+
+<section aria-labelledby="sample">
+  <h2 id="sample" class="caps section-label">Sample output</h2>
+  ${sampleSection(pkg)}
+  ${pkg.outputSchema ? html`<details><summary class="caps">Output schema (${pkg.outputSchemaPath})</summary>${jsonBlock(pkg.outputSchema)}</details>` : ""}
+</section>
 
 <section aria-labelledby="does">
   <h2 id="does" class="caps section-label">What it does</h2>
@@ -352,12 +413,6 @@ ${crumbNav(trail)}
     <dt>Learning</dt><dd>${pkg.learning ? "On: it keeps notes from your corrections and earlier runs." : "Off."}</dd>
     ${pkg.approvals === "never" ? html`<dt>Approvals</dt><dd>Runs unattended: no tool asks. Pins and denials still hold.</dd>` : ""}
   </dl>
-</section>
-
-<section aria-labelledby="sample">
-  <h2 id="sample" class="caps section-label">Sample output</h2>
-  ${sampleSection(pkg)}
-  ${pkg.outputSchema ? html`<details><summary class="caps">Output schema (${pkg.outputSchemaPath})</summary>${jsonBlock(pkg.outputSchema)}</details>` : ""}
 </section>
 
 <section aria-labelledby="evals">
@@ -407,6 +462,7 @@ ${crumbNav(trail)}
     path,
     mdPath: `/templates/${pkg.name}.md`,
     ogType: "article",
+    mainClass: "tpl-main",
     title: `${clip(pkg.displayName, 50)}: AgentRun template`,
     ogTitle: pkg.displayName,
     // The search snippet: what it does (its first sentence), then the eval line, inside 158 characters.
@@ -533,12 +589,39 @@ export function listPage(site) {
     "A sample run in samples/<template>/<name>/ of this repository: input.json and an output.json that matches the schema.",
     "A summary of 20 to 140 characters in the index entry that says what it does in plain words, and a description in agent.md with the detail.",
   ];
+  // The same steps and bar as the page, worded as a job for a coding agent, so the reader can hand the listing over.
+  const prompt = [
+    `Help me list my AgentRun template on the AgentRun template marketplace (${site.url("/")}).`,
+    "",
+    "Work in the repository I have open. Ask me before you push, tag or open a pull request. Never invent an eval result or a sample output: run the template to get them.",
+    "",
+    `Reference: ${site.url("/list-your-template.md")}`,
+    "",
+    "1. Find the template folder: the one that holds agent.md. If there are several, ask me which one.",
+    "2. Check it against the bar below. Tell me each gap in one line, then fix the ones I approve.",
+    "3. Run `npx @parcha/agentrun template validate <folder>` and fix what it reports until it passes.",
+    "4. Check the GitHub repository is public. If it is private, stop and tell me: private repositories can't be installed.",
+    "5. Pin a version: propose a tag (for example v1.0.0) on the commit that passed, and create and push it once I agree.",
+    `6. Write the marketplace entry and show it to me. Then fork ${site.repo.owner}/${site.repo.name}, add the entry to .agentrun/marketplace.json, add the sample run under samples/<template>/<name>/, and open a pull request.`,
+    "7. Give me the pull request link and say what the reviewers will check.",
+    "",
+    "The bar:",
+    ...bar.map((b) => `- ${b}`),
+    "",
+    "The entry:",
+    entry,
+    "",
+    `Categories: ${Object.keys(CATEGORY_TEXT).join(", ")}. Up to 8 tags, lowercase letters, digits and dashes. Pin the source with @ref (a tag or a commit).`,
+  ].join("\n");
   const body = html`
-${crumbNav(trail)}
 <section class="hero">
-  <p class="caps eyebrow">For template authors</p>
   <h1>List your template</h1>
   <p class="lead">The marketplace is one file, <code>.agentrun/marketplace.json</code> in <a href="${site.repoUrl}">${site.repo.owner}/${site.repo.name}</a>. Your template stays in your repository. Listing it is a pull request that adds one line.</p>
+</section>
+<section aria-labelledby="agent">
+  <h2 id="agent" class="caps section-label">Have your agent list it</h2>
+  <p>Paste this into Claude Code, Codex or another coding agent, in the repository that holds your template. It checks the template, fixes the gaps and opens the pull request.</p>
+  <div class="prompt"><p class="prompt-bar"><button type="button" class="btn btn-solid btn-sm" data-copy="${prompt}" hidden>Copy prompt</button></p><pre class="code" tabindex="0" aria-label="Prompt for a coding agent"><code>${prompt}</code></pre></div>
 </section>
 <section aria-labelledby="how">
   <h2 id="how" class="caps section-label">How it works</h2>
@@ -571,6 +654,14 @@ ${crumbNav(trail)}
       "# List your template",
       "",
       `The marketplace is one file, \`.agentrun/marketplace.json\` in ${site.repoUrl}. Your template stays in your repository. Listing it is a pull request that adds one line.`,
+      "",
+      "## Have your agent list it",
+      "",
+      "Paste this into a coding agent, in the repository that holds your template:",
+      "",
+      "````text",
+      prompt,
+      "````",
       "",
       "## How it works",
       "",

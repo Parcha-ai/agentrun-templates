@@ -155,6 +155,19 @@ export function unprovenWords(pkg) {
   return `No one has run this against real ${listWords(toolkits)} accounts through Composio yet. Its eval cases use stand-ins.`;
 }
 
+/** The line for a template someone has run against real accounts, with the day: "Proven live against real Gmail
+ *  accounts on 2026-11-20". Null when proven-live.json does not list it. */
+export function provenWords(pkg) {
+  if (!pkg.provenLive) return null;
+  const toolkits = [...new Set((pkg.mcp ?? []).filter((n) => n.source === "composio").map((n) => TOOLKIT_NAMES[n.toolkit] ?? n.toolkit))];
+  return `Proven live against real ${toolkits.length ? `${listWords(toolkits)} ` : ""}accounts on ${pkg.provenLive}`;
+}
+
+/** A template that prefers a free model: it costs nothing to run. */
+export function isFree(pkg) {
+  return typeof pkg.model?.prefer === "string" && pkg.model.prefer.endsWith(":free");
+}
+
 const HARNESS_NAMES = { pi: "pi", "claude-agent": "Claude Code", codex: "Codex" };
 
 /** "a, b and c" */
@@ -196,6 +209,9 @@ export function requirements(pkg) {
   // A free model it prefers ("openrouter/inclusionai/ling-3.2-flash:free"): first, as it is what the template costs.
   const prefer = typeof pkg.model?.prefer === "string" ? pkg.model.prefer : "";
   if (prefer.endsWith(":free")) add({ id: "free", logo: "logo-free.svg", text: `Runs free, on ${modelName(prefer)}${prefer.startsWith("openrouter/") ? " through OpenRouter" : ""}` });
+  // Someone has run it against real accounts (site/proven-live.json): said next, as it is what a reader can rely on.
+  const proven = provenWords(pkg);
+  if (proven) add({ id: "proven", logo: "logo-proven.svg", text: proven });
   const emailTools = tools.some((t) => t.startsWith("email_"));
   if (triggers.includes("email")) add({ id: "email", logo: "logo-email.svg", text: "Requires your email account, through AgentRun's email trigger" });
   else if (emailTools) add({ id: "email", logo: "logo-email.svg", text: "Requires your email account, through AgentRun's email tools" });

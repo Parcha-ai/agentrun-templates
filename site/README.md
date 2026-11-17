@@ -33,8 +33,8 @@ one does.
   (Exa), web fetch, a webhook, a schedule. Each logo is a file in `assets/` (`logo-*.svg`, black on transparent; the
   dark theme inverts it). A new toolkit with no logo file shows the generic plug.
 - `site/proven-live.json` (`{"<template>": "YYYY-MM-DD"}`) lists the templates someone has run against real accounts.
-  A template whose tools come through Composio and that isn't listed says "Integration not yet proven live" on its
-  page. A name not in the index fails the build.
+  A listed template shows a shield logo whose line says against which accounts and when. A template whose tools come
+  through Composio and that isn't listed says "Integration not yet proven live" on its page. A name not in the index fails the build.
 - The sample output is `samples/<template>/<name>/output.md` when there is one, else the `contentMediaType: text/markdown`
   field (`report_markdown`) of `samples/<template>/<name>/output.json`.
 
@@ -44,9 +44,10 @@ one does.
 
 | Path | Page |
 | --- | --- |
-| `/` | every template, with search, and the categories |
-| `/templates/<name>/` | one template: what it does, what starts it, inputs, setup, what it needs, sample output, evals, source, install |
-| `/categories/<category>/` | the templates in one category (only categories with templates get a page) |
+| `/` | every template, under the tabs (All, Free, each category) and search |
+| `/free/` | the templates that prefer a free model (only when there are any) |
+| `/templates/<name>/` | one template: install, sample output, what it does, what starts it, inputs, what it needs, evals, source. On a wide screen Install stays in view beside the page |
+| `/categories/<category>/` | the templates in one category, same tabs and search (only categories with templates get a page) |
 | `/list-your-template/` | how the one-line index pull request works, and the bar |
 | `<path>.md` | the Markdown twin of each page |
 | `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/search.json`, `/404.html` | |
@@ -60,9 +61,19 @@ from a publisher, which is what that type describes. `HowTo` was the other optio
 results in 2023, and a template page is not a list of steps. Category pages are `CollectionPage` with an `ItemList`,
 and every page below the home has a `BreadcrumbList`.
 
+## Look
+
+The site looks like agentrun.ai and the AgentRun console: the `agent.run()` wordmark, agentrun.ai's dark surfaces and
+orange, mono headings and nav in sentence case, dark words on orange buttons, square corners, and its footer columns.
+Light follows the system with the console's light tokens. Search matches a template's name, description, tags and what
+it requires ("slack", "free"); `/` focuses it and Escape clears it.
+
+No small caps label sits above a page title, and section headings are sentence case at a readable size. A template
+page keeps its breadcrumb; no other page has one.
+
 ## Install button
 
-It asks once for the reader's AgentRun address (kept in this browser's localStorage under
+It asks once for the reader's AgentRun address, with or without `https://` (kept in this browser's localStorage under
 `agentrun.marketplace.address`, sent nowhere) and opens `<address>/#/templates/install?src=<source>@<sha>`. Without
 JavaScript the page still shows `npx @parcha/agentrun template install <source>@<sha> --trust`.
 

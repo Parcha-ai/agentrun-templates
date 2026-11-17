@@ -11,8 +11,8 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { GitHub } from "./lib/github.mjs";
 import { loadPackage, readIndex, SiteError } from "./lib/packages.mjs";
-import { CATEGORY_TEXT } from "./lib/describe.mjs";
-import { categoryPage, homePage, layout, listPage, notFoundPage, SITE_NAME, templatePage } from "./lib/pages.mjs";
+import { CATEGORY_TEXT, isFree, requirements } from "./lib/describe.mjs";
+import { categoryPage, freePage, homePage, layout, listPage, notFoundPage, SITE_NAME, templatePage } from "./lib/pages.mjs";
 import { mdText } from "./lib/util.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -67,10 +67,11 @@ export async function build(options = {}) {
   };
 
   const pages = [homePage(site, packages)];
+  if (packages.some(isFree)) pages.push(freePage(site, packages));
   for (const pkg of packages) pages.push(templatePage(site, pkg, stats.get(`${pkg.owner}/${pkg.repo}`)));
   for (const cat of Object.keys(CATEGORY_TEXT)) {
     const inCat = packages.filter((p) => p.category === cat);
-    if (inCat.length) pages.push(categoryPage(site, cat, inCat));
+    if (inCat.length) pages.push(categoryPage(site, cat, inCat, packages));
   }
   pages.push(listPage(site));
   const notFound = notFoundPage();
@@ -97,6 +98,8 @@ export async function build(options = {}) {
 
   write("search.json", JSON.stringify(packages.map((p) => ({
     name: p.name, title: p.displayName, description: p.description, category: p.category, tags: p.tags, url: `/templates/${p.name}/`,
+    // What it requires, in words, so a search for "slack" or "free" finds the templates that use it.
+    needs: requirements(p).map((r) => r.text),
   }))) + "\n");
 
   const priority = (path) => (path === "/" ? "1.0" : path.startsWith("/templates/") ? "0.8" : "0.6");
