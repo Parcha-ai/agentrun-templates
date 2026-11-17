@@ -268,9 +268,10 @@ summary:hover { color: hsl(var(--foreground)); }
 .req:hover, .req:focus { box-shadow: inset 0 -2px 0 hsl(var(--primary)); outline: none; }
 .req:hover img, .req:focus img { opacity: 1; }
 /* The line sits over the row from its left edge, as wide as the card allows: it can't run off the card or the screen. */
-.req-tip { position: absolute; left: 5px; bottom: calc(100% + 4px); z-index: 10; width: max-content; max-width: min(320px, calc(100% - 5px), 86vw); padding: 6px 9px; font-family: var(--font-sans); font-size: 13px; line-height: 1.35; background: hsl(var(--foreground)); color: hsl(var(--background)); border-radius: var(--ar-control-radius); visibility: hidden; pointer-events: none; }
-.req:hover .req-tip, .req:focus .req-tip { visibility: visible; }
-.reqs:has(.req:hover) .req:focus:not(:hover) .req-tip { visibility: hidden; }
+.req-tip { position: absolute; left: 5px; bottom: calc(100% + 4px); z-index: 10; width: max-content; max-width: min(320px, calc(100% - 5px), 86vw); padding: 6px 9px; font-family: var(--font-sans); font-size: 13px; line-height: 1.35; background: hsl(var(--foreground)); color: hsl(var(--background)); border-radius: var(--ar-control-radius); opacity: 0; pointer-events: none; }
+/* Hidden with opacity, not visibility: the line stays in the page for a screen reader, as each logo's only name. */
+.req:hover .req-tip, .req:focus .req-tip { opacity: 1; }
+.reqs:has(.req:hover) .req:focus:not(:hover) .req-tip { opacity: 0; }
 .tpl .reqs { min-width: 100%; }
 
 /* A template page on a wide screen: the page reads down the left, Install stays in view on the right. The order in

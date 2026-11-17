@@ -24,7 +24,8 @@
         card.hidden = !hit;
         if (hit) shown++;
       }
-      if (status) status.textContent = q.length && shown ? `${shown} of ${cards.length} templates match.` : "";
+      // The count is announced (role="status") for no match too; the paragraph under it then says what to do next.
+      if (status) status.textContent = q.length ? `${shown} of ${cards.length} templates match.` : "";
       if (none) {
         none.hidden = !(q.length && !shown);
         // "search all templates" carries the words over to the home page.

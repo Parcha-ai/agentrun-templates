@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -269,6 +269,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     // has no free template, so there is no Free tab and no /free/ page.
     assert.match(home, /<nav class="tabs" id="categories" aria-label="Categories"><a href="\/" aria-current="page">All <span class="n">1<\/span><\/a><a href="\/categories\/research\/">Research <span class="n">1<\/span><\/a><\/nav>\s*<form class="search"/);
     assert.doesNotMatch(home, /href="\/free\/"/);
+    assert.equal(existsSync(join(out, "free", "index.html")), false);
     const category = readFileSync(join(out, "categories", "research", "index.html"), "utf8");
     assert.match(category, /<a href="\/categories\/research\/" aria-current="page">Research <span class="n">1<\/span><\/a>/);
     assert.match(category, /<input id="q" name="q" type="search"[^>]*data-search>/, "a category page searches its own cards");
@@ -360,7 +361,35 @@ test("a template whose tools come through Composio says it is not yet proven liv
   assert.equal(unprovenWords({ mcp: [], provenLive: null }), null);
 });
 
-test("a template proven live shows a logo saying against which accounts and when; a free one is on the Free tab", () => {
+test("a template that prefers a free model gets the Free tab and the /free/ page", async () => {
+  const root = mkdtempSync(join(tmpdir(), "site-free-"));
+  const out = mkdtempSync(join(tmpdir(), "site-dist-"));
+  const cache = mkdtempSync(join(tmpdir(), "site-cache-"));
+  try {
+    cpSync(fixture, root, { recursive: true });
+    const manifest = join(root, "templates", "sample-watch", "agent.md");
+    const text = readFileSync(manifest, "utf8");
+    const free = text.replace("prefer: openrouter/particle-ai/particle-1", "prefer: openrouter/example/free-1:free");
+    assert.notEqual(free, text, "the fixture has a preferred model to replace");
+    writeFileSync(manifest, free);
+    await build({ root, out, sha: SHA, offline: true, cacheDir: cache, log: () => {} });
+    assert.deepEqual(check({ dir: out, baseUrl: "https://marketplace.agentrun.ai" }).problems, []);
+    const home = readFileSync(join(out, "index.html"), "utf8");
+    assert.match(home, /<a href="\/" aria-current="page">All <span class="n">1<\/span><\/a><a href="\/free\/">Free <span class="n">1<\/span><\/a><a href="\/categories\/research\/">/);
+    const page = readFileSync(join(out, "free", "index.html"), "utf8");
+    assert.match(page, /<h1>Free templates<\/h1>/);
+    assert.match(page, /<a href="\/free\/" aria-current="page">Free <span class="n">1<\/span><\/a>/);
+    assert.match(page, /<li class="card tpl" data-name="sample-watch">/);
+    assert.match(page, /<span class="req-tip">Runs free, on Free 1 through OpenRouter<\/span>/);
+    assert.match(readFileSync(join(out, "free.md"), "utf8"), /^# Free templates\n[\s\S]*\[Sample watch\]\(https:\/\/marketplace\.agentrun\.ai\/templates\/sample-watch\.md\)/);
+    assert.match(readFileSync(join(out, "sitemap.xml"), "utf8"), /<loc>https:\/\/marketplace\.agentrun\.ai\/free\/<\/loc>/);
+    assert.match(readFileSync(join(out, "index.md"), "utf8"), /^Free to run: https:\/\/marketplace\.agentrun\.ai\/free\.md$/m);
+  } finally {
+    for (const d of [root, out, cache]) rmSync(d, { recursive: true, force: true });
+  }
+});
+
+test("a template proven live shows a logo saying against which accounts and when; a free model is recognised", () => {
   const pkg = { tools: [], triggers: [], mcp: [{ source: "composio", toolkit: "gmail", required: true }, { source: "composio", toolkit: "slack", required: true }], provenLive: "2026-11-20" };
   assert.equal(provenWords(pkg), "Proven live against real Gmail and Slack accounts on 2026-11-20");
   assert.equal(provenWords({ ...pkg, mcp: [] }), "Proven live against real accounts on 2026-11-20");
