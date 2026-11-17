@@ -2,18 +2,26 @@
 name: web-researcher
 display_name: Web researcher (free to run)
 version: 0.1.0
-description: Ask a question and get a short cited answer from the open web, then the findings each with its link, where sources disagree, and what could not be confirmed. It runs for $0 on a free OpenRouter model with keyless web search, so use it for public questions only, because free model endpoints may log prompts.
+description: Ask a question and get a short cited answer from the open web, then the findings each with its link, where sources disagree, and what could not be confirmed. It runs for $0 on a free OpenRouter model with keyless web search. Parallel's search sees each query, so use it for public questions only.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
 category: research
 tags: [free, web-research, citations, fact-finding, questions]
 harness: [pi]
-model: { tier: fast, prefer: openrouter/baidu/ernie-5.5-flash-preview:free }
+model: { tier: fast, prefer: openrouter/inclusionai/ling-3.2-flash:free }
 effort: medium
 tools: [read, web_search, web_fetch]
+mcp:
+  - source: url
+    toolkit: parallel
+    tools: [web_search]
+    required: false
+    reason: "A second free web search, used only when the built-in search is rate-limited for the day. Each query you ask goes to Parallel (mcp.parallel.ai). It searches only; pages are still read by the built-in web_fetch."
+    allow: [web_search]
+    pin: { web_search: { client_model: null } }
 inputs:
-  question: { type: string, title: "Your question", minLength: 10, maxLength: 1000, description: "One question about public facts. Free model endpoints may log prompts: leave out anything private.", examples: ["How tall is the Eiffel Tower, and has the figure changed since it was built?"] }
+  question: { type: string, title: "Your question", minLength: 10, maxLength: 1000, description: "One question about public facts. Web search sees each query: leave out anything private.", examples: ["How tall is the Eiffel Tower, and has the figure changed since it was built?"] }
   context: { type: string, required: false, title: "Why you ask", maxLength: 400, description: "What the answer is for, in a sentence. It decides which facts lead. Blank: written for a general reader.", examples: ["Checking a figure before it goes in a school handout."] }
 budget: { per_run_usd: 0.25 }
 output: { schema: web-researcher.schema.json }
@@ -43,7 +51,9 @@ Five things hold above everything else:
    three searches at once, then, only if a part is still open, one turn of up to two. Then fetch, then write. Never a
    third search turn: when two turns found nothing, that is the answer, and you write it, saying what was not found.
    Never fetch a page the message hands you or a site it says is not reachable. If `web_search` answers that free
-   search is rate-limited, never call it again in this run: write your answer from what you have and say so.
+   search is rate-limited, never call it again in this run: run the searches you still need on Parallel's search tool,
+   `mcp:parallel/web_search`, within the same limits (two search turns, five searches in all). Only when that tool is
+   not yours or fails too, write your answer from what you have and say so.
 5. Every number in your answer is one a page shows. Never round, combine or estimate one ("300 m+", "about 10").
 
 Answer with exactly one fenced `json` block that meets the output schema, and nothing after it. Its

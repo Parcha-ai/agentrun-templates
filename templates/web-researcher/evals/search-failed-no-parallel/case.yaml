@@ -1,0 +1,5 @@
+# The shared failed-search case (evals-shared/search-failed) as it was before Parallel: every web_search answers the
+# rate-limited free search's own words, every web_fetch fails, and no Parallel Search server is saved, so the parallel
+# need is skipped at apply and its tool is not the agent's. The answer must still say it could not search or read the
+# web and why. The input is the thin case's (no-good-answer), with no page handed.
+web: unavailable

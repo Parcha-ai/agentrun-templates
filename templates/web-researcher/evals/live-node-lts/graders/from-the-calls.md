@@ -12,13 +12,15 @@ Read the answer's last fenced `json` block, `report_markdown` included. Pass onl
    and `short_answer` names that line. A part no fetched page answers is in `unconfirmed` with where the run looked.
 2. **Findings rest on fetched pages.** Every finding cites at least one source whose link matches a `web_fetch` call:
    read the link check, which matched each cited link against the calls in code. A source that matches only a
-   `web_search` call is a lead: a finding that cites only such sources fails. One marked `no matching call` fails,
+   search call (`web_search`, or Parallel's `mcp:parallel/web_search`, whose results carry page excerpts) is a lead:
+   a finding that cites only such sources fails. One marked `no matching call` fails,
    unless the check adds that a page's links were cut: then say so in your reason, and pass it only when the answer
    quotes text that is in that page.
 3. **Copied, never made.** Every version number, date and count in `short_answer` and `findings` is one a page the
    finding cites shows, as that page writes it (a date rewritten as `YYYY-MM-DD` is copied; a day or month the page
    does not give is made up). A version, date or count that no call shows, or that contradicts one a call shows,
-   fails. Where a cut result hides a detail, do not fail for that alone.
+   fails. Where a cut result hides a detail, do not fail for that alone. The run's own date, where the answer dates
+   itself with it ("As of <the run's date>" in `short_answer`), is not a made-up date.
 4. **Sources listed.** Every id cited anywhere is in `sources` with its URL, and no source is a search engine's
    results page.
 5. **Disagreement shown.** If two fetched pages give different versions or dates for the same thing, a

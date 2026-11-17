@@ -1,0 +1,5 @@
+# Live: the real web, with Parallel Search saved as an MCP server named parallel (Settings → MCP servers, the Parallel
+# Search preset: https://mcp.parallel.ai/mcp, no credential, toolkit parallel), so a run whose built-in search is
+# rate-limited for the day goes on searching on Parallel's. Run it with --on-data on a server that keeps that server.
+grants:
+  - mcp:parallel/web_search
