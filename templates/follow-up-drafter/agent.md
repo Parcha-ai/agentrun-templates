@@ -32,9 +32,11 @@ parameters:
 inputs:
   thread_id: { type: string, required: false, pattern: "^[0-9a-f]{10,24}$", title: "Thread id", description: "Draft a reply in this Gmail thread, for a run by hand (the long hex id in the thread's URL). Leave it out on the trigger's runs: the event names the thread.", examples: ["19a2b3c4d5e6f708"] }
   notes: { type: string, required: false, maxLength: 1000, title: "What to say", description: "Facts or decisions the reply should carry that the thread doesn't hold (\"yes to Dec 1, no discount\"). Blank: unknowns become bracketed blanks.", examples: ["Yes to a Dec 1 start. No multi-year discount."] }
-# Spend is $0.01-0.05 a run (measured 2026-11-15), but a codex step on gpt-6.1-sol plus its final answer can hold ~$0.30
-# before it answers. Under $0.25 that hold set off the wrap-up on codex's first Gmail fetch.
-budget: { per_run_usd: 0.50 }
+# Sized from the 2026-11-17 live walk: cap >= 2 x the highest harness's spend + $0.40, the most one codex step on
+# gpt-6.1-sol held before it answered that day ($0.36), rounded up to $0.10; a cap under that stops a job halfway.
+# Live walk 2026-11-17: pi $0.10, claude-agent $0.14, codex stopped at $0.17 when its next step needed $0.36 under
+# the old $0.50 cap. Sized: 2 x $0.17 + $0.40, rounded up.
+budget: { per_run_usd: 0.80 }
 learning: true
 # It drafts, so ask: each run's draft waits for the owner's yes, where they see the recipient before it is saved; the
 # thread read runs where the owner turned on Allow reads. Its pins (no cc, bcc, extra recipients, other mailbox or

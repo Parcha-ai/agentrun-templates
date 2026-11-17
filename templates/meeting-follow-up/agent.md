@@ -40,7 +40,10 @@ parameters:
 inputs:
   date: { type: string, format: date, required: false, title: "Day", description: "Draft follow-ups for this day's meetings instead of today's, for a run by hand.", examples: ["2026-11-17"] }
   notes: { type: string, required: false, maxLength: 2000, title: "What happened", description: "What was agreed, per meeting, to fill in instead of blanks (\"Globex: 30-day pilot from Dec 1, Kim sends the data export\"). Blank: every outcome is a bracketed blank.", examples: ["Globex: 30-day pilot from Dec 1; Kim sends the data export by Friday."] }
-budget: { per_run_usd: 0.40 }
+# Sized from the 2026-11-17 live walk: cap >= 2 x the highest harness's spend + $0.40, the most one codex step on
+# gpt-6.1-sol held before it answered that day ($0.36), rounded up to $0.10; a cap under that stops a job halfway.
+# Live walk 2026-11-17: pi $0.03, claude-agent $0.05, codex $0.04, all finished. Sized: 2 x $0.05 + $0.40, rounded up.
+budget: { per_run_usd: 0.50 }
 learning: true
 # It drafts, so ask: each draft waits for the owner's yes, where they see the recipient before it is saved; the calendar
 # read runs where the owner turned on Allow reads. Its pins (no cc, bcc, extra recipients, other mailbox, attachment or
