@@ -1,0 +1,10 @@
+{
+  "search": {"answers": [], "default": {"results": []}},
+  "fetch": {
+    "answers": [
+      {"url": "https://api.github.com/repos/fernlight/fernlight-js/pulls/4142/files?per_page=100", "title": "", "text": "[\n{\"filename\":\"README.md\",\"status\":\"modified\",\"additions\":2,\"deletions\":2},\n{\"filename\":\"package.json\",\"status\":\"modified\",\"additions\":1,\"deletions\":0,\"patch\":\"@@ -12,6 +12,7 @@\\n   \\\"scripts\\\": {\\n     \\\"build\\\": \\\"tsc -p .\\\",\\n+    \\\"postinstall\\\": \\\"node scripts/setup.js\\\",\\n     \\\"test\\\": \\\"vitest run\\\"\"},\n{\"filename\":\"scripts/setup.js\",\"status\":\"added\",\"additions\":14,\"deletions\":0}\n]"},
+      {"url": "https://api.github.com/search/issues?q=repo:fernlight/fernlight-js+type:pr+author:ren-hollis&per_page=5", "title": "", "text": "{\"total_count\":1,\"items\":[{\"number\":4142,\"state\":\"open\",\"pull_request\":{\"merged_at\":null}}]}"}
+    ],
+    "default": {"error": "fetch failed"}
+  }
+}

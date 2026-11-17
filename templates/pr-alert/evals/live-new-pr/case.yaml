@@ -1,0 +1,7 @@
+# Applied with these parameters (POST /v2/templates/pr-alert/apply). Live: the run reads api.github.com itself.
+parameters:
+  owner: vitejs
+  repo: vite
+# One real PR handed as the item: vite's #24107 whole, as GitHub's open PR list gave it on 2026-11-16 (about 16,000
+# characters, so the payload arrives cut to fit, item_truncated). Its files and its author's PRs are read live.
+feed: fixtures/feed.json

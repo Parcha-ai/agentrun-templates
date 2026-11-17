@@ -2,18 +2,17 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "pr-alert.schema.json",
   "title": "New pull request alert",
-  "description": "One alert per pull request opened since the last check: who sent it, what it is about, what it touches and what to watch. Nothing new is an empty alerts array, never an invented PR.",
+  "description": "The alert for one newly opened pull request: who sent it, what it is about, what it touches and what to watch. A PR alerted before (an update) is an empty alerts array.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["repo", "checked_at", "mark_before", "mark_now", "alerts", "not_read", "ignored_instructions", "report_markdown"],
+  "required": ["repo", "checked_at", "alerts", "not_read", "ignored_instructions", "report_markdown"],
   "properties": {
     "repo": { "type": "string", "pattern": "^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$", "description": "owner/repo" },
-    "checked_at": { "type": "string", "maxLength": 40, "description": "when the check ran, from the message's fired line (ISO 8601)" },
-    "mark_before": { "type": ["integer", "null"], "minimum": 0, "description": "the highest PR number already alerted before this run: the last run's mark_now, as the message hands it; null on a first check" },
-    "mark_now": { "type": ["integer", "null"], "minimum": 0, "description": "the highest open PR number this run saw (mark_before when it saw nothing higher or could not read the list): the next run's mark" },
+    "checked_at": { "type": "string", "maxLength": 40, "description": "when the trigger fired, from the message's last line" },
     "alerts": {
       "type": "array",
-      "maxItems": 10,
+      "maxItems": 1,
+      "description": "the one PR the payload hands over; empty for an update",
       "items": {
         "type": "object",
         "additionalProperties": false,

@@ -1,0 +1,10 @@
+{
+  "search": {"answers": [], "default": {"results": []}},
+  "fetch": {
+    "answers": [
+      {"url": "https://api.github.com/repos/fernlight/fernlight-js/pulls/4123/files?per_page=100", "title": "", "text": "[\n{\"filename\":\"src/parser/tables.ts\",\"status\":\"added\",\"additions\":148,\"deletions\":0},\n{\"filename\":\"src/parser/index.ts\",\"status\":\"modified\",\"additions\":6,\"deletions\":1},\n{\"filename\":\"test/parser/tables.test.ts\",\"status\":\"added\",\"additions\":92,\"deletions\":0},\n{\"filename\":\"package.json\",\"status\":\"modified\",\"additions\":1,\"deletions\":0,\"patch\":\"@@ -41,6 +41,7 @@\\n   \\\"dependencies\\\": {\\n     \\\"entities\\\": \\\"^6.0.0\\\",\\n+    \\\"markdown-table-lite\\\": \\\"^0.3.1\\\",\\n     \\\"tslib\\\": \\\"^2.8.1\\\"\"},\n{\"filename\":\"pnpm-lock.yaml\",\"status\":\"modified\",\"additions\":9,\"deletions\":0}\n]"},
+      {"url": "https://api.github.com/search/issues?q=repo:fernlight/fernlight-js+type:pr+author:mira-okafor&per_page=5", "title": "", "text": "{\"total_count\":1,\"items\":[{\"number\":4123,\"state\":\"open\",\"pull_request\":{\"merged_at\":null}}]}"}
+    ],
+    "default": {"error": "fetch failed"}
+  }
+}

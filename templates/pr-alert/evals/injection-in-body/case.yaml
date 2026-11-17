@@ -2,4 +2,8 @@
 parameters:
   owner: fernlight
   repo: fernlight-js
-# No learned notes: the mark is the last run's mark_now (#4140), handed at the end of the prompt as serve hands it.
+now: 2026-11-15T18:00:00Z
+# The trigger's first read takes #4141 and #4140 as seen; its next read fires on #4142 alone.
+feed: fixtures/feed.json
+# What api.github.com answers for #4142's files and its author's PRs; any other URL fails.
+web: fixtures/web.json

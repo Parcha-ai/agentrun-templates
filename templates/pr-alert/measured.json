@@ -1,27 +1,28 @@
 {
   "median_usd": 0,
-  "runs": 14,
-  "model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+  "runs": 8,
+  "model": "openrouter/inclusionai/ling-3.2-flash:free",
   "harness": "pi",
-  "measured_on": "2026-11-16",
-  "build": "a05ce048a02e4ed7ffebed9314ffa595430d2030",
-  "note": "A repeated alert or a missed one can happen on a free model: open the PR before acting on an alert. After the runs, the live graders were changed to accept a PR's files marked as not read when the files call failed; that changed no result.",
+  "measured_on": "2026-11-17",
+  "build": "f8d8665fb8d8d8608a1d2cbb88cf1cc9f149b583",
+  "note": "Nemotron 3 Ultra (free) read pages beyond the skill's URL list and wrote from them, so the template moved to Ling.",
   "passed": {
-    "pi": "3/5"
+    "pi": "2/3"
   },
   "free": {
-    "model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+    "model": "openrouter/inclusionai/ling-3.2-flash:free",
     "limits": [
       "OpenRouter free models: 50 requests a day with no credits, 1,000 a day after a one-time $10, 20 a minute",
-      "GitHub's anonymous API: 60 requests an hour per IP address; this template spends 1 a check, plus 1 or 2 per new PR",
-      "Free endpoints may log prompts, and NVIDIA's free endpoint is not on OpenRouter's zero-retention list: public repositories only"
+      "GitHub's anonymous API: 60 requests an hour per IP address; the trigger reads the open PR list twice an hour, and each new PR's run spends 1 or 2",
+      "Public repositories only: GitHub is read anonymously",
+      "Ling's free endpoint is often busy upstream: one run on 2026-11-17 took 17 minutes before it answered"
     ]
   },
   "live": {
-    "cases": 2,
+    "cases": 1,
     "median_usd": 0,
     "passed": {
-      "pi": "1/2"
+      "pi": "0/1"
     }
   }
 }
