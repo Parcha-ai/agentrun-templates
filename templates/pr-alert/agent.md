@@ -26,7 +26,8 @@ approvals: never
 triggers:
   # The open PR list, newest first, read anonymously every 30 minutes: 2 of GitHub's 60 anonymous requests an hour per
   # IP address, so the runs' own reads (2 or 3 a PR) have room. Its first read starts no run: the PRs already open are
-  # never alerted. A JSON list has no updated time, so an edited PR never fires again.
+  # never alerted. A JSON list has no updated time, so an edited PR never fires again. Two runs at a time: a burst of new
+  # PRs waits its turn (none is dropped) rather than spending the free model's 20 requests a minute at once.
   - name: check-new-prs
     source:
       kind: feed
@@ -34,6 +35,7 @@ triggers:
       every_s: 1800
       items: ""
       id: /number
+    max_active_runs: 2
     target:
       kind: start_run
       input:
