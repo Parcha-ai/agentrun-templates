@@ -8,18 +8,15 @@ and text aimed at AI tools. It is not a code review: no line comments and no ver
 
 ## Runs for $0
 
-- Model: `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free` (NVIDIA Nemotron 3 Ultra) on pi. Put an
-  `OPENROUTER_API_KEY` in your server's environment; no credits are needed. Free OpenRouter models allow 50 requests a
-  day with no credits (1,000 a day after a one-time $10) and 20 a minute. How long a model stays free is OpenRouter's
-  call. We picked it over the other free models we could run (2026-11-16, 2 runs per case): it was the only one with a
-  clean live case. Ling 3.2 Flash passed one more fixture case but no live case; ERNIE 5.5 Flash Preview passed no live
-  case; the free Gemma 4 endpoints were rate-limited all day.
+- Model: `openrouter/inclusionai/ling-3.2-flash:free` (Ling 3.2 Flash) on pi. Put an `OPENROUTER_API_KEY` in your
+  server's environment; no credits are needed. Free OpenRouter models allow 50 requests a day with no credits (1,000 a
+  day after a one-time $10) and 20 a minute. How long a model stays free is OpenRouter's call. Nemotron 3 Ultra
+  (free) read pages beyond the skill's URL list and wrote from them, so the template moved to Ling.
 - GitHub: read anonymously over `api.github.com` (60 requests an hour per IP address), by the trigger and by the run's
   `web_fetch`. No GitHub App, no webhook and no token, so it runs on a laptop with no public address. Public
   repositories only: a private one answers 404 to an anonymous read.
-- Free model endpoints may log prompts. PRs on a public repository are public already. NVIDIA's free endpoint is not
-  on OpenRouter's zero-retention list, so OpenRouter's "ZDR only" setting turns this model off: leave it off for this
-  template, and point it only at public repositories.
+- Ling's free endpoint is on OpenRouter's zero-retention list, so OpenRouter's "ZDR only" setting keeps it on. Point
+  it only at public repositories: it reads GitHub anonymously, and a private one's PRs never reach it.
 
 ## Requests
 
