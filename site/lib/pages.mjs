@@ -589,10 +589,39 @@ export function listPage(site) {
     "A sample run in samples/<template>/<name>/ of this repository: input.json and an output.json that matches the schema.",
     "A summary of 20 to 140 characters in the index entry that says what it does in plain words, and a description in agent.md with the detail.",
   ];
+  // The same steps and bar as the page, worded as a job for a coding agent, so the reader can hand the listing over.
+  const prompt = [
+    `Help me list my AgentRun template on the AgentRun template marketplace (${site.url("/")}).`,
+    "",
+    "Work in the repository I have open. Ask me before you push, tag or open a pull request. Never invent an eval result or a sample output: run the template to get them.",
+    "",
+    `Reference: ${site.url("/list-your-template.md")}`,
+    "",
+    "1. Find the template folder: the one that holds agent.md. If there are several, ask me which one.",
+    "2. Check it against the bar below. Tell me each gap in one line, then fix the ones I approve.",
+    "3. Run `npx @parcha/agentrun template validate <folder>` and fix what it reports until it passes.",
+    "4. Check the GitHub repository is public. If it is private, stop and tell me: private repositories can't be installed.",
+    "5. Pin a version: propose a tag (for example v1.0.0) on the commit that passed, and create and push it once I agree.",
+    `6. Write the marketplace entry and show it to me. Then fork ${site.repo.owner}/${site.repo.name}, add the entry to .agentrun/marketplace.json, add the sample run under samples/<template>/<name>/, and open a pull request.`,
+    "7. Give me the pull request link and say what the reviewers will check.",
+    "",
+    "The bar:",
+    ...bar.map((b) => `- ${b}`),
+    "",
+    "The entry:",
+    entry,
+    "",
+    `Categories: ${Object.keys(CATEGORY_TEXT).join(", ")}. Up to 8 tags, lowercase letters, digits and dashes. Pin the source with @ref (a tag or a commit).`,
+  ].join("\n");
   const body = html`
 <section class="hero">
   <h1>List your template</h1>
   <p class="lead">The marketplace is one file, <code>.agentrun/marketplace.json</code> in <a href="${site.repoUrl}">${site.repo.owner}/${site.repo.name}</a>. Your template stays in your repository. Listing it is a pull request that adds one line.</p>
+</section>
+<section aria-labelledby="agent">
+  <h2 id="agent" class="caps section-label">Have your agent list it</h2>
+  <p>Paste this into Claude Code, Codex or another coding agent, in the repository that holds your template. It checks the template, fixes the gaps and opens the pull request.</p>
+  <div class="prompt"><p class="prompt-bar"><button type="button" class="btn btn-solid btn-sm" data-copy="${prompt}" hidden>Copy prompt</button></p><pre class="code" tabindex="0" aria-label="Prompt for a coding agent"><code>${prompt}</code></pre></div>
 </section>
 <section aria-labelledby="how">
   <h2 id="how" class="caps section-label">How it works</h2>
@@ -625,6 +654,14 @@ export function listPage(site) {
       "# List your template",
       "",
       `The marketplace is one file, \`.agentrun/marketplace.json\` in ${site.repoUrl}. Your template stays in your repository. Listing it is a pull request that adds one line.`,
+      "",
+      "## Have your agent list it",
+      "",
+      "Paste this into a coding agent, in the repository that holds your template:",
+      "",
+      "````text",
+      prompt,
+      "````",
       "",
       "## How it works",
       "",

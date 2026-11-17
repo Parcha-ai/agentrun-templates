@@ -265,6 +265,9 @@ test("builds the fixture into pages that pass the checker", async () => {
     // A card: title, summary, logos. No pills.
     assert.match(home, /<li class="card tpl" data-name="sample-watch">\s*<h3><a href="\/templates\/sample-watch\/">Sample watch<\/a><\/h3>\s*<p class="desc">Watches one topic every week and tells you what changed, each item dated and linked\.<\/p>\s*<ul class="reqs" aria-label="What it requires"><li class="req" tabindex="0"><img src="\/assets\/logo-exa\.svg[^>]*><span class="req-tip">[^<]*<\/span><\/li>[\s\S]*?<\/ul>\s*<\/li>/);
     assert.doesNotMatch(home, /median|\$0\.0|class="chip/, "no cost and no pills on a card");
+    const listing = readFileSync(join(out, "list-your-template", "index.html"), "utf8");
+    assert.match(listing, /<button[^>]*data-copy="Help me list my AgentRun template[^"]*template validate[^"]*"[^>]*hidden>Copy prompt<\/button>/, "the agent prompt has a copy button");
+    assert.match(readFileSync(join(out, "list-your-template.md"), "utf8"), /## Have your agent list it[\s\S]*Help me list my AgentRun template/);
     for (const f of ["index.html", "list-your-template/index.html"]) assert.doesNotMatch(readFileSync(join(out, f), "utf8"), /eyebrow/, `no label above the title on ${f}`);
     // Over the cards: the tabs (all, then each category with templates, each a real page), then search. The fixture
     // has no free template, so there is no Free tab and no /free/ page.

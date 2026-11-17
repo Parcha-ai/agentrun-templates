@@ -141,6 +141,7 @@
   for (const btn of document.querySelectorAll("[data-copy]")) {
     if (!navigator.clipboard) continue;
     btn.hidden = false;
+    const label = btn.textContent;
     btn.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(btn.dataset.copy);
@@ -148,7 +149,7 @@
       } catch {
         btn.textContent = "Copy failed";
       }
-      setTimeout(() => { btn.textContent = "Copy"; }, 1600);
+      setTimeout(() => { btn.textContent = label; }, 1600);
     });
   }
 })();

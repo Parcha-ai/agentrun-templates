@@ -217,6 +217,9 @@ label.caps { display: block; font-size: 11px; color: hsl(var(--muted-foreground)
 .install p { margin: 0 0 12px; }
 .cmd { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 12px; }
 .cmd pre { flex: 1; margin: 0; }
+.prompt { margin: 0 0 12px; }
+.prompt-bar { margin: 0 0 8px; }
+.prompt pre.code { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 320px; overflow-y: auto; font-size: 13px; }
 
 dialog { max-width: min(520px, calc(100vw - 32px)); padding: 24px; box-shadow: 0 10px 30px hsl(var(--background) / 0.6); }
 dialog::backdrop { background: hsl(var(--background) / 0.7); }
