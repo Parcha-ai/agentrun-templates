@@ -8,7 +8,7 @@ author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
 category: engineering
 tags: [upgrades, dependencies, releases, github]
-harness: [pi]
+harness: [pi, claude-agent, codex]
 model: { tier: balanced }
 effort: medium
 tools: [web_fetch, read]
