@@ -1,0 +1,40 @@
+# Checks that every Composio tool and trigger event a template names still exists in Composio's live list
+# (scripts/check-composio.mjs), so a slug Composio renamed or removed fails here before an owner applies a broken
+# template. Daily, by hand, and on a pull request that changes a template or the check.
+#
+# The live step needs the repository secret COMPOSIO_API_KEY (any Composio project key; it only reads the public tool
+# and trigger lists). A repo admin must set it under Settings, Secrets and variables, Actions. Without it the live step
+# fails with "COMPOSIO_API_KEY is not set". A pull request from a fork gets no secrets, so there only the tests run and
+# the next scheduled run checks the merged result.
+name: composio-check
+
+on:
+  schedule:
+    - cron: "37 6 * * *"
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - templates/**
+      - scripts/check-composio.mjs
+      - scripts/test/**
+      - site/lib/yaml.mjs
+      - .github/workflows/composio-check.yml
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - run: node --test 'scripts/test/*.test.mjs'
+      - name: Composio slugs exist
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        run: node scripts/check-composio.mjs
+        env:
+          COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
