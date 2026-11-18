@@ -24,8 +24,10 @@ function templatesDir(t, templates) {
 }
 
 /** A stub of Composio's v3 API: tools and trigger types per toolkit, each list served `per` items a page by cursor.
- *  Records every call; `fail` answers the first n calls whose URL matches with a status (or a thrown network error). */
-function composio({ tools = {}, events = {}, per = 1000, fail = [] } = {}) {
+ *  `tools` is the toolkit's latest version (toolkit_versions=latest); `baseTools`, what Composio lists without it (its
+ *  base version, which leaves newer tools out). Records every call; `fail` answers the first n calls whose URL matches
+ *  with a status (or a thrown network error). */
+function composio({ tools = {}, baseTools = tools, events = {}, per = 1000, fail = [] } = {}) {
   const calls = [];
   const fetch = async (href, init = {}) => {
     const url = new URL(href);
@@ -38,7 +40,8 @@ function composio({ tools = {}, events = {}, per = 1000, fail = [] } = {}) {
       }
     }
     let list;
-    if (url.pathname === "/api/v3/tools") list = tools[url.searchParams.get("toolkit_slug")] ?? [];
+    const latest = url.searchParams.get("toolkit_versions") === "latest";
+    if (url.pathname === "/api/v3/tools") list = (latest ? tools : baseTools)[url.searchParams.get("toolkit_slug")] ?? [];
     else if (url.pathname === "/api/v3/triggers_types") list = events[url.searchParams.get("toolkit_slugs")] ?? [];
     else return new Response("{}", { status: 404 });
     const start = Number(url.searchParams.get("cursor") ?? 0);
@@ -149,6 +152,24 @@ triggers:
     "payments: triggers[0].source.event: STRIPE_CHARGE_FAILED is not a stripe trigger event on Composio (did you mean STRIPE_CHARGE_FAILED_TRIGGER?)",
     "payments: triggers[0].source.accept[0].event: STRIPE_CHARGE_REFUNDED_TRIGGER is not a stripe trigger event on Composio",
   ]);
+});
+
+test("tools are read at the toolkit's latest version, which lists tools its base version leaves out", async (t) => {
+  const root = templatesDir(t, {
+    newer: `mcp:
+  - source: composio
+    toolkit: linear
+    tools: [LINEAR_LIST_ISSUES_BY_TEAM_ID]`,
+    gone: `mcp:
+  - source: composio
+    toolkit: linear
+    tools: [LINEAR_REMOVED_LONG_AGO]`,
+  });
+  const api = composio({ tools: { linear: ["LINEAR_LIST_LINEAR_ISSUES", "LINEAR_LIST_ISSUES_BY_TEAM_ID"] }, baseTools: { linear: ["LINEAR_LIST_LINEAR_ISSUES"] } });
+  const out = await checkComposio({ root, key: KEY, fetch: api.fetch, sleep: noSleep });
+  assert.deepEqual(out.lines, ["gone: mcp[0].tools: LINEAR_REMOVED_LONG_AGO is not a linear tool on Composio"]);
+  assert.equal(out.code, 1);
+  assert.ok(api.calls.every((c) => c.url.searchParams.get("toolkit_versions") === "latest"));
 });
 
 test("paging: every page of tools and trigger types is read by cursor", async (t) => {
