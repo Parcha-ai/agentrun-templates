@@ -5,8 +5,10 @@
 // What it reads, from each templates/<name>/agent.md front matter:
 //   mcp[i] with source: composio   its toolkit, and the tool slugs in tools, allow and the keys of pin
 //   triggers[i].source with kind: composio   its server (the package's toolkit name) and event, and each accept[].event
-// Each toolkit's tools and trigger types are fetched once, every page, with the same calls the AgentRun server makes
-// (GET /api/v3/tools?toolkit_slug=, GET /api/v3/triggers_types?toolkit_slugs=, paged by cursor, key in x-api-key).
+// Each toolkit's tools and trigger types are fetched once, every page, with the calls the AgentRun server makes
+// (GET /api/v3/tools?toolkit_slug=, GET /api/v3/triggers_types?toolkit_slugs=, paged by cursor, key in x-api-key), plus
+// toolkit_versions=latest: without it the tools list is the toolkit's base version (00000000_00), which leaves out tools
+// added since (on 2026-11-18, linear 21 of 48, stripe 33 of 435). Trigger types answer the latest version either way.
 //
 //   COMPOSIO_API_KEY=... node scripts/check-composio.mjs [templates-dir]
 //
@@ -163,8 +165,8 @@ export async function checkComposio({ root, key, fetch = globalThis.fetch, sleep
       try {
         const live =
           kind === "tool"
-            ? await listAll(`/api/v3/tools?toolkit_slug=${encodeURIComponent(toolkit)}`, TOOLS_PAGE, ctx)
-            : await listAll(`/api/v3/triggers_types?toolkit_slugs=${encodeURIComponent(toolkit)}`, EVENTS_PAGE, ctx);
+            ? await listAll(`/api/v3/tools?toolkit_slug=${encodeURIComponent(toolkit)}&toolkit_versions=latest`, TOOLS_PAGE, ctx)
+            : await listAll(`/api/v3/triggers_types?toolkit_slugs=${encodeURIComponent(toolkit)}&toolkit_versions=latest`, EVENTS_PAGE, ctx);
         lists[kind].set(toolkit, live);
       } catch (error) {
         const why = error instanceof FetchError ? error.message : String(error?.message ?? error);
