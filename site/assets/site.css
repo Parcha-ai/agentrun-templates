@@ -165,7 +165,11 @@ main > section { margin: 40px 0; }
 .tpl h3 { margin: 0; font-size: 15px; font-weight: 600; font-family: var(--font-mono); }
 .tpl h3 a { text-decoration: none; }
 .tpl .desc, .cats .desc { margin: 0; color: hsl(var(--muted-foreground)); font-size: 14px; flex: 1; }
-.tpl:hover, .cats .card:hover { border-color: hsl(var(--border-strong)); }
+/* The whole card is the link, so the whole card answers the pointer: orange border, lifted surface. */
+.tpl { cursor: pointer; transition: border-color 120ms ease, background-color 120ms ease; }
+.tpl:hover, .cats .card:hover { border-color: hsl(var(--primary)); background: hsl(var(--muted)); }
+/* Grey summary text on the lifted surface falls under 4.5:1 in light, so it takes the text colour while hovered. */
+.tpl:hover .desc, .cats .card:hover .desc { color: hsl(var(--foreground)); }
 .cats .card { padding: 16px; }
 .cats a { display: flex; justify-content: space-between; align-items: baseline; text-decoration: none; margin-bottom: 6px; }
 .cat-title { font-weight: 600; font-size: 14px; font-family: var(--font-mono); }
