@@ -42,7 +42,10 @@ parameters:
   timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
   goal_amount: { type: number, required: false, minimum: 1, title: "Goal", description: "The schedule passes your saved goal. By hand, check against another figure.", examples: [500000] }
-budget: { per_run_usd: 0.25 }
+# Sized from the 2026-11-19 live walk (v0.1.0-beta.46): cap >= 2 x the highest harness's spend + $0.40 (the most
+# one codex step held before answering on 11-17), rounded up to $0.10; a cap under that stops a job halfway.
+# Live walk 2026-11-19: pi $0.02, claude-agent $0.07, codex $0.05, all finished. Sized: 2 x $0.07 + $0.40, rounded up.
+budget: { per_run_usd: 0.60 }
 learning: true
 # Suggested: never, so the scheduled post goes out unattended. The owner makes that choice at install; under ask the
 # post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.

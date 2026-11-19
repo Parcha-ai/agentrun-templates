@@ -38,7 +38,11 @@ parameters:
 inputs:
   since: { type: string, format: date-time, required: false, title: "Since", description: "Count only mail after this time. Blank: since the last digest, or everything the search returns on the first run.", examples: ["2026-11-09T09:00:00Z"] }
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "A product area or customer to call out. Blank: every theme.", examples: ["billing"] }
-budget: { per_run_usd: 0.80 }
+# Sized from the 2026-11-19 live walk (v0.1.0-beta.46): cap >= 2 x the highest harness's spend + $0.40 (the most
+# one codex step held before answering on 11-17), rounded up to $0.10; a cap under that stops a job halfway.
+# Live walk 2026-11-19: pi $0.02 and codex $0.34 finished; claude-agent stopped at $0.27 when its next step needed
+# $0.55 under the old $0.80 cap. Sized: 2 x $0.34 + $0.40, rounded up.
+budget: { per_run_usd: 1.10 }
 learning: true
 # Suggested never: its job is an unattended pinned post on a schedule. A ticked tool is granted, not allowed, so it
 # runs on its own only if the owner picks Never at install; under ask the search and the post wait for a yes. Both pins
