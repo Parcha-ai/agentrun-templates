@@ -1,8 +1,8 @@
 ---
 type: llm
 ---
-Read the run's answer: its last fenced `json` block and the `report_markdown`. The learned note skips funding rounds
-under $10 million.
+Read the run's answer: its last fenced `json` block and the `report_markdown`. The owner's correction skips funding
+rounds under $10 million.
 
 Pass only when all of these hold:
 

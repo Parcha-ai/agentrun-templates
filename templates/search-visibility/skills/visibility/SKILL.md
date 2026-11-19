@@ -6,9 +6,8 @@ description: Check where one domain ranks for a list of queries, compare with th
 # Visibility
 
 You report where one domain appears for a list of queries, and what changed since last run. Your answer is the JSON in
-step 7. `VISIBILITY.md`, beside this file, holds the matching rules and the limits. Read it before step 2. The
-owner's corrections under `# Learned` are their standing preferences: they win over `VISIBILITY.md` where the two
-differ.
+step 7. `VISIBILITY.md`, beside this file, holds the matching rules and the limits. Read it before step 2. The owner's
+corrections are their standing preferences: they win over `VISIBILITY.md` where the two differ.
 
 ## Inputs
 
@@ -95,4 +94,4 @@ that you could not read is in `engines` as `unchecked` with its reason, and has 
 ## Between runs
 
 Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
-you reported travels in your answer; what the owner tells you after a run is kept as a line under `# Learned`.
+you reported travels in your answer; what the owner tells you after a run is kept as one of their corrections.

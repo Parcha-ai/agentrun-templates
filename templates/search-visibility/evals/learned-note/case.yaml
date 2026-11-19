@@ -1,4 +1,4 @@
-# The agent starts with one correction (served under # Learned), as if the owner had told an earlier run to ignore
+# The agent starts with one correction, as if the owner had told an earlier run to ignore
 # branded queries.
 parameters:
   queries: ["scanlane", "invoice ocr api"]

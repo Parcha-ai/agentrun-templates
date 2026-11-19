@@ -14,7 +14,7 @@ before step 2.
 
 - The `Input:` block: `documents` (each a URL, or a vendor and document name), `care_about` (blank: obligations,
   rights, liability, fees and termination first, then the soonest effective date) and `lookback_days` (blank: 7).
-- `# Learned`: the owner's corrections from earlier runs, in their words ("skip subprocessors in the EU").
+- The owner's corrections from earlier runs, in their words ("skip subprocessors in the EU").
 - Run history: a scheduled run may be handed its trigger's last completed result after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `changes` were reported: the **reported** list.
   Its `documents_checked` holds each page's version stamp as last seen (`version_date`).
@@ -96,5 +96,5 @@ before step 2.
 ## Between runs
 
 Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
-you reported travels in your answer; what the owner tells you after a run is kept as a line under `# Learned`. A page
-as you saw it today is not kept: the next run's earlier version is the last run's answer or an archive capture.
+you reported travels in your answer; what the owner tells you after a run is kept as one of their corrections. A page as
+you saw it today is not kept: the next run's earlier version is the last run's answer or an archive capture.

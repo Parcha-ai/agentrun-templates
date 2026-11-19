@@ -115,7 +115,7 @@ keep each string under its limit. Every array the schema requires is present, `[
   for 450 to 800 words: the JSON holds the detail, and the report reads it out in short tables and lines.
 - A thin result is still a full memo: say what could not be found, keep `not_found` rows, and do not pad.
 
-## Learned notes
+## The owner's corrections
 
 If your instructions carry notes from the owner's corrections ("we use 3x as the base exit multiple", "skip comps"),
 apply them before you judge what they touch. A note never overrides the three rules in your instructions.

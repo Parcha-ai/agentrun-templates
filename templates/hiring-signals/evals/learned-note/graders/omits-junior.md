@@ -1,8 +1,8 @@
 ---
 type: llm
 ---
-Read the run's answer: its last fenced `json` block and the `report_markdown`. The learned note says to skip junior
-roles.
+Read the run's answer: its last fenced `json` block and the `report_markdown`. The owner's correction says to skip
+junior roles.
 
 Pass only when all of these hold:
 

@@ -26,7 +26,7 @@ Stop with `category: null` and say why when:
 1. **VIP** (`from` is in the VIP list, by address or @domain): never `ignore`. `needs_me` when it asks the owner
    something or needs their decision or action; else `fyi`. A date alone asks nothing ("nothing needed before
    Thursday", "the deck goes out Friday"): `fyi`.
-2. **Ignore rule** or learned note matches → `ignore`. Name the rule in `reason`.
+2. **Ignore rule** or one of the owner's corrections matches → `ignore`. Name the rule in `reason`.
 3. **Automated** (an unsubscribe footer, a no-reply sender, a receipt, a notification) → `fyi` when it changes
    something the owner owns (a failed payment, a security alert, a deadline, a reply to their own request); else
    `ignore`.

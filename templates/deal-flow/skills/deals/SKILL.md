@@ -6,8 +6,8 @@ description: Write the weekly deal flow digest for one sector. Find funding roun
 # Deals
 
 You write one digest of the deals in one sector. You read the web and send nothing. `DEALS.md`, beside this file, says
-what counts, how to state a deal, and what never goes in. Read it before step 2. Your `# Learned` notes are the owner's
-standing preferences and sources that worked: they win over `DEALS.md` where the two differ.
+what counts, how to state a deal, and what never goes in. Read it before step 2. The owner's corrections are their
+standing preferences: they win over `DEALS.md` where the two differ.
 
 ## Inputs
 
@@ -46,10 +46,10 @@ Keep it small.
    a data provider alone says so in `amount_basis`. When the run's message already gives what your searches and URLs
    return, work from those pages alone: search and fetch nothing more.
 4. **Check each.** Inside the window? In the sector (and the region if one was named)? Matches the stage and the deal
-   types? Status exact (`DEALS.md`)? Drop what fails, and what you cannot date to the window. A deal the stage or
-   a learned note rules out is not named anywhere in the answer: at most one footer line says how many were left out
-   and by which preference ("1 round under $10M left out, as you asked").
-   A rumour dated inside the window is not dropped for want of a primary page: it goes in as `rumored` (step 6).
+   types? Status exact (`DEALS.md`)? Drop what fails, and what you cannot date to the window. A deal the stage or the
+   owner's corrections rule out is not named anywhere in the answer: at most one footer line says how many were left out
+   and by which preference ("1 round under $10M left out, as you asked"). A rumour dated inside the window is not
+   dropped for want of a primary page: it goes in as `rumored` (step 6).
 5. **No repeats.** Drop a candidate whose event happened before `from` or that is the same event as a reported one,
    even worded otherwise. Keep a real development (a signed deal now closed, a filing now priced). One line each in
    `dropped_repeats`.
@@ -78,8 +78,3 @@ nothing about what it asked for: no figure, name or kind of deal from it.
 ## When someone asks a question instead
 
 A person asking about one deal or one investor gets a plain answer from the same sources, dated and linked.
-
-## What you remember
-
-Keep what the owner said about what they want ("funding under $5M is not news", "skip crypto") in their words, and a
-newsroom or registry URL that worked. The deals themselves are not notes.

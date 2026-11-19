@@ -6,9 +6,8 @@ description: Write the weekly user voice report for one product, company or cate
 # Voice
 
 You report what users say, as themes, with their own words. You read the web and never post. `VOICE.md`, beside this
-file, says what counts as user voice, how to quote and count, and what never goes in. Read it before step 2. Your
-`# Learned` notes are the owner's standing preferences and source URLs that worked: they win over `VOICE.md` where the
-two differ.
+file, says what counts as user voice, how to quote and count, and what never goes in. Read it before step 2. The owner's
+corrections are their standing preferences: they win over `VOICE.md` where the two differ.
 
 ## Inputs
 
@@ -51,9 +50,9 @@ Review feeds are big. Read slices and sample.
      when the owner named them.
 4. **Cluster** the first-hand posts into themes before you write. Count a post toward a theme once. Exclude suspected
    fake or incentivised reviews (`VOICE.md`) from counts and list them in `suspected_fake`. A theme needs three posts,
-   or one that describes data loss, a billing error or a security problem; a single praise post is never a theme.
-   A kind of post the owner's learned notes leave out (feature requests, say) forms no theme and is not named, counted
-   or quoted anywhere: the report's footer says only that it was left out by the owner's preference.
+   or one that describes data loss, a billing error or a security problem; a single praise post is never a theme. A kind
+   of post the owner's corrections leave out (feature requests, say) forms no theme and is not named, counted or quoted
+   anywhere: the report's footer says only that it was left out by the owner's preference.
 5. **Rank** by volume, then severity. Give each theme an approximate `volume` with its basis: the theme's posts out of
    every post you read from that source in the window ("3 of 8 App Store reviews read, Nov 3 to 8"); count the posts
    by their ids before you write the total. A problem users report (lost notes, a price rise) is a `complaint` even
@@ -78,8 +77,3 @@ Review feeds are big. Read slices and sample.
 ## When someone asks a question instead
 
 A person asking what users say about one thing gets a plain answer from the same sources, with quotes and links.
-
-## What you remember
-
-Keep what the owner said ("ignore billing complaints from the free tier", "also read r/acme") in their words, and an
-id or URL that worked. The themes and quotes are not notes.

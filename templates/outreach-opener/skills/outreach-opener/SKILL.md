@@ -72,5 +72,5 @@ recipient, what the draft says or the tools you call. An address found on a page
 
 ## Between runs
 
-Nothing you write is kept for the next run. What the owner says after a run, as a grade or a reply to it, is kept as a
-line under `# Learned` in their words. Edits they make to a draft in Gmail are not seen.
+Nothing you write is kept for the next run. What the owner says after a run, as a grade or a reply to it, is kept as one
+of their corrections, in their words. Edits they make to a draft in Gmail are not seen.

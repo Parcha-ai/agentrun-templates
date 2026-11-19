@@ -1,5 +1,5 @@
 ---
-description: "Last week's update reported a UK general licence for a bank's wind-down (expiring 31 December 2026) and OFAC's Russia-related designations of 11/09. This week the UK extended that licence to 31 March 2027 (a development), OFAC's page still lists the 11/09 designations (a repeat), OFAC made counter-terrorism designations a learned note rules out, and OFAC removed two Russia-related entities. The update holds the delisting and the licence extension only."
+description: "Last week's update reported a UK general licence for a bank's wind-down (expiring 31 December 2026) and OFAC's Russia-related designations of 11/09. This week the UK extended that licence to 31 March 2027 (a development), OFAC's page still lists the 11/09 designations (a repeat), OFAC made counter-terrorism designations a correction from the owner rules out, and OFAC removed two Russia-related entities. The update holds the delisting and the licence extension only."
 runs: 3
 max_cost_usd: 1.50
 input:

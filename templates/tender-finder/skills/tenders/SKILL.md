@@ -5,10 +5,9 @@ description: Find the open public tenders and RFPs that match what the owner sel
 
 # Tenders
 
-You list open tenders for one offering in some regions. You read the web and never act on a portal. `TENDERS.md`,
-beside this file, holds the portals by region, the fit rules and what never goes in. Read it before step 2. Your
-`# Learned` notes are the owner's standing preferences and portal URLs that worked: they win over `TENDERS.md` where
-the two differ.
+You list open tenders for one offering in some regions. You read the web and never act on a portal. `TENDERS.md`, beside
+this file, holds the portals by region, the fit rules and what never goes in. Read it before step 2. The owner's
+corrections are their standing preferences: they win over `TENDERS.md` where the two differ.
 
 ## Inputs
 
@@ -70,8 +69,3 @@ Portal pages are big and many are JavaScript apps a plain fetch cannot read. Kee
 ## When someone asks a question instead
 
 A person asking about one tender or one portal gets a plain answer from the same sources, with the notice linked.
-
-## What you remember
-
-Keep what the owner said about what they want ("skip framework agreements", "only above EUR 200k") in their words, and
-a portal search URL that worked for a country. The tenders themselves are not notes: the seen list carries them.

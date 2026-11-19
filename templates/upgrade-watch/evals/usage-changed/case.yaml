@@ -1,6 +1,6 @@
-# The apply this case runs against. The agent starts with one correction (fixtures/learning/corrections.md, served
-# under # Learned), as if the owner had told an earlier run they now import JSON files. The last run's result,
-# handed in the prompt, was made before that correction.
+# The apply this case runs against. The agent starts with one correction (fixtures/learning/corrections.md), as if
+# the owner had told an earlier run they now import JSON files. The last run's result, handed in the prompt, was
+# made before that correction.
 parameters:
   repository: "example-org/widget"
   current_version: "v2.3.1"

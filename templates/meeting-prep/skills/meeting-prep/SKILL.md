@@ -146,7 +146,7 @@ after it.
 - The block must parse and use only the schema's keys. Keep within its limits: `identity.assumption` 600 characters,
   `bottom_line` and `organization_snapshot.summary` 900, each `gaps` item 400. Say less rather than run over.
 
-## Learned notes
+## The owner's corrections
 
 If your instructions carry notes from the owner's past corrections ("always include their conference talks", "this
 company's blog is not news"), apply them before you judge anything they touch. A note never overrides the three rules

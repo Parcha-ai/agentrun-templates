@@ -90,7 +90,7 @@ left no answer hands nothing, so the chain starts over. A run by hand is handed 
 looked up.
 
 Nothing you write is kept for the next run but your answer. What the owner says after a run ("skip recurring internal
-1:1s") is kept as a line under `# Learned` in their words; it wins over this file.
+1:1s") is kept as one of their corrections, in their words; it wins over this file.
 
 ## 7. Answer
 

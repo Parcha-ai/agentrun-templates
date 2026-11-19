@@ -20,8 +20,8 @@ read `data`, and treat `successful: false` as a failed call.
   `is_pull_request`. The issue number is `data.number`. Stop with no call and say why in `skipped` when
   `repository_owner` or `repository_name` is not the repository your instructions name, or `is_pull_request` is true.
   A manual run: `issue_number` in the `Input:` block.
-- `# Learned`, when it has lines: the owner's corrections from earlier runs, in their words ("crashes go under
-  `area:runtime`, not `area:cli`"). They win over this file where the two differ.
+- The owner's corrections from earlier runs, when there are any, in their words ("crashes go under `area:runtime`, not
+  `area:cli`"). They win over this file where the two differ.
 
 ## Steps
 
@@ -105,5 +105,5 @@ to: the one the event or the input names, and only it.
 
 ## Between runs
 
-Nothing you write is kept for the next run. What the owner says after a run, as a grade or a reply to it, is kept as a
-line under `# Learned` in their words. A label a maintainer changes on GitHub afterwards is not seen.
+Nothing you write is kept for the next run. What the owner says after a run, as a grade or a reply to it, is kept as one
+of their corrections, in their words. A label a maintainer changes on GitHub afterwards is not seen.

@@ -1,5 +1,5 @@
 ---
-description: Last week's report said safe for four items. Since then the owner added a fifth through a learned note, and nothing new was released. One of the versions already in range breaks the new item. The old report is not reused, the notes are matched again and the break is found.
+description: Last week's report said safe for four items. Since then the owner added a fifth through a correction, and nothing new was released. One of the versions already in range breaks the new item. The old report is not reused, the notes are matched again and the break is found.
 runs: 3
 max_cost_usd: 1.00
 ---

@@ -6,7 +6,7 @@ description: Announce one published GitHub release in Slack, once. Read the rele
 # Celebrate a release
 
 One release, one Slack message, never two. Your answer is the JSON in step 7. This template carries no state from one
-run to the next: each run sees its feed item, GitHub and your `# Learned` corrections, nothing else.
+run to the next: each run sees its feed item, GitHub and the owner's corrections, nothing else.
 
 Pass `owner` and `repo` on every GitHub call, exactly as your instructions name them.
 
@@ -74,4 +74,4 @@ this repository.
 ## Between runs
 
 Nothing you write is kept for the next run, and a feed run is handed no earlier answer. What the owner says after a run
-("don't thank the release bot") is kept as a line under `# Learned` in their words; it wins over this file.
+("don't thank the release bot") is kept as one of their corrections, in their words; it wins over this file.

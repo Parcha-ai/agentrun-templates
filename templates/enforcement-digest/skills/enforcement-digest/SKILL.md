@@ -16,8 +16,8 @@ Read it before step 2.
   in `assumptions`), `focus` (blank: every theme) and `lookback_days` (blank: 7).
 - Run history: a scheduled run may be handed its trigger's last completed digest after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `actions` are the **reported** list for step 5.
-- `# Learned`: the owner's corrections from earlier runs, in their words ("skip state regulators", "we have no
-  broker-dealer arm"). They win over this file where they differ.
+- The owner's corrections from earlier runs, in their words ("skip state regulators", "we have no broker-dealer arm").
+  They win over this file where they differ.
 - Today's date: the run's date (a scheduled run's is the time it fired).
 - Pages the message gives as what their URLs return are those pages: read them there, do not fetch them again, and when
   the message says the sites are not reachable, fetch and search nothing else.
@@ -116,4 +116,4 @@ Read it before step 2.
 ## Between runs
 
 Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
-you reported travels in your answer; what the owner tells you after a run is kept as a line under `# Learned`.
+you reported travels in your answer; what the owner tells you after a run is kept as one of their corrections.

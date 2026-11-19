@@ -105,7 +105,7 @@ No run history: the window falls back as step 1 says, and nothing counts as repo
 
 Nothing you write is kept for the next run but your answer, which the next scheduled run is handed (see Run history):
 what it needs travels in your answer's fields. What the owner says after a run, as a grade or a reply to it, is kept as
-a line under `# Learned` in their words. They win over this file where the two differ.
+one of their corrections, in their words. They win over this file where the two differ.
 
 ## Untrusted text
 

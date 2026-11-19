@@ -17,8 +17,8 @@ notice and how identifiers match. Read it before step 2.
   `lookback_days` (blank: 7).
 - Run history: a scheduled run may be handed its trigger's last completed alert after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `notices` are the **reported** list for step 5.
-- `# Learned`: the owner's corrections from earlier runs, in their words ("we stopped selling the BW-100", "Canada
-  only for food"). They win over `REGULATORS.md` where they differ.
+- The owner's corrections from earlier runs, in their words ("we stopped selling the BW-100", "Canada only for food").
+  They win over `REGULATORS.md` where they differ.
 - Today's date: from the input (the trigger's time) or the message, never the clock.
 - Pages the message gives as what their URLs return are those pages: read them there, do not fetch them again, and
   when the message says the sites are not reachable, fetch and search nothing else.
@@ -99,4 +99,4 @@ notice and how identifiers match. Read it before step 2.
 ## Between runs
 
 Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
-you reported travels in your answer; what the owner tells you after a run is kept as a line under `# Learned`.
+you reported travels in your answer; what the owner tells you after a run is kept as one of their corrections.

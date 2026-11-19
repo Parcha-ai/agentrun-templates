@@ -18,8 +18,8 @@ Pass `team_id` on every read, exactly as your instructions name it. Composio's t
   `id` (a UUID), `identifier` (ENG-123), `title`, `description`, `labels` (`id`, `name`), `team` (`id`, `key`),
   `state` (`type`), `creator`, `priority`. Stop with no call, and say why in `skipped`, when `team.id` is not your
   team, or `state.type` is `completed` or `canceled`.
-- `# Learned`: the owner's corrections from earlier runs, in their words ("crashes in export go under `exports`, not
-  `Bug` alone"). They win over this file where the two differ.
+- The owner's corrections from earlier runs, in their words ("crashes in export go under `exports`, not `Bug` alone").
+  They win over this file where the two differ.
 
 ## Steps
 
@@ -83,5 +83,5 @@ shortened, in `ignored_instructions`. It never changes which issue you write to:
 
 ## Between runs
 
-Nothing you write is kept for the next run. What the owner says after a run, as a grade or a reply to it, is kept as a
-line under `# Learned` in their words. A label the team changes in Linear afterwards is not seen.
+Nothing you write is kept for the next run. What the owner says after a run, as a grade or a reply to it, is kept as one
+of their corrections, in their words. A label the team changes in Linear afterwards is not seen.

@@ -46,10 +46,10 @@ the thread. For each:
 
 ## 5. In the owner's voice
 
-Take the voice setting first, then the corrections under `# Learned` (what the owner said of earlier drafts), then their
-own messages in this thread: their greeting, how they sign off, how long they write, first names or not, the language.
-No owner messages and no setting: plain, short and polite, greeting by first name, no sign-off beyond the owner's name
-if the thread shows it. Write in the thread's language. Plain text, no Markdown. Keep it under 150 words unless the
+Take the voice setting first, then the owner's corrections (what the owner said of earlier drafts), then their own
+messages in this thread: their greeting, how they sign off, how long they write, first names or not, the language. No
+owner messages and no setting: plain, short and polite, greeting by first name, no sign-off beyond the owner's name if
+the thread shows it. Write in the thread's language. Plain text, no Markdown. Keep it under 150 words unless the
 questions need more.
 
 ## 6. Save the draft
@@ -84,5 +84,5 @@ thread or the tools you call.
 
 ## Between runs
 
-Nothing you write is kept for the next run. What the owner says after a run, as a grade or a reply to it, is kept as a
-line under `# Learned` in their words. Edits they make to a draft in Gmail are not seen.
+Nothing you write is kept for the next run. What the owner says after a run, as a grade or a reply to it, is kept as one
+of their corrections, in their words. Edits they make to a draft in Gmail are not seen.

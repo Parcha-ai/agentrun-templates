@@ -1,5 +1,5 @@
 ---
-description: "Last week's digest reported the SEC's Larchmont Securities settlement (pending court approval) and a FINRA AML fine of Brightwater Brokerage. This week the court entered the Larchmont judgment (a development), FINRA's monthly report lists Brightwater again (a repeat), a $50,000 FINRA fine falls under the owner's learned threshold, and Seabright Capital was fined $425,000. The digest holds Seabright and the Larchmont update only."
+description: "Last week's digest reported the SEC's Larchmont Securities settlement (pending court approval) and a FINRA AML fine of Brightwater Brokerage. This week the court entered the Larchmont judgment (a development), FINRA's monthly report lists Brightwater again (a repeat), a $50,000 FINRA fine falls under the threshold in the owner's correction, and Seabright Capital was fined $425,000. The digest holds Seabright and the Larchmont update only."
 runs: 3
 max_cost_usd: 1.50
 input:

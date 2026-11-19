@@ -14,7 +14,7 @@ you saw carries over to the next run except your answer, which the next schedule
 
 - The `Input:` block: `pages` (each a URL, a domain or a company name), `focus` (blank: the default kinds in
   `CHANGES.md`), `company` (blank: write for a general team), `lookback_days` (blank: 7).
-- `# Learned`: the owner's corrections from earlier runs, in their words ("skip the logo stuff").
+- The owner's corrections from earlier runs, in their words ("skip the logo stuff").
 - Run history: a scheduled run may be handed its trigger's last completed result after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `changes` are the **reported** list for step 5,
   and their `after` values are the page as last seen for what they cover.
@@ -86,5 +86,5 @@ you saw carries over to the next run except your answer, which the next schedule
 ## Between runs
 
 Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
-you reported travels in your answer; what the owner tells you after a run is kept as a line under `# Learned`. A page
-as you saw it today is not kept: the next run's earlier version is the last run's answer or an archive capture.
+you reported travels in your answer; what the owner tells you after a run is kept as one of their corrections. A page as
+you saw it today is not kept: the next run's earlier version is the last run's answer or an archive capture.

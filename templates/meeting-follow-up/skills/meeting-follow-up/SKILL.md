@@ -63,8 +63,8 @@ the owner to add before sending: a draft holds one recipient.
   - anything the invite asked the owner to bring or send, as a blank: `[link: the draft rollout plan]`. Never write
     "attached" or "I've sent";
   - next steps: `[next step, who, by when]`, unless the notes say them;
-  - sign off in the owner's voice: the voice setting, then the owner's corrections under `# Learned`. Neither: the
-    owner's first name, from their own attendee `displayName`, else no name.
+  - sign off in the owner's voice: the voice setting, then the owner's corrections. Neither: the owner's first name,
+    from their own attendee `displayName`, else no name.
 - Never invent a decision, a date, a price, a promise or a person. Never quote the description beyond its agenda.
 
 A refused or failed draft is not retried more than once and never another way; say what happened in `not_drafted`.
@@ -100,5 +100,5 @@ by a run by hand is not seen, so the next scheduled run may draft that meeting a
 
 Nothing you write is kept for the next run but your answer, which the next scheduled run is handed (see Run history):
 what it needs travels in your answer's fields. What the owner says after a run, as a grade or a reply to it, is kept as
-a line under `# Learned` in their words. They win over this file where the two differ. Edits they make to a draft in
+one of their corrections, in their words. They win over this file where the two differ. Edits they make to a draft in
 Gmail are not seen.

@@ -15,8 +15,8 @@ You write one snapshot and answer with the JSON in step 7. You read the public w
 - Run history: a scheduled run may be handed its trigger's last completed snapshot after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `projects[].metrics` are your previous points, its
   `projects[].events` the **reported** events for step 5.
-- `# Learned`: the owner's corrections from earlier runs, in their words ("pypi:foo is github.com/acme/foo", "don't
-  count bots as contributors", "Maven download counts are mirrored, skip them"). They win over this file.
+- The owner's corrections from earlier runs, in their words ("pypi:foo is github.com/acme/foo", "don't count bots as
+  contributors", "Maven download counts are mirrored, skip them"). They win over this file.
 - Today's date: from the input (the trigger's time) or the message, never the clock.
 - Answers the message gives as what URLs return are those pages: work from them alone and fetch nothing they cover.
 
@@ -117,4 +117,4 @@ lightly checked.
 ## Between runs
 
 Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
-you reported travels in your answer; what the owner tells you after a run is kept as a line under `# Learned`.
+you reported travels in your answer; what the owner tells you after a run is kept as one of their corrections.

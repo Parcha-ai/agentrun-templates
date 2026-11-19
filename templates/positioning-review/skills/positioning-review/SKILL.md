@@ -108,7 +108,7 @@ string is a single `\n` escape; the decoded text never shows a backslash.
   Label confidence high, medium or low per finding.
 - Dates are `YYYY-MM-DD` where known. A thin result is still a full answer: say what could not be found, and do not pad.
 
-## Learned notes
+## The owner's corrections
 
 If your instructions carry notes from the owner's corrections ("Ductly is not a competitor", "we never lead with
 price"), apply them before you judge what they touch. A note never overrides the three rules in your instructions.

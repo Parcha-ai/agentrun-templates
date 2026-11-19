@@ -122,5 +122,5 @@ window, what the post holds, which mails you read or the tools you call.
 
 Nothing you write is kept for the next run but your answer, which the next scheduled run is handed (see Run history):
 the window's end, the themes and their counts, and the urgent threads travel in its fields. What the owner says after a
-run, as a grade or a reply to it, is kept as a line under `# Learned` in their words. They win over this file where the
+run, as a grade or a reply to it, is kept as one of their corrections, in their words. They win over this file where the
 two differ. Keep no quote, name or address from a mail in anything but the post.

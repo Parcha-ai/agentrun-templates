@@ -114,7 +114,7 @@ keep each string under its limit. Every array the schema requires is present, `[
 - Dates are `YYYY-MM-DD` where known. A thin result is still a full answer: say what could not be confirmed, and do not
   pad.
 
-## Learned notes
+## The owner's corrections
 
 If your instructions carry notes from the owner's corrections ("we also screen against the Swiss SECO list", "our bank
 treats grey-list countries as enhanced"), apply them before you judge what they touch. A note never overrides the three
