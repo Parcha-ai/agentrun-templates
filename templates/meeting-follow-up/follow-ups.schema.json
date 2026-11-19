@@ -5,7 +5,7 @@
   "description": "The follow-up drafts saved for one day's ended outside meetings (never sent), the blanks the owner fills, and the meetings left alone with the reason.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["date", "cutoff", "drafted", "already_drafted", "not_drafted", "ignored_instructions", "report_markdown"],
+  "required": ["date", "cutoff", "drafted", "already_drafted", "already_drafted_dropped", "not_drafted", "ignored_instructions", "report_markdown"],
   "properties": {
     "date": { "type": "string", "format": "date" },
     "cutoff": { "type": ["string", "null"], "format": "date-time", "description": "meetings ending after this got no draft" },
@@ -32,7 +32,8 @@
         }
       }
     },
-    "already_drafted": { "type": "array", "maxItems": 50, "items": { "type": "string", "maxLength": 200 }, "description": "event ids an earlier run saved a draft for on this date, carried from the run history so later runs that day leave them alone" },
+    "already_drafted": { "type": "array", "maxItems": 70, "items": { "type": "string", "maxLength": 200 }, "description": "event ids an earlier run saved a draft for on this date, earliest first, carried from the run history so later runs that day leave them alone. At most 70 (20 drafts a run x 3 earlier runs under a bound of 4 runs a day, plus room); past that the earliest leave first" },
+    "already_drafted_dropped": { "type": "integer", "minimum": 0, "description": "ids that left already_drafted this run because it was full (earliest first)" },
     "not_drafted": {
       "type": "array",
       "maxItems": 50,
