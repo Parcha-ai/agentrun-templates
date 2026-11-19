@@ -54,7 +54,8 @@ A page that names the person at the organization (its team or leadership page) d
 when a second page agrees, `likely` when it is the only one, and `identity.assumption` says so in those words. A namesake
 at another employer is then a different person, not a conflict to resolve: `identity.assumption` itself says "the
 Alex Rowan who is CEO of X is a different person", list them in `rejected_candidates`, and name them nowhere else: not in the bottom line, talking
-points, questions, priorities or gaps.
+points, questions, priorities or gaps. The page that rules them out is cited only from `rejected_candidates`, never
+from `identity.assumption`, `gaps` or any other field.
 
 **Nobody found.** When neither the person nor the organization turns up anywhere, the brief is that finding:
 `confidence` `uncertain`; `career`, `public_work`, `organization_snapshot.recent_news` and `likely_priorities` empty;

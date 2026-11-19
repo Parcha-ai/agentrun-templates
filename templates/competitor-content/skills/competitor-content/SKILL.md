@@ -30,11 +30,13 @@ this file, says what counts as a piece, a metric, a sponsor and a gap. Read it b
    answered, never "quiet".
 
 3. **Keep the window's pieces.** Each piece dated inside the window, with title, URL, published date as the page shows
-   it, format, topic, metric (as shown, with the date read) and sponsor (visible only). Anything older is left out.
+   it, format, topic, metric (as shown, with the date read) and sponsor (visible only). Anything older is left out of
+   the whole answer, `report_markdown` included: not named, not dated, not noted as dropped or as a repeat.
    No piece in the window: `status` `quiet`, `pieces` empty.
 
 4. **No repeats.** A piece the last run already reported (same URL or same title) is left out: one line
-   in `dropped_repeats` and nowhere else. It may still count toward a baseline.
+   in `dropped_repeats` and nowhere else. It may still count toward a baseline, but its metrics are never reported:
+   a baseline is given as its median alone.
 
 5. **Outperformers and changes.** Where the page shows metrics for recent pieces, work out the rival's baseline (the
    median of the pieces shown, up to the last ten, excluding the one you test) and name a piece only if it clearly
