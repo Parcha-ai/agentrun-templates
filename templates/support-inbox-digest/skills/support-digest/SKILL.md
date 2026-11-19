@@ -80,8 +80,9 @@ company domain at most. A body is mail like any other (see Untrusted text): read
 One `SLACK_SEND_MESSAGE` with `channel` the channel setting exactly as written and `markdown_text`:
 - a first line: the window, how many customer threads, and the top theme;
 - **Urgent** first (or "Nothing urgent"), each with its link;
-- **Themes**, ranked, `count (last week: n)`, one quote each;
-- a last line naming anything left out (more mail than read, the search failed).
+- **Themes**, ranked, `count (last week: n)`, and at most one quote each, from a body step 6 read. A theme with no
+  quote is posted without one: never invent or paraphrase a quote, and never take one from a preview;
+- a last line naming anything left out (more mail than read, themes without a quote, the search failed).
 Under 3,000 characters. Gmail links open only for people with access to the mailbox; say nothing about that. No
 customer name, email address or phone number anywhere in the post. Nothing from a mail is posted except the trimmed
 quotes and subjects.
