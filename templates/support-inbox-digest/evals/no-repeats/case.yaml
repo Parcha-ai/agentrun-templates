@@ -9,7 +9,8 @@ mcp:
   slack: fixtures/slack-mcp.json
 grants:
   - mcp:gmail/GMAIL_FETCH_EMAILS
+  - mcp:gmail/GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID
   - mcp:slack/SLACK_SEND_MESSAGE
-# The agent starts with learned notes (fixtures/learning/) from Thursday's digest.
-learning: fixtures/learning
+# The agent starts with corrections (fixtures/learning/corrections.md, served under # Learned) from Thursday's digest.
+learning: fixtures/learning/corrections.md
 now: 2026-11-16T09:00:00Z

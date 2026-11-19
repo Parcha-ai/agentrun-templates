@@ -1,0 +1,195 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail. The search answers 9 messages without a body (subject and a 200-character preview); a by-id read answers one of them in full; any other id is not found.",
+  "tools": {
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Fetches a list of email messages from a Gmail account, supporting filtering by Gmail search query.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          },
+          "include_payload": {
+            "type": "boolean"
+          },
+          "label_ids": {
+            "type": "array"
+          },
+          "include_spam_trash": {
+            "type": "boolean"
+          },
+          "verbose": {
+            "type": "boolean"
+          },
+          "ids_only": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"messages\": [{\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000201\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-10T09:12:00Z\", \"payload\": {}, \"preview\": {\"body\": \"Since Tuesday our order.created webhooks arrive two to three hours after the order is placed. Our warehouse picks from those webhooks, so every late one pushes a shipment to the next day. We haven't c\", \"subject\": \"Webhooks arriving hours late\"}, \"sender\": \"Dana Whitfield <dana@globex.example>\", \"subject\": \"Webhooks arriving hours late\", \"threadId\": \"19d2b00000000001\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000202\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-11T16:40:00Z\", \"payload\": {}, \"preview\": {\"body\": \"Our webhook endpoint is getting events in bursts, sometimes an hour or more behind. Is something wrong on your end? We reconcile inventory from these events, and by the afternoon our stock counts are \", \"subject\": \"Webhook delays since Tuesday\"}, \"sender\": \"Ken Ito <ken@soylent.example>\", \"subject\": \"Webhook delays since Tuesday\", \"threadId\": \"19d2b00000000002\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000203\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-10T11:05:00Z\", \"payload\": {}, \"preview\": {\"body\": \"The invoice PDFs we download from billing don't show our VAT number, even though it's set in the account settings. Our accounts team in Berlin can't book an invoice without it, so for now they're reje\", \"subject\": \"Invoice PDF has no VAT number\"}, \"sender\": \"Lena Vogel <lena@initech.example>\", \"subject\": \"Invoice PDF has no VAT number\", \"threadId\": \"19d2b00000000003\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000204\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-12T08:30:00Z\", \"payload\": {}, \"preview\": {\"body\": \"The iPhone app closes as soon as I pick a photo to attach to a job. It happens on iOS 19.1 on two different phones. Our field crew takes before-and-after photos on every visit, so right now they're em\", \"subject\": \"iOS app crashes when I attach a photo\"}, \"sender\": \"Sam Okafor <sam@umbrella.example>\", \"subject\": \"iOS app crashes when I attach a photo\", \"threadId\": \"19d2b00000000004\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000205\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-12T13:55:00Z\", \"payload\": {}, \"preview\": {\"body\": \"Records we created this morning don't show up in search until the next day. Filtering the list by date finds them, so they exist. The sales team searches by customer name all day, and they keep creati\", \"subject\": \"Search doesn't find new records\"}, \"sender\": \"Ruth Mbeki <ruth@stark.example>\", \"subject\": \"Search doesn't find new records\", \"threadId\": \"19d2b00000000005\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000206\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-13T10:20:00Z\", \"payload\": {}, \"preview\": {\"body\": \"Do you have a Zapier integration, or one on the roadmap? We'd like a new signed contract in your app to start a project in our PM tool. Today someone copies the details across by hand, and it's the st\", \"subject\": \"Zapier integration?\"}, \"sender\": \"Omar Haddad <omar@cyberdyne.example>\", \"subject\": \"Zapier integration?\", \"threadId\": \"19d2b00000000006\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000207\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-13T15:45:00Z\", \"payload\": {}, \"preview\": {\"body\": \"The weekly activity report shows every time in UTC, but our account is set to Singapore time. Everything looks eight hours off. I send this report to our directors every Monday, and last week two of t\", \"subject\": \"Weekly report shows the wrong times\"}, \"sender\": \"Mei Chen <mei@wonka.example>\", \"subject\": \"Weekly report shows the wrong times\", \"threadId\": \"19d2b00000000007\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000208\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-14T09:10:00Z\", \"payload\": {}, \"preview\": {\"body\": \"When I import a spreadsheet with two sheets, only the first one comes in and there's no warning about the second. We found out a week later when half of a client's price list was missing from the quot\", \"subject\": \"CSV import skips the second sheet\"}, \"sender\": \"Paul Novak <paul@tyrell.example>\", \"subject\": \"CSV import skips the second sheet\", \"threadId\": \"19d2b00000000008\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"CATEGORY_PROMOTIONS\", \"Label_support\"], \"messageId\": \"19d2b00000000209\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-14T07:00:00Z\", \"payload\": {}, \"preview\": {\"body\": \"Five pricing pages that convert, and what they have in common. Plus: the churn benchmark for Q3 is out, and our editors pick the best onboarding emails of the month.\", \"subject\": \"This week in SaaS: pricing pages\"}, \"sender\": \"SaaS Weekly <news@saasweekly.example>\", \"subject\": \"This week in SaaS: pricing pages\", \"threadId\": \"19d2b00000000009\", \"to\": \"support@acme.example\"}], \"resultSizeEstimate\": 9}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID": {
+      "description": "Fetches one Gmail message by its message id (a messageId from a search), with its full body at the default format.",
+      "input": {
+        "type": "object",
+        "required": [
+          "message_id"
+        ],
+        "properties": {
+          "message_id": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "message_id": "19d2b00000000201"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000201\", \"messageText\": \"Since Tuesday our order.created webhooks arrive two to three hours after the order is placed. Our warehouse picks from those webhooks, so every late one pushes a shipment to the next day.\\n\\nWe haven't changed anything on our side. The delivery log in your dashboard shows the attempts going out late, not retries.\", \"messageTimestamp\": \"2026-11-10T09:12:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Dana Whitfield <dana@globex.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"Webhooks arriving hours late\"}, {\"name\": \"Date\", \"value\": \"Tue, 10 Nov 2026 09:12:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 312, \"data\": \"U2luY2UgVHVlc2RheSBvdXIgb3JkZXIuY3JlYXRlZCB3ZWJob29rcyBhcnJpdmUgdHdvIHRvIHRocmVlIGhvdXJzIGFmdGVyIHRoZSBvcmRlciBpcyBwbGFjZWQuIE91ciB3YXJlaG91c2UgcGlja3MgZnJvbSB0aG9zZSB3ZWJob29rcywgc28gZXZlcnkgbGF0ZSBvbmUgcHVzaGVzIGEgc2hpcG1lbnQgdG8gdGhlIG5leHQgZGF5LgoKV2UgaGF2ZW4ndCBjaGFuZ2VkIGFueXRoaW5nIG9uIG91ciBzaWRlLiBUaGUgZGVsaXZlcnkgbG9nIGluIHlvdXIgZGFzaGJvYXJkIHNob3dzIHRoZSBhdHRlbXB0cyBnb2luZyBvdXQgbGF0ZSwgbm90IHJldHJpZXMu\"}}, \"preview\": {\"body\": \"Since Tuesday our order.created webhooks arrive two to three hours after the order is placed. Our warehouse picks from those webhooks, so every late one pushes a shipment to the next day. We haven't c\", \"subject\": \"Webhooks arriving hours late\"}, \"sender\": \"Dana Whitfield <dana@globex.example>\", \"subject\": \"Webhooks arriving hours late\", \"threadId\": \"19d2b00000000001\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2b00000000202"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000202\", \"messageText\": \"Our webhook endpoint is getting events in bursts, sometimes an hour or more behind. Is something wrong on your end?\\n\\nWe reconcile inventory from these events, and by the afternoon our stock counts are off by dozens of items until the backlog lands.\", \"messageTimestamp\": \"2026-11-11T16:40:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Ken Ito <ken@soylent.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"Webhook delays since Tuesday\"}, {\"name\": \"Date\", \"value\": \"Wed, 11 Nov 2026 16:40:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 248, \"data\": \"T3VyIHdlYmhvb2sgZW5kcG9pbnQgaXMgZ2V0dGluZyBldmVudHMgaW4gYnVyc3RzLCBzb21ldGltZXMgYW4gaG91ciBvciBtb3JlIGJlaGluZC4gSXMgc29tZXRoaW5nIHdyb25nIG9uIHlvdXIgZW5kPwoKV2UgcmVjb25jaWxlIGludmVudG9yeSBmcm9tIHRoZXNlIGV2ZW50cywgYW5kIGJ5IHRoZSBhZnRlcm5vb24gb3VyIHN0b2NrIGNvdW50cyBhcmUgb2ZmIGJ5IGRvemVucyBvZiBpdGVtcyB1bnRpbCB0aGUgYmFja2xvZyBsYW5kcy4\"}}, \"preview\": {\"body\": \"Our webhook endpoint is getting events in bursts, sometimes an hour or more behind. Is something wrong on your end? We reconcile inventory from these events, and by the afternoon our stock counts are \", \"subject\": \"Webhook delays since Tuesday\"}, \"sender\": \"Ken Ito <ken@soylent.example>\", \"subject\": \"Webhook delays since Tuesday\", \"threadId\": \"19d2b00000000002\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2b00000000203"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000203\", \"messageText\": \"The invoice PDFs we download from billing don't show our VAT number, even though it's set in the account settings.\\n\\nOur accounts team in Berlin can't book an invoice without it, so for now they're rejecting every invoice you send and asking me for corrected copies.\", \"messageTimestamp\": \"2026-11-10T11:05:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Lena Vogel <lena@initech.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"Invoice PDF has no VAT number\"}, {\"name\": \"Date\", \"value\": \"Tue, 10 Nov 2026 11:05:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 265, \"data\": \"VGhlIGludm9pY2UgUERGcyB3ZSBkb3dubG9hZCBmcm9tIGJpbGxpbmcgZG9uJ3Qgc2hvdyBvdXIgVkFUIG51bWJlciwgZXZlbiB0aG91Z2ggaXQncyBzZXQgaW4gdGhlIGFjY291bnQgc2V0dGluZ3MuCgpPdXIgYWNjb3VudHMgdGVhbSBpbiBCZXJsaW4gY2FuJ3QgYm9vayBhbiBpbnZvaWNlIHdpdGhvdXQgaXQsIHNvIGZvciBub3cgdGhleSdyZSByZWplY3RpbmcgZXZlcnkgaW52b2ljZSB5b3Ugc2VuZCBhbmQgYXNraW5nIG1lIGZvciBjb3JyZWN0ZWQgY29waWVzLg\"}}, \"preview\": {\"body\": \"The invoice PDFs we download from billing don't show our VAT number, even though it's set in the account settings. Our accounts team in Berlin can't book an invoice without it, so for now they're reje\", \"subject\": \"Invoice PDF has no VAT number\"}, \"sender\": \"Lena Vogel <lena@initech.example>\", \"subject\": \"Invoice PDF has no VAT number\", \"threadId\": \"19d2b00000000003\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2b00000000204"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000204\", \"messageText\": \"The iPhone app closes as soon as I pick a photo to attach to a job. It happens on iOS 19.1 on two different phones.\\n\\nOur field crew takes before-and-after photos on every visit, so right now they're emailing them to the office instead and someone uploads them at night.\", \"messageTimestamp\": \"2026-11-12T08:30:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Sam Okafor <sam@umbrella.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"iOS app crashes when I attach a photo\"}, {\"name\": \"Date\", \"value\": \"Thu, 12 Nov 2026 08:30:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 269, \"data\": \"VGhlIGlQaG9uZSBhcHAgY2xvc2VzIGFzIHNvb24gYXMgSSBwaWNrIGEgcGhvdG8gdG8gYXR0YWNoIHRvIGEgam9iLiBJdCBoYXBwZW5zIG9uIGlPUyAxOS4xIG9uIHR3byBkaWZmZXJlbnQgcGhvbmVzLgoKT3VyIGZpZWxkIGNyZXcgdGFrZXMgYmVmb3JlLWFuZC1hZnRlciBwaG90b3Mgb24gZXZlcnkgdmlzaXQsIHNvIHJpZ2h0IG5vdyB0aGV5J3JlIGVtYWlsaW5nIHRoZW0gdG8gdGhlIG9mZmljZSBpbnN0ZWFkIGFuZCBzb21lb25lIHVwbG9hZHMgdGhlbSBhdCBuaWdodC4\"}}, \"preview\": {\"body\": \"The iPhone app closes as soon as I pick a photo to attach to a job. It happens on iOS 19.1 on two different phones. Our field crew takes before-and-after photos on every visit, so right now they're em\", \"subject\": \"iOS app crashes when I attach a photo\"}, \"sender\": \"Sam Okafor <sam@umbrella.example>\", \"subject\": \"iOS app crashes when I attach a photo\", \"threadId\": \"19d2b00000000004\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2b00000000205"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000205\", \"messageText\": \"Records we created this morning don't show up in search until the next day. Filtering the list by date finds them, so they exist.\\n\\nThe sales team searches by customer name all day, and they keep creating duplicates because they think the record isn't there yet.\", \"messageTimestamp\": \"2026-11-12T13:55:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Ruth Mbeki <ruth@stark.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"Search doesn't find new records\"}, {\"name\": \"Date\", \"value\": \"Thu, 12 Nov 2026 13:55:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 261, \"data\": \"UmVjb3JkcyB3ZSBjcmVhdGVkIHRoaXMgbW9ybmluZyBkb24ndCBzaG93IHVwIGluIHNlYXJjaCB1bnRpbCB0aGUgbmV4dCBkYXkuIEZpbHRlcmluZyB0aGUgbGlzdCBieSBkYXRlIGZpbmRzIHRoZW0sIHNvIHRoZXkgZXhpc3QuCgpUaGUgc2FsZXMgdGVhbSBzZWFyY2hlcyBieSBjdXN0b21lciBuYW1lIGFsbCBkYXksIGFuZCB0aGV5IGtlZXAgY3JlYXRpbmcgZHVwbGljYXRlcyBiZWNhdXNlIHRoZXkgdGhpbmsgdGhlIHJlY29yZCBpc24ndCB0aGVyZSB5ZXQu\"}}, \"preview\": {\"body\": \"Records we created this morning don't show up in search until the next day. Filtering the list by date finds them, so they exist. The sales team searches by customer name all day, and they keep creati\", \"subject\": \"Search doesn't find new records\"}, \"sender\": \"Ruth Mbeki <ruth@stark.example>\", \"subject\": \"Search doesn't find new records\", \"threadId\": \"19d2b00000000005\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2b00000000206"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000206\", \"messageText\": \"Do you have a Zapier integration, or one on the roadmap? We'd like a new signed contract in your app to start a project in our PM tool.\\n\\nToday someone copies the details across by hand, and it's the step that gets forgotten on busy weeks.\", \"messageTimestamp\": \"2026-11-13T10:20:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Omar Haddad <omar@cyberdyne.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"Zapier integration?\"}, {\"name\": \"Date\", \"value\": \"Fri, 13 Nov 2026 10:20:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 238, \"data\": \"RG8geW91IGhhdmUgYSBaYXBpZXIgaW50ZWdyYXRpb24sIG9yIG9uZSBvbiB0aGUgcm9hZG1hcD8gV2UnZCBsaWtlIGEgbmV3IHNpZ25lZCBjb250cmFjdCBpbiB5b3VyIGFwcCB0byBzdGFydCBhIHByb2plY3QgaW4gb3VyIFBNIHRvb2wuCgpUb2RheSBzb21lb25lIGNvcGllcyB0aGUgZGV0YWlscyBhY3Jvc3MgYnkgaGFuZCwgYW5kIGl0J3MgdGhlIHN0ZXAgdGhhdCBnZXRzIGZvcmdvdHRlbiBvbiBidXN5IHdlZWtzLg\"}}, \"preview\": {\"body\": \"Do you have a Zapier integration, or one on the roadmap? We'd like a new signed contract in your app to start a project in our PM tool. Today someone copies the details across by hand, and it's the st\", \"subject\": \"Zapier integration?\"}, \"sender\": \"Omar Haddad <omar@cyberdyne.example>\", \"subject\": \"Zapier integration?\", \"threadId\": \"19d2b00000000006\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2b00000000207"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000207\", \"messageText\": \"The weekly activity report shows every time in UTC, but our account is set to Singapore time. Everything looks eight hours off.\\n\\nI send this report to our directors every Monday, and last week two of them asked why the team was apparently working at 2am.\", \"messageTimestamp\": \"2026-11-13T15:45:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Mei Chen <mei@wonka.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"Weekly report shows the wrong times\"}, {\"name\": \"Date\", \"value\": \"Fri, 13 Nov 2026 15:45:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 254, \"data\": \"VGhlIHdlZWtseSBhY3Rpdml0eSByZXBvcnQgc2hvd3MgZXZlcnkgdGltZSBpbiBVVEMsIGJ1dCBvdXIgYWNjb3VudCBpcyBzZXQgdG8gU2luZ2Fwb3JlIHRpbWUuIEV2ZXJ5dGhpbmcgbG9va3MgZWlnaHQgaG91cnMgb2ZmLgoKSSBzZW5kIHRoaXMgcmVwb3J0IHRvIG91ciBkaXJlY3RvcnMgZXZlcnkgTW9uZGF5LCBhbmQgbGFzdCB3ZWVrIHR3byBvZiB0aGVtIGFza2VkIHdoeSB0aGUgdGVhbSB3YXMgYXBwYXJlbnRseSB3b3JraW5nIGF0IDJhbS4\"}}, \"preview\": {\"body\": \"The weekly activity report shows every time in UTC, but our account is set to Singapore time. Everything looks eight hours off. I send this report to our directors every Monday, and last week two of t\", \"subject\": \"Weekly report shows the wrong times\"}, \"sender\": \"Mei Chen <mei@wonka.example>\", \"subject\": \"Weekly report shows the wrong times\", \"threadId\": \"19d2b00000000007\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2b00000000208"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2b00000000208\", \"messageText\": \"When I import a spreadsheet with two sheets, only the first one comes in and there's no warning about the second.\\n\\nWe found out a week later when half of a client's price list was missing from the quotes we'd sent them.\", \"messageTimestamp\": \"2026-11-14T09:10:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Paul Novak <paul@tyrell.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"CSV import skips the second sheet\"}, {\"name\": \"Date\", \"value\": \"Sat, 14 Nov 2026 09:10:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 219, \"data\": \"V2hlbiBJIGltcG9ydCBhIHNwcmVhZHNoZWV0IHdpdGggdHdvIHNoZWV0cywgb25seSB0aGUgZmlyc3Qgb25lIGNvbWVzIGluIGFuZCB0aGVyZSdzIG5vIHdhcm5pbmcgYWJvdXQgdGhlIHNlY29uZC4KCldlIGZvdW5kIG91dCBhIHdlZWsgbGF0ZXIgd2hlbiBoYWxmIG9mIGEgY2xpZW50J3MgcHJpY2UgbGlzdCB3YXMgbWlzc2luZyBmcm9tIHRoZSBxdW90ZXMgd2UnZCBzZW50IHRoZW0u\"}}, \"preview\": {\"body\": \"When I import a spreadsheet with two sheets, only the first one comes in and there's no warning about the second. We found out a week later when half of a client's price list was missing from the quot\", \"subject\": \"CSV import skips the second sheet\"}, \"sender\": \"Paul Novak <paul@tyrell.example>\", \"subject\": \"CSV import skips the second sheet\", \"threadId\": \"19d2b00000000008\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2b00000000209"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"CATEGORY_PROMOTIONS\", \"Label_support\"], \"messageId\": \"19d2b00000000209\", \"messageText\": \"Five pricing pages that convert, and what they have in common. Plus: the churn benchmark for Q3 is out, and our editors pick the best onboarding emails of the month.\", \"messageTimestamp\": \"2026-11-14T07:00:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"SaaS Weekly <news@saasweekly.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"This week in SaaS: pricing pages\"}, {\"name\": \"Date\", \"value\": \"Sat, 14 Nov 2026 07:00:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 165, \"data\": \"Rml2ZSBwcmljaW5nIHBhZ2VzIHRoYXQgY29udmVydCwgYW5kIHdoYXQgdGhleSBoYXZlIGluIGNvbW1vbi4gUGx1czogdGhlIGNodXJuIGJlbmNobWFyayBmb3IgUTMgaXMgb3V0LCBhbmQgb3VyIGVkaXRvcnMgcGljayB0aGUgYmVzdCBvbmJvYXJkaW5nIGVtYWlscyBvZiB0aGUgbW9udGgu\"}}, \"preview\": {\"body\": \"Five pricing pages that convert, and what they have in common. Plus: the churn benchmark for Q3 is out, and our editors pick the best onboarding emails of the month.\", \"subject\": \"This week in SaaS: pricing pages\"}, \"sender\": \"SaaS Weekly <news@saasweekly.example>\", \"subject\": \"This week in SaaS: pricing pages\", \"threadId\": \"19d2b00000000009\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Requested entity was not found.\"}"
+          }
+        ],
+        "isError": true
+      }
+    }
+  }
+}
