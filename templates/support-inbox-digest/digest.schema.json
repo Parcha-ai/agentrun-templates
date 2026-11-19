@@ -5,7 +5,7 @@
   "description": "One week of support mail from the owner's Gmail search: urgent threads with links, themes ranked by thread count with last week's count and trimmed quotes, what was dropped, and where it was posted.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["window", "coverage", "urgent", "themes", "delivery", "ignored_instructions", "report_markdown"],
+  "required": ["window", "coverage", "urgent", "open_urgent", "themes", "delivery", "ignored_instructions", "report_markdown"],
   "properties": {
     "window": {
       "type": "object",
@@ -56,6 +56,22 @@
           "url": { "type": "string", "format": "uri", "pattern": "^https://mail\\.google\\.com/" },
           "still_open": { "type": "boolean", "description": "reported urgent in an earlier digest and written to again" },
           "first_reported": { "type": ["string", "null"], "format": "date" }
+        }
+      }
+    },
+    "open_urgent": {
+      "type": "array",
+      "maxItems": 40,
+      "description": "Every urgent thread reported in the last 30 days, this digest's and the ones carried from the run history, so the next digest knows its age even after a quiet week.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["thread_id", "subject", "company", "first_reported"],
+        "properties": {
+          "thread_id": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "subject": { "type": "string", "maxLength": 200 },
+          "company": { "type": "string", "maxLength": 160 },
+          "first_reported": { "type": "string", "format": "date" }
         }
       }
     },
