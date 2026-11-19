@@ -144,7 +144,8 @@ slices, never whole pages, and count your fetches.
      for one reason may share one entry: `"version": "v2.0.0 to v2.3.1 (9 versions)"`.
    - `unreachable` gets each page the plan needed and could not read: `{ "url", "reason", "detail" }`, the same
      reasons. Both lists hold objects, never plain text.
-   - A changelog path the release notes pointed you to goes in a learned note, so the next run starts from it.
+   - A changelog path the release notes pointed you to is that version's `source_url`: the next scheduled run is
+     handed your answer and starts from it.
 
 4. **Pull out the changes that can break.** From each version's notes, every change `UPGRADE.md` counts: something
    removed, renamed or moved; a default, a format or a behavior that differs; a new requirement; a deprecation; a

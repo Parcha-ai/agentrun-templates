@@ -79,7 +79,7 @@
       "description": "Reported elsewhere but not on the vendor's own pages: never a change."
     },
     "assumptions": { "type": "array", "items": { "type": "string" } },
-    "dropped_repeats": { "type": "array", "items": { "type": "string" }, "description": "Changes the last log or a learned note already reported, left out, in a few words each." },
+    "dropped_repeats": { "type": "array", "items": { "type": "string" }, "description": "Changes the last run's log already reported, left out, in a few words each." },
     "unreachable": {
       "type": "array",
       "items": {

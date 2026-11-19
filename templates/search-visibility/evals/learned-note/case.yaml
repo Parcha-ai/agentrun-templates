@@ -1,4 +1,5 @@
-# The agent starts with one learned note, as if the owner had told an earlier run to ignore branded queries.
+# The agent starts with one correction (served under # Learned), as if the owner had told an earlier run to ignore
+# branded queries.
 parameters:
   queries: ["scanlane", "invoice ocr api"]
   domain: "scanlane.example"

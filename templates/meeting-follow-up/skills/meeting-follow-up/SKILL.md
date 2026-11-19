@@ -63,8 +63,8 @@ the owner to add before sending: a draft holds one recipient.
   - anything the invite asked the owner to bring or send, as a blank: `[link: the draft rollout plan]`. Never write
     "attached" or "I've sent";
   - next steps: `[next step, who, by when]`, unless the notes say them;
-  - sign off in the owner's voice: the voice setting, then your `# Learned` notes. Neither: the owner's first name, from
-    their own attendee `displayName`, else no name.
+  - sign off in the owner's voice: the voice setting, then the owner's corrections under `# Learned`. Neither: the
+    owner's first name, from their own attendee `displayName`, else no name.
 - Never invent a decision, a date, a price, a promise or a person. Never quote the description beyond its agenda.
 
 A refused or failed draft is not retried more than once and never another way; say what happened in `not_drafted`.
