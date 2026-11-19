@@ -79,7 +79,8 @@ wait in Gmail, who to add, which blanks to fill. Say plainly when no meeting qua
 
 `already_drafted` is what the next run needs to leave alone: every event id an earlier run saved a draft for on this
 `date`, that is the run history's `already_drafted` and the ids of its `drafted`, when its `date` is this run's (else
-`[]`), in the order they were drafted, earliest first. A run that skips a meeting as already drafted still carries its
+`[]`), in the order they were drafted, earliest first. This run's own drafts go in `drafted` only: the next run adds
+them. A run that skips a meeting as already drafted still carries its
 id here, so a third run that day doesn't draft it again.
 
 It holds at most 70. A run drafts at most 20 (the `drafted` limit). Nothing in this skill bounds how many runs a day
