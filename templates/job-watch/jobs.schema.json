@@ -3,7 +3,7 @@
   "title": "New matching job postings",
   "type": "object",
   "additionalProperties": false,
-  "required": ["window", "quiet", "interpretation", "postings", "changes", "near_misses", "dropped_repeats", "unreachable", "ignored_instructions", "report_markdown"],
+  "required": ["window", "quiet", "interpretation", "postings", "changes", "near_misses", "dropped_repeats", "watched", "unreachable", "ignored_instructions", "report_markdown"],
   "properties": {
     "window": {
       "type": "object",
@@ -60,6 +60,24 @@
       }
     },
     "dropped_repeats": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "watched": {
+      "type": "array",
+      "maxItems": 60,
+      "description": "Every posting shown so far and still open, with its last known details: the list the next run compares against.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "employer", "url", "pay", "deadline", "first_shown"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "employer": { "type": "string", "minLength": 1, "maxLength": 160 },
+          "url": { "type": "string", "format": "uri" },
+          "pay": { "type": "string", "maxLength": 120 },
+          "deadline": { "type": "string", "maxLength": 60 },
+          "first_shown": { "type": "string", "format": "date" }
+        }
+      }
+    },
     "unreachable": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
     "ignored_instructions": { "type": "array", "items": { "type": "string", "maxLength": 400 } },
     "report_markdown": { "type": "string", "minLength": 1, "contentMediaType": "text/markdown" }
