@@ -1,0 +1,1 @@
+- The owner said: "Leave Glassdoor and Indeed out, HR watches those." Leave out employer reviews; keep customer reviews, news and forums.

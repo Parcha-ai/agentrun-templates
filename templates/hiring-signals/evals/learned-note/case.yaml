@@ -2,4 +2,4 @@
 parameters:
   companies: ["Quillforge (quillforge.example)"]
   lookback_days: 7
-learning: fixtures/learning
+learning: fixtures/learning/corrections.md

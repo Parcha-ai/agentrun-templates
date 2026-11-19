@@ -1,1 +1,0 @@
-- [Skip framework agreements](skip-frameworks.md) - the owner does not bid on framework agreements and wants single contracts only

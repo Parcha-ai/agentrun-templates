@@ -1,2 +1,0 @@
-- [Postings shown](postings-shown.md) — postings shown on 2026-11-16, with deadlines and pay
-- [No agencies](no-agencies.md) — the person doesn't want recruiter or agency postings

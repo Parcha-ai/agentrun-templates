@@ -1,6 +1,0 @@
----
-name: Follow-ups drafted
-description: Event ids that already have a follow-up draft; never draft them again
-type: project
----
-- 2026-11-17 ev_globex_kickoff: "Globex pilot kickoff", draft to kim@globex.example (run by hand at 12:00 UTC).

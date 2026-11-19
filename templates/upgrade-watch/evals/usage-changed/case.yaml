@@ -5,4 +5,4 @@ parameters:
   repository: "example-org/widget"
   current_version: "v2.3.1"
   depends_on: "the serve command's --port and --data flags; POST /v2/agents; the WIDGET_TOKEN environment variable; the export file format (CSV)"
-learning: fixtures/learning
+learning: fixtures/learning/corrections.md

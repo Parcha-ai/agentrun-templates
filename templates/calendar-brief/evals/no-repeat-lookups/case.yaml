@@ -9,5 +9,6 @@ mcp:
 grants:
   - mcp:googlecalendar/GOOGLECALENDAR_EVENTS_LIST
   - mcp:slack/SLACK_SEND_MESSAGE
-# The agent starts with a learned note (fixtures/learning/) holding yesterday's Globex note.
-learning: fixtures/learning
+# The agent starts with corrections (fixtures/learning/corrections.md, served under # Learned) holding yesterday's
+# Globex note.
+learning: fixtures/learning/corrections.md

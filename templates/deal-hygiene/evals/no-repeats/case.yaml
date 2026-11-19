@@ -13,6 +13,6 @@ grants:
   - mcp:hubspot/HUBSPOT_RETRIEVE_PIPELINE_STAGES
   - mcp:hubspot/HUBSPOT_RETRIEVE_OWNERS
   - mcp:slack/SLACK_SEND_MESSAGE
-# The agent starts with last week's list as a learned note (MEMORY.md and its note, in the learning folder's format).
-learning: fixtures/learning
+# The agent starts with last week's list as corrections (fixtures/learning/corrections.md, served under # Learned).
+learning: fixtures/learning/corrections.md
 now: 2026-11-16T09:00:00Z

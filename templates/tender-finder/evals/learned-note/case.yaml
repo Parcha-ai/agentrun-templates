@@ -2,4 +2,4 @@
 parameters:
   offering: "penetration testing services"
   regions: ["Netherlands"]
-learning: fixtures/learning
+learning: fixtures/learning/corrections.md

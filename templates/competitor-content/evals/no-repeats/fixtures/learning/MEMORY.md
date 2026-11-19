@@ -1,2 +1,0 @@
-- [Payflow](payflow.md) — pieces reported in the 2026-11-16 edition
-- [Billcraft](billcraft.md) — pieces reported in the 2026-11-16 edition and its view baseline

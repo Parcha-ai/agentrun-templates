@@ -1,1 +1,0 @@
-- [Goals reached](goals-reached.md) — the revenue goals already celebrated in Slack, by period

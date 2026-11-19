@@ -1,0 +1,1 @@
+- The owner said: "Anything under a hundred grand is noise for us. Leave it out." Leave out actions whose stated amounts total less than $100,000; keep larger ones and any action with no money but a licence or business restriction.

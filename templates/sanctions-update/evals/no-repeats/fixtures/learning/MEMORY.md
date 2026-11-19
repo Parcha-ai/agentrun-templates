@@ -1,1 +1,0 @@
-- [No counter-terrorism programs](no-counter-terrorism.md) — the owner screens trade finance only and wants counter-terrorism designations left out
