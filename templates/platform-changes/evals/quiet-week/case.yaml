@@ -3,3 +3,5 @@ parameters:
   platforms: ["Twilio", "Mapbox"]
   lookback_days: 7
 # The run starts with this input, checked against the template's input schema; prompt.md is its content.
+# The run's clock is the prompt's firing time, so its lookback window is the grader's.
+now: 2026-11-16T08:00:00Z
