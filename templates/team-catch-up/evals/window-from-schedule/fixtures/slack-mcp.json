@@ -1,0 +1,330 @@
+{
+  "server": "slack",
+  "description": "A fake Composio Slack, Mon 2026-11-16 09:00 to Tue 09:00 UTC. C0PROJ0001: Lena asks the owner (U0OWNER001) to sign off the SOC 2 vendor list by Thursday; Jonas floats moving standup (no replies); Kim is blocked on legal's DPA review (legal says Wednesday); Lena's Dec 1 pricing date, agreed in the thread by the owner and Marco. C0SUPPORT1: Priya asks the owner to take a Hooli RCA call; an alert bot; an Initech refund the owner already approved in the thread. A post to C0CATCHUP1 succeeds.",
+  "tools": {
+    "SLACK_FETCH_CONVERSATION_HISTORY": {
+      "description": "Fetches a chronological list of messages and events from a specified Slack conversation.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "oldest": {
+            "type": "string"
+          },
+          "latest": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "cursor": {
+            "type": "string"
+          },
+          "inclusive": {
+            "type": "boolean"
+          },
+          "include_all_metadata": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0PROJ0001"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"has_more\": false, \"messages\": [{\"type\": \"message\", \"ts\": \"1794852000.000400\", \"user\": \"U0LENA0001\", \"text\": \"<@U0OWNER001> can you sign off the SOC 2 vendor list by Thursday? The auditor needs it Friday.\"}, {\"type\": \"message\", \"ts\": \"1794841200.000300\", \"user\": \"U0JONAS001\", \"text\": \"maybe we should move standup to 10?\"}, {\"type\": \"message\", \"ts\": \"1794837600.000200\", \"user\": \"U0KIM00001\", \"text\": \"Blocked on legal's review of the Globex DPA. Waiting since Friday; can't start the pilot without it.\", \"reply_count\": 1, \"thread_ts\": \"1794837600.000200\"}, {\"type\": \"message\", \"ts\": \"1794830400.000100\", \"user\": \"U0LENA0001\", \"text\": \"Proposal: ship v2 pricing on Dec 1, not Nov 24, so support has the new docs in time.\", \"reply_count\": 2, \"thread_ts\": \"1794830400.000100\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SUPPORT1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"has_more\": false, \"messages\": [{\"type\": \"message\", \"ts\": \"1794859200.000200\", \"user\": \"U0PRIYA001\", \"text\": \"<@U0OWNER001> Hooli is asking for a call about the outage RCA this week, can you take it?\"}, {\"type\": \"message\", \"ts\": \"1794845000.000900\", \"user\": \"U0STATUSB\", \"text\": \"[alert] Error rate back to normal on api-eu.\"}, {\"type\": \"message\", \"ts\": \"1794834000.000100\", \"user\": \"U0PRIYA001\", \"text\": \"<@U0OWNER001> ok to refund Initech's November invoice?\", \"reply_count\": 1, \"thread_ts\": \"1794834000.000100\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION": {
+      "description": "Retrieves replies to a specific parent message in a Slack conversation.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "ts": {
+            "type": "string"
+          },
+          "oldest": {
+            "type": "string"
+          },
+          "latest": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "cursor": {
+            "type": "string"
+          },
+          "inclusive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0PROJ0001",
+            "ts": "1794830400.000100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"messages\": [{\"type\": \"message\", \"ts\": \"1794830400.000100\", \"user\": \"U0LENA0001\", \"text\": \"Proposal: ship v2 pricing on Dec 1, not Nov 24, so support has the new docs in time.\", \"reply_count\": 2, \"thread_ts\": \"1794830400.000100\"}, {\"type\": \"message\", \"ts\": \"1794831000.000110\", \"user\": \"U0OWNER001\", \"text\": \"Agreed, Dec 1.\", \"thread_ts\": \"1794830400.000100\"}, {\"type\": \"message\", \"ts\": \"1794831600.000120\", \"user\": \"U0MARCO001\", \"text\": \"+1. I'll tell the partners this week.\", \"thread_ts\": \"1794830400.000100\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0PROJ0001",
+            "ts": "1794837600.000200"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"messages\": [{\"type\": \"message\", \"ts\": \"1794837600.000200\", \"user\": \"U0KIM00001\", \"text\": \"Blocked on legal's review of the Globex DPA. Waiting since Friday; can't start the pilot without it.\", \"reply_count\": 1, \"thread_ts\": \"1794837600.000200\"}, {\"type\": \"message\", \"ts\": \"1794848400.000210\", \"user\": \"U0LENA0001\", \"text\": \"Legal says Wednesday at the earliest.\", \"thread_ts\": \"1794837600.000200\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SUPPORT1",
+            "ts": "1794834000.000100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"messages\": [{\"type\": \"message\", \"ts\": \"1794834000.000100\", \"user\": \"U0PRIYA001\", \"text\": \"<@U0OWNER001> ok to refund Initech's November invoice?\", \"reply_count\": 1, \"thread_ts\": \"1794834000.000100\"}, {\"type\": \"message\", \"ts\": \"1794835800.000110\", \"user\": \"U0OWNER001\", \"text\": \"Yes, go ahead.\", \"thread_ts\": \"1794834000.000100\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"thread_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_RETRIEVE_MESSAGE_PERMALINK_URL": {
+      "description": "Retrieves a permalink URL for a specific message in a Slack channel or conversation.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "message_ts": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0PROJ0001",
+            "message_ts": "1794852000.000400"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0PROJ0001\", \"permalink\": \"https://acme.slack.com/archives/C0PROJ0001/p1794852000000400\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0PROJ0001",
+            "message_ts": "1794841200.000300"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0PROJ0001\", \"permalink\": \"https://acme.slack.com/archives/C0PROJ0001/p1794841200000300\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0PROJ0001",
+            "message_ts": "1794837600.000200"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0PROJ0001\", \"permalink\": \"https://acme.slack.com/archives/C0PROJ0001/p1794837600000200\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0PROJ0001",
+            "message_ts": "1794830400.000100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0PROJ0001\", \"permalink\": \"https://acme.slack.com/archives/C0PROJ0001/p1794830400000100\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SUPPORT1",
+            "message_ts": "1794859200.000200"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0SUPPORT1\", \"permalink\": \"https://acme.slack.com/archives/C0SUPPORT1/p1794859200000200\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SUPPORT1",
+            "message_ts": "1794845000.000900"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0SUPPORT1\", \"permalink\": \"https://acme.slack.com/archives/C0SUPPORT1/p1794845000000900\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "channel": "C0SUPPORT1",
+            "message_ts": "1794834000.000100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0SUPPORT1\", \"permalink\": \"https://acme.slack.com/archives/C0SUPPORT1/p1794834000000100\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"message_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "SLACK_SEND_MESSAGE": {
+      "description": "Posts a message to a Slack channel, direct message, or private group.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "markdown_text": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "thread_ts": {
+            "type": "string"
+          },
+          "blocks": {
+            "type": "array"
+          },
+          "unfurl_links": {
+            "type": "boolean"
+          },
+          "mrkdwn": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "channel": "C0CATCHUP1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"ok\": true, \"channel\": \"C0CATCHUP1\", \"ts\": \"1794906060.000100\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"channel_not_found\"}"
+          }
+        ],
+        "isError": true
+      }
+    }
+  }
+}

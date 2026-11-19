@@ -1,8 +1,8 @@
 ---
 type: llm
 ---
-The learned note says the last catch-up covered both channels up to 1794819600 (2026-11-16 09:00 UTC) and reported two
-items: Lena's request to review the Q4 hiring plan (p1794733200000700) and Kim's blocker on the staging database
+The last catch-up's answer, handed as run history, says it covered both channels up to 2026-11-16 09:00 UTC
+(`window.to`, ts 1794819600) and reported two items: Lena's request to review the Q4 hiring plan (p1794733200000700) and Kim's blocker on the staging database
 migration (p1794736800000800). This run, C0PROJ0001 returns both again (the fake ignores `oldest`) plus Lena's new
 request to sign off the SOC 2 vendor list by Thursday. Kim's thread got a reply inside the window (2026-11-16 16:00 UTC):
 "Migration finished, QA started this afternoon. Unblocked."

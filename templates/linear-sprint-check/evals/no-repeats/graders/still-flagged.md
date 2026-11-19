@@ -1,8 +1,8 @@
 ---
 type: llm
 ---
-A learned note says the last check of Cycle 42 flagged ENG-12 (overdue), ENG-15 (stalled) and ENG-30 (added). On
-2026-11-20: ENG-12 is still overdue and unchanged, ENG-15 is done, ENG-30 is unchanged, and ENG-33 came into the cycle
+The last check of Cycle 42 (2026-11-18, its answer handed as run history) flagged ENG-12 (overdue), ENG-15 (stalled)
+and ENG-30 (added). On 2026-11-20: ENG-12 is still overdue and unchanged, ENG-15 is done, ENG-30 is unchanged, and ENG-33 came into the cycle
 on 2026-11-19.
 
 Read the answer's last fenced `json` block and the Slack post. Pass only if all hold:

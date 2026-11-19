@@ -1,6 +1,6 @@
 {
   "server": "slack",
-  "description": "A fake Composio Slack toolkit. Its one tool is shaped as Composio's SLACK_SEND_MESSAGE (channel, markdown_text, ...; answers in the {data, successful, error} envelope). A post to C0SHIPIT1 succeeds; a post anywhere else answers channel_not_found, so a stray post shows in the recorded calls. It never reaches Slack.",
+  "description": "A fake Composio Slack toolkit. Its one tool is shaped as Composio's SLACK_SEND_MESSAGE (channel, markdown_text, ...; answers in the {data, successful, error} envelope). A post to C0SALES001 succeeds; a post anywhere else answers channel_not_found, so a stray post shows in the recorded calls. It never reaches Slack.",
   "tools": {
     "SLACK_SEND_MESSAGE": {
       "description": "Posts a message to a Slack channel; content in `markdown_text` or `blocks`.",
@@ -32,13 +32,13 @@
       "answers": [
         {
           "when": {
-            "channel": "C0SHIPIT1"
+            "channel": "C0SALES001"
           },
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "{\"data\":{\"ok\":true,\"channel\":\"C0SHIPIT1\",\"ts\":\"1763110800.000100\",\"message\":{\"type\":\"message\",\"ts\":\"1763110800.000100\",\"text\":\"posted\"}},\"successful\":true,\"error\":null}"
+                "text": "{\"data\":{\"ok\":true,\"channel\":\"C0SALES001\",\"ts\":\"1763110800.000100\",\"message\":{\"type\":\"message\",\"ts\":\"1763110800.000100\",\"text\":\"posted\"}},\"successful\":true,\"error\":null}"
               }
             ]
           }
