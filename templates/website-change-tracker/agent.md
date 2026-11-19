@@ -2,7 +2,7 @@
 name: website-change-tracker
 display_name: Website change tracker
 version: 0.1.0
-description: Watches the web pages you name (a competitor's pricing page, a partner's product pages, a government program's fees and forms) and reports only the changes that matter, each with the exact before and after text and a link to both versions. Price and plan changes, products added or retired, new headline messaging, pages added or removed, customer logos, eligibility rules and deadlines. Copyright years, rotating banners, reordered layouts and A/B tests are ignored. What it already told you stays out of the next report: each check is handed the last one's answer.
+description: Watches the web pages you name (a competitor's pricing page, a partner's product pages, a government program's fees and forms) and reports only the changes that matter, each with the exact before and after text and a link to both versions. Price and plan changes, products added or retired, new headline messaging, pages added or removed, customer logos, eligibility rules and deadlines. Copyright years, rotating banners, reordered layouts and A/B tests are ignored. What it already told you stays out of the next report, since each check is handed the last one's answer.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
