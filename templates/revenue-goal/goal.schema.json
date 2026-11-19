@@ -5,7 +5,7 @@
   "description": "The period's revenue in the goal's currency, added up from Stripe, whether it passed the goal, and the one Slack celebration (or why none was posted).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["goal", "period", "total", "reached", "posted", "skipped", "ignored_instructions", "report_markdown"],
+  "required": ["goal", "period", "total", "reached", "reached_on", "posted", "skipped", "ignored_instructions", "report_markdown"],
   "properties": {
     "goal": {
       "type": "object",
