@@ -30,10 +30,10 @@ says how to match the role and location, apply filters, merge duplicates and spo
    (`max_chars: 6000`) on the employer's or ATS page. At most 15 fetches.
 
 3. **Verify and filter.** Keep a posting only if its page shows it open, it matches the role and location, it passes
-   every must-have, and it is new (inside the window, or new to the record and posted or refreshed in the last 30
-   days). Record title, employer, location terms, pay as stated (else "not listed"), contract type, posted date (and
-   reopened or refreshed), deadline. A posting failing exactly one criterion: `near_misses` with that criterion. Stale or
-   closed: left out.
+   every must-have, and it is new: posted, reopened or refreshed inside the window. A posting dated before the window's
+   start is out even when the last run's list doesn't name it: an earlier run's window held it. Record title, employer,
+   location terms, pay as stated (else "not listed"), contract type, posted date (and reopened or refreshed), deadline.
+   A posting failing exactly one criterion: `near_misses` with that criterion. Stale or closed: left out.
 
 4. **Merge and flag.** One row per job, linked to the employer or ATS page, board copies in `also_seen_on`. Clear scam:
    not listed, a near miss with the signs. Borderline: listed with `flag`, never first.

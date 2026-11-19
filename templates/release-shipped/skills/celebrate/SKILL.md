@@ -5,7 +5,8 @@ description: Announce one published GitHub release in Slack, once. Read the rele
 
 # Celebrate a release
 
-One release, one Slack message, never two. Your answer is the JSON in step 7.
+One release, one Slack message, never two. Your answer is the JSON in step 7. This template carries no state from one
+run to the next: each run sees its feed item, GitHub and your `# Learned` corrections, nothing else.
 
 Pass `owner` and `repo` on every GitHub call, exactly as your instructions name them.
 

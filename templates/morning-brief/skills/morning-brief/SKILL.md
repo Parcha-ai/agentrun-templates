@@ -80,8 +80,10 @@ mentioned"). It wins over this file where the two differ.
 
 Your run history's `needs_you` holds the open items the last plan named, by link. One that is still open stays in
 today's plan, marked `carried: true` with its `first_asked` kept: it still needs the owner, but it is not news. One that
-was answered since drops out. Check it the same way as a new one (its thread, its replies), even when it is older than
-today's read window: read its thread by the id in the link.
+was answered since drops out. So does one that was for a meeting or call that has happened since (a sheet for
+yesterday's 10:00 call): what it asked for can't be done any more, and `coverage` says it was dropped for that. A missed
+deadline alone doesn't drop an ask that can still be done: it stays, carried and overdue. Check it the same way as a new
+one (its thread, its replies), even when it is older than today's read window: read its thread by the id in the link.
 
 ### Run history
 
