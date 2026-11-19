@@ -9,6 +9,6 @@ Read the posted text and the answer's last fenced `json` block. Pass only if all
 1. Lena's Q1 budget request is an open `request`, due Friday, with its permalink.
 2. `coverage.channels_not_read` is empty, and `coverage.unread_since`, when present, does not name C0SUPPORT1: it was
    read this run.
-3. Nothing else is reported.
+3. Nothing is reported besides these two requests.
 
 Answer pass or fail, and quote what decided it.
