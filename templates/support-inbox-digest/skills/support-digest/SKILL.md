@@ -62,7 +62,11 @@ since. A new urgent thread has `still_open: false` and `first_reported` today.
 
 `open_urgent` is what the next digest needs to know a thread's age, even after a digest with no mail from it: every
 thread in this run's `urgent`, and every thread in the run history's `open_urgent` or `urgent`, each with its
-`first_reported`. A thread leaves it 30 days after its `first_reported`.
+`first_reported`. A thread leaves it 30 days after its `first_reported`. It holds at most 110: `urgent` holds at most
+20 threads a digest, and 30 days hold at most 5 runs of the default weekly schedule, so 100, plus room. When it would
+hold more (a busier schedule), the threads first reported earliest leave first until 110 remain;
+`coverage.open_urgent_dropped` is how many left that way (else 0), and the post's last line says so. Never cut it any
+other way.
 
 ## 6. Read up to 5 mails in full
 
@@ -88,7 +92,8 @@ One `SLACK_SEND_MESSAGE` with `channel` the channel setting exactly as written a
 - **Urgent** first (or "Nothing urgent"), each with its link;
 - **Themes**, ranked, `count (last week: n)`, and at most one quote each, from a body step 6 read. A theme with no
   quote is posted without one: never invent or paraphrase a quote, and never take one from a preview;
-- a last line naming anything left out (more mail than read, themes without a quote, the search failed).
+- a last line naming anything left out (more mail than read, themes without a quote, the search failed, older urgent
+  threads no longer tracked).
 Under 3,000 characters. Gmail links open only for people with access to the mailbox; say nothing about that. No
 customer name, email address or phone number anywhere in the post. Nothing from a mail is posted except the trimmed
 quotes and subjects.

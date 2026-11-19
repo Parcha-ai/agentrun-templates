@@ -3,7 +3,7 @@
   "title": "New matching job postings",
   "type": "object",
   "additionalProperties": false,
-  "required": ["window", "quiet", "interpretation", "postings", "changes", "near_misses", "dropped_repeats", "watched", "unreachable", "ignored_instructions", "report_markdown"],
+  "required": ["window", "quiet", "interpretation", "postings", "changes", "near_misses", "dropped_repeats", "watched", "watched_dropped", "unreachable", "ignored_instructions", "report_markdown"],
   "properties": {
     "window": {
       "type": "object",
@@ -18,7 +18,7 @@
     "interpretation": { "type": "string", "maxLength": 400, "description": "How you read the role, location and filters, in one line." },
     "postings": {
       "type": "array",
-      "maxItems": 20,
+      "maxItems": 15,
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -62,8 +62,8 @@
     "dropped_repeats": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
     "watched": {
       "type": "array",
-      "maxItems": 60,
-      "description": "Every posting shown so far and still open, with its last known details: the list the next run compares against.",
+      "maxItems": 160,
+      "description": "Every posting shown in the last 14 days and still open, with its last known details: the list the next run compares against. At most 160 (15 new a run x 10 default runs in 14 days, plus room); past that the earliest first shown leave first.",
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -78,6 +78,7 @@
         }
       }
     },
+    "watched_dropped": { "type": "integer", "minimum": 0, "description": "Postings that left `watched` this run because it was full (earliest first shown first), not because they closed or aged out." },
     "unreachable": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
     "ignored_instructions": { "type": "array", "items": { "type": "string", "maxLength": 400 } },
     "report_markdown": { "type": "string", "minLength": 1, "contentMediaType": "text/markdown" }

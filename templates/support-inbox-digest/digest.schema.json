@@ -19,7 +19,7 @@
     "coverage": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["messages_read", "threads_kept", "dropped", "more_than_read"],
+      "required": ["messages_read", "threads_kept", "dropped", "more_than_read", "open_urgent_dropped"],
       "properties": {
         "messages_read": { "type": "integer", "minimum": 0 },
         "threads_kept": { "type": "integer", "minimum": 0 },
@@ -37,6 +37,7 @@
           }
         },
         "more_than_read": { "type": "boolean" },
+        "open_urgent_dropped": { "type": "integer", "minimum": 0, "description": "threads that left open_urgent this run because it was full (earliest first reported first), not because 30 days passed" },
         "search_failed": { "type": "boolean" }
       }
     },
@@ -61,8 +62,8 @@
     },
     "open_urgent": {
       "type": "array",
-      "maxItems": 40,
-      "description": "Every urgent thread reported in the last 30 days, this digest's and the ones carried from the run history, so the next digest knows its age even after a quiet week.",
+      "maxItems": 110,
+      "description": "At most 110 (20 urgent a digest x 5 default weekly runs in 30 days, plus room; past that the earliest first reported leave first). Every urgent thread reported in the last 30 days, this digest's and the ones carried from the run history, so the next digest knows its age even after a quiet week.",
       "items": {
         "type": "object",
         "additionalProperties": false,
