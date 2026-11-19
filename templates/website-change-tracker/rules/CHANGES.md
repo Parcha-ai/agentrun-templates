@@ -33,6 +33,6 @@ A `focus` narrows these: "price, plan limits, tiers" keeps `pricing` and `plan` 
 ## Evidence
 
 - Quote before and after exactly, with currency, period and plan name: "$49 per user per month, billed annually (Team)".
-- The before needs a source: your note of the page with its date, the last run, or an archive capture with its date.
+- The before needs a source: the last run with its date, or an archive capture with its date.
   Third-party commentary alone is never evidence of a change.
 - A removed page needs a fetch that shows it gone. Absence from a truncated read is not removal.

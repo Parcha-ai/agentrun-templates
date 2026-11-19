@@ -1,6 +1,6 @@
 ---
 name: terms-watch
-description: Check vendors' legal pages (terms, privacy policies, DPAs, acceptable use policies, subprocessor lists) for clause-level changes since the last check. Read each page's version stamp, compare its clauses with the earlier text (your learned note, the last run, the vendor's version history, else an archive copy), keep substantive changes, quote old and new wording with clause numbers, keep version and effective dates apart, drop repeats, and keep a note of each page's key clauses for next time. Use for the scheduled check and for "did Slack change its DPA", "what changed in these terms".
+description: Check vendors' legal pages (terms, privacy policies, DPAs, acceptable use policies, subprocessor lists) for clause-level changes since the last check. Read each page's version stamp, compare its clauses with the earlier text (the last run's result, the vendor's version history, else an archive copy), keep substantive changes, quote old and new wording with clause numbers, keep version and effective dates apart, and drop repeats. Use for the scheduled check and for "did Slack change its DPA", "what changed in these terms".
 ---
 
 # Terms watch
@@ -14,18 +14,17 @@ before step 2.
 
 - The `Input:` block: `documents` (each a URL, or a vendor and document name), `care_about` (blank: obligations,
   rights, liability, fees and termination first, then the soonest effective date) and `lookback_days` (blank: 7).
-- Your `# Learned` notes: one per vendor, holding each page's URL, its version stamp as last seen and the key clauses
-  quoted with their numbers, with the date seen and the changes already reported; and what the owner told you
-  ("skip subprocessors in the EU").
+- `# Learned`: the owner's corrections from earlier runs, in their words ("skip subprocessors in the EU").
 - Run history: a scheduled run may be handed its trigger's last completed result after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `changes` were reported: the **reported** list.
+  Its `documents_checked` holds each page's version stamp as last seen (`version_date`).
 - Today's date: from the input (the trigger's time) or the message, never the clock.
 - Pages the message gives as what their URLs return are those pages: read them there and do not fetch them again.
   When the message says the sites are not reachable, fetch and search nothing.
 
 ## Steps
 
-1. **Window and pages.** `to` is today; `from` is the last check's date (the note's or the last run's), else today
+1. **Window and pages.** `to` is today; `from` is the last check's date (the last run's `window.to`), else today
    minus `lookback_days`. Resolve each entry to its canonical live page (`LEGAL-TEXT.md`); a vendor and document name
    takes one `web_search` (`n: 5`) on the vendor's own domain. An entry you cannot resolve: `unresolved` in
    `documents_checked`. More than 30 entries: the first 30, and say so.
@@ -34,29 +33,30 @@ before step 2.
    have the clauses that matter). Note the version stamp ("Last updated", "Version 4.1", "Effective") and any effective
    date for an update. A challenge, login wall or error page is `unreachable`, never "unchanged".
 
-3. **Stamp first.** When your note has the page's stamp and the live stamp is the same, the page is `unchanged`: no
-   archive fetch, no clause comparison. A different stamp, no stamp, or no note: go on to step 4.
+3. **Stamp first.** When the last run's `documents_checked` has the page's stamp and the live stamp is the same, the
+   page is `unchanged`: no archive fetch, no clause comparison. A different stamp, no stamp, or no earlier stamp: go on
+   to step 4.
 
-4. **Find the earlier text**, in this order: your note's quoted clauses; the last run's result; the vendor's own
+4. **Find the earlier text**, in this order: the last run's result (its quoted clauses); the vendor's own
    version history; an archive capture (`LEGAL-TEXT.md` gives the URL form and the age limit). Check the capture's own
    date in the URL it lands on. No earlier text for the clauses that differ: go to step 5's last rule.
 
 5. **Compare clause by clause.** Line up each clause of the earlier text with the live one, by its heading and words,
    not its number (a clause that moved from 7 to 8 with the same text is noise). Keep what `LEGAL-TEXT.md` counts;
-   drop its noise and list it in `noise_ignored` in a few words. A note that holds only some clauses settles only
-   those: for the rest, use the vendor's history or an archive.
-   - No earlier text at all (no note, no history, no capture in range): the page is `no_baseline`. When the page itself
-     names what it changed (a "we updated Section 7" banner, a summary of changes), add one entry for it with
-     `confirmed: false`, `before: null`, `before_source.kind: none`, the live clause quoted in `after`, and a summary
-     that starts "Unconfirmed: prior version not retrieved". Never write what the old text said, not even from a
+   drop its noise and list it in `noise_ignored` in a few words. The last run's quotes settle only the clauses they
+   hold: for the rest, use the vendor's history or an archive.
+   - No earlier text at all (no earlier run's quote, no history, no capture in range): the page is `no_baseline`. When
+     the page itself names what it changed (a "we updated Section 7" banner, a summary of changes), add one entry for it
+     with `confirmed: false`, `before: null`, `before_source.kind: none`, the live clause quoted in `after`, and a
+     summary that starts "Unconfirmed: prior version not retrieved". Never write what the old text said, not even from a
      law-firm alert or the vendor's summary. `quiet` counts confirmed changes only.
 
-6. **No repeats.** Before writing a change, look it up on the reported list and in your notes by vendor, clause and the
-   same old and new wording. A change already reported is dropped, even when the page still shows it: one line in
+6. **No repeats.** Before writing a change, look it up on the reported list by vendor, clause and the same old
+   and new wording. A change already reported is dropped, even when the page still shows it: one line in
    `dropped_repeats`, nowhere else (no entry, no line or quote of it in the report). A further change to a reported
    clause, or a moved effective date for a reported update, is new: report it with `change_since_last` saying what
    developed ("effective date moved from December 15, 2026 to January 15, 2027"), its before being what was reported.
-   A change your notes say the owner doesn't want is left out and named nowhere.
+   A change the owner's corrections rule out is left out and named nowhere.
 
 7. **Write each change and answer.** One entry per clause that changed; merge an added sub-clause with the clause it
    serves. The clause number and heading as the live page gives them, `before` and `after` quoted exactly, where the
@@ -93,10 +93,8 @@ before step 2.
 - Private individuals named in a page or an archive stay out; officials and the vendor are named as the page names them.
 - This is not legal advice, and the report's footer says so when it holds a change.
 
-## What you remember
+## Between runs
 
-At the end of a run you will be asked what to keep. Keep one note per vendor, replacing the old one: each watched
-page's URL, its version stamp and effective date as seen today, the key clauses quoted short with their numbers
-(liability cap, data use and AI training, retention, subprocessor notice, governing law, termination, notice period),
-today's date, and the changes reported (this run's and the note's earlier ones, the last 10). Keep too what the owner
-tells you about what they care about, in their words. A page you could not read keeps its old note.
+Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
+you reported travels in your answer; what the owner tells you after a run is kept as a line under `# Learned`. A page
+as you saw it today is not kept: the next run's earlier version is the last run's answer or an archive capture.

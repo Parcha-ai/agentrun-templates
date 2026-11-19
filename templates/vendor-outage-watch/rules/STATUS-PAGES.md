@@ -32,7 +32,7 @@
 | MongoDB Atlas | `https://status.mongodb.com/api/v2/incidents.json` | linked from the incident |
 
 A vendor not listed: find its official status page once (the vendor's own domain or its hosted page linked from the
-vendor's site), test `/api/v2/incidents.json`, and keep what worked in a learned note.
+vendor's site), test `/api/v2/incidents.json`, and name what worked in `vendors_checked`.
 
 ## Corroboration, never the source
 

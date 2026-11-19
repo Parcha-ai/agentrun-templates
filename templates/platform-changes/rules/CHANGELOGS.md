@@ -1,7 +1,7 @@
 # Where vendors publish changes
 
-The log reads this before every run. Edit it like code. A URL that stopped working is replaced by the one you found,
-and the learned note says so.
+The log reads this before every run. Edit it like code. A URL that stopped working is replaced here by the one that
+works; until then the run finds it again and says so in `platforms_checked`.
 
 ## How to read each kind of page
 

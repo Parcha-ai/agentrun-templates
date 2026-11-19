@@ -16,8 +16,8 @@ step 2.
   topic), `sources` (blank: the main official sources for the topic and jurisdictions) and `lookback_days` (blank: 7).
 - Run history: a scheduled run may be handed its trigger's last completed brief after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `items` are the **reported** list for step 5.
-- Your `# Learned` notes: source URLs and feeds that worked, and the owner's preferences ("skip EFRAG Q&As"). They win
-  over this file where they differ.
+- `# Learned`: the owner's corrections from earlier runs, in their words ("skip EFRAG Q&As"). They win over this file
+  where they differ.
 - Today's date: the run's date (a scheduled run's is the time it fired).
 - Pages the message gives as what their URLs return are those pages: read them there and do not fetch them again.
   When the message says the sites are not reachable, fetch and search nothing.
@@ -57,7 +57,7 @@ step 2.
    and their progress, proposed and final rules, acts entering into force, guidance and FAQs, consultations, enforcement
    decisions with amounts, rulings, and speeches or letters by an authority that signal direction (stage `signal`).
    Out: anything outside the topic; an act by an authority outside the jurisdictions that does not bind them (name it
-   nowhere, or once in `assumptions`); commentary with no official document (step 4); anything a learned note rules out
+   nowhere, or once in `assumptions`); commentary with no official document (step 4); anything a correction rules out
    (named nowhere).
 
 4. **Commentary is a lead, not an item.** A law-firm alert, news story or newsletter that reports an act: find the
@@ -110,8 +110,7 @@ step 2.
   the decision names them and it matters.
 - No legal, tax or financial advice: what to review, check or calendar, never what the reader must do in law.
 
-## What you remember
+## Between runs
 
-At the end of a run you may be asked what to keep. Keep a source URL or feed you found by trying ("CPPA rulemaking is
-cppa.ca.gov/regulations"), and what the owner tells you about scope ("skip EFRAG Q&As"). One week's items are not a
-note: last week's brief keeps them out of this one.
+Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
+you reported travels in your answer; what the owner tells you after a run is kept as a line under `# Learned`.

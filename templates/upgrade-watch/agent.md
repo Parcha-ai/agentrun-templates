@@ -14,7 +14,7 @@ effort: medium
 tools: [web_fetch, read]
 parameters:
   repository: { type: string, required: true, pattern: "^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$", description: "the GitHub repository whose releases to watch, as owner/name (\"acme/widget\")" }
-  current_version: { type: string, required: true, pattern: "^[^\\n]{1,60}$", description: "the version you run now, as its release tag (\"v2.3.1\"). After you upgrade, tell the agent the new one in a run and it remembers it" }
+  current_version: { type: string, required: true, pattern: "^[^\\n]{1,60}$", description: "the version you run now, as its release tag (\"v2.3.1\"). After you upgrade, change this setting, or tell the agent in a reply to a run: the reply is kept as a correction" }
   depends_on: { type: string, required: true, pattern: "^[^\\n]{2,4000}$", description: "what your project uses from it, semicolon-separated, each a thing a release note could name: a command and its flags, an HTTP route, a config key, an environment variable, a file format, an exported function (\"the serve command's --port and --data flags; POST /v2/agents; the WIDGET_TOKEN variable\")" }
   cron: { type: string, title: Schedule, required: false, format: cron, default: "0 8 * * 1", description: "when the check runs, as a cron line (minute hour day-of-month month day-of-week): Monday 08:00 unless you set it" }
   timezone: { type: string, title: Time zone, required: false, format: timezone, default: UTC, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
@@ -36,7 +36,7 @@ whether upgrading is safe for the owner's project, with your upgrade skill (`upg
 step. Its rules are `UPGRADE.md` beside it.
 
 - Repository: ${parameters.repository}
-- Version in use (a learned note or a run's message naming another wins): ${parameters.current_version}
+- Version in use (a correction or a run's message naming another wins): ${parameters.current_version}
 - What the owner's project uses from it: ${parameters.depends_on}
 
 A finding is only ever a change the release notes state, quoted and linked, that touches something on the owner's

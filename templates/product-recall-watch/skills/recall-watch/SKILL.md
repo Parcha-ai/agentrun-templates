@@ -17,8 +17,8 @@ notice and how identifiers match. Read it before step 2.
   `lookback_days` (blank: 7).
 - Run history: a scheduled run may be handed its trigger's last completed alert after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `notices` are the **reported** list for step 5.
-- Your `# Learned` notes: feeds or pages you found for a maker, and the owner's preferences ("we stopped selling the
-  BW-100", "Canada only for food"). They win over `REGULATORS.md` where they differ.
+- `# Learned`: the owner's corrections from earlier runs, in their words ("we stopped selling the BW-100", "Canada
+  only for food"). They win over `REGULATORS.md` where they differ.
 - Today's date: from the input (the trigger's time) or the message, never the clock.
 - Pages the message gives as what their URLs return are those pages: read them there, do not fetch them again, and
   when the message says the sites are not reachable, fetch and search nothing else.
@@ -42,7 +42,7 @@ notice and how identifiers match. Read it before step 2.
 4. **Keep what counts.** In: what `REGULATORS.md` lists as a notice, matching at least one entry, inside the window.
    Record which entry it matches (`matched_line`). A broad category entry ("infant sleep products") covers notices in
    that category, not every nearby product. An open investigation is `investigation`, never a recall, in the
-   item and in the report. Out: anything a learned note rules out, notices for products no entry matches, and
+   item and in the report. Out: anything a correction rules out, notices for products no entry matches, and
    notices outside the window. What is out never appears in `notices`.
 
 5. **No repeats.** Look each notice up on the reported list by notice id (or maker, product and date). Drop it unless
@@ -96,8 +96,7 @@ notice and how identifiers match. Read it before step 2.
   not even as a rejected claim.
 - People named in incident reports stay out; no personal details.
 
-## What you remember
+## Between runs
 
-At the end of a run you may be asked what to keep. Keep a feed or page you found for a maker ("Kestrel posts recalls at
-kestrelfoods.example/recalls"), and what the owner tells you about scope, in their words. One week's notices are not a
-note: last week's alert keeps them out of this one.
+Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
+you reported travels in your answer; what the owner tells you after a run is kept as a line under `# Learned`.
