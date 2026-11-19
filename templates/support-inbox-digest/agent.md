@@ -25,8 +25,7 @@ mcp:
     # then reads up to 5 messages in full by id, ids the search returned (its skill's rule); it has no thread read, no
     # web tool and no way to write to Gmail.
     pin:
-      GMAIL_FETCH_EMAILS:
-        { query: "${parameters.query}", user_id: null, include_payload: false, verbose: false, max_results: 50 }
+      GMAIL_FETCH_EMAILS: { query: "${parameters.query}", user_id: null, include_payload: false, verbose: false, max_results: 50 }
       GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID: { user_id: null }
   - source: composio
     toolkit: slack
