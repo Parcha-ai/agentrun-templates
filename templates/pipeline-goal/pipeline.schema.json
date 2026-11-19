@@ -48,6 +48,7 @@
       }
     },
     "reached": { "type": "boolean" },
+    "reached_on": { "type": ["string", "null"], "format": "date", "description": "the day this goal's message was posted: today on a post that went out, carried from the last check's answer once posted, else null" },
     "posted": {
       "type": "object",
       "additionalProperties": false,

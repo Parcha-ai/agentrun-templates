@@ -41,6 +41,7 @@
       "description": "null when the total could not be added up (a skipped or incomplete run)"
     },
     "reached": { "type": "boolean", "description": "true when the total is at or above the goal" },
+    "reached_on": { "type": ["string", "null"], "format": "date", "description": "the day this goal's message was posted for this period: today on a post that went out, carried from the last check's answer once posted, else null" },
     "posted": {
       "type": "object",
       "additionalProperties": false,

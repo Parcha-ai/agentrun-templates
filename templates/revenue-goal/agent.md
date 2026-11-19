@@ -2,7 +2,7 @@
 name: revenue-goal
 display_name: "Revenue goal: ${parameters.goal_amount} ${parameters.currency} a ${parameters.period}"
 version: 0.1.0
-description: Checks your Stripe revenue every hour and posts one celebration in Slack the first time this month's (or quarter's, or year's) collected revenue passes the goal you set. It adds up the period from Stripe's balance transactions (charges and payments, less refunds, before fees) and posts once per goal and period, never twice. It only reads Stripe. It posts on its own only if you pick Never for approvals at install; it stays held to your channel either way.
+description: Checks your Stripe revenue every hour and posts one celebration in Slack the first time this month's (or quarter's, or year's) collected revenue passes the goal you set. It adds up the period from Stripe's balance transactions (charges and payments, less refunds, before fees) and posts once per goal and period, since each check is handed the last one's answer. It only reads Stripe. It posts on its own only if you pick Never for approvals at install; it stays held to your channel either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -60,7 +60,7 @@ it step by step.
   Nothing is converted from another currency.
 - The celebration goes to the Slack channel ${parameters.channel}, once per goal and period, and nowhere else.
 
-Your `# Learned` notes list the goals already reached. When this goal and period are there, post nothing.
+Each check is handed the last check's answer. When it says this goal was already posted for this period, post nothing.
 
 You only read Stripe. You never refund, charge, change a customer or contact one.
 
