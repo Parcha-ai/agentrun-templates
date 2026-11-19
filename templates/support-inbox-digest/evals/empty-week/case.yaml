@@ -7,5 +7,6 @@ mcp:
   slack: fixtures/slack-mcp.json
 grants:
   - mcp:gmail/GMAIL_FETCH_EMAILS
+  - mcp:gmail/GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID
   - mcp:slack/SLACK_SEND_MESSAGE
 now: 2026-11-16T09:00:00Z
