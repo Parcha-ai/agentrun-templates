@@ -16,7 +16,8 @@ Read it before step 2.
   "AWS" alone is all of it), `usage` (blank: every material change, actions for a typical integrator), `emphasize`
   (blank: the default order in step 6) and `lookback_days` (blank: 7).
 - Run history: a scheduled run may be handed its trigger's last completed log after its message, as a fenced json
-  block under "The result of this trigger's last completed run". Its `changes` are the **reported** list for step 5.
+  block under "The result of this trigger's last completed run". Its `changes` and its `dropped_repeats` together are
+  the **reported** list for step 5: a repeat dropped last week was still reported before.
 - The owner's corrections from earlier runs, in their words ("we don't use Stripe Terminal", "skip new features"). They
   win over this file where they differ.
 - Today's date: from the input (the trigger's time) or the message, never the clock.
@@ -50,11 +51,13 @@ Read it before step 2.
    else); a change a correction rules out (named nowhere at all); incidents and outages (a status page is another
    job). What is out never appears in `changes`.
 
-5. **No repeats.** Before writing any change, look it up on the reported list (the last run's `changes`) by
-   platform, product and what changed. Drop one on the list unless it developed: the deadline moved,
+5. **No repeats.** Before writing any change, look it up on the reported list (the last run's `changes` and
+   `dropped_repeats`) by platform, product and what changed. Drop one on the list unless it developed: the deadline moved,
    the replacement or migration path was published, the scope or price changed again. A kept development fills
    `change_since_last` with what changed ("shutdown moved from 2027-01-14 to 2027-02-11"). Each one you drop goes in
-   `dropped_repeats` in one line and nowhere else: not in `changes`, not in the report's list.
+   `dropped_repeats` in one line and nowhere else: not in `changes`, not in the report's list. The line names the
+   platform, the product, what changed and its deadline wording ("Vercel, Fast Data Transfer (Pro): overage $0.15 to
+   $0.20 per GB, from December 1, 2026"), so the next run can match it and tell whether it developed.
 
 6. **Write each change** from the vendor's page:
    - `product` exactly as the vendor names it; `what_changed` with the exact version, SDK release, plan, region,
