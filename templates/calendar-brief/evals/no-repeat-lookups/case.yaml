@@ -3,6 +3,8 @@
 parameters:
   channel: C0BRIEF001
   days: 2
+# The calendar fixture is for 2026-11-17 and 18: the run fires at the schedule's 07:00 on the 17th.
+now: 2026-11-17T07:00:00Z
 mcp:
   googlecalendar: fixtures/calendar-mcp.json
   slack: fixtures/slack-mcp.json
