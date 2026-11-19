@@ -47,7 +47,8 @@ identity, product, funding, traction, competition, risks, naming each thin step 
 
 Read the website: legal name, headquarters, founding year from its footer, about page or terms. The website decides
 which company this is. A same-name company is named once in `identity_note` as a different company, and nothing of it
-(funding, customers, people) appears anywhere else.
+(funding, customers, people) appears anywhere else. When the company or its site cannot be found, `identity_note` and
+`bottom_line` each say so and name where you looked (its domain, the searches, the registries).
 
 ### 2. Product and pricing
 
@@ -96,7 +97,8 @@ a source, with date. No valuation is assigned to a company whose valuation no so
   = 4.0%"). Compare the entry price to comps only where comps have sourced figures; otherwise say no comparison is
   possible. No return multiple or exit value is computed from figures you do not have.
 - `risks`: market, product, team, regulatory, financing, concentration; each with a mitigant or "none identified".
-  News, litigation and regulatory actions are cited.
+  News, litigation and regulatory actions are cited, with the event's date in the entry itself (a departure in `risks`
+  or `team` says the day it happened), not only in `sources`.
 - `diligence_questions`: specific and answerable, one per gap ("What was ARR at 2026-09-30, and how is it defined?").
 - `thesis`: up to three bullets, each something the partner should confirm, cited.
 

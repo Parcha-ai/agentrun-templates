@@ -61,8 +61,10 @@ points, questions, priorities or gaps.
 no company that merely resembles the name described as a possible match; talking points and questions only about the
 user's own goal, with no claim about the person. A name tells you nothing about what a company does: "Mills" in a name
 is not evidence of mills, so no product, sector or site is guessed from it. Every search goes in `sources` with
-`found: false`. The `bottom_line` names where you looked and says what to get next: the spelling, a profile link, the
-employer's legal name.
+`found: false`. A search that errors or is refused counts as one that found nothing: it is listed, with its URL, and
+does not change the finding. `identity.assumption` and the `bottom_line` each say in those words that neither the
+person nor the organization could be found, name where you looked (the searches and the sites), and the `bottom_line`
+says what to get next: the spelling, a profile link, the employer's legal name.
 
 ### 2. Career arc
 
@@ -137,7 +139,7 @@ after it.
 - `sources`: every page you relied on, each with an id (`S1`, ...), once. Searches that found nothing get
   `found: false`. Cite ids in every JSON fact and inline in `report_markdown` as `[S3]`.
 - `report_markdown` is the one-page brief, about 600 to 900 words, in this order: Bottom line (three to five
-  sentences, including the identity assumption), Profile (career table), Public work and statements, Organization
+  sentences, including who the subject is and why, with no rejected namesake), Profile (career table), Public work and statements, Organization
   and recent news, Likely priorities (labeled inference), Goal-specific findings (skip for `general`), Sensitivities,
   Talking points, Questions, Gaps and coverage. Sources live in the JSON, not in the markdown.
 - Dates are `YYYY-MM-DD`.
