@@ -1,6 +1,6 @@
 {
   "server": "gmail",
-  "description": "A fake Composio Gmail. The search matches no mail.",
+  "description": "A fake Composio Gmail. The search matches no mail. The by-id fetch finds nothing: there is no message to fetch.",
   "tools": {
     "GMAIL_FETCH_EMAILS": {
       "description": "Fetches a list of email messages from a Gmail account, supporting filtering by Gmail search query.",
@@ -41,6 +41,36 @@
             "text": "{\"data\": {\"messages\": [], \"resultSizeEstimate\": 0}, \"successful\": true, \"error\": null}"
           }
         ]
+      }
+    },
+    "GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID": {
+      "description": "Fetches one Gmail message by its message id (a messageId from a search), with its full body at the default format.",
+      "input": {
+        "type": "object",
+        "required": [
+          "message_id"
+        ],
+        "properties": {
+          "message_id": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Requested entity was not found.\"}"
+          }
+        ],
+        "isError": true
       }
     }
   }

@@ -1,6 +1,6 @@
 {
   "server": "gmail",
-  "description": "A fake Composio Gmail. The 7-day search returns mail from 2026-11-10 to 15. Three messages are older than the last digest (Thursday 2026-11-12 15:00 UTC): a CSV export complaint, an SSO loop, and Grace's lockout, reported urgent then. Newer: three CSV export threads, a billing question, and Grace writing again that she is still locked out.",
+  "description": "A fake Composio Gmail. The 7-day search returns mail from 2026-11-10 to 15. Three messages are older than the last digest (Thursday 2026-11-12 15:00 UTC): a CSV export complaint, an SSO loop, and Grace's lockout, reported urgent then. Newer: three CSV export threads, a billing question, and Grace writing again that she is still locked out. The search answers metadata only (a 200-character preview, no body); GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID answers each message's full text by id.",
   "tools": {
     "GMAIL_FETCH_EMAILS": {
       "description": "Fetches a list of email messages from a Gmail account, supporting filtering by Gmail search query.",
@@ -38,9 +38,144 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"data\": {\"messages\": [{\"messageId\": \"19d2c00000000101\", \"threadId\": \"19d2c00000000001\", \"sender\": \"Priya Nair <priya@hooli.example>\", \"to\": \"support@acme.example\", \"subject\": \"CSV export never finishes\", \"messageTimestamp\": \"2026-11-10T10:04:00Z\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageText\": \"Exporting our orders to CSV fails with 'request timed out'.\"}, {\"messageId\": \"19d2c00000000102\", \"threadId\": \"19d2c00000000002\", \"sender\": \"Omar Haddad <omar@soylent.example>\", \"to\": \"support@acme.example\", \"subject\": \"SSO keeps redirecting\", \"messageTimestamp\": \"2026-11-11T13:00:00Z\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageText\": \"Logging in with Okta sends me back to the login page in a loop.\"}, {\"messageId\": \"19d2c00000000103\", \"threadId\": \"19d2c00000000003\", \"sender\": \"Grace Liu <grace.liu@initrode.example>\", \"to\": \"support@acme.example\", \"subject\": \"URGENT: whole company locked out\", \"messageTimestamp\": \"2026-11-11T07:40:00Z\", \"labelIds\": [\"INBOX\", \"IMPORTANT\", \"Label_support\"], \"messageText\": \"None of our 200 people can log in through SSO. We can't work.\"}, {\"messageId\": \"19d2c00000000113\", \"threadId\": \"19d2c00000000003\", \"sender\": \"Grace Liu <grace.liu@initrode.example>\", \"to\": \"support@acme.example\", \"subject\": \"Re: URGENT: whole company locked out\", \"messageTimestamp\": \"2026-11-14T08:00:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"IMPORTANT\", \"Label_support\"], \"messageText\": \"Day four and we're still locked out. Nobody has called us back.\"}, {\"messageId\": \"19d2c00000000104\", \"threadId\": \"19d2c00000000004\", \"sender\": \"Wes Kim <wes@stark.example>\", \"to\": \"support@acme.example\", \"subject\": \"export broken?\", \"messageTimestamp\": \"2026-11-13T16:45:00Z\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageText\": \"CSV export just hangs. Smaller exports work.\"}, {\"messageId\": \"19d2c00000000105\", \"threadId\": \"19d2c00000000005\", \"sender\": \"Lena Ortiz <lena@wayne.example>\", \"to\": \"support@acme.example\", \"subject\": \"Report export timeout\", \"messageTimestamp\": \"2026-11-14T11:10:00Z\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageText\": \"Our weekly CSV export failed again.\"}, {\"messageId\": \"19d2c00000000106\", \"threadId\": \"19d2c00000000006\", \"sender\": \"Ana Silva <ana@pied.example>\", \"to\": \"support@acme.example\", \"subject\": \"Can't download my data\", \"messageTimestamp\": \"2026-11-15T09:00:00Z\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"Label_support\"], \"messageText\": \"Download as CSV gives a 504 error every time.\"}, {\"messageId\": \"19d2c00000000107\", \"threadId\": \"19d2c00000000007\", \"sender\": \"Ivy Moss <ivy@umbrella.example>\", \"to\": \"support@acme.example\", \"subject\": \"Which plan are we on?\", \"messageTimestamp\": \"2026-11-13T17:00:00Z\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageText\": \"Can you tell me which plan we're billed on and when it renews?\"}], \"resultSizeEstimate\": 8}, \"successful\": true, \"error\": null}"
+            "text": "{\"data\": {\"messages\": [{\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2c00000000101\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-10T10:04:00Z\", \"payload\": {}, \"preview\": {\"body\": \"Exporting our orders to CSV fails with 'request timed out'.\", \"subject\": \"CSV export never finishes\"}, \"sender\": \"Priya Nair <priya@hooli.example>\", \"subject\": \"CSV export never finishes\", \"threadId\": \"19d2c00000000001\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2c00000000102\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-11T13:00:00Z\", \"payload\": {}, \"preview\": {\"body\": \"Logging in with Okta sends me back to the login page in a loop.\", \"subject\": \"SSO keeps redirecting\"}, \"sender\": \"Omar Haddad <omar@soylent.example>\", \"subject\": \"SSO keeps redirecting\", \"threadId\": \"19d2c00000000002\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"IMPORTANT\", \"Label_support\"], \"messageId\": \"19d2c00000000103\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-11T07:40:00Z\", \"payload\": {}, \"preview\": {\"body\": \"None of our 200 people can log in through SSO. We can't work.\", \"subject\": \"URGENT: whole company locked out\"}, \"sender\": \"Grace Liu <grace.liu@initrode.example>\", \"subject\": \"URGENT: whole company locked out\", \"threadId\": \"19d2c00000000003\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"IMPORTANT\", \"Label_support\"], \"messageId\": \"19d2c00000000113\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-14T08:00:00Z\", \"payload\": {}, \"preview\": {\"body\": \"Day four and we're still locked out. Nobody has called us back.\", \"subject\": \"Re: URGENT: whole company locked out\"}, \"sender\": \"Grace Liu <grace.liu@initrode.example>\", \"subject\": \"Re: URGENT: whole company locked out\", \"threadId\": \"19d2c00000000003\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2c00000000104\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-13T16:45:00Z\", \"payload\": {}, \"preview\": {\"body\": \"CSV export just hangs. Smaller exports work.\", \"subject\": \"export broken?\"}, \"sender\": \"Wes Kim <wes@stark.example>\", \"subject\": \"export broken?\", \"threadId\": \"19d2c00000000004\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2c00000000105\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-14T11:10:00Z\", \"payload\": {}, \"preview\": {\"body\": \"Our weekly CSV export failed again.\", \"subject\": \"Report export timeout\"}, \"sender\": \"Lena Ortiz <lena@wayne.example>\", \"subject\": \"Report export timeout\", \"threadId\": \"19d2c00000000005\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"Label_support\"], \"messageId\": \"19d2c00000000106\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-15T09:00:00Z\", \"payload\": {}, \"preview\": {\"body\": \"Download as CSV gives a 504 error every time.\", \"subject\": \"Can't download my data\"}, \"sender\": \"Ana Silva <ana@pied.example>\", \"subject\": \"Can't download my data\", \"threadId\": \"19d2c00000000006\", \"to\": \"support@acme.example\"}, {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2c00000000107\", \"messageText\": \"\", \"messageTimestamp\": \"2026-11-13T17:00:00Z\", \"payload\": {}, \"preview\": {\"body\": \"Can you tell me which plan we're billed on and when it renews?\", \"subject\": \"Which plan are we on?\"}, \"sender\": \"Ivy Moss <ivy@umbrella.example>\", \"subject\": \"Which plan are we on?\", \"threadId\": \"19d2c00000000007\", \"to\": \"support@acme.example\"}], \"resultSizeEstimate\": 8}, \"successful\": true, \"error\": null}"
           }
         ]
+      }
+    },
+    "GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID": {
+      "description": "Fetches one Gmail message by its message id (a messageId from a search), with its full body at the default format.",
+      "input": {
+        "type": "object",
+        "required": [
+          "message_id"
+        ],
+        "properties": {
+          "message_id": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "message_id": "19d2c00000000101"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2c00000000101\", \"messageText\": \"Exporting our orders to CSV fails with 'request timed out'.\", \"messageTimestamp\": \"2026-11-10T10:04:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Priya Nair <priya@hooli.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"CSV export never finishes\"}, {\"name\": \"Date\", \"value\": \"Tue, 10 Nov 2026 10:04:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 59, \"data\": \"RXhwb3J0aW5nIG91ciBvcmRlcnMgdG8gQ1NWIGZhaWxzIHdpdGggJ3JlcXVlc3QgdGltZWQgb3V0Jy4\"}}, \"preview\": {\"body\": \"Exporting our orders to CSV fails with 'request timed out'.\", \"subject\": \"CSV export never finishes\"}, \"sender\": \"Priya Nair <priya@hooli.example>\", \"subject\": \"CSV export never finishes\", \"threadId\": \"19d2c00000000001\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2c00000000102"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2c00000000102\", \"messageText\": \"Logging in with Okta sends me back to the login page in a loop.\", \"messageTimestamp\": \"2026-11-11T13:00:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Omar Haddad <omar@soylent.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"SSO keeps redirecting\"}, {\"name\": \"Date\", \"value\": \"Wed, 11 Nov 2026 13:00:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 63, \"data\": \"TG9nZ2luZyBpbiB3aXRoIE9rdGEgc2VuZHMgbWUgYmFjayB0byB0aGUgbG9naW4gcGFnZSBpbiBhIGxvb3Au\"}}, \"preview\": {\"body\": \"Logging in with Okta sends me back to the login page in a loop.\", \"subject\": \"SSO keeps redirecting\"}, \"sender\": \"Omar Haddad <omar@soylent.example>\", \"subject\": \"SSO keeps redirecting\", \"threadId\": \"19d2c00000000002\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2c00000000103"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"IMPORTANT\", \"Label_support\"], \"messageId\": \"19d2c00000000103\", \"messageText\": \"None of our 200 people can log in through SSO. We can't work.\", \"messageTimestamp\": \"2026-11-11T07:40:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Grace Liu <grace.liu@initrode.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"URGENT: whole company locked out\"}, {\"name\": \"Date\", \"value\": \"Wed, 11 Nov 2026 07:40:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 61, \"data\": \"Tm9uZSBvZiBvdXIgMjAwIHBlb3BsZSBjYW4gbG9nIGluIHRocm91Z2ggU1NPLiBXZSBjYW4ndCB3b3JrLg\"}}, \"preview\": {\"body\": \"None of our 200 people can log in through SSO. We can't work.\", \"subject\": \"URGENT: whole company locked out\"}, \"sender\": \"Grace Liu <grace.liu@initrode.example>\", \"subject\": \"URGENT: whole company locked out\", \"threadId\": \"19d2c00000000003\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2c00000000113"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"IMPORTANT\", \"Label_support\"], \"messageId\": \"19d2c00000000113\", \"messageText\": \"Day four and we're still locked out. Nobody has called us back.\", \"messageTimestamp\": \"2026-11-14T08:00:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Grace Liu <grace.liu@initrode.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"Re: URGENT: whole company locked out\"}, {\"name\": \"Date\", \"value\": \"Sat, 14 Nov 2026 08:00:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 63, \"data\": \"RGF5IGZvdXIgYW5kIHdlJ3JlIHN0aWxsIGxvY2tlZCBvdXQuIE5vYm9keSBoYXMgY2FsbGVkIHVzIGJhY2su\"}}, \"preview\": {\"body\": \"Day four and we're still locked out. Nobody has called us back.\", \"subject\": \"Re: URGENT: whole company locked out\"}, \"sender\": \"Grace Liu <grace.liu@initrode.example>\", \"subject\": \"Re: URGENT: whole company locked out\", \"threadId\": \"19d2c00000000003\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2c00000000104"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2c00000000104\", \"messageText\": \"CSV export just hangs. Smaller exports work.\", \"messageTimestamp\": \"2026-11-13T16:45:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Wes Kim <wes@stark.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"export broken?\"}, {\"name\": \"Date\", \"value\": \"Fri, 13 Nov 2026 16:45:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 44, \"data\": \"Q1NWIGV4cG9ydCBqdXN0IGhhbmdzLiBTbWFsbGVyIGV4cG9ydHMgd29yay4\"}}, \"preview\": {\"body\": \"CSV export just hangs. Smaller exports work.\", \"subject\": \"export broken?\"}, \"sender\": \"Wes Kim <wes@stark.example>\", \"subject\": \"export broken?\", \"threadId\": \"19d2c00000000004\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2c00000000105"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2c00000000105\", \"messageText\": \"Our weekly CSV export failed again.\", \"messageTimestamp\": \"2026-11-14T11:10:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Lena Ortiz <lena@wayne.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"Report export timeout\"}, {\"name\": \"Date\", \"value\": \"Sat, 14 Nov 2026 11:10:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 35, \"data\": \"T3VyIHdlZWtseSBDU1YgZXhwb3J0IGZhaWxlZCBhZ2Fpbi4\"}}, \"preview\": {\"body\": \"Our weekly CSV export failed again.\", \"subject\": \"Report export timeout\"}, \"sender\": \"Lena Ortiz <lena@wayne.example>\", \"subject\": \"Report export timeout\", \"threadId\": \"19d2c00000000005\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2c00000000106"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"UNREAD\", \"Label_support\"], \"messageId\": \"19d2c00000000106\", \"messageText\": \"Download as CSV gives a 504 error every time.\", \"messageTimestamp\": \"2026-11-15T09:00:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Ana Silva <ana@pied.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"Can't download my data\"}, {\"name\": \"Date\", \"value\": \"Sun, 15 Nov 2026 09:00:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 45, \"data\": \"RG93bmxvYWQgYXMgQ1NWIGdpdmVzIGEgNTA0IGVycm9yIGV2ZXJ5IHRpbWUu\"}}, \"preview\": {\"body\": \"Download as CSV gives a 504 error every time.\", \"subject\": \"Can't download my data\"}, \"sender\": \"Ana Silva <ana@pied.example>\", \"subject\": \"Can't download my data\", \"threadId\": \"19d2c00000000006\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19d2c00000000107"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"attachmentList\": [], \"display_url\": \"https://mail.google.com/mail/u/0/\", \"labelIds\": [\"INBOX\", \"Label_support\"], \"messageId\": \"19d2c00000000107\", \"messageText\": \"Can you tell me which plan we're billed on and when it renews?\", \"messageTimestamp\": \"2026-11-13T17:00:00Z\", \"payload\": {\"partId\": \"\", \"mimeType\": \"text/plain\", \"filename\": \"\", \"headers\": [{\"name\": \"From\", \"value\": \"Ivy Moss <ivy@umbrella.example>\"}, {\"name\": \"To\", \"value\": \"support@acme.example\"}, {\"name\": \"Subject\", \"value\": \"Which plan are we on?\"}, {\"name\": \"Date\", \"value\": \"Fri, 13 Nov 2026 17:00:00 +0000\"}, {\"name\": \"Content-Type\", \"value\": \"text/plain; charset=\\\"UTF-8\\\"\"}], \"body\": {\"size\": 62, \"data\": \"Q2FuIHlvdSB0ZWxsIG1lIHdoaWNoIHBsYW4gd2UncmUgYmlsbGVkIG9uIGFuZCB3aGVuIGl0IHJlbmV3cz8\"}}, \"preview\": {\"body\": \"Can you tell me which plan we're billed on and when it renews?\", \"subject\": \"Which plan are we on?\"}, \"sender\": \"Ivy Moss <ivy@umbrella.example>\", \"subject\": \"Which plan are we on?\", \"threadId\": \"19d2c00000000007\", \"to\": \"support@acme.example\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Requested entity was not found.\"}"
+          }
+        ],
+        "isError": true
       }
     }
   }
