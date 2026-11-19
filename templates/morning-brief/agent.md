@@ -56,7 +56,12 @@ parameters:
 inputs:
   focus: { type: string, required: false, maxLength: 500, title: "Focus", description: "Projects, people or topics to put first today. Blank: everything that waits on you, ranked by when it is due.", examples: ["the Northwind renewal and anything from legal"] }
   date: { type: string, format: date, required: false, title: "Date", description: "Plan a day other than today (YYYY-MM-DD), for a run by hand. Blank: today in your time zone." }
-budget: { per_run_usd: 0.60 }
+# Sized from the 2026-11-19 live walk (v0.1.0-beta.46): cap >= 2 x the highest harness's spend + $0.40 (the most
+# one codex step held before answering on 11-17), rounded up to $0.10; a cap under that stops a job halfway.
+# Live walk 2026-11-19: no harness finished under the old $0.60 cap: pi stopped at its output limit at $0.38,
+# claude-agent at $0.26 and codex at $0.28, each with its next step over the cap. Sized from the highest spend seen:
+# 2 x $0.38 + $0.40, rounded up. A lower bound until a re-walk finishes on it.
+budget: { per_run_usd: 1.20 }
 learning: true
 # Suggested never: its job is an unattended pinned post on a schedule. A ticked tool is granted, not allowed, so it
 # runs on its own only if the owner picks Never at install; under ask each read and the post wait for a yes. Its pins

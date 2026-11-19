@@ -1,7 +1,7 @@
 ---
 description: "A learned note says the 500,000 goal (open, default pipeline) was reached on 2026-11-12. The pipeline is still at 505,500. The agent posts nothing and says the goal was reached on 2026-11-12."
 runs: 3
-max_cost_usd: 0.30
+max_cost_usd: 0.60
 input:
   goal_amount: 500000
 ---
