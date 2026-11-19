@@ -393,6 +393,31 @@ test("a template that prefers a free model gets the Free tab and the /free/ page
   }
 });
 
+test("learning reads as on for true and for an object of the loop's settings, and says what it keeps", async () => {
+  const root = mkdtempSync(join(tmpdir(), "site-learning-"));
+  const cache = mkdtempSync(join(tmpdir(), "site-cache-"));
+  const outs = [];
+  try {
+    cpSync(fixture, root, { recursive: true });
+    const manifest = join(root, "templates", "sample-watch", "agent.md");
+    const text = readFileSync(manifest, "utf8");
+    for (const [value, on] of [["true", true], ["{ agree_on: [summary_markdown], compile_after: 5 }", true], ["false", false]]) {
+      const changed = text.replace(/^learning: true$/m, `learning: ${value}`);
+      assert.ok(value === "true" || changed !== text, "the fixture has learning: true to replace");
+      writeFileSync(manifest, changed);
+      const out = mkdtempSync(join(tmpdir(), "site-dist-"));
+      outs.push(out);
+      await build({ root, out, sha: SHA, offline: true, cacheDir: cache, log: () => {} });
+      const page = readFileSync(join(out, "templates", "sample-watch", "index.html"), "utf8");
+      const said = /<dt>Learning<\/dt><dd>([^<]*)<\/dd>/.exec(page)?.[1];
+      assert.equal(said, on ? "On: it keeps your corrections and compiles a job it repeats into a workflow." : "Off.", `learning: ${value}`);
+      assert.match(readFileSync(join(out, "templates", "sample-watch.md"), "utf8"), new RegExp(`^- Learning: ${on ? "on" : "off"}$`, "m"), `learning: ${value}`);
+    }
+  } finally {
+    for (const d of [root, cache, ...outs]) rmSync(d, { recursive: true, force: true });
+  }
+});
+
 test("a template proven live shows a logo saying against which accounts and when; a free model is recognised", () => {
   const pkg = { tools: [], triggers: [], mcp: [{ source: "composio", toolkit: "gmail", required: true }, { source: "composio", toolkit: "slack", required: true }], provenLive: "2026-11-20" };
   assert.equal(provenWords(pkg), "Proven live against real Gmail and Slack accounts on 2026-11-20");

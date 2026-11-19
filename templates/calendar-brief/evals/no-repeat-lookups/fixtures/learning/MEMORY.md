@@ -1,1 +1,0 @@
-- [Company notes given](company-notes.md) - outside companies already noted in recent briefs, with the date

@@ -1,0 +1,1 @@
+- The owner said: "We don't bid on frameworks, only single contracts." Leave framework agreements and dynamic purchasing systems out of the report, even as near misses.

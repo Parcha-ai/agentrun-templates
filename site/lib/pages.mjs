@@ -410,7 +410,7 @@ ${crumbNav(trail)}
     ${pkg.mcp.map((need) => html`<dt>${mcpWords(need)} tools${need.required ? "" : " (optional)"}</dt><dd>${need.reason ? html`${need.reason} ` : ""}${need.tools.map((t, k) => html`${k ? ", " : ""}<code>${t}</code>`)}${need.allow.length ? html`. Runs without asking: ${need.allow.map((t, k) => html`${k ? ", " : ""}<code>${t}</code>`)}` : ""}.</dd>`)}
     <dt>Computer</dt><dd>${upperFirst(computerWords(pkg.computer))}${pkg.checkout === "pull_request" ? ", with the pull request checked out read-only" : ""}</dd>
     <dt>Keys</dt><dd>${keys.model}${keys.secrets.length ? html`, plus ${keys.secrets.map((s, k) => html`${k ? ", " : ""}<code>${s}</code>`)}` : ""}.</dd>
-    <dt>Learning</dt><dd>${pkg.learning ? "On: it keeps notes from your corrections and earlier runs." : "Off."}</dd>
+    <dt>Learning</dt><dd>${pkg.learning ? "On: it keeps your corrections and compiles a job it repeats into a workflow." : "Off."}</dd>
     ${pkg.approvals === "never" ? html`<dt>Approvals</dt><dd>Runs unattended: no tool asks. Pins and denials still hold.</dd>` : ""}
   </dl>
 </section>

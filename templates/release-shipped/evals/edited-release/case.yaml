@@ -18,6 +18,7 @@ grants:
   - mcp:github/list_pull_requests
   - mcp:github/pull_request_read
   - mcp:slack/SLACK_SEND_MESSAGE
-# The agent starts with the releases already announced as a learned note (MEMORY.md and its note).
-learning: fixtures/learning
+# The agent starts with the releases already announced as corrections (fixtures/learning/corrections.md, served
+# under # Learned).
+learning: fixtures/learning/corrections.md
 now: 2026-11-14T18:30:00Z

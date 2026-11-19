@@ -1,1 +1,0 @@
-- [Last sprint check](last-check.md) — what the 2026-11-19 check of Cycle 42 flagged

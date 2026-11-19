@@ -1,0 +1,1 @@
+- The owner said: "We only carry Kestrel granola. Their pet treats and frozen stuff aren't ours, don't flag them." Leave out Kestrel notices for products outside the granola line.

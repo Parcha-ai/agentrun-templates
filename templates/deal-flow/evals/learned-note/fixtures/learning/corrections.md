@@ -1,0 +1,1 @@
+- The owner said: "Rounds under $10M aren't news to me." Leave out funding rounds whose disclosed amount is under $10 million. Acquisitions and listings are not affected.

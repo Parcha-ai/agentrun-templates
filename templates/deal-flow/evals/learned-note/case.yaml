@@ -2,4 +2,4 @@
 parameters:
   sector: "industrial robotics"
   lookback_days: 7
-learning: fixtures/learning
+learning: fixtures/learning/corrections.md

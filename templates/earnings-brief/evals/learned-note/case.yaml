@@ -3,4 +3,4 @@ parameters:
   tickers: ["GLOBEX"]
   recap: false
   lookback_days: 7
-learning: fixtures/learning
+learning: fixtures/learning/corrections.md

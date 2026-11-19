@@ -1,1 +1,0 @@
-- [fernpack's package is @fernpack/core](fernpack-core-package.md) — count fernpack's downloads from npm @fernpack/core, not the old fernpack wrapper

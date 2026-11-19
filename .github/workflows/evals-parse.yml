@@ -1,0 +1,31 @@
+# Checks that every template's eval cases still parse under the latest released AgentRun server, the way
+# `agentrun-serve eval-template` reads them before its first run. Nothing runs: no model, no key, no spend.
+# A release can refuse a case field (beta.45 made a case's `learning` one corrections file); the daily run
+# catches that before a user's first eval does, even with no push here.
+name: evals-parse
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      AGENTRUN_TELEMETRY: "0"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.22.3
+      # `latest` is the dist-tag every AgentRun release is published under.
+      - run: npm install --prefix "$RUNNER_TEMP/serve" --no-save --no-audit --no-fund --ignore-scripts @parcha/agentrun-serve@latest
+      - run: node .github/parse-evals.mjs "$RUNNER_TEMP/serve"

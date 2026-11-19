@@ -1,1 +1,0 @@
-- [Paywell legal pages as last seen](paywell.md) — DPA version stamp and key clauses seen 2026-11-09; nothing reported yet

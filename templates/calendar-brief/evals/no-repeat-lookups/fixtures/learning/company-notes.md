@@ -1,6 +1,0 @@
----
-name: Company notes given
-description: Outside companies noted in recent briefs; reuse a note younger than 7 days instead of looking the company up again
-type: project
----
-- 2026-11-16 globex.example: Globex makes inventory software for mid-size retailers; raised a $40M Series B on 2026-10-21 (https://retailwire.example/2026/10/21/globex-series-b).

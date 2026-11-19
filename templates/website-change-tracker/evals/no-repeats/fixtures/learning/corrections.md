@@ -1,0 +1,4 @@
+- quillforge.example as seen 2026-11-09 (test data):
+- pricing (https://quillforge.example/pricing): Starter $0, up to 3 editors, 1 space; Team $49 per user per month billed annually, unlimited editors, 20 spaces, AI search; Business $99 per user per month billed annually, SSO and SCIM, audit log, unlimited spaces. No logo strip; one rotating testimonial.
+- quillforge.example changes reported: none yet.
+- The owner said: "Skip the logo stuff. I only care about plans and prices." Leave out `customers` changes; keep pricing, plan and product changes.

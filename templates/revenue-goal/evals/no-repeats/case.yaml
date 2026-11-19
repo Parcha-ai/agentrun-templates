@@ -12,7 +12,7 @@ grants:
   - mcp:stripe/STRIPE_LIST_BALANCE_TRANSACTIONS
   - mcp:stripe/STRIPE_SEARCH_CHARGES
   - mcp:slack/SLACK_SEND_MESSAGE
-# The agent starts with the goals it already reached as a learned note (MEMORY.md and its note, in the learning
-# folder's format).
-learning: fixtures/learning
+# The agent starts with the goals it already reached as corrections (fixtures/learning/corrections.md, served
+# under # Learned).
+learning: fixtures/learning/corrections.md
 now: 2026-11-20T10:00:00Z

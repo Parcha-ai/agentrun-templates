@@ -3,4 +3,4 @@ parameters:
   subject: "Quillforge"
   app_store_id: "123456789"
   lookback_days: 7
-learning: fixtures/learning
+learning: fixtures/learning/corrections.md

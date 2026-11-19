@@ -1,0 +1,1 @@
+- The owner said on 2026-11-12: "We also run `widget import` on JSON files now, every night." Add it to what their project uses from widget: the import command reading JSON input.

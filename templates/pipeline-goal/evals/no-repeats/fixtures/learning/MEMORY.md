@@ -1,1 +1,0 @@
-- [Goals reached](goals-reached.md) — the pipeline goals already celebrated in Slack

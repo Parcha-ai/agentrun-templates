@@ -224,7 +224,8 @@ export async function loadPackage(entry, ctx) {
     checkout: str(m.checkout),
     secrets: Array.isArray(m.secrets) ? m.secrets.map(String) : [],
     budget: isObj(m.budget) ? m.budget : undefined,
-    learning: m.learning === true,
+    // true, or an object (on, with the loop's settings: agree_on, compile_after), as AgentRun beta.46 takes it.
+    learning: m.learning === true || isObj(m.learning),
     approvals: str(m.approvals),
     triggers: (Array.isArray(m.triggers) ? m.triggers : []).filter(isObj),
     outputSchema,

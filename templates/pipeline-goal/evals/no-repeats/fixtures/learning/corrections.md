@@ -1,0 +1,2 @@
+- Pipeline goal 400000 usd (open, pipeline default) reached on 2026-10-21 (total $402,000)
+- Pipeline goal 500000 usd (open, pipeline default) reached on 2026-11-12 (total $505,500)

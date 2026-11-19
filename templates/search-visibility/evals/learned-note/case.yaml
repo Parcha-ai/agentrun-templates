@@ -2,4 +2,4 @@
 parameters:
   queries: ["scanlane", "invoice ocr api"]
   domain: "scanlane.example"
-learning: fixtures/learning
+learning: fixtures/learning/corrections.md

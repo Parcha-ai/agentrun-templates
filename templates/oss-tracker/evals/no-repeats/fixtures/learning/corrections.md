@@ -1,0 +1,1 @@
+- Since 3.0 the project publishes its code as `@fernpack/core`; the unscoped `fernpack` package is a wrapper kept for old installs, and its downloads shrink as people move. The owner said: "Track @fernpack/core for fernpack's downloads."

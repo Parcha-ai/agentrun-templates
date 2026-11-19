@@ -1,1 +1,0 @@
-- [Last digest](last-digest.md) — the PRs the 2026-11-09 digest listed and who each waited on
