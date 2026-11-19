@@ -1,12 +1,12 @@
 ---
 type: llm
 ---
-Last week's edition (handed to the agent as run history, and in its learned note) used the Controller Pulse 2026 survey
+Last week's edition (handed to the agent as run history) used the Controller Pulse 2026 survey
 and the r/Accounting fake bank-change invoice thread. Both pages are still up; the thread has grown to 2.4k points, which
 is not a new development. New this week: the final e-invoice exchange framework v2 (2026-11-19, effective 2027-03-01,
 twelve networks signed on per the coalition) and Bookwise retiring CSV bill import on 2027-01-31 (changelog entry
-2026-11-18). The Bookwise bank sync entry (2026-11-05) was used in the 2026-11-09 edition. A learned feedback note says
-the owner wants no webinar ideas.
+2026-11-18). The Bookwise bank sync entry (2026-11-05) is older than this week's window (2026-11-16 to 2026-11-23). The owner's
+correction says no webinar ideas.
 
 Read the answer's last fenced `json` block, its `report_markdown` included. Pass only if all hold:
 

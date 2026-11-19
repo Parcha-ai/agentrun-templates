@@ -1,4 +1,1 @@
-- Postings shown 2026-11-16 (test data):
-- Tilda Health, Product Designer (Mid-level), Lisbon hybrid, EUR 48,000 to 58,000, posted 2026-11-15, deadline not stated (https://boards.greenhouse.example/tildahealth/jobs/4410).
-- Corvo Labs, UX/UI Designer, Lisbon onsite, pay not listed, posted 2026-11-14, deadline not stated (https://apply.workable.example/corvolabs/j/7F21).
 - The person said: "Skip anything posted by a recruiter or agency, I only want to apply to employers directly."

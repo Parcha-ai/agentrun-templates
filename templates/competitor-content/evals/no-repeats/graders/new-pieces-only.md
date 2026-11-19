@@ -1,7 +1,7 @@
 ---
 type: llm
 ---
-Window 2026-11-16 to 2026-11-23. Last week's edition (in the learned notes and the run history) reported Payflow's
+Window 2026-11-16 to 2026-11-23. Last week's edition (handed to the agent as run history) reported Payflow's
 e-invoicing article, State of AP report and Northbank webinar, and Billcraft's fake-invoice video and its short "Three
 red flags on a vendor invoice" (2026-11-16). The short is dated inside this week's window too, but it was already
 reported. New this week: Payflow's case study "How Tern Logistics cut invoice exceptions by 40%" (2026-11-18) and

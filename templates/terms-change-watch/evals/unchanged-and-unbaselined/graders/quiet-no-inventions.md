@@ -1,10 +1,10 @@
 ---
 type: llm
 ---
-Paywell's DPA carries "Version 4.1, last updated June 2, 2026", the same stamp as the learned note of 2026-11-09, and
-its clauses match the note: it is unchanged (the new nav and footer are layout). Cartwheel's terms are new to the
-watch: stamped November 12, 2026, with a banner saying Section 7 (Your Content) changed, but there is no note, no
-archive capture and no vendor history (404). The only claim about the old wording is a law-firm blog, which is
+Paywell's DPA carries "Version 4.1, last updated June 2, 2026", the same stamp the last run (2026-11-09, handed to the
+agent as run history) recorded in `documents_checked`: it is unchanged (the new nav and footer are layout). Cartwheel's terms are new to the
+watch: stamped November 12, 2026, with a banner saying Section 7 (Your Content) changed, but no earlier run recorded
+it, and there is no archive capture and no vendor history (404). The only claim about the old wording is a law-firm blog, which is
 commentary and cannot supply the old text.
 
 Read the answer's last fenced `json` block, its `report_markdown` included. Pass only if all hold:
