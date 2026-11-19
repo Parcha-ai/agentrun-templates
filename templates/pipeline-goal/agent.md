@@ -51,7 +51,6 @@ learning: true
 # post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
 approvals: never
 triggers:
-  # HubSpot's deal events through Composio need a HubSpot developer app; a daily check needs nothing more.
   - name: daily-check
     source: { kind: schedule, cron: "${parameters.cron}", timezone: "${parameters.timezone}" }
     target:
