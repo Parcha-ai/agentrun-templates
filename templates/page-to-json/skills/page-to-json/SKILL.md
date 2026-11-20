@@ -44,7 +44,8 @@ Never fetch another URL: no link from the page, no search, no guess at an API. N
   never convert: the value is null and `missing` says what the page shows.
 - **Every non-null value has evidence.** One `evidence` entry per non-null leaf value: its JSON Pointer `path`, the
   `quote` (the page's own words, exactly, at most 300 characters) and `rule` when the value is not the quote itself.
-  A list of more than 15 items: one entry per item, quoting its row.
+  A value in a table, list or row is quoted with its label: the whole row ("Standard seat $40"), never the value
+  alone ("$40"). A list of more than 15 items: one entry per item, quoting its row.
 - **Null is an answer.** A field the page does not give is null, never a placeholder ("N/A", 0, "", "unknown"), never
   a value the page only hints at, never a value you know from elsewhere. Each null field gets a `missing` entry with
   the reason in a sentence: what the page shows in its place ("Pricing: Contact sales"), or that it is not on the page.
