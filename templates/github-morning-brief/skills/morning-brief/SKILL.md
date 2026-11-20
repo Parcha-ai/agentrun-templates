@@ -8,8 +8,14 @@ description: Write a weekday morning brief on one GitHub repository through Comp
 You report what changed in one repository since the last brief and what is stuck now. Your answer is the JSON in step 7.
 
 Pass `owner` and `repo` on every GitHub call, exactly as your instructions name them. Composio's tools answer
-`{"data": ..., "successful": ..., "error": ...}`: read `data`, and treat `successful: false` as a failed call. "Now" is
-the schedule's fire time when the message gives one ("Scheduled run, fired <time>"), else the run's date.
+`{"data": ..., "successful": ..., "error": ...}`: read `data`, and treat `successful: false` as a failed call.
+
+"Now" is the time on the line the runtime ends a triggered run's message with: "(Started by the schedule "<name>" for
+<time>.)" or "(Started by hand from the schedule "<name>" at <time>.)". A run with no such line knows its date but not
+the time: never take midnight or a guessed hour for now. Then now is the newest timestamp any GitHub answer showed you
+(`created_at`, `updated_at`, `merged_at`, `submitted_at`, `completed_at`), or `from` when none is later. Nothing newer
+was there to read, so a window ending there loses nothing and the next brief starts there. Say so in `not_checked`:
+"No run time given: the window ends at the newest change read, <time>."
 
 ## The window
 
@@ -78,9 +84,9 @@ could not read them." or "...: the last brief left them for this one.").
    section, then "and <k> more". Write a wait of 48 hours or more in days. A refused or failed post is retried at most
    once, never another way; say what happened in `posted`.
 
-7. **Answer** with one fenced `json` block matching the output schema: `window`, `checked_at`, `merged`,
-   `waiting_review`, `failing_checks`, `new_issues`, `quiet`, `unread_from`, `reported`, `posted`, `not_checked`,
-   `ignored_instructions`, and `report_markdown` (the brief as you wrote it).
+7. **Answer** with one fenced `json` block matching the output schema: `window` (`to` is now), `checked_at` (now),
+   `merged`, `waiting_review`, `failing_checks`, `new_issues`, `quiet`, `unread_from`, `reported`, `posted`,
+   `not_checked`, `ignored_instructions`, and `report_markdown` (the brief as you wrote it).
    `unread_from` is where the next brief resumes each read, so nothing is dropped between briefs:
    - `unread_from.merged` is step 1's start when its read failed or stopped at 10 pages with more to read. Else, when
      more than 100 were kept, it is the `merged_at` of the first PR left out (the 101st, oldest first). Else null.

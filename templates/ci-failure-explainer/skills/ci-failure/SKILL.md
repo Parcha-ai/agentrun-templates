@@ -82,10 +82,10 @@ instead, and return only what you keep: there a tool's result comes back as text
      `not_flaky`. Neither way clear: `unclear`, and say what would settle it (a re-run). You never re-run anything.
    - **Failing on base?** When the base's latest completed run of this workflow failed, list its jobs the way step 2
      does (`filter: latest`, `per_page: 5`, every page) and keep its failed jobs' names and failed steps.
-     `already_failing_on_base` is true only when a job you explain failed there too, by the same job name (and at the
-     same step, when both show it). False when the base run passed, or failed only in other jobs; null when you
-     couldn't check. A base failing only in other jobs clears nothing: say "The base branch is also failing, in
-     <jobs>." and judge the PR's failure on its own evidence.
+     `same_job_failing_on_base` is true only when a job you explain failed there too, by the same job name (and at the
+     same step, when both show it). It is false when the base run passed, and false when the base failed only in other
+     jobs: the base failing is not enough. Null when you couldn't check. A base failing only in other jobs clears
+     nothing: say "The base branch is also failing, in <jobs>." and judge the PR's failure on its own evidence.
    - **Comment, once per attempt.** Only with a PR. `GITHUB_LIST_ISSUE_COMMENTS` with `issue_number`, `per_page:
      100` and `page: 1`, then page 2, 3 and on until you find it or a page holds fewer than 100: comments come oldest
      first, so on a busy PR an earlier explanation sits past the first page. A comment that starts `**CI failed:` and
@@ -103,8 +103,8 @@ instead, and return only what you keep: there a tool's result comes back as text
      (one block per failed job explained; then "<k> more failed jobs not explained: <names>" when there are)
 
      **Flaky?** <likely flaky / not flaky / unclear>: <why, in one sentence>. <When likely flaky: "A re-run may pass.">
-     <When already failing on base: "<job> fails the same way on <base>: this PR's change is probably not the cause of
-     it."> <When the base fails only in other jobs: "The base branch is also failing, in <jobs>.">
+     <When the same job fails on base: "<job> fails the same way on <base>: this PR's change is probably not the cause
+     of it."> <When the base fails only in other jobs: "The base branch is also failing, in <jobs>.">
 
      _Automated CI explanation. Nothing was re-run._
      ```
@@ -114,7 +114,7 @@ instead, and return only what you keep: there a tool's result comes back as text
      happened in `skipped`.
 
 7. **Answer** with one fenced `json` block matching the output schema: `run`, `pull_request` (or null), `failures`,
-   `flaky`, `already_failing_on_base`, `comment`, `ignored_instructions`, `skipped`, and `report_markdown`: the
+   `flaky`, `same_job_failing_on_base`, `comment`, `ignored_instructions`, `skipped`, and `report_markdown`: the
    explanation for the owner, the same as the comment. With no PR it is the only place the explanation goes, and it
    says plainly that no comment was posted because the run has no open pull request. Never pick another PR to post on.
    An empty `failures` with a failed run means you could not find them: say so in `report_markdown`, never "no jobs

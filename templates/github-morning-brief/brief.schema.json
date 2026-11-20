@@ -15,10 +15,10 @@
       "description": "the time this brief covers; the next brief starts at `to`",
       "properties": {
         "from": { "type": "string", "format": "date-time", "maxLength": 30 },
-        "to": { "type": "string", "format": "date-time", "maxLength": 30 }
+        "to": { "type": "string", "format": "date-time", "maxLength": 30, "description": "now: the time on the runtime's started-by line, else the newest timestamp the reads showed; never a guessed midnight" }
       }
     },
-    "checked_at": { "type": "string", "format": "date-time" },
+    "checked_at": { "type": "string", "format": "date-time", "description": "now, the same time as window.to" },
     "merged": {
       "type": "array",
       "maxItems": 100,

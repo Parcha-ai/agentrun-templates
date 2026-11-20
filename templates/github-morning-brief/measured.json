@@ -1,20 +1,20 @@
 {
-  "median_usd": 0.034,
-  "runs": 12,
+  "median_usd": 0.0404,
+  "runs": 14,
   "model": "openrouter/openai/gpt-6.1-sol",
   "harness": "pi",
   "measured_on": "2026-11-20",
   "passed": {
-    "pi": "6/6",
-    "claude-agent": "6/6",
-    "codex": "6/6"
+    "pi": "7/7",
+    "claude-agent": "7/7",
+    "codex": "7/7"
   },
   "stand_ins": true,
   "build": "0.1.0-beta.47",
-  "note": "Live on a real repository (2026-11-20, pi): passed, read-only. No brief issue was set and the server denied comments, so nothing was posted.",
+  "note": "Live by hand (2026-11-20, pi): passed, read-only; no brief issue was set, so nothing was posted. The run's window end was midnight rather than the run time; fixed after this run.",
   "live": {
     "cases": 1,
-    "median_usd": 0.0399,
+    "median_usd": 0.0424,
     "passed": {
       "pi": "1/1"
     }

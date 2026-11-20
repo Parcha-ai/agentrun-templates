@@ -5,7 +5,7 @@
   "description": "Why one GitHub Actions run failed: each failed job's step, cause, file and line when the log shows them, the evidence lines, whether it looks flaky, and the one comment posted on its pull request or why none was.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["run", "pull_request", "failures", "flaky", "already_failing_on_base", "comment", "ignored_instructions", "skipped", "report_markdown"],
+  "required": ["run", "pull_request", "failures", "flaky", "same_job_failing_on_base", "comment", "ignored_instructions", "skipped", "report_markdown"],
   "properties": {
     "run": {
       "type": "object",
@@ -60,7 +60,7 @@
         "why": { "type": "string", "minLength": 1, "maxLength": 400 }
       }
     },
-    "already_failing_on_base": { "type": ["boolean", "null"], "description": "the same job fails on the base branch's latest run; null when not checked" },
+    "same_job_failing_on_base": { "type": ["boolean", "null"], "description": "true only when a job this answer explains also failed, under the same job name, in the base branch's latest completed run of this workflow; false when that run passed or failed only in other jobs; null when not checked" },
     "comment": {
       "type": "object",
       "additionalProperties": false,

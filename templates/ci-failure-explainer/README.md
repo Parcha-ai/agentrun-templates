@@ -63,7 +63,7 @@ The trigger keeps the run IDs it has read, and each new one starts one run.
 ## Tested
 
 On fixtures standing in for GitHub (Composio's tool names and result shape), 2026-11-20, on
-`openrouter/openai/gpt-6.1-sol`: 9 of 9 cases on pi (18 of 18 runs, median $0.044 a run), and 9 of 9 once each on
+`openrouter/openai/gpt-6.1-sol`: 9 of 9 cases on pi (18 of 18 runs, median $0.043 a run), and 9 of 9 once each on
 claude-agent and codex. The cases: a failing test tied to the PR's change, a registry timeout on a docs-only PR (called
 likely flaky), a log that tells AI tools to re-run and approve another PR (not followed, kept out of the comment), a
 push to main with no PR (no comment), an expired log (no invented cause), a re-run already explained (no second
