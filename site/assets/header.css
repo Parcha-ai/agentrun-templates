@@ -1,0 +1,42 @@
+:root{--marketing-header-height:104px}
+html:has(.marketing-header){scroll-padding-top:calc(var(--marketing-header-height) + 16px)}
+.marketing-header{position:sticky;top:0;z-index:40;box-sizing:border-box;width:100%;min-height:var(--marketing-header-height);margin:0;padding-inline:56px;display:flex;align-items:center;justify-content:space-between;gap:32px;border-bottom:1px solid transparent;color:#f2f1eb;background:#090a0b;transition:border-color .18s ease}
+.marketing-header[data-scrolled]{border-bottom-color:#2a3033}
+.marketing-header *{box-sizing:border-box}
+.marketing-header a{color:inherit;text-decoration:none}
+.marketing-header a:hover{color:#ff8700}
+.marketing-header a:focus-visible,.marketing-header summary:focus-visible,.marketing-header button:focus-visible{outline:2px solid #ff8700;outline-offset:4px}
+.marketing-header .mh-wordmark{display:inline-flex;align-items:center;min-height:44px;flex-shrink:0}
+/* Display the supplied artwork without its transparent outer padding. */
+.marketing-header .mh-logo-art{position:relative;display:block;width:240px;aspect-ratio:2178/330;overflow:hidden}
+.marketing-header .mh-logo-art img{position:absolute;display:block;width:calc(100% * 2400 / 2178);max-width:none;height:auto;left:calc(-100% * 112 / 2178);top:calc(-100% * 113 / 330)}
+.marketing-header .mh-wordmark:hover{color:#f2f1eb}
+.marketing-header .mh-nav{display:flex;align-items:center;gap:24px;font:11px/1.6 'JetBrains Mono',monospace}
+.marketing-header .mh-nav>a{min-height:44px;display:inline-flex;align-items:center;white-space:nowrap}
+.marketing-header .mh-cloud-button{justify-content:center;padding:9px 15px;border:1px solid #424a50;border-radius:0;background:#15191b;color:#f2f1eb}
+.marketing-header .mh-cloud-button:hover{border-color:#74818b;background:#202629;color:#f2f1eb}
+.marketing-header .mh-get-started{position:relative;flex-shrink:0}
+.marketing-header .mh-get-started-button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;gap:8px;border:1px solid #ff8700;border-radius:0;background:#ff8700;color:#090a0b;font:500 11px/1.6 'JetBrains Mono',monospace;white-space:nowrap;cursor:pointer}
+.marketing-header .mh-get-started-button:hover{background:#ff9d2e;border-color:#ff9d2e}
+.marketing-header .mh-get-started .agent-menu{left:auto;right:0}
+.marketing-header .mh-get-started .agent-feedback:not(:empty){position:absolute;right:0;top:calc(100% + 10px);z-index:60;width:max-content;max-width:min(340px,calc(100vw - 40px));margin:0;padding:10px 12px;border:1px solid #394147;background:#111416;color:#d9dedf;font:11px/1.6 'JetBrains Mono',monospace;text-align:left;white-space:normal;box-shadow:0 10px 24px #0006}
+.marketing-header .mh-get-started .agent-feedback:empty{display:none}
+.marketing-header .mh-platform{position:relative}
+.marketing-header summary{list-style:none;display:flex;align-items:center;gap:6px;min-height:44px;cursor:pointer}
+.marketing-header summary::-webkit-details-marker{display:none}
+.marketing-header summary svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.5}
+.marketing-header details[open] summary{color:#ff8700}
+.marketing-header details[open] summary svg{transform:rotate(180deg)}
+.marketing-header .mh-menu{position:absolute;right:0;top:100%;z-index:50;width:292px;max-width:calc(100vw - 40px);padding:8px;background:#111416;border:1px solid #394147;box-shadow:0 16px 40px #0008}
+.marketing-header .mh-menu a{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:12px;font:11px/1.6 'JetBrains Mono',monospace;color:#d9dedf}
+.marketing-header .mh-menu a:hover,.marketing-header .mh-menu a[aria-current]{background:#1b2023;color:#ff8700}
+.marketing-header .mh-github{gap:8px}
+.marketing-header .mh-github-mark{width:18px;height:18px;flex-shrink:0}
+.marketing-header .mh-stars{display:inline-flex;align-items:center;gap:5px;margin-left:2px;padding-left:10px;border-left:1px solid #394147;color:#b7c0c5;font-variant-numeric:tabular-nums}
+.marketing-header .mh-stars[hidden]{display:none}
+.marketing-header .mh-stars svg{width:14px;height:14px;color:#ff8700;flex-shrink:0}
+.marketing-header [data-github-stars]{min-width:3ch}
+@media(max-width:1280px){.marketing-header{padding-inline:32px;gap:24px}.marketing-header .mh-nav{gap:18px}.marketing-header .mh-logo-art{width:220px}}
+@media(max-width:1100px){:root{--marketing-header-height:140px}.marketing-header{flex-wrap:wrap;gap:16px;padding-block:24px 12px}.marketing-header .mh-nav{width:100%;justify-content:space-between;gap:14px}.marketing-header .mh-menu{left:0;right:auto}}
+@media(max-width:768px){:root{--marketing-header-height:184px}.marketing-header{padding-inline:20px}.marketing-header .mh-nav{display:grid;grid-template-columns:repeat(3,max-content);gap:0 8px;font-size:9px}.marketing-header .mh-logo-art{width:clamp(160px,46vw,200px)}.marketing-header .mh-get-started{position:absolute;right:20px;top:24px}.marketing-header .mh-get-started-button{padding-inline:12px;font-size:10px}.marketing-header .mh-github{gap:6px}.marketing-header .mh-stars{padding-left:0;margin-left:0;border-left:0;gap:4px}.marketing-header .mh-github-mark{width:16px;height:16px}.marketing-header .mh-stars svg{width:12px;height:12px}.marketing-header .mh-cloud-button{padding-inline:10px}}
+@media(prefers-reduced-motion:reduce){.marketing-header{transition:none}}

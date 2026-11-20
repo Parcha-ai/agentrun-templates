@@ -1,5 +1,6 @@
 // The pages: each is real HTML a crawler reads (no client-side rendering), plus a Markdown twin with the same content.
 
+import { marketingHeader, marketingOnboarding } from "./header.mjs";
 import { CATEGORY_TEXT, computerWords, factsShort, isFree, isTriggered, keyWords, mcpWords, modelChoices, modelWords, requirements, testedLine, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
 import { markdownToHtml } from "./markdown.mjs";
 import { clip, html, mdCode, mdText, plural, raw, upperFirst } from "./util.mjs";
@@ -9,9 +10,8 @@ const PLATFORM = "AgentRun is an open-source platform for running agents: it add
 
 // ---------- shared frame ----------
 
-// agentrun.ai's product mark and the GitHub mark, inline so the header needs no image request.
+// The website's product mark, used beside the footer wordmark.
 const MARK = '<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" fill="#ff8000"/><path d="M12 9l11 7-11 7z" fill="#000"/></svg>';
-const GITHUB_MARK = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297a12 12 0 0 0-3.793 23.385c.6.111.82-.261.82-.577 0-.285-.011-1.04-.017-2.04-3.338.724-4.043-1.61-4.043-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.839 1.237 1.839 1.237 1.07 1.835 2.807 1.305 3.492.998.108-.776.418-1.305.762-1.605-2.665-.303-5.467-1.334-5.467-5.931 0-1.31.469-2.381 1.236-3.221-.124-.303-.536-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.5 11.5 0 0 1 3.003-.404c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.652.243 2.873.119 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.625-5.479 5.922.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .319.216.694.825.576A12.001 12.001 0 0 0 12 .297Z"/></svg>';
 
 function jsonLdTag(data) {
   return raw(`<script type="application/ld+json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`);
@@ -27,7 +27,7 @@ export function layout(site, page) {
 <meta name="description" content="${page.description}">
 ${page.noindex ? "" : html`<link rel="canonical" href="${url}">`}
 ${page.mdPath ? html`<link rel="alternate" type="text/markdown" href="${page.mdPath}" title="This page as Markdown">` : ""}
-<meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="dark">
 ${page.noindex ? raw('<meta name="robots" content="noindex">') : ""}
 <meta property="og:site_name" content="${SITE_NAME}">
 <meta property="og:type" content="${page.ogType ?? "website"}">
@@ -40,32 +40,28 @@ ${page.noindex ? "" : html`<meta property="og:url" content="${url}">`}
 <meta name="twitter:description" content="${page.description}">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/jetbrains-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/schibsted-grotesk-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css?v=${site.assetVersion}">
+<link rel="stylesheet" href="/homepage/onboarding.css?v=${site.assetVersion}">
+<link rel="stylesheet" href="/assets/header.css?v=${site.assetVersion}">
 ${page.jsonLd ? jsonLdTag(page.jsonLd) : ""}
-<script src="/assets/site.js?v=${site.assetVersion}" defer></script>
+<script type="module" src="/assets/site.js?v=${site.assetVersion}"></script>
+<script type="module" src="/assets/header.js?v=${site.assetVersion}"></script>
+${page.templatePrompt ? html`<script src="/assets/template-prompt.js?v=${site.assetVersion}" defer></script>` : ""}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="top">
-  <div class="wrap top-row">
-    <a class="brand" href="/" aria-label="AgentRun Marketplace home">${raw(MARK)}agent<span class="brand-run">.run()</span><span class="brand-sub">Marketplace</span></a>
-    <nav aria-label="Site">
-      <a href="/"${page.nav === "home" ? raw(' aria-current="page"') : ""}>Templates</a>
-      <a href="/list-your-template/"${page.nav === "list" ? raw(' aria-current="page"') : ""}>List your template</a>
-      <a href="https://agentrun.ai/docs">Docs</a>
-      <a href="${site.repoUrl}">${raw(GITHUB_MARK)}GitHub</a>
-    </nav>
-  </div>
-</header>
-<main id="main" class="wrap${page.mainClass ? ` ${page.mainClass}` : ""}">
+${marketingHeader()}
+<noscript><p class="wrap">Get started with the <a href="https://agentrun.ai/docs/quickstart">AgentRun quickstart</a>.</p></noscript>
+<main id="main" tabindex="-1" class="wrap${page.mainClass ? ` ${page.mainClass}` : ""}">
 ${page.body}
 </main>
 <footer class="foot">
   <div class="wrap">
     <div class="foot-layout">
       <div class="foot-brand">
-        <a class="brand" href="https://agentrun.ai/" aria-label="AgentRun">${raw(MARK)}agent<span class="brand-run">.run()</span></a>
+        <a class="brand" href="https://agentrun.ai/" aria-label="AgentRun">${raw(MARK)}agent.<span class="brand-run">run</span>()</a>
         <p>${PLATFORM}</p>
       </div>
       <nav class="foot-cols" aria-label="Footer">
@@ -95,6 +91,7 @@ ${page.body}
     </div>
   </div>
 </footer>
+${marketingOnboarding()}
 </body>
 </html>`}\n`;
 }
@@ -157,9 +154,12 @@ function tabs(packages, current) {
 /** Title, one line, the tabs, search, and the cards: the same frame on the home page, the free page and each category. */
 function gallery(site, { title, lead, current, all, shown }) {
   return html`
-<section class="hero${current === "all" ? " hero-home" : ""}">
-  <h1>${title}</h1>
-  <p class="lead">${lead}</p>
+<section class="hero gallery-hero${current === "all" ? " hero-home" : ""}">
+  <div class="gallery-heading">
+    <h1>${title}</h1>
+    <p class="lead">${lead}</p>
+  </div>
+  <a class="btn btn-sm gallery-action" href="/list-your-template/">List your template</a>
 </section>
 
 <section aria-label="Templates" class="gallery">
@@ -179,7 +179,7 @@ function gallery(site, { title, lead, current, all, shown }) {
 
 export function homePage(site, packages) {
   const cats = Object.keys(CATEGORY_TEXT).filter((c) => packages.some((p) => p.category === c));
-  const body = html`${gallery(site, { title: "Agents that already do a job", lead: "Working agents for your own AgentRun. Read every instruction, install one, and it runs.", current: "all", all: packages, shown: packages })}
+  const body = html`${gallery(site, { title: "Marketplace", lead: "Working agents for your own AgentRun. Read every instruction, install one, and it runs.", current: "all", all: packages, shown: packages })}
 
 <section aria-labelledby="what" class="prose-block">
   <h2 id="what" class="caps section-label">What is in a template</h2>
@@ -355,6 +355,20 @@ function sampleSection(pkg) {
   });
 }
 
+function installPrompt(pkg) {
+  return [
+    `Help me install the ${pkg.displayName} template on my existing AgentRun.`,
+    "",
+    `Pinned template source: ${pkg.installSource}`,
+    `Read the template and its instructions: ${pkg.treeUrl}`,
+    "",
+    "Ask for my AgentRun address or local installation directory if you do not already know it. Confirm which instance to use before making changes.",
+    "Read https://agentrun.ai/SKILL.md and inspect the installed version's template install help. Use the installation workflow that version supports.",
+    "Review this template's setup, instructions and requested tools with me, then install the pinned version on that instance with the settings and permissions I approve. Do not start a second instance or redeploy my existing one.",
+    "If this version cannot install templates, explain what is missing and the supported next step. Verify the result and tell me how to run the installed agent.",
+  ].join("\n");
+}
+
 export function templatePage(site, pkg, stats) {
   const path = `/templates/${pkg.name}/`;
   const cat = CATEGORY_TEXT[pkg.category];
@@ -364,6 +378,7 @@ export function templatePage(site, pkg, stats) {
   const triggers = triggerLines(pkg);
   // npx: a stranger has no global `agentrun`. --trust: a server's first package from a publisher is refused without it.
   const cli = `npx @parcha/agentrun template install ${pkg.installSource} --trust`;
+  const prompt = installPrompt(pkg);
   const shortSha = pkg.sha.slice(0, 7);
   const body = html`
 ${crumbNav(trail)}
@@ -378,7 +393,16 @@ ${crumbNav(trail)}
   ${pkg.setup ? html`<p class="setup">${pkg.setup}</p>` : ""}
   ${pkg.guide ? html`<p class="guide"><a href="${pkg.guide}">The setup guide</a> walks you through it step by step.</p>` : ""}
   ${unprovenWords(pkg) ? html`<p class="unproven">${unprovenWords(pkg)}</p>` : ""}
-  <p><button type="button" class="btn btn-solid" data-install="${pkg.installSource}" hidden>Install on your AgentRun</button> <button type="button" class="btn btn-ghost" data-install-forget hidden>Change address</button></p>
+  <div class="install-actions">
+    <button type="button" class="btn btn-solid" data-install="${pkg.installSource}" hidden>Install on your AgentRun</button>
+    <div class="agent-onboarding template-onboarding" data-template-onboarding>
+      <button type="button" class="btn template-prompt-trigger" data-template-picker aria-haspopup="menu" aria-expanded="false" aria-controls="template-agent-menu" hidden>Install with your agent <span aria-hidden="true">⌄</span></button>
+      <div class="agent-menu template-agent-menu" id="template-agent-menu" role="menu" aria-label="Choose your agent" hidden></div>
+    </div>
+    <button type="button" class="btn btn-ghost" data-install-forget hidden>Change address</button>
+  </div>
+  <p class="agent-feedback" role="status" data-template-feedback></p>
+  <details data-template-prompt-fallback><summary>View installation prompt</summary><pre class="code template-prompt-text"><code>${prompt}</code></pre></details>
   <p class="meta" data-install-address></p>
   <p class="or">Or from a terminal on the machine where your AgentRun runs:</p>
   <div class="cmd"><pre class="code"><code>${cli}</code></pre><button type="button" class="btn btn-sm" data-copy="${cli}" hidden>Copy</button></div>
@@ -396,6 +420,18 @@ ${crumbNav(trail)}
     <p class="row"><button type="submit" class="btn btn-solid" value="ok">Open the install screen</button> <button type="button" class="btn" data-install-cancel>Cancel</button></p>
     <p class="meta">No AgentRun yet? <code>npx @parcha/agentrun</code> starts one on your machine.</p>
   </form>
+</dialog>
+
+<dialog class="setup-dialog" data-template-prompt-dialog aria-labelledby="template-prompt-title">
+  <div class="setup-dialog-top"><span>AGENT.RUN() / INSTALL TEMPLATE</span><button class="setup-close" type="button" data-template-prompt-close aria-label="Close installation prompt" autofocus>×</button></div>
+  <div class="setup-dialog-content">
+    <h2 id="template-prompt-title">Install ${pkg.displayName} with your agent.</h2>
+    <p>Give your coding agent this prompt to install the template on your existing AgentRun.</p>
+    <div class="setup-actions"><button class="button primary" type="button" data-template-prompt-copy>Copy prompt</button><button class="button outline" type="button" data-template-prompt-download>Download Markdown</button></div>
+    <p class="setup-status" role="status" data-template-prompt-status></p>
+    <textarea aria-label="Template installation prompt" readonly spellcheck="false">${prompt}</textarea>
+    <div class="setup-source"><a href="${pkg.treeUrl}">Read the template source</a></div>
+  </div>
 </dialog>
 
 <section aria-labelledby="sample">
@@ -489,6 +525,7 @@ ${crumbNav(trail)}
     mdPath: `/templates/${pkg.name}.md`,
     ogType: "article",
     mainClass: "tpl-main",
+    templatePrompt: true,
     title: `${clip(pkg.displayName, 50)}: AgentRun template`,
     ogTitle: pkg.displayName,
     // The search snippet: what it does (its first sentence), then the eval line, inside 158 characters.
@@ -532,6 +569,14 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
     "```",
     "",
     `Or open \`<your AgentRun address>/#/templates/install?src=${encodeURIComponent(pkg.installSource)}\`. Pinned to commit ${pkg.sha}.`,
+    "",
+    "### Install with your agent",
+    "",
+    "Copy this prompt into your coding agent:",
+    "",
+    "```text",
+    installPrompt(pkg),
+    "```",
     "",
     "## What it does",
     "",

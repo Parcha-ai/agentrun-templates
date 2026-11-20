@@ -32,7 +32,7 @@ export const SECURITY_HEADERS = {
 
 const TYPES = {
   ".html": "text/html; charset=utf-8", ".md": "text/markdown; charset=utf-8", ".txt": "text/plain; charset=utf-8",
-  ".json": "application/json", ".xml": "application/xml", ".css": "text/css", ".js": "text/javascript", ".svg": "image/svg+xml", ".woff2": "font/woff2",
+  ".json": "application/json", ".xml": "application/xml", ".css": "text/css", ".js": "text/javascript", ".svg": "image/svg+xml", ".png": "image/png", ".woff2": "font/woff2",
 };
 
 /** How long a browser may keep a file: assets a day (css and js carry a ?v= of their content), pages five minutes. */

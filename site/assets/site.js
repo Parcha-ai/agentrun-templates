@@ -1,5 +1,9 @@
-// The only script on the site, and every page reads fine without it: search filters the cards already on the page,
-// the Install button opens <your AgentRun>/#/templates/install?src=..., Copy copies the CLI line.
+// Every page reads fine without this script: search filters existing cards,
+// Install opens the reader's AgentRun, and Copy copies the CLI line.
+const addressModule = new URL("./install-address.js", import.meta.url);
+addressModule.search = new URL(import.meta.url).search;
+const { normalizeInstallAddress, templateInstallUrl } = await import(addressModule);
+
 (() => {
   "use strict";
   const KEY = "agentrun.marketplace.address";
@@ -58,22 +62,16 @@
   }
 
   // ---------- install ----------
-  const read = () => { try { return localStorage.getItem(KEY); } catch { return null; } };
   const save = (v) => { try { v ? localStorage.setItem(KEY, v) : localStorage.removeItem(KEY); } catch { /* private mode */ } };
-
-  /** A base URL the reader typed: http(s) only, no query or fragment, trailing slash dropped. */
-  const normalize = (text) => {
-    let t = String(text || "").trim();
-    if (!t) return null;
-    if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(t)) t = `https://${t}`;
-    let u;
-    try { u = new URL(t); } catch { return null; }
-    if (u.protocol !== "https:" && u.protocol !== "http:") return null;
-    if (u.username || u.password) return null;
-    return `${u.origin}${u.pathname.replace(/\/+$/, "")}`;
+  const read = () => {
+    try {
+      const saved = localStorage.getItem(KEY);
+      const address = normalizeInstallAddress(saved);
+      if (saved && saved !== address) save(address);
+      return address;
+    } catch { return null; }
   };
 
-  const installUrl = (address, src) => `${address}/#/templates/install?src=${encodeURIComponent(src)}`;
   const button = document.querySelector("[data-install]");
   const forget = document.querySelector("[data-install-forget]");
   const where = document.querySelector("[data-install-address]");
@@ -94,8 +92,10 @@
       button.textContent = host ? `Install on ${host}` : "Install on your AgentRun";
     };
     const go = (address) => {
+      const href = templateInstallUrl(address, src);
+      if (!href) return;
       const a = document.createElement("a");
-      a.href = installUrl(address, src);
+      a.href = href;
       a.target = "_blank";
       a.rel = "noopener noreferrer";
       a.click();
@@ -119,7 +119,7 @@
       input.focus();
     });
     form.addEventListener("submit", (e) => {
-      const a = normalize(input.value);
+      const a = normalizeInstallAddress(input.value);
       if (!a) {
         e.preventDefault();
         error.textContent = "That is not an address. Type the one you open your AgentRun at, like agentrun.example.com.";
