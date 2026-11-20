@@ -38,7 +38,7 @@ undisclosed client", never guessed.
 
 - New: the skill's step 3 rule, and only that one: posted, reopened or refreshed inside the window, with its real date.
   A posting dated before the window's start is not new.
-- Shown before: only what the last run's `watched` holds, at most the 25 postings shown most recently. That is a real
+- Shown before: only what the last run's `watched` holds, at most the 40 postings shown most recently. That is a real
   limit, not a choice: a posting shown before those is not known, and when it is reopened or refreshed it is reported
   again. It holds until the runtime hands a run only the fields it carries.
 - Stale: older than about 30 days with no refresh. Dropped.
