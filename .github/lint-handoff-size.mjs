@@ -12,10 +12,10 @@
 //   counts maxLength in grapheme clusters, and one cluster takes any number of combining marks, so maxLength alone
 //   bounds nothing: such a string is counted at 6 B a character and reported. A carried string is bounded by its
 //   `pattern`, which runs with the `u` flag and so counts code points: an anchored sequence of classes, escapes and
-//   literals with bounded quantifiers ({n}, {m,n}, ?). Each code point is counted at the most it can take: 6 for a
-//   control character or a lone surrogate (written \u00XX, \uDXXX), 4 for any other in a negated class or `.`, and in a
-//   listed class or literal its own size (a quote or backslash 2, ASCII 1). `format: date` is 10 ASCII characters, and
-//   `format: date-time` (ASCII by its own rule) is its maxLength;
+//   literals with bounded quantifiers ({n}, {m,n}, ?), any `|` inside a group. Each code point is counted at the most
+//   it can take: 6 for a control character or a lone surrogate (written \u00XX, \uDXXX), 4 for any other in a negated
+//   class or `.`, and in a listed class or literal its own size (a quote or backslash 2, ASCII 1). `format: date` is 10
+//   ASCII characters, and `format: date-time` (ASCII by its own rule) is its maxLength;
 // - the carried fields must fit CARRIED_BUDGET_BYTES: under half the limit, so the run's own output (its report, its
 //   items) keeps the larger part, about 20 KB;
 // - inside a carried field, a string with no such bound, an array with no maxItems, or an object open to more keys (no
@@ -61,7 +61,8 @@ function largest(schema, root, path, problems) {
 
 const inferred = (schema) => (schema.properties ? ["object"] : schema.items ? ["array"] : []);
 const size = (value) => Buffer.byteLength(JSON.stringify(value) ?? "");
-const widest = (values) => values.reduce((best, value) => (size(value) > size(best) ? value : best), null);
+// No seed: a null seed (4 B) would beat a string of one or two bytes.
+const widest = (values) => values.reduce((best, value) => (size(value) > size(best) ? value : best));
 
 function largestOf(type, schema, root, path, problems) {
   switch (type) {
@@ -233,7 +234,9 @@ function patternBytes(pattern) {
     }
     return most;
   };
-  const bytes = alternation();
+  // A `|` outside every group splits the anchors: `^a|b$` is `^a` or `b$`, and either half matches any tail or head.
+  const bytes = sequence();
+  if (peek() === "|") throw new Error("not anchored at both ends: | outside a group (write ^(?:a|b)$)");
   if (i !== src.length) throw new Error(`unmatched ${src[i]}`);
   return bytes;
 }
