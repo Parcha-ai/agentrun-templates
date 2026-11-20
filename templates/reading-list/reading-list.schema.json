@@ -55,7 +55,7 @@
           "url": { "type": "string" },
           "title": { "type": "string", "maxLength": 200 },
           "status": { "enum": ["read", "unreachable", "not_a_feed"] },
-          "items_in_window": { "type": "integer", "minimum": 0 },
+          "items_in_window": { "type": ["integer", "null"], "minimum": 0, "description": "null when the feed was not read (unreachable or not_a_feed): nothing was counted" },
           "note": { "type": "string", "maxLength": 300, "description": "for unreachable or not_a_feed: the error or what came back" }
         }
       }

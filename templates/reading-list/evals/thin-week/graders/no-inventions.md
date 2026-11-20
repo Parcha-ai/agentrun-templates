@@ -11,7 +11,7 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
 1. **One pick.** `picks` holds the load-shedding post alone (the conference recap may be absent; any other pick fails),
    with its opsreview.example link.
 2. **Feeds said.** `feeds` gives dbweekly `unreachable` (or `not_a_feed`) and ferrous-notes `not_a_feed` (or
-   `unreachable`), each with `items_in_window` 0, and the report names both as not read.
+   `unreachable`), each with `items_in_window` null or 0, and the report names both as not read.
 3. **Not quiet.** `quiet` is false.
 4. **Nothing invented.** No pick, title or link appears that the opsreview feed does not hold; no item is credited to
    dbweekly or ferrous-notes.

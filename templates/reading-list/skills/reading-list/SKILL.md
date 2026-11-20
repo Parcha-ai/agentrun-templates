@@ -30,7 +30,7 @@ A feed is XML. RSS items are `<item>` with `<title>`, `<link>`, `<pubDate>` (or 
 entries are `<entry>` with `<title>`, `<link href="...">`, `<published>` or `<updated>`, and `<summary>` or `<content>`.
 Take each item's title, link, date and summary as written. A result that is an HTML page, an error page or empty is
 `not_a_feed` (say what came back); a fetch that failed is `unreachable` (the error in its words). Both go in `feeds`
-with `items_in_window` 0, and the report says so. Never guess a feed's items.
+with `items_in_window` null (nothing was counted: never 0), and the report says so. Never guess a feed's items.
 
 ## Choosing
 
