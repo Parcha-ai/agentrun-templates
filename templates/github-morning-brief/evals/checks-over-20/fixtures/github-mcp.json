@@ -1,0 +1,570 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater on Friday 2026-11-20 08:00 UTC: nothing merged, no new issues; open PR #150 with 130 check runs, 100 a page, 23 of them failing or timed out (15 on page 1, 8 on page 2), and brief issue #40. Composio's slugs and {data, successful, error} results, acme/tidewater only. Every write answers success. It never reaches GitHub.",
+  "tools": {
+    "GITHUB_LIST_PULL_REQUESTS": {
+      "description": "Lists pull requests for a GitHub repository. REQUIRES 'owner' AND 'repo' parameters - both are MANDATORY and must be provided in every call. Does NOT support filtering by assignee or date range - use GITHUB_FIND_PULL_REQUESTS instead for searching PRs by assignee, author, or across multiple reposito",
+      "input": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string",
+            "description": "Filter by base branch name."
+          },
+          "head": {
+            "type": "string",
+            "description": "Filter by head user/org and branch name, e.g., `user:ref-name`."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number for results."
+          },
+          "repo": {
+            "type": "string",
+            "description": "[REQUIRED - MUST BE PROVIDED] The name of the repository (without the `.git` extension). This parameter is mandatory and cannot be omitted. Example: 'Spoon-Knif"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sorts results. Valid values: 'created', 'updated', 'popularity', 'long-running'. 'popularity' is by comment count; 'long-running' by age and recent activity."
+          },
+          "owner": {
+            "type": "string",
+            "description": "[REQUIRED - MUST BE PROVIDED] The GitHub username or organization name that owns the repository. This parameter is mandatory and cannot be omitted. Example: 'oc"
+          },
+          "state": {
+            "type": "string",
+            "description": "Filter by pull request state. Valid values: 'open', 'closed', 'all'."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page (maximum 100)."
+          },
+          "direction": {
+            "type": "string",
+            "description": "Sort direction. Valid values: 'asc', 'desc'. Defaults to 'desc' if sort is 'created' or unspecified, else 'asc'."
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "state": "closed",
+              "page": 1
+            },
+            {
+              "state": "closed",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "closed",
+              "page": 2
+            },
+            {
+              "state": "closed",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "state": "closed"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "open",
+              "page": 1
+            },
+            {
+              "state": "open",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 150, \"title\": \"Add Python 3.14 to the test matrix\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"ana-r\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/150\", \"body\": \"\", \"created_at\": \"2026-11-19T09:00:00Z\", \"updated_at\": \"2026-11-19T15:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-150\", \"sha\": \"0150ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [{\"login\": \"bob\", \"type\": \"User\"}], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "open",
+              "page": 2
+            },
+            {
+              "state": "open",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "state": "open"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 150, \"title\": \"Add Python 3.14 to the test matrix\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"ana-r\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/150\", \"body\": \"\", \"created_at\": \"2026-11-19T09:00:00Z\", \"updated_at\": \"2026-11-19T15:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-150\", \"sha\": \"0150ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [{\"login\": \"bob\", \"type\": \"User\"}], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "state": "all"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 150, \"title\": \"Add Python 3.14 to the test matrix\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"ana-r\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/150\", \"body\": \"\", \"created_at\": \"2026-11-19T09:00:00Z\", \"updated_at\": \"2026-11-19T15:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-150\", \"sha\": \"0150ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [{\"login\": \"bob\", \"type\": \"User\"}], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [{\"number\": 150, \"title\": \"Add Python 3.14 to the test matrix\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"ana-r\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/150\", \"body\": \"\", \"created_at\": \"2026-11-19T09:00:00Z\", \"updated_at\": \"2026-11-19T15:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-150\", \"sha\": \"0150ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [{\"login\": \"bob\", \"type\": \"User\"}], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST": {
+      "description": "Lists submitted reviews chronologically for a specific pull request within a GitHub repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "The page number for the set of results to retrieve."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension. This name is not case sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (e.g., a GitHub username or organization name). This name is not case sensitive."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "The number of review results to display per page. Maximum 100."
+          },
+          "pull_number": {
+            "type": "integer",
+            "description": "The unique number identifying the pull request within the repository."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 150,
+              "page": 1
+            },
+            {
+              "pull_number": "150",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 150,
+              "page": 2
+            },
+            {
+              "pull_number": "150",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 150
+            },
+            {
+              "pull_number": "150"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_CHECK_RUNS_FOR_A_REF": {
+      "description": "List GitHub check runs for a commit SHA, branch, or tag to assess CI status and conclusions. Results default to the latest runs; the filter can be set to include all runs.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "ref": {
+            "type": "string",
+            "description": "The git reference - can be a commit SHA, branch name, or tag name."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number of results to fetch."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository without .git extension. Case-insensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (username or organization name). Case-insensitive."
+          },
+          "app_id": {
+            "type": "integer",
+            "description": "Filter by GitHub App identifier."
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter by completion timestamp: 'latest' returns the most recent check runs, 'all' returns all check runs."
+          },
+          "status": {
+            "type": "string",
+            "description": "Filter by check run status: queued, in_progress, or completed."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page, maximum 100."
+          },
+          "check_name": {
+            "type": "string",
+            "description": "Filters results to check runs with the specified name."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "ref"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "ref": "0150ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 1
+            },
+            {
+              "ref": "0150ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 130, \"check_runs\": [{\"id\": 206339972, \"name\": \"test (py-3.11, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50289246\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 901858113, \"name\": \"test (py-3.11, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50465053\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 582637314, \"name\": \"test (py-3.11, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50309916\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1188772555, \"name\": \"test (py-3.11, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50886171\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1369452168, \"name\": \"test (py-3.11, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50153946\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1747784269, \"name\": \"test (py-3.11, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50757913\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2136344078, \"name\": \"test (py-3.11, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50553688\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2700069343, \"name\": \"test (py-3.11, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50668119\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3079986588, \"name\": \"test (py-3.11, ubuntu, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50272726\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1433160872, \"name\": \"test (py-3.11, ubuntu, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50063827\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3325886170, \"name\": \"test (py-3.11, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50925321\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4289839647, \"name\": \"test (py-3.11, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50606858\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3905607260, \"name\": \"test (py-3.11, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50094091\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2360064917, \"name\": \"test (py-3.11, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50942412\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2614144982, \"name\": \"test (py-3.11, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50459213\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2724041491, \"name\": \"test (py-3.11, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50664014\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3039201104, \"name\": \"test (py-3.11, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50200335\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1788823681, \"name\": \"test (py-3.11, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50297792\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2112117954, \"name\": \"test (py-3.11, macos, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50150401\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3648340186, \"name\": \"test (py-3.11, macos, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50218735\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3313977804, \"name\": \"test (py-3.11, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50409263\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4228543753, \"name\": \"test (py-3.11, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50386540\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3950076234, \"name\": \"test (py-3.11, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50977005\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2400193667, \"name\": \"test (py-3.11, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50353770\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2557155520, \"name\": \"test (py-3.11, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50521323\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2716214277, \"name\": \"test (py-3.11, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50894120\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3063754822, \"name\": \"test (py-3.11, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50533673\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1764032407, \"name\": \"test (py-3.11, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50415014\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2120215508, \"name\": \"test (py-3.11, windows, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50374823\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 765611580, \"name\": \"test (py-3.11, windows, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50660958\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4263219836, \"name\": \"test (py-3.12, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50881591\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3348541113, \"name\": \"test (py-3.12, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50936948\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3505240826, \"name\": \"test (py-3.12, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50586677\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3029129011, \"name\": \"test (py-3.12, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50153586\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2750923632, \"name\": \"test (py-3.12, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50507635\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2591752117, \"name\": \"test (py-3.12, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50556080\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2365713398, \"name\": \"test (py-3.12, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50156721\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1387799591, \"name\": \"test (py-3.12, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50654590\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1170419812, \"name\": \"test (py-3.12, ubuntu, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50539775\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3875037547, \"name\": \"test (py-3.12, ubuntu, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50094233\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4090579081, \"name\": \"test (py-3.12, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50245099\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3395056716, \"name\": \"test (py-3.12, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50229032\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3710345231, \"name\": \"test (py-3.12, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50027241\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3108376006, \"name\": \"test (py-3.12, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50773934\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2923239813, \"name\": \"test (py-3.12, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50124975\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2544903488, \"name\": \"test (py-3.12, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50099884\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2160800003, \"name\": \"test (py-3.12, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50946157\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1601371858, \"name\": \"test (py-3.12, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50669154\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1208609425, \"name\": \"test (py-3.12, macos, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50227939\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 723692834, \"name\": \"test (py-3.12, macos, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50623238\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1980982287, \"name\": \"test (py-3.12, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50144805\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1335777482, \"name\": \"test (py-3.12, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50682598\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1491422345, \"name\": \"test (py-3.12, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50572327\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1015292224, \"name\": \"test (py-3.12, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50027808\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 738145539, \"name\": \"test (py-3.12, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50396449\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 309463494, \"name\": \"test (py-3.12, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50490146\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 84483461, \"name\": \"test (py-3.12, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50330787\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3669021268, \"name\": \"test (py-3.12, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50344108\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3452683799, \"name\": \"test (py-3.12, windows, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50114797\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 796674331, \"name\": \"test (py-3.12, windows, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50845117\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 419837163, \"name\": \"test (py-3.13, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50211247\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 545982510, \"name\": \"test (py-3.13, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50797484\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 938482797, \"name\": \"test (py-3.13, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50868717\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1402040740, \"name\": \"test (py-3.13, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50742698\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1156212199, \"name\": \"test (py-3.13, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50784363\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2103925026, \"name\": \"test (py-3.13, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50975080\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1780239713, \"name\": \"test (py-3.13, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50997225\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3047522992, \"name\": \"test (py-3.13, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50457190\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2732496627, \"name\": \"test (py-3.13, ubuntu, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50029991\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2289334826, \"name\": \"test (py-3.13, ubuntu, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50798559\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1448794247, \"name\": \"test (py-3.13, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50590282\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1876419650, \"name\": \"test (py-3.13, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50226121\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2024599553, \"name\": \"test (py-3.13, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50381832\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 483237320, \"name\": \"test (py-3.13, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50504079\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 196512139, \"name\": \"test (py-3.13, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50461262\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 842773838, \"name\": \"test (py-3.13, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50604429\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 624992525, \"name\": \"test (py-3.13, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50808204\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4210650844, \"name\": \"test (py-3.13, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50809731\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3984751263, \"name\": \"test (py-3.13, macos, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50298050\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3426683829, \"name\": \"test (py-3.13, macos, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50137438\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 413105998, \"name\": \"test (py-3.13, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50213603\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 554845067, \"name\": \"test (py-3.13, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50986336\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 912873416, \"name\": \"test (py-3.13, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50935969\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1376270849, \"name\": \"test (py-3.13, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50961574\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1165176386, \"name\": \"test (py-3.13, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50882663\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2097025671, \"name\": \"test (py-3.13, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"timed_out\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50131108\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1803880132, \"name\": \"test (py-3.13, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"timed_out\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50032677\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3023882517, \"name\": \"test (py-3.13, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"timed_out\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50822378\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2739395926, \"name\": \"test (py-3.13, windows, shard 9)\", \"status\": \"completed\", \"conclusion\": \"timed_out\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50406635\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 784970758, \"name\": \"test (py-3.13, windows, shard 10)\", \"status\": \"completed\", \"conclusion\": \"timed_out\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50700323\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3250933709, \"name\": \"test (py-3.14, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50955364\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4165497608, \"name\": \"test (py-3.14, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50466151\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4013123403, \"name\": \"test (py-3.14, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50217702\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2337409666, \"name\": \"test (py-3.14, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50835489\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2619940545, \"name\": \"test (py-3.14, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50325664\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2778997252, \"name\": \"test (py-3.14, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50682787\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3000972871, \"name\": \"test (py-3.14, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50483426\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1835465110, \"name\": \"test (py-3.14, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50887341\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2048781781, \"name\": \"test (py-3.14, ubuntu, shard 9)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50584236\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1520516268, \"name\": \"test (py-3.14, ubuntu, shard 10)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50401356\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0150ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 2
+            },
+            {
+              "ref": "0150ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 130, \"check_runs\": [{\"id\": 2550801455, \"name\": \"test (py-3.14, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50430958\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2709985514, \"name\": \"test (py-3.14, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50159917\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3069971625, \"name\": \"test (py-3.14, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50547500\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3533529440, \"name\": \"test (py-3.14, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50741675\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3320214819, \"name\": \"test (py-3.14, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50357866\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4234889702, \"name\": \"test (py-3.14, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50514985\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3943718309, \"name\": \"test (py-3.14, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50853480\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 883528308, \"name\": \"test (py-3.14, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50429543\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 600999479, \"name\": \"test (py-3.14, macos, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50576870\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 352088211, \"name\": \"test (py-3.14, macos, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50890261\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3393862088, \"name\": \"test (py-3.14, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50865776\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4089906445, \"name\": \"test (py-3.14, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50349427\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3837530446, \"name\": \"test (py-3.14, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50837106\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2161998983, \"name\": \"test (py-3.14, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50277493\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2544265412, \"name\": \"test (py-3.14, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50769396\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2922075137, \"name\": \"test (py-3.14, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50196535\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3109044290, \"name\": \"test (py-3.14, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50636150\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1726582675, \"name\": \"test (py-3.14, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50905913\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1905433552, \"name\": \"test (py-3.14, windows, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50060984\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 717244245, \"name\": \"test (py-3.14, windows, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50476859\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 223475983, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50125188\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2281407443, \"name\": \"typecheck\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50207616\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1090946627, \"name\": \"docs\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50667319\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 635786898, \"name\": \"build\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50441755\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 233481919, \"name\": \"e2e (1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50738847\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 879204986, \"name\": \"e2e (2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50421020\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 589073977, \"name\": \"e2e (3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50022173\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1199432688, \"name\": \"e2e (4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50383898\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1342633907, \"name\": \"e2e (5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50786523\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1770769270, \"name\": \"e2e (6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50992984\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0150ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 3
+            },
+            {
+              "ref": "0150ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "3"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 130, \"check_runs\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "ref": "0150ab12cd34ef56ab12cd34ef56ab12cd34ef56"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 130, \"check_runs\": [{\"id\": 206339972, \"name\": \"test (py-3.11, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50289246\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 901858113, \"name\": \"test (py-3.11, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50465053\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 582637314, \"name\": \"test (py-3.11, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50309916\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1188772555, \"name\": \"test (py-3.11, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50886171\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1369452168, \"name\": \"test (py-3.11, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50153946\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1747784269, \"name\": \"test (py-3.11, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50757913\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2136344078, \"name\": \"test (py-3.11, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50553688\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2700069343, \"name\": \"test (py-3.11, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50668119\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3079986588, \"name\": \"test (py-3.11, ubuntu, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50272726\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1433160872, \"name\": \"test (py-3.11, ubuntu, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50063827\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3325886170, \"name\": \"test (py-3.11, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50925321\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4289839647, \"name\": \"test (py-3.11, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50606858\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3905607260, \"name\": \"test (py-3.11, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50094091\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2360064917, \"name\": \"test (py-3.11, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50942412\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2614144982, \"name\": \"test (py-3.11, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50459213\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2724041491, \"name\": \"test (py-3.11, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50664014\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3039201104, \"name\": \"test (py-3.11, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50200335\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1788823681, \"name\": \"test (py-3.11, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50297792\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2112117954, \"name\": \"test (py-3.11, macos, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50150401\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3648340186, \"name\": \"test (py-3.11, macos, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50218735\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3313977804, \"name\": \"test (py-3.11, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50409263\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4228543753, \"name\": \"test (py-3.11, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50386540\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3950076234, \"name\": \"test (py-3.11, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50977005\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2400193667, \"name\": \"test (py-3.11, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50353770\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2557155520, \"name\": \"test (py-3.11, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50521323\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2716214277, \"name\": \"test (py-3.11, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50894120\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3063754822, \"name\": \"test (py-3.11, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50533673\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1764032407, \"name\": \"test (py-3.11, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50415014\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2120215508, \"name\": \"test (py-3.11, windows, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50374823\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 765611580, \"name\": \"test (py-3.11, windows, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50660958\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4263219836, \"name\": \"test (py-3.12, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50881591\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3348541113, \"name\": \"test (py-3.12, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50936948\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3505240826, \"name\": \"test (py-3.12, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50586677\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3029129011, \"name\": \"test (py-3.12, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50153586\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2750923632, \"name\": \"test (py-3.12, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50507635\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2591752117, \"name\": \"test (py-3.12, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50556080\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2365713398, \"name\": \"test (py-3.12, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50156721\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1387799591, \"name\": \"test (py-3.12, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50654590\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1170419812, \"name\": \"test (py-3.12, ubuntu, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50539775\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3875037547, \"name\": \"test (py-3.12, ubuntu, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50094233\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4090579081, \"name\": \"test (py-3.12, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50245099\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3395056716, \"name\": \"test (py-3.12, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50229032\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3710345231, \"name\": \"test (py-3.12, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50027241\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3108376006, \"name\": \"test (py-3.12, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50773934\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2923239813, \"name\": \"test (py-3.12, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50124975\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2544903488, \"name\": \"test (py-3.12, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50099884\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2160800003, \"name\": \"test (py-3.12, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50946157\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1601371858, \"name\": \"test (py-3.12, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50669154\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1208609425, \"name\": \"test (py-3.12, macos, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50227939\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 723692834, \"name\": \"test (py-3.12, macos, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50623238\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1980982287, \"name\": \"test (py-3.12, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50144805\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1335777482, \"name\": \"test (py-3.12, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50682598\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1491422345, \"name\": \"test (py-3.12, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50572327\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1015292224, \"name\": \"test (py-3.12, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50027808\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 738145539, \"name\": \"test (py-3.12, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50396449\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 309463494, \"name\": \"test (py-3.12, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50490146\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 84483461, \"name\": \"test (py-3.12, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50330787\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3669021268, \"name\": \"test (py-3.12, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50344108\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3452683799, \"name\": \"test (py-3.12, windows, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50114797\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 796674331, \"name\": \"test (py-3.12, windows, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50845117\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 419837163, \"name\": \"test (py-3.13, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50211247\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 545982510, \"name\": \"test (py-3.13, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50797484\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 938482797, \"name\": \"test (py-3.13, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50868717\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1402040740, \"name\": \"test (py-3.13, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50742698\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1156212199, \"name\": \"test (py-3.13, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50784363\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2103925026, \"name\": \"test (py-3.13, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50975080\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1780239713, \"name\": \"test (py-3.13, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50997225\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3047522992, \"name\": \"test (py-3.13, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50457190\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2732496627, \"name\": \"test (py-3.13, ubuntu, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50029991\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2289334826, \"name\": \"test (py-3.13, ubuntu, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50798559\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1448794247, \"name\": \"test (py-3.13, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50590282\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1876419650, \"name\": \"test (py-3.13, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50226121\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2024599553, \"name\": \"test (py-3.13, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50381832\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 483237320, \"name\": \"test (py-3.13, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50504079\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 196512139, \"name\": \"test (py-3.13, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50461262\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 842773838, \"name\": \"test (py-3.13, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50604429\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 624992525, \"name\": \"test (py-3.13, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50808204\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4210650844, \"name\": \"test (py-3.13, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50809731\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3984751263, \"name\": \"test (py-3.13, macos, shard 9)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50298050\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3426683829, \"name\": \"test (py-3.13, macos, shard 10)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50137438\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 413105998, \"name\": \"test (py-3.13, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50213603\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 554845067, \"name\": \"test (py-3.13, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50986336\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 912873416, \"name\": \"test (py-3.13, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50935969\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1376270849, \"name\": \"test (py-3.13, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50961574\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1165176386, \"name\": \"test (py-3.13, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50882663\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2097025671, \"name\": \"test (py-3.13, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"timed_out\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50131108\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1803880132, \"name\": \"test (py-3.13, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"timed_out\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50032677\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3023882517, \"name\": \"test (py-3.13, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"timed_out\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50822378\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2739395926, \"name\": \"test (py-3.13, windows, shard 9)\", \"status\": \"completed\", \"conclusion\": \"timed_out\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50406635\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 784970758, \"name\": \"test (py-3.13, windows, shard 10)\", \"status\": \"completed\", \"conclusion\": \"timed_out\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50700323\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3250933709, \"name\": \"test (py-3.14, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50955364\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4165497608, \"name\": \"test (py-3.14, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50466151\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4013123403, \"name\": \"test (py-3.14, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50217702\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2337409666, \"name\": \"test (py-3.14, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50835489\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2619940545, \"name\": \"test (py-3.14, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50325664\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2778997252, \"name\": \"test (py-3.14, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50682787\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3000972871, \"name\": \"test (py-3.14, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50483426\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1835465110, \"name\": \"test (py-3.14, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50887341\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2048781781, \"name\": \"test (py-3.14, ubuntu, shard 9)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50584236\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1520516268, \"name\": \"test (py-3.14, ubuntu, shard 10)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000150/job/50401356\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"No commit found for the ref\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_REPOSITORY_ISSUES": {
+      "description": "Lists issues (including pull requests) from a GitHub repository. Requires BOTH 'owner' AND 'repo' parameters (e.g., owner='octocat', repo='Hello-World' for github.com/octocat/Hello-World).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number for the set of results. Refer to GitHub's REST API documentation for pagination details."
+          },
+          "repo": {
+            "type": "string",
+            "description": "REQUIRED. The name of the repository (without .git extension). For 'octocat/Hello-World', repo is 'Hello-World'. Not case-sensitive. Must be provided together w"
+          },
+          "sort": {
+            "type": "string",
+            "description": "The field to sort the results by."
+          },
+          "type": {
+            "type": "string",
+            "description": "Filter issues by type name. Use '*' for issues with any type, 'none' for issues without a type, or specify a type name."
+          },
+          "owner": {
+            "type": "string",
+            "description": "REQUIRED. The GitHub account owner (user or organization) of the repository. For 'octocat/Hello-World', owner is 'octocat'. Not case-sensitive. Must be provided"
+          },
+          "since": {
+            "type": "string",
+            "description": "Filters issues to include only those updated at or after the specified time. This should be a timestamp in ISO 8601 format (e.g., `YYYY-MM-DDTHH:MM:SSZ`)."
+          },
+          "state": {
+            "type": "string",
+            "description": "Filters issues based on their state."
+          },
+          "labels": {
+            "type": "string",
+            "description": "A comma-separated list of label names to filter issues by. Example: 'bug,ui,@high'."
+          },
+          "creator": {
+            "type": "string",
+            "description": "Filter issues by the username of the user who created the issue."
+          },
+          "assignee": {
+            "type": "string",
+            "description": "Filter issues by assignee's username. Use 'none' for issues with no assignee, or '*' for issues assigned to any user."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page (max 100). Default is 30, which matches GitHub's API default. Refer to GitHub's REST API documentation for pagination details."
+          },
+          "direction": {
+            "type": "string",
+            "description": "The direction of the sort."
+          },
+          "mentioned": {
+            "type": "string",
+            "description": "Filter issues by a user mentioned in the issue's description or comments. Provide the username."
+          },
+          "milestone": {
+            "type": "string",
+            "description": "Filter issues by milestone. Provide the milestone `number` as a string, '*' for issues with any milestone, or 'none' for issues without a milestone."
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "page": 1
+            },
+            {
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 150, \"title\": \"Add Python 3.14 to the test matrix\", \"user\": {\"login\": \"ana-r\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/150\", \"created_at\": \"2026-11-19T09:00:00Z\", \"updated_at\": \"2026-11-19T15:00:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/150\", \"html_url\": \"https://github.com/acme/tidewater/pull/150\"}}, {\"number\": 40, \"title\": \"Daily brief\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/40\", \"created_at\": \"2026-10-01T09:00:00Z\", \"updated_at\": \"2026-11-19T08:01:00Z\", \"labels\": [], \"comments\": 0}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "page": 2
+            },
+            {
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [{\"number\": 150, \"title\": \"Add Python 3.14 to the test matrix\", \"user\": {\"login\": \"ana-r\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/150\", \"created_at\": \"2026-11-19T09:00:00Z\", \"updated_at\": \"2026-11-19T15:00:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/150\", \"html_url\": \"https://github.com/acme/tidewater/pull/150\"}}, {\"number\": 40, \"title\": \"Daily brief\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/40\", \"created_at\": \"2026-10-01T09:00:00Z\", \"updated_at\": \"2026-11-19T08:01:00Z\", \"labels\": [], \"comments\": 0}], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_CREATE_AN_ISSUE_COMMENT": {
+      "description": "Creates a new comment on an existing GitHub issue or pull request within the specified repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "description": "Comment content in GitHub Flavored Markdown."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository (without `.git` extension); not case-sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Account owner of the repository (username or organization); not case-sensitive."
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "Number identifying the issue or pull request for the comment."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number",
+          "body"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"id\": 99001, \"html_url\": \"https://github.com/acme/tidewater/issues/40#issuecomment-99001\"}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

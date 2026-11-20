@@ -1,0 +1,617 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater: run 19450007008 on PR #536, failed in test/csv.test.ts:58. PR #536 has 102 comments, 100 a page, oldest first; the explainer's comment for attempt 1 of this run is the first on page 2. Composio's slugs and {data, successful, error} results, acme/tidewater only. Every write answers success. It never reaches GitHub.",
+  "tools": {
+    "GITHUB_GET_A_WORKFLOW_RUN": {
+      "description": "Gets a specific workflow run by its ID from a GitHub repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository (case-insensitive, without .git extension)."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The username or organization name that owns the repository (not case-sensitive)."
+          },
+          "run_id": {
+            "type": "integer",
+            "description": "Unique ID of the workflow run."
+          },
+          "exclude_pull_requests": {
+            "type": "boolean",
+            "description": "If true, excludes pull request data; the `pull_requests` array in the response will be empty."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "run_id"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "run_id": 19450007008
+            },
+            {
+              "run_id": "19450007008"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"id\": 19450007008, \"name\": \"CI\", \"display_title\": \"Quote CSV fields that contain the delimiter\", \"head_branch\": \"csv-quotes\", \"head_sha\": \"05369f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a\", \"event\": \"pull_request\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 1, \"run_number\": 893, \"workflow_id\": 7700001, \"path\": \".github/workflows/ci.yml\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007008\", \"jobs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450007008/jobs\", \"logs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450007008/logs\", \"created_at\": \"2026-11-19T10:00:00Z\", \"updated_at\": \"2026-11-19T10:09:30Z\", \"run_started_at\": \"2026-11-19T10:00:00Z\", \"actor\": {\"login\": \"dev-user\"}, \"pull_requests\": [{\"number\": 536, \"head\": {\"ref\": \"csv-quotes\", \"sha\": \"05369f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a\"}, \"base\": {\"ref\": \"main\", \"repo\": {\"name\": \"tidewater\"}}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such workflow run\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_JOBS_FOR_A_WORKFLOW_RUN": {
+      "description": "Lists jobs for a specific workflow run in a GitHub repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "The page number of the results to fetch. For more details, see \"[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-paginat"
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the .git extension. This field is not case-sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The username or organization name that owns the repository. This field is not case-sensitive."
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filters jobs by their `completed_at` timestamp. `latest` returns jobs from the most recent execution attempt of the workflow run. `all` returns all jobs for a w"
+          },
+          "run_id": {
+            "type": "integer",
+            "description": "The unique identifier of the workflow run for which jobs are to be listed."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "The number of results to return per page, with a maximum of 100. For more details, see \"[Using pagination in the REST API](https://docs.github.com/rest/using-th"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "run_id"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "run_id": 19450007008
+            },
+            {
+              "run_id": "19450007008"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 1, \"jobs\": [{\"id\": 68001, \"run_id\": 19450007008, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007008/job/68001\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm test\", \"status\": \"completed\", \"conclusion\": \"failure\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"skipped\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/81300068001\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_CHECK_RUN_ANNOTATIONS": {
+      "description": "Lists annotations for a specific check run in a GitHub repository, detailing issues like errors or warnings on particular code lines.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "The page number of the results to fetch. See \"[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-ap"
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension. The name is not case sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository. This is typically the username or organization name. The name is not case sensitive."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "The number of results per page (maximum 100). See \"[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-re"
+          },
+          "check_run_id": {
+            "type": "integer",
+            "description": "The unique identifier of the check run for which annotations are to be listed."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "check_run_id"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "check_run_id": 81300068001
+            },
+            {
+              "check_run_id": "81300068001"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"path\": \"test/csv.test.ts\", \"start_line\": 58, \"end_line\": 58, \"annotation_level\": \"failure\", \"message\": \"AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n\\n'a,\\\"b,c\\\"' !== 'a,b,c'\\n\", \"title\": \"\"}, {\"path\": \".github\", \"start_line\": 1, \"end_line\": 1, \"annotation_level\": \"failure\", \"message\": \"Process completed with exit code 1.\", \"title\": \"\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such check run\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_DOWNLOAD_JOB_LOGS_FOR_A_WORKFLOW_RUN": {
+      "description": "Downloads logs for a specific job in a GitHub Actions workflow run, contingent on the repository's existence and the job ID being valid and having produced logs.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension. This name is not case-sensitive. "
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (e.g., user or organization). This name is not case-sensitive."
+          },
+          "job_id": {
+            "type": "integer",
+            "description": "The unique identifier of the job for which to download logs. You can obtain this from the 'List jobs for a workflow run' endpoint."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "job_id"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "job_id": 68001
+            },
+            {
+              "job_id": "68001"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"details\": \"2026-11-19T10:01:00.1234567Z ##[group]Run actions/checkout@v4\\n2026-11-19T10:01:01.1234567Z Syncing repository: acme/tidewater\\n2026-11-19T10:01:02.1234567Z ##[endgroup]\\n2026-11-19T10:01:03.1234567Z ##[group]Run actions/setup-node@v4\\n2026-11-19T10:01:04.1234567Z Found in cache @ /opt/hostedtoolcache/node/22.23.2/x64\\n2026-11-19T10:01:05.1234567Z ##[endgroup]\\n2026-11-19T10:01:06.1234567Z ##[group]Run npm ci\\n2026-11-19T10:01:07.1234567Z added 412 packages, and audited 413 packages in 9s\\n2026-11-19T10:01:08.1234567Z found 0 vulnerabilities\\n2026-11-19T10:01:09.1234567Z ##[endgroup]\\n2026-11-19T10:01:10.1234567Z ##[group]Run npm test\\n2026-11-19T10:01:11.1234567Z > tidewater@2.4.1 test\\n2026-11-19T10:01:12.1234567Z > node --test test/\\n2026-11-19T10:01:13.1234567Z \\n2026-11-19T10:01:14.1234567Z \\u25b6 csv\\n2026-11-19T10:01:15.1234567Z   \\u2714 writes a header row (0.3ms)\\n2026-11-19T10:01:16.1234567Z   \\u2716 leaves plain fields unquoted (0.7ms)\\n2026-11-19T10:01:17.1234567Z     AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n2026-11-19T10:01:18.1234567Z     \\n2026-11-19T10:01:19.1234567Z     'a,\\\"b,c\\\"' !== 'a,b,c'\\n2026-11-19T10:01:20.1234567Z     \\n2026-11-19T10:01:21.1234567Z         at TestContext.<anonymous> (file:///home/runner/work/tidewater/tidewater/test/csv.test.ts:58:10)\\n2026-11-19T10:01:22.1234567Z \\u25b6 csv (1.4ms)\\n2026-11-19T10:01:23.1234567Z \\u2139 tests 41\\n2026-11-19T10:01:24.1234567Z \\u2139 pass 40\\n2026-11-19T10:01:25.1234567Z \\u2139 fail 1\\n2026-11-19T10:01:26.1234567Z ##[error]Process completed with exit code 1.\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no logs for this job\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_WORKFLOW_RUNS_FOR_A_REPOSITORY": {
+      "description": "Lists workflow runs for a repository, allowing filtering by actor, branch, event, status, creation date, check suite ID, or head SHA; the repository must exist and be accessible.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results to fetch."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension (not case-sensitive)."
+          },
+          "actor": {
+            "type": "string",
+            "description": "Filter by the actor's login (e.g., the user who triggered the `push`)."
+          },
+          "event": {
+            "type": "string",
+            "description": "Filter by the event that triggered the workflow (e.g., `push`, `pull_request`)."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (not case-sensitive)."
+          },
+          "branch": {
+            "type": "string",
+            "description": "Filter by branch name (e.g., `main` or the branch that triggered the `push`)."
+          },
+          "status": {
+            "type": "string",
+            "description": "Filter by `status` or `conclusion` (e.g., `success`, `in_progress`). Note: Only GitHub Actions can set `waiting`, `pending`, or `requested`."
+          },
+          "created": {
+            "type": "string",
+            "description": "Filter by creation date or date-time range (ISO8601 format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ). Supports operators like `>`, `<`, `>=`, `<=`, and `..` for rang"
+          },
+          "head_sha": {
+            "type": "string",
+            "description": "Filter to include only runs associated with the specified `head_sha` (commit SHA at the head of the branch)."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page (maximum 100)."
+          },
+          "check_suite_id": {
+            "type": "integer",
+            "description": "Filter by a specific `check_suite_id`."
+          },
+          "exclude_pull_requests": {
+            "type": "boolean",
+            "description": "Set to `true` to exclude workflow runs triggered by pull request events. Omit or leave as null to include all runs."
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"total_count\": 2, \"workflow_runs\": [{\"id\": 19450006995, \"name\": \"CI\", \"display_title\": \"\", \"head_branch\": \"main\", \"head_sha\": \"08849f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a\", \"event\": \"push\", \"status\": \"completed\", \"conclusion\": \"success\", \"run_attempt\": 1, \"run_number\": 884, \"workflow_id\": 7700001, \"path\": \".github/workflows/ci.yml\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450006995\", \"jobs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450006995/jobs\", \"logs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450006995/logs\", \"created_at\": \"2026-11-19T09:00:00Z\", \"updated_at\": \"2026-11-19T09:09:30Z\", \"run_started_at\": \"2026-11-19T09:00:00Z\", \"actor\": {\"login\": \"dev-user\"}, \"pull_requests\": []}, {\"id\": 19450006990, \"name\": \"CI\", \"display_title\": \"\", \"head_branch\": \"main\", \"head_sha\": \"08809f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a\", \"event\": \"push\", \"status\": \"completed\", \"conclusion\": \"success\", \"run_attempt\": 1, \"run_number\": 880, \"workflow_id\": 7700001, \"path\": \".github/workflows/ci.yml\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450006990\", \"jobs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450006990/jobs\", \"logs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450006990/logs\", \"created_at\": \"2026-11-18T16:00:00Z\", \"updated_at\": \"2026-11-18T16:09:30Z\", \"run_started_at\": \"2026-11-18T16:00:00Z\", \"actor\": {\"login\": \"dev-user\"}, \"pull_requests\": []}]}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_PULL_REQUESTS_ASSOCIATED_WITH_A_COMMIT": {
+      "description": "Lists pull requests for a commit; returns merged PRs that introduced the commit if on the default branch, or open PRs including the commit if on other branches.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of results to retrieve."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name, without the `.git` extension (case-insensitive)."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Account owner of the repository (GitHub username or organization name, case-insensitive)."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page (max 100)."
+          },
+          "commit_sha": {
+            "type": "string",
+            "description": "SHA of the commit to list associated pull requests for."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "commit_sha"
+        ]
+      },
+      "answers": [
+        {
+          "when": {
+            "commit_sha": "05369f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 536, \"title\": \"Quote CSV fields that contain the delimiter\", \"state\": \"open\", \"merged_at\": null, \"html_url\": \"https://github.com/acme/tidewater/pull/536\", \"head\": {\"ref\": \"csv-quotes\", \"sha\": \"05369f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a\", \"repo\": {\"full_name\": \"acme/tidewater\"}}, \"base\": {\"ref\": \"main\", \"repo\": {\"full_name\": \"acme/tidewater\"}}, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_PULL_REQUESTS_FILES": {
+      "description": "Lists a page of files changed in a specified GitHub pull request, including additions, modifications, and removals.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results to retrieve for pagination."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension. This field is not case sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (e.g., a GitHub username or organization name). This field is not case sensitive."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of file results to return per page (max 100)."
+          },
+          "pull_number": {
+            "type": "integer",
+            "description": "The numeric identifier of the pull request whose files are to be listed."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 536,
+              "page": 2
+            },
+            {
+              "pull_number": "536",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"files\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 536
+            },
+            {
+              "pull_number": "536"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"files\": [{\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"src/report/csv.ts\", \"status\": \"modified\", \"additions\": 2, \"deletions\": 1, \"changes\": 3, \"patch\": \"@@ -12,5 +12,6 @@ export function csvRow(fields: string[]): string {\\n-  return fields.map((f) => (f.includes('\\\"') ? `\\\"${f.replace(/\\\"/g, '\\\"\\\"')}\\\"` : f)).join(\\\",\\\");\\n+  const quote = (f: string) => f.includes('\\\"') || f.includes(\\\",\\\");\\n+  return fields.map((f) => (quote(f) ? `\\\"${f.replace(/\\\"/g, '\\\"\\\"')}\\\"` : f)).join(\\\",\\\");\\n }\", \"blob_url\": \"https://github.com/acme/tidewater/blob/x/src/report/csv.ts\", \"raw_url\": \"https://github.com/acme/tidewater/raw/x/src/report/csv.ts\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/src/report/csv.ts\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such pull request\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_ISSUE_COMMENTS": {
+      "description": "Lists comments for a specified issue in a GitHub repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results to retrieve."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository, without the `.git` extension (not case-sensitive)."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Username of the account owning the repository (not case-sensitive)."
+          },
+          "since": {
+            "type": "string",
+            "description": "Filters comments to include only those updated at or after this ISO 8601 timestamp (e.g., `YYYY-MM-DDTHH:MM:SSZ`)."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of comments to return per page (max 100)."
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "Number that identifies the issue."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "issue_number": 536,
+              "page": 1
+            },
+            {
+              "issue_number": "536",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"id\": 2230000, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T08:00:00Z\", \"updated_at\": \"2026-11-17T08:00:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230000\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230001, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T08:07:00Z\", \"updated_at\": \"2026-11-17T08:07:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230001\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230002, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T08:14:00Z\", \"updated_at\": \"2026-11-17T08:14:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230002\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230003, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T08:21:00Z\", \"updated_at\": \"2026-11-17T08:21:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230003\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230004, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T08:28:00Z\", \"updated_at\": \"2026-11-17T08:28:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230004\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230005, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T08:35:00Z\", \"updated_at\": \"2026-11-17T08:35:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230005\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230006, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T09:42:00Z\", \"updated_at\": \"2026-11-17T09:42:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230006\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230007, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T09:49:00Z\", \"updated_at\": \"2026-11-17T09:49:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230007\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230008, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T09:56:00Z\", \"updated_at\": \"2026-11-17T09:56:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230008\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230009, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T09:03:00Z\", \"updated_at\": \"2026-11-17T09:03:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230009\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230010, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T09:10:00Z\", \"updated_at\": \"2026-11-17T09:10:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230010\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230011, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T09:17:00Z\", \"updated_at\": \"2026-11-17T09:17:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230011\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230012, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T10:24:00Z\", \"updated_at\": \"2026-11-17T10:24:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230012\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230013, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T10:31:00Z\", \"updated_at\": \"2026-11-17T10:31:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230013\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230014, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T10:38:00Z\", \"updated_at\": \"2026-11-17T10:38:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230014\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230015, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T10:45:00Z\", \"updated_at\": \"2026-11-17T10:45:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230015\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230016, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T10:52:00Z\", \"updated_at\": \"2026-11-17T10:52:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230016\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230017, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T10:59:00Z\", \"updated_at\": \"2026-11-17T10:59:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230017\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230018, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T11:06:00Z\", \"updated_at\": \"2026-11-17T11:06:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230018\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230019, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T11:13:00Z\", \"updated_at\": \"2026-11-17T11:13:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230019\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230020, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T11:20:00Z\", \"updated_at\": \"2026-11-17T11:20:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230020\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230021, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T11:27:00Z\", \"updated_at\": \"2026-11-17T11:27:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230021\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230022, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T11:34:00Z\", \"updated_at\": \"2026-11-17T11:34:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230022\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230023, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T11:41:00Z\", \"updated_at\": \"2026-11-17T11:41:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230023\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230024, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T12:48:00Z\", \"updated_at\": \"2026-11-17T12:48:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230024\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230025, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T12:55:00Z\", \"updated_at\": \"2026-11-17T12:55:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230025\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230026, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T12:02:00Z\", \"updated_at\": \"2026-11-17T12:02:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230026\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230027, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T12:09:00Z\", \"updated_at\": \"2026-11-17T12:09:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230027\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230028, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T12:16:00Z\", \"updated_at\": \"2026-11-17T12:16:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230028\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230029, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T12:23:00Z\", \"updated_at\": \"2026-11-17T12:23:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230029\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230030, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T13:30:00Z\", \"updated_at\": \"2026-11-17T13:30:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230030\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230031, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T13:37:00Z\", \"updated_at\": \"2026-11-17T13:37:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230031\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230032, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T13:44:00Z\", \"updated_at\": \"2026-11-17T13:44:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230032\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230033, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T13:51:00Z\", \"updated_at\": \"2026-11-17T13:51:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230033\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230034, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T13:58:00Z\", \"updated_at\": \"2026-11-17T13:58:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230034\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230035, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T13:05:00Z\", \"updated_at\": \"2026-11-17T13:05:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230035\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230036, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T14:12:00Z\", \"updated_at\": \"2026-11-17T14:12:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230036\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230037, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T14:19:00Z\", \"updated_at\": \"2026-11-17T14:19:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230037\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230038, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T14:26:00Z\", \"updated_at\": \"2026-11-17T14:26:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230038\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230039, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T14:33:00Z\", \"updated_at\": \"2026-11-17T14:33:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230039\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230040, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T14:40:00Z\", \"updated_at\": \"2026-11-17T14:40:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230040\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230041, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T14:47:00Z\", \"updated_at\": \"2026-11-17T14:47:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230041\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230042, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T15:54:00Z\", \"updated_at\": \"2026-11-17T15:54:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230042\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230043, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T15:01:00Z\", \"updated_at\": \"2026-11-17T15:01:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230043\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230044, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T15:08:00Z\", \"updated_at\": \"2026-11-17T15:08:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230044\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230045, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T15:15:00Z\", \"updated_at\": \"2026-11-17T15:15:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230045\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230046, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T15:22:00Z\", \"updated_at\": \"2026-11-17T15:22:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230046\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230047, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T15:29:00Z\", \"updated_at\": \"2026-11-17T15:29:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230047\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230048, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T16:36:00Z\", \"updated_at\": \"2026-11-17T16:36:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230048\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230049, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T16:43:00Z\", \"updated_at\": \"2026-11-17T16:43:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230049\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230050, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T08:50:00Z\", \"updated_at\": \"2026-11-18T08:50:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230050\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230051, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T08:57:00Z\", \"updated_at\": \"2026-11-18T08:57:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230051\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230052, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T08:04:00Z\", \"updated_at\": \"2026-11-18T08:04:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230052\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230053, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T08:11:00Z\", \"updated_at\": \"2026-11-18T08:11:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230053\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230054, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T08:18:00Z\", \"updated_at\": \"2026-11-18T08:18:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230054\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230055, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T08:25:00Z\", \"updated_at\": \"2026-11-18T08:25:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230055\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230056, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T09:32:00Z\", \"updated_at\": \"2026-11-18T09:32:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230056\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230057, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T09:39:00Z\", \"updated_at\": \"2026-11-18T09:39:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230057\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230058, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T09:46:00Z\", \"updated_at\": \"2026-11-18T09:46:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230058\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230059, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T09:53:00Z\", \"updated_at\": \"2026-11-18T09:53:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230059\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230060, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T09:00:00Z\", \"updated_at\": \"2026-11-18T09:00:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230060\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230061, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T09:07:00Z\", \"updated_at\": \"2026-11-18T09:07:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230061\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230062, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T10:14:00Z\", \"updated_at\": \"2026-11-18T10:14:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230062\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230063, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T10:21:00Z\", \"updated_at\": \"2026-11-18T10:21:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230063\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230064, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T10:28:00Z\", \"updated_at\": \"2026-11-18T10:28:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230064\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230065, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T10:35:00Z\", \"updated_at\": \"2026-11-18T10:35:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230065\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230066, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T10:42:00Z\", \"updated_at\": \"2026-11-18T10:42:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230066\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230067, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T10:49:00Z\", \"updated_at\": \"2026-11-18T10:49:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230067\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230068, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T11:56:00Z\", \"updated_at\": \"2026-11-18T11:56:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230068\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230069, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T11:03:00Z\", \"updated_at\": \"2026-11-18T11:03:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230069\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230070, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T11:10:00Z\", \"updated_at\": \"2026-11-18T11:10:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230070\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230071, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T11:17:00Z\", \"updated_at\": \"2026-11-18T11:17:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230071\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230072, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T11:24:00Z\", \"updated_at\": \"2026-11-18T11:24:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230072\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230073, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T11:31:00Z\", \"updated_at\": \"2026-11-18T11:31:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230073\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230074, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T12:38:00Z\", \"updated_at\": \"2026-11-18T12:38:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230074\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230075, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T12:45:00Z\", \"updated_at\": \"2026-11-18T12:45:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230075\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230076, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T12:52:00Z\", \"updated_at\": \"2026-11-18T12:52:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230076\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230077, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T12:59:00Z\", \"updated_at\": \"2026-11-18T12:59:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230077\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230078, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T12:06:00Z\", \"updated_at\": \"2026-11-18T12:06:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230078\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230079, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T12:13:00Z\", \"updated_at\": \"2026-11-18T12:13:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230079\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230080, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T13:20:00Z\", \"updated_at\": \"2026-11-18T13:20:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230080\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230081, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T13:27:00Z\", \"updated_at\": \"2026-11-18T13:27:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230081\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230082, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T13:34:00Z\", \"updated_at\": \"2026-11-18T13:34:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230082\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230083, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T13:41:00Z\", \"updated_at\": \"2026-11-18T13:41:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230083\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230084, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T13:48:00Z\", \"updated_at\": \"2026-11-18T13:48:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230084\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230085, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T13:55:00Z\", \"updated_at\": \"2026-11-18T13:55:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230085\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230086, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T14:02:00Z\", \"updated_at\": \"2026-11-18T14:02:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230086\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230087, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T14:09:00Z\", \"updated_at\": \"2026-11-18T14:09:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230087\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230088, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T14:16:00Z\", \"updated_at\": \"2026-11-18T14:16:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230088\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230089, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T14:23:00Z\", \"updated_at\": \"2026-11-18T14:23:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230089\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230090, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T14:30:00Z\", \"updated_at\": \"2026-11-18T14:30:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230090\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230091, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T14:37:00Z\", \"updated_at\": \"2026-11-18T14:37:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230091\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230092, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T15:44:00Z\", \"updated_at\": \"2026-11-18T15:44:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230092\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230093, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T15:51:00Z\", \"updated_at\": \"2026-11-18T15:51:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230093\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230094, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T15:58:00Z\", \"updated_at\": \"2026-11-18T15:58:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230094\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230095, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T15:05:00Z\", \"updated_at\": \"2026-11-18T15:05:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230095\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230096, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T15:12:00Z\", \"updated_at\": \"2026-11-18T15:12:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230096\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230097, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T15:19:00Z\", \"updated_at\": \"2026-11-18T15:19:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230097\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230098, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T16:26:00Z\", \"updated_at\": \"2026-11-18T16:26:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230098\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230099, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T16:33:00Z\", \"updated_at\": \"2026-11-18T16:33:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230099\", \"body\": \"Can we keep the old behaviour behind a flag?\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 536,
+              "page": 2
+            },
+            {
+              "issue_number": "536",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"id\": 2230100, \"user\": {\"login\": \"acme-ci-helper\", \"type\": \"User\"}, \"created_at\": \"2026-11-19T10:12:00Z\", \"updated_at\": \"2026-11-19T10:12:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230100\", \"body\": \"**CI failed: CI run 19450007008, attempt 1** (https://github.com/acme/tidewater/actions/runs/19450007008)\\n\\n**test (ubuntu-latest)**, step **Run npm test**: the test \\\"leaves plain fields unquoted\\\" now gets a quoted field, after this PR started quoting fields that contain a comma.\\n`test/csv.test.ts:58`\\n\\n**Flaky?** not flaky: the PR's change to csvRow is what the test checks.\\n\\n_Automated CI explanation. Nothing was re-run._\"}, {\"id\": 2230101, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-19T10:15:00Z\", \"updated_at\": \"2026-11-19T10:15:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230101\", \"body\": \"Thanks, looking at the expectation now.\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 536,
+              "page": 3
+            },
+            {
+              "issue_number": "536",
+              "page": "3"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 536
+            },
+            {
+              "issue_number": "536"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"id\": 2230000, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T08:00:00Z\", \"updated_at\": \"2026-11-17T08:00:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230000\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230001, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T08:07:00Z\", \"updated_at\": \"2026-11-17T08:07:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230001\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230002, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T08:14:00Z\", \"updated_at\": \"2026-11-17T08:14:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230002\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230003, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T08:21:00Z\", \"updated_at\": \"2026-11-17T08:21:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230003\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230004, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T08:28:00Z\", \"updated_at\": \"2026-11-17T08:28:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230004\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230005, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T08:35:00Z\", \"updated_at\": \"2026-11-17T08:35:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230005\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230006, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T09:42:00Z\", \"updated_at\": \"2026-11-17T09:42:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230006\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230007, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T09:49:00Z\", \"updated_at\": \"2026-11-17T09:49:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230007\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230008, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T09:56:00Z\", \"updated_at\": \"2026-11-17T09:56:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230008\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230009, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T09:03:00Z\", \"updated_at\": \"2026-11-17T09:03:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230009\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230010, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T09:10:00Z\", \"updated_at\": \"2026-11-17T09:10:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230010\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230011, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T09:17:00Z\", \"updated_at\": \"2026-11-17T09:17:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230011\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230012, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T10:24:00Z\", \"updated_at\": \"2026-11-17T10:24:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230012\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230013, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T10:31:00Z\", \"updated_at\": \"2026-11-17T10:31:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230013\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230014, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T10:38:00Z\", \"updated_at\": \"2026-11-17T10:38:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230014\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230015, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T10:45:00Z\", \"updated_at\": \"2026-11-17T10:45:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230015\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230016, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T10:52:00Z\", \"updated_at\": \"2026-11-17T10:52:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230016\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230017, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T10:59:00Z\", \"updated_at\": \"2026-11-17T10:59:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230017\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230018, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T11:06:00Z\", \"updated_at\": \"2026-11-17T11:06:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230018\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230019, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T11:13:00Z\", \"updated_at\": \"2026-11-17T11:13:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230019\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230020, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T11:20:00Z\", \"updated_at\": \"2026-11-17T11:20:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230020\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230021, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T11:27:00Z\", \"updated_at\": \"2026-11-17T11:27:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230021\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230022, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T11:34:00Z\", \"updated_at\": \"2026-11-17T11:34:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230022\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230023, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T11:41:00Z\", \"updated_at\": \"2026-11-17T11:41:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230023\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230024, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T12:48:00Z\", \"updated_at\": \"2026-11-17T12:48:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230024\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230025, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T12:55:00Z\", \"updated_at\": \"2026-11-17T12:55:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230025\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230026, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T12:02:00Z\", \"updated_at\": \"2026-11-17T12:02:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230026\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230027, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T12:09:00Z\", \"updated_at\": \"2026-11-17T12:09:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230027\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230028, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T12:16:00Z\", \"updated_at\": \"2026-11-17T12:16:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230028\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230029, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T12:23:00Z\", \"updated_at\": \"2026-11-17T12:23:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230029\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230030, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T13:30:00Z\", \"updated_at\": \"2026-11-17T13:30:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230030\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230031, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T13:37:00Z\", \"updated_at\": \"2026-11-17T13:37:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230031\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230032, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T13:44:00Z\", \"updated_at\": \"2026-11-17T13:44:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230032\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230033, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T13:51:00Z\", \"updated_at\": \"2026-11-17T13:51:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230033\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230034, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T13:58:00Z\", \"updated_at\": \"2026-11-17T13:58:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230034\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230035, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T13:05:00Z\", \"updated_at\": \"2026-11-17T13:05:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230035\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230036, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T14:12:00Z\", \"updated_at\": \"2026-11-17T14:12:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230036\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230037, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T14:19:00Z\", \"updated_at\": \"2026-11-17T14:19:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230037\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230038, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T14:26:00Z\", \"updated_at\": \"2026-11-17T14:26:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230038\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230039, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T14:33:00Z\", \"updated_at\": \"2026-11-17T14:33:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230039\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230040, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T14:40:00Z\", \"updated_at\": \"2026-11-17T14:40:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230040\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230041, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T14:47:00Z\", \"updated_at\": \"2026-11-17T14:47:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230041\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230042, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T15:54:00Z\", \"updated_at\": \"2026-11-17T15:54:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230042\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230043, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T15:01:00Z\", \"updated_at\": \"2026-11-17T15:01:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230043\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230044, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T15:08:00Z\", \"updated_at\": \"2026-11-17T15:08:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230044\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230045, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T15:15:00Z\", \"updated_at\": \"2026-11-17T15:15:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230045\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230046, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T15:22:00Z\", \"updated_at\": \"2026-11-17T15:22:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230046\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230047, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-17T15:29:00Z\", \"updated_at\": \"2026-11-17T15:29:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230047\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230048, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T16:36:00Z\", \"updated_at\": \"2026-11-17T16:36:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230048\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230049, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-17T16:43:00Z\", \"updated_at\": \"2026-11-17T16:43:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230049\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230050, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T08:50:00Z\", \"updated_at\": \"2026-11-18T08:50:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230050\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230051, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T08:57:00Z\", \"updated_at\": \"2026-11-18T08:57:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230051\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230052, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T08:04:00Z\", \"updated_at\": \"2026-11-18T08:04:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230052\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230053, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T08:11:00Z\", \"updated_at\": \"2026-11-18T08:11:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230053\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230054, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T08:18:00Z\", \"updated_at\": \"2026-11-18T08:18:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230054\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230055, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T08:25:00Z\", \"updated_at\": \"2026-11-18T08:25:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230055\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230056, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T09:32:00Z\", \"updated_at\": \"2026-11-18T09:32:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230056\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230057, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T09:39:00Z\", \"updated_at\": \"2026-11-18T09:39:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230057\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230058, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T09:46:00Z\", \"updated_at\": \"2026-11-18T09:46:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230058\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230059, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T09:53:00Z\", \"updated_at\": \"2026-11-18T09:53:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230059\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230060, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T09:00:00Z\", \"updated_at\": \"2026-11-18T09:00:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230060\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230061, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T09:07:00Z\", \"updated_at\": \"2026-11-18T09:07:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230061\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230062, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T10:14:00Z\", \"updated_at\": \"2026-11-18T10:14:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230062\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230063, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T10:21:00Z\", \"updated_at\": \"2026-11-18T10:21:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230063\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230064, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T10:28:00Z\", \"updated_at\": \"2026-11-18T10:28:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230064\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230065, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T10:35:00Z\", \"updated_at\": \"2026-11-18T10:35:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230065\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230066, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T10:42:00Z\", \"updated_at\": \"2026-11-18T10:42:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230066\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230067, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T10:49:00Z\", \"updated_at\": \"2026-11-18T10:49:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230067\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230068, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T11:56:00Z\", \"updated_at\": \"2026-11-18T11:56:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230068\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230069, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T11:03:00Z\", \"updated_at\": \"2026-11-18T11:03:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230069\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230070, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T11:10:00Z\", \"updated_at\": \"2026-11-18T11:10:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230070\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230071, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T11:17:00Z\", \"updated_at\": \"2026-11-18T11:17:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230071\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230072, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T11:24:00Z\", \"updated_at\": \"2026-11-18T11:24:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230072\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230073, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T11:31:00Z\", \"updated_at\": \"2026-11-18T11:31:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230073\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230074, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T12:38:00Z\", \"updated_at\": \"2026-11-18T12:38:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230074\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230075, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T12:45:00Z\", \"updated_at\": \"2026-11-18T12:45:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230075\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230076, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T12:52:00Z\", \"updated_at\": \"2026-11-18T12:52:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230076\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230077, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T12:59:00Z\", \"updated_at\": \"2026-11-18T12:59:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230077\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230078, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T12:06:00Z\", \"updated_at\": \"2026-11-18T12:06:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230078\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230079, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T12:13:00Z\", \"updated_at\": \"2026-11-18T12:13:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230079\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230080, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T13:20:00Z\", \"updated_at\": \"2026-11-18T13:20:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230080\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230081, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T13:27:00Z\", \"updated_at\": \"2026-11-18T13:27:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230081\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230082, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T13:34:00Z\", \"updated_at\": \"2026-11-18T13:34:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230082\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230083, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T13:41:00Z\", \"updated_at\": \"2026-11-18T13:41:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230083\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230084, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T13:48:00Z\", \"updated_at\": \"2026-11-18T13:48:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230084\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230085, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T13:55:00Z\", \"updated_at\": \"2026-11-18T13:55:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230085\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230086, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T14:02:00Z\", \"updated_at\": \"2026-11-18T14:02:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230086\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230087, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T14:09:00Z\", \"updated_at\": \"2026-11-18T14:09:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230087\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230088, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T14:16:00Z\", \"updated_at\": \"2026-11-18T14:16:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230088\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230089, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T14:23:00Z\", \"updated_at\": \"2026-11-18T14:23:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230089\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230090, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T14:30:00Z\", \"updated_at\": \"2026-11-18T14:30:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230090\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230091, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T14:37:00Z\", \"updated_at\": \"2026-11-18T14:37:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230091\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230092, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T15:44:00Z\", \"updated_at\": \"2026-11-18T15:44:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230092\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230093, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T15:51:00Z\", \"updated_at\": \"2026-11-18T15:51:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230093\", \"body\": \"Can we keep the old behaviour behind a flag?\"}, {\"id\": 2230094, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T15:58:00Z\", \"updated_at\": \"2026-11-18T15:58:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230094\", \"body\": \"Re-running the docs job.\"}, {\"id\": 2230095, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T15:05:00Z\", \"updated_at\": \"2026-11-18T15:05:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230095\", \"body\": \"LGTM once the tests pass.\"}, {\"id\": 2230096, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T15:12:00Z\", \"updated_at\": \"2026-11-18T15:12:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230096\", \"body\": \"Should a field with a newline be quoted too?\"}, {\"id\": 2230097, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T15:19:00Z\", \"updated_at\": \"2026-11-18T15:19:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230097\", \"body\": \"Pushed a fix for the review notes.\"}, {\"id\": 2230098, \"user\": {\"login\": \"omar-q\", \"type\": \"User\"}, \"created_at\": \"2026-11-18T16:26:00Z\", \"updated_at\": \"2026-11-18T16:26:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230098\", \"body\": \"Docs preview is ready.\"}, {\"id\": 2230099, \"user\": {\"login\": \"tidewater-docs-bot\", \"type\": \"Bot\"}, \"created_at\": \"2026-11-18T16:33:00Z\", \"updated_at\": \"2026-11-18T16:33:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/536#issuecomment-2230099\", \"body\": \"Can we keep the old behaviour behind a flag?\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_CREATE_AN_ISSUE_COMMENT": {
+      "description": "Creates a new comment on an existing GitHub issue or pull request within the specified repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "description": "Comment content in GitHub Flavored Markdown."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository (without `.git` extension); not case-sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Account owner of the repository (username or organization); not case-sensitive."
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "Number identifying the issue or pull request for the comment."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number",
+          "body"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"id\": 99001, \"html_url\": \"https://github.com/acme/tidewater/issues/536#issuecomment-99001\"}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

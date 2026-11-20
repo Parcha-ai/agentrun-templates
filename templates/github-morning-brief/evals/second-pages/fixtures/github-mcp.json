@@ -1,0 +1,701 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater on Thursday 2026-11-19 08:00 UTC: nothing merged; open PR #140 with 103 reviews (page 1 all comments, lina's APPROVED on page 2) and open PR #141 with 104 check runs (build (windows-arm64) failing, on page 2). Reviews and check runs answer 100 a page. Composio's slugs and {data, successful, error} results, acme/tidewater only. Every write answers success. It never reaches GitHub.",
+  "tools": {
+    "GITHUB_LIST_PULL_REQUESTS": {
+      "description": "Lists pull requests for a GitHub repository. REQUIRES 'owner' AND 'repo' parameters - both are MANDATORY and must be provided in every call. Does NOT support filtering by assignee or date range - use GITHUB_FIND_PULL_REQUESTS instead for searching PRs by assignee, author, or across multiple reposito",
+      "input": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string",
+            "description": "Filter by base branch name."
+          },
+          "head": {
+            "type": "string",
+            "description": "Filter by head user/org and branch name, e.g., `user:ref-name`."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number for results."
+          },
+          "repo": {
+            "type": "string",
+            "description": "[REQUIRED - MUST BE PROVIDED] The name of the repository (without the `.git` extension). This parameter is mandatory and cannot be omitted. Example: 'Spoon-Knif"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sorts results. Valid values: 'created', 'updated', 'popularity', 'long-running'. 'popularity' is by comment count; 'long-running' by age and recent activity."
+          },
+          "owner": {
+            "type": "string",
+            "description": "[REQUIRED - MUST BE PROVIDED] The GitHub username or organization name that owns the repository. This parameter is mandatory and cannot be omitted. Example: 'oc"
+          },
+          "state": {
+            "type": "string",
+            "description": "Filter by pull request state. Valid values: 'open', 'closed', 'all'."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page (maximum 100)."
+          },
+          "direction": {
+            "type": "string",
+            "description": "Sort direction. Valid values: 'asc', 'desc'. Defaults to 'desc' if sort is 'created' or unspecified, else 'asc'."
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "state": "closed",
+              "page": 1
+            },
+            {
+              "state": "closed",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "closed",
+              "page": 2
+            },
+            {
+              "state": "closed",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "state": "closed"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "open",
+              "page": 1
+            },
+            {
+              "state": "open",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 140, \"title\": \"Rewrite the upload queue\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/140\", \"body\": \"\", \"created_at\": \"2026-11-12T10:00:00Z\", \"updated_at\": \"2026-11-18T17:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-140\", \"sha\": \"0140ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [{\"login\": \"lina\", \"type\": \"User\"}], \"requested_teams\": [], \"labels\": []}, {\"number\": 141, \"title\": \"Add a Windows ARM build\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/141\", \"body\": \"\", \"created_at\": \"2026-11-18T09:00:00Z\", \"updated_at\": \"2026-11-18T11:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-141\", \"sha\": \"0141ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "open",
+              "page": 2
+            },
+            {
+              "state": "open",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "state": "open"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 140, \"title\": \"Rewrite the upload queue\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/140\", \"body\": \"\", \"created_at\": \"2026-11-12T10:00:00Z\", \"updated_at\": \"2026-11-18T17:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-140\", \"sha\": \"0140ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [{\"login\": \"lina\", \"type\": \"User\"}], \"requested_teams\": [], \"labels\": []}, {\"number\": 141, \"title\": \"Add a Windows ARM build\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/141\", \"body\": \"\", \"created_at\": \"2026-11-18T09:00:00Z\", \"updated_at\": \"2026-11-18T11:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-141\", \"sha\": \"0141ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "state": "all"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 140, \"title\": \"Rewrite the upload queue\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/140\", \"body\": \"\", \"created_at\": \"2026-11-12T10:00:00Z\", \"updated_at\": \"2026-11-18T17:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-140\", \"sha\": \"0140ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [{\"login\": \"lina\", \"type\": \"User\"}], \"requested_teams\": [], \"labels\": []}, {\"number\": 141, \"title\": \"Add a Windows ARM build\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/141\", \"body\": \"\", \"created_at\": \"2026-11-18T09:00:00Z\", \"updated_at\": \"2026-11-18T11:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-141\", \"sha\": \"0141ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [{\"number\": 140, \"title\": \"Rewrite the upload queue\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/140\", \"body\": \"\", \"created_at\": \"2026-11-12T10:00:00Z\", \"updated_at\": \"2026-11-18T17:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-140\", \"sha\": \"0140ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [{\"login\": \"lina\", \"type\": \"User\"}], \"requested_teams\": [], \"labels\": []}, {\"number\": 141, \"title\": \"Add a Windows ARM build\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/141\", \"body\": \"\", \"created_at\": \"2026-11-18T09:00:00Z\", \"updated_at\": \"2026-11-18T11:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-141\", \"sha\": \"0141ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST": {
+      "description": "Lists submitted reviews chronologically for a specific pull request within a GitHub repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "The page number for the set of results to retrieve."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension. This name is not case sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (e.g., a GitHub username or organization name). This name is not case sensitive."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "The number of review results to display per page. Maximum 100."
+          },
+          "pull_number": {
+            "type": "integer",
+            "description": "The unique number identifying the pull request within the repository."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 140,
+              "page": 1
+            },
+            {
+              "pull_number": "140",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"id\": 226079345, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T11:00:00Z\", \"body\": \"\"}, {\"id\": 279903436, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T12:25:00Z\", \"body\": \"\"}, {\"id\": 355088936, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T13:50:00Z\", \"body\": \"\"}, {\"id\": 97012822, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T15:15:00Z\", \"body\": \"\"}, {\"id\": 799437298, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T16:40:00Z\", \"body\": \"\"}, {\"id\": 168731000, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T18:05:00Z\", \"body\": \"\"}, {\"id\": 561483110, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T19:30:00Z\", \"body\": \"\"}, {\"id\": 273068009, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T20:55:00Z\", \"body\": \"\"}, {\"id\": 38773262, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T22:20:00Z\", \"body\": \"\"}, {\"id\": 699163764, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T23:45:00Z\", \"body\": \"\"}, {\"id\": 284694186, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T01:10:00Z\", \"body\": \"\"}, {\"id\": 223124503, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T02:35:00Z\", \"body\": \"\"}, {\"id\": 981196144, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T04:00:00Z\", \"body\": \"\"}, {\"id\": 999982064, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T05:25:00Z\", \"body\": \"\"}, {\"id\": 986921257, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T06:50:00Z\", \"body\": \"\"}, {\"id\": 501602723, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T08:15:00Z\", \"body\": \"\"}, {\"id\": 271879738, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T09:40:00Z\", \"body\": \"\"}, {\"id\": 680513335, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T11:05:00Z\", \"body\": \"\"}, {\"id\": 19849492, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T12:30:00Z\", \"body\": \"\"}, {\"id\": 675235694, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T13:55:00Z\", \"body\": \"\"}, {\"id\": 444048627, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T15:20:00Z\", \"body\": \"\"}, {\"id\": 45911220, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T16:45:00Z\", \"body\": \"\"}, {\"id\": 761520800, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T18:10:00Z\", \"body\": \"\"}, {\"id\": 185054752, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T19:35:00Z\", \"body\": \"\"}, {\"id\": 218700789, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T21:00:00Z\", \"body\": \"\"}, {\"id\": 423590216, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T22:25:00Z\", \"body\": \"\"}, {\"id\": 358290348, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T23:50:00Z\", \"body\": \"\"}, {\"id\": 343752753, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T01:15:00Z\", \"body\": \"\"}, {\"id\": 462178197, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T02:40:00Z\", \"body\": \"\"}, {\"id\": 56869355, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T04:05:00Z\", \"body\": \"\"}, {\"id\": 642103285, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T05:30:00Z\", \"body\": \"\"}, {\"id\": 928025522, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T06:55:00Z\", \"body\": \"\"}, {\"id\": 521223387, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T08:20:00Z\", \"body\": \"\"}, {\"id\": 330253473, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T09:45:00Z\", \"body\": \"\"}, {\"id\": 886061874, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T11:10:00Z\", \"body\": \"\"}, {\"id\": 95129487, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T12:35:00Z\", \"body\": \"\"}, {\"id\": 256930024, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T14:00:00Z\", \"body\": \"\"}, {\"id\": 385642088, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T15:25:00Z\", \"body\": \"\"}, {\"id\": 398687409, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T16:50:00Z\", \"body\": \"\"}, {\"id\": 702985275, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T18:15:00Z\", \"body\": \"\"}, {\"id\": 147282338, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T19:40:00Z\", \"body\": \"\"}, {\"id\": 159802734, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T21:05:00Z\", \"body\": \"\"}, {\"id\": 633307469, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T22:30:00Z\", \"body\": \"\"}, {\"id\": 433965367, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T23:55:00Z\", \"body\": \"\"}, {\"id\": 49808532, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T01:20:00Z\", \"body\": \"\"}, {\"id\": 782328531, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T02:45:00Z\", \"body\": \"\"}, {\"id\": 446249011, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T04:10:00Z\", \"body\": \"\"}, {\"id\": 183478963, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T05:35:00Z\", \"body\": \"\"}, {\"id\": 906948526, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T07:00:00Z\", \"body\": \"\"}, {\"id\": 144791453, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T08:25:00Z\", \"body\": \"\"}, {\"id\": 662734713, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T09:50:00Z\", \"body\": \"\"}, {\"id\": 140854900, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T11:15:00Z\", \"body\": \"\"}, {\"id\": 527713744, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T12:40:00Z\", \"body\": \"\"}, {\"id\": 585534894, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T14:05:00Z\", \"body\": \"\"}, {\"id\": 979218864, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T15:30:00Z\", \"body\": \"\"}, {\"id\": 861440503, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T16:55:00Z\", \"body\": \"\"}, {\"id\": 50936478, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T18:20:00Z\", \"body\": \"\"}, {\"id\": 397885156, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T19:45:00Z\", \"body\": \"\"}, {\"id\": 899748534, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T21:10:00Z\", \"body\": \"\"}, {\"id\": 949328907, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T22:35:00Z\", \"body\": \"\"}, {\"id\": 784322073, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T00:00:00Z\", \"body\": \"\"}, {\"id\": 205769369, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T01:25:00Z\", \"body\": \"\"}, {\"id\": 655312448, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T02:50:00Z\", \"body\": \"\"}, {\"id\": 450013758, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T04:15:00Z\", \"body\": \"\"}, {\"id\": 289489319, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T05:40:00Z\", \"body\": \"\"}, {\"id\": 46475171, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T07:05:00Z\", \"body\": \"\"}, {\"id\": 18295566, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T08:30:00Z\", \"body\": \"\"}, {\"id\": 820796788, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T09:55:00Z\", \"body\": \"\"}, {\"id\": 121353114, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T11:20:00Z\", \"body\": \"\"}, {\"id\": 377003997, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T12:45:00Z\", \"body\": \"\"}, {\"id\": 712028477, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T14:10:00Z\", \"body\": \"\"}, {\"id\": 267806141, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T15:35:00Z\", \"body\": \"\"}, {\"id\": 233638560, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T17:00:00Z\", \"body\": \"\"}, {\"id\": 342141075, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T18:25:00Z\", \"body\": \"\"}, {\"id\": 539585143, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T19:50:00Z\", \"body\": \"\"}, {\"id\": 743263419, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T21:15:00Z\", \"body\": \"\"}, {\"id\": 134316319, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T22:40:00Z\", \"body\": \"\"}, {\"id\": 329888607, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T00:05:00Z\", \"body\": \"\"}, {\"id\": 456058689, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T01:30:00Z\", \"body\": \"\"}, {\"id\": 335166214, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T02:55:00Z\", \"body\": \"\"}, {\"id\": 102191771, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T04:20:00Z\", \"body\": \"\"}, {\"id\": 904668385, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T05:45:00Z\", \"body\": \"\"}, {\"id\": 713993851, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T07:10:00Z\", \"body\": \"\"}, {\"id\": 394723400, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T08:35:00Z\", \"body\": \"\"}, {\"id\": 849856604, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T10:00:00Z\", \"body\": \"\"}, {\"id\": 870749916, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T11:25:00Z\", \"body\": \"\"}, {\"id\": 125600261, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T12:50:00Z\", \"body\": \"\"}, {\"id\": 383427707, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T14:15:00Z\", \"body\": \"\"}, {\"id\": 355025890, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T15:40:00Z\", \"body\": \"\"}, {\"id\": 844623846, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T17:05:00Z\", \"body\": \"\"}, {\"id\": 952761163, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T18:30:00Z\", \"body\": \"\"}, {\"id\": 288986417, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T19:55:00Z\", \"body\": \"\"}, {\"id\": 111329822, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T21:20:00Z\", \"body\": \"\"}, {\"id\": 376526425, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T22:45:00Z\", \"body\": \"\"}, {\"id\": 418628151, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T00:10:00Z\", \"body\": \"\"}, {\"id\": 437428407, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T01:35:00Z\", \"body\": \"\"}, {\"id\": 64204714, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T03:00:00Z\", \"body\": \"\"}, {\"id\": 865130349, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T04:25:00Z\", \"body\": \"\"}, {\"id\": 56259465, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T05:50:00Z\", \"body\": \"\"}, {\"id\": 212071821, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T07:15:00Z\", \"body\": \"\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 140,
+              "page": 2
+            },
+            {
+              "pull_number": "140",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"id\": 136954535, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T08:40:00Z\", \"body\": \"\"}, {\"id\": 144694800, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"APPROVED\", \"submitted_at\": \"2026-11-18T17:00:00Z\", \"body\": \"\"}, {\"id\": 665512457, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T17:20:00Z\", \"body\": \"\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 140,
+              "page": 3
+            },
+            {
+              "pull_number": "140",
+              "page": "3"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 140
+            },
+            {
+              "pull_number": "140"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"id\": 226079345, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T11:00:00Z\", \"body\": \"\"}, {\"id\": 279903436, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T12:25:00Z\", \"body\": \"\"}, {\"id\": 355088936, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T13:50:00Z\", \"body\": \"\"}, {\"id\": 97012822, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T15:15:00Z\", \"body\": \"\"}, {\"id\": 799437298, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T16:40:00Z\", \"body\": \"\"}, {\"id\": 168731000, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T18:05:00Z\", \"body\": \"\"}, {\"id\": 561483110, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T19:30:00Z\", \"body\": \"\"}, {\"id\": 273068009, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T20:55:00Z\", \"body\": \"\"}, {\"id\": 38773262, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T22:20:00Z\", \"body\": \"\"}, {\"id\": 699163764, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T23:45:00Z\", \"body\": \"\"}, {\"id\": 284694186, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T01:10:00Z\", \"body\": \"\"}, {\"id\": 223124503, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T02:35:00Z\", \"body\": \"\"}, {\"id\": 981196144, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T04:00:00Z\", \"body\": \"\"}, {\"id\": 999982064, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T05:25:00Z\", \"body\": \"\"}, {\"id\": 986921257, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T06:50:00Z\", \"body\": \"\"}, {\"id\": 501602723, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T08:15:00Z\", \"body\": \"\"}, {\"id\": 271879738, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T09:40:00Z\", \"body\": \"\"}, {\"id\": 680513335, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T11:05:00Z\", \"body\": \"\"}, {\"id\": 19849492, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T12:30:00Z\", \"body\": \"\"}, {\"id\": 675235694, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T13:55:00Z\", \"body\": \"\"}, {\"id\": 444048627, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T15:20:00Z\", \"body\": \"\"}, {\"id\": 45911220, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T16:45:00Z\", \"body\": \"\"}, {\"id\": 761520800, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T18:10:00Z\", \"body\": \"\"}, {\"id\": 185054752, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T19:35:00Z\", \"body\": \"\"}, {\"id\": 218700789, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T21:00:00Z\", \"body\": \"\"}, {\"id\": 423590216, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T22:25:00Z\", \"body\": \"\"}, {\"id\": 358290348, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-13T23:50:00Z\", \"body\": \"\"}, {\"id\": 343752753, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T01:15:00Z\", \"body\": \"\"}, {\"id\": 462178197, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T02:40:00Z\", \"body\": \"\"}, {\"id\": 56869355, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T04:05:00Z\", \"body\": \"\"}, {\"id\": 642103285, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T05:30:00Z\", \"body\": \"\"}, {\"id\": 928025522, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T06:55:00Z\", \"body\": \"\"}, {\"id\": 521223387, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T08:20:00Z\", \"body\": \"\"}, {\"id\": 330253473, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T09:45:00Z\", \"body\": \"\"}, {\"id\": 886061874, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T11:10:00Z\", \"body\": \"\"}, {\"id\": 95129487, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T12:35:00Z\", \"body\": \"\"}, {\"id\": 256930024, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T14:00:00Z\", \"body\": \"\"}, {\"id\": 385642088, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T15:25:00Z\", \"body\": \"\"}, {\"id\": 398687409, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T16:50:00Z\", \"body\": \"\"}, {\"id\": 702985275, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T18:15:00Z\", \"body\": \"\"}, {\"id\": 147282338, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T19:40:00Z\", \"body\": \"\"}, {\"id\": 159802734, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T21:05:00Z\", \"body\": \"\"}, {\"id\": 633307469, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T22:30:00Z\", \"body\": \"\"}, {\"id\": 433965367, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-14T23:55:00Z\", \"body\": \"\"}, {\"id\": 49808532, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T01:20:00Z\", \"body\": \"\"}, {\"id\": 782328531, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T02:45:00Z\", \"body\": \"\"}, {\"id\": 446249011, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T04:10:00Z\", \"body\": \"\"}, {\"id\": 183478963, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T05:35:00Z\", \"body\": \"\"}, {\"id\": 906948526, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T07:00:00Z\", \"body\": \"\"}, {\"id\": 144791453, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T08:25:00Z\", \"body\": \"\"}, {\"id\": 662734713, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T09:50:00Z\", \"body\": \"\"}, {\"id\": 140854900, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T11:15:00Z\", \"body\": \"\"}, {\"id\": 527713744, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T12:40:00Z\", \"body\": \"\"}, {\"id\": 585534894, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T14:05:00Z\", \"body\": \"\"}, {\"id\": 979218864, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T15:30:00Z\", \"body\": \"\"}, {\"id\": 861440503, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T16:55:00Z\", \"body\": \"\"}, {\"id\": 50936478, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T18:20:00Z\", \"body\": \"\"}, {\"id\": 397885156, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T19:45:00Z\", \"body\": \"\"}, {\"id\": 899748534, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T21:10:00Z\", \"body\": \"\"}, {\"id\": 949328907, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-15T22:35:00Z\", \"body\": \"\"}, {\"id\": 784322073, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T00:00:00Z\", \"body\": \"\"}, {\"id\": 205769369, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T01:25:00Z\", \"body\": \"\"}, {\"id\": 655312448, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T02:50:00Z\", \"body\": \"\"}, {\"id\": 450013758, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T04:15:00Z\", \"body\": \"\"}, {\"id\": 289489319, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T05:40:00Z\", \"body\": \"\"}, {\"id\": 46475171, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T07:05:00Z\", \"body\": \"\"}, {\"id\": 18295566, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T08:30:00Z\", \"body\": \"\"}, {\"id\": 820796788, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T09:55:00Z\", \"body\": \"\"}, {\"id\": 121353114, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T11:20:00Z\", \"body\": \"\"}, {\"id\": 377003997, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T12:45:00Z\", \"body\": \"\"}, {\"id\": 712028477, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T14:10:00Z\", \"body\": \"\"}, {\"id\": 267806141, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T15:35:00Z\", \"body\": \"\"}, {\"id\": 233638560, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T17:00:00Z\", \"body\": \"\"}, {\"id\": 342141075, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T18:25:00Z\", \"body\": \"\"}, {\"id\": 539585143, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T19:50:00Z\", \"body\": \"\"}, {\"id\": 743263419, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T21:15:00Z\", \"body\": \"\"}, {\"id\": 134316319, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-16T22:40:00Z\", \"body\": \"\"}, {\"id\": 329888607, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T00:05:00Z\", \"body\": \"\"}, {\"id\": 456058689, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T01:30:00Z\", \"body\": \"\"}, {\"id\": 335166214, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T02:55:00Z\", \"body\": \"\"}, {\"id\": 102191771, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T04:20:00Z\", \"body\": \"\"}, {\"id\": 904668385, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T05:45:00Z\", \"body\": \"\"}, {\"id\": 713993851, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T07:10:00Z\", \"body\": \"\"}, {\"id\": 394723400, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T08:35:00Z\", \"body\": \"\"}, {\"id\": 849856604, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T10:00:00Z\", \"body\": \"\"}, {\"id\": 870749916, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T11:25:00Z\", \"body\": \"\"}, {\"id\": 125600261, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T12:50:00Z\", \"body\": \"\"}, {\"id\": 383427707, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T14:15:00Z\", \"body\": \"\"}, {\"id\": 355025890, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T15:40:00Z\", \"body\": \"\"}, {\"id\": 844623846, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T17:05:00Z\", \"body\": \"\"}, {\"id\": 952761163, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T18:30:00Z\", \"body\": \"\"}, {\"id\": 288986417, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T19:55:00Z\", \"body\": \"\"}, {\"id\": 111329822, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T21:20:00Z\", \"body\": \"\"}, {\"id\": 376526425, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-17T22:45:00Z\", \"body\": \"\"}, {\"id\": 418628151, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T00:10:00Z\", \"body\": \"\"}, {\"id\": 437428407, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T01:35:00Z\", \"body\": \"\"}, {\"id\": 64204714, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T03:00:00Z\", \"body\": \"\"}, {\"id\": 865130349, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T04:25:00Z\", \"body\": \"\"}, {\"id\": 56259465, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T05:50:00Z\", \"body\": \"\"}, {\"id\": 212071821, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-18T07:15:00Z\", \"body\": \"\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 141,
+              "page": 1
+            },
+            {
+              "pull_number": "141",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 141,
+              "page": 2
+            },
+            {
+              "pull_number": "141",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 141
+            },
+            {
+              "pull_number": "141"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_CHECK_RUNS_FOR_A_REF": {
+      "description": "List GitHub check runs for a commit SHA, branch, or tag to assess CI status and conclusions. Results default to the latest runs; the filter can be set to include all runs.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "ref": {
+            "type": "string",
+            "description": "The git reference - can be a commit SHA, branch name, or tag name."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number of results to fetch."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository without .git extension. Case-insensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (username or organization name). Case-insensitive."
+          },
+          "app_id": {
+            "type": "integer",
+            "description": "Filter by GitHub App identifier."
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter by completion timestamp: 'latest' returns the most recent check runs, 'all' returns all check runs."
+          },
+          "status": {
+            "type": "string",
+            "description": "Filter by check run status: queued, in_progress, or completed."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page, maximum 100."
+          },
+          "check_name": {
+            "type": "string",
+            "description": "Filters results to check runs with the specified name."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "ref"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "ref": "0140ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 1
+            },
+            {
+              "ref": "0140ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": [{\"id\": 728764670, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000140/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 210998072, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000140/job/50125188\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0140ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 2
+            },
+            {
+              "ref": "0140ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "ref": "0140ab12cd34ef56ab12cd34ef56ab12cd34ef56"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": [{\"id\": 728764670, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000140/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 210998072, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000140/job/50125188\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0141ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 1
+            },
+            {
+              "ref": "0141ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 104, \"check_runs\": [{\"id\": 1075933950, \"name\": \"test (node-20, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50494265\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2041335355, \"name\": \"test (node-20, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50621882\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1859607160, \"name\": \"test (node-20, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50103099\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 179713969, \"name\": \"test (node-20, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50405500\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 499983346, \"name\": \"test (node-20, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50182397\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 608182071, \"name\": \"test (node-20, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50688574\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 859507572, \"name\": \"test (node-20, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50218879\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3967992997, \"name\": \"test (node-20, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50721392\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3034873946, \"name\": \"test (node-20, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50298098\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2372517023, \"name\": \"test (node-20, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50359025\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2584914140, \"name\": \"test (node-20, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50815152\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4268999957, \"name\": \"test (node-20, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50460599\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3909669206, \"name\": \"test (node-20, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50984310\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3498438035, \"name\": \"test (node-20, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50053173\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3355376080, \"name\": \"test (node-20, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50557364\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 407320065, \"name\": \"test (node-20, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50676923\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3569150663, \"name\": \"test (node-20, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50028189\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3979466242, \"name\": \"test (node-20, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50071454\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4199203393, \"name\": \"test (node-20, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50021215\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2653663112, \"name\": \"test (node-20, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50001048\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2303769547, \"name\": \"test (node-20, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50922265\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2967308046, \"name\": \"test (node-20, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50118170\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2812711757, \"name\": \"test (node-20, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50019867\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2015321244, \"name\": \"test (node-20, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50739156\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1433090449, \"name\": \"test (node-22, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50542152\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1827013972, \"name\": \"test (node-22, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50129291\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2073891095, \"name\": \"test (node-22, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50578698\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 536640734, \"name\": \"test (node-22, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50581069\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 143091869, \"name\": \"test (node-22, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50390028\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 822760536, \"name\": \"test (node-22, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50434895\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 644956187, \"name\": \"test (node-22, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50933390\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4190670794, \"name\": \"test (node-22, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50899905\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 612541959, \"name\": \"test (node-22, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50351537\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 487561922, \"name\": \"test (node-22, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50475122\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 175410817, \"name\": \"test (node-22, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50262771\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1846928200, \"name\": \"test (node-22, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50634292\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2037315339, \"name\": \"test (node-22, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50717621\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1088670670, \"name\": \"test (node-22, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50831158\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1469636493, \"name\": \"test (node-22, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50667895\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2283868252, \"name\": \"test (node-22, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50429624\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 161799237, \"name\": \"test (node-22, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50330833\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 808050816, \"name\": \"test (node-22, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50425938\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 659748035, \"name\": \"test (node-22, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50016531\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1127454986, \"name\": \"test (node-22, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50569876\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1414040905, \"name\": \"test (node-22, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50737557\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1841672588, \"name\": \"test (node-22, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50774038\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2059314639, \"name\": \"test (node-22, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50413719\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2768726558, \"name\": \"test (node-22, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50373400\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1790305312, \"name\": \"test (node-24, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50430363\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1396234469, \"name\": \"test (node-24, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50564120\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1145293990, \"name\": \"test (node-24, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50975577\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 539140463, \"name\": \"test (node-24, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50489566\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 928625964, \"name\": \"test (node-24, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50098527\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 248809961, \"name\": \"test (node-24, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50836764\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 430939562, \"name\": \"test (node-24, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50199133\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3323351675, \"name\": \"test (node-24, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50334930\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1331284641, \"name\": \"test (node-24, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50547636\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1993668196, \"name\": \"test (node-24, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50399863\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1638916647, \"name\": \"test (node-24, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50793270\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 97423342, \"name\": \"test (node-24, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50591793\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 313891757, \"name\": \"test (node-24, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50956656\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 725133160, \"name\": \"test (node-24, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50236019\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1011069739, \"name\": \"test (node-24, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50581362\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3824844026, \"name\": \"test (node-24, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50183869\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3053289858, \"name\": \"test (node-24, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50031172\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2356198727, \"name\": \"test (node-24, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50808967\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2601232644, \"name\": \"test (node-24, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50260678\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4285187277, \"name\": \"test (node-24, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50841153\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3893481614, \"name\": \"test (node-24, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50393216\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3516722251, \"name\": \"test (node-24, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50502019\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3337091080, \"name\": \"test (node-24, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50001794\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 425605081, \"name\": \"test (node-24, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50782477\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2376614583, \"name\": \"test (node-25, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50782851\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3022356082, \"name\": \"test (node-25, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50276864\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2740873777, \"name\": \"test (node-25, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50375681\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3342796792, \"name\": \"test (node-25, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50283654\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3494122427, \"name\": \"test (node-25, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50313863\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3922276222, \"name\": \"test (node-25, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50800964\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4273093437, \"name\": \"test (node-25, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50850693\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 554431724, \"name\": \"test (node-25, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50850122\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3939654319, \"name\": \"test (node-25, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50741589\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3546244714, \"name\": \"test (node-25, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50335126\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3290722857, \"name\": \"test (node-25, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50987799\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2688884704, \"name\": \"test (node-25, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50320336\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3074296739, \"name\": \"test (node-25, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50647249\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2394109798, \"name\": \"test (node-25, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50184274\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2580030245, \"name\": \"test (node-25, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50788883\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1181871348, \"name\": \"test (node-25, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50016284\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3681655491, \"name\": \"test (node-25, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50460354\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3808208390, \"name\": \"test (node-25, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50219841\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4119310917, \"name\": \"test (node-25, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50381248\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2447826828, \"name\": \"test (node-25, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50406343\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2258488271, \"name\": \"test (node-25, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50112070\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3205560074, \"name\": \"test (node-25, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50377861\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2825642825, \"name\": \"test (node-25, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50588356\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2010262680, \"name\": \"test (node-25, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50028107\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 355728841, \"name\": \"e2e (1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50738847\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 750698764, \"name\": \"e2e (2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50421020\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1002820943, \"name\": \"e2e (3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50022173\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1604630662, \"name\": \"e2e (4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50383898\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0141ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 2
+            },
+            {
+              "ref": "0141ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 104, \"check_runs\": [{\"id\": 361276025, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50125188\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2669861029, \"name\": \"typecheck\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50207616\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1507843381, \"name\": \"docs\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50667319\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 377134942, \"name\": \"build (windows-arm64)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50471104\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0141ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 3
+            },
+            {
+              "ref": "0141ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "3"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 104, \"check_runs\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "ref": "0141ab12cd34ef56ab12cd34ef56ab12cd34ef56"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 104, \"check_runs\": [{\"id\": 1075933950, \"name\": \"test (node-20, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50494265\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2041335355, \"name\": \"test (node-20, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50621882\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1859607160, \"name\": \"test (node-20, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50103099\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 179713969, \"name\": \"test (node-20, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50405500\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 499983346, \"name\": \"test (node-20, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50182397\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 608182071, \"name\": \"test (node-20, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50688574\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 859507572, \"name\": \"test (node-20, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50218879\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3967992997, \"name\": \"test (node-20, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50721392\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3034873946, \"name\": \"test (node-20, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50298098\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2372517023, \"name\": \"test (node-20, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50359025\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2584914140, \"name\": \"test (node-20, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50815152\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4268999957, \"name\": \"test (node-20, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50460599\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3909669206, \"name\": \"test (node-20, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50984310\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3498438035, \"name\": \"test (node-20, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50053173\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3355376080, \"name\": \"test (node-20, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50557364\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 407320065, \"name\": \"test (node-20, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50676923\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3569150663, \"name\": \"test (node-20, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50028189\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3979466242, \"name\": \"test (node-20, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50071454\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4199203393, \"name\": \"test (node-20, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50021215\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2653663112, \"name\": \"test (node-20, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50001048\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2303769547, \"name\": \"test (node-20, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50922265\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2967308046, \"name\": \"test (node-20, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50118170\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2812711757, \"name\": \"test (node-20, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50019867\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2015321244, \"name\": \"test (node-20, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50739156\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1433090449, \"name\": \"test (node-22, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50542152\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1827013972, \"name\": \"test (node-22, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50129291\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2073891095, \"name\": \"test (node-22, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50578698\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 536640734, \"name\": \"test (node-22, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50581069\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 143091869, \"name\": \"test (node-22, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50390028\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 822760536, \"name\": \"test (node-22, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50434895\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 644956187, \"name\": \"test (node-22, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50933390\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4190670794, \"name\": \"test (node-22, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50899905\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 612541959, \"name\": \"test (node-22, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50351537\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 487561922, \"name\": \"test (node-22, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50475122\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 175410817, \"name\": \"test (node-22, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50262771\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1846928200, \"name\": \"test (node-22, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50634292\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2037315339, \"name\": \"test (node-22, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50717621\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1088670670, \"name\": \"test (node-22, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50831158\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1469636493, \"name\": \"test (node-22, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50667895\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2283868252, \"name\": \"test (node-22, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50429624\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 161799237, \"name\": \"test (node-22, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50330833\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 808050816, \"name\": \"test (node-22, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50425938\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 659748035, \"name\": \"test (node-22, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50016531\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1127454986, \"name\": \"test (node-22, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50569876\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1414040905, \"name\": \"test (node-22, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50737557\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1841672588, \"name\": \"test (node-22, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50774038\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2059314639, \"name\": \"test (node-22, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50413719\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2768726558, \"name\": \"test (node-22, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50373400\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1790305312, \"name\": \"test (node-24, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50430363\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1396234469, \"name\": \"test (node-24, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50564120\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1145293990, \"name\": \"test (node-24, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50975577\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 539140463, \"name\": \"test (node-24, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50489566\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 928625964, \"name\": \"test (node-24, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50098527\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 248809961, \"name\": \"test (node-24, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50836764\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 430939562, \"name\": \"test (node-24, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50199133\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3323351675, \"name\": \"test (node-24, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50334930\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1331284641, \"name\": \"test (node-24, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50547636\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1993668196, \"name\": \"test (node-24, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50399863\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1638916647, \"name\": \"test (node-24, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50793270\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 97423342, \"name\": \"test (node-24, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50591793\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 313891757, \"name\": \"test (node-24, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50956656\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 725133160, \"name\": \"test (node-24, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50236019\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1011069739, \"name\": \"test (node-24, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50581362\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3824844026, \"name\": \"test (node-24, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50183869\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3053289858, \"name\": \"test (node-24, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50031172\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2356198727, \"name\": \"test (node-24, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50808967\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2601232644, \"name\": \"test (node-24, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50260678\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4285187277, \"name\": \"test (node-24, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50841153\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3893481614, \"name\": \"test (node-24, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50393216\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3516722251, \"name\": \"test (node-24, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50502019\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3337091080, \"name\": \"test (node-24, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50001794\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 425605081, \"name\": \"test (node-24, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50782477\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2376614583, \"name\": \"test (node-25, ubuntu, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50782851\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3022356082, \"name\": \"test (node-25, ubuntu, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50276864\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2740873777, \"name\": \"test (node-25, ubuntu, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50375681\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3342796792, \"name\": \"test (node-25, ubuntu, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50283654\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3494122427, \"name\": \"test (node-25, ubuntu, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50313863\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3922276222, \"name\": \"test (node-25, ubuntu, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50800964\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4273093437, \"name\": \"test (node-25, ubuntu, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50850693\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 554431724, \"name\": \"test (node-25, ubuntu, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50850122\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3939654319, \"name\": \"test (node-25, macos, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50741589\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3546244714, \"name\": \"test (node-25, macos, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50335126\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3290722857, \"name\": \"test (node-25, macos, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50987799\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2688884704, \"name\": \"test (node-25, macos, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50320336\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3074296739, \"name\": \"test (node-25, macos, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50647249\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2394109798, \"name\": \"test (node-25, macos, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50184274\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2580030245, \"name\": \"test (node-25, macos, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50788883\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1181871348, \"name\": \"test (node-25, macos, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50016284\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3681655491, \"name\": \"test (node-25, windows, shard 1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50460354\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3808208390, \"name\": \"test (node-25, windows, shard 2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50219841\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 4119310917, \"name\": \"test (node-25, windows, shard 3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50381248\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2447826828, \"name\": \"test (node-25, windows, shard 4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50406343\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2258488271, \"name\": \"test (node-25, windows, shard 5)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50112070\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3205560074, \"name\": \"test (node-25, windows, shard 6)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50377861\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2825642825, \"name\": \"test (node-25, windows, shard 7)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50588356\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2010262680, \"name\": \"test (node-25, windows, shard 8)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50028107\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 355728841, \"name\": \"e2e (1)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50738847\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 750698764, \"name\": \"e2e (2)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50421020\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1002820943, \"name\": \"e2e (3)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50022173\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1604630662, \"name\": \"e2e (4)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000141/job/50383898\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"No commit found for the ref\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_REPOSITORY_ISSUES": {
+      "description": "Lists issues (including pull requests) from a GitHub repository. Requires BOTH 'owner' AND 'repo' parameters (e.g., owner='octocat', repo='Hello-World' for github.com/octocat/Hello-World).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number for the set of results. Refer to GitHub's REST API documentation for pagination details."
+          },
+          "repo": {
+            "type": "string",
+            "description": "REQUIRED. The name of the repository (without .git extension). For 'octocat/Hello-World', repo is 'Hello-World'. Not case-sensitive. Must be provided together w"
+          },
+          "sort": {
+            "type": "string",
+            "description": "The field to sort the results by."
+          },
+          "type": {
+            "type": "string",
+            "description": "Filter issues by type name. Use '*' for issues with any type, 'none' for issues without a type, or specify a type name."
+          },
+          "owner": {
+            "type": "string",
+            "description": "REQUIRED. The GitHub account owner (user or organization) of the repository. For 'octocat/Hello-World', owner is 'octocat'. Not case-sensitive. Must be provided"
+          },
+          "since": {
+            "type": "string",
+            "description": "Filters issues to include only those updated at or after the specified time. This should be a timestamp in ISO 8601 format (e.g., `YYYY-MM-DDTHH:MM:SSZ`)."
+          },
+          "state": {
+            "type": "string",
+            "description": "Filters issues based on their state."
+          },
+          "labels": {
+            "type": "string",
+            "description": "A comma-separated list of label names to filter issues by. Example: 'bug,ui,@high'."
+          },
+          "creator": {
+            "type": "string",
+            "description": "Filter issues by the username of the user who created the issue."
+          },
+          "assignee": {
+            "type": "string",
+            "description": "Filter issues by assignee's username. Use 'none' for issues with no assignee, or '*' for issues assigned to any user."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page (max 100). Default is 30, which matches GitHub's API default. Refer to GitHub's REST API documentation for pagination details."
+          },
+          "direction": {
+            "type": "string",
+            "description": "The direction of the sort."
+          },
+          "mentioned": {
+            "type": "string",
+            "description": "Filter issues by a user mentioned in the issue's description or comments. Provide the username."
+          },
+          "milestone": {
+            "type": "string",
+            "description": "Filter issues by milestone. Provide the milestone `number` as a string, '*' for issues with any milestone, or 'none' for issues without a milestone."
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "page": 1
+            },
+            {
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 141, \"title\": \"Add a Windows ARM build\", \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/141\", \"created_at\": \"2026-11-18T09:00:00Z\", \"updated_at\": \"2026-11-18T11:00:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/141\", \"html_url\": \"https://github.com/acme/tidewater/pull/141\"}}, {\"number\": 140, \"title\": \"Rewrite the upload queue\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/140\", \"created_at\": \"2026-11-12T10:00:00Z\", \"updated_at\": \"2026-11-18T17:20:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/140\", \"html_url\": \"https://github.com/acme/tidewater/pull/140\"}}, {\"number\": 40, \"title\": \"Daily brief\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/40\", \"created_at\": \"2026-10-01T09:00:00Z\", \"updated_at\": \"2026-11-18T08:01:00Z\", \"labels\": [], \"comments\": 0}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "page": 2
+            },
+            {
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [{\"number\": 141, \"title\": \"Add a Windows ARM build\", \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/141\", \"created_at\": \"2026-11-18T09:00:00Z\", \"updated_at\": \"2026-11-18T11:00:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/141\", \"html_url\": \"https://github.com/acme/tidewater/pull/141\"}}, {\"number\": 140, \"title\": \"Rewrite the upload queue\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/140\", \"created_at\": \"2026-11-12T10:00:00Z\", \"updated_at\": \"2026-11-18T17:20:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/140\", \"html_url\": \"https://github.com/acme/tidewater/pull/140\"}}, {\"number\": 40, \"title\": \"Daily brief\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/40\", \"created_at\": \"2026-10-01T09:00:00Z\", \"updated_at\": \"2026-11-18T08:01:00Z\", \"labels\": [], \"comments\": 0}], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_CREATE_AN_ISSUE_COMMENT": {
+      "description": "Creates a new comment on an existing GitHub issue or pull request within the specified repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "description": "Comment content in GitHub Flavored Markdown."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository (without `.git` extension); not case-sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Account owner of the repository (username or organization); not case-sensitive."
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "Number identifying the issue or pull request for the comment."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number",
+          "body"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"id\": 99001, \"html_url\": \"https://github.com/acme/tidewater/issues/40#issuecomment-99001\"}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

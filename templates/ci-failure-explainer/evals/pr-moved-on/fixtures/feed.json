@@ -1,0 +1,92 @@
+{
+  "description": "acme/tidewater's failed runs: two old ones were listed before; run 19450007010 on PR #538 is new to this trigger.",
+  "format": "json-list",
+  "items": [
+    {
+      "id": 19450006970,
+      "name": "CI",
+      "display_title": "",
+      "head_branch": "main",
+      "head_sha": "08789f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_attempt": 1,
+      "run_number": 878,
+      "workflow_id": 7700001,
+      "path": ".github/workflows/ci.yml",
+      "html_url": "https://github.com/acme/tidewater/actions/runs/19450006970",
+      "jobs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450006970/jobs",
+      "logs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450006970/logs",
+      "created_at": "2026-11-16T16:00:00Z",
+      "updated_at": "2026-11-16T16:09:30Z",
+      "run_started_at": "2026-11-16T16:00:00Z",
+      "actor": {
+        "login": "dev-user"
+      },
+      "pull_requests": []
+    },
+    {
+      "id": 19450006981,
+      "name": "CI",
+      "display_title": "",
+      "head_branch": "old-branch",
+      "head_sha": "08759f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_attempt": 1,
+      "run_number": 875,
+      "workflow_id": 7700001,
+      "path": ".github/workflows/ci.yml",
+      "html_url": "https://github.com/acme/tidewater/actions/runs/19450006981",
+      "jobs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450006981/jobs",
+      "logs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450006981/logs",
+      "created_at": "2026-11-17T12:00:00Z",
+      "updated_at": "2026-11-17T12:09:30Z",
+      "run_started_at": "2026-11-17T12:00:00Z",
+      "actor": {
+        "login": "dev-user"
+      },
+      "pull_requests": []
+    }
+  ],
+  "item": {
+    "id": 19450007010,
+    "name": "CI",
+    "display_title": "Export reports as CSV",
+    "head_branch": "csv-export",
+    "head_sha": "05389f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "failure",
+    "run_attempt": 1,
+    "run_number": 896,
+    "workflow_id": 7700001,
+    "path": ".github/workflows/ci.yml",
+    "html_url": "https://github.com/acme/tidewater/actions/runs/19450007010",
+    "jobs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450007010/jobs",
+    "logs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450007010/logs",
+    "created_at": "2026-11-18T14:00:00Z",
+    "updated_at": "2026-11-18T14:09:30Z",
+    "run_started_at": "2026-11-18T14:00:00Z",
+    "actor": {
+      "login": "dev-user"
+    },
+    "pull_requests": [
+      {
+        "number": 538,
+        "head": {
+          "ref": "csv-export",
+          "sha": "05389f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a"
+        },
+        "base": {
+          "ref": "main",
+          "repo": {
+            "name": "tidewater"
+          }
+        }
+      }
+    ]
+  }
+}
