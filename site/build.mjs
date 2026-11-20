@@ -94,6 +94,11 @@ export async function build(options = {}) {
     write(page.path.endsWith("/") ? `${page.path}index.html` : page.path, layout(site, page));
     if (page.mdPath) write(page.mdPath, page.md);
   }
+  // Sample media sits beside its template's page, at the URL packages.mjs gave it (/templates/<t>/samples/<case>/<file>).
+  for (const m of packages.flatMap((p) => p.examples.flatMap((ex) => ex.media))) {
+    mkdirSync(join(out, dirname(m.url)), { recursive: true });
+    copyFileSync(m.path, join(out, m.url));
+  }
   mkdirSync(join(out, "assets", "fonts"), { recursive: true });
   cpSync(join(here, "vendor/agentrun-website/public"), out, { recursive: true });
   for (const f of assetFiles) copyFileSync(join(assetsDir, f), join(out, "assets", f));

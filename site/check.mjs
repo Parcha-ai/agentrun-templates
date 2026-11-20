@@ -3,7 +3,8 @@
 // exists, OG and Twitter tags, one h1, and JSON-LD that parses; every internal link, asset and #fragment resolves;
 // the sitemap, llms.txt and the .md twins line up with the pages; nothing inline breaks the CSP the server sends
 // (lib/server.mjs), which allows no other origin; and nothing on a page (scripts, styles, fonts, images) loads from
-// another origin.
+// another origin. Each template's sample media is an allowed type, its videos are 720p at most, and the files add up
+// to 8 MiB at most.
 // Usage: node site/check.mjs [--dir site/dist] [--base-url https://marketplace.agentrun.ai]. Exits 1 on any problem.
 
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
@@ -11,6 +12,7 @@ import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { CSP } from "./lib/server.mjs";
+import { MEDIA_BUDGET_BYTES, MEDIA_TYPES, mediaSize, VIDEO_MAX_SHORT_SIDE } from "./lib/media.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -20,6 +22,7 @@ export function check({ dir, baseUrl }) {
   const problems = [];
   const bad = (file, msg) => problems.push(`${file}: ${msg}`);
   if (/https?:/.test(CSP.replace(/form-action[^;]*/, ""))) bad("lib/server.mjs", `the CSP allows another origin: ${CSP}`);
+  if (!/(^|; )media-src 'self'(;|$)/.test(CSP)) bad("lib/server.mjs", "the CSP does not say media-src 'self'");
   const walk = (d) => readdirSync(d).flatMap((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : [join(d, f)]));
   const files = walk(root).map((f) => relative(root, f).split(sep).join("/"));
   const htmlFiles = files.filter((f) => f.endsWith(".html"));
@@ -141,6 +144,32 @@ export function check({ dir, baseUrl }) {
   }
   for (const md of files.filter((f) => f.endsWith(".md"))) if (!readFileSync(join(root, md), "utf8").startsWith("# ")) bad(md, "does not start with a # title");
   if (!existsSync(join(root, "404.html"))) bad("404.html", "missing");
+
+  // Sample media (templates/<t>/samples/<case>/<file>): an allowed type, video at most 720p, 8 MiB a template.
+  const mib = (n) => `${(n / 1048576).toFixed(2)} MiB`;
+  const mediaBytes = new Map();
+  for (const f of files) {
+    const m = /^templates\/([^/]+)\/samples\/(.+)$/.exec(f);
+    if (!m) continue;
+    const [, template, rel] = m;
+    const where = `templates/${template}`;
+    const ext = /\.[^./]+$/.exec(rel)?.[0].toLowerCase() ?? "";
+    const bytes = statSync(join(root, f)).size;
+    const sum = mediaBytes.get(template) ?? { bytes: 0, largest: null };
+    sum.bytes += bytes;
+    if (!sum.largest || bytes > sum.largest.bytes) sum.largest = { rel, bytes };
+    mediaBytes.set(template, sum);
+    if (!/^[^/]+\/[^/]+$/.test(rel)) bad(where, `sample media ${rel} is not <sample>/<file>`);
+    if (!MEDIA_TYPES[ext]) { bad(where, `sample media ${rel}: ${ext || "no extension"} isn't an allowed type (${Object.keys(MEDIA_TYPES).join(" ")})`); continue; }
+    if (ext === ".mp4") {
+      const dims = mediaSize(readFileSync(join(root, f)), f);
+      if (!dims) bad(where, `sample media ${rel}: no video size in its tkhd box`);
+      else if (Math.min(dims.width, dims.height) > VIDEO_MAX_SHORT_SIDE) bad(where, `sample media ${rel} is ${dims.width}x${dims.height}; a video's shorter side is ${VIDEO_MAX_SHORT_SIDE} px at most`);
+    }
+  }
+  for (const [template, { bytes, largest }] of mediaBytes) {
+    if (bytes > MEDIA_BUDGET_BYTES) bad(`templates/${template}`, `sample media total ${bytes} bytes (${mib(bytes)}), over the ${mib(MEDIA_BUDGET_BYTES)} a template may ship; the largest file is ${largest.rel} at ${largest.bytes} bytes`);
+  }
 
   return { problems, pages: htmlFiles.length, files: files.length };
 }
