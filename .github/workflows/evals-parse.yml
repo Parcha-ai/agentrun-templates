@@ -31,6 +31,7 @@ jobs:
       - run: node .github/lint-templates.mjs
       # A scheduled run's last answer is handed to the next only under 32 KiB, and whole or not at all: the fields a
       # skill reads back (`x-carried`) must fit 12,000 bytes at their largest.
+      - run: node --test .github/lint-handoff-size.test.mjs
       - run: node .github/lint-handoff-size.mjs
       # `latest` is the dist-tag every AgentRun release is published under.
       - run: npm install --prefix "$RUNNER_TEMP/serve" --no-save --no-audit --no-fund --ignore-scripts @parcha/agentrun-serve@latest

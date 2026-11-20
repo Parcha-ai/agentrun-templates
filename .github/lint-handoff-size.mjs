@@ -19,6 +19,7 @@
 // each problem; exit 1 on any problem.
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 export const PREVIOUS_RESULT_MAX_BYTES = 32 * 1024;
 export const CARRIED_BUDGET_BYTES = 12_000;
@@ -106,38 +107,48 @@ function scheduledSchema(name) {
   return agent.match(/^output:\s*\{\s*schema:\s*([^\s,}]+)/m)?.[1];
 }
 
-let failed = 0;
-let checked = 0;
-const undeclared = [];
-for (const name of readdirSync(templatesDir).sort()) {
-  let file;
-  try {
-    file = scheduledSchema(name);
-  } catch {
-    continue;
-  }
-  if (!file) continue;
-  const schema = JSON.parse(readFileSync(join(templatesDir, name, file), "utf8"));
-  const carried = schema["x-carried"];
-  if (carried === undefined) {
-    undeclared.push(name);
-    console.log(`not declared ${name}/${file}`);
-    continue;
-  }
-  checked++;
+/** The largest value the `x-carried` fields of an output schema allow, its size as previousResultOf would hand it on, and
+ *  the problems that leave it without one. */
+export function measureCarried(schema) {
   const problems = [];
   const worst = {};
-  for (const key of carried) {
+  for (const key of schema["x-carried"] ?? []) {
     if (!schema.properties?.[key]) problems.push(`x-carried names ${key}, which the schema has no property for`);
     else worst[key] = largest(schema.properties[key], schema, `$.${key}`, problems);
   }
-  const bytes = Buffer.byteLength(JSON.stringify(worst, null, 2));
-  if (bytes > CARRIED_BUDGET_BYTES) problems.unshift(`carried worst case ${bytes} B is over the ${CARRIED_BUDGET_BYTES} B budget`);
-  console.log(`${problems.length ? "not ok" : "ok"} ${name}/${file}: carried ${carried.join(", ")}: worst case ${bytes} B`);
-  for (const problem of problems) console.log(`  ${problem}`);
-  if (problems.length) failed++;
+  return { bytes: Buffer.byteLength(JSON.stringify(worst, null, 2)), problems };
 }
-console.log(
-  `lint-handoff-size: ${checked} declared, ${failed} over the ${CARRIED_BUDGET_BYTES} B budget or unbounded (limit ${PREVIOUS_RESULT_MAX_BYTES} B); ${undeclared.length} scheduled templates not declared`,
-);
-process.exit(failed ? 1 : 0);
+
+function main() {
+  let failed = 0;
+  let checked = 0;
+  const undeclared = [];
+  for (const name of readdirSync(templatesDir).sort()) {
+    let file;
+    try {
+      file = scheduledSchema(name);
+    } catch {
+      continue;
+    }
+    if (!file) continue;
+    const schema = JSON.parse(readFileSync(join(templatesDir, name, file), "utf8"));
+    const carried = schema["x-carried"];
+    if (carried === undefined) {
+      undeclared.push(name);
+      console.log(`not declared ${name}/${file}`);
+      continue;
+    }
+    checked++;
+    const { bytes, problems } = measureCarried(schema);
+    if (bytes > CARRIED_BUDGET_BYTES) problems.unshift(`carried worst case ${bytes} B is over the ${CARRIED_BUDGET_BYTES} B budget`);
+    console.log(`${problems.length ? "not ok" : "ok"} ${name}/${file}: carried ${carried.join(", ")}: worst case ${bytes} B`);
+    for (const problem of problems) console.log(`  ${problem}`);
+    if (problems.length) failed++;
+  }
+  console.log(
+    `lint-handoff-size: ${checked} declared, ${failed} over the ${CARRIED_BUDGET_BYTES} B budget or unbounded (limit ${PREVIOUS_RESULT_MAX_BYTES} B); ${undeclared.length} scheduled templates not declared`,
+  );
+  return failed ? 1 : 0;
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) process.exit(main());
