@@ -61,3 +61,15 @@ test("a pattern with no end, no anchors or an open quantifier is reported", () =
     assert.match(problems[0], /pattern/, pattern);
   }
 });
+
+test("an alternation outside a group is not anchored, and is reported", () => {
+  // `^a|b$` is `^a` or `b$`: "a" followed by any number of combining marks matches, so it has no largest size.
+  const { problems } = measureCarried(carrying({ type: "string", maxLength: 1, pattern: "^a|b$" }));
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /not anchored/);
+});
+
+test("an alternation inside one group between the anchors is sized", () => {
+  const field = { type: "string", maxLength: 1, pattern: "^(?:a|b)$" };
+  assert.equal(coversValue(field, "a"), handedOn("a"));
+});
