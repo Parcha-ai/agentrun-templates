@@ -1,0 +1,30 @@
+{
+  "search": {
+    "answers": [],
+    "default": {
+      "error": "search is not part of this case"
+    }
+  },
+  "fetch": {
+    "answers": [
+      {
+        "url": "https://dbweekly.example/feed.xml",
+        "title": "DB Weekly",
+        "text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"><channel><title>DB Weekly</title>\n<item><title>How the Postgres 19 planner picks join orders</title><link>https://dbweekly.example/2026/11/pg19-join-order</link><pubDate>Sun, 08 Nov 2026 09:00:00 GMT</pubDate><description>A walk through the new join-order search in Postgres 19, with EXPLAIN output before and after and the GUCs that control it.</description></item>\n<item><title>Database jobs this week</title><link>https://dbweekly.example/2026/11/jobs-46</link><pubDate>Fri, 13 Nov 2026 08:00:00 GMT</pubDate><description>Twelve open roles at companies hiring database engineers.</description></item>\n<item><title>Postmortem: a replica lag spiral at a payments company</title><link>https://dbweekly.example/2026/11/replica-lag-postmortem</link><pubDate>Tue, 10 Nov 2026 14:00:00 GMT</pubDate><description>A write-up of a six-hour incident where replica lag fed a retry storm, the timeline, and the three changes that stopped it.</description></item>\n<item><title>B-tree deduplication, measured</title><link>https://dbweekly.example/2026/11/btree-dedup</link><pubDate>Mon, 09 Nov 2026 10:00:00 GMT</pubDate><description>Benchmarks of index size and insert speed with and without B-tree deduplication on three workloads.</description></item>\n<item><title>What's new in SQLite 3.52</title><link>https://dbweekly.example/2026/10/sqlite-352</link><pubDate>Wed, 28 Oct 2026 10:00:00 GMT</pubDate><description>The release notes for SQLite 3.52, walked through.</description></item>\n</channel></rss>"
+      },
+      {
+        "url": "https://ferrous-notes.example/atom.xml",
+        "title": "Ferrous notes",
+        "text": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<feed xmlns=\"http://www.w3.org/2005/Atom\"><title>Ferrous notes</title>\n<entry><title>Cutting allocations in a hot parser loop</title><link href=\"https://ferrous-notes.example/posts/parser-allocations\"/><published>2026-11-11T16:00:00Z</published><summary>Profiling a Rust JSON parser with perf and dhat, and the three changes that cut allocations by 80% in the hot loop.</summary></entry>\n<entry><title>My favourite mechanical keyboards of 2026</title><link href=\"https://ferrous-notes.example/posts/keyboards-2026\"/><published>2026-11-14T12:00:00Z</published><summary>A gear post: six keyboards I typed on this year.</summary></entry>\n<entry><title>async drop, one year in</title><link href=\"https://ferrous-notes.example/posts/async-drop\"/><published>2026-11-03T09:00:00Z</published><summary>A look back at async drop a year after it landed.</summary></entry>\n</feed>"
+      },
+      {
+        "url": "https://opsreview.example/rss",
+        "title": "Ops Review",
+        "text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"><channel><title>Ops Review</title>\n<item><title>Load shedding that doesn't fall over</title><link>https://opsreview.example/p/load-shedding</link><pubDate>Fri, 13 Nov 2026 07:30:00 GMT</pubDate><description>How one team rebuilt its load shedder after an outage, with the queue math and the metrics they alert on.</description></item>\n<item><title>Conference season recap</title><link>https://opsreview.example/p/conf-recap</link><pubDate>Sat, 14 Nov 2026 10:00:00 GMT</pubDate><description>Photos and a few talk titles from three conferences.</description></item>\n<item><title>Links: the best of the week</title><link>https://dbweekly.example/2026/11/pg19-join-order</link><pubDate>Sat, 14 Nov 2026 09:00:00 GMT</pubDate><description>Our favourite read this week: how the Postgres 19 planner picks join orders.</description></item>\n</channel></rss>"
+      }
+    ],
+    "default": {
+      "error": "fetch failed: the host did not answer"
+    }
+  }
+}

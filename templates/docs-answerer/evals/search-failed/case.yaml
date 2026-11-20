@@ -1,0 +1,3 @@
+# The shared failed-search case (evals-shared/search-failed): every web_search answers the rate-limited free search's
+# own words, every web_fetch fails, and no Firecrawl server is saved. The input is the thin case's (docs-dont-say).
+web: unavailable

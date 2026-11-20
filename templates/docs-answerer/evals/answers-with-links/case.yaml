@@ -1,0 +1,3 @@
+# A made-up docs site and two off-site pages, answered from fixtures/web.json; nothing reaches the network.
+web: fixtures/web.json
+now: 2026-11-16T09:00:00Z

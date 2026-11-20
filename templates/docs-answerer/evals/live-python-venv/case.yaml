@@ -1,0 +1,6 @@
+# Live: the real docs, with Firecrawl's keyless MCP server saved as firecrawl (Settings → MCP servers, the Firecrawl
+# preset: https://mcp.firecrawl.dev/v2/mcp, no credential, toolkit firecrawl), so a run whose built-in search is
+# rate-limited goes on searching there. Run it with --on-data on a server that keeps that server.
+grants:
+  - mcp:firecrawl/firecrawl_search
+  - mcp:firecrawl/firecrawl_scrape

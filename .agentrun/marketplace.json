@@ -902,6 +902,79 @@
         "weekly"
       ],
       "summary": "Every Monday, insider buys and sells on your watchlist, big buys flagged, each with its SEC filing. Not investment advice. Uses monid."
+    },
+    {
+      "name": "reading-list",
+      "source": "./templates/reading-list",
+      "category": "personal",
+      "tags": [
+        "free",
+        "rss",
+        "reading",
+        "newsletter",
+        "weekly"
+      ],
+      "summary": "Every week, the top posts from your RSS and Atom feeds for what you care about, each with a two-line why and its link, never repeating an earlier week.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. It reads only your feeds, so it needs no search provider. Set the feeds, your interests and the schedule when you apply it."
+    },
+    {
+      "name": "field-monitor",
+      "source": "./templates/field-monitor",
+      "category": "research",
+      "tags": [
+        "free",
+        "monitoring",
+        "research",
+        "news",
+        "weekly",
+        "citations"
+      ],
+      "summary": "A weekly report on what changed in one topic, each change dated and cited to the page that says it, with what it could not check.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add Firecrawl's keyless server (Settings → MCP servers, the Firecrawl preset) and it keeps searching when that runs out and reads pages drawn by JavaScript. Firecrawl sees each query and URL, so use it for public pages only."
+    },
+    {
+      "name": "page-to-json",
+      "source": "./templates/page-to-json",
+      "category": "engineering",
+      "tags": [
+        "free",
+        "extraction",
+        "json-schema",
+        "scraping",
+        "structured-data"
+      ],
+      "summary": "Give it a URL and a JSON Schema and it returns typed JSON from that page, each value with the text it came from and each missing one null with a reason.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. It reads the one page you give it. Add Firecrawl's keyless server (Settings → MCP servers, the Firecrawl preset) to read pages drawn by JavaScript. Firecrawl sees each query and URL, so use it for public pages only."
+    },
+    {
+      "name": "ai-search-visibility",
+      "source": "./templates/ai-search-visibility",
+      "category": "marketing",
+      "tags": [
+        "free",
+        "geo",
+        "ai-search",
+        "robots-txt",
+        "llms-txt",
+        "seo",
+        "audit"
+      ],
+      "summary": "Checks whether ChatGPT, Claude, Perplexity and Google's AI crawlers can reach your site, whether you have an llms.txt and whether buyer searches find you, then lists what to fix first.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add Firecrawl's keyless server (Settings → MCP servers, the Firecrawl preset) and it keeps searching when that runs out. Firecrawl sees each query and URL, so use it for public pages only."
+    },
+    {
+      "name": "docs-answerer",
+      "source": "./templates/docs-answerer",
+      "category": "engineering",
+      "tags": [
+        "free",
+        "documentation",
+        "support",
+        "questions",
+        "citations"
+      ],
+      "summary": "Answers a question from one product's own docs site only, each point linked to the page that says it, and says plainly when the docs don't cover it.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add Firecrawl's keyless server (Settings → MCP servers, the Firecrawl preset) and it keeps searching the docs site when that runs out. Firecrawl sees each query and URL, so use it for public pages only."
     }
   ]
 }
