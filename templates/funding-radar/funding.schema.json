@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Weekly funding radar",
+  "x-carried": ["window", "unread_from", "reported_deal_ids"],
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "window",
+    "quiet",
+    "sectors",
+    "rounds",
+    "matched_total",
+    "reported_deal_ids",
+    "unread_from",
+    "could_not_check",
+    "ignored_instructions",
+    "monid_calls",
+    "report_markdown"
+  ],
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "format": "date", "description": "Rounds added to Fundable on or after this day: the last run's `unread_from` when it has one, else the last run's `to`, else today minus the lookback." },
+        "to": { "type": "string", "format": "date", "description": "Today." }
+      },
+      "description": "The days read, by the day Fundable added the round."
+    },
+    "quiet": {
+      "type": "boolean",
+      "description": "True only when the deals search ran and found no round that was not already reported. A search that failed, or a sector that matched no Fundable industry, makes it false."
+    },
+    "sectors": {
+      "type": "array",
+      "maxItems": 5,
+      "description": "Each sector or keyword the owner gave and the Fundable industry it was matched to.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["query", "permalink", "name"],
+        "properties": {
+          "query": { "type": "string", "maxLength": 60 },
+          "permalink": { "type": ["string", "null"], "maxLength": 80, "description": "The permalink `industry/search` answered with; null when nothing matched." },
+          "name": { "type": ["string", "null"], "maxLength": 80 }
+        }
+      }
+    },
+    "rounds": {
+      "type": "array",
+      "maxItems": 25,
+      "description": "The new rounds this run read, largest first, at most `max_rounds`.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["deal_id", "company", "what_it_does", "stage", "amount_usd", "announced", "lead", "other_investors", "valuation_usd", "links", "crunchbase_url"],
+        "properties": {
+          "deal_id": { "type": "string", "maxLength": 40 },
+          "company": { "type": "string", "maxLength": 80, "description": "The raising company as the round's description names it." },
+          "what_it_does": { "type": "string", "maxLength": 240, "description": "From the round's description, or Crunchbase's short description when it was read." },
+          "stage": { "type": "string", "maxLength": 40, "description": "The round type as a person says it: Pre-seed, Seed, Series A, Series B extension." },
+          "amount_usd": { "type": ["number", "null"], "minimum": 0, "description": "Null when undisclosed (Fundable gives 0)." },
+          "announced": { "type": "string", "format": "date" },
+          "lead": { "type": "array", "maxItems": 4, "items": { "type": "string", "maxLength": 100 }, "description": "Who led, as the description names them. Empty when it names no lead." },
+          "other_investors": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 100 } },
+          "valuation_usd": { "type": ["number", "null"], "minimum": 0 },
+          "links": { "type": "array", "minItems": 1, "maxItems": 3, "items": { "type": "string", "format": "uri" }, "description": "The round's articles as Fundable gives them, the primary one first." },
+          "crunchbase_url": { "type": ["string", "null"], "format": "uri" }
+        }
+      }
+    },
+    "matched_total": { "type": ["integer", "null"], "minimum": 0, "description": "How many rounds the deals search matched (its `total_count`), so the reader sees what the cap left out. Null when it did not run." },
+    "reported_deal_ids": {
+      "type": "array",
+      "maxItems": 100,
+      "description": "The ids of the rounds the next run must skip, oldest first: every round reported this run, and, while `unread_from` stays set across runs, the last run's ids before them, since the next run reads those days again. Over 100, the oldest are dropped and the report says so.",
+      "items": { "type": "string", "pattern": "^[0-9a-f-]{36}$" }
+    },
+    "unread_from": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "The first day whose rounds this run could not read: `window.from` when the deals search or a sector's industry search failed, so the next run starts there and reads those days again. Null when every sector was searched and the deals search answered. A sector that matches no Fundable industry is not a failure."
+    },
+    "could_not_check": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "monid_calls": { "type": "integer", "minimum": 0 },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown" }
+  }
+}

@@ -1,0 +1,6 @@
+# Applied with these parameters (POST /v2/templates/review-pulse/apply). Live: real monid calls, paid from the
+# eval's monid key; nothing is handed to the run.
+parameters:
+  product: Notion
+  product_domain: notion.so
+  rivals: ["ClickUp clickup.com"]

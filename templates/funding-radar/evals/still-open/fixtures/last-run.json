@@ -1,0 +1,56 @@
+{
+  "agentrun": "3688f4156fc94c39e706a61a1b0ade28c8cb8acb",
+  "run_id": "01a1cf00-0000-7000-8000-00000000f203",
+  "ended_at": "2026-11-16T08:02:12Z",
+  "output": {
+    "window": {
+      "from": "2026-11-02",
+      "to": "2026-11-16"
+    },
+    "quiet": false,
+    "sectors": [
+      {
+        "query": "fintech",
+        "permalink": "fintech-e067",
+        "name": "FinTech"
+      },
+      {
+        "query": "insurtech",
+        "permalink": null,
+        "name": null
+      }
+    ],
+    "rounds": [
+      {
+        "deal_id": "e4b10000-4444-4eee-8fff-000000000013",
+        "company": "Corvane",
+        "what_it_does": "Reconciles card payments for clinics.",
+        "stage": "Seed",
+        "amount_usd": 4000000,
+        "announced": "2026-11-11",
+        "lead": [
+          "Alder Point"
+        ],
+        "other_investors": [],
+        "valuation_usd": null,
+        "links": [
+          "https://news.example/corvane-seed"
+        ],
+        "crunchbase_url": null
+      }
+    ],
+    "matched_total": 3,
+    "reported_deal_ids": [
+      "e4b10000-4444-4eee-8fff-000000000011",
+      "e4b10000-4444-4eee-8fff-000000000012",
+      "e4b10000-4444-4eee-8fff-000000000013"
+    ],
+    "unread_from": "2026-11-02",
+    "could_not_check": [
+      "Fundable industry search for 'insurtech' failed: the provider answered 503."
+    ],
+    "ignored_instructions": [],
+    "monid_calls": 5,
+    "report_markdown": "## Funding radar: fintech, insurtech; seed; 2026-11-02 to 2026-11-16\n\n- **Corvane** raised $4M Seed, led by Alder Point (announced 2026-11-11). Reconciles card payments for clinics. [article](https://news.example/corvane-seed)\n\nBramblepay and Tidewell, reported last week, are left out.\n\n### Could not check\n- Fundable industry search for 'insurtech' failed: the provider answered 503. Rounds added since 2026-11-02 could not be read; the next run reads them.\n\nmonid calls this run: 5"
+  }
+}

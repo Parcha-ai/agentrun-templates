@@ -857,6 +857,51 @@
         "github"
       ],
       "summary": "Every Monday, says whether upgrading a project you depend on is safe for what you use from it, each break quoted from its release notes."
+    },
+    {
+      "name": "review-pulse",
+      "source": "./templates/review-pulse",
+      "category": "marketing",
+      "tags": [
+        "reviews",
+        "g2",
+        "capterra",
+        "trustpilot",
+        "competitors",
+        "customer-feedback",
+        "weekly"
+      ],
+      "summary": "Every Monday, G2, Capterra and Trustpilot reviews of you and up to three rivals, in themes with quotes. Uses monid, billed per call."
+    },
+    {
+      "name": "funding-radar",
+      "source": "./templates/funding-radar",
+      "category": "research",
+      "tags": [
+        "funding",
+        "venture-capital",
+        "startups",
+        "fundable",
+        "crunchbase",
+        "deal-flow",
+        "weekly"
+      ],
+      "summary": "Every Monday, the new funding rounds in your sectors: amount, who led, what the company does, with links. Uses monid, billed per round."
+    },
+    {
+      "name": "insider-moves",
+      "source": "./templates/insider-moves",
+      "category": "finance",
+      "tags": [
+        "insider-trading",
+        "sec-filings",
+        "form-4",
+        "13d",
+        "institutional-holders",
+        "stocks",
+        "weekly"
+      ],
+      "summary": "Every Monday, insider buys and sells on your watchlist, big buys flagged, each with its SEC filing. Not investment advice. Uses monid."
     }
   ]
 }

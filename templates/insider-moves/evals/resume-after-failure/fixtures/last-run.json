@@ -1,0 +1,71 @@
+{
+  "agentrun": "3688f4156fc94c39e706a61a1b0ade28c8cb8acb",
+  "run_id": "01a1cf00-0000-7000-8000-00000000f302",
+  "ended_at": "2026-11-09T08:01:48Z",
+  "output": {
+    "window": {
+      "from": "2026-11-02",
+      "to": "2026-11-09"
+    },
+    "quiet": false,
+    "tickers": [
+      {
+        "ticker": "QLMT",
+        "company": "Quillmont Systems Inc.",
+        "cik": "1900001",
+        "status": "read"
+      },
+      {
+        "ticker": "BRVX",
+        "company": "",
+        "cik": null,
+        "status": "failed"
+      }
+    ],
+    "trades": [
+      {
+        "ticker": "QLMT",
+        "insider": "Robert Vance",
+        "role": "CFO",
+        "kind": "sell",
+        "traded": "2026-11-04",
+        "reported": "2026-11-05",
+        "shares": 12000,
+        "price_usd": 41.25,
+        "value_usd": 495000,
+        "significant": false,
+        "filing_url": "https://www.secform4.example/filings/1900001/0001900001-26-000097.htm",
+        "source": "secform4"
+      }
+    ],
+    "thirteen_d": [],
+    "thirteen_d_list_through": "2026-11-08",
+    "institutions": [
+      {
+        "ticker": "QLMT",
+        "quarter": "2026-09-30",
+        "holders": 431,
+        "shares_held": 55100000,
+        "prev_quarter": "2026-06-30",
+        "prev_holders": 415,
+        "prev_shares_held": 52950000
+      }
+    ],
+    "unread_from": {
+      "tickers": [
+        {
+          "ticker": "BRVX",
+          "from": "2026-11-02"
+        }
+      ],
+      "thirteen_d": null
+    },
+    "could_not_check": [
+      "BRVX: the secform4 search failed (monid could not be reached)."
+    ],
+    "ignored_instructions": [],
+    "monid_calls": 5,
+    "disclaimer": "This is not investment advice.",
+    "report_markdown": "## Insider moves: QLMT, BRVX, 2026-11-02 to 2026-11-09\n\n### QLMT\n- Robert Vance (CFO) sold 12,000 shares at $41.25, $495,000, on 2026-11-04 [Form 4](https://www.secform4.example/filings/1900001/0001900001-26-000097.htm)\n\n### BRVX\nNot read: the filings search failed. The next run reads its filings from 2026-11-02.\n\nThis is not investment advice.\n\nmonid calls this run: 5"
+  }
+}
