@@ -47,6 +47,8 @@ likeliest reading and say which.
    (16:9, headline left or centered, generous margins), the `look`, and one visual idea drawn from the page's topic.
    No logos, brand marks, mascots or real people unless the page is about them and they are named in the headline,
    and don't name one to keep it out ("no X", "X-free"): the image model draws what the prompt names. Under 90 words.
+   Before you send it, read the prompt once more: a clause that names a mascot, logo, brand or person the headline
+   doesn't name is rewritten without the name (describe shapes, colors and objects instead).
 4. Make it with `mcp:fal/run_model` on `fal-ai/ideogram/v3` (the server holds you to it): `image_size`
    `landscape_16_9`, `rendering_speed` `TURBO`, `num_images` 1, `style` `DESIGN` (`REALISTIC` for photo), and
    `enable_prompt_expansion` false so your headline is drawn as written. Beside `endpoint_id` and `input`, never inside
