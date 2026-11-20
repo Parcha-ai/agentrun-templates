@@ -1,0 +1,18 @@
+{
+  "median_usd": 0.0014,
+  "runs": 8,
+  "model": "openrouter/anthropic/claude-haiku-5.5",
+  "harness": "pi",
+  "measured_on": "2026-11-20",
+  "build": "821d445622",
+  "passed": {
+    "pi": "4/4"
+  },
+  "live": {
+    "cases": 1,
+    "median_usd": 0.0017,
+    "passed": {
+      "pi": "1/1"
+    }
+  }
+}

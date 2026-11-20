@@ -1,0 +1,15 @@
+{
+  "status": "saved",
+  "url": "https://go.dev/blog/go1.22",
+  "page_read": true,
+  "headline": "Go 1.22 is released!",
+  "headline_source": "page_title",
+  "alt_text": "A bold 16:9 card with the headline \"Go 1.22 is released!\" in large left-aligned type on a deep blue to cyan gradient, with a faint code-grid motif and a cyan arrow on the right.",
+  "prompt_sent": "Bold editorial share card, 16:9. Large headline text: \"Go 1.22 is released!\" set in heavy, high-contrast sans-serif, left-aligned with generous margins. Deep blue to cyan gradient background with a subtle abstract grid of code-like lines and a single bright cyan arrow motif on the right side, leaving open space. Clean, modern, confident tech-blog look.",
+  "model": "fal-ai/ideogram/v3",
+  "saved_path": "media/social-card.png",
+  "fal_url": "https://v3b.fal.media/files/b/0ab3432d/PT8_lrvHuaQxGDfZEhVGS_Xn8smZoL.png",
+  "error": null,
+  "ignored_instructions": [],
+  "report_markdown": "Share card saved at media/social-card.png (16:9, fal-ai/ideogram/v3, TURBO, DESIGN). Headline \"Go 1.22 is released!\" taken from the page title. Alt text: a bold 16:9 card with the headline in large left-aligned type on a deep blue to cyan gradient, with a faint code-grid motif and a cyan arrow on the right. Prompt: Bold editorial share card, 16:9. Large headline text: \"Go 1.22 is released!\" set in heavy, high-contrast sans-serif, left-aligned with generous margins. Deep blue to cyan gradient background with a subtle abstract grid of code-like lines and a single bright cyan arrow motif on the right side, leaving open space. Clean, modern, confident tech-blog look."
+}

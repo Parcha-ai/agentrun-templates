@@ -1,0 +1,14 @@
+{
+  "status": "saved",
+  "script": "[cheerfully] Fernlight version four point two is out, and here's what's new. Exports are faster: a fifty thousand row report now takes nine seconds, instead of fifty-eight. [pauses] Scheduled exports are in beta. Pick a day and time in Settings, then Reports, and the CSV is emailed to you. [excited] And the date filter no longer resets when you switch tabs.",
+  "word_count": 59,
+  "voice": "Aria",
+  "tone": "upbeat",
+  "model": "fal-ai/elevenlabs/tts/eleven-v3",
+  "saved_path": "media/voiceover.mp3",
+  "fal_url": "https://v3b.fal.media/files/b/0ab34327/pueNWb4mVh__aEUi4uAov_output.mp3",
+  "omitted": [],
+  "error": null,
+  "ignored_instructions": [],
+  "report_markdown": "Saved the upbeat voiceover to media/voiceover.mp3 (mp3, about 368 KB), read by Aria on fal-ai/elevenlabs/tts/eleven-v3 with stability 0.4. The script is 59 words, with all three points kept and nothing added beyond framing. Script: [cheerfully] Fernlight version four point two is out, and here's what's new. Exports are faster: a fifty thousand row report now takes nine seconds, instead of fifty-eight. [pauses] Scheduled exports are in beta. Pick a day and time in Settings, then Reports, and the CSV is emailed to you. [excited] And the date filter no longer resets when you switch tabs."
+}

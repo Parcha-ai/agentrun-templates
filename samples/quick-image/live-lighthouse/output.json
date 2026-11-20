@@ -1,0 +1,14 @@
+{
+  "status": "saved",
+  "description": "A lighthouse on a rocky coast at dawn, gulls overhead, soft pastel watercolor",
+  "prompt_sent": "A lighthouse on a rocky coast at dawn, with gulls flying overhead. Soft pastel watercolor style, gentle washes of pink, peach and pale blue, wide landscape composition, soft diffused dawn light.",
+  "model": "fal-ai/flux/schnell",
+  "image_size": "landscape_4_3",
+  "saved_path": "media/image.jpg",
+  "fal_url": "https://v3b.fal.media/files/b/0ab3431e/c5LdbkpixQyF1b0QzlYcA.jpg",
+  "width": 1024,
+  "height": 768,
+  "error": null,
+  "ignored_instructions": [],
+  "report_markdown": "![Lighthouse at dawn](media/image.jpg)\n\n**Prompt:** A lighthouse on a rocky coast at dawn, with gulls flying overhead. Soft pastel watercolor style, gentle washes of pink, peach and pale blue, wide landscape composition, soft diffused dawn light.\n\n**Model:** fal-ai/flux/schnell · **Size:** landscape_4_3 (1024×768)"
+}
