@@ -16,8 +16,10 @@ calendarId = primary") means you left that field out or changed it: call again o
 ## 1. Which day, up to when
 
 The `date` in the `Input:` block, else today in the owner's time zone. The run's start time is the cut-off: a meeting
-that ends after it gets no draft today (the next run, or a run by hand, catches it). For a past `date`, every meeting
-of that day has ended.
+that ends after it gets no draft from this run and goes in `not_drafted` as `not ended`. Never say a later run will
+draft it: you don't know the schedule, and on the default one (one run a weekday, at 17:00) the next run reads the next
+day. The report may say it ends after this run and that a run by hand after it ends, with that `date`, drafts it. For
+a past `date`, every meeting of that day has ended.
 
 ## 2. Read the day
 
