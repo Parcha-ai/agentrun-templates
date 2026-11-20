@@ -125,7 +125,7 @@ The server (`lib/server.mjs`) sends these on every answer, 404s and redirects in
 | `Strict-Transport-Security` | `max-age=63072000; includeSubDomains` |
 | `X-Content-Type-Options` | `nosniff` |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` |
-| `Permissions-Policy` | camera, microphone, geolocation, payment, usb and interest-cohort off |
+| `Permissions-Policy` | camera, microphone, geolocation, payment and usb off |
 | `Cross-Origin-Opener-Policy`, `Cross-Origin-Resource-Policy` | `same-origin` |
 | `X-Frame-Options` | `DENY` |
 
