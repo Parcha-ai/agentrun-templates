@@ -40,15 +40,16 @@ instead, and return only what you keep: there a tool's result comes back as text
    pages together in your next turn, at most 12 pages in all. Never `filter: all` and never more than 5 jobs a page:
    a bigger page comes back cut, and the failed jobs may be the part you lose. From every page keep only the jobs with
    `conclusion` `failure` or `timed_out`: their `id`, `name`, check run ID (the number at the end of `check_run_url`)
-   and failed step (the first step with `conclusion: failure`). Forget the rest. Explain at most 3 failed jobs, the first 3 in the list; name the others in `skipped`
-   ("4 more failed jobs not explained: ..."). More than 60 jobs: stop after the 12th page and say plainly, in
-   `skipped` and in `report_markdown`, that jobs past the 60th were not read.
+   and failed step (the first step with `conclusion: failure`). Forget the rest. Explain at most 3 failed jobs, the
+   first 3 in the list; name the others in `skipped` ("4 more failed jobs not explained: ..."). More than 60 jobs:
+   stop after the 12th page and say plainly, in `skipped` and in `report_markdown`, that jobs past the 60th were not
+   read.
 
 3. **Annotations first.** For each failed job you explain, all in one turn: `GITHUB_LIST_CHECK_RUN_ANNOTATIONS` with
    `check_run_id` set to the job's check run ID, the number at the end of its `check_run_url`. It is not the job's
-   `id`: the two can differ, and a job ID there reads another check run or none. An annotation with a `path` and `start_line` is the file and line, from GitHub
-   itself. The runner's own annotation (path `.github`, "Process completed with exit code 1.") names no file: it is
-   never `file` or `line`.
+   `id`: the two can differ, and a job ID there reads another check run or none. An annotation with a `path` and
+   `start_line` is the file and line, from GitHub itself. The runner's own annotation (path `.github`, "Process
+   completed with exit code 1.") names no file: it is never `file` or `line`.
 
    In the same turn, the reads of steps 4 and 6 (the pull request's files, the base branch's runs, the comments): none
    of them waits for the annotations.
@@ -77,14 +78,20 @@ instead, and return only what you keep: there a tool's result comes back as text
    - **Flaky?** `GITHUB_LIST_WORKFLOW_RUNS_FOR_A_REPOSITORY` with `branch` set to the PR's base (or the default
      branch), `status: completed`, `per_page: 5`: the same workflow's latest runs there. `likely_flaky` needs
      evidence: an infrastructure failure (a network timeout or reset, a registry or service answering 5xx, a lost
-     runner, out of disk) in code the PR doesn't touch. The same workflow failing on the base is
-     `already_failing_on_base: true`. An assertion or a build error in code the PR changed is `not_flaky`. Neither way
-     clear: `unclear`, and say what would settle it (a re-run). You never re-run anything.
+     runner, out of disk) in code the PR doesn't touch. An assertion or a build error in code the PR changed is
+     `not_flaky`. Neither way clear: `unclear`, and say what would settle it (a re-run). You never re-run anything.
+   - **Failing on base?** When the base's latest completed run of this workflow failed, list its jobs the way step 2
+     does (`filter: latest`, `per_page: 5`, every page) and keep its failed jobs' names and failed steps.
+     `already_failing_on_base` is true only when a job you explain failed there too, by the same job name (and at the
+     same step, when both show it). False when the base run passed, or failed only in other jobs; null when you
+     couldn't check. A base failing only in other jobs clears nothing: say "The base branch is also failing, in
+     <jobs>." and judge the PR's failure on its own evidence.
    - **Comment, once per attempt.** Only with a PR. `GITHUB_LIST_ISSUE_COMMENTS` with `issue_number`, `per_page:
      100` and `page: 1`, then page 2, 3 and on until you find it or a page holds fewer than 100: comments come oldest
      first, so on a busy PR an earlier explanation sits past the first page. A comment that starts `**CI failed:` and
-     names this run ID and this attempt ("run <id>, attempt <n>") already explains it: post nothing, `comment.posted` false with `why_not` saying so. One for an earlier attempt
-     doesn't count. Otherwise one `GITHUB_CREATE_AN_ISSUE_COMMENT`:
+     names this run ID and this attempt ("run <id>, attempt <n>") already explains it: post nothing, `comment.posted`
+     false with `why_not` saying so. One for an earlier attempt doesn't count. Otherwise one
+     `GITHUB_CREATE_AN_ISSUE_COMMENT`:
      ```
      **CI failed: <workflow> run <run id>, attempt <n>** (<link to the run>)
 
@@ -96,7 +103,8 @@ instead, and return only what you keep: there a tool's result comes back as text
      (one block per failed job explained; then "<k> more failed jobs not explained: <names>" when there are)
 
      **Flaky?** <likely flaky / not flaky / unclear>: <why, in one sentence>. <When likely flaky: "A re-run may pass.">
-     <When already failing on base: "The same workflow fails on <base>: this PR's change is probably not the cause.">
+     <When already failing on base: "<job> fails the same way on <base>: this PR's change is probably not the cause of
+     it."> <When the base fails only in other jobs: "The base branch is also failing, in <jobs>.">
 
      _Automated CI explanation. Nothing was re-run._
      ```

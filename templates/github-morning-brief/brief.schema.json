@@ -105,7 +105,7 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["merged", "issues"],
-      "description": "where each read the next brief owes starts: the start of a read that failed or stopped with more to read, null when it read everything; the next brief reads from there",
+      "description": "where each read the next brief owes starts: the start of a read that failed or stopped with more to read, else the time of the first item left out over the 100 listed, null when everything was read and listed; the next brief reads from there",
       "properties": {
         "merged": { "type": ["string", "null"], "format": "date-time", "maxLength": 30, "description": "merged pull requests from here on were not all read" },
         "issues": { "type": ["string", "null"], "format": "date-time", "maxLength": 30, "description": "new issues from here on were not all read" }

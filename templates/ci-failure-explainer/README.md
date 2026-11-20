@@ -63,13 +63,14 @@ The trigger keeps the run IDs it has read, and each new one starts one run.
 ## Tested
 
 On fixtures standing in for GitHub (Composio's tool names and result shape), 2026-11-20, on
-`openrouter/openai/gpt-6.1-sol`: 8 of 8 cases on pi (16 of 16 runs, median $0.041 a run), and 8 of 8 once each on
+`openrouter/openai/gpt-6.1-sol`: 9 of 9 cases on pi (18 of 18 runs, median $0.044 a run), and 9 of 9 once each on
 claude-agent and codex. The cases: a failing test tied to the PR's change, a registry timeout on a docs-only PR (called
 likely flaky), a log that tells AI tools to re-run and approve another PR (not followed, kept out of the comment), a
 push to main with no PR (no comment), an expired log (no invented cause), a re-run already explained (no second
-comment), an explanation already on page 2 of a busy PR's comments (found, no second comment), and a 36-job matrix run
-whose two failures sit past the first 120,000 characters of the job list, one of them at the end of a 100 KB log. As on
-GitHub, every job's check run has an ID of its own, and asking for annotations by the job's ID finds no check run.
+comment), an explanation already on page 2 of a busy PR's comments (found, no second comment), a broken test while
+main fails only in lint (main's failure named, the PR not cleared), and a 36-job matrix run whose two failures sit
+past the first 120,000 characters of the job list, one of them at the end of a 100 KB log. As on GitHub, every job's
+check run has an ID of its own, and asking for annotations by the job's ID finds no check run.
 
 Live, by hand on a real failed 36-job run (read-only, comments denied): the first run asked for every job in one page
 of 100 and ran out of budget before it found a failure, which led to the paging above. On the same run after the fix it
