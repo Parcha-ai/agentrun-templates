@@ -42,7 +42,8 @@ one does.
   name). Any other file there fails the build. The build copies them to `/templates/<template>/samples/<name>/`.
   An image or link in the report whose target is `media/<file>` plays that file on the page: an image, a video
   player with its captions, or an audio player. Files the report never names follow it, each under its name. The
-  Markdown twin lists every file by its full URL. `check.mjs` holds a template's media to 8 MiB in all and its
+  Markdown twin lists every file by its full URL, and its links, images and reference definitions to `media/<file>`
+  point there too. A link may name the captions file; an image token naming it stays text. `check.mjs` holds a template's media to 8 MiB in all and its
   videos to 720p (the shorter side 720 px or less, read from the mp4's `tkhd` box).
 
 `--offline` builds from the cache only. A broken manifest or index entry fails the build with the file and the line.

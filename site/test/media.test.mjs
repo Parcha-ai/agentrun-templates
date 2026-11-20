@@ -259,6 +259,83 @@ test("the server answers a byte range with 206, an impossible one with 416, stre
   }
 });
 
+test("an uppercase extension the build accepts is served with its type and kept a day", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "site-media-case-"));
+  mkdirSync(join(dir, "m"), { recursive: true });
+  writeFileSync(join(dir, "404.html"), "missing");
+  copyFileSync(join(media, "tiny.vtt"), join(dir, "m", "tiny.VTT"));
+  copyFileSync(join(media, "dot.jpg"), join(dir, "m", "dot.JPG"));
+  const server = siteServer({ root: dir });
+  await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  try {
+    for (const [file, type] of [["tiny.VTT", "text/vtt; charset=utf-8"], ["dot.JPG", "image/jpeg"]]) {
+      const res = await fetch(`${base}/m/${file}`);
+      await res.arrayBuffer();
+      assert.equal(res.status, 200, file);
+      assert.equal(res.headers.get("content-type"), type, file);
+      assert.equal(res.headers.get("cache-control"), "public, max-age=86400", file);
+    }
+  } finally {
+    await new Promise((ok) => server.close(ok));
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+const FORMS = [
+  "Code stays code: `![Preview](media/dot.png \"Preview\")`, even with the same text as the image after it.",
+  "",
+  "![Preview](media/dot.png \"Preview\")",
+  "",
+  "[Download captions](media/tiny.vtt) and ![not a player](media/tiny.vtt).",
+  "",
+  "See ![the clip][clip] and [the dot][preview].",
+  "",
+  "[![framed](media/dot.png)](<./media/tiny.mp4>)",
+  "",
+  "Code stays code: `![x](media/dot.png)`.",
+  "",
+  "[preview]: media/dot.png \"The dot\"",
+  "[clip]: ./media/tiny.mp4",
+  "",
+].join("\n");
+
+/** The fixture built with FORMS as the acme report, handed to `fn(out)`. */
+async function withForms(fn) {
+  const root = repoWith({ "dot.png": "dot.png", "tiny.mp4": "tiny.mp4", "tiny.vtt": "tiny.vtt" }, FORMS);
+  const out = await built(root);
+  try {
+    assert.deepEqual(check({ dir: out, baseUrl: BASE }).problems, []);
+    await fn(out);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(out, { recursive: true, force: true });
+  }
+}
+
+test("a link to captions points at the copy; an image token naming them is no player; reference forms render", () => withForms((out) => {
+  const page = readFileSync(join(out, "templates", "sample-watch", "index.html"), "utf8");
+  const html = /<article class="report card">([\s\S]*?)<\/article>/.exec(page)[1];
+  assert.match(html, new RegExp(`<img src="${URL_OF("dot.png")}" alt="Preview" loading="lazy" width="8" height="6">`), "a titled image");
+  assert.match(html, new RegExp(`<a href="${URL_OF("tiny.vtt")}">Download captions</a> and not a player\\.`));
+  assert.doesNotMatch(html, /<(video|audio|img)[^>]*tiny\.vtt/, "an image token naming captions is no player");
+  assert.match(html, new RegExp(`See <video [^>]*src="${URL_OF("tiny.mp4")}"[^>]*>[\\s\\S]*?</video> and <a href="${URL_OF("dot.png")}">the dot</a>\\.`), "reference forms");
+}));
+
+test("the Markdown twin points every link, image and definition naming a media file at its full URL", () => withForms((out) => {
+  const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
+  const abs = (f) => `${BASE}${URL_OF(f)}`;
+  assert.ok(md.includes(`![Preview](${abs("dot.png")} "Preview")`), "a titled image");
+  assert.ok(md.includes(`[Download captions](${abs("tiny.vtt")})`), "a link to captions");
+  assert.ok(md.includes(`![not a player](${abs("tiny.vtt")})`));
+  assert.ok(md.includes(`[preview]: ${abs("dot.png")} "The dot"`), "a reference definition");
+  assert.ok(md.includes(`[clip]: ${abs("tiny.mp4")}`), "a reference definition with ./");
+  assert.ok(md.includes(`[![framed](${abs("dot.png")})](<${abs("tiny.mp4")}>)`), "an image inside a link, and an <angle> target");
+  assert.ok(md.includes("See ![the clip][clip] and [the dot][preview]."), "reference uses stay as written");
+  assert.ok(md.includes("Code stays code: `![x](media/dot.png)`."), "code is not a link");
+  assert.ok(md.includes("Code stays code: `![Preview](media/dot.png \"Preview\")`, even"), "code before an identical link stays as written");
+}));
+
 test("the CSP lets media load from this site only", () => {
   assert.match(CSP, /(^|; )media-src 'self'(;|$)/);
   assert.doesNotMatch(CSP, /https?:|\*/, "no other origin, no wildcard");

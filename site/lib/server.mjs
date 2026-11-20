@@ -106,7 +106,7 @@ export function siteHandler({ root, dev = false }) {
     const target = file ?? join(root, "404.html");
     let size;
     try { size = (await stat(target)).size; } catch { return send(404, { "content-type": "text/plain; charset=utf-8" }, "not found\n"); }
-    const headers = { "content-type": TYPES[extname(target)] ?? "application/octet-stream", "cache-control": cacheFor(file ? url.pathname : "/404.html", { dev }) };
+    const headers = { "content-type": TYPES[extname(target).toLowerCase()] ?? "application/octet-stream", "cache-control": cacheFor(file ? url.pathname : "/404.html", { dev }) };
     let status = file ? 200 : 404;
     let range = null;
     if (file) {

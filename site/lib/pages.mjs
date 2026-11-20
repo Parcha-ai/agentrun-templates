@@ -2,7 +2,7 @@
 
 import { marketingHeader, marketingOnboarding } from "./header.mjs";
 import { CATEGORY_TEXT, computerWords, factsShort, isFree, isTriggered, keyWords, mcpWords, modelChoices, modelWords, requirements, testedLine, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
-import { markdownToHtml, mediaPlayer } from "./markdown.mjs";
+import { absoluteMediaLinks, markdownToHtml, mediaPlayer } from "./markdown.mjs";
 import { clip, html, mdCode, mdText, plural, raw, upperFirst } from "./util.mjs";
 
 export const SITE_NAME = "AgentRun Marketplace";
@@ -619,11 +619,7 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
     if (pkg.examples.length > 1) out.push(`### ${ex.name}`, "");
     if (ex.input !== undefined) out.push("Input:", "", "```json", JSON.stringify(ex.input, null, 2), "```", "");
     // media/<file> in the report is relative to the sample folder; on this page it is the file's full URL.
-    const absolute = (text) => text.replace(/\]\((?:\.\/)?media\/([^)\s]+)\)/g, (all, f) => {
-      const m = ex.media.find((x) => x.file === f);
-      return m ? `](${site.url(m.url)})` : all;
-    });
-    if (shown) out.push("Output:", "", absolute(shown.trim().replace(/^#{1,4} /gm, "#### ")), "");
+    if (shown) out.push("Output:", "", absoluteMediaLinks(shown, ex.media, (m) => site.url(m.url)).trim().replace(/^#{1,4} /gm, "#### "), "");
     const files = ex.media.filter((m) => m.kind !== "captions");
     if (files.length) out.push("Media:", "", ...files.map((m) => `- [${m.file}](${site.url(m.url)})${m.captions ? `, captions: ${site.url(m.captions.url)}` : ""}`), "");
   }

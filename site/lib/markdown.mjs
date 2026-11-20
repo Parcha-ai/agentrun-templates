@@ -14,15 +14,21 @@ function safeUrl(href) {
   return SAFE_URL.test(url) ? url : null;
 }
 
-// The sample media of the call in progress. marked is synchronous, so one parse runs at a time.
-let current = null;
-
-function mediaFor(href) {
-  if (!current) return undefined;
+/** The file in `media` a Markdown target names (media/<file> or ./media/<file>), or undefined. A link may name
+ *  captions; a player (`player: true`) is never captions. */
+function mediaTarget(href, media, { player = false } = {}) {
   let url = String(href ?? "").trim();
   try { url = decodeURI(url); } catch {}
   const m = /^(?:\.\/)?media\/([^/?#]+)$/.exec(url);
-  const item = m ? current.media.find((x) => x.file === m[1] && x.kind !== "captions") : undefined;
+  return m ? media.find((x) => x.file === m[1] && !(player && x.kind === "captions")) : undefined;
+}
+
+// The sample media of the call in progress. marked is synchronous, so one parse runs at a time.
+let current = null;
+
+function mediaFor(href, options) {
+  if (!current) return undefined;
+  const item = mediaTarget(href, current.media, options);
   if (item) current.used.add(item.file);
   return item;
 }
@@ -67,7 +73,7 @@ function instance(shift) {
       },
       // A page loads nothing from a third party, so an image in a package is a link to it, never fetched.
       image({ href, text }) {
-        const item = mediaFor(href);
+        const item = mediaFor(href, { player: true });
         if (item) return mediaPlayer(item, text);
         const url = safeUrl(href);
         const label = escapeHtml(text || "image");
@@ -78,6 +84,39 @@ function instance(shift) {
   });
   cache.set(shift, md);
   return md;
+}
+
+const reEscape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const TITLE = `(?:"(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*'|\\((?:[^()\\\\]|\\\\.)*\\))`;
+
+/** `text` with every link, image and reference definition that names one of `media` pointing at `urlOf(item)`
+ *  instead, for a Markdown page that isn't beside the files. It reads the tokens of marked's lexer, the same ones
+ *  markdownToHtml renders, and changes only each one's destination, where it stands in the text: a reference use
+ *  keeps its label (its definition changes), and code is left as written. */
+export function absoluteMediaLinks(text, media, urlOf) {
+  const src = String(text ?? "").replace(/\r\n?/g, "\n");
+  if (!media.length) return src;
+  const md = instance(2);
+  const edits = [];
+  let cursor = 0;
+  md.walkTokens(md.lexer(src), (t) => {
+    const at = typeof t.raw === "string" ? src.indexOf(t.raw, cursor) : -1;
+    if (at < 0) return;
+    if (t.type === "code" || t.type === "codespan" || t.type === "html") { cursor = at + t.raw.length; return; }
+    if (t.type !== "link" && t.type !== "image" && t.type !== "def") return;
+    cursor = t.type === "def" ? at + t.raw.length : at;
+    const item = mediaTarget(t.href, media);
+    if (!item) return;
+    const dest = `(?:\\./)?media/${reEscape(item.file)}`;
+    // A definition's destination follows its "label:"; an inline one sits in the "(...)" that ends the token.
+    const m = t.type === "def"
+      ? new RegExp(`^( {0,3}\\[(?:[^\\]\\\\]|\\\\.)+\\]:[ \\t]*\\n?[ \\t]*<?)(${dest})`).exec(t.raw)
+      : new RegExp(`(\\([ \\t]*\\n?[ \\t]*<?)(${dest})>?(?:\\s+${TITLE})?\\s*\\)$`).exec(t.raw);
+    if (m) edits.push({ at: at + m.index + m[1].length, length: m[2].length, url: urlOf(item) });
+  });
+  let out = src;
+  for (const e of edits.sort((a, b) => b.at - a.at)) out = out.slice(0, e.at) + e.url + out.slice(e.at + e.length);
+  return out;
 }
 
 /** Markdown as HTML; `shift` pushes headings down (a "#" becomes h(1+shift)). `media` is a sample's media files
