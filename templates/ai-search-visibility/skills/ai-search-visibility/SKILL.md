@@ -76,7 +76,7 @@ results, the kind of pages answer engines retrieve and cite, never the engines' 
 
 ## 4. Fixes, most important first
 
-- **high**: a `search_index` or `user_fetch` bot `blocked` (the engine can't fetch the site to cite it). The fix names
+- **high**: a `search_index` or `user_fetch` bot `blocked` (robots.txt refuses that crawler the site). The fix names
   the robots.txt lines to change and quotes the line that blocks it. Googlebot or Bingbot blocked is the first fix.
 - **medium**: a `search_index` bot `partly_blocked` on paths that hold the site's main pages; the site `not_found` for
   a question (fix: a page on the site that answers that question plainly, with the question's words in its title).
@@ -86,6 +86,9 @@ results, the kind of pages answer engines retrieve and cite, never the engines' 
   hide the site from AI search answers (those are the search_index and user_fetch bots).
 Every fix has `evidence`: the quoted rule, the status, or the search's result list. Nothing goes in `fixes` that no read
 shows. When nothing needs fixing, `fixes` is empty and the report says so.
+
+Say only what the reads show: a rule refuses a crawler, a search lists the site or not. Never say what an AI engine
+will answer, cite or ignore ("won't be cited in AI answers", "ChatGPT cannot cite you"): no read shows an answer.
 
 ## When the reads failed
 
