@@ -10,12 +10,12 @@
 //   type list, anyOf or oneOf, the longest enum value;
 // - every string at the most UTF-8 bytes JSON.stringify can write for it. AgentRun's submit check (typebox 1.3.27)
 //   counts maxLength in grapheme clusters, and one cluster takes any number of combining marks, so maxLength alone
-//   bounds nothing. A carried string is bounded by its `pattern`, which runs with the `u` flag and so counts code
-//   points: an anchored sequence of classes, escapes and literals with bounded quantifiers ({n}, {m,n}, ?). Each code
-//   point is counted at the most it can take: 6 for a control character or a lone surrogate (written \u00XX,
-//   \uDXXX), 4 for any other in a negated class or `.`, and in a listed class or literal its own size (a quote or
-//   backslash 2, ASCII 1). `format: date` is 10 ASCII characters, and `format: date-time` (ASCII by its own rule)
-//   is its maxLength;
+//   bounds nothing: such a string is counted at 6 B a character and reported. A carried string is bounded by its
+//   `pattern`, which runs with the `u` flag and so counts code points: an anchored sequence of classes, escapes and
+//   literals with bounded quantifiers ({n}, {m,n}, ?). Each code point is counted at the most it can take: 6 for a
+//   control character or a lone surrogate (written \u00XX, \uDXXX), 4 for any other in a negated class or `.`, and in a
+//   listed class or literal its own size (a quote or backslash 2, ASCII 1). `format: date` is 10 ASCII characters, and
+//   `format: date-time` (ASCII by its own rule) is its maxLength;
 // - the carried fields must fit CARRIED_BUDGET_BYTES: under half the limit, so the run's own output (its report, its
 //   items) keeps the larger part, about 20 KB;
 // - inside a carried field, a string with no such bound, an array with no maxItems, or an object open to more keys (no
@@ -253,7 +253,9 @@ function stringBytes(schema, path, problems) {
   problems.push(
     `${path}: string with no bound in bytes: AgentRun's check counts maxLength in grapheme clusters, so give it a pattern such as ^[^\\u0000-\\u001f\\ud800-\\udfff]{0,N}$`,
   );
-  return undefined;
+  // Still counted in the total, at 6 B a character (the most one code point takes), so the number shows what the field
+  // would cost if maxLength counted code points.
+  return schema.maxLength === undefined ? undefined : schema.maxLength * 6;
 }
 
 /** The template's output schema file, when its agent.md has a schedule trigger and an output schema. */
