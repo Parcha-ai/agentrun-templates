@@ -100,3 +100,24 @@ test("a carried array's entry must be bounded", () => {
   assert.equal(problems.length, 1);
   assert.match(problems[0], /grapheme/);
 });
+
+// A field that may be an array or an object: the runtime trims only the array. Its object branch is never cut, so it
+// counts against the budget even when the array branch is the larger one (#11 review).
+const BIG_OBJECT = { type: "object", additionalProperties: false, properties: { note: { type: "string", pattern: "^[a-z ]{0,33000}$" } } };
+const SEEN = { type: "array", maxItems: 500, items: { type: "string", pattern: "^[a-z0-9]{1,100}$" } };
+
+test("a carried field that may be an array or an object over the budget fails: the object is never cut", () => {
+  const schema = schemaOf({ seen: { anyOf: [SEEN, BIG_OBJECT] } });
+  const objectAlone = measureCarried(schemaOf({ seen: BIG_OBJECT })).bytes;
+  assert.ok(objectAlone > CARRIED_BUDGET_BYTES, "the setup: the object is over the budget");
+  assert.ok(measureCarried(schema).bytes > objectAlone, "the setup: the array branch is the larger one");
+  const { problems } = checkCarried(schema);
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /never cut \(seen\)/);
+});
+
+test("a carried field that may be an array or null passes at an array over the budget", () => {
+  const schema = schemaOf({ seen: { anyOf: [SEEN, { type: "null" }] } });
+  assert.ok(measureCarried(schema).bytes > CARRIED_BUDGET_BYTES, "the setup: the array at maxItems is over the budget");
+  assert.deepEqual(checkCarried(schema).problems, []);
+});
