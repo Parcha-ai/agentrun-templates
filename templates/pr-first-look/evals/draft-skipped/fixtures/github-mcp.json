@@ -93,18 +93,18 @@
           "when": [
             {
               "pull_number": 516,
-              "page": 2
+              "page": 1
             },
             {
               "pull_number": "516",
-              "page": "2"
+              "page": "1"
             }
           ],
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "{\"data\": {\"files\": []}, \"successful\": true, \"error\": null}"
+                "text": "{\"data\": {\"files\": [{\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"src/sync/scheduler.ts\", \"status\": \"modified\", \"additions\": 1, \"deletions\": 0, \"changes\": 1, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/src/sync/scheduler.ts\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/src/sync/scheduler.ts\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/src/sync/scheduler.ts?ref=feature\", \"patch\": \"@@ -1,3 +1,4 @@\\n+// rework in progress\\n import { queue } from \\\"./queue\\\";\"}]}, \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -113,11 +113,11 @@
           "when": [
             {
               "pull_number": 516,
-              "page": 3
+              "page": 2
             },
             {
               "pull_number": "516",
-              "page": "3"
+              "page": "2"
             }
           ],
           "result": {
@@ -195,6 +195,46 @@
         ]
       },
       "answers": [
+        {
+          "when": [
+            {
+              "issue_number": 516,
+              "page": 1
+            },
+            {
+              "issue_number": "516",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 516,
+              "page": 2
+            },
+            {
+              "issue_number": "516",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
         {
           "when": [
             {

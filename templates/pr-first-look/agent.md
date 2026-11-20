@@ -35,7 +35,7 @@ parameters:
   max_diff_lines: { type: integer, required: false, default: 1500, minimum: 100, maximum: 6000, description: "the most changed lines it reads from one pull request; files past it are named as skipped. 1500 unless you set it" }
 inputs:
   pr_number: { type: integer, minimum: 1, required: false, title: "Pull request number", description: "Look at one pull request by hand. Leave it out on the trigger's runs: the event names the pull request.", examples: [512] }
-budget: { per_run_usd: 0.60 }
+budget: { per_run_usd: 1.20 }
 learning: true
 # The comment asks the owner first by default. Once the owner trusts it, approvals never lets it comment unattended;
 # the pins hold either way.

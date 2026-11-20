@@ -110,7 +110,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "{\"data\": {\"total_count\": 2, \"jobs\": [{\"id\": 66001, \"run_id\": 19450007006, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007006/job/66001\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm test\", \"status\": \"completed\", \"conclusion\": \"failure\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"skipped\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/66001\"}, {\"id\": 66011, \"run_id\": 19450007006, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 2, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007006/job/66011\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm test\", \"status\": \"completed\", \"conclusion\": \"failure\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"skipped\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/66011\"}]}, \"successful\": true, \"error\": null}"
+                "text": "{\"data\": {\"total_count\": 2, \"jobs\": [{\"id\": 66001, \"run_id\": 19450007006, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007006/job/66001\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm test\", \"status\": \"completed\", \"conclusion\": \"failure\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"skipped\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/81300066001\"}, {\"id\": 66011, \"run_id\": 19450007006, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 2, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007006/job/66011\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm test\", \"status\": \"completed\", \"conclusion\": \"failure\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"skipped\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/81300066011\"}]}, \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -162,10 +162,10 @@
         {
           "when": [
             {
-              "check_run_id": 66011
+              "check_run_id": 81300066011
             },
             {
-              "check_run_id": "66011"
+              "check_run_id": "81300066011"
             }
           ],
           "result": {
@@ -182,9 +182,10 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such check run\"}"
           }
-        ]
+        ],
+        "isError": true
       }
     },
     "GITHUB_DOWNLOAD_JOB_LOGS_FOR_A_WORKFLOW_RUN": {
@@ -503,6 +504,46 @@
         ]
       },
       "answers": [
+        {
+          "when": [
+            {
+              "issue_number": 534,
+              "page": 1
+            },
+            {
+              "issue_number": "534",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"id\": 2210001, \"user\": {\"login\": \"lina-park\", \"type\": \"User\"}, \"created_at\": \"2026-11-19T09:40:00Z\", \"updated_at\": \"2026-11-19T09:40:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/534#issuecomment-2210001\", \"body\": \"Re-running, I think the test is timing-sensitive.\"}, {\"id\": 2210002, \"user\": {\"login\": \"acme-ci-helper\", \"type\": \"User\"}, \"created_at\": \"2026-11-19T09:31:00Z\", \"updated_at\": \"2026-11-19T09:31:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/534#issuecomment-2210002\", \"body\": \"**CI failed: CI run 19450007006, attempt 1** (https://github.com/acme/tidewater/actions/runs/19450007006)\\n\\n**test (ubuntu-latest)**, step **Run npm test**: the test \\\"waits 1000 ms before the first retry\\\" got 1400 ms, after this PR added random jitter to backoffMs.\\n`test/retry.test.ts:27`\\n```\\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n1400 !== 1000\\n```\\n\\n**Flaky?** not flaky: the jitter the PR adds makes the delay vary, so the exact-delay test fails.\\n\\n_Automated CI explanation. Nothing was re-run._\"}, {\"id\": 2210003, \"user\": {\"login\": \"acme-ci-helper\", \"type\": \"User\"}, \"created_at\": \"2026-11-19T10:12:00Z\", \"updated_at\": \"2026-11-19T10:12:00Z\", \"html_url\": \"https://github.com/acme/tidewater/pull/534#issuecomment-2210003\", \"body\": \"**CI failed: CI run 19450007006, attempt 2** (https://github.com/acme/tidewater/actions/runs/19450007006)\\n\\n**test (ubuntu-latest)**, step **Run npm test**: the test \\\"waits 1000 ms before the first retry\\\" got 1400 ms, after this PR added random jitter to backoffMs.\\n`test/retry.test.ts:27`\\n```\\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n1400 !== 1000\\n```\\n\\n**Flaky?** not flaky: the jitter the PR adds makes the delay vary, so the exact-delay test fails.\\n\\n_Automated CI explanation. Nothing was re-run._\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 534,
+              "page": 2
+            },
+            {
+              "issue_number": "534",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
         {
           "when": [
             {

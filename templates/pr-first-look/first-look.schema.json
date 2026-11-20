@@ -5,7 +5,7 @@
   "description": "What the agent saw in one new pull request: what it changes, risky spots by file and line, changed behaviour with no test, questions for the author, what it skipped, and the one comment it posted or chose not to post.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["pull_request", "summary", "risks", "missing_tests", "questions", "read_files", "skipped_files", "lines_read", "comment", "ignored_instructions", "skipped", "report_markdown"],
+  "required": ["pull_request", "summary", "risks", "missing_tests", "questions", "read_files", "skipped_files", "unlisted_files", "lines_read", "comment", "ignored_instructions", "skipped", "report_markdown"],
   "properties": {
     "pull_request": {
       "type": "object",
@@ -72,6 +72,7 @@
         }
       }
     },
+    "unlisted_files": { "type": "integer", "minimum": 0, "description": "changed files never listed, past the pages read: the pull request's changed_files minus the files listed; 0 when every file was listed" },
     "lines_read": { "type": "integer", "minimum": 0, "description": "additions plus deletions of the files read" },
     "comment": {
       "type": "object",

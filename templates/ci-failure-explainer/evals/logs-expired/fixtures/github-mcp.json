@@ -110,7 +110,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "{\"data\": {\"total_count\": 2, \"jobs\": [{\"id\": 65001, \"run_id\": 19450007005, \"name\": \"docker\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007005/job/65001\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Set up Docker Buildx\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Build image\", \"status\": \"completed\", \"conclusion\": \"failure\", \"number\": 4}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"skipped\", \"number\": 5}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/65001\"}, {\"id\": 65002, \"run_id\": 19450007005, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007005/job/65002\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm test\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/65002\"}]}, \"successful\": true, \"error\": null}"
+                "text": "{\"data\": {\"total_count\": 2, \"jobs\": [{\"id\": 65001, \"run_id\": 19450007005, \"name\": \"docker\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007005/job/65001\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Set up Docker Buildx\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Build image\", \"status\": \"completed\", \"conclusion\": \"failure\", \"number\": 4}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"skipped\", \"number\": 5}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/81300065001\"}, {\"id\": 65002, \"run_id\": 19450007005, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007005/job/65002\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm test\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/81300065002\"}]}, \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -162,10 +162,10 @@
         {
           "when": [
             {
-              "check_run_id": 65001
+              "check_run_id": 81300065001
             },
             {
-              "check_run_id": "65001"
+              "check_run_id": "81300065001"
             }
           ],
           "result": {
@@ -182,9 +182,10 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such check run\"}"
           }
-        ]
+        ],
+        "isError": true
       }
     },
     "GITHUB_DOWNLOAD_JOB_LOGS_FOR_A_WORKFLOW_RUN": {

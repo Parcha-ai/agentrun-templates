@@ -54,18 +54,18 @@
           "when": [
             {
               "state": "closed",
-              "page": 2
+              "page": 1
             },
             {
               "state": "closed",
-              "page": "2"
+              "page": "1"
             }
           ],
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+                "text": "{\"data\": [{\"number\": 61, \"title\": \"Cache the remote listing\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/61\", \"body\": \"\", \"created_at\": \"2026-11-16T10:00:00Z\", \"updated_at\": \"2026-11-18T07:10:00Z\", \"closed_at\": \"2026-11-18T07:10:00Z\", \"merged_at\": \"2026-11-18T07:10:00Z\", \"head\": {\"ref\": \"branch-61\", \"sha\": \"0061ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 60, \"title\": \"Fix ENOSPC on --watch\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/60\", \"body\": \"\", \"created_at\": \"2026-11-15T09:00:00Z\", \"updated_at\": \"2026-11-17T15:00:00Z\", \"closed_at\": \"2026-11-17T15:00:00Z\", \"merged_at\": \"2026-11-17T15:00:00Z\", \"head\": {\"ref\": \"branch-60\", \"sha\": \"0060ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 59, \"title\": \"Try a new progress bar\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"ana-r\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/59\", \"body\": \"\", \"created_at\": \"2026-11-14T09:00:00Z\", \"updated_at\": \"2026-11-17T12:00:00Z\", \"closed_at\": \"2026-11-17T12:00:00Z\", \"merged_at\": null, \"head\": {\"ref\": \"branch-59\", \"sha\": \"0059ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 57, \"title\": \"Bump Node to 22\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/57\", \"body\": \"\", \"created_at\": \"2026-11-13T09:00:00Z\", \"updated_at\": \"2026-11-17T10:00:00Z\", \"closed_at\": \"2026-11-17T07:50:00Z\", \"merged_at\": \"2026-11-17T07:50:00Z\", \"head\": {\"ref\": \"branch-57\", \"sha\": \"0057ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -73,11 +73,11 @@
         {
           "when": [
             {
-              "state": "open",
+              "state": "closed",
               "page": 2
             },
             {
-              "state": "open",
+              "state": "closed",
               "page": "2"
             }
           ],
@@ -99,6 +99,46 @@
               {
                 "type": "text",
                 "text": "{\"data\": [{\"number\": 61, \"title\": \"Cache the remote listing\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/61\", \"body\": \"\", \"created_at\": \"2026-11-16T10:00:00Z\", \"updated_at\": \"2026-11-18T07:10:00Z\", \"closed_at\": \"2026-11-18T07:10:00Z\", \"merged_at\": \"2026-11-18T07:10:00Z\", \"head\": {\"ref\": \"branch-61\", \"sha\": \"0061ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 60, \"title\": \"Fix ENOSPC on --watch\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/60\", \"body\": \"\", \"created_at\": \"2026-11-15T09:00:00Z\", \"updated_at\": \"2026-11-17T15:00:00Z\", \"closed_at\": \"2026-11-17T15:00:00Z\", \"merged_at\": \"2026-11-17T15:00:00Z\", \"head\": {\"ref\": \"branch-60\", \"sha\": \"0060ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 59, \"title\": \"Try a new progress bar\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"ana-r\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/59\", \"body\": \"\", \"created_at\": \"2026-11-14T09:00:00Z\", \"updated_at\": \"2026-11-17T12:00:00Z\", \"closed_at\": \"2026-11-17T12:00:00Z\", \"merged_at\": null, \"head\": {\"ref\": \"branch-59\", \"sha\": \"0059ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 57, \"title\": \"Bump Node to 22\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/57\", \"body\": \"\", \"created_at\": \"2026-11-13T09:00:00Z\", \"updated_at\": \"2026-11-17T10:00:00Z\", \"closed_at\": \"2026-11-17T07:50:00Z\", \"merged_at\": \"2026-11-17T07:50:00Z\", \"head\": {\"ref\": \"branch-57\", \"sha\": \"0057ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "open",
+              "page": 1
+            },
+            {
+              "state": "open",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 52, \"title\": \"Add an S3 backend\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"ana-r\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/52\", \"body\": \"\", \"created_at\": \"2026-11-10T09:00:00Z\", \"updated_at\": \"2026-11-10T09:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-52\", \"sha\": \"0052ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [{\"login\": \"bob\", \"type\": \"User\"}], \"requested_teams\": [], \"labels\": []}, {\"number\": 62, \"title\": \"Retry uploads on 503\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"j-okafor\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/62\", \"body\": \"\", \"created_at\": \"2026-11-17T06:00:00Z\", \"updated_at\": \"2026-11-17T06:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-62\", \"sha\": \"0062ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [{\"login\": \"lina\", \"type\": \"User\"}], \"requested_teams\": [], \"labels\": []}, {\"number\": 63, \"title\": \"Speed up hashing\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/63\", \"body\": \"\", \"created_at\": \"2026-11-16T11:00:00Z\", \"updated_at\": \"2026-11-16T11:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-63\", \"sha\": \"0063ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 64, \"title\": \"Rename config keys\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/64\", \"body\": \"\", \"created_at\": \"2026-11-16T13:00:00Z\", \"updated_at\": \"2026-11-16T13:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-64\", \"sha\": \"0064ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 65, \"title\": \"WIP: desktop GUI\", \"state\": \"open\", \"draft\": true, \"locked\": false, \"user\": {\"login\": \"ana-r\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/65\", \"body\": \"\", \"created_at\": \"2026-11-17T09:00:00Z\", \"updated_at\": \"2026-11-17T09:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-65\", \"sha\": \"0065ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 66, \"title\": \"Bump undici from 8.10.1 to 8.10.2\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"dependabot[bot]\", \"type\": \"Bot\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/66\", \"body\": \"\", \"created_at\": \"2026-11-17T04:00:00Z\", \"updated_at\": \"2026-11-17T04:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-66\", \"sha\": \"0066ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "open",
+              "page": 2
+            },
+            {
+              "state": "open",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -496,6 +536,24 @@
         ]
       },
       "answers": [
+        {
+          "when": [
+            {
+              "page": 1
+            },
+            {
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 71, \"title\": \"sync hangs on a symlink loop\", \"user\": {\"login\": \"user-314\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/71\", \"created_at\": \"2026-11-18T06:00:00Z\", \"updated_at\": \"2026-11-18T06:00:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 62, \"title\": \"Retry uploads on 503\", \"user\": {\"login\": \"j-okafor\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/62\", \"created_at\": \"2026-11-17T06:00:00Z\", \"updated_at\": \"2026-11-17T06:00:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/62\", \"html_url\": \"https://github.com/acme/tidewater/pull/62\"}}, {\"number\": 70, \"title\": \"Docs: Windows install steps are out of date\", \"user\": {\"login\": \"winfan\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/70\", \"created_at\": \"2026-11-17T12:00:00Z\", \"updated_at\": \"2026-11-17T12:00:00Z\", \"labels\": [{\"name\": \"docs\"}], \"comments\": 0}, {\"number\": 68, \"title\": \"Crash on an empty config file\", \"user\": {\"login\": \"user-77\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/68\", \"created_at\": \"2026-11-16T09:00:00Z\", \"updated_at\": \"2026-11-17T14:00:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 40, \"title\": \"Daily brief\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/40\", \"created_at\": \"2026-10-01T09:00:00Z\", \"updated_at\": \"2026-11-17T08:01:00Z\", \"labels\": [], \"comments\": 0}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
         {
           "when": [
             {

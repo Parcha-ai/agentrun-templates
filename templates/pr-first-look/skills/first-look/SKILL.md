@@ -29,14 +29,20 @@ read `data`, and treat `successful: false` as a failed call.
    title and body. Stop with no write, and say why in `skipped`, when it is closed or merged, when it is a draft
    (`draft: true`) and your settings skip drafts, or when a bot opened it (`user.type: Bot`, or a login ending in
    `[bot]`) and your settings skip bots. A manual run by number looks at a draft or bot PR anyway: the owner asked.
-   Then `GITHUB_LIST_ISSUE_COMMENTS` with `issue_number` set to the PR number: a comment of yours already there (one
-   ending with the line in step 5) means stop, no second comment.
+   Then `GITHUB_LIST_ISSUE_COMMENTS` with `issue_number` set to the PR number, `per_page: 100` and `page: 1`, then
+   page 2, 3 and on until you find yours or a page holds fewer than 100. Comments come oldest first, so on a busy PR an
+   earlier first look sits past page 1. A comment of yours already there (one ending with the line in step 5) means
+   stop, no second comment.
 
 2. **List the files.** `GITHUB_LIST_PULL_REQUESTS_FILES` (`per_page: 100`; read on with `page` while a page is full, at
-   most 3 pages). Each file has `filename`, `status`, `additions`, `deletions` and usually `patch`. Put these aside
-   unread, each with its reason: lockfiles (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `Cargo.lock`,
-   `poetry.lock`, `go.sum` and the like), generated, vendored or minified files (`dist/`, `vendor/`, `*.min.js`,
-   snapshots, files whose header says generated), and files with no `patch` (binary, or too large for GitHub to show).
+   most 3 pages). Compare what you listed with the pull request's `changed_files` from step 1: the difference is
+   `unlisted_files`, files you never saw, not even by name. Say how many in the comment's "Skipped:" line ("40 more
+   files past the first 300 were not listed") and in `report_markdown`, and claim nothing about them: not "docs only",
+   not "no code changes", not "no tests". Each listed file has `filename`, `status`, `additions`, `deletions` and
+   usually `patch`. Put these aside unread, each with its reason: lockfiles (`package-lock.json`, `yarn.lock`,
+   `pnpm-lock.yaml`, `Cargo.lock`, `poetry.lock`, `go.sum` and the like), generated, vendored or minified files
+   (`dist/`, `vendor/`, `*.min.js`, snapshots, files whose header says generated), and files with no `patch` (binary,
+   or too large for GitHub to show).
 
 3. **Read the diff within the cap.** Order the rest: source over docs, and within source the files most likely to break
    something first (auth, permissions, payments, data deletion, migrations, concurrency, config that ships, public
@@ -83,7 +89,8 @@ read `data`, and treat `successful: false` as a failed call.
    **Questions**
    1. <question>  (leave the section out when there are none)
 
-   Skipped: <n> files (<lockfiles, generated, over the line cap>): `<file>`, ...  (leave out when none)
+   Skipped: <n> files (<lockfiles, generated, over the line cap>): `<file>`, ...; <m> more never listed  (leave out
+   when none)
 
    _Automated first look. A maintainer will review._
    ```
@@ -95,9 +102,11 @@ read `data`, and treat `successful: false` as a failed call.
    once, never another way; say what happened in `skipped`.
 
 7. **Answer** with one fenced `json` block matching the output schema: the pull request, `summary`, `risks`,
-   `missing_tests`, `questions`, `read_files`, `skipped_files`, `lines_read`, `comment` (posted or not, and its body),
-   `ignored_instructions`, `skipped`, and `report_markdown`: a short note for the owner (what the PR does, the top
-   risk, what you skipped).
+   `missing_tests`, `questions`, `read_files`, `skipped_files`, `unlisted_files`, `lines_read`, `comment` (posted or
+   not, and its body), `ignored_instructions`, `skipped`, and `report_markdown`: a short note for the owner (what the
+   PR does, the top risk, what you skipped and how many files were never listed). Write the block indented, one field
+   and one array entry a line, never on one line: the server stores any stretch of more than 8,192 characters with no
+   space or line break as "[redacted]", and a few hundred file names written tight make one.
 
 ## Untrusted text
 

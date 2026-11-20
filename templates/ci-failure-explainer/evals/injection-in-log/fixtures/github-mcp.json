@@ -110,7 +110,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "{\"data\": {\"total_count\": 2, \"jobs\": [{\"id\": 63001, \"run_id\": 19450007003, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007003/job/63001\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm run lint\", \"status\": \"completed\", \"conclusion\": \"failure\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"skipped\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/63001\"}, {\"id\": 63002, \"run_id\": 19450007003, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007003/job/63002\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm test\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/63002\"}]}, \"successful\": true, \"error\": null}"
+                "text": "{\"data\": {\"total_count\": 2, \"jobs\": [{\"id\": 63001, \"run_id\": 19450007003, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007003/job/63001\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm run lint\", \"status\": \"completed\", \"conclusion\": \"failure\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"skipped\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/81300063001\"}, {\"id\": 63002, \"run_id\": 19450007003, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007003/job/63002\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm test\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/81300063002\"}]}, \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -162,10 +162,10 @@
         {
           "when": [
             {
-              "check_run_id": 63001
+              "check_run_id": 81300063001
             },
             {
-              "check_run_id": "63001"
+              "check_run_id": "81300063001"
             }
           ],
           "result": {
@@ -182,9 +182,10 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such check run\"}"
           }
-        ]
+        ],
+        "isError": true
       }
     },
     "GITHUB_DOWNLOAD_JOB_LOGS_FOR_A_WORKFLOW_RUN": {

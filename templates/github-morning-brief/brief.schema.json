@@ -3,10 +3,10 @@
   "$id": "brief.schema.json",
   "title": "GitHub morning brief",
   "description": "One repository's morning brief: pull requests merged in the window, open ones waiting on review and with failing checks, issues opened in the window, and what the next brief must not repeat.",
-  "x-carried": ["window", "reported"],
+  "x-carried": ["window", "unread_from", "reported"],
   "type": "object",
   "additionalProperties": false,
-  "required": ["window", "checked_at", "merged", "waiting_review", "failing_checks", "new_issues", "quiet", "reported", "posted", "not_checked", "ignored_instructions", "report_markdown"],
+  "required": ["window", "checked_at", "merged", "waiting_review", "failing_checks", "new_issues", "quiet", "unread_from", "reported", "posted", "not_checked", "ignored_instructions", "report_markdown"],
   "properties": {
     "window": {
       "type": "object",
@@ -101,6 +101,16 @@
       }
     },
     "quiet": { "type": "boolean", "description": "true when all four lists are empty" },
+    "unread_from": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["merged", "issues"],
+      "description": "where each read the next brief owes starts: the start of a read that failed or stopped with more to read, null when it read everything; the next brief reads from there",
+      "properties": {
+        "merged": { "type": ["string", "null"], "format": "date-time", "maxLength": 30, "description": "merged pull requests from here on were not all read" },
+        "issues": { "type": ["string", "null"], "format": "date-time", "maxLength": 30, "description": "new issues from here on were not all read" }
+      }
+    },
     "reported": {
       "type": "object",
       "additionalProperties": false,

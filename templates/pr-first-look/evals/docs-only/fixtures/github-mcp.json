@@ -93,18 +93,18 @@
           "when": [
             {
               "pull_number": 513,
-              "page": 2
+              "page": 1
             },
             {
               "pull_number": "513",
-              "page": "2"
+              "page": "1"
             }
           ],
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "{\"data\": {\"files\": []}, \"successful\": true, \"error\": null}"
+                "text": "{\"data\": {\"files\": [{\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"README.md\", \"status\": \"modified\", \"additions\": 1, \"deletions\": 1, \"changes\": 2, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/README.md\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/README.md\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/README.md?ref=feature\", \"patch\": \"@@ -21,7 +21,7 @@ tidewater sync ./src remote:backup\\n\\n ## Configuration\\n\\n-Tidewater reads `tidewater.yml` from the current directory. See [the configuraton guide](docs/config.md).\\n+Tidewater reads `tidewater.yml` from the current directory. See [the configuration guide](docs/config.md).\\n\\n ## License\\n \"}, {\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"docs/config.md\", \"status\": \"modified\", \"additions\": 1, \"deletions\": 1, \"changes\": 2, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/docs/config.md\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/docs/config.md\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/docs/config.md?ref=feature\", \"patch\": \"@@ -14,7 +14,7 @@ sync:\\n\\n | Key | Default | What it does |\\n |---|---|---|\\n-| `sync.concurency` | `4` | How many files upload at once. |\\n+| `sync.concurrency` | `4` | How many files upload at once. |\\n | `sync.retries` | `3` | How many times a failed upload is retried. |\\n | `sync.exclude` | `[]` | Glob patterns to leave out. |\\n \"}]}, \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -113,11 +113,11 @@
           "when": [
             {
               "pull_number": 513,
-              "page": 3
+              "page": 2
             },
             {
               "pull_number": "513",
-              "page": "3"
+              "page": "2"
             }
           ],
           "result": {
@@ -195,6 +195,46 @@
         ]
       },
       "answers": [
+        {
+          "when": [
+            {
+              "issue_number": 513,
+              "page": 1
+            },
+            {
+              "issue_number": "513",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 513,
+              "page": 2
+            },
+            {
+              "issue_number": "513",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
         {
           "when": [
             {

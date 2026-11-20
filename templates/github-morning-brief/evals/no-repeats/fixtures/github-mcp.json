@@ -54,18 +54,18 @@
           "when": [
             {
               "state": "closed",
-              "page": 2
+              "page": 1
             },
             {
               "state": "closed",
-              "page": "2"
+              "page": "1"
             }
           ],
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+                "text": "{\"data\": [{\"number\": 82, \"title\": \"Add --dry-run to sync\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/82\", \"body\": \"\", \"created_at\": \"2026-11-12T10:00:00Z\", \"updated_at\": \"2026-11-14T11:00:00Z\", \"closed_at\": \"2026-11-14T11:00:00Z\", \"merged_at\": \"2026-11-14T11:00:00Z\", \"head\": {\"ref\": \"branch-82\", \"sha\": \"0082ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 80, \"title\": \"Fix progress on Windows\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"winfan\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/80\", \"body\": \"\", \"created_at\": \"2026-11-10T10:00:00Z\", \"updated_at\": \"2026-11-14T09:00:00Z\", \"closed_at\": \"2026-11-12T16:00:00Z\", \"merged_at\": \"2026-11-12T16:00:00Z\", \"head\": {\"ref\": \"branch-80\", \"sha\": \"0080ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 81, \"title\": \"Experiment: zstd\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/81\", \"body\": \"\", \"created_at\": \"2026-11-11T10:00:00Z\", \"updated_at\": \"2026-11-13T09:00:00Z\", \"closed_at\": \"2026-11-13T09:00:00Z\", \"merged_at\": null, \"head\": {\"ref\": \"branch-81\", \"sha\": \"0081ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -73,11 +73,11 @@
         {
           "when": [
             {
-              "state": "open",
+              "state": "closed",
               "page": 2
             },
             {
-              "state": "open",
+              "state": "closed",
               "page": "2"
             }
           ],
@@ -99,6 +99,46 @@
               {
                 "type": "text",
                 "text": "{\"data\": [{\"number\": 82, \"title\": \"Add --dry-run to sync\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/82\", \"body\": \"\", \"created_at\": \"2026-11-12T10:00:00Z\", \"updated_at\": \"2026-11-14T11:00:00Z\", \"closed_at\": \"2026-11-14T11:00:00Z\", \"merged_at\": \"2026-11-14T11:00:00Z\", \"head\": {\"ref\": \"branch-82\", \"sha\": \"0082ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 80, \"title\": \"Fix progress on Windows\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"winfan\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/80\", \"body\": \"\", \"created_at\": \"2026-11-10T10:00:00Z\", \"updated_at\": \"2026-11-14T09:00:00Z\", \"closed_at\": \"2026-11-12T16:00:00Z\", \"merged_at\": \"2026-11-12T16:00:00Z\", \"head\": {\"ref\": \"branch-80\", \"sha\": \"0080ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 81, \"title\": \"Experiment: zstd\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/81\", \"body\": \"\", \"created_at\": \"2026-11-11T10:00:00Z\", \"updated_at\": \"2026-11-13T09:00:00Z\", \"closed_at\": \"2026-11-13T09:00:00Z\", \"merged_at\": null, \"head\": {\"ref\": \"branch-81\", \"sha\": \"0081ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "open",
+              "page": 1
+            },
+            {
+              "state": "open",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 77, \"title\": \"Parallel uploads\", \"state\": \"open\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"ana-r\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/77\", \"body\": \"\", \"created_at\": \"2026-11-09T08:00:00Z\", \"updated_at\": \"2026-11-09T08:00:00Z\", \"closed_at\": null, \"merged_at\": null, \"head\": {\"ref\": \"branch-77\", \"sha\": \"0077ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [{\"login\": \"bob\", \"type\": \"User\"}], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "open",
+              "page": 2
+            },
+            {
+              "state": "open",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -341,6 +381,24 @@
         ]
       },
       "answers": [
+        {
+          "when": [
+            {
+              "page": 1
+            },
+            {
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 91, \"title\": \"Exclude patterns ignore dotfiles\", \"user\": {\"login\": \"user-512\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/91\", \"created_at\": \"2026-11-15T20:00:00Z\", \"updated_at\": \"2026-11-15T20:00:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 90, \"title\": \"Feature: resume an interrupted sync\", \"user\": {\"login\": \"user-9\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/90\", \"created_at\": \"2026-11-13T07:30:00Z\", \"updated_at\": \"2026-11-14T12:00:00Z\", \"labels\": [{\"name\": \"enhancement\"}], \"comments\": 0}, {\"number\": 40, \"title\": \"Daily brief\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/40\", \"created_at\": \"2026-10-01T09:00:00Z\", \"updated_at\": \"2026-11-13T08:01:00Z\", \"labels\": [], \"comments\": 0}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
         {
           "when": [
             {

@@ -93,18 +93,18 @@
           "when": [
             {
               "pull_number": 512,
-              "page": 2
+              "page": 1
             },
             {
               "pull_number": "512",
-              "page": "2"
+              "page": "1"
             }
           ],
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "{\"data\": {\"files\": []}, \"successful\": true, \"error\": null}"
+                "text": "{\"data\": {\"files\": [{\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"src/server/auth.ts\", \"status\": \"modified\", \"additions\": 6, \"deletions\": 5, \"changes\": 11, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/src/server/auth.ts\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/src/server/auth.ts\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/src/server/auth.ts?ref=feature\", \"patch\": \"@@ -12,12 +12,13 @@ import { timingSafeEqual } from \\\"node:crypto\\\";\\n\\n export function readToken(req: Request): string | undefined {\\n   const header = req.headers.get(\\\"authorization\\\");\\n-  if (!header?.startsWith(\\\"Bearer \\\")) return undefined;\\n-  return header.slice(\\\"Bearer \\\".length);\\n+  if (header?.startsWith(\\\"Bearer \\\")) return header.slice(\\\"Bearer \\\".length);\\n+  // Webhook senders that can't set headers pass the token in the URL.\\n+  const fromQuery = new URL(req.url).searchParams.get(\\\"token\\\");\\n+  if (fromQuery) console.info(`auth: token from query for ${req.url}`);\\n+  return fromQuery ?? undefined;\\n }\\n\\n export function tokenMatches(given: string, expected: string): boolean {\\n-  const a = Buffer.from(given);\\n-  const b = Buffer.from(expected);\\n-  return a.length === b.length && timingSafeEqual(a, b);\\n+  return given === expected;\\n }\"}, {\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"src/server/routes/webhooks.ts\", \"status\": \"modified\", \"additions\": 1, \"deletions\": 1, \"changes\": 2, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/src/server/routes/webhooks.ts\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/src/server/routes/webhooks.ts\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/src/server/routes/webhooks.ts?ref=feature\", \"patch\": \"@@ -30,4 +30,4 @@ export async function handleWebhook(req: Request): Promise<Response> {\\n   const token = readToken(req);\\n-  if (!token || !tokenMatches(token, config.webhookSecret)) {\\n+  if (!token || !tokenMatches(token, config.webhookSecret ?? \\\"\\\")) {\\n     return new Response(\\\"unauthorized\\\", { status: 401 });\\n   }\"}, {\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"docs/webhooks.md\", \"status\": \"modified\", \"additions\": 4, \"deletions\": 0, \"changes\": 4, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/docs/webhooks.md\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/docs/webhooks.md\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/docs/webhooks.md?ref=feature\", \"patch\": \"@@ -8,3 +8,7 @@ Every webhook request must carry your webhook secret as a bearer token:\\n ```\\n Authorization: Bearer <secret>\\n ```\\n+\\n+Senders that can't set headers can pass it in the URL instead:\\n+\\n+    https://tidewater.example/hooks/sync?token=<secret>\"}]}, \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -113,11 +113,11 @@
           "when": [
             {
               "pull_number": 512,
-              "page": 3
+              "page": 2
             },
             {
               "pull_number": "512",
-              "page": "3"
+              "page": "2"
             }
           ],
           "result": {
@@ -195,6 +195,46 @@
         ]
       },
       "answers": [
+        {
+          "when": [
+            {
+              "issue_number": 512,
+              "page": 1
+            },
+            {
+              "issue_number": "512",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 512,
+              "page": 2
+            },
+            {
+              "issue_number": "512",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
         {
           "when": [
             {
