@@ -42,7 +42,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "{\"prices\":[{\"endpoint_id\":\"fal-ai/ideogram/v3\",\"unit_price\":0.03,\"unit\":\"image (TURBO); 0.06 BALANCED, 0.09 QUALITY\",\"currency\":\"USD\"}]}"
+                "text": "{\"prices\":[{\"endpoint_id\":\"fal-ai/ideogram/v3\",\"unit_price\":0.03,\"unit\":\"images\",\"currency\":\"USD\"}]}"
               }
             ]
           }

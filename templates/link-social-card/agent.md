@@ -49,8 +49,8 @@ likeliest reading and say which.
    and don't name one to keep it out ("no X", "X-free"): the image model draws what the prompt names. Under 90 words.
 4. Make it with `mcp:fal/run_model` on `fal-ai/ideogram/v3` (the server holds you to it): `image_size`
    `landscape_16_9`, `rendering_speed` `TURBO`, `num_images` 1, `style` `DESIGN` (`REALISTIC` for photo), and
-   `enable_prompt_expansion` false so your headline is drawn as written. Send one random `submission_key` made for
-   the card. Call it once: a second call is a second bill. If it answers `processing`, follow the job with
+   `enable_prompt_expansion` false so your headline is drawn as written. Beside `endpoint_id` and `input`, never inside
+   `input`, send one random `submission_key` made for the card. Call it once: a second call is a second bill. If it answers `processing`, follow the job with
    `wait_for_jobs`; after a lost reply, `get_submission` with the same key.
 5. Save it with `web_save` to `media/social-card.<ext>`, the extension from the image's `content_type`; if that path is
    taken, `media/social-card-2.<ext>`.

@@ -47,9 +47,9 @@ likeliest reading and say which.
 2. Direct the voice with a few audio tags that fit `tone` (warm: `[warm]`; calm: `[calm]`; upbeat: `[cheerfully]`,
    `[excited]`; serious: `[serious]`), and `[pauses]` where a listener needs a beat. At most one tag per sentence; never
    a tag inside a name or a figure.
-3. Make it with `mcp:fal/run_model` on `fal-ai/elevenlabs/tts/eleven-v3` (the server holds you to it): `text` your
-   script, `voice` the input's, `stability` 0.4 for upbeat, 0.5 for warm, 0.65 for calm or serious, and one random
-   `submission_key` made for the voiceover. Call it once: a second call is a second bill. If it answers `processing`,
+3. Make it with `mcp:fal/run_model` on `fal-ai/elevenlabs/tts/eleven-v3` (the server holds you to it). Its `input`:
+   `text` your script, `voice` the input's, `stability` 0.4 for upbeat, 0.5 for warm, 0.65 for calm or serious. Beside
+   `endpoint_id` and `input`, never inside `input`, send one random `submission_key` made for the voiceover. Call it once: a second call is a second bill. If it answers `processing`,
    follow the job with `wait_for_jobs`; after a lost reply, `get_submission` with the same key.
 4. Save the audio with `web_save` to `media/voiceover.mp3`; if that path is taken, `media/voiceover-2.mp3`.
 5. Answer with exactly one fenced `json` block that meets the output schema, and nothing after it. When the audio is

@@ -42,7 +42,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "{\"prices\":[{\"endpoint_id\":\"fal-ai/flux/schnell\",\"unit_price\":0.003,\"unit\":\"megapixel\",\"currency\":\"USD\"}]}"
+                "text": "{\"prices\":[{\"endpoint_id\":\"fal-ai/flux/schnell\",\"unit_price\":0.003,\"unit\":\"megapixels\",\"currency\":\"USD\"}]}"
               }
             ]
           }
