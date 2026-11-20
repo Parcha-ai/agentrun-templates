@@ -63,8 +63,8 @@
     "dropped_repeats": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
     "watched": {
       "type": "array",
-      "maxItems": 40,
-      "description": "Every posting shown in the last 14 days and still open, with only what the next run compares. At most 40, what the 12,000-byte carried budget holds; past that the earliest first shown leave first.",
+      "maxItems": 150,
+      "description": "Every posting shown in the last 14 days and still open, with only what the next run compares, oldest first (by first_shown, earliest first). At most 150, a retention choice: 14 days of the default schedule (10 weekday runs) times 15 new postings a run; past that the earliest first shown leave first. When the answer is too large to hand on whole, the runtime hands the next run its carried fields alone and drops entries from the front: a dropped posting is forgotten, a change to it is not reported, and it is listed again only if its page dates it inside the window.",
       "items": {
         "type": "object",
         "additionalProperties": false,

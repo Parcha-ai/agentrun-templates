@@ -63,8 +63,8 @@
     },
     "open_urgent": {
       "type": "array",
-      "maxItems": 60,
-      "description": "At most 60, what the 12,000-byte carried budget holds beside window and theme_counts; past that the earliest first reported leave first. Every urgent thread reported in the last 30 days, this digest's and the ones carried from the run history, so the next digest knows its age even after a quiet week.",
+      "maxItems": 100,
+      "description": "Oldest first (by first_reported, earliest first). At most 100, a retention choice: 30 days of the default schedule (5 weekly digests) times 20 urgent threads a digest; past that the earliest first reported leave first. When the answer is too large to hand on whole, the runtime drops entries from the front; a dropped thread is forgotten. Every urgent thread reported in the last 30 days, this digest's and the ones carried from the run history, so the next digest knows its age even after a quiet week.",
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -78,7 +78,7 @@
     "theme_counts": {
       "type": "array",
       "maxItems": 20,
-      "description": "Each theme's name and thread count, in short: what the next digest compares as last_week.",
+      "description": "Each theme's name and thread count, in short: what the next digest compares as last_week. Ordered by threads, fewest first: the front is what the runtime drops first when the answer is too large to hand on whole.",
       "items": {
         "type": "object",
         "additionalProperties": false,
