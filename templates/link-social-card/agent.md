@@ -44,8 +44,8 @@ likeliest reading and say which.
    spelling of names.
 3. Write the prompt: the headline in double quotes as the text to set ("large headline text: \"...\""), the layout
    (16:9, headline left or centered, generous margins), the `look`, and one visual idea drawn from the page's topic.
-   No logos, brand marks or real people unless the page is about them and they are named in the headline. Under 90
-   words.
+   No logos, brand marks, mascots or real people unless the page is about them and they are named in the headline,
+   and don't name one to keep it out ("no X", "X-free"): the image model draws what the prompt names. Under 90 words.
 4. Make it with `mcp:fal/run_model` on `fal-ai/ideogram/v3` (the server holds you to it): `image_size`
    `landscape_16_9`, `rendering_speed` `TURBO`, `num_images` 1, `style` `DESIGN` (`REALISTIC` for photo), and
    `enable_prompt_expansion` false so your headline is drawn as written. Send one random `submission_key` made for
