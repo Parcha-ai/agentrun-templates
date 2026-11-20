@@ -11,10 +11,10 @@
   },
   "stand_ins": true,
   "build": "0.1.0-beta.47",
-  "note": "Live by hand on a real failed run (2026-11-20, pi): passed, read-only. Nothing was posted: no open pull request matched the run's head commit, because the PR had moved on, so the skill's exact-commit rule skipped the comment.",
+  "note": "Live by hand on a real failed run (2026-11-20, pi): passed, read-only. The server denied the comment, so nothing was posted. Main's latest run had passed by then, so same_job_failing_on_base came out false against a passing base; a base failing only in other jobs is covered by the evals, not the live run.",
   "live": {
     "cases": 1,
-    "median_usd": 0.2353,
+    "median_usd": 0.2859,
     "passed": {
       "pi": "1/1"
     }

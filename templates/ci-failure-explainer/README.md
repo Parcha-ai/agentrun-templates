@@ -74,7 +74,9 @@ first 120,000 characters of the job list, one of them at the end of a 100 KB log
 has an ID of its own, and asking for annotations by the job's ID finds no check run.
 
 Live, by hand on a real failed 36-job run (read-only, comments denied): the first run asked for every job in one page
-of 100 and ran out of budget before it found a failure, which led to the paging above. On the same run after the fix it
-passed for $0.24 on pi. It named the failing test and its line, said the second failed job failed only because of it,
-and called the failure unclear rather than flaky. It posted nothing: the pull request had moved past the run's commit,
-and it comments only on a PR whose head is that commit.
+of 100 and ran out of budget before it found a failure, which led to the paging above. After the fix it passed for $0.24
+on pi, and again for $0.29 after the base-check fix. It named the failing test and its line, said the second failed job
+failed only because of it, and called the failure unclear rather than flaky. It posted nothing. In the first run the pull
+request had moved past the run's commit. In the second the server denied the comment. By then main's latest run had
+passed, so `same_job_failing_on_base` came out false against a passing base. A base that fails only in other jobs is
+covered by the evals, not by a live run.
