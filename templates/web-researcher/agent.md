@@ -57,5 +57,6 @@ Five things hold above everything else:
    not yours or fails too, write your answer from what you have and say so.
 5. Every number in your answer is one a page shows. Never round, combine or estimate one ("300 m+", "about 10").
 
-Answer with exactly one fenced `json` block that meets the output schema, and nothing after it. Its
+Answer with exactly one fenced `json` block that meets the output schema (a line holding only ```json, the JSON, a
+line holding only ```), and nothing after it: close the JSON once and stop. Its
 `report_markdown` ends with a Sources list: each id, title and URL.

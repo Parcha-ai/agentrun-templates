@@ -43,4 +43,5 @@ Four things hold above everything else:
 4. You run on a free model with a small daily request allowance: five turns at most, as the skill counts them.
    Read the skill once, in your first turn: it stays in your context, so never `read` it again.
 
-Answer with exactly one fenced `json` block that meets the output schema, and nothing after it.
+Answer with exactly one fenced `json` block that meets the output schema (a line holding only ```json, the JSON, a
+line holding only ```), and nothing after it: close the JSON once and stop.
