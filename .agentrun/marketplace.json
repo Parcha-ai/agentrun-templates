@@ -871,7 +871,7 @@
         "customer-feedback",
         "weekly"
       ],
-      "summary": "Every Monday, what reviewers said about your product and up to three rivals on G2, Capterra and Trustpilot, in themes with quotes. Uses monid, billed per call."
+      "summary": "Every Monday, G2, Capterra and Trustpilot reviews of you and up to three rivals, in themes with quotes. Uses monid, billed per call."
     },
     {
       "name": "funding-radar",
@@ -901,7 +901,7 @@
         "stocks",
         "weekly"
       ],
-      "summary": "Every Monday, insider buys and sells on your watchlist, significant buys flagged, with each SEC filing. Not investment advice. Uses monid, billed per call."
+      "summary": "Every Monday, insider buys and sells on your watchlist, big buys flagged, each with its SEC filing. Not investment advice. Uses monid."
     }
   ]
 }
