@@ -63,18 +63,18 @@
     "dropped_repeats": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
     "watched": {
       "type": "array",
-      "maxItems": 160,
-      "description": "Every posting shown in the last 14 days and still open, with its last known details: the list the next run compares against. At most 160 (15 new a run x 10 default runs in 14 days, plus room); past that the earliest first shown leave first.",
+      "maxItems": 25,
+      "description": "Every posting shown in the last 14 days and still open, in short: the list the next run compares against. At most 25, what the 12,000-byte carried budget holds; past that the earliest first shown leave first.",
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": ["title", "employer", "url", "pay", "deadline", "first_shown"],
         "properties": {
-          "title": { "type": "string", "minLength": 1, "maxLength": 200 },
-          "employer": { "type": "string", "minLength": 1, "maxLength": 160 },
-          "url": { "type": "string", "format": "uri" },
-          "pay": { "type": "string", "maxLength": 120 },
-          "deadline": { "type": "string", "maxLength": 60 },
+          "title": { "type": "string", "minLength": 1, "maxLength": 60, "description": "as posted, cut to 60 characters" },
+          "employer": { "type": "string", "minLength": 1, "maxLength": 40, "description": "cut to 40 characters" },
+          "url": { "type": "string", "format": "uri", "maxLength": 160 },
+          "pay": { "type": "string", "maxLength": 30, "description": "as posted, cut to 30 characters, or \"not listed\"" },
+          "deadline": { "type": "string", "maxLength": 10, "description": "YYYY-MM-DD, \"rolling\" or \"not stated\"" },
           "first_shown": { "type": "string", "format": "date" }
         }
       }
