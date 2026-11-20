@@ -280,6 +280,13 @@ export function measureCarried(schema) {
   return { bytes: Buffer.byteLength(JSON.stringify(worst, null, 2)), problems };
 }
 
+/** The problems that fail a declared schema: what measureCarried finds, and carried fields over CARRIED_BUDGET_BYTES. */
+export function checkCarried(schema) {
+  const { bytes, problems } = measureCarried(schema);
+  if (bytes > CARRIED_BUDGET_BYTES) problems.unshift(`carried worst case ${bytes} B is over the ${CARRIED_BUDGET_BYTES} B budget`);
+  return { bytes, problems };
+}
+
 function main() {
   let failed = 0;
   let checked = 0;
@@ -300,8 +307,7 @@ function main() {
       continue;
     }
     checked++;
-    const { bytes, problems } = measureCarried(schema);
-    if (bytes > CARRIED_BUDGET_BYTES) problems.unshift(`carried worst case ${bytes} B is over the ${CARRIED_BUDGET_BYTES} B budget`);
+    const { bytes, problems } = checkCarried(schema);
     console.log(`${problems.length ? "not ok" : "ok"} ${name}/${file}: carried ${carried.join(", ")}: worst case ${bytes} B`);
     for (const problem of problems) console.log(`  ${problem}`);
     if (problems.length) failed++;
