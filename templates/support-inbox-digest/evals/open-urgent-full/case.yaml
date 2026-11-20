@@ -12,5 +12,6 @@ grants:
   - mcp:gmail/GMAIL_FETCH_EMAILS
   - mcp:gmail/GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID
   - mcp:slack/SLACK_SEND_MESSAGE
-# The prompt ends with the last run's answer, the way the runtime hands a scheduled run its history.
+# The prompt ends with what agentrun hands this run from fixtures/last-run.json (.github/handed-history.mjs): the whole
+# answer, under 32 KiB.
 now: 2026-11-16T09:00:00Z

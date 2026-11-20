@@ -33,7 +33,7 @@
         }
       }
     },
-    "already_drafted": { "type": "array", "maxItems": 55, "items": { "type": "string", "maxLength": 200, "pattern": "^[!#-\\[\\]-~]{1,200}$" }, "description": "every event id a run saved a draft for on this date, this run's included, earliest first, each copied whole from `drafted`: what later runs that day leave alone. At most 55, what the 12,000-byte carried budget holds; past that the earliest leave first" },
+    "already_drafted": { "type": "array", "maxItems": 80, "items": { "type": "string", "maxLength": 200, "pattern": "^[!#-\\[\\]-~]{1,200}$" }, "description": "every event id a run saved a draft for on this date, this run's included, oldest first (in the order drafted), each copied whole from `drafted`: what later runs that day leave alone. At most 80, a retention choice: 20 drafts a run times 4 runs a day; past that the earliest leave first. When the answer is too large to hand on whole, the runtime drops ids from the front" },
     "already_drafted_dropped": { "type": "integer", "minimum": 0, "description": "ids that left already_drafted this run because it was full (earliest first)" },
     "not_drafted": {
       "type": "array",

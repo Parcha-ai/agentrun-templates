@@ -1,5 +1,6 @@
 # Applied with these parameters (POST /v2/templates/job-watch/apply). Pass: 3 of 3 runs. Twice a weekday, so 14 days
-# hold 18 runs and the carried list can reach its cap.
+# hold 20 runs and the carried list can reach its cap. The prompt ends with what agentrun hands this run from
+# fixtures/last-run.json (.github/handed-history.mjs): the whole answer, under 32 KiB.
 parameters:
   role: "Mid-level product designer"
   location: "Lisbon (hybrid or onsite) or remote within the EU"

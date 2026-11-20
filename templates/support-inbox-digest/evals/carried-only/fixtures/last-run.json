@@ -1,0 +1,638 @@
+{
+  "agentrun": "3688f4156fc94c39e706a61a1b0ade28c8cb8acb",
+  "run_id": "01a1cf00-0000-7000-8000-00000000d513",
+  "ended_at": "2026-11-12T15:02:10Z",
+  "output": {
+    "window": {
+      "from": null,
+      "to": "2026-11-12T15:00:00Z"
+    },
+    "coverage": {
+      "messages_read": 41,
+      "threads_kept": 39,
+      "dropped": [
+        {
+          "reason": "team",
+          "messages": 2
+        }
+      ],
+      "more_than_read": false,
+      "open_urgent_dropped": 0
+    },
+    "urgent": [
+      {
+        "thread_id": "19d2c00000000003",
+        "subject": "Whole company locked out of SSO",
+        "company": "initrode.example",
+        "why": "a whole company can't log in",
+        "last_message_at": "2026-11-11T16:00:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c00000000003",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b001",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 01)",
+        "company": "store01.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b001",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b002",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 02)",
+        "company": "store02.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b002",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b003",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 03)",
+        "company": "store03.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b003",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b004",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 04)",
+        "company": "store04.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b004",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b005",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 05)",
+        "company": "store05.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b005",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b006",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 06)",
+        "company": "store06.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b006",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b007",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 07)",
+        "company": "store07.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b007",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b008",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 08)",
+        "company": "store08.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b008",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b009",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 09)",
+        "company": "store09.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b009",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b010",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 10)",
+        "company": "store10.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b010",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b011",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 11)",
+        "company": "store11.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b011",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b012",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 12)",
+        "company": "store12.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b012",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b013",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 13)",
+        "company": "store13.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b013",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b014",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 14)",
+        "company": "store14.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b014",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b015",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 15)",
+        "company": "store15.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b015",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b016",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 16)",
+        "company": "store16.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b016",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b017",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 17)",
+        "company": "store17.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b017",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b018",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 18)",
+        "company": "store18.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b018",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b019",
+        "subject": "URGENT: payments failing at checkout since this morning, every card declined with a gateway timeout, during our biggest sale of the year; we need someone from your side on a call right now, please escalate (store 19)",
+        "company": "store19.example",
+        "why": "a customer can't take payments: checkout fails for every card with a gateway timeout during their biggest sale, and they say they are losing orders by the hour and need a call today",
+        "last_message_at": "2026-11-12T11:20:00Z",
+        "url": "https://mail.google.com/mail/u/0/#all/19d2c0000000b019",
+        "still_open": false,
+        "first_reported": "2026-11-12"
+      }
+    ],
+    "themes": [
+      {
+        "name": "Checkout gateway timeout",
+        "threads": 19,
+        "last_week": null,
+        "quotes": [
+          "Since about 9:40 this morning nothing goes through at checkout. We have a sale running today and this is costing us real money every minute it stays down.",
+          "We tried three cards and two browsers and every single payment fails with 'gateway timeout'; our customers are giving up and buying elsewhere."
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000b001",
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000b002",
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000b003"
+        ]
+      },
+      {
+        "name": "SSO login loop",
+        "threads": 2,
+        "last_week": null,
+        "quotes": [
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice and complain to us ",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice and compl"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c00000000003"
+        ]
+      },
+      {
+        "name": "CSV export times out",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice and complain to us ",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice and compl"
+        ],
+        "examples": []
+      },
+      {
+        "name": "Invoice PDF missing VAT",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Invoice PDF missing VAT: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c001"
+        ]
+      },
+      {
+        "name": "Webhook retries duplicated",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Webhook retries duplicated: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to not",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c002"
+        ]
+      },
+      {
+        "name": "Mobile app crashes on login",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Mobile app crashes on login: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to no",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c003"
+        ]
+      },
+      {
+        "name": "Refund not received",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Refund not received: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice and",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c004"
+        ]
+      },
+      {
+        "name": "Password reset email late",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Password reset email late: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to noti",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c005"
+        ]
+      },
+      {
+        "name": "Report totals don't match",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Report totals don't match: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to noti",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c006"
+        ]
+      },
+      {
+        "name": "API rate limit too low",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "API rate limit too low: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice ",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c007"
+        ]
+      },
+      {
+        "name": "Calendar sync duplicates",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Calendar sync duplicates: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notic",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c008"
+        ]
+      },
+      {
+        "name": "Bulk import skips rows",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Bulk import skips rows: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice ",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c009"
+        ]
+      },
+      {
+        "name": "Two-factor codes rejected",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Two-factor codes rejected: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to noti",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c010"
+        ]
+      },
+      {
+        "name": "Search misses recent orders",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Search misses recent orders: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to no",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c011"
+        ]
+      },
+      {
+        "name": "Seat count wrong on invoice",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Seat count wrong on invoice: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to no",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c012"
+        ]
+      },
+      {
+        "name": "Slack alerts stopped",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Slack alerts stopped: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice an",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c013"
+        ]
+      },
+      {
+        "name": "Timezone wrong in exports",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Timezone wrong in exports: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to noti",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c014"
+        ]
+      },
+      {
+        "name": "Cannot remove old admin",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Cannot remove old admin: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c015"
+        ]
+      },
+      {
+        "name": "Discount code not applied",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Discount code not applied: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to noti",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c016"
+        ]
+      },
+      {
+        "name": "Dark mode text unreadable",
+        "threads": 1,
+        "last_week": null,
+        "quotes": [
+          "Dark mode text unreadable: We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to noti",
+          "We have tried everything on our side and it still fails the same way every time; please look at it today, our team is blocked and our own customers are starting to notice"
+        ],
+        "examples": [
+          "https://mail.google.com/mail/u/0/#all/19d2c0000000c017"
+        ]
+      }
+    ],
+    "delivery": {
+      "posted": true,
+      "channel": "C0SUPPORT1",
+      "ts": "1794495725.000100"
+    },
+    "ignored_instructions": [],
+    "report_markdown": "Support mail to Thu Nov 12 15:00: 39 customer threads, 20 urgent, most of them a checkout gateway outage.\n*Urgent*\n• initrode.example: whole company locked out of SSO <https://mail.google.com/mail/u/0/#all/19d2c00000000003|thread>\n• store01.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b001|thread>\n• store02.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b002|thread>\n• store03.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b003|thread>\n• store04.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b004|thread>\n• store05.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b005|thread>\n• store06.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b006|thread>\n• store07.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b007|thread>\n• store08.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b008|thread>\n• store09.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b009|thread>\n• store10.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b010|thread>\n• store11.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b011|thread>\n• store12.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b012|thread>\n• store13.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b013|thread>\n• store14.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b014|thread>\n• store15.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b015|thread>\n• store16.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b016|thread>\n• store17.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b017|thread>\n• store18.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b018|thread>\n• store19.example: checkout gateway timeout, every card declined <https://mail.google.com/mail/u/0/#all/19d2c0000000b019|thread>\n*Themes*\n• Checkout gateway timeout: 19\n• SSO login loop: 2\n• CSV export times out: 1\n• Invoice PDF missing VAT: 1\n• Webhook retries duplicated: 1\n• Mobile app crashes on login: 1\n• Refund not received: 1\n• Password reset email late: 1\n• Report totals don't match: 1\n• API rate limit too low: 1\n• Calendar sync duplicates: 1\n• Bulk import skips rows: 1\n• Two-factor codes rejected: 1\n• Search misses recent orders: 1\n• Seat count wrong on invoice: 1\n• Slack alerts stopped: 1\n• Timezone wrong in exports: 1\n• Cannot remove old admin: 1\n• Discount code not applied: 1\n• Dark mode text unreadable: 1",
+    "theme_counts": [
+      {
+        "name": "CSV export times out",
+        "threads": 1
+      },
+      {
+        "name": "Invoice PDF missing VAT",
+        "threads": 1
+      },
+      {
+        "name": "Webhook retries duplicated",
+        "threads": 1
+      },
+      {
+        "name": "Mobile app crashes on login",
+        "threads": 1
+      },
+      {
+        "name": "Refund not received",
+        "threads": 1
+      },
+      {
+        "name": "Password reset email late",
+        "threads": 1
+      },
+      {
+        "name": "Report totals don't match",
+        "threads": 1
+      },
+      {
+        "name": "API rate limit too low",
+        "threads": 1
+      },
+      {
+        "name": "Calendar sync duplicates",
+        "threads": 1
+      },
+      {
+        "name": "Bulk import skips rows",
+        "threads": 1
+      },
+      {
+        "name": "Two-factor codes rejected",
+        "threads": 1
+      },
+      {
+        "name": "Search misses recent orders",
+        "threads": 1
+      },
+      {
+        "name": "Seat count wrong on invoice",
+        "threads": 1
+      },
+      {
+        "name": "Slack alerts stopped",
+        "threads": 1
+      },
+      {
+        "name": "Timezone wrong in exports",
+        "threads": 1
+      },
+      {
+        "name": "Cannot remove old admin",
+        "threads": 1
+      },
+      {
+        "name": "Discount code not applied",
+        "threads": 1
+      },
+      {
+        "name": "Dark mode text unreadable",
+        "threads": 1
+      },
+      {
+        "name": "SSO login loop",
+        "threads": 2
+      },
+      {
+        "name": "Checkout gateway timeout",
+        "threads": 19
+      }
+    ],
+    "open_urgent": [
+      {
+        "thread_id": "19d2c00000000003",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b001",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b002",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b003",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b004",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b005",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b006",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b007",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b008",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b009",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b010",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b011",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b012",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b013",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b014",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b015",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b016",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b017",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b018",
+        "first_reported": "2026-11-12"
+      },
+      {
+        "thread_id": "19d2c0000000b019",
+        "first_reported": "2026-11-12"
+      }
+    ]
+  }
+}

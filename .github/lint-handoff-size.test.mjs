@@ -3,7 +3,7 @@
 // bound must be reported. Run: node --test .github/
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { measureCarried } from "./lint-handoff-size.mjs";
+import { CARRIED_BUDGET_BYTES, checkCarried, measureCarried } from "./lint-handoff-size.mjs";
 
 const NO_CONTROL = (n) => `^[^\\u0000-\\u001f\\ud800-\\udfff]{0,${n}}$`;
 const carrying = (field) => ({ "x-carried": ["s"], type: "object", additionalProperties: false, properties: { s: field } });
@@ -72,4 +72,52 @@ test("an alternation outside a group is not anchored, and is reported", () => {
 test("an alternation inside one group between the anchors is sized", () => {
   const field = { type: "string", maxLength: 1, pattern: "^(?:a|b)$" };
   assert.equal(coversValue(field, "a"), handedOn("a"));
+});
+
+// AgentRun since #3310: a result over 32 KiB hands the x-carried fields alone, and drops the oldest entries (the front) of
+// its carried arrays until they fit. A scalar or an object is never cut. So an array may be over the budget at maxItems;
+// the fields that are never cut must fit it together, and one entry of each array must be bounded.
+const ENTRY = { type: "object", additionalProperties: false, required: ["id"], properties: { id: { type: "string", pattern: "^[a-z0-9]{1,100}$" } } };
+const schemaOf = (properties, carried = Object.keys(properties)) => ({ "x-carried": carried, type: "object", additionalProperties: false, properties });
+
+test("a carried array over the budget at maxItems passes: the runtime drops its oldest entries", () => {
+  const schema = schemaOf({ date: { type: "string", format: "date" }, seen: { type: "array", maxItems: 500, items: ENTRY } });
+  assert.ok(measureCarried(schema).bytes > CARRIED_BUDGET_BYTES, "the setup: the array at maxItems is over the budget");
+  assert.deepEqual(checkCarried(schema).problems, []);
+});
+
+test("carried fields that are never cut must fit the budget together: an object over it fails", () => {
+  // The same 500 entries, inside an object: the runtime never cuts an object, nor an array inside one.
+  const schema = schemaOf({ meta: { type: "object", additionalProperties: false, properties: { seen: { type: "array", maxItems: 500, items: ENTRY } } } });
+  const { problems } = checkCarried(schema);
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /never cut/);
+});
+
+test("a carried array's entry must be bounded", () => {
+  const schema = schemaOf({ seen: { type: "array", maxItems: 500, items: { type: "string", maxLength: 10 } } });
+  const { problems } = checkCarried(schema);
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /grapheme/);
+});
+
+// A field that may be an array or an object: the runtime trims only the array. Its object branch is never cut, so it
+// counts against the budget even when the array branch is the larger one (#11 review).
+const BIG_OBJECT = { type: "object", additionalProperties: false, properties: { note: { type: "string", pattern: "^[a-z ]{0,33000}$" } } };
+const SEEN = { type: "array", maxItems: 500, items: { type: "string", pattern: "^[a-z0-9]{1,100}$" } };
+
+test("a carried field that may be an array or an object over the budget fails: the object is never cut", () => {
+  const schema = schemaOf({ seen: { anyOf: [SEEN, BIG_OBJECT] } });
+  const objectAlone = measureCarried(schemaOf({ seen: BIG_OBJECT })).bytes;
+  assert.ok(objectAlone > CARRIED_BUDGET_BYTES, "the setup: the object is over the budget");
+  assert.ok(measureCarried(schema).bytes > objectAlone, "the setup: the array branch is the larger one");
+  const { problems } = checkCarried(schema);
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /never cut \(seen\)/);
+});
+
+test("a carried field that may be an array or null passes at an array over the budget", () => {
+  const schema = schemaOf({ seen: { anyOf: [SEEN, { type: "null" }] } });
+  assert.ok(measureCarried(schema).bytes > CARRIED_BUDGET_BYTES, "the setup: the array at maxItems is over the budget");
+  assert.deepEqual(checkCarried(schema).problems, []);
 });

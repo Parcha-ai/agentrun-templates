@@ -9,5 +9,6 @@ mcp:
 grants:
   - mcp:googlecalendar/GOOGLECALENDAR_EVENTS_LIST
   - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
-# The prompt ends with the last run's answer, the way the runtime hands a scheduled run its history.
+# The prompt ends with what agentrun hands this run from fixtures/last-run.json (.github/handed-history.mjs): the whole
+# answer, under 32 KiB.
 now: 2026-11-17T17:00:00Z

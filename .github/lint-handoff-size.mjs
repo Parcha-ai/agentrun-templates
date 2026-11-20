@@ -1,7 +1,10 @@
-// A scheduled template's answer is its next run's only memory, and AgentRun hands it over only while it is small enough:
-// agentrun packages/serve/src/trigger-targets.ts, PREVIOUS_RESULT_MAX_BYTES = 32 * 1024. previousResultOf serializes the
-// last completed run's answer with JSON.stringify(output, null, 2), and when that is over the limit the next run is
-// handed none of it (one line saying so), not a cut copy: every carried list, window and date is lost at once.
+// A scheduled template's answer is its next run's only memory: agentrun packages/serve/src/trigger-targets.ts hands
+// a schedule's run its last completed answer, serialized with JSON.stringify(output, null, 2), whole while that is at
+// most PREVIOUS_RESULT_MAX_BYTES = 32 * 1024. Over it (since agentrun #3310), the next run is handed only the fields
+// the answer's output schema names in `x-carried`; when those are over the limit too, the oldest entries of its
+// carried arrays (the front: a template keeps each carried array oldest first) are dropped, from the largest array
+// first, until they fit. A carried scalar or object is never cut, nor anything inside an entry: when those alone are
+// over the limit the next run is handed nothing of the answer.
 //
 // A schema names the top-level fields its skill reads back from the last answer in `x-carried` (an annotation; JSON
 // Schema validators ignore it). For each such schema this lint builds the largest value those fields allow and measures
@@ -16,15 +19,16 @@
 //   it can take: 6 for a control character or a lone surrogate (written \u00XX, \uDXXX), 4 for any other in a negated
 //   class or `.`, and in a listed class or literal its own size (a quote or backslash 2, ASCII 1). `format: date` is 10
 //   ASCII characters, and `format: date-time` (ASCII by its own rule) is its maxLength;
-// - the carried fields must fit CARRIED_BUDGET_BYTES: under half the limit, so the run's own output (its report, its
-//   items) keeps the larger part, about 20 KB;
+// - the carried fields that are not arrays, never cut, must fit CARRIED_BUDGET_BYTES together, well under the limit; a
+//   carried array may be over it at maxItems (the runtime trims it), but it must have a maxItems and one entry of it
+//   a largest size. A field that may be an array or something else counts its largest other value as never cut;
 // - inside a carried field, a string with no such bound, an array with no maxItems, or an object open to more keys (no
 //   `additionalProperties: false`, or a key schema without maxProperties and a bounded key) has no largest size and
 //   fails.
 // A template with a `kind: schedule` trigger (the one source with previousResult: true, agentrun trigger-schedule.ts)
 // whose schema has no `x-carried` is listed as "not declared", and not checked.
-// Usage: node .github/lint-handoff-size.mjs. Prints each scheduled template's carried worst case or "not declared", then
-// each problem; exit 1 on any problem.
+// Usage: node .github/lint-handoff-size.mjs. Prints each scheduled template's never-cut worst case and, per carried
+// array, one entry's and maxItems' worst case, or "not declared"; then each problem. Exit 1 on any problem.
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -37,26 +41,30 @@ const repo = join(import.meta.dirname, "..");
 const templatesDir = join(repo, "templates");
 
 /** The largest value `schema` allows, or problems naming why it has none. */
-function largest(schema, root, path, problems) {
+const largest = (schema, root, path, problems) => widest(alternatives(schema, root, path, problems));
+
+/** The largest value of each alternative `schema` allows at its top: each branch of an anyOf or oneOf, each type of a
+ *  type list, each enum value. A carried field may be an array in one and not in another (checkCarried). */
+function alternatives(schema, root, path, problems) {
   if (schema === true || schema === undefined) {
     problems.push(`${path}: any value is allowed`);
-    return null;
+    return [null];
   }
   if (schema.$ref) {
     const target = schema.$ref.replace(/^#\//, "").split("/").reduce((at, key) => at?.[key], root);
     if (!target) problems.push(`${path}: $ref ${schema.$ref} not found`);
-    return target ? largest(target, root, path, problems) : null;
+    return target ? alternatives(target, root, path, problems) : [null];
   }
   const branches = schema.anyOf ?? schema.oneOf;
-  if (branches) return widest(branches.map((branch, i) => largest({ ...schema, anyOf: undefined, oneOf: undefined, ...branch }, root, `${path}|${i}`, problems)));
-  if ("const" in schema) return schema.const;
-  if (schema.enum) return widest(schema.enum);
+  if (branches) return branches.flatMap((branch, i) => alternatives({ ...schema, anyOf: undefined, oneOf: undefined, ...branch }, root, `${path}|${i}`, problems));
+  if ("const" in schema) return [schema.const];
+  if (schema.enum) return schema.enum;
   const types = Array.isArray(schema.type) ? schema.type : schema.type ? [schema.type] : inferred(schema);
   if (types.length === 0) {
     problems.push(`${path}: no type`);
-    return null;
+    return [null];
   }
-  return widest(types.map((type) => largestOf(type, schema, root, path, problems)));
+  return types.map((type) => largestOf(type, schema, root, path, problems));
 }
 
 const inferred = (schema) => (schema.properties ? ["object"] : schema.items ? ["array"] : []);
@@ -280,6 +288,40 @@ export function measureCarried(schema) {
   return { bytes: Buffer.byteLength(JSON.stringify(worst, null, 2)), problems };
 }
 
+/** The problems that fail a declared schema, and the sizes behind them. AgentRun (#3310) hands a result over the limit
+ *  as its x-carried fields alone, and drops the oldest entries (the front) of its carried arrays until those fit; a scalar
+ *  or an object is never cut, nor anything inside an entry. So the carried fields that are not arrays must fit
+ *  CARRIED_BUDGET_BYTES together (`neverCut`), and each carried array must be bounded, its one entry too (`entries`: one
+ *  entry's worst case and the array's at maxItems, which may be over the budget). */
+export function checkCarried(schema) {
+  const problems = [];
+  const neverCut = {};
+  const entries = [];
+  for (const key of schema["x-carried"] ?? []) {
+    const field = schema.properties?.[key];
+    if (!field) {
+      problems.push(`x-carried names ${key}, which the schema has no property for`);
+      continue;
+    }
+    // An array is trimmed by the runtime; any other value the field may take instead is never cut, even when the array
+    // is the larger of the two.
+    const values = alternatives(field, schema, `$.${key}`, problems);
+    const arrays = values.filter(Array.isArray);
+    const others = values.filter((value) => !Array.isArray(value));
+    if (arrays.length) {
+      const value = widest(arrays);
+      const one = Buffer.byteLength(JSON.stringify({ [key]: value.slice(0, 1) }, null, 2)) - Buffer.byteLength(JSON.stringify({ [key]: [] }, null, 2));
+      entries.push({ key, entry: one, all: Buffer.byteLength(JSON.stringify({ [key]: value }, null, 2)) });
+    }
+    if (others.length) neverCut[key] = widest(others);
+  }
+  const bytes = Buffer.byteLength(JSON.stringify(neverCut, null, 2));
+  if (bytes > CARRIED_BUDGET_BYTES) {
+    problems.unshift(`carried fields that are never cut (${Object.keys(neverCut).join(", ")}): worst case ${bytes} B is over the ${CARRIED_BUDGET_BYTES} B budget`);
+  }
+  return { bytes, entries, problems };
+}
+
 function main() {
   let failed = 0;
   let checked = 0;
@@ -300,14 +342,14 @@ function main() {
       continue;
     }
     checked++;
-    const { bytes, problems } = measureCarried(schema);
-    if (bytes > CARRIED_BUDGET_BYTES) problems.unshift(`carried worst case ${bytes} B is over the ${CARRIED_BUDGET_BYTES} B budget`);
-    console.log(`${problems.length ? "not ok" : "ok"} ${name}/${file}: carried ${carried.join(", ")}: worst case ${bytes} B`);
+    const { bytes, entries, problems } = checkCarried(schema);
+    const arrays = entries.map(({ key, entry, all }) => `; ${key} ${entry} B an entry, ${all} B at maxItems`).join("");
+    console.log(`${problems.length ? "not ok" : "ok"} ${name}/${file}: carried ${carried.join(", ")}: never cut ${bytes} B${arrays}`);
     for (const problem of problems) console.log(`  ${problem}`);
     if (problems.length) failed++;
   }
   console.log(
-    `lint-handoff-size: ${checked} declared, ${failed} over the ${CARRIED_BUDGET_BYTES} B budget or unbounded (limit ${PREVIOUS_RESULT_MAX_BYTES} B); ${undeclared.length} scheduled templates not declared`,
+    `lint-handoff-size: ${checked} declared, ${failed} unbounded or with fields never cut over the ${CARRIED_BUDGET_BYTES} B budget (limit ${PREVIOUS_RESULT_MAX_BYTES} B); ${undeclared.length} scheduled templates not declared`,
   );
   return failed ? 1 : 0;
 }

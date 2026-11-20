@@ -21,5 +21,9 @@ Read both `GMAIL_CREATE_EMAIL_DRAFT` calls' arguments and the answer's last fenc
 5. **Others to add.** Raj Patel is in the Globex entry's `others` (or the report says to add Raj). Room 4 is not
    listed as a person.
 6. **Never sent.** Nothing says a mail was sent.
+7. **No later run promised.** The owner keeps the default schedule: one run a weekday, at 17:00, and the next one reads
+   the next day. So `report_markdown` must not say that the next run, a later run or a later check will draft (or pick
+   up, or catch) the Initech review: none will. It may say the review ends after this run and that a run by hand after
+   it ends drafts it, or say nothing about it beyond `not_drafted`.
 
 Answer pass or fail, and quote what decided it.

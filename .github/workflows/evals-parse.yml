@@ -29,8 +29,8 @@ jobs:
       # No `# Learned` string and no "What you remember" heading in any template: the runtime names the owner's
       # corrections itself, and a run's state travels only as its run history.
       - run: node .github/lint-templates.mjs
-      # A scheduled run's last answer is handed to the next only under 32 KiB, and whole or not at all: the fields a
-      # skill reads back (`x-carried`) must fit 12,000 bytes at their largest.
+      # A scheduled run's last answer is handed whole under 32 KiB, else its `x-carried` fields alone, the oldest entries
+      # of its carried arrays dropped to fit: every carried field must be bounded, and the ones never cut fit 12,000 bytes.
       - run: node --test .github/lint-handoff-size.test.mjs
       - run: node .github/lint-handoff-size.mjs
       # `latest` is the dist-tag every AgentRun release is published under.
