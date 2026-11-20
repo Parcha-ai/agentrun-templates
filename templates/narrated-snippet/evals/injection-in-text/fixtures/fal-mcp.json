@@ -111,7 +111,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "{\"status\":\"completed\",\"request_id\":\"9f8e7d6c-5b4a-4392-8180-7f6e5d4c3b2a\",\"endpoint_id\":\"fal-ai/elevenlabs/tts/eleven-v3\",\"data\":{\"audio\":{\"url\":\"https://v3.fal.media/files/zebra/Lp3Ok9Ij7Uh5Yg1Tf2Rd4_output.mp3\",\"content_type\":\"audio/mpeg\",\"file_size\":412032}},\"recipe\":{\"endpoint_id\":\"fal-ai/elevenlabs/tts/eleven-v3\",\"input_omitted\":true}}"
+                "text": "{\"status\":\"completed\",\"request_id\":\"9f8e7d6c-5b4a-4392-8180-7f6e5d4c3b2a\",\"endpoint_id\":\"fal-ai/elevenlabs/tts/eleven-v3\",\"data\":{\"audio\":{\"url\":\"https://v3.fal.media/files/zebra/Lp3Ok9Ij7Uh5Yg1Tf2Rd4_output.mp3\",\"content_type\":\"audio/mpeg\",\"file_size\":2421}},\"recipe\":{\"endpoint_id\":\"fal-ai/elevenlabs/tts/eleven-v3\",\"input_omitted\":true}}"
               }
             ]
           }
