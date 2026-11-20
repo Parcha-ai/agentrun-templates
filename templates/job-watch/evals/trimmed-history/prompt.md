@@ -13,7 +13,7 @@ Scheduled run, fired 2026-11-18T07:00:00Z (Wednesday). Find the new matching pos
 The sites below are not reachable from this run. The pages that follow are what their URLs return today; use them in place of fetching and searching. Every other site, the postings in the run history included, cannot be reached today. These sites are test data.
 
 --- https://boards.greenhouse.example/brisa/jobs/7101 (fetched 2026-11-18) ---
-<h1>Product Designer</h1><p>Brisa Health · Lisbon, Portugal · Hybrid, 3 days a week in office · Full-time</p><p>Salary: EUR 50,000 to 60,000 per year. Posted November 18, 2026. Applications close December 20, 2026. 3 to 5 years designing patient-facing apps.</p>
+<h1>Product Designer</h1><p>Brisa Health · Lisbon, Portugal · Hybrid, 3 days a week in office · Full-time · Open to EU-based candidates</p><p>Salary: EUR 50,000 to 60,000 per year. Posted November 18, 2026. Applications close December 20, 2026. 3 to 5 years designing patient-facing apps.</p>
 
 --- https://careers.solace-clinics.example/en-eu/jobs/design/product-designer-mid-level-lisbon-or-remote-eu-req-2026-095?source=board&utm_campaign=autumn-hiring (fetched 2026-11-18) ---
 <h1>Product Designer (Mid-level)</h1><p>Solace Clinics · Lisbon, hybrid 2 days a week, or remote within the EU · Full-time · Open to EU-based candidates</p><p>Refreshed November 18, 2026. Design for a network of outpatient clinics; 3+ years of product design.</p>
