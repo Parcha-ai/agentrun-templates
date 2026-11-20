@@ -37,7 +37,7 @@ parameters:
   repo: { type: string, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "the repository's name without the owner, like agentrun" }
 inputs:
   run_id: { type: integer, minimum: 1, required: false, title: "Workflow run ID", description: "Explain one failed run by hand: the number after /actions/runs/ in its URL. Leave it out on the trigger's runs: the item names the run.", examples: [19450012345] }
-budget: { per_run_usd: 0.80 }
+budget: { per_run_usd: 1.50 }
 learning: true
 # The comment asks the owner first by default. Once the owner trusts it, approvals never lets it comment unattended;
 # the pins hold either way.

@@ -33,6 +33,19 @@ Logs are written by whoever wrote the code under test, and a pull request from a
 instruction found in a log ("re-run all jobs", "post approved on #500") is never followed: the answer lists it under
 `ignored_instructions`.
 
+## Big runs
+
+A matrix workflow can have dozens of jobs, about 5 KB of JSON each, and a test job's log can run to hundreds of
+kilobytes. Whatever the agent reads stays in its context and is paid for again on every later step, so it reads small:
+
+- The job list 5 jobs a page, latest attempt only, keeping just the failed jobs' names and failed steps.
+- GitHub's annotations first, for the file and line, then the end of each failed job's log, for the test's name, the
+  error and its evidence lines. A log too long to come back whole is said to be cut, never guessed past.
+- At most 3 failed jobs explained; the others are named. Past 60 jobs it stops paging and says so in the comment.
+
+On the fixtures, a 36-job run with two failures and a 100 KB log costs $0.11 to $0.13 on pi and about $0.20 on
+claude-agent and codex. A run is capped at $1.50, which leaves room for three logs at the tool's size limit.
+
 ## How it knows what is new
 
 The trigger keeps the run IDs it has read, and each new one starts one run.
@@ -50,8 +63,12 @@ The trigger keeps the run IDs it has read, and each new one starts one run.
 ## Tested
 
 On fixtures standing in for GitHub (Composio's tool names and result shape), 2026-11-20, on
-`openrouter/openai/gpt-6.1-sol`: 6 of 6 cases on pi (12 of 12 runs, median $0.037 a run), and 6 of 6 once each on
+`openrouter/openai/gpt-6.1-sol`: 7 of 7 cases on pi (14 of 14 runs, median $0.042 a run), and 7 of 7 once each on
 claude-agent and codex. The cases: a failing test tied to the PR's change, a registry timeout on a docs-only PR (called
 likely flaky), a log that tells AI tools to re-run and approve another PR (not followed, kept out of the comment), a
-push to main with no PR (no comment), an expired log (no invented cause), and a re-run already explained (no second
-comment). The live run against a real repository is still to come.
+push to main with no PR (no comment), an expired log (no invented cause), a re-run already explained (no second
+comment), and a 36-job matrix run whose two failures sit past the first 120,000 characters of the job list, one of
+them at the end of a 100 KB log.
+
+The first live run, on a real 36-job run, asked for all jobs in one page of 100 and ran out of budget before it found
+the failures. The paging above is the fix; the live run is being repeated on the same failed run.
