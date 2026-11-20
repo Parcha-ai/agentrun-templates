@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: engineering
 tags: [free, documentation, support, questions, citations]
 harness: [pi]
-model: { tier: fast, prefer: openrouter/inclusionai/ling-3.2-flash:free }
+model: { tier: fast, prefer: openrouter/nvidia/nemotron-3.5-super-vl:free }
 effort: medium
 tools: [read, web_search, web_fetch]
 mcp:
@@ -21,7 +21,7 @@ mcp:
     allow: [firecrawl_search, firecrawl_scrape]
 inputs:
   docs_url: { type: string, format: uri, title: "Docs site", description: "The documentation's home, or the section to answer from: only pages on this host, under this URL's first path segment, count as the docs.", examples: ["https://docs.python.org/3/"] }
-  question: { type: string, minLength: 8, maxLength: 800, title: "Your question", description: "One question about the product. Web search sees it: leave out anything private.", examples: ["How do I create a virtual environment that can also see the system site-packages?"] }
+  question: { type: string, minLength: 8, maxLength: 800, title: "Your question", description: "One question about the product. Web search and the free model's provider see it: leave out anything private.", examples: ["How do I create a virtual environment that can also see the system site-packages?"] }
 budget: { per_run_usd: 0.25 }
 output: { schema: docs-answer.schema.json }
 ---

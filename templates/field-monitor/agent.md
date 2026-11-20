@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: research
 tags: [free, monitoring, research, news, weekly, citations]
 harness: [pi]
-model: { tier: fast, prefer: openrouter/inclusionai/ling-3.2-flash:free }
+model: { tier: fast, prefer: openrouter/nvidia/nemotron-3.5-super-vl:free }
 effort: medium
 tools: [read, web_search, web_fetch]
 mcp:
@@ -26,7 +26,7 @@ parameters:
   cron: { type: string, format: cron, default: "0 8 * * 1", required: false, description: "when the report runs, as a cron line: Monday 08:00 unless you set it; set lookback_days to its gap" }
   timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in: UTC unless you set it" }
 inputs:
-  topic: { type: string, minLength: 3, maxLength: 300, title: "Topic", description: "What to watch. Web search sees it: leave out anything private.", examples: ["WebGPU support in browsers"] }
+  topic: { type: string, minLength: 3, maxLength: 300, title: "Topic", description: "What to watch. Web search and the free model's provider see it: leave out anything private.", examples: ["WebGPU support in browsers"] }
   sources: { type: array, items: { type: string, pattern: "^https?://" }, required: false, title: "Sources to read first", description: "Up to 6 pages (more are not read). Blank: web search alone.", examples: [["https://developer.chrome.com/blog", "https://webkit.org/blog/"]] }
   lookback_days: { type: integer, required: false, minimum: 1, maximum: 31, title: "Days to look back", description: "Blank: 7." }
 budget: { per_run_usd: 0.25 }

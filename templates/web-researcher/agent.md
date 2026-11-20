@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: research
 tags: [free, web-research, citations, fact-finding, questions]
 harness: [pi]
-model: { tier: fast, prefer: openrouter/inclusionai/ling-3.2-flash:free }
+model: { tier: fast, prefer: openrouter/nvidia/nemotron-3.5-super-vl:free }
 effort: medium
 tools: [read, web_search, web_fetch]
 mcp:
@@ -21,7 +21,7 @@ mcp:
     allow: [web_search]
     pin: { web_search: { client_model: null } }
 inputs:
-  question: { type: string, title: "Your question", minLength: 10, maxLength: 1000, description: "One question about public facts. Web search sees each query: leave out anything private.", examples: ["How tall is the Eiffel Tower, and has the figure changed since it was built?"] }
+  question: { type: string, title: "Your question", minLength: 10, maxLength: 1000, description: "One question about public facts. Web search and the free model's provider see it: leave out anything private.", examples: ["How tall is the Eiffel Tower, and has the figure changed since it was built?"] }
   context: { type: string, required: false, title: "Why you ask", maxLength: 400, description: "What the answer is for, in a sentence. It decides which facts lead. Blank: written for a general reader.", examples: ["Checking a figure before it goes in a school handout."] }
 budget: { per_run_usd: 0.25 }
 output: { schema: web-researcher.schema.json }

@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: personal
 tags: [free, rss, reading, newsletter, weekly]
 harness: [pi]
-model: { tier: fast, prefer: openrouter/inclusionai/ling-3.2-flash:free }
+model: { tier: fast, prefer: openrouter/nvidia/nemotron-3.5-super-vl:free }
 effort: medium
 tools: [read, web_fetch]
 parameters:

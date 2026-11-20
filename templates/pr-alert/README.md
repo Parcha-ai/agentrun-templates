@@ -8,15 +8,18 @@ and text aimed at AI tools. It is not a code review: no line comments and no ver
 
 ## Runs for $0
 
-- Model: `openrouter/inclusionai/ling-3.2-flash:free` (Ling 3.2 Flash) on pi. Put an `OPENROUTER_API_KEY` in your
-  server's environment; no credits are needed. Free OpenRouter models allow 50 requests a day with no credits (1,000 a
-  day after a one-time $10) and 20 a minute. How long a model stays free is OpenRouter's call. Nemotron 3 Ultra
-  (free) read pages beyond the skill's URL list and wrote from them, so the template moved to Ling.
+- Model: `openrouter/nvidia/nemotron-3.5-super-vl:free` (Nemotron 3.5 Super VL), served by NVIDIA, on pi. Put an
+  `OPENROUTER_API_KEY` in your server's environment; no credits are needed. Free OpenRouter models allow 50 requests a
+  day with no credits (1,000 a day after a one-time $10) and 20 a minute. The endpoint takes up to 868,928 tokens in
+  and 131,072 out. How long a model stays free is OpenRouter's call. The template left Ling 3.2 Flash (free) on
+  2026-11-20, when its shared upstream pool answered most requests with a rate-limit error.
 - GitHub: read anonymously over `api.github.com` (60 requests an hour per IP address), by the trigger and by the run's
   `web_fetch`. No GitHub App, no webhook and no token, so it runs on a laptop with no public address. Public
   repositories only: a private one answers 404 to an anonymous read.
-- Ling's free endpoint is on OpenRouter's zero-retention list, so OpenRouter's "ZDR only" setting keeps it on. Point
-  it only at public repositories: it reads GitHub anonymously, and a private one's PRs never reach it.
+- NVIDIA's free endpoint keeps data. Under NVIDIA's API trial terms it may log what it is sent and use it to improve
+  its products, AI models included, and the terms ask you not to send confidential or personal data. It is not on
+  OpenRouter's zero-retention list, so OpenRouter's "ZDR only" setting turns it off. Point it only at public
+  repositories: it reads GitHub anonymously, and a private one's PRs never reach it.
 
 ## Requests
 

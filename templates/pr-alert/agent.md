@@ -9,7 +9,7 @@ repository: https://github.com/Parcha-ai/agentrun-templates
 category: engineering
 tags: [free, github, pull-requests, alerts, open-source, contributors]
 harness: [pi]
-model: { tier: fast, prefer: openrouter/inclusionai/ling-3.2-flash:free }
+model: { tier: fast, prefer: openrouter/nvidia/nemotron-3.5-super-vl:free }
 effort: medium
 tools: [read, web_fetch]
 # No GitHub connection, no App, no webhook, no token: it reads one public repository over GitHub's anonymous API with

@@ -831,7 +831,7 @@
         "contributors"
       ],
       "summary": "Tells you about each new pull request on a public GitHub repo: who sent it, what it touches and what to watch.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed, and no GitHub token. It reads the repo's open pull requests every 30 minutes and sends one alert per new PR, on the free Ling 3.2 Flash model. GitHub is read anonymously, so point it only at a public repository."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed, and no GitHub token. It reads the repo's open pull requests every 30 minutes and sends one alert per new PR, on the free Nemotron 3.5 Super VL model. GitHub is read anonymously, so point it only at a public repository. NVIDIA, which serves the model, may use what it reads to improve its AI models."
     },
     {
       "name": "web-researcher",
@@ -844,7 +844,7 @@
         "fact-finding"
       ],
       "summary": "Answers one question from the open web: a short answer, each finding with its link, and where sources disagree.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add the Parallel Search server (Settings → MCP servers, its preset) and search keeps working when that free tier runs out. Parallel sees each query, so ask only public questions."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add the Parallel Search server (Settings → MCP servers, its preset) and search keeps working when that runs out. NVIDIA, which serves the free model, may use what you send it to improve its AI models, so send nothing private. Parallel sees each query."
     },
     {
       "name": "upgrade-watch",
@@ -914,8 +914,8 @@
         "newsletter",
         "weekly"
       ],
-      "summary": "Every week, the top posts from your RSS and Atom feeds for what you care about, each with a two-line why and its link, never repeating an earlier week.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. It reads only your feeds, so it needs no search provider. Set the feeds, your interests and the schedule when you apply it."
+      "summary": "Every week, the top posts from your RSS and Atom feeds for what you care about, each with a two-line why and its link, never repeated.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. It reads only your feeds, so it needs no search provider. Set the feeds, your interests and the schedule when you apply it. NVIDIA, which serves the free model, may use what you send it to improve its AI models, so send nothing private."
     },
     {
       "name": "field-monitor",
@@ -930,7 +930,7 @@
         "citations"
       ],
       "summary": "A weekly report on what changed in one topic, each change dated and cited to the page that says it, with what it could not check.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add Firecrawl's keyless server (Settings → MCP servers, the Firecrawl preset) and it keeps searching when that runs out and reads pages drawn by JavaScript. Firecrawl sees each query and URL, so use it for public pages only."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Firecrawl's keyless server (Settings → MCP servers) searches past that and reads pages drawn by JavaScript. NVIDIA, which serves the free model, may use what you send it to improve its AI models, so send nothing private. Firecrawl sees each query and URL."
     },
     {
       "name": "page-to-json",
@@ -943,8 +943,8 @@
         "scraping",
         "structured-data"
       ],
-      "summary": "Give it a URL and a JSON Schema and it returns typed JSON from that page, each value with the text it came from and each missing one null with a reason.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. It reads the one page you give it. Add Firecrawl's keyless server (Settings → MCP servers, the Firecrawl preset) to read pages drawn by JavaScript. Firecrawl sees each query and URL, so use it for public pages only."
+      "summary": "Give it a URL and a JSON Schema; it returns typed JSON from that page, each value with its source text, each missing one null with why.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. It reads the one page you give it. Add Firecrawl's keyless server (Settings → MCP servers, the Firecrawl preset) to read pages drawn by JavaScript. NVIDIA, which serves the free model, may use what you send it to improve its AI models, so send nothing private. Firecrawl sees each URL, so use public pages only."
     },
     {
       "name": "ai-search-visibility",
@@ -959,8 +959,8 @@
         "seo",
         "audit"
       ],
-      "summary": "Checks whether ChatGPT, Claude, Perplexity and Google's AI crawlers can reach your site, whether you have an llms.txt and whether buyer searches find you, then lists what to fix first.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add Firecrawl's keyless server (Settings → MCP servers, the Firecrawl preset) and it keeps searching when that runs out. Firecrawl sees each query and URL, so use it for public pages only."
+      "summary": "Can AI search reach and name your site? Checks AI crawlers' access, your llms.txt and buyer searches, then lists what to fix first.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add Firecrawl's keyless server (Settings → MCP servers, its preset) and it keeps searching when that runs out. NVIDIA, which serves the free model, may use what you send it to improve its AI models, so send nothing private. Firecrawl sees each query and URL."
     },
     {
       "name": "docs-answerer",
@@ -973,8 +973,8 @@
         "questions",
         "citations"
       ],
-      "summary": "Answers a question from one product's own docs site only, each point linked to the page that says it, and says plainly when the docs don't cover it.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add Firecrawl's keyless server (Settings → MCP servers, the Firecrawl preset) and it keeps searching the docs site when that runs out. Firecrawl sees each query and URL, so use it for public pages only."
+      "summary": "Answers a question from one product's own docs, each point linked to the page that says it, and says plainly what the docs don't cover.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add Firecrawl's keyless server (Settings → MCP servers) and it keeps searching the docs site when that runs out. NVIDIA, which serves the free model, may use what you send it to improve its AI models, so send nothing private. Firecrawl sees each query and URL."
     }
   ]
 }
