@@ -902,6 +902,45 @@
         "weekly"
       ],
       "summary": "Every Monday, insider buys and sells on your watchlist, big buys flagged, each with its SEC filing. Not investment advice. Uses monid."
+    },
+    {
+      "name": "ci-failure-explainer",
+      "source": "./templates/ci-failure-explainer",
+      "category": "engineering",
+      "tags": [
+        "github",
+        "ci",
+        "github-actions",
+        "pull-requests",
+        "flaky-tests"
+      ],
+      "summary": "Explains each failed GitHub Actions run on its pull request: the failing step, the likely cause, the file and line, and whether it looks flaky.",
+      "setup": "Public repositories only: the trigger finds new failures by reading the repository's failed-run list without a token every 10 minutes. On a private repository, run it by hand with the input run_id. Connect GitHub through Composio for the reads and the one comment. It never re-runs a job."
+    },
+    {
+      "name": "pr-first-look",
+      "source": "./templates/pr-first-look",
+      "category": "engineering",
+      "tags": [
+        "github",
+        "pull-requests",
+        "code-review",
+        "first-look"
+      ],
+      "summary": "Leaves one first-look comment on each new pull request: a 3-line summary, risky spots by file and line, missing tests and questions for the author."
+    },
+    {
+      "name": "github-morning-brief",
+      "source": "./templates/github-morning-brief",
+      "category": "engineering",
+      "tags": [
+        "github",
+        "pull-requests",
+        "issues",
+        "ci",
+        "daily"
+      ],
+      "summary": "A weekday 8:00 brief on one GitHub repository: what merged, what waits on review and for how long, failing checks and new issues."
     }
   ]
 }

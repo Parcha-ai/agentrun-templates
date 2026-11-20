@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "brief.schema.json",
+  "title": "GitHub morning brief",
+  "description": "One repository's morning brief: pull requests merged in the window, open ones waiting on review and with failing checks, issues opened in the window, and what the next brief must not repeat.",
+  "x-carried": ["window", "reported"],
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "checked_at", "merged", "waiting_review", "failing_checks", "new_issues", "quiet", "reported", "posted", "not_checked", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "description": "the time this brief covers; the next brief starts at `to`",
+      "properties": {
+        "from": { "type": "string", "format": "date-time", "maxLength": 30 },
+        "to": { "type": "string", "format": "date-time", "maxLength": 30 }
+      }
+    },
+    "checked_at": { "type": "string", "format": "date-time" },
+    "merged": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["number", "title", "url", "author", "merged_at"],
+        "properties": {
+          "number": { "type": "integer", "minimum": 1 },
+          "title": { "type": "string", "maxLength": 300 },
+          "url": { "type": "string", "format": "uri" },
+          "author": { "type": "string", "maxLength": 100 },
+          "merged_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "waiting_review": {
+      "type": "array",
+      "maxItems": 50,
+      "description": "open pull requests with no approval and no outstanding change request, oldest wait first",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["number", "title", "url", "author", "waiting_since", "hours_waiting", "waiting_for"],
+        "properties": {
+          "number": { "type": "integer", "minimum": 1 },
+          "title": { "type": "string", "maxLength": 300 },
+          "url": { "type": "string", "format": "uri" },
+          "author": { "type": "string", "maxLength": 100 },
+          "waiting_since": { "type": "string", "format": "date-time" },
+          "hours_waiting": { "type": "integer", "minimum": 0 },
+          "waiting_for": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 100 }, "description": "requested reviewers and teams; empty when nobody was asked" }
+        }
+      }
+    },
+    "failing_checks": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["number", "title", "url", "checks"],
+        "properties": {
+          "number": { "type": "integer", "minimum": 1 },
+          "title": { "type": "string", "maxLength": 300 },
+          "url": { "type": "string", "format": "uri" },
+          "checks": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "conclusion"],
+              "properties": {
+                "name": { "type": "string", "maxLength": 200 },
+                "conclusion": { "enum": ["failure", "timed_out", "action_required"] },
+                "url": { "type": ["string", "null"], "maxLength": 500 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "new_issues": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["number", "title", "url", "author", "created_at"],
+        "properties": {
+          "number": { "type": "integer", "minimum": 1 },
+          "title": { "type": "string", "maxLength": 300 },
+          "url": { "type": "string", "format": "uri" },
+          "author": { "type": "string", "maxLength": 100 },
+          "created_at": { "type": "string", "format": "date-time" },
+          "labels": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 100 } }
+        }
+      }
+    },
+    "quiet": { "type": "boolean", "description": "true when all four lists are empty" },
+    "reported": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["merged", "issues"],
+      "description": "numbers the next brief must not report as news again, most recent first",
+      "properties": {
+        "merged": { "type": "array", "maxItems": 150, "items": { "type": "integer", "minimum": 1 } },
+        "issues": { "type": "array", "maxItems": 150, "items": { "type": "integer", "minimum": 1 } }
+      }
+    },
+    "posted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issue_number", "ok"],
+      "properties": {
+        "issue_number": { "type": ["integer", "null"], "description": "the brief issue it was posted on; null when none is set" },
+        "ok": { "type": "boolean" },
+        "why_not": { "type": "string", "maxLength": 300, "description": "when nothing was posted: no brief issue, a quiet window, or a refused write" }
+      }
+    },
+    "not_checked": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 300 } },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 8000 }
+  }
+}

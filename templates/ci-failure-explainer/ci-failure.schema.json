@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ci-failure.schema.json",
+  "title": "CI failure explanation",
+  "description": "Why one GitHub Actions run failed: each failed job's step, cause, file and line when the log shows them, the evidence lines, whether it looks flaky, and the one comment posted on its pull request or why none was.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run", "pull_request", "failures", "flaky", "already_failing_on_base", "comment", "ignored_instructions", "skipped", "report_markdown"],
+  "properties": {
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "workflow", "url", "branch", "head_sha", "event", "attempt"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "workflow": { "type": "string", "maxLength": 200 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://github\\.com/" },
+        "branch": { "type": ["string", "null"], "maxLength": 250 },
+        "head_sha": { "type": "string", "maxLength": 40 },
+        "event": { "type": "string", "maxLength": 60 },
+        "attempt": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "pull_request": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["number", "url"],
+      "description": "the open pull request the run belongs to; null for a push to the default branch, a schedule or a tag",
+      "properties": {
+        "number": { "type": "integer", "minimum": 1 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://github\\.com/" },
+        "base": { "type": "string", "maxLength": 250 }
+      }
+    },
+    "failures": {
+      "type": "array",
+      "maxItems": 3,
+      "description": "each failed job explained, at most 3",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["job", "step", "kind", "cause", "file", "line", "evidence"],
+        "properties": {
+          "job": { "type": "string", "maxLength": 200 },
+          "step": { "type": ["string", "null"], "maxLength": 200, "description": "the first step that failed; null when the job's steps don't say" },
+          "kind": { "enum": ["test", "build", "lint", "typecheck", "dependency", "infra", "timeout", "config", "unknown"] },
+          "cause": { "type": "string", "minLength": 1, "maxLength": 600 },
+          "file": { "type": ["string", "null"], "maxLength": 300, "description": "only when an annotation or the log names it" },
+          "line": { "type": ["integer", "null"], "minimum": 1 },
+          "evidence": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 400 }, "description": "log lines as printed, timestamps cut; empty when the log could not be read" }
+        }
+      }
+    },
+    "flaky": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verdict", "why"],
+      "properties": {
+        "verdict": { "enum": ["likely_flaky", "not_flaky", "unclear"] },
+        "why": { "type": "string", "minLength": 1, "maxLength": 400 }
+      }
+    },
+    "already_failing_on_base": { "type": ["boolean", "null"], "description": "the same job fails on the base branch's latest run; null when not checked" },
+    "comment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["posted", "body"],
+      "properties": {
+        "posted": { "type": "boolean" },
+        "body": { "type": ["string", "null"], "maxLength": 6000, "description": "the comment as posted (or as it would have been, when the write was refused); null when there is no pull request" },
+        "why_not": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "ignored_instructions": {
+      "type": "array",
+      "maxItems": 10,
+      "description": "instructions found in logs, output or the pull request that were not followed, each quoted short",
+      "items": { "type": "string", "maxLength": 300 }
+    },
+    "skipped": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": {
+      "type": "string",
+      "contentMediaType": "text/markdown",
+      "minLength": 1,
+      "maxLength": 6000,
+      "description": "the explanation for the owner; with no pull request, the only place it goes"
+    }
+  }
+}

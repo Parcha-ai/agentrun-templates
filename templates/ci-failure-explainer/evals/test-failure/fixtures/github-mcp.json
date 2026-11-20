@@ -1,0 +1,537 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater: failed run 19450007001 of CI on PR #530 (leap-day), its three jobs, the test job's annotations and log, main's passing runs, and #530's one changed file. Composio's slugs and {data, successful, error} results, acme/tidewater only. Every write answers success. It never reaches GitHub.",
+  "tools": {
+    "GITHUB_GET_A_WORKFLOW_RUN": {
+      "description": "Gets a specific workflow run by its ID from a GitHub repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository (case-insensitive, without .git extension)."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The username or organization name that owns the repository (not case-sensitive)."
+          },
+          "run_id": {
+            "type": "integer",
+            "description": "Unique ID of the workflow run."
+          },
+          "exclude_pull_requests": {
+            "type": "boolean",
+            "description": "If true, excludes pull request data; the `pull_requests` array in the response will be empty."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "run_id"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "run_id": 19450007001
+            },
+            {
+              "run_id": "19450007001"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"id\": 19450007001, \"name\": \"CI\", \"display_title\": \"Handle Feb 29 in addYears\", \"head_branch\": \"leap-day\", \"head_sha\": \"05309f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a\", \"event\": \"pull_request\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 1, \"run_number\": 885, \"workflow_id\": 7700001, \"path\": \".github/workflows/ci.yml\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007001\", \"jobs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450007001/jobs\", \"logs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450007001/logs\", \"created_at\": \"2026-11-19T10:00:00Z\", \"updated_at\": \"2026-11-19T10:09:30Z\", \"run_started_at\": \"2026-11-19T10:00:00Z\", \"actor\": {\"login\": \"dev-user\"}, \"pull_requests\": [{\"number\": 530, \"head\": {\"ref\": \"leap-day\", \"sha\": \"05309f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a\"}, \"base\": {\"ref\": \"main\", \"repo\": {\"name\": \"tidewater\"}}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such workflow run\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_JOBS_FOR_A_WORKFLOW_RUN": {
+      "description": "Lists jobs for a specific workflow run in a GitHub repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "The page number of the results to fetch. For more details, see \"[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-paginat"
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the .git extension. This field is not case-sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The username or organization name that owns the repository. This field is not case-sensitive."
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filters jobs by their `completed_at` timestamp. `latest` returns jobs from the most recent execution attempt of the workflow run. `all` returns all jobs for a w"
+          },
+          "run_id": {
+            "type": "integer",
+            "description": "The unique identifier of the workflow run for which jobs are to be listed."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "The number of results to return per page, with a maximum of 100. For more details, see \"[Using pagination in the REST API](https://docs.github.com/rest/using-th"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "run_id"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "run_id": 19450007001
+            },
+            {
+              "run_id": "19450007001"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 3, \"jobs\": [{\"id\": 61001, \"run_id\": 19450007001, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007001/job/61001\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm run lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/61001\"}, {\"id\": 61002, \"run_id\": 19450007001, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007001/job/61002\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm test\", \"status\": \"completed\", \"conclusion\": \"failure\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"skipped\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/61002\"}, {\"id\": 61003, \"run_id\": 19450007001, \"name\": \"build\", \"status\": \"completed\", \"conclusion\": \"success\", \"run_attempt\": 1, \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450007001/job/61003\", \"started_at\": \"2026-11-19T10:00:20Z\", \"completed_at\": \"2026-11-19T10:08:50Z\", \"steps\": [{\"name\": \"Set up job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 1}, {\"name\": \"Checkout\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 2}, {\"name\": \"Setup Node\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 3}, {\"name\": \"Install dependencies\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 4}, {\"name\": \"Run npm run build\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 5}, {\"name\": \"Complete job\", \"status\": \"completed\", \"conclusion\": \"success\", \"number\": 6}], \"check_run_url\": \"https://api.github.com/repos/acme/tidewater/check-runs/61003\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_CHECK_RUN_ANNOTATIONS": {
+      "description": "Lists annotations for a specific check run in a GitHub repository, detailing issues like errors or warnings on particular code lines.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "The page number of the results to fetch. See \"[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-ap"
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension. The name is not case sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository. This is typically the username or organization name. The name is not case sensitive."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "The number of results per page (maximum 100). See \"[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-re"
+          },
+          "check_run_id": {
+            "type": "integer",
+            "description": "The unique identifier of the check run for which annotations are to be listed."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "check_run_id"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "check_run_id": 61002
+            },
+            {
+              "check_run_id": "61002"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"path\": \"test/dates.test.ts\", \"start_line\": 42, \"end_line\": 42, \"annotation_level\": \"failure\", \"message\": \"AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n\\n'2024-02-29' !== '2024-03-01'\\n\", \"title\": \"\"}, {\"path\": \".github\", \"start_line\": 1, \"end_line\": 1, \"annotation_level\": \"failure\", \"message\": \"Process completed with exit code 1.\", \"title\": \"\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_DOWNLOAD_JOB_LOGS_FOR_A_WORKFLOW_RUN": {
+      "description": "Downloads logs for a specific job in a GitHub Actions workflow run, contingent on the repository's existence and the job ID being valid and having produced logs.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension. This name is not case-sensitive. "
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (e.g., user or organization). This name is not case-sensitive."
+          },
+          "job_id": {
+            "type": "integer",
+            "description": "The unique identifier of the job for which to download logs. You can obtain this from the 'List jobs for a workflow run' endpoint."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "job_id"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "job_id": 61002
+            },
+            {
+              "job_id": "61002"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"details\": \"2026-11-19T10:01:00.1234567Z ##[group]Run actions/checkout@v4\\n2026-11-19T10:01:01.1234567Z Syncing repository: acme/tidewater\\n2026-11-19T10:01:02.1234567Z ##[endgroup]\\n2026-11-19T10:01:03.1234567Z ##[group]Run actions/setup-node@v4\\n2026-11-19T10:01:04.1234567Z Found in cache @ /opt/hostedtoolcache/node/22.23.2/x64\\n2026-11-19T10:01:05.1234567Z ##[endgroup]\\n2026-11-19T10:01:06.1234567Z ##[group]Run npm ci\\n2026-11-19T10:01:07.1234567Z added 412 packages, and audited 413 packages in 9s\\n2026-11-19T10:01:08.1234567Z found 0 vulnerabilities\\n2026-11-19T10:01:09.1234567Z ##[endgroup]\\n2026-11-19T10:01:10.1234567Z ##[group]Run npm test\\n2026-11-19T10:01:11.1234567Z > tidewater@2.4.1 test\\n2026-11-19T10:01:12.1234567Z > node --test test/\\n2026-11-19T10:01:13.1234567Z \\n2026-11-19T10:01:14.1234567Z \\u25b6 dates\\n2026-11-19T10:01:15.1234567Z   \\u2714 parseDate reads ISO dates (0.4ms)\\n2026-11-19T10:01:16.1234567Z   \\u2714 addYears keeps Feb 29 on a leap year (0.2ms)\\n2026-11-19T10:01:17.1234567Z   \\u2716 addYears moves Mar 1 to Mar 1 across a leap day (1.1ms)\\n2026-11-19T10:01:18.1234567Z     AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n2026-11-19T10:01:19.1234567Z     \\n2026-11-19T10:01:20.1234567Z     '2024-02-29' !== '2024-03-01'\\n2026-11-19T10:01:21.1234567Z     \\n2026-11-19T10:01:22.1234567Z         at TestContext.<anonymous> (file:///home/runner/work/tidewater/tidewater/test/dates.test.ts:42:12)\\n2026-11-19T10:01:23.1234567Z \\u25b6 dates (3.1ms)\\n2026-11-19T10:01:24.1234567Z \\u25b6 sync\\n2026-11-19T10:01:25.1234567Z   \\u2714 uploads changed files (12ms)\\n2026-11-19T10:01:26.1234567Z   \\u2714 skips excluded paths (3ms)\\n2026-11-19T10:01:27.1234567Z \\u25b6 sync (16ms)\\n2026-11-19T10:01:28.1234567Z \\u2139 tests 41\\n2026-11-19T10:01:29.1234567Z \\u2139 pass 40\\n2026-11-19T10:01:30.1234567Z \\u2139 fail 1\\n2026-11-19T10:01:31.1234567Z ##[error]Process completed with exit code 1.\"}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no logs for this job\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_WORKFLOW_RUNS_FOR_A_REPOSITORY": {
+      "description": "Lists workflow runs for a repository, allowing filtering by actor, branch, event, status, creation date, check suite ID, or head SHA; the repository must exist and be accessible.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results to fetch."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension (not case-sensitive)."
+          },
+          "actor": {
+            "type": "string",
+            "description": "Filter by the actor's login (e.g., the user who triggered the `push`)."
+          },
+          "event": {
+            "type": "string",
+            "description": "Filter by the event that triggered the workflow (e.g., `push`, `pull_request`)."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (not case-sensitive)."
+          },
+          "branch": {
+            "type": "string",
+            "description": "Filter by branch name (e.g., `main` or the branch that triggered the `push`)."
+          },
+          "status": {
+            "type": "string",
+            "description": "Filter by `status` or `conclusion` (e.g., `success`, `in_progress`). Note: Only GitHub Actions can set `waiting`, `pending`, or `requested`."
+          },
+          "created": {
+            "type": "string",
+            "description": "Filter by creation date or date-time range (ISO8601 format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ). Supports operators like `>`, `<`, `>=`, `<=`, and `..` for rang"
+          },
+          "head_sha": {
+            "type": "string",
+            "description": "Filter to include only runs associated with the specified `head_sha` (commit SHA at the head of the branch)."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page (maximum 100)."
+          },
+          "check_suite_id": {
+            "type": "integer",
+            "description": "Filter by a specific `check_suite_id`."
+          },
+          "exclude_pull_requests": {
+            "type": "boolean",
+            "description": "Set to `true` to exclude workflow runs triggered by pull request events. Omit or leave as null to include all runs."
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"total_count\": 2, \"workflow_runs\": [{\"id\": 19450006995, \"name\": \"CI\", \"display_title\": \"\", \"head_branch\": \"main\", \"head_sha\": \"08849f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a\", \"event\": \"push\", \"status\": \"completed\", \"conclusion\": \"success\", \"run_attempt\": 1, \"run_number\": 884, \"workflow_id\": 7700001, \"path\": \".github/workflows/ci.yml\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450006995\", \"jobs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450006995/jobs\", \"logs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450006995/logs\", \"created_at\": \"2026-11-19T09:00:00Z\", \"updated_at\": \"2026-11-19T09:09:30Z\", \"run_started_at\": \"2026-11-19T09:00:00Z\", \"actor\": {\"login\": \"dev-user\"}, \"pull_requests\": []}, {\"id\": 19450006990, \"name\": \"CI\", \"display_title\": \"\", \"head_branch\": \"main\", \"head_sha\": \"08809f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a\", \"event\": \"push\", \"status\": \"completed\", \"conclusion\": \"success\", \"run_attempt\": 1, \"run_number\": 880, \"workflow_id\": 7700001, \"path\": \".github/workflows/ci.yml\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19450006990\", \"jobs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450006990/jobs\", \"logs_url\": \"https://api.github.com/repos/acme/tidewater/actions/runs/19450006990/logs\", \"created_at\": \"2026-11-18T16:00:00Z\", \"updated_at\": \"2026-11-18T16:09:30Z\", \"run_started_at\": \"2026-11-18T16:00:00Z\", \"actor\": {\"login\": \"dev-user\"}, \"pull_requests\": []}]}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_PULL_REQUESTS_ASSOCIATED_WITH_A_COMMIT": {
+      "description": "Lists pull requests for a commit; returns merged PRs that introduced the commit if on the default branch, or open PRs including the commit if on other branches.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of results to retrieve."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name, without the `.git` extension (case-insensitive)."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Account owner of the repository (GitHub username or organization name, case-insensitive)."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page (max 100)."
+          },
+          "commit_sha": {
+            "type": "string",
+            "description": "SHA of the commit to list associated pull requests for."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "commit_sha"
+        ]
+      },
+      "answers": [
+        {
+          "when": {
+            "commit_sha": "05309f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 530, \"title\": \"Handle Feb 29 in addYears\", \"state\": \"open\", \"merged_at\": null, \"html_url\": \"https://github.com/acme/tidewater/pull/530\", \"head\": {\"ref\": \"leap-day\", \"sha\": \"05309f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a\", \"repo\": {\"full_name\": \"acme/tidewater\"}}, \"base\": {\"ref\": \"main\", \"repo\": {\"full_name\": \"acme/tidewater\"}}, \"user\": {\"login\": \"dev-user\", \"type\": \"User\"}}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_PULL_REQUESTS_FILES": {
+      "description": "Lists a page of files changed in a specified GitHub pull request, including additions, modifications, and removals.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results to retrieve for pagination."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension. This field is not case sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (e.g., a GitHub username or organization name). This field is not case sensitive."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of file results to return per page (max 100)."
+          },
+          "pull_number": {
+            "type": "integer",
+            "description": "The numeric identifier of the pull request whose files are to be listed."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 530,
+              "page": 2
+            },
+            {
+              "pull_number": "530",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"files\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 530
+            },
+            {
+              "pull_number": "530"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"files\": [{\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"src/dates.ts\", \"status\": \"modified\", \"additions\": 1, \"deletions\": 1, \"changes\": 2, \"patch\": \"@@ -18,7 +18,7 @@ export function parseDate(text: string): Date {\\n\\n export function addYears(date: Date, years: number): Date {\\n-  return new Date(Date.UTC(date.getUTCFullYear() + years, date.getUTCMonth(), date.getUTCDate()));\\n+  return new Date(date.getTime() + years * 365 * 24 * 60 * 60 * 1000);\\n }\\n\\n export function formatDate(date: Date): string {\", \"blob_url\": \"https://github.com/acme/tidewater/blob/x/src/dates.ts\", \"raw_url\": \"https://github.com/acme/tidewater/raw/x/src/dates.ts\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/src/dates.ts\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such pull request\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_ISSUE_COMMENTS": {
+      "description": "Lists comments for a specified issue in a GitHub repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results to retrieve."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository, without the `.git` extension (not case-sensitive)."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Username of the account owning the repository (not case-sensitive)."
+          },
+          "since": {
+            "type": "string",
+            "description": "Filters comments to include only those updated at or after this ISO 8601 timestamp (e.g., `YYYY-MM-DDTHH:MM:SSZ`)."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of comments to return per page (max 100)."
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "Number that identifies the issue."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_CREATE_AN_ISSUE_COMMENT": {
+      "description": "Creates a new comment on an existing GitHub issue or pull request within the specified repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "description": "Comment content in GitHub Flavored Markdown."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository (without `.git` extension); not case-sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Account owner of the repository (username or organization); not case-sensitive."
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "Number identifying the issue or pull request for the comment."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number",
+          "body"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"id\": 99001, \"html_url\": \"https://github.com/acme/tidewater/issues/530#issuecomment-99001\"}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

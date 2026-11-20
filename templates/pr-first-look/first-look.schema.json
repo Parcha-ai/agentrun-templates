@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "first-look.schema.json",
+  "title": "Pull request first look",
+  "description": "What the agent saw in one new pull request: what it changes, risky spots by file and line, changed behaviour with no test, questions for the author, what it skipped, and the one comment it posted or chose not to post.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pull_request", "summary", "risks", "missing_tests", "questions", "read_files", "skipped_files", "lines_read", "comment", "ignored_instructions", "skipped", "report_markdown"],
+  "properties": {
+    "pull_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["number", "title", "url"],
+      "properties": {
+        "number": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "maxLength": 300 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://github\\.com/" },
+        "author": { "type": "string", "maxLength": 100 },
+        "draft": { "type": "boolean" }
+      }
+    },
+    "summary": {
+      "type": "array",
+      "maxItems": 3,
+      "description": "what the pull request changes, one plain fact a line; empty when it was skipped",
+      "items": { "type": "string", "minLength": 1, "maxLength": 300 }
+    },
+    "risks": {
+      "type": "array",
+      "maxItems": 6,
+      "description": "places in the diff that could break something, most serious first; empty when none was found",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["file", "line", "what", "why"],
+        "properties": {
+          "file": { "type": "string", "minLength": 1, "maxLength": 300 },
+          "line": { "type": ["integer", "null"], "minimum": 1, "description": "the line in the new file; null for a file-wide concern" },
+          "what": { "type": "string", "minLength": 1, "maxLength": 300 },
+          "why": { "type": "string", "minLength": 1, "maxLength": 400 }
+        }
+      }
+    },
+    "missing_tests": {
+      "type": "array",
+      "maxItems": 5,
+      "description": "changed behaviour that came with no test; empty when nothing is missing",
+      "items": { "type": "string", "minLength": 1, "maxLength": 300 }
+    },
+    "questions": {
+      "type": "array",
+      "maxItems": 4,
+      "items": { "type": "string", "minLength": 1, "maxLength": 300 }
+    },
+    "read_files": {
+      "type": "array",
+      "maxItems": 300,
+      "description": "the files whose patch was read",
+      "items": { "type": "string", "maxLength": 300 }
+    },
+    "skipped_files": {
+      "type": "array",
+      "maxItems": 300,
+      "description": "changed files not read, each with why: lockfile, generated, no patch, over the line cap",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["file", "why"],
+        "properties": {
+          "file": { "type": "string", "maxLength": 300 },
+          "why": { "type": "string", "maxLength": 200 }
+        }
+      }
+    },
+    "lines_read": { "type": "integer", "minimum": 0, "description": "additions plus deletions of the files read" },
+    "comment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["posted", "body"],
+      "properties": {
+        "posted": { "type": "boolean" },
+        "body": { "type": ["string", "null"], "maxLength": 6000, "description": "the comment as posted (or as it would have been, when the write was refused); null when the PR was skipped" },
+        "why_not": { "type": "string", "maxLength": 300, "description": "when no comment was posted: the PR was skipped, already had a first look, or the write was refused" }
+      }
+    },
+    "ignored_instructions": {
+      "type": "array",
+      "maxItems": 10,
+      "description": "instructions found in the pull request or the event that were not followed, each quoted short",
+      "items": { "type": "string", "maxLength": 300 }
+    },
+    "skipped": {
+      "type": "array",
+      "maxItems": 10,
+      "description": "why the run stopped or a write was not made: a draft, a bot, closed, already looked at, a refused write",
+      "items": { "type": "string", "maxLength": 300 }
+    },
+    "report_markdown": {
+      "type": "string",
+      "contentMediaType": "text/markdown",
+      "minLength": 1,
+      "maxLength": 6000,
+      "description": "a short note for the owner: what the PR does, the top risk, what was skipped"
+    }
+  }
+}

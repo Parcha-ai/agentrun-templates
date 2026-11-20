@@ -1,0 +1,266 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater: draft pull request #516. Composio's slugs and {data, successful, error} results, acme/tidewater only. Every write answers success. It never reaches GitHub.",
+  "tools": {
+    "GITHUB_GET_A_PULL_REQUEST": {
+      "description": "Retrieves a specific pull request from a GitHub repository using its owner, repository name, and pull request number.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the .git extension. This value is not case sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The username of the account that owns the repository. This value is not case sensitive."
+          },
+          "pull_number": {
+            "type": "integer",
+            "description": "The number that identifies the specific pull request."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 516
+            },
+            {
+              "pull_number": "516"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"number\": 516, \"title\": \"WIP: rework the sync scheduler\", \"body\": \"Not ready yet, opening for CI.\", \"state\": \"open\", \"draft\": true, \"merged\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/516\", \"head\": {\"ref\": \"scheduler-rework\", \"sha\": \"0516aa11bb22cc33dd44ee55ff6600778899aabb\"}, \"base\": {\"ref\": \"main\"}, \"created_at\": \"2026-11-18T14:02:00Z\", \"updated_at\": \"2026-11-18T14:02:00Z\", \"additions\": 310, \"deletions\": 95, \"changed_files\": 6, \"comments\": 0, \"review_comments\": 0, \"requested_reviewers\": [], \"labels\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such pull request in acme/tidewater\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_PULL_REQUESTS_FILES": {
+      "description": "Lists a page of files changed in a specified GitHub pull request, including additions, modifications, and removals.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results to retrieve for pagination."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension. This field is not case sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (e.g., a GitHub username or organization name). This field is not case sensitive."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of file results to return per page (max 100)."
+          },
+          "pull_number": {
+            "type": "integer",
+            "description": "The numeric identifier of the pull request whose files are to be listed."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 516,
+              "page": 2
+            },
+            {
+              "pull_number": "516",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"files\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 516,
+              "page": 3
+            },
+            {
+              "pull_number": "516",
+              "page": "3"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"files\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 516
+            },
+            {
+              "pull_number": "516"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"files\": [{\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"src/sync/scheduler.ts\", \"status\": \"modified\", \"additions\": 1, \"deletions\": 0, \"changes\": 1, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/src/sync/scheduler.ts\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/src/sync/scheduler.ts\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/src/sync/scheduler.ts?ref=feature\", \"patch\": \"@@ -1,3 +1,4 @@\\n+// rework in progress\\n import { queue } from \\\"./queue\\\";\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such pull request in acme/tidewater\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_ISSUE_COMMENTS": {
+      "description": "Lists comments for a specified issue in a GitHub repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results to retrieve."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository, without the `.git` extension (not case-sensitive)."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Username of the account owning the repository (not case-sensitive)."
+          },
+          "since": {
+            "type": "string",
+            "description": "Filters comments to include only those updated at or after this ISO 8601 timestamp (e.g., `YYYY-MM-DDTHH:MM:SSZ`)."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of comments to return per page (max 100)."
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "Number that identifies the issue."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "issue_number": 516
+            },
+            {
+              "issue_number": "516"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_CREATE_AN_ISSUE_COMMENT": {
+      "description": "Creates a new comment on an existing GitHub issue or pull request within the specified repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "description": "Comment content in GitHub Flavored Markdown."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository (without `.git` extension); not case-sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Account owner of the repository (username or organization); not case-sensitive."
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "Number identifying the issue or pull request for the comment."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number",
+          "body"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"id\": 99001, \"html_url\": \"https://github.com/acme/tidewater/issues/0#issuecomment-99001\"}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

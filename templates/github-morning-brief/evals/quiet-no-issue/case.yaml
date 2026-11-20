@@ -1,0 +1,16 @@
+# Applied with these parameters (POST /v2/templates/github-morning-brief/apply).
+parameters:
+  owner: acme
+  repo: tidewater
+  timezone: UTC
+# The runner serves fixtures/github-mcp.json as the saved MCP server `github` (Composio's GitHub toolkit) and records each call for the graders.
+mcp:
+  github: fixtures/github-mcp.json
+grants:
+  - mcp:github/GITHUB_LIST_PULL_REQUESTS
+  - mcp:github/GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST
+  - mcp:github/GITHUB_LIST_CHECK_RUNS_FOR_A_REF
+  - mcp:github/GITHUB_LIST_REPOSITORY_ISSUES
+  - mcp:github/GITHUB_CREATE_AN_ISSUE_COMMENT
+# The prompt ends with the last run's answer, the way the runtime hands a scheduled run its history.
+now: 2026-11-19T08:00:00Z
