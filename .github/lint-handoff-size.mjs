@@ -21,7 +21,7 @@
 //   ASCII characters, and `format: date-time` (ASCII by its own rule) is its maxLength;
 // - the carried fields that are not arrays, never cut, must fit CARRIED_BUDGET_BYTES together, well under the limit; a
 //   carried array may be over it at maxItems (the runtime trims it), but it must have a maxItems and one entry of it
-//   a largest size;
+//   a largest size. A field that may be an array or something else counts its largest other value as never cut;
 // - inside a carried field, a string with no such bound, an array with no maxItems, or an object open to more keys (no
 //   `additionalProperties: false`, or a key schema without maxProperties and a bounded key) has no largest size and
 //   fails.
@@ -41,26 +41,30 @@ const repo = join(import.meta.dirname, "..");
 const templatesDir = join(repo, "templates");
 
 /** The largest value `schema` allows, or problems naming why it has none. */
-function largest(schema, root, path, problems) {
+const largest = (schema, root, path, problems) => widest(alternatives(schema, root, path, problems));
+
+/** The largest value of each alternative `schema` allows at its top: each branch of an anyOf or oneOf, each type of a
+ *  type list, each enum value. A carried field may be an array in one and not in another (checkCarried). */
+function alternatives(schema, root, path, problems) {
   if (schema === true || schema === undefined) {
     problems.push(`${path}: any value is allowed`);
-    return null;
+    return [null];
   }
   if (schema.$ref) {
     const target = schema.$ref.replace(/^#\//, "").split("/").reduce((at, key) => at?.[key], root);
     if (!target) problems.push(`${path}: $ref ${schema.$ref} not found`);
-    return target ? largest(target, root, path, problems) : null;
+    return target ? alternatives(target, root, path, problems) : [null];
   }
   const branches = schema.anyOf ?? schema.oneOf;
-  if (branches) return widest(branches.map((branch, i) => largest({ ...schema, anyOf: undefined, oneOf: undefined, ...branch }, root, `${path}|${i}`, problems)));
-  if ("const" in schema) return schema.const;
-  if (schema.enum) return widest(schema.enum);
+  if (branches) return branches.flatMap((branch, i) => alternatives({ ...schema, anyOf: undefined, oneOf: undefined, ...branch }, root, `${path}|${i}`, problems));
+  if ("const" in schema) return [schema.const];
+  if (schema.enum) return schema.enum;
   const types = Array.isArray(schema.type) ? schema.type : schema.type ? [schema.type] : inferred(schema);
   if (types.length === 0) {
     problems.push(`${path}: no type`);
-    return null;
+    return [null];
   }
-  return widest(types.map((type) => largestOf(type, schema, root, path, problems)));
+  return types.map((type) => largestOf(type, schema, root, path, problems));
 }
 
 const inferred = (schema) => (schema.properties ? ["object"] : schema.items ? ["array"] : []);
@@ -299,11 +303,17 @@ export function checkCarried(schema) {
       problems.push(`x-carried names ${key}, which the schema has no property for`);
       continue;
     }
-    const value = largest(field, schema, `$.${key}`, problems);
-    if (Array.isArray(value)) {
+    // An array is trimmed by the runtime; any other value the field may take instead is never cut, even when the array
+    // is the larger of the two.
+    const values = alternatives(field, schema, `$.${key}`, problems);
+    const arrays = values.filter(Array.isArray);
+    const others = values.filter((value) => !Array.isArray(value));
+    if (arrays.length) {
+      const value = widest(arrays);
       const one = Buffer.byteLength(JSON.stringify({ [key]: value.slice(0, 1) }, null, 2)) - Buffer.byteLength(JSON.stringify({ [key]: [] }, null, 2));
       entries.push({ key, entry: one, all: Buffer.byteLength(JSON.stringify({ [key]: value }, null, 2)) });
-    } else neverCut[key] = value;
+    }
+    if (others.length) neverCut[key] = widest(others);
   }
   const bytes = Buffer.byteLength(JSON.stringify(neverCut, null, 2));
   if (bytes > CARRIED_BUDGET_BYTES) {
