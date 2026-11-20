@@ -16,8 +16,8 @@ by its key) follow a job without billing again.
 **A second `run_model` or `submit_job` is a second bill**, unless it carries the same `submission_key` and the exact
 same request, which recovers the first job. Make one random `submission_key` per generation (a UUID works), send it
 with the paid call and keep it for every retry. When `run_model` answers `processing`, never call it again: read the
-job with `wait_for_jobs` `{"jobs": [{"index": 0, "endpoint_id", "request_id", "status_url", "response_url"}]}`,
-waiting the `poll_after_seconds` it gives between reads; the completed result comes in its answer. After a timeout or a
+job with `wait_for_jobs` `{"jobs": [{"index": 0, "endpoint_id", "request_id", "status_url", "response_url"}]}`. Copy each handle exactly as fal returned it, character for character: never build, shorten or extend a URL.
+Wait the `poll_after_seconds` it gives between reads; the completed result comes in its answer. After a timeout or a
 lost reply, call `get_submission` with the same key before anything else. `not_found` or `submission_unknown` never
 authorizes a new paid generation: say so and stop.
 

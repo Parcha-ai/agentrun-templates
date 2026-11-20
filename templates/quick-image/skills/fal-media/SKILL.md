@@ -35,7 +35,7 @@ same request: that recovers the first job instead of billing again.
   works), send it with the paid call, and keep it for every retry of that generation. A new key is a new bill.
 - When `run_model` answers `processing`, the job is running. Never call `run_model` again for it: read it with
   `wait_for_jobs` and its original handles, `{"jobs": [{"index": 0, "endpoint_id", "request_id", "status_url",
-  "response_url"}]}`. While a job is pending, wait the `poll_after_seconds` it gives before the next read. A completed
+  "response_url"}]}`. Copy each handle exactly as fal returned it, character for character: never build, shorten or extend a URL. While a job is pending, wait the `poll_after_seconds` it gives before the next read. A completed
   job's result comes in the same answer; read it once more, with `read_mode: "result"`, only if the answer left it out.
 - After a timeout, a lost reply or an answer you can't read, call `get_submission` with the same key before anything
   else. Follow the handles it returns with `wait_for_jobs`. `not_found` or `submission_unknown` never authorizes a new
