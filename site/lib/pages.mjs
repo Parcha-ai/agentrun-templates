@@ -592,22 +592,26 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
 
 // ---------- list your template ----------
 
-/** The model the Ollama page pulls: one with tool calling that fits a laptop. */
+/** The model the Ollama page pulls (one with tool calling that fits a laptop), and the copy of it with room for a
+ *  template's prompt: Ollama loads a model at 4,096 tokens of context, and a template's first request is about 12,000. */
 const OLLAMA_TAG = "qwen3:8b";
+const OLLAMA_LOCAL = "qwen3-8b-32k";
 
 /** How to run templates on a local model through Ollama, at no cost per run. */
 export function ollamaPage(site, packages) {
   const anyFree = packages.some(isFree);
   const path = "/ollama/";
   const trail = [["Templates", "/"], ["Run on Ollama", path]];
-  const envs = `AGENT_MODEL_BASE_URL=http://localhost:11434/v1 AGENT_MODEL_GATEWAY_IDS=bare AGENT_MODEL=${OLLAMA_TAG} AGENT_MODEL_PRICE=0,0,0 AGENT_MODEL_API_KEY=none`;
+  const envs = `AGENT_MODEL_BASE_URL=http://localhost:11434/v1 AGENT_MODEL_GATEWAY_IDS=bare AGENT_MODEL=${OLLAMA_LOCAL} AGENT_MODEL_PRICE=0,0,0 AGENT_MODEL_API_KEY=none`;
   const service = `~/.agentrun/bin/agentrun service install ${envs.split(" ").map((e) => `--env ${e}`).join(" ")}`;
   const background = `~/.agentrun/bin/agentrun stop
 curl -fsSL https://agentrun.ai/install | ${envs} sh`;
   const steps = [
     ["Install Ollama.", "On macOS or Windows, download it from ollama.com/download. On Linux:", "curl -fsSL https://ollama.com/install.sh | sh"],
-    ["Pull a model that can call tools.", `Templates search, fetch pages and write files, so the model has to call tools. ${OLLAMA_TAG} does and needs about 6 GB of memory. Check any other model with ollama show <tag>: tools must be listed under Capabilities.`, `ollama pull ${OLLAMA_TAG}
+    ["Pull a model that can call tools.", `Templates search, fetch pages and write files, so the model has to call tools. ${OLLAMA_TAG} can. Check any other model with ollama show <tag>: tools must be listed under Capabilities.`, `ollama pull ${OLLAMA_TAG}
 ollama show ${OLLAMA_TAG}`],
+    ["Give it room for a template's prompt.", `Ollama loads a model with 4,096 tokens of context. A template's first request is about 12,000, and Ollama drops the start, the question included, so the agent answers that it was never asked anything. Make a copy of the model with 32,768 tokens. It needs about 10 GB of memory. On Windows, put the two lines of the Modelfile in a file with any editor, then run ollama create.`, `printf 'FROM ${OLLAMA_TAG}\\nPARAMETER num_ctx 32768\\n' > Modelfile
+ollama create ${OLLAMA_LOCAL} -f Modelfile`],
     ["Point AgentRun at it.", "If AgentRun runs as a service, install the service again with the model. It restarts and keeps the setting:", service],
     ["Or, if AgentRun runs in the background, stop it and start it with the same five settings.", "A background start keeps only what that line sets.", background],
     ["Install a template.", "Pick one on this site and press Install. Every run then goes to your model, whatever model the template names, and the model costs nothing. A template that calls a paid service (monid, Parallel) still pays that service, as its page says.", null],
@@ -615,7 +619,7 @@ ollama show ${OLLAMA_TAG}`],
   const notes = [
     "AGENT_MODEL_API_KEY=none is a key Ollama ignores. Without a key set, AgentRun refuses each run.",
     "AGENT_MODEL_PRICE=0,0,0 tells AgentRun a run costs $0, so a template's spend cap still works.",
-    "A template's Tested line is measured on its own model, not yours. A small local model passes fewer cases, and on a computer without a GPU a run takes minutes.",
+    "A template's Tested line is measured on its own model, not yours. A small local model passes fewer cases, and on a computer without a GPU a run takes 10 to 15 minutes.",
     "The model is local, the web is not. Searches and page fetches still go out to the web. Search needs no key: it goes through Exa's keyless tier, or through Parallel when you set PARALLEL_API_KEY.",
   ];
   const body = html`
@@ -636,7 +640,7 @@ ollama show ${OLLAMA_TAG}`],
     path,
     mdPath: "/ollama.md",
     title: `Run AgentRun templates on Ollama | ${SITE_NAME}`,
-    description: `Run AgentRun templates on a local model with Ollama: install it, pull ${OLLAMA_TAG}, set five variables, and the model costs nothing.`,
+    description: `Run AgentRun templates on a local model with Ollama: install it, pull ${OLLAMA_TAG} with room for a template's prompt, set five variables, and the model costs nothing.`,
     jsonLd: { "@context": "https://schema.org", "@graph": [{ "@type": "HowTo", name: "Run AgentRun templates on Ollama", url: site.url(path), step: steps.map(([h], k) => ({ "@type": "HowToStep", position: k + 1, text: h })) }, crumbs(site, trail)] },
     body,
     md: [

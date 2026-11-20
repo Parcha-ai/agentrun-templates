@@ -483,8 +483,10 @@ test("the Ollama page gives the install, the pull and the five settings, and the
     assert.match(page, /<h1>Run templates on Ollama<\/h1>/);
     assert.match(page, /curl -fsSL https:\/\/ollama\.com\/install\.sh \| sh/);
     assert.match(page, /ollama pull qwen3:8b/);
+    // Ollama's 4,096-token default drops a template's question; the page makes a 32k copy and names that copy.
+    assert.match(page, /printf &#39;FROM qwen3:8b\\nPARAMETER num_ctx 32768\\n&#39; &gt; Modelfile\nollama create qwen3-8b-32k -f Modelfile/);
     // The five settings a run needs, each as a service --env: the base URL, bare ids, the model, a $0 price and the ignored key.
-    for (const env of ["AGENT_MODEL_BASE_URL=http://localhost:11434/v1", "AGENT_MODEL_GATEWAY_IDS=bare", "AGENT_MODEL=qwen3:8b", "AGENT_MODEL_PRICE=0,0,0", "AGENT_MODEL_API_KEY=none"]) {
+    for (const env of ["AGENT_MODEL_BASE_URL=http://localhost:11434/v1", "AGENT_MODEL_GATEWAY_IDS=bare", "AGENT_MODEL=qwen3-8b-32k", "AGENT_MODEL_PRICE=0,0,0", "AGENT_MODEL_API_KEY=none"]) {
       assert.ok(page.includes(`--env ${env}`), env);
     }
     const md = readFileSync(join(out, "ollama.md"), "utf8");
