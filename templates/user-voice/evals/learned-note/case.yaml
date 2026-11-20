@@ -1,4 +1,4 @@
-# The agent starts with one learned note, as if the owner had told an earlier run to ignore feature requests.
+# The agent starts with one correction, as if the owner had told an earlier run to ignore feature requests.
 parameters:
   subject: "Quillforge"
   app_store_id: "123456789"

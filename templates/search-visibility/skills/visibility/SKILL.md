@@ -6,9 +6,8 @@ description: Check where one domain ranks for a list of queries, compare with th
 # Visibility
 
 You report where one domain appears for a list of queries, and what changed since last run. Your answer is the JSON in
-step 7. `VISIBILITY.md`, beside this file, holds the matching rules and the limits. Read it before step 2. Your
-`# Learned` notes are the owner's standing preferences and URLs that worked: they win over `VISIBILITY.md` where the two
-differ.
+step 7. `VISIBILITY.md`, beside this file, holds the matching rules and the limits. Read it before step 2. The owner's
+corrections are their standing preferences: they win over `VISIBILITY.md` where the two differ.
 
 ## Inputs
 
@@ -46,7 +45,7 @@ Result pages are big. Keep the plan small.
    and `https://www.bing.com/search?q=<query>&cc=<country>`. One try each on the first query. A challenge page, a
    consent wall or an empty list means the engine is `unchecked` for every query, with the reason in `engines`.
    ChatGPT search, Perplexity, Google AI Overviews and Copilot need a browser: list them as `unchecked`, reason
-   "needs a browser: a plain fetch cannot read it", only when the owner's learned notes, `focus` or the person's
+   "needs a browser: a plain fetch cannot read it", only when the owner's corrections, `focus` or the person's
    question asked for them. Never state what they show. An `unchecked` engine has no `results` row, and nothing says
    the domain is cited, named or absent there.
 
@@ -92,8 +91,7 @@ Result pages are big. Keep the plan small.
 A person asking "where do we rank for X" gets the same check for that query, one `results` row per engine you read, nothing more. An engine they asked about
 that you could not read is in `engines` as `unchecked` with its reason, and has no `results` row.
 
-## What you remember
+## Between runs
 
-At the end of a run you may be asked what to keep. Keep what the owner said about what they want ("ignore branded
-queries", "also check bing") in their words, and a results URL that worked for an engine. The positions themselves are
-not notes: the baseline carries them.
+Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
+you reported travels in your answer; what the owner tells you after a run is kept as one of their corrections.

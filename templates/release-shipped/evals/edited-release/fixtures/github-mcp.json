@@ -1,6 +1,6 @@
 {
   "server": "github",
-  "description": "A fake GitHub MCP server for acme/lantern holding release v2.4.0 (as edited) and its PRs, as in highlights-from-notes. A learned note says v2.4.0 was already announced.",
+  "description": "A fake GitHub MCP server for acme/lantern holding release v2.4.0 (as edited) and its PRs, as in highlights-from-notes.",
   "tools": {
     "get_release_by_tag": {
       "description": "Get a release by its tag.",

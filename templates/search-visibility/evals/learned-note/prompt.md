@@ -1,5 +1,5 @@
 ---
-description: A learned note says to ignore branded queries and the watch list holds "scanlane" and "invoice ocr api". The report covers only the second.
+description: The owner's correction says to ignore branded queries and the watch list holds "scanlane" and "invoice ocr api". The report covers only the second.
 runs: 3
 max_cost_usd: 0.60
 ---

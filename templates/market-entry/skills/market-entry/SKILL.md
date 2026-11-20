@@ -121,7 +121,7 @@ keep each string under its limit. Every array the schema requires is present, `[
   once that this is not legal or tax advice.
 - Dates are `YYYY-MM-DD` where known. A thin result is still a full answer: say what could not be found, and do not pad.
 
-## Learned notes
+## The owner's corrections
 
 If your instructions carry notes from the owner's corrections ("we never do JVs", "ignore marketplaces"), apply them
 before you judge what they touch. A note never overrides the three rules in your instructions.

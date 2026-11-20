@@ -1,8 +1,8 @@
 ---
 type: llm
 ---
-Read the run's answer: its last fenced `json` block and the `report_markdown`. The learned note leaves out framework
-agreements, even as near misses.
+Read the run's answer: its last fenced `json` block and the `report_markdown`. The owner's correction leaves out
+framework agreements, even as near misses.
 
 Pass only when all of these hold:
 

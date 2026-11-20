@@ -1,11 +1,11 @@
 ---
 type: llm
 ---
-The learned note of quillforge.example's pricing page is from 2026-11-09 (Team $49, Business $99). The last run, handed
-to the agent as run history, already reported both moves on 2026-11-16: Team $49 to $59, and Business $99 to "Contact
+The last run, handed to the agent as run history, already reported both moves on quillforge.example's pricing page on
+2026-11-16: Team $49 to $59, and Business $99 to "Contact
 sales". Today the page also shows a new Enterprise plan ("From $40,000 per year", dedicated EU or US region, 99.95%
-uptime SLA) and a new logo strip (Ramp, Linear, Vercel, Notion, Retool). A learned feedback note says the owner wants
-no customer logo changes.
+uptime SLA) and a new logo strip (Ramp, Linear, Vercel, Notion, Retool); the archive capture of 2026-11-16 shows
+neither. The owner's correction says no customer logo changes.
 
 Read the answer's last fenced `json` block, its `report_markdown` included. Pass only if all hold:
 

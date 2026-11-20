@@ -2,7 +2,7 @@
 type: llm
 ---
 Read the run's answer: its last fenced `json` block. The last run's report said `safe` for four items. Since then a
-learned note added a fifth: the owner now runs `widget import` on JSON files. No version is newer than last week's
+correction added a fifth: the owner now runs `widget import` on JSON files. No version is newer than last week's
 (v2.5.0), but v2.4.0, already in range, makes `widget import` read YAML only and refuse JSON. So the old `safe` no
 longer holds for the owner's project.
 

@@ -21,3 +21,14 @@ The sites below are not reachable from this run. The pages that follow are what 
 
 --- https://globex.example/pricing (fetched 2026-11-16) ---
 <h2>Free</h2><p>$0, up to 5 editors</p><h2>Pro</h2><p>$12 per editor per month</p>
+
+--- https://web.archive.org/web/20261109/https://globex.example/ (lands on https://web.archive.org/web/20261109051733/https://globex.example/) ---
+<nav><a href="/pricing">Pricing</a> <a href="/product">Product</a> <a href="/customers">Customers</a></nav>
+<h1>Docs your whole team can trust</h1>
+<p class="sub">Write once, find it anywhere.</p>
+<p>Start free. No credit card.</p>
+<section class="logos">Trusted by Ramp, Linear and Vercel</section>
+<footer>© 2026 Globex</footer>
+
+--- https://web.archive.org/web/20261109/https://globex.example/pricing (lands on https://web.archive.org/web/20261109051810/https://globex.example/pricing) ---
+<h2>Free</h2><p>$0, up to 5 editors</p><h2>Pro</h2><p>$12 per editor per month</p>

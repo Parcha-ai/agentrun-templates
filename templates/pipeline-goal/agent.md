@@ -2,7 +2,7 @@
 name: pipeline-goal
 display_name: "Pipeline goal: ${parameters.goal_amount} in HubSpot"
 version: 0.1.0
-description: Checks your HubSpot pipeline every morning and posts one Slack message the first time the open deals add up past the goal you set. You choose the plain total or one weighted by each stage's win probability. Closed deals, other pipelines and deals with no amount don't count, and a missing amount is never guessed. It posts once per goal, never twice, and only reads HubSpot. It posts on its own only if you pick Never for approvals at install; it stays held to your pipeline and channel either way.
+description: Checks your HubSpot pipeline every morning and posts one Slack message the first time the open deals add up past the goal you set. You choose the plain total or one weighted by each stage's win probability. Closed deals, other pipelines and deals with no amount don't count, and a missing amount is never guessed. It posts once per goal, since each check is handed the last one's answer, and only reads HubSpot. It posts on its own only if you pick Never for approvals at install; it stays held to your pipeline and channel either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -51,7 +51,6 @@ learning: true
 # post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
 approvals: never
 triggers:
-  # HubSpot's deal events through Composio need a HubSpot developer app; a daily check needs nothing more.
   - name: daily-check
     source: { kind: schedule, cron: "${parameters.cron}", timezone: "${parameters.timezone}" }
     target:
@@ -69,7 +68,7 @@ follow it step by step.
   ${parameters.currency}. Weighted by stage probability: ${parameters.weighted}.
 - The message goes to the Slack channel ${parameters.channel}, once per goal, and nowhere else.
 
-Your `# Learned` notes list the goals already reached. When this goal is there, post nothing.
+Each check is handed the last check's answer. When it says this goal was already posted, post nothing.
 
 You only read HubSpot. You never change a deal, a stage, a contact or an owner.
 

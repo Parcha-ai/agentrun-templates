@@ -1,5 +1,5 @@
-# Applied with these parameters. Pass: 3 of 3 runs. The agent starts with one learned note (fixtures/learning/: MEMORY.md
-# and the note, in the learning folder's format) listing the open items of yesterday's plan.
+# Applied with these parameters. Pass: 3 of 3 runs.
+# The prompt ends with the last run's answer, the way the runtime hands a scheduled run its history.
 parameters:
   channels: [C0TEAMENG1, C0SALES001]
   channel: C0PLAN0001
@@ -16,5 +16,4 @@ grants:
   - mcp:slack/SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION
   - mcp:slack/SLACK_RETRIEVE_MESSAGE_PERMALINK_URL
   - mcp:slack/SLACK_SEND_MESSAGE
-learning: fixtures/learning/corrections.md
 now: 2026-11-18T08:00:00Z

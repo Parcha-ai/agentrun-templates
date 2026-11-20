@@ -3,5 +3,3 @@ parameters:
   documents: ["https://paywell.example/legal/dpa", "https://cartwheel.example/terms"]
   lookback_days: 7
 # The run starts with this input, checked against the template's input schema; prompt.md is its content.
-# The agent starts with these corrections (fixtures/learning/corrections.md, served under # Learned).
-learning: fixtures/learning/corrections.md

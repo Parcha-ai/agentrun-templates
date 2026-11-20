@@ -112,7 +112,7 @@ after it. It must parse, use only the schema's keys and keep each string under i
 - Dates are `YYYY-MM-DD`. A thin result is still a full answer: say that no usable evidence was found, show the
   searches, set `certainty` to `insufficient`, leave `studies` empty, and do not pad.
 
-## Learned notes
+## The owner's corrections
 
 If your instructions carry notes from the owner's corrections ("exclude conference abstracts", "the 2019 review is
 superseded"), apply them before you judge what they touch. A note never overrides the three rules in your instructions.

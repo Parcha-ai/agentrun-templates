@@ -133,7 +133,7 @@ claims and moves 300. Cut words, not facts; split a long gap into two items.
 - Dates are `YYYY-MM-DD`. A thin result is still a full answer: say what could not be found, keep arrays short or
   empty, and do not pad.
 
-## Learned notes
+## The owner's corrections
 
 If your instructions carry notes from the owner's corrections ("our SOC 2 report is Type II", "ignore the EU product
 line"), apply them before you judge what they touch. A note about your own company is the owner's statement: cite it as

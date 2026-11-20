@@ -1,9 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "New matching job postings",
+  "x-carried": ["window", "watched"],
   "type": "object",
   "additionalProperties": false,
-  "required": ["window", "quiet", "interpretation", "postings", "changes", "near_misses", "dropped_repeats", "unreachable", "ignored_instructions", "report_markdown"],
+  "required": ["window", "quiet", "interpretation", "postings", "changes", "near_misses", "dropped_repeats", "watched", "watched_dropped", "unreachable", "ignored_instructions", "report_markdown"],
   "properties": {
     "window": {
       "type": "object",
@@ -18,7 +19,7 @@
     "interpretation": { "type": "string", "maxLength": 400, "description": "How you read the role, location and filters, in one line." },
     "postings": {
       "type": "array",
-      "maxItems": 20,
+      "maxItems": 15,
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -60,6 +61,23 @@
       }
     },
     "dropped_repeats": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
+    "watched": {
+      "type": "array",
+      "maxItems": 40,
+      "description": "Every posting shown in the last 14 days and still open, with only what the next run compares. At most 40, what the 12,000-byte carried budget holds; past that the earliest first shown leave first.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["url", "first_shown", "deadline", "pay_listed"],
+        "properties": {
+          "url": { "type": "string", "format": "uri", "maxLength": 160, "pattern": "^https?://[!#-\\[\\]-~]{1,152}$", "description": "The posting page with its query kept, less its fragment and tracking parameters (the skill's list), percent-encoded so it is ASCII" },
+          "first_shown": { "type": "string", "format": "date" },
+          "deadline": { "type": "string", "maxLength": 10, "pattern": "^(\\d{4}-\\d{2}-\\d{2}|rolling|not stated)$" },
+          "pay_listed": { "type": "boolean" }
+        }
+      }
+    },
+    "watched_dropped": { "type": "integer", "minimum": 0, "description": "Postings that left `watched` this run because it was full (earliest first shown first), not because they closed or aged out." },
     "unreachable": { "type": "array", "items": { "type": "string", "maxLength": 240 } },
     "ignored_instructions": { "type": "array", "items": { "type": "string", "maxLength": 400 } },
     "report_markdown": { "type": "string", "minLength": 1, "contentMediaType": "text/markdown" }

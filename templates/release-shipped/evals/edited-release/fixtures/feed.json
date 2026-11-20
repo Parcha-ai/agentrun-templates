@@ -1,5 +1,5 @@
 {
-  "description": "acme/lantern's release feed, as GitHub serves releases.atom: v2.4.0 and v2.3.0 before the run. Then v2.4.0 is edited (a typo in its notes fixed): the same entry with a later updated time, so the trigger fires on it with update: true. A learned note says v2.4.0 was announced.",
+  "description": "acme/lantern's release feed, as GitHub serves releases.atom: v2.4.0 and v2.3.0 before the run. Then v2.4.0 is edited (a typo in its notes fixed): the same entry with a later updated time, so the trigger fires on it with update: true.",
   "format": "atom",
   "title": "Release notes from lantern",
   "items": [

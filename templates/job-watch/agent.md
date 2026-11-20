@@ -2,7 +2,7 @@
 name: job-watch
 display_name: Job opening watch
 version: 0.1.0
-description: Every weekday morning, the new job postings that match your role, location and must-haves, found on company career pages, applicant tracking systems (Greenhouse, Lever, Ashby, Workable) and public job boards. Each posting is checked on the employer's own page, duplicates across boards become one row, pay is shown only when the posting states it, and scam signs are flagged. Postings it already showed you don't come back; ones that closed or changed get a line.
+description: Every weekday morning, the new job postings that match your role, location and must-haves, found on company career pages, applicant tracking systems (Greenhouse, Lever, Ashby, Workable) and public job boards. Each posting is checked on the employer's own page, duplicates across boards become one row, pay is shown only when the posting states it, and scam signs are flagged. Postings it already showed you don't come back, up to a limit. For now it remembers at most the 40 postings it showed most recently, so a posting shown before those can be reported again. Ones that closed or changed get a line.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates

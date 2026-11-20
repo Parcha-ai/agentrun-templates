@@ -2,5 +2,5 @@
 parameters:
   field: "Single-cell RNA sequencing methods"
 # The run starts with the input in prompt.md's front matter; prompt.md's body is its content.
-# The agent starts with these corrections (fixtures/learning/corrections.md, served under # Learned).
+# The agent starts with these corrections (fixtures/learning/corrections.md).
 learning: fixtures/learning/corrections.md

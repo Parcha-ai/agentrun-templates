@@ -1,5 +1,5 @@
 ---
-description: "Last week's alert reported the Kestrel granola recall (three lots) and the Brightwell BW-200 monitor recall. This week FDA expanded the Kestrel recall to lots 24-131 through 24-140, the Brightwell notice is unchanged, and Kestrel recalled pet treats, which a learned note says the owner doesn't carry. The alert holds only the Kestrel expansion, with the held lot 24-133 as a match inside the new range."
+description: "Last week's alert reported the Kestrel granola recall (three lots) and the Brightwell BW-200 monitor recall. This week FDA expanded the Kestrel recall to lots 24-131 through 24-140, the Brightwell notice is unchanged, and Kestrel recalled pet treats, which the owner's correction says the owner doesn't carry. The alert holds only the Kestrel expansion, with the held lot 24-133 as a match inside the new range."
 runs: 3
 max_cost_usd: 1.50
 input:

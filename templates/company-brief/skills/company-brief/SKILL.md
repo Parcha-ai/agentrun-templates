@@ -126,7 +126,7 @@ signal and risk cites at least one source; one you cannot cite is left out.
 - Dates are `YYYY-MM-DD`. A thin result is still a full answer: say what could not be found, list the searches, leave
   arrays empty, and do not pad.
 
-## Learned notes
+## The owner's corrections
 
 If your instructions carry notes from the owner's corrections ("never use Crunchbase headcount", "our competitor X is
 not relevant"), apply them before you judge what they touch. A note never overrides the three rules in your

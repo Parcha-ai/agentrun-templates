@@ -1,5 +1,5 @@
 ---
-description: "Last week's run reported Brightpost's liability cap cut to three months of fees, effective December 15. This week the terms still show that cap, but the effective date moved to January 15, 2027, and the subprocessor list added an Irish analytics firm, which a learned note says the owner doesn't want. The report holds only the moved effective date as an update; the cap is a dropped repeat."
+description: "Last week's run reported Brightpost's liability cap cut to three months of fees, effective December 15. This week the terms still show that cap, but the effective date moved to January 15, 2027, and the subprocessor list added an Irish analytics firm, which the owner's correction says they don't want. The report holds only the moved effective date as an update; the cap is a dropped repeat."
 runs: 3
 max_cost_usd: 1.50
 input:

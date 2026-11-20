@@ -5,7 +5,7 @@
   "description": "The period's revenue in the goal's currency, added up from Stripe, whether it passed the goal, and the one Slack celebration (or why none was posted).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["goal", "period", "total", "reached", "posted", "skipped", "ignored_instructions", "report_markdown"],
+  "required": ["goal", "period", "total", "reached", "reached_on", "posted", "skipped", "ignored_instructions", "report_markdown"],
   "properties": {
     "goal": {
       "type": "object",
@@ -41,6 +41,7 @@
       "description": "null when the total could not be added up (a skipped or incomplete run)"
     },
     "reached": { "type": "boolean", "description": "true when the total is at or above the goal" },
+    "reached_on": { "type": ["string", "null"], "format": "date", "description": "the day this goal's message was posted for this period: today on a post that went out, carried from the last check's answer once posted, else null" },
     "posted": {
       "type": "object",
       "additionalProperties": false,

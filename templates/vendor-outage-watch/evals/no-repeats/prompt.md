@@ -1,5 +1,5 @@
 ---
-description: "Last week's brief reported an AWS us-east-1 DynamoDB incident and a GitHub Pages incident. This week AWS published the post-event summary (a development), the Pages incident is unchanged, and Azure had an East US incident that a learned note puts out of scope. The brief holds only the AWS postmortem."
+description: "Last week's brief reported an AWS us-east-1 DynamoDB incident and a GitHub Pages incident. This week AWS published the post-event summary (a development), the Pages incident is unchanged, and Azure had an East US incident that a correction from the owner puts out of scope. The brief holds only the AWS postmortem."
 runs: 3
 max_cost_usd: 1.50
 input:

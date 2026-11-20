@@ -54,15 +54,18 @@ A page that names the person at the organization (its team or leadership page) d
 when a second page agrees, `likely` when it is the only one, and `identity.assumption` says so in those words. A namesake
 at another employer is then a different person, not a conflict to resolve: `identity.assumption` itself says "the
 Alex Rowan who is CEO of X is a different person", list them in `rejected_candidates`, and name them nowhere else: not in the bottom line, talking
-points, questions, priorities or gaps.
+points, questions, priorities or gaps. The page that rules them out is cited only from `rejected_candidates`, never
+from `identity.assumption`, `gaps` or any other field.
 
 **Nobody found.** When neither the person nor the organization turns up anywhere, the brief is that finding:
 `confidence` `uncertain`; `career`, `public_work`, `organization_snapshot.recent_news` and `likely_priorities` empty;
 no company that merely resembles the name described as a possible match; talking points and questions only about the
 user's own goal, with no claim about the person. A name tells you nothing about what a company does: "Mills" in a name
 is not evidence of mills, so no product, sector or site is guessed from it. Every search goes in `sources` with
-`found: false`. The `bottom_line` names where you looked and says what to get next: the spelling, a profile link, the
-employer's legal name.
+`found: false`. A search that errors or is refused counts as one that found nothing: it is listed, with its URL, and
+does not change the finding. `identity.assumption` and the `bottom_line` each say in those words that neither the
+person nor the organization could be found, name where you looked (the searches and the sites), and the `bottom_line`
+says what to get next: the spelling, a profile link, the employer's legal name.
 
 ### 2. Career arc
 
@@ -137,7 +140,7 @@ after it.
 - `sources`: every page you relied on, each with an id (`S1`, ...), once. Searches that found nothing get
   `found: false`. Cite ids in every JSON fact and inline in `report_markdown` as `[S3]`.
 - `report_markdown` is the one-page brief, about 600 to 900 words, in this order: Bottom line (three to five
-  sentences, including the identity assumption), Profile (career table), Public work and statements, Organization
+  sentences, including who the subject is and why, with no rejected namesake), Profile (career table), Public work and statements, Organization
   and recent news, Likely priorities (labeled inference), Goal-specific findings (skip for `general`), Sensitivities,
   Talking points, Questions, Gaps and coverage. Sources live in the JSON, not in the markdown.
 - Dates are `YYYY-MM-DD`.
@@ -146,7 +149,7 @@ after it.
 - The block must parse and use only the schema's keys. Keep within its limits: `identity.assumption` 600 characters,
   `bottom_line` and `organization_snapshot.summary` 900, each `gaps` item 400. Say less rather than run over.
 
-## Learned notes
+## The owner's corrections
 
 If your instructions carry notes from the owner's past corrections ("always include their conference talks", "this
 company's blog is not news"), apply them before you judge anything they touch. A note never overrides the three rules

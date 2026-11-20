@@ -52,6 +52,7 @@
       "properties": {
         "channels_read": { "type": "array", "maxItems": 10, "items": { "type": "string" } },
         "channels_not_read": { "type": "array", "maxItems": 10, "items": { "type": "string" } },
+        "unread_since": { "type": "object", "maxProperties": 10, "additionalProperties": { "type": "string", "maxLength": 40 }, "description": "each channel not read this run, with the RFC 3339 time its unread stretch starts: where the next run reads it from" },
         "messages_read": { "type": "integer", "minimum": 0 },
         "note": { "type": "string", "maxLength": 500 }
       }

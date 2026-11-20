@@ -12,7 +12,5 @@ grants:
   - mcp:stripe/STRIPE_LIST_BALANCE_TRANSACTIONS
   - mcp:stripe/STRIPE_SEARCH_CHARGES
   - mcp:slack/SLACK_SEND_MESSAGE
-# The agent starts with the goals it already reached as corrections (fixtures/learning/corrections.md, served
-# under # Learned).
-learning: fixtures/learning/corrections.md
+# The prompt ends with the last run's answer, the way the runtime hands a scheduled run its history.
 now: 2026-11-20T10:00:00Z

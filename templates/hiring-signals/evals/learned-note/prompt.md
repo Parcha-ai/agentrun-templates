@@ -1,5 +1,5 @@
 ---
-description: A learned note says to skip junior roles; this week the board has a junior role in Berlin and a Head of Data in London. The digest leaves the junior one out and keeps the senior one.
+description: The owner's correction says to skip junior roles; this week the board has a junior role in Berlin and a Head of Data in London. The digest leaves the junior one out and keeps the senior one.
 runs: 3
 max_cost_usd: 0.80
 ---

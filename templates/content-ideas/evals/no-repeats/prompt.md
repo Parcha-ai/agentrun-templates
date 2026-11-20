@@ -1,5 +1,5 @@
 ---
-description: "Last week's edition used the Controller Pulse survey and the r/Accounting fake-invoice thread; both pages are still up and the thread is still growing. This week also brings the final e-invoice framework and a platform ending CSV bill import. A learned note says no webinars. The edition holds the two new hooks only, the old ones sit in dropped_repeats, and no idea is a webinar."
+description: "Last week's edition used the Controller Pulse survey and the r/Accounting fake-invoice thread; both pages are still up and the thread is still growing. This week also brings the final e-invoice framework and a platform ending CSV bill import. An older Bookwise entry falls before the window, and the owner's correction says no webinars. The edition holds the two new hooks only, the old ones sit in dropped_repeats, the Bookwise bank sync is not used, and no idea is a webinar."
 runs: 3
 max_cost_usd: 2.00
 input:
