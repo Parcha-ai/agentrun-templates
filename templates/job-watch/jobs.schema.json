@@ -70,7 +70,7 @@
         "additionalProperties": false,
         "required": ["url", "first_shown", "deadline", "pay_listed"],
         "properties": {
-          "url": { "type": "string", "format": "uri", "maxLength": 160, "pattern": "^https?://[!#-\\[\\]-~]{1,152}$", "description": "The posting page with its query kept, less its fragment and tracking parameters (the skill's list); ASCII, as a URL is" },
+          "url": { "type": "string", "format": "uri", "maxLength": 160, "pattern": "^https?://[!#-\\[\\]-~]{1,152}$", "description": "The posting page with its query kept, less its fragment and tracking parameters (the skill's list), percent-encoded so it is ASCII" },
           "first_shown": { "type": "string", "format": "date" },
           "deadline": { "type": "string", "maxLength": 10, "pattern": "^(\\d{4}-\\d{2}-\\d{2}|rolling|not stated)$" },
           "pay_listed": { "type": "boolean" }

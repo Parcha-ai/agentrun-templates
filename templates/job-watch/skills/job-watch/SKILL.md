@@ -51,7 +51,8 @@ says how to match the role and location, apply filters, merge duplicates and spo
    `watched` is the shown list the next run compares against: this run's `postings` and every posting on the shown
    list, each with only what step 5 compares: its `url`, the date it was `first_shown`, its `deadline` as last seen
    (`YYYY-MM-DD`, `rolling` or `not stated`) and whether it listed pay (`pay_listed`).
-   - `url` is the employer's or ATS posting page, kept whole, query included: a query such as `?jobId=123` or
+   - `url` is the employer's or ATS posting page in its percent-encoded form (a non-ASCII character, a space or a
+     quote written as `%XX`, as a browser sends it), kept whole, query included: a query such as `?jobId=123` or
      `?gh_jid=123` is what tells one job from another on the same page. Only the fragment (`#...`) and these tracking
      parameters are removed: any name starting `utm_`, `gclid`, `gbraid`, `wbraid`, `dclid`, `fbclid`, `msclkid`,
      `twclid`, `li_fat_id`, `igshid`, `yclid`, `mc_cid`, `mc_eid`, `_hsenc`, `_hsmi`, `mkt_tok`, `gh_src`,
