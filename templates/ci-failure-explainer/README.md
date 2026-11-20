@@ -70,5 +70,8 @@ push to main with no PR (no comment), an expired log (no invented cause), a re-r
 comment), and a 36-job matrix run whose two failures sit past the first 120,000 characters of the job list, one of
 them at the end of a 100 KB log.
 
-The first live run, on a real 36-job run, asked for all jobs in one page of 100 and ran out of budget before it found
-the failures. The paging above is the fix; the live run is being repeated on the same failed run.
+Live, by hand on a real failed 36-job run (read-only, comments denied): the first run asked for every job in one page
+of 100 and ran out of budget before it found a failure, which led to the paging above. On the same run after the fix it
+passed for $0.24 on pi. It named the failing test and its line, said the second failed job failed only because of it,
+and called the failure unclear rather than flaky. It posted nothing: the pull request had moved past the run's commit,
+and it comments only on a PR whose head is that commit.
