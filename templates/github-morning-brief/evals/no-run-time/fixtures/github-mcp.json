@@ -215,6 +215,46 @@
         {
           "when": [
             {
+              "pull_number": 121,
+              "page": 1
+            },
+            {
+              "pull_number": "121",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 121,
+              "page": 2
+            },
+            {
+              "pull_number": "121",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
               "pull_number": 121
             },
             {
@@ -289,6 +329,46 @@
         ]
       },
       "answers": [
+        {
+          "when": [
+            {
+              "ref": "0121ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 1
+            },
+            {
+              "ref": "0121ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": [{\"id\": 921066765, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000121/job/50598087\", \"started_at\": \"2026-11-20T11:31:00Z\", \"completed_at\": \"2026-11-20T11:40:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 285597387, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000121/job/50125188\", \"started_at\": \"2026-11-20T11:31:00Z\", \"completed_at\": \"2026-11-20T11:40:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0121ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 2
+            },
+            {
+              "ref": "0121ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
         {
           "when": {
             "ref": "0121ab12cd34ef56ab12cd34ef56ab12cd34ef56"

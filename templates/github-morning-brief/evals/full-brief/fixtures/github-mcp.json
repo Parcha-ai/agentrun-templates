@@ -215,6 +215,46 @@
         {
           "when": [
             {
+              "pull_number": 52,
+              "page": 1
+            },
+            {
+              "pull_number": "52",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"id\": 71697451, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"COMMENTED\", \"submitted_at\": \"2026-11-12T10:00:00Z\", \"body\": \"\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 52,
+              "page": 2
+            },
+            {
+              "pull_number": "52",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
               "pull_number": 52
             },
             {
@@ -233,10 +273,90 @@
         {
           "when": [
             {
+              "pull_number": 62,
+              "page": 1
+            },
+            {
+              "pull_number": "62",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 62,
+              "page": 2
+            },
+            {
+              "pull_number": "62",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
               "pull_number": 62
             },
             {
               "pull_number": "62"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 63,
+              "page": 1
+            },
+            {
+              "pull_number": "63",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"id\": 860336337, \"user\": {\"login\": \"bob\", \"type\": \"User\"}, \"state\": \"APPROVED\", \"submitted_at\": \"2026-11-17T09:30:00Z\", \"body\": \"\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 63,
+              "page": 2
+            },
+            {
+              "pull_number": "63",
+              "page": "2"
             }
           ],
           "result": {
@@ -269,6 +389,46 @@
         {
           "when": [
             {
+              "pull_number": 64,
+              "page": 1
+            },
+            {
+              "pull_number": "64",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"id\": 714425698, \"user\": {\"login\": \"lina\", \"type\": \"User\"}, \"state\": \"CHANGES_REQUESTED\", \"submitted_at\": \"2026-11-17T11:00:00Z\", \"body\": \"\"}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 64,
+              "page": 2
+            },
+            {
+              "pull_number": "64",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
               "pull_number": 64
             },
             {
@@ -287,10 +447,90 @@
         {
           "when": [
             {
+              "pull_number": 65,
+              "page": 1
+            },
+            {
+              "pull_number": "65",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 65,
+              "page": 2
+            },
+            {
+              "pull_number": "65",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
               "pull_number": 65
             },
             {
               "pull_number": "65"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 66,
+              "page": 1
+            },
+            {
+              "pull_number": "66",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 66,
+              "page": 2
+            },
+            {
+              "pull_number": "66",
+              "page": "2"
             }
           ],
           "result": {
@@ -380,6 +620,46 @@
       },
       "answers": [
         {
+          "when": [
+            {
+              "ref": "0052ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 1
+            },
+            {
+              "ref": "0052ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": [{\"id\": 4263033647, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000052/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 534435678, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000052/job/50125188\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0052ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 2
+            },
+            {
+              "ref": "0052ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
           "when": {
             "ref": "0052ab12cd34ef56ab12cd34ef56ab12cd34ef56"
           },
@@ -388,6 +668,46 @@
               {
                 "type": "text",
                 "text": "{\"data\": {\"total_count\": 2, \"check_runs\": [{\"id\": 4263033647, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000052/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 534435678, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000052/job/50125188\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0062ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 1
+            },
+            {
+              "ref": "0062ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": [{\"id\": 4234020214, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000062/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 496789767, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000062/job/50125188\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0062ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 2
+            },
+            {
+              "ref": "0062ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": []}, \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -406,6 +726,46 @@
           }
         },
         {
+          "when": [
+            {
+              "ref": "0063ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 1
+            },
+            {
+              "ref": "0063ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": [{\"id\": 3846517815, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000063/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 75978822, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000063/job/50125188\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0063ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 2
+            },
+            {
+              "ref": "0063ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
           "when": {
             "ref": "0063ab12cd34ef56ab12cd34ef56ab12cd34ef56"
           },
@@ -414,6 +774,46 @@
               {
                 "type": "text",
                 "text": "{\"data\": {\"total_count\": 2, \"check_runs\": [{\"id\": 3846517815, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000063/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 75978822, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000063/job/50125188\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0064ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 1
+            },
+            {
+              "ref": "0064ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": [{\"id\": 2852430576, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000064/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 1271320193, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000064/job/50125188\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0064ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 2
+            },
+            {
+              "ref": "0064ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 2, \"check_runs\": []}, \"successful\": true, \"error\": null}"
               }
             ]
           }
@@ -432,6 +832,46 @@
           }
         },
         {
+          "when": [
+            {
+              "ref": "0065ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 1
+            },
+            {
+              "ref": "0065ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 1, \"check_runs\": [{\"id\": 3005191089, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000065/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0065ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 2
+            },
+            {
+              "ref": "0065ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 1, \"check_runs\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
           "when": {
             "ref": "0065ab12cd34ef56ab12cd34ef56ab12cd34ef56"
           },
@@ -440,6 +880,46 @@
               {
                 "type": "text",
                 "text": "{\"data\": {\"total_count\": 1, \"check_runs\": [{\"id\": 3005191089, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000065/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0066ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 1
+            },
+            {
+              "ref": "0066ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 1, \"check_runs\": [{\"id\": 2553462898, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000066/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0066ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 2
+            },
+            {
+              "ref": "0066ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 1, \"check_runs\": []}, \"successful\": true, \"error\": null}"
               }
             ]
           }

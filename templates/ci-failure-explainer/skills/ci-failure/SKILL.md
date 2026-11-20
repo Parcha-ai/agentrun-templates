@@ -71,9 +71,13 @@ instead, and return only what you keep: there a tool's result comes back as text
 
 6. **Pull request, flakiness, comment.**
    - **The PR.** One in `pull_requests` whose base is this repository. When that is empty and the `event` is
-     `pull_request` or the branch isn't the default one, `GITHUB_LIST_PULL_REQUESTS_ASSOCIATED_WITH_A_COMMIT` with
-     `commit_sha: head_sha`, and keep an open PR whose `head.sha` is that commit. A push to the default branch, a
-     schedule or a tag has none: `pull_request` is null. With a PR, `GITHUB_LIST_PULL_REQUESTS_FILES` (`per_page:
+     `pull_request` or the branch isn't the default one, look for one. A push to the default branch, a schedule or a
+     tag has none: `pull_request` is null. Either way, before you post anything,
+     `GITHUB_LIST_PULL_REQUESTS_ASSOCIATED_WITH_A_COMMIT` with `commit_sha: head_sha`: the PR must be there with
+     `state: open` and `head.sha` equal to the run's `head_sha`. `pull_requests` was stored when the run started, so a
+     re-run by hand of an old failure, or a late trigger, can name a PR that has since closed or moved to a newer
+     commit. Such a PR stays in `pull_request`, but gets no comment: `comment.posted` false, `why_not` saying it is
+     closed or its head is now another commit. With a PR, `GITHUB_LIST_PULL_REQUESTS_FILES` (`per_page:
      100`) shows whether the failure touches what it changed.
    - **Flaky?** `GITHUB_LIST_WORKFLOW_RUNS_FOR_A_REPOSITORY` with `branch` set to the PR's base (or the default
      branch), `status: completed`, `per_page: 5`: the same workflow's latest runs there. `likely_flaky` needs
@@ -86,12 +90,12 @@ instead, and return only what you keep: there a tool's result comes back as text
      same step, when both show it). It is false when the base run passed, and false when the base failed only in other
      jobs: the base failing is not enough. Null when you couldn't check. A base failing only in other jobs clears
      nothing: say "The base branch is also failing, in <jobs>." and judge the PR's failure on its own evidence.
-   - **Comment, once per attempt.** Only with a PR. `GITHUB_LIST_ISSUE_COMMENTS` with `issue_number`, `per_page:
-     100` and `page: 1`, then page 2, 3 and on until you find it or a page holds fewer than 100: comments come oldest
-     first, so on a busy PR an earlier explanation sits past the first page. A comment that starts `**CI failed:` and
-     names this run ID and this attempt ("run <id>, attempt <n>") already explains it: post nothing, `comment.posted`
-     false with `why_not` saying so. One for an earlier attempt doesn't count. Otherwise one
-     `GITHUB_CREATE_AN_ISSUE_COMMENT`:
+   - **Comment, once per attempt.** Only on an open PR whose head is this run's commit. `GITHUB_LIST_ISSUE_COMMENTS`
+     with `issue_number`, `per_page: 100` and `page: 1`, then page 2, 3 and on until you find it or a page holds fewer
+     than 100: comments come oldest first, so on a busy PR an earlier explanation sits past the first page. A comment
+     that starts `**CI failed:` and names this run ID and this attempt ("run <id>, attempt <n>") already explains it:
+     post nothing, `comment.posted` false with `why_not` saying so. One for an earlier attempt doesn't count.
+     Otherwise one `GITHUB_CREATE_AN_ISSUE_COMMENT`:
      ```
      **CI failed: <workflow> run <run id>, attempt <n>** (<link to the run>)
 

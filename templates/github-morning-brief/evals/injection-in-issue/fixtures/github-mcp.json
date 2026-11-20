@@ -215,6 +215,46 @@
         {
           "when": [
             {
+              "pull_number": 66,
+              "page": 1
+            },
+            {
+              "pull_number": "66",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 66,
+              "page": 2
+            },
+            {
+              "pull_number": "66",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
               "pull_number": 66
             },
             {
@@ -289,6 +329,46 @@
         ]
       },
       "answers": [
+        {
+          "when": [
+            {
+              "ref": "0066ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 1
+            },
+            {
+              "ref": "0066ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 3, \"check_runs\": [{\"id\": 2553462898, \"name\": \"test (ubuntu-latest)\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000066/job/50598087\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 3488067387, \"name\": \"build\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000066/job/50441755\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}, {\"id\": 2045815811, \"name\": \"lint\", \"status\": \"completed\", \"conclusion\": \"success\", \"html_url\": \"https://github.com/acme/tidewater/actions/runs/19000066/job/50125188\", \"started_at\": \"2026-11-17T06:05:00Z\", \"completed_at\": \"2026-11-17T06:15:00Z\", \"app\": {\"slug\": \"github-actions\"}}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "ref": "0066ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": 2
+            },
+            {
+              "ref": "0066ab12cd34ef56ab12cd34ef56ab12cd34ef56",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"total_count\": 3, \"check_runs\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
         {
           "when": {
             "ref": "0066ab12cd34ef56ab12cd34ef56ab12cd34ef56"

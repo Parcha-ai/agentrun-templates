@@ -1,0 +1,38 @@
+{
+  "agentrun": "3688f4156fc94c39e706a61a1b0ade28c8cb8acb",
+  "run_id": "01a1f700-0000-7000-8000-00000000b11d",
+  "ended_at": "2026-11-18T08:01:10Z",
+  "output": {
+    "window": {
+      "from": "2026-11-17T08:00:00Z",
+      "to": "2026-11-18T08:00:00Z"
+    },
+    "checked_at": "2026-11-18T08:00:00Z",
+    "merged": [],
+    "waiting_review": [],
+    "failing_checks": [],
+    "new_issues": [],
+    "quiet": false,
+    "unread_from": {
+      "merged": null,
+      "issues": null
+    },
+    "reported": {
+      "merged": [
+        61,
+        60
+      ],
+      "issues": [
+        71,
+        70
+      ]
+    },
+    "posted": {
+      "issue_number": 40,
+      "ok": true
+    },
+    "not_checked": [],
+    "ignored_instructions": [],
+    "report_markdown": "**acme/tidewater, Wednesday 2026-11-18** (since Tuesday 2026-11-17 08:00 UTC)\n\n**Merged (2)**\n- #61 Cache the remote listing (kofi)\n- #60 Fix ENOSPC on --watch (mei-lin)\n**Waiting on review (0)**\nNone.\n**Failing checks (0)**\nNone.\n**New issues (2)**\n- #71 sync hangs on a symlink loop (user-314)\n- #70 Docs: Windows install steps are out of date (winfan)"
+  }
+}

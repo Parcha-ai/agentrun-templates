@@ -41,19 +41,24 @@ could not read them." or "...: the last brief left them for this one.").
    out drafts (`draft: true`) and PRs opened by bots (`user.type: Bot`, or a login ending in `[bot]`). Look at the
    oldest 20 at most; say in `not_checked` how many you left out.
 
-3. **Waiting on review.** For each open PR from step 2, `GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST` (`per_page: 100`).
-   Take each reviewer's last review that is `APPROVED` or `CHANGES_REQUESTED`. The PR waits on review when it has no
-   approval and no outstanding change request: either nobody has reviewed (`first_review`), or the only reviews are
-   comments. A PR with an approval waits on a merge, and one with changes requested waits on its author: neither is
-   listed here. `waiting_since` is the PR's `created_at`, or the newest review's `submitted_at` when there is one;
-   `hours_waiting` is whole hours from then to now. `waiting_for` is `requested_reviewers` logins and
-   `requested_teams` names, or empty when nobody was asked. Oldest wait first.
+3. **Waiting on review.** For each open PR from step 2, `GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST` (`per_page: 100`,
+   `page: 1`), then page 2, 3 and on while a page is full, at most 5 pages. Reviews come oldest first, so the latest
+   sit on the last page: a PR whose reviews fail to read or run past 5 pages goes in `not_checked` ("#<n>: reviews not
+   fully read") and is never listed as waiting. Take each reviewer's last review that is `APPROVED` or
+   `CHANGES_REQUESTED`. The PR waits on review when it has no approval and no outstanding change request: either nobody
+   has reviewed (`first_review`), or the only reviews are comments. A PR with an approval waits on a merge, and one
+   with changes requested waits on its author: neither is listed here. `waiting_since` is the PR's `created_at`, or
+   the newest review's `submitted_at` when there is one; `hours_waiting` is whole hours from then to now.
+   `waiting_for` is `requested_reviewers` logins and `requested_teams` names, or empty when nobody was asked. Oldest
+   wait first.
 
 4. **Failing checks.** For each open PR from step 2, `GITHUB_LIST_CHECK_RUNS_FOR_A_REF` with `ref` set to its
-   `head.sha` and `filter: latest`. A check fails when it is `completed` with conclusion `failure`, `timed_out` or
-   `action_required`. List each such PR with its failing checks (name, conclusion, `html_url`). `cancelled`, `skipped`,
-   `neutral` and checks still running are not failures. A read that fails puts the PR in `not_checked`, never in the
-   failing list.
+   `head.sha`, `filter: latest`, `per_page: 100`, `page: 1`, then page 2, 3 and on while `total_count` says more
+   remain, at most 5 pages. A failure may sit on any page. A check fails when it is `completed` with conclusion
+   `failure`, `timed_out` or `action_required`. List each such PR with its failing checks (name, conclusion,
+   `html_url`). `cancelled`, `skipped`, `neutral` and checks still running are not failures. A read that fails puts
+   the PR in `not_checked`, never in the failing list. One stopped at 5 pages lists the failures it read and goes in
+   `not_checked` too ("#<n>: checks past the 500th not read"): never call its checks passing.
 
 5. **New issues.** `GITHUB_LIST_REPOSITORY_ISSUES` with `state: all`, `since` set to this read's start, `sort: created`,
    `direction: desc`, `per_page: 100`, `page: 1`. Read on, page 2, 3 and so on, while a page is full; stop after 10

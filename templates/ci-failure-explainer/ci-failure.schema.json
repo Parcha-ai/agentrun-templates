@@ -25,7 +25,7 @@
       "type": ["object", "null"],
       "additionalProperties": false,
       "required": ["number", "url"],
-      "description": "the open pull request the run belongs to; null for a push to the default branch, a schedule or a tag",
+      "description": "the pull request the run belongs to; it gets a comment only while open with this run's commit as its head; null for a push to the default branch, a schedule or a tag",
       "properties": {
         "number": { "type": "integer", "minimum": 1 },
         "url": { "type": "string", "format": "uri", "pattern": "^https://github\\.com/" },
