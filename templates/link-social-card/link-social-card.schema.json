@@ -11,7 +11,7 @@
     "url": { "type": "string", "description": "the link the card is for" },
     "page_read": { "type": "boolean", "description": "whether web_fetch read the page" },
     "headline": { "type": "string", "maxLength": 80, "description": "the words set on the card" },
-    "headline_source": { "enum": ["input", "page_title", "page_text"], "description": "where the headline came from" },
+    "headline_source": {"enum": ["input", "page_title", "page_text", null], "description": "where the headline came from; null when there is none (status failed: the page was not read and no headline was given)"},
     "alt_text": { "type": "string", "maxLength": 300 },
     "prompt_sent": { "type": "string", "maxLength": 1200, "description": "the exact prompt sent to fal, or empty when nothing was sent" },
     "model": { "type": "string", "description": "the fal endpoint that made it" },

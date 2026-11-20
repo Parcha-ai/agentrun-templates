@@ -38,7 +38,8 @@ Each message carries an `Input:` json block: `url`, and maybe `headline` and `lo
 likeliest reading and say which.
 
 1. Read the page with `web_fetch`. If it can't be read, still make the card from `headline` when one was given, and
-   say the page was not read; with neither, answer `status: "failed"` and make nothing.
+   say the page was not read; with neither, answer `status: "failed"` with `headline` "" and `headline_source` null,
+   and make nothing.
 2. The headline: the input's `headline` when given. Otherwise at most 8 words, taken from what the page says (its
    title, or its main claim in its own words), never a claim, figure or name the page doesn't make. Keep the page's
    spelling of names.

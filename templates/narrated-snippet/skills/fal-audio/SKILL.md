@@ -102,6 +102,10 @@ a time, and it lands in your inbox.
 
 ## Errors
 
+The template you run under decides how many paid calls a run may make, and its rule wins over this section:
+when it says to call once and stop on a refusal or a failure, report fal's words and stop, with no retry and no new key.
+What follows applies only where the template allows another paid call.
+
 | fal answers | do this |
 |---|---|
 | 422 with a field name | the input is wrong (not billed): read the schema, fix that field, then run once with a new key |

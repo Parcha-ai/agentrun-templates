@@ -98,6 +98,10 @@ Video costs dollars a clip, images cents. Never pick a video model when the task
 
 ## Errors
 
+The template you run under decides how many paid calls a run may make, and its rule wins over this section:
+when it says to call once and stop on a refusal or a failure, report fal's words and stop, with no retry and no new key.
+What follows applies only where the template allows another paid call.
+
 - **422**: the input broke the schema, and nothing was billed. Read `detail`, fix the field, and send the corrected
   input once, with a new key (a changed request under the old key is rejected). Never resend the same one.
 - **A refusal** (content policy, safety checker): a definite answer. Report it in fal's words; don't send it again.

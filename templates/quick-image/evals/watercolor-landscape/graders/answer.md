@@ -14,5 +14,6 @@ Read the calls and the answer's last fenced `json` block. Pass only if all hold:
    `path` of the `web_save` call. `fal_url` is the URL above. `model` is `fal-ai/flux/schnell`; `image_size` is
    `landscape_4_3`; `width` 1024 and `height` 768.
 4. **Nothing else paid.** No second `run_model` and no `submit_job`.
+5. **Keyed.** The `run_model` call carries a `submission_key`, so a lost reply can be recovered.
 
 Answer pass or fail, and quote what decided it.

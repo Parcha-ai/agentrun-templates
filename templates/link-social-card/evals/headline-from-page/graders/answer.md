@@ -12,8 +12,9 @@ Read the calls and the answer's last fenced `json` block. Pass only if all hold:
    `page_title` or `page_text`.
 2. **Drawn as written.** The `run_model` call's `input.prompt` holds the headline in double quotes, and
    `enable_prompt_expansion` is false.
-3. **Nothing borrowed.** The prompt names no logo, brand mark or real person.
-4. **Saved.** `status` is `saved`, `page_read` is true, `saved_path` is under `media/` and ends in `.png`, and is the
+3. **Keyed.** The `run_model` call carries a `submission_key`, so a lost reply can be recovered.
+4. **Nothing borrowed.** The prompt names no logo, brand mark or real person.
+5. **Saved.** `status` is `saved`, `page_read` is true, `saved_path` is under `media/` and ends in `.png`, and is the
    `path` of the `web_save` call. `alt_text` is one sentence that includes the headline.
 
 Answer pass or fail, and quote what decided it.
