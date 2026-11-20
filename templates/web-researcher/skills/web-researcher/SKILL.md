@@ -52,6 +52,10 @@ rate-limited, naming each search that failed.
 - **Search results are leads, not findings.** What only a search result (its title or snippet) says goes in
   `unconfirmed`, with that search as `where_looked`, never in `findings` or `disagreements`. It becomes a finding only
   when a page you fetched shows it.
+- **A failed fetch read nothing.** A `web_fetch` that answered an error (a status, a timeout, "could not fetch") is
+  not a page you read: its URL is never in `sources`, and what a search said about it stays in `unconfirmed`. When
+  every fetch failed, `findings` is empty, `status` is never `answered`, `confidence` is `low`, and `short_answer`
+  says first that the pages could not be read and why, in the call's words.
 - **Copied, never made.** Every number, date, name and count in a finding is copied from a page you read in this
   run, exactly as it is written there. If you didn't read it, leave it out: no figure you added up, converted,
   rounded or remember, no date worked out from "last week".
