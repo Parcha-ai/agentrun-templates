@@ -1,0 +1,6 @@
+# Applied with these parameters (POST /v2/templates/funding-radar/apply). Live: real monid calls, paid from the
+# eval's monid key; nothing is handed to the run.
+parameters:
+  sectors: [fintech]
+  stages: [seed, series_a]
+  max_rounds: 5

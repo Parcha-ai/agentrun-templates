@@ -1,0 +1,9 @@
+# Applied with these parameters (POST /v2/templates/funding-radar/apply). Pass: 2 of 2 runs.
+parameters:
+  sectors: [fintech]
+  stages: [seed]
+# The prompt carries every endpoint's answer; a monid call the agent makes anyway answers as monid unreachable and is
+# never charged.
+monid: unavailable
+# The runs' clock: the date the prompt gives.
+now: "2026-11-16T08:00:00Z"

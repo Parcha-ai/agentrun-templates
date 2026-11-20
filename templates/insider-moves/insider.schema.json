@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Weekly insider moves",
+  "x-carried": ["window"],
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "window",
+    "quiet",
+    "tickers",
+    "trades",
+    "thirteen_d",
+    "thirteen_d_list_through",
+    "institutions",
+    "could_not_check",
+    "ignored_instructions",
+    "monid_calls",
+    "disclaimer",
+    "report_markdown"
+  ],
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "format": "date", "description": "Filings reported on or after this day: the last run's `to`, else today minus the lookback." },
+        "to": { "type": "string", "format": "date", "description": "Today. Filings reported before it are in; today's wait for the next run." }
+      }
+    },
+    "quiet": {
+      "type": "boolean",
+      "description": "True only when every ticker was read and none had an insider trade or 13D filing reported in the window. A ticker that failed or was not found makes it false."
+    },
+    "tickers": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ticker", "company", "cik", "status"],
+        "properties": {
+          "ticker": { "type": "string", "pattern": "^[A-Z0-9.-]{1,10}$" },
+          "company": { "type": ["string", "null"], "maxLength": 120 },
+          "cik": { "type": ["string", "null"], "pattern": "^[0-9]{1,10}$", "description": "From the filing links the search answered with: `/filings/<cik>/`." },
+          "status": { "enum": ["read", "not_found", "failed"] }
+        }
+      }
+    },
+    "trades": {
+      "type": "array",
+      "maxItems": 80,
+      "description": "Insider trades reported in the window, by ticker, newest first.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ticker", "insider", "role", "kind", "traded", "reported", "shares", "price_usd", "value_usd", "significant", "filing_url", "source"],
+        "properties": {
+          "ticker": { "type": "string", "maxLength": 10 },
+          "insider": { "type": "string", "maxLength": 120 },
+          "role": { "type": "string", "maxLength": 120 },
+          "kind": { "enum": ["buy", "sell", "planned_sale", "option_exercise", "other"] },
+          "traded": { "type": "string", "format": "date" },
+          "reported": { "type": "string", "format": "date" },
+          "shares": { "type": ["integer", "null"], "minimum": 0 },
+          "price_usd": { "type": ["number", "null"], "minimum": 0 },
+          "value_usd": { "type": ["number", "null"], "minimum": 0 },
+          "significant": { "type": "boolean", "description": "An open-market buy worth at least the owner's threshold." },
+          "filing_url": { "type": "string", "format": "uri" },
+          "source": { "enum": ["secform4", "finviz"] }
+        }
+      }
+    },
+    "thirteen_d": {
+      "type": "array",
+      "maxItems": 20,
+      "description": "13D filings on a watchlist company, reported in the window.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ticker", "filer", "reported", "stake", "change", "filing_url"],
+        "properties": {
+          "ticker": { "type": "string", "maxLength": 10 },
+          "filer": { "type": "string", "maxLength": 160 },
+          "reported": { "type": "string", "format": "date" },
+          "stake": { "type": "string", "maxLength": 60, "description": "Shares and percent as filed: \"6,035,214 15.200%\"." },
+          "change": { "type": "string", "maxLength": 60 },
+          "filing_url": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "thirteen_d_list_through": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "The newest report date in the 13D list monid returned, so the reader sees how current it is. Null when it was not read."
+    },
+    "institutions": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ticker", "quarter", "holders", "shares_held", "prev_quarter", "prev_holders", "prev_shares_held"],
+        "properties": {
+          "ticker": { "type": "string", "maxLength": 10 },
+          "quarter": { "type": "string", "format": "date" },
+          "holders": { "type": "integer", "minimum": 0 },
+          "shares_held": { "type": "integer", "minimum": 0 },
+          "prev_quarter": { "type": "string", "format": "date" },
+          "prev_holders": { "type": "integer", "minimum": 0 },
+          "prev_shares_held": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "could_not_check": { "type": "array", "maxItems": 15, "items": { "type": "string", "maxLength": 300 } },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "monid_calls": { "type": "integer", "minimum": 0 },
+    "disclaimer": { "const": "This is not investment advice." },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown" }
+  }
+}

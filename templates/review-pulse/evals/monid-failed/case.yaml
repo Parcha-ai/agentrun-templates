@@ -1,0 +1,6 @@
+# Every monid call answers as monid does when it can't be reached: never sent, never charged. The input is the
+# thin-listings case's.
+monid: unavailable
+parameters:
+  product: Tallyloom
+  product_domain: tallyloom.example
