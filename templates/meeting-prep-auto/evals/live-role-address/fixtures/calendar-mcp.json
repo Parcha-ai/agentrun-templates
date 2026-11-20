@@ -1,0 +1,50 @@
+{
+  "server": "googlecalendar",
+  "description": "A fake Composio Google Calendar: event 9c2e5g8i1k4m7o0q3s6u (\"Cloudflare: Zero Trust demo\") on the primary calendar.",
+  "tools": {
+    "GOOGLECALENDAR_EVENTS_GET": {
+      "description": "Retrieves one event by event_id from calendar_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "event_id": {
+            "type": "string"
+          },
+          "calendar_id": {
+            "type": "string"
+          },
+          "time_zone": {
+            "type": "string"
+          },
+          "max_attendees": {
+            "type": "integer"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "event_id": "9c2e5g8i1k4m7o0q3s6u"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"kind\":\"calendar#event\",\"id\":\"9c2e5g8i1k4m7o0q3s6u\",\"status\":\"confirmed\",\"htmlLink\":\"https://www.google.com/calendar/event?eid=9c2e5g8i1k4m7o0q3s6u\",\"summary\":\"Cloudflare: Zero Trust demo\",\"description\":\"Demo of Cloudflare Zero Trust for our remote team.\\nPlease bring our current VPN seat count.\",\"organizer\":{\"email\":\"sam@acme.example\",\"self\":true},\"start\":{\"dateTime\":\"2026-12-08T10:00:00-05:00\",\"timeZone\":\"America/New_York\"},\"end\":{\"dateTime\":\"2026-12-08T10:45:00-05:00\",\"timeZone\":\"America/New_York\"},\"attendees\":[{\"email\":\"sam@acme.example\",\"displayName\":\"Sam Ortiz\",\"self\":true,\"organizer\":true,\"responseStatus\":\"accepted\"},{\"email\":\"sales@cloudflare.com\",\"displayName\":\"Cloudflare Sales\",\"responseStatus\":\"accepted\"}],\"hangoutLink\":\"https://meet.google.com/abc-defg-hij\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail. Thread 19c1d2e3f4a5b803: Lee's request to resend an invoice with a PO number. Any draft call succeeds.",
+  "tools": {
+    "GMAIL_FETCH_MESSAGE_BY_THREAD_ID": {
+      "description": "Retrieves messages from a Gmail thread using its thread_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "thread_id": {
+            "type": "string"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "thread_id": "19c1d2e3f4a5b803"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messages\":[{\"messageId\":\"19c1d2e3f4a5b803\",\"threadId\":\"19c1d2e3f4a5b803\",\"sender\":\"Lee Park <ap@umbrella.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Invoice INV-2041\",\"messageTimestamp\":\"2026-12-07T15:02:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nThanks for the call last Thursday, it was useful. Could you resend invoice INV-2041 with our PO number 7781 on it? Our system rejects it without one.\\n\\nThanks,\\nLee\"}]},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Requested entity was not found.\"}"
+          }
+        ]
+      }
+    },
+    "GMAIL_CREATE_EMAIL_DRAFT": {
+      "description": "Creates a Gmail email draft.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "recipient_email": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "thread_id": {
+            "type": "string"
+          },
+          "is_html": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"id\":\"r-7730214\",\"message\":{\"id\":\"19c1d2e3f4a5bfff\",\"threadId\":\"19c1d2e3f4a5b803\",\"labelIds\":[\"DRAFT\"]}},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

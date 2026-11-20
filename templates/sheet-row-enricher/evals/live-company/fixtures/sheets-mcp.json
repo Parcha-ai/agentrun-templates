@@ -1,0 +1,70 @@
+{
+  "server": "googlesheets",
+  "description": "A fake Composio Google Sheets: tab Leads, rows 2-3 filled, row 4 the new Datadog row. Any write succeeds.",
+  "tools": {
+    "GOOGLESHEETS_VALUES_GET": {
+      "description": "Returns a range of values from a spreadsheet (spreadsheet_id, range in A1 notation).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "spreadsheet_id": {
+            "type": "string"
+          },
+          "range": {
+            "type": "string"
+          },
+          "major_dimension": {
+            "type": "string"
+          },
+          "value_render_option": {
+            "type": "string"
+          },
+          "start_row": {
+            "type": "integer"
+          },
+          "end_row": {
+            "type": "integer"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"range\":\"Leads!A1:G4\",\"majorDimension\":\"ROWS\",\"values\":[[\"company\",\"website\",\"size\",\"what it does\",\"hq\",\"sources\",\"owner\"],[\"Hooli\",\"https://hooli.example\",\"~1,200\",\"Search and cloud software for enterprises\",\"Palo Alto, California, US\",\"website: https://hooli.example | size: https://hooli.example/about\",\"Dana\"],[\"Soylent\",\"https://soylent.example\",\"51-200\",\"Meal-replacement drinks sold online\",\"Los Angeles, California, US\",\"website: https://soylent.example\",\"Lee\"],[\"Datadog\",\"\",\"\",\"\",\"\",\"\",\"Lee\"]],\"display_url\":\"https://docs.google.com/spreadsheets/d/1QxA7bC3dE9fG2hJ4kL6mN8pR0sT5vW7yZ1aB3cD5eF/edit\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GOOGLESHEETS_UPDATE_VALUES_BATCH": {
+      "description": "Sets values in one or more ranges of a spreadsheet (spreadsheet_id, valueInputOption, data: [{range, values}]).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "spreadsheet_id": {
+            "type": "string"
+          },
+          "valueInputOption": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array"
+          },
+          "includeValuesInResponse": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"spreadsheetId\":\"1QxA7bC3dE9fG2hJ4kL6mN8pR0sT5vW7yZ1aB3cD5eF\",\"totalUpdatedRows\":1,\"totalUpdatedCells\":4,\"responses\":[]},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

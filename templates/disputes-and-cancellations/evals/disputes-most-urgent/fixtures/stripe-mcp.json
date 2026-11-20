@@ -1,0 +1,276 @@
+{
+  "server": "stripe",
+  "description": "A fake Composio Stripe on 2026-11-23: four disputes. Globex $1,200.00 fraudulent needs_response (created Nov 20, evidence due Nov 26 23:59 UTC); Soylent $89.00 product_not_received needs_response (created Nov 22, due Dec 5); Hooli XYZ $45.00 duplicate warning_needs_response (created Nov 21, due Nov 25); Initrode $299.00 under_review (created Nov 2, outside the window). No cancelled subscriptions.",
+  "tools": {
+    "STRIPE_LIST_DISPUTES": {
+      "description": "List disputes, newest first (created {gt, gte, lt, lte}, charge, payment_intent, limit, starting_after).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "created": {
+            "type": "object"
+          },
+          "charge": {
+            "type": "string"
+          },
+          "payment_intent": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "starting_after": {
+            "type": "string"
+          },
+          "ending_before": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"du_1SoylentPNR02\",\"object\":\"dispute\",\"amount\":8900,\"currency\":\"usd\",\"charge\":\"ch_3SoylentShip02\",\"payment_intent\":\"pi_3SoylentShip02\",\"created\":1795359600,\"livemode\":true,\"reason\":\"product_not_received\",\"status\":\"needs_response\",\"is_charge_refundable\":false,\"metadata\":{},\"evidence\":{\"customer_name\":null,\"customer_email_address\":null,\"product_description\":null,\"uncategorized_text\":null},\"evidence_details\":{\"due_by\":1796515199,\"has_evidence\":false,\"past_due\":false,\"submission_count\":0},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"case_type\":\"chargeback\",\"network_reason_code\":\"10.4\"}}},{\"id\":\"du_1HooliDup03\",\"object\":\"dispute\",\"amount\":4500,\"currency\":\"usd\",\"charge\":\"ch_3HooliSeat03\",\"payment_intent\":\"pi_3HooliSeat03\",\"created\":1795253400,\"livemode\":true,\"reason\":\"duplicate\",\"status\":\"warning_needs_response\",\"is_charge_refundable\":false,\"metadata\":{},\"evidence\":{\"customer_name\":null,\"customer_email_address\":null,\"product_description\":null,\"uncategorized_text\":null},\"evidence_details\":{\"due_by\":1795651199,\"has_evidence\":false,\"past_due\":false,\"submission_count\":0},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"case_type\":\"chargeback\",\"network_reason_code\":\"10.4\"}}},{\"id\":\"du_1GlobexFraud01\",\"object\":\"dispute\",\"amount\":120000,\"currency\":\"usd\",\"charge\":\"ch_3GlobexAnnual01\",\"payment_intent\":\"pi_3GlobexAnnual01\",\"created\":1795168800,\"livemode\":true,\"reason\":\"fraudulent\",\"status\":\"needs_response\",\"is_charge_refundable\":false,\"metadata\":{},\"evidence\":{\"customer_name\":null,\"customer_email_address\":null,\"product_description\":null,\"uncategorized_text\":null},\"evidence_details\":{\"due_by\":1795737599,\"has_evidence\":false,\"past_due\":false,\"submission_count\":0},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"case_type\":\"chargeback\",\"network_reason_code\":\"10.4\"}}},{\"id\":\"du_1InitrodeOld04\",\"object\":\"dispute\",\"amount\":29900,\"currency\":\"usd\",\"charge\":\"ch_3InitrodeOld04\",\"payment_intent\":\"pi_3InitrodeOld04\",\"created\":1793620800,\"livemode\":true,\"reason\":\"subscription_canceled\",\"status\":\"under_review\",\"is_charge_refundable\":false,\"metadata\":{},\"evidence\":{\"customer_name\":null,\"customer_email_address\":null,\"product_description\":null,\"uncategorized_text\":null},\"evidence_details\":{\"due_by\":1794614399,\"has_evidence\":true,\"past_due\":false,\"submission_count\":1},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"case_type\":\"chargeback\",\"network_reason_code\":\"10.4\"}}}],\"has_more\":false,\"url\":\"/v1/disputes\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_RETRIEVE_CHARGE": {
+      "description": "Retrieve a charge by charge_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "charge_id": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "charge_id": "ch_3GlobexAnnual01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3GlobexAnnual01\",\"object\":\"charge\",\"amount\":120000,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"disputed\":true,\"customer\":\"cus_Globex01\",\"created\":1793354400,\"livemode\":true,\"description\":\"Pro annual\",\"billing_details\":{\"name\":null,\"email\":null},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\"}}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "charge_id": "ch_3SoylentShip02"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3SoylentShip02\",\"object\":\"charge\",\"amount\":8900,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"disputed\":true,\"customer\":\"cus_Soylent02\",\"created\":1793804400,\"livemode\":true,\"description\":\"Starter kit\",\"billing_details\":{\"name\":null,\"email\":null},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\"}}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "charge_id": "ch_3HooliSeat03"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3HooliSeat03\",\"object\":\"charge\",\"amount\":4500,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"disputed\":true,\"customer\":\"cus_Hooli03\",\"created\":1793523600,\"livemode\":true,\"description\":\"Extra seat\",\"billing_details\":{\"name\":null,\"email\":null},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\"}}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "charge_id": "ch_3InitrodeOld04"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3InitrodeOld04\",\"object\":\"charge\",\"amount\":29900,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"disputed\":true,\"customer\":\"cus_Initrode04\",\"created\":1792497600,\"livemode\":true,\"description\":\"Subscription payment\",\"billing_details\":{\"name\":null,\"email\":null},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\"}}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such charge\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_RETRIEVE_CUSTOMER": {
+      "description": "Retrieve a customer by customer_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "customer_id": "cus_Globex01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Globex01\",\"object\":\"customer\",\"name\":\"Globex\",\"email\":\"billing@globex.example\",\"created\":1761818400,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer_id": "cus_Soylent02"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Soylent02\",\"object\":\"customer\",\"name\":\"Soylent\",\"email\":\"billing@soylent.example\",\"created\":1793804400,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer_id": "cus_Hooli03"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Hooli03\",\"object\":\"customer\",\"name\":\"Hooli XYZ\",\"email\":\"billing@hooli.example\",\"created\":1772355600,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer_id": "cus_Initrode04"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Initrode04\",\"object\":\"customer\",\"name\":\"Initrode\",\"email\":\"billing@initrode.example\",\"created\":1750420800,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such customer\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_SEARCH_SUBSCRIPTIONS": {
+      "description": "Search subscriptions with Stripe's Search Query Language (status, canceled_at, created, metadata).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"search_result\",\"data\":[],\"has_more\":false,\"next_page\":null,\"url\":\"/v1/subscriptions/search\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_INVOICES": {
+      "description": "List invoices, newest first (customer, subscription, status, created, limit).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "customer": {
+            "type": "string"
+          },
+          "subscription": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "created": {
+            "type": "object"
+          },
+          "starting_after": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_PRODUCTS": {
+      "description": "List products; `ids` returns only those products (limit, active).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"prod_TeamPlan01\",\"object\":\"product\",\"name\":\"Team\",\"active\":true},{\"id\":\"prod_ProPlan02\",\"object\":\"product\",\"name\":\"Pro\",\"active\":true}],\"has_more\":false,\"url\":\"/v1/products\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

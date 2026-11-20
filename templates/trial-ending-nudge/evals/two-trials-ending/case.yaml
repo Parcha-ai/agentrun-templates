@@ -1,0 +1,17 @@
+# Applied with these parameters. The fixtures stand in for the owner's Composio Stripe, Gmail and Slack; every call
+# is recorded for the graders. The run fires at the schedule's 09:00 on Monday 2026-11-23.
+parameters:
+  channel: C0GROWTH01
+  days_ahead: 3
+  sign_off: "Sam, Acme"
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  gmail: fixtures/gmail-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:stripe/STRIPE_LIST_SUBSCRIPTIONS
+  - mcp:stripe/STRIPE_RETRIEVE_CUSTOMER
+  - mcp:stripe/STRIPE_LIST_PRODUCTS
+  - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
+  - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-23T09:00:00Z

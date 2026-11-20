@@ -1,0 +1,47 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail: no message matches.",
+  "tools": {
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Fetches a list of email messages matching a Gmail search query (query, max_results, include_payload, verbose, ...).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "include_payload": {
+            "type": "boolean"
+          },
+          "verbose": {
+            "type": "boolean"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "ids_only": {
+            "type": "boolean"
+          },
+          "page_token": {
+            "type": "string"
+          },
+          "include_spam_trash": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"messages\":[],\"nextPageToken\":null,\"resultSizeEstimate\":0},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

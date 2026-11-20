@@ -1,0 +1,11 @@
+# Applied with these parameters. Live: the web searches and fetches are real, paid from the eval's search key; the
+# sheet stays a fixture (every read answers the whole tab, every call is recorded). Row 4 names a real public company.
+parameters:
+  spreadsheet_id: 1QxA7bC3dE9fG2hJ4kL6mN8pR0sT5vW7yZ1aB3cD5eF
+  sheet_name: Leads
+mcp:
+  googlesheets: fixtures/sheets-mcp.json
+grants:
+  - mcp:googlesheets/GOOGLESHEETS_VALUES_GET
+  - mcp:googlesheets/GOOGLESHEETS_UPDATE_VALUES_BATCH
+now: 2026-12-08T10:00:00Z

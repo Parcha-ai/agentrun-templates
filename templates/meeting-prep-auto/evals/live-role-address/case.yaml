@@ -1,0 +1,16 @@
+# Applied with these parameters. Live: the web searches are real, paid from the eval's search key; the calendar,
+# Gmail and Slack stay fixtures. One outside guest, a role address on a real company's domain, so no person is looked
+# up and no personal name leaves the run.
+parameters:
+  channel: C0PREP0001
+  internal_domains: [acme.example]
+  timezone: America/New_York
+mcp:
+  googlecalendar: fixtures/calendar-mcp.json
+  gmail: fixtures/gmail-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:googlecalendar/GOOGLECALENDAR_EVENTS_GET
+  - mcp:gmail/GMAIL_FETCH_EMAILS
+  - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-12-08T14:30:00Z

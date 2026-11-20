@@ -1,0 +1,35 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail: a draft is saved and answers its id. It never reaches Gmail.",
+  "tools": {
+    "GMAIL_CREATE_EMAIL_DRAFT": {
+      "description": "Creates a Gmail email draft (recipient_email, subject, body, is_html, thread_id).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "recipient_email": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "is_html": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"id\":\"r-7730114\",\"message\":{\"id\":\"19c4d5e6f7a8b9c0\",\"threadId\":\"19c4d5e6f7a8b9c0\",\"labelIds\":[\"DRAFT\"]}},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

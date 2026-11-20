@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "slots.schema.json",
+  "title": "Meeting slot reply",
+  "description": "What the agent did with one Gmail thread: whether it asks to meet, the free/busy window it read, the open slots it offered in a reply draft (never sent, nothing booked), or why it left the thread alone.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["thread", "action", "request", "window", "offered", "draft", "others_on_thread", "ignored_instructions", "skipped", "report_markdown"],
+  "properties": {
+    "thread": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "subject"],
+      "properties": {
+        "id": { "type": ["string", "null"], "maxLength": 40 },
+        "subject": { "type": ["string", "null"], "maxLength": 300 },
+        "url": { "type": ["string", "null"], "format": "uri", "pattern": "^https://mail\\.google\\.com/" },
+        "asked_by": { "type": ["string", "null"], "maxLength": 200, "description": "who asked to meet: name and address" }
+      }
+    },
+    "action": { "enum": ["drafted", "skipped"] },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asks_to_meet"],
+      "properties": {
+        "asks_to_meet": { "type": "boolean" },
+        "minutes": { "type": ["integer", "null"], "minimum": 5, "maximum": 480 },
+        "wishes": { "type": ["string", "null"], "maxLength": 300, "description": "days or times the sender asked for, in their words" },
+        "notes": { "type": ["string", "null"], "maxLength": 300 }
+      }
+    },
+    "window": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["from", "to", "timezone"],
+      "properties": {
+        "from": { "type": "string", "format": "date-time" },
+        "to": { "type": "string", "format": "date-time" },
+        "timezone": { "type": "string", "maxLength": 64 },
+        "busy_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "offered": {
+      "type": "array",
+      "maxItems": 3,
+      "description": "the slots in the draft, earliest first",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["start", "end"],
+        "properties": {
+          "start": { "type": "string", "format": "date-time" },
+          "end": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "draft": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["recipient_email", "subject", "body", "thread_id"],
+      "properties": {
+        "recipient_email": { "type": "string", "format": "email" },
+        "subject": { "type": "string", "maxLength": 300 },
+        "body": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "thread_id": { "type": "string", "maxLength": 40 },
+        "draft_id": { "type": ["string", "null"], "maxLength": 100 },
+        "saved": { "type": "boolean", "description": "false when the draft call was refused or failed" }
+      }
+    },
+    "others_on_thread": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 200 }, "description": "people on the thread the draft does not address, for the owner to add" },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "skipped": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "why no draft was saved, or a call refused or failed" },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 3000 }
+  }
+}

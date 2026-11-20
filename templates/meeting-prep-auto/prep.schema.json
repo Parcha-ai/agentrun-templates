@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "prep.schema.json",
+  "title": "Meeting prep",
+  "description": "The brief posted before one meeting with outside guests: who is coming, their company, the last email with them and the prep the invite asks for, each claim with its source, or why no brief was posted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event", "action", "outside", "companies", "last_email", "prep", "searches", "posted", "ignored_instructions", "skipped", "limits", "report_markdown"],
+  "properties": {
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "start"],
+      "properties": {
+        "id": { "type": ["string", "null"], "maxLength": 1024 },
+        "title": { "type": ["string", "null"], "maxLength": 300 },
+        "start": { "type": ["string", "null"], "format": "date-time" },
+        "link": { "type": ["string", "null"], "maxLength": 500 }
+      }
+    },
+    "action": { "enum": ["posted", "skipped"] },
+    "outside": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["email", "role", "source"],
+        "properties": {
+          "name": { "type": ["string", "null"], "maxLength": 120 },
+          "email": { "type": "string", "maxLength": 254 },
+          "role": { "type": ["string", "null"], "maxLength": 200, "description": "from a search result, or null when none was found" },
+          "source": { "type": ["string", "null"], "format": "uri", "maxLength": 500 }
+        }
+      }
+    },
+    "companies": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["domain", "name", "lines", "sources", "lookup"],
+        "properties": {
+          "domain": { "type": "string", "maxLength": 200 },
+          "name": { "type": ["string", "null"], "maxLength": 120 },
+          "lookup": { "enum": ["found", "nothing_found", "failed"], "description": "failed when the searches errored, so nothing could be checked" },
+          "lines": { "type": "array", "maxItems": 3, "items": { "type": "string", "maxLength": 300 } },
+          "sources": { "type": "array", "maxItems": 5, "items": { "type": "string", "format": "uri", "maxLength": 500 } }
+        }
+      }
+    },
+    "last_email": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["subject", "date"],
+      "properties": {
+        "subject": { "type": "string", "maxLength": 300 },
+        "date": { "type": "string", "maxLength": 40 },
+        "from": { "type": ["string", "null"], "maxLength": 200 },
+        "preview": { "type": ["string", "null"], "maxLength": 200 }
+      }
+    },
+    "prep": { "type": ["string", "null"], "maxLength": 300, "description": "what the invite asks the owner to prepare, quoted" },
+    "searches": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "posted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ok"],
+      "properties": {
+        "channel": { "type": ["string", "null"], "maxLength": 20 },
+        "ok": { "type": "boolean" },
+        "why_not": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "skipped": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "limits": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 3000 }
+  }
+}

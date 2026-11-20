@@ -1,0 +1,16 @@
+# Applied with these parameters. The run is the starting-soon trigger's, at 09:30 Eastern on Tuesday 2026-12-08, for a
+# meeting at 10:00. The fixtures stand in for the owner's Composio Calendar, Gmail and Slack and record every call. Only Acme people and a room are invited.
+parameters:
+  channel: C0PREP0001
+  internal_domains: [acme.example]
+  timezone: America/New_York
+mcp:
+  googlecalendar: fixtures/calendar-mcp.json
+  gmail: fixtures/gmail-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:googlecalendar/GOOGLECALENDAR_EVENTS_GET
+  - mcp:gmail/GMAIL_FETCH_EMAILS
+  - mcp:slack/SLACK_SEND_MESSAGE
+web: fixtures/web.json
+now: 2026-12-08T14:30:00Z
