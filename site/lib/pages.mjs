@@ -215,7 +215,7 @@ export function homePage(site, packages) {
 export function freePage(site, packages) {
   const free = packages.filter(isFree);
   const path = "/free/";
-  const lead = "These run on a free model, so a run costs nothing. Each page lists the free tier's limits. Any template runs free on your own computer with Ollama.";
+  const lead = "These run on a free model, so a run costs nothing. Each page lists the free tier's limits. Any template can also run on a model on your own computer, with Ollama.";
   return {
     path,
     mdPath: "/free.md",
@@ -610,7 +610,7 @@ curl -fsSL https://agentrun.ai/install | ${envs} sh`;
 ollama show ${OLLAMA_TAG}`],
     ["Point AgentRun at it.", "If AgentRun runs as a service, install the service again with the model. It restarts and keeps the setting:", service],
     ["Or, if AgentRun runs in the background, stop it and start it with the same five settings.", "A background start keeps only what that line sets.", background],
-    ["Install a template.", "Pick one on this site and press Install. Every run then goes to your model, whatever model the template names, and costs nothing.", null],
+    ["Install a template.", "Pick one on this site and press Install. Every run then goes to your model, whatever model the template names, and the model costs nothing. A template that calls a paid service (monid, Parallel) still pays that service, as its page says.", null],
   ];
   const notes = [
     "AGENT_MODEL_API_KEY=none is a key Ollama ignores. Without a key set, AgentRun refuses each run.",
@@ -621,7 +621,7 @@ ollama show ${OLLAMA_TAG}`],
   const body = html`
 <section class="hero">
   <h1>Run templates on Ollama</h1>
-  <p class="lead">Ollama runs a model on your own computer. Point AgentRun at it and every run is free, and nothing you send leaves your machine for a model provider.</p>
+  <p class="lead">Ollama runs a model on your own computer. Point AgentRun at it and you pay nothing for the model, and nothing you send leaves your machine for a model provider. Paid tools a template calls still cost what they cost.</p>
 </section>
 <section aria-labelledby="steps">
   <h2 id="steps" class="caps section-label">Set it up</h2>
@@ -636,13 +636,13 @@ ollama show ${OLLAMA_TAG}`],
     path,
     mdPath: "/ollama.md",
     title: `Run AgentRun templates on Ollama | ${SITE_NAME}`,
-    description: `Run AgentRun templates on a local model with Ollama: install it, pull ${OLLAMA_TAG}, set five variables, and every run costs nothing.`,
+    description: `Run AgentRun templates on a local model with Ollama: install it, pull ${OLLAMA_TAG}, set five variables, and the model costs nothing.`,
     jsonLd: { "@context": "https://schema.org", "@graph": [{ "@type": "HowTo", name: "Run AgentRun templates on Ollama", url: site.url(path), step: steps.map(([h], k) => ({ "@type": "HowToStep", position: k + 1, text: h })) }, crumbs(site, trail)] },
     body,
     md: [
       "# Run templates on Ollama",
       "",
-      "Ollama runs a model on your own computer. Point AgentRun at it and every run is free, and nothing you send leaves your machine for a model provider.",
+      "Ollama runs a model on your own computer. Point AgentRun at it and you pay nothing for the model, and nothing you send leaves your machine for a model provider. Paid tools a template calls still cost what they cost.",
       "",
       "## Set it up",
       "",

@@ -409,16 +409,26 @@ test("a template that starts on an event gets the Triggers tab and the /triggers
     const feed = text.replace("triggers:\n", 'triggers:\n  - name: news\n    source: { kind: feed, urls: ["https://example.com/feed.xml"] }\n    target: { kind: start_run, input: { content: "A new item." } }\n');
     assert.notEqual(feed, text, "the fixture has a triggers list to add to");
     writeFileSync(manifest, feed);
+    // A second template, on its schedule alone: in All, never on the Triggers page.
+    cpSync(join(root, "templates", "sample-watch"), join(root, "templates", "sample-digest"), { recursive: true });
+    writeFileSync(join(root, "templates", "sample-digest", "agent.md"), text.replace("name: sample-watch", "name: sample-digest").replace('display_name: "Sample watch:', 'display_name: "Sample digest:'));
+    const index = join(root, ".agentrun", "marketplace.json");
+    const market = JSON.parse(readFileSync(index, "utf8"));
+    market.templates.push({ ...market.templates[0], name: "sample-digest", source: "./templates/sample-digest", summary: "Sends one digest of a topic every week, on a schedule and nothing else." });
+    writeFileSync(index, JSON.stringify(market));
     await build({ root, out, sha: SHA, offline: true, cacheDir: cache, log: () => {} });
     assert.deepEqual(check({ dir: out, baseUrl: "https://marketplace.agentrun.ai" }).problems, []);
     const home = readFileSync(join(out, "index.html"), "utf8");
-    assert.match(home, /<a href="\/" aria-current="page">All <span class="n">1<\/span><\/a><a href="\/triggers\/">Triggers <span class="n">1<\/span><\/a><a href="\/categories\/research\/">/);
+    assert.match(home, /<a href="\/" aria-current="page">All <span class="n">2<\/span><\/a><a href="\/triggers\/">Triggers <span class="n">1<\/span><\/a><a href="\/categories\/research\/">/);
+    assert.match(home, /<li class="card tpl" data-name="sample-digest">/, "the schedule-only template is in All");
     const page = readFileSync(join(out, "triggers", "index.html"), "utf8");
     assert.match(page, /<h1>Templates that start on an event<\/h1>/);
     assert.match(page, /<a href="\/triggers\/" aria-current="page">Triggers <span class="n">1<\/span><\/a>/);
     assert.match(page, /<form class="search" role="search" action="\/triggers\/" method="get">/);
-    assert.match(page, /<li class="card tpl" data-name="sample-watch">/);
-    assert.match(readFileSync(join(out, "triggers.md"), "utf8"), /^# Templates that start on an event\n[\s\S]*\[Sample watch\]\(https:\/\/marketplace\.agentrun\.ai\/templates\/sample-watch\.md\)/);
+    assert.deepEqual([...page.matchAll(/<li class="card tpl" data-name="([^"]+)">/g)].map((m) => m[1]), ["sample-watch"]);
+    const md = readFileSync(join(out, "triggers.md"), "utf8");
+    assert.match(md, /^# Templates that start on an event\n[\s\S]*\[Sample watch\]\(https:\/\/marketplace\.agentrun\.ai\/templates\/sample-watch\.md\)/);
+    assert.doesNotMatch(md, /sample-digest|Sample digest/);
     assert.match(readFileSync(join(out, "sitemap.xml"), "utf8"), /<loc>https:\/\/marketplace\.agentrun\.ai\/triggers\/<\/loc>/);
     assert.match(readFileSync(join(out, "index.md"), "utf8"), /^Start on an event: https:\/\/marketplace\.agentrun\.ai\/triggers\.md$/m);
   } finally {
