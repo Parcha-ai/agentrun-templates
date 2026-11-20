@@ -1,0 +1,1 @@
+- The owner said: "Skip the logo stuff. I only care about plans and prices." Leave out `customers` changes; keep pricing, plan and product changes.

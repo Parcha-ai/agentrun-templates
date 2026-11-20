@@ -13,6 +13,5 @@ grants:
   - mcp:github/GITHUB_LIST_ISSUE_COMMENTS
   - mcp:github/GITHUB_LIST_COMMITS_ON_A_PULL_REQUEST
   - mcp:slack/SLACK_SEND_MESSAGE
-# The agent starts with last week's digest as a learned note (MEMORY.md and its note, in the learning folder's format).
-learning: fixtures/learning
+# The prompt ends with the last run's answer, the way the runtime hands a scheduled run its history.
 now: 2026-11-16T09:00:00Z

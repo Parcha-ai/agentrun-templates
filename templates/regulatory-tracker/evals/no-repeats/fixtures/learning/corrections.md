@@ -1,0 +1,1 @@
+- The owner said: "Skip EFRAG's Q&A batches and implementation guidance, our auditors send us those. I only want Commission, Council, Parliament and Official Journal acts." Leave out EFRAG Q&As and implementation guidance; keep everything else on the topic.

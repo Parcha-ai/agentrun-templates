@@ -12,6 +12,5 @@ grants:
   - mcp:slack/SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION
   - mcp:slack/SLACK_RETRIEVE_MESSAGE_PERMALINK_URL
   - mcp:slack/SLACK_SEND_MESSAGE
-# The agent starts with a learned note (fixtures/learning/): where the last catch-up ended and what it reported.
-learning: fixtures/learning
+# The prompt ends with the last run's answer, the way the runtime hands a scheduled run its history.
 now: 2026-11-17T09:00:00Z

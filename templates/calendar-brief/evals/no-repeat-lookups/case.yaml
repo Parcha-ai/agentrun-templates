@@ -3,11 +3,12 @@
 parameters:
   channel: C0BRIEF001
   days: 2
+# The calendar fixture is for 2026-11-17 and 18: the run fires at the schedule's 07:00 on the 17th.
+now: 2026-11-17T07:00:00Z
 mcp:
   googlecalendar: fixtures/calendar-mcp.json
   slack: fixtures/slack-mcp.json
 grants:
   - mcp:googlecalendar/GOOGLECALENDAR_EVENTS_LIST
   - mcp:slack/SLACK_SEND_MESSAGE
-# The agent starts with a learned note (fixtures/learning/) holding yesterday's Globex note.
-learning: fixtures/learning
+# The prompt ends with the last run's answer, the way the runtime hands a scheduled run its history.

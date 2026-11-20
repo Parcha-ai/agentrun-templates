@@ -1,5 +1,5 @@
 ---
-description: "Last week's log reported the gpt-6-luna snapshot shutdown (January 14), the Assistants API deprecation, Vercel's Pro overage price rise and Stripe's acacia breaking change. This week OpenAI moved the snapshot shutdown to February 11 (a development), Stripe announced a Billing retry default change, and Vercel launched a beta queue product that a learned note says the owner doesn't want. The log holds the moved shutdown and the Stripe change; the rest sit in dropped_repeats or nowhere."
+description: "Last week's log reported the gpt-6-luna snapshot shutdown (January 14), the Assistants API deprecation, Vercel's Pro overage price rise and Stripe's acacia breaking change. This week OpenAI moved the snapshot shutdown to February 11 (a development), Stripe announced a Billing retry default change, and Vercel launched a beta queue product that the owner's correction says they don't want. The log holds the moved shutdown and the Stripe change; the rest sit in dropped_repeats or nowhere."
 runs: 3
 max_cost_usd: 1.50
 input:

@@ -1,6 +1,7 @@
 // The pages: each is real HTML a crawler reads (no client-side rendering), plus a Markdown twin with the same content.
 
-import { CATEGORY_TEXT, computerWords, factsShort, isFree, keyWords, mcpWords, modelChoices, modelWords, requirements, testedLine, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
+import { marketingHeader, marketingOnboarding } from "./header.mjs";
+import { CATEGORY_TEXT, computerWords, factsShort, isFree, isTriggered, keyWords, mcpWords, modelChoices, modelWords, requirements, testedLine, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
 import { markdownToHtml } from "./markdown.mjs";
 import { clip, html, mdCode, mdText, plural, raw, upperFirst } from "./util.mjs";
 
@@ -9,9 +10,8 @@ const PLATFORM = "AgentRun is an open-source platform for running agents: it add
 
 // ---------- shared frame ----------
 
-// agentrun.ai's product mark and the GitHub mark, inline so the header needs no image request.
+// The website's product mark, used beside the footer wordmark.
 const MARK = '<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" fill="#ff8000"/><path d="M12 9l11 7-11 7z" fill="#000"/></svg>';
-const GITHUB_MARK = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297a12 12 0 0 0-3.793 23.385c.6.111.82-.261.82-.577 0-.285-.011-1.04-.017-2.04-3.338.724-4.043-1.61-4.043-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.839 1.237 1.839 1.237 1.07 1.835 2.807 1.305 3.492.998.108-.776.418-1.305.762-1.605-2.665-.303-5.467-1.334-5.467-5.931 0-1.31.469-2.381 1.236-3.221-.124-.303-.536-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.5 11.5 0 0 1 3.003-.404c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.652.243 2.873.119 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.625-5.479 5.922.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .319.216.694.825.576A12.001 12.001 0 0 0 12 .297Z"/></svg>';
 
 function jsonLdTag(data) {
   return raw(`<script type="application/ld+json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`);
@@ -27,7 +27,7 @@ export function layout(site, page) {
 <meta name="description" content="${page.description}">
 ${page.noindex ? "" : html`<link rel="canonical" href="${url}">`}
 ${page.mdPath ? html`<link rel="alternate" type="text/markdown" href="${page.mdPath}" title="This page as Markdown">` : ""}
-<meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="dark">
 ${page.noindex ? raw('<meta name="robots" content="noindex">') : ""}
 <meta property="og:site_name" content="${SITE_NAME}">
 <meta property="og:type" content="${page.ogType ?? "website"}">
@@ -40,38 +40,35 @@ ${page.noindex ? "" : html`<meta property="og:url" content="${url}">`}
 <meta name="twitter:description" content="${page.description}">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/jetbrains-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/schibsted-grotesk-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css?v=${site.assetVersion}">
+<link rel="stylesheet" href="/homepage/onboarding.css?v=${site.assetVersion}">
+<link rel="stylesheet" href="/assets/header.css?v=${site.assetVersion}">
 ${page.jsonLd ? jsonLdTag(page.jsonLd) : ""}
-<script src="/assets/site.js?v=${site.assetVersion}" defer></script>
+<script type="module" src="/assets/site.js?v=${site.assetVersion}"></script>
+<script type="module" src="/assets/header.js?v=${site.assetVersion}"></script>
+${page.templatePrompt ? html`<script src="/assets/template-prompt.js?v=${site.assetVersion}" defer></script>` : ""}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="top">
-  <div class="wrap top-row">
-    <a class="brand" href="/" aria-label="AgentRun Marketplace home">${raw(MARK)}agent<span class="brand-run">.run()</span><span class="brand-sub">Marketplace</span></a>
-    <nav aria-label="Site">
-      <a href="/"${page.nav === "home" ? raw(' aria-current="page"') : ""}>Templates</a>
-      <a href="/list-your-template/"${page.nav === "list" ? raw(' aria-current="page"') : ""}>List your template</a>
-      <a href="https://agentrun.ai/docs">Docs</a>
-      <a href="${site.repoUrl}">${raw(GITHUB_MARK)}GitHub</a>
-    </nav>
-  </div>
-</header>
-<main id="main" class="wrap${page.mainClass ? ` ${page.mainClass}` : ""}">
+${marketingHeader()}
+<noscript><p class="wrap">Get started with the <a href="https://agentrun.ai/docs/quickstart">AgentRun quickstart</a>.</p></noscript>
+<main id="main" tabindex="-1" class="wrap${page.mainClass ? ` ${page.mainClass}` : ""}">
 ${page.body}
 </main>
 <footer class="foot">
   <div class="wrap">
     <div class="foot-layout">
       <div class="foot-brand">
-        <a class="brand" href="https://agentrun.ai/" aria-label="AgentRun">${raw(MARK)}agent<span class="brand-run">.run()</span></a>
+        <a class="brand" href="https://agentrun.ai/" aria-label="AgentRun">${raw(MARK)}agent.<span class="brand-run">run</span>()</a>
         <p>${PLATFORM}</p>
       </div>
       <nav class="foot-cols" aria-label="Footer">
         <div><h2>Marketplace</h2><ul>
           <li><a href="/">All templates</a></li>
           <li><a href="/list-your-template/">List your template</a></li>
+          <li><a href="/ollama/">Run on Ollama</a></li>
           <li><a href="${site.repoUrl}">Templates on GitHub</a></li>
           <li><a href="/llms.txt">For your agents</a></li>
         </ul></div>
@@ -94,6 +91,7 @@ ${page.body}
     </div>
   </div>
 </footer>
+${marketingOnboarding()}
 </body>
 </html>`}\n`;
 }
@@ -131,16 +129,22 @@ function starWords(stats) {
   return [stats?.stars ? plural(stats.stars, "star") : null, stats?.forks ? plural(stats.forks, "fork") : null].filter(Boolean).join(", ");
 }
 
-// ---------- gallery (home, free, one category) ----------
+// ---------- gallery (home, free, triggers, one category) ----------
 
-/** The tabs over every gallery page: all, free (when any template is), then each category that has templates. Each is
+/** Each gallery page that isn't a category, by its tab id: where its search form posts. */
+const GALLERY_PATHS = { all: "/", free: "/free/", triggers: "/triggers/" };
+
+/** The tabs over every gallery page: all, free and triggers (each when any template is), then each category that has
+ *  templates. Each is
  *  a real page, so they work without the script and a crawler follows them. */
 function tabs(packages, current) {
   const cats = Object.keys(CATEGORY_TEXT).filter((c) => packages.some((p) => p.category === c));
   const free = packages.filter(isFree).length;
+  const triggered = packages.filter(isTriggered).length;
   const items = [
     ["all", "/", "All", packages.length],
     ...(free ? [["free", "/free/", "Free", free]] : []),
+    ...(triggered ? [["triggers", "/triggers/", "Triggers", triggered]] : []),
     ...cats.map((c) => [c, `/categories/${c}/`, CATEGORY_TEXT[c].title, packages.filter((p) => p.category === c).length]),
   ];
   return html`<nav class="tabs" id="categories" aria-label="Categories">${items.map(([id, href, label, n]) =>
@@ -150,14 +154,17 @@ function tabs(packages, current) {
 /** Title, one line, the tabs, search, and the cards: the same frame on the home page, the free page and each category. */
 function gallery(site, { title, lead, current, all, shown }) {
   return html`
-<section class="hero${current === "all" ? " hero-home" : ""}">
-  <h1>${title}</h1>
-  <p class="lead">${lead}</p>
+<section class="hero gallery-hero${current === "all" ? " hero-home" : ""}">
+  <div class="gallery-heading">
+    <h1>${title}</h1>
+    <p class="lead">${lead}</p>
+  </div>
+  <a class="btn btn-sm gallery-action" href="/list-your-template/">List your template</a>
 </section>
 
 <section aria-label="Templates" class="gallery">
   ${tabs(all, current)}
-  <form class="search" role="search" action="${current === "all" ? "/" : current === "free" ? "/free/" : `/categories/${current}/`}" method="get">
+  <form class="search" role="search" action="${GALLERY_PATHS[current] ?? `/categories/${current}/`}" method="get">
     <label class="sr" for="q">Search ${plural(shown.length, "template")}</label>
     <input id="q" name="q" type="search" autocomplete="off" placeholder="Search ${plural(shown.length, "template")}: slack, pull requests, competitors…" data-search>
     <kbd class="key" aria-hidden="true">/</kbd>
@@ -172,7 +179,7 @@ function gallery(site, { title, lead, current, all, shown }) {
 
 export function homePage(site, packages) {
   const cats = Object.keys(CATEGORY_TEXT).filter((c) => packages.some((p) => p.category === c));
-  const body = html`${gallery(site, { title: "Agents that already do a job", lead: "Working agents for your own AgentRun. Read every instruction, install one, and it runs.", current: "all", all: packages, shown: packages })}
+  const body = html`${gallery(site, { title: "Marketplace", lead: "Working agents for your own AgentRun. Read every instruction, install one, and it runs.", current: "all", all: packages, shown: packages })}
 
 <section aria-labelledby="what" class="prose-block">
   <h2 id="what" class="caps section-label">What is in a template</h2>
@@ -208,7 +215,7 @@ export function homePage(site, packages) {
 export function freePage(site, packages) {
   const free = packages.filter(isFree);
   const path = "/free/";
-  const lead = "These run on a free model, so a run costs nothing. Each page lists the free tier's limits.";
+  const lead = "These run on a free model, so a run costs nothing. Each page lists the free tier's limits. Any template can also run on a model on your own computer, with Ollama.";
   return {
     path,
     mdPath: "/free.md",
@@ -217,6 +224,22 @@ export function freePage(site, packages) {
     jsonLd: { "@context": "https://schema.org", "@graph": [{ "@type": "CollectionPage", name: "Free templates", url: site.url(path), mainEntity: itemList(site, free) }, crumbs(site, [["Templates", "/"], ["Free", path]])] },
     body: gallery(site, { title: "Free templates", lead, current: "free", all: packages, shown: free }),
     md: ["# Free templates", "", lead, "", ...free.map((p) => `- [${mdText(p.displayName)}](${site.url(`/templates/${p.name}.md`)}): ${mdText(p.description)}`), ""].join("\n"),
+  };
+}
+
+/** The templates that start on their own when something happens, on their own page. */
+export function triggersPage(site, packages) {
+  const shown = packages.filter(isTriggered);
+  const path = "/triggers/";
+  const lead = "These start on their own when something happens: a new issue, a failed payment, a new feed item, an email. Each page says what starts it.";
+  return {
+    path,
+    mdPath: "/triggers.md",
+    title: `Agent templates that start on an event | ${SITE_NAME}`,
+    description: clip(`${plural(shown.length, "agent template")} for AgentRun that start on an app event, a feed or an email: ${shown.map((p) => p.displayName).join(", ")}.`, 160),
+    jsonLd: { "@context": "https://schema.org", "@graph": [{ "@type": "CollectionPage", name: "Templates that start on an event", url: site.url(path), mainEntity: itemList(site, shown) }, crumbs(site, [["Templates", "/"], ["Triggers", path]])] },
+    body: gallery(site, { title: "Templates that start on an event", lead, current: "triggers", all: packages, shown }),
+    md: ["# Templates that start on an event", "", lead, "", ...shown.map((p) => `- [${mdText(p.displayName)}](${site.url(`/templates/${p.name}.md`)}): ${mdText(p.description)}`), ""].join("\n"),
   };
 }
 
@@ -243,6 +266,9 @@ function homeMd(site, packages, cats) {
     ...cats.map((c) => `- [${CATEGORY_TEXT[c].title}](${site.url(`/categories/${c}.md`)}): ${CATEGORY_TEXT[c].blurb}`),
     "",
     ...(packages.some(isFree) ? [`Free to run: ${site.url("/free.md")}`, ""] : []),
+    ...(packages.some(isTriggered) ? [`Start on an event: ${site.url("/triggers.md")}`, ""] : []),
+    `Run any template on a local model: ${site.url("/ollama.md")}`,
+    "",
     `List your own: ${site.url("/list-your-template.md")}`,
     "",
   ].join("\n");
@@ -329,6 +355,20 @@ function sampleSection(pkg) {
   });
 }
 
+function installPrompt(pkg) {
+  return [
+    `Help me install the ${pkg.displayName} template on my existing AgentRun.`,
+    "",
+    `Pinned template source: ${pkg.installSource}`,
+    `Read the template and its instructions: ${pkg.treeUrl}`,
+    "",
+    "Ask for my AgentRun address or local installation directory if you do not already know it. Confirm which instance to use before making changes.",
+    "Read https://agentrun.ai/SKILL.md and inspect the installed version's template install help. Use the installation workflow that version supports.",
+    "Review this template's setup, instructions and requested tools with me, then install the pinned version on that instance with the settings and permissions I approve. Do not start a second instance or redeploy my existing one.",
+    "If this version cannot install templates, explain what is missing and the supported next step. Verify the result and tell me how to run the installed agent.",
+  ].join("\n");
+}
+
 export function templatePage(site, pkg, stats) {
   const path = `/templates/${pkg.name}/`;
   const cat = CATEGORY_TEXT[pkg.category];
@@ -338,6 +378,7 @@ export function templatePage(site, pkg, stats) {
   const triggers = triggerLines(pkg);
   // npx: a stranger has no global `agentrun`. --trust: a server's first package from a publisher is refused without it.
   const cli = `npx @parcha/agentrun template install ${pkg.installSource} --trust`;
+  const prompt = installPrompt(pkg);
   const shortSha = pkg.sha.slice(0, 7);
   const body = html`
 ${crumbNav(trail)}
@@ -352,7 +393,16 @@ ${crumbNav(trail)}
   ${pkg.setup ? html`<p class="setup">${pkg.setup}</p>` : ""}
   ${pkg.guide ? html`<p class="guide"><a href="${pkg.guide}">The setup guide</a> walks you through it step by step.</p>` : ""}
   ${unprovenWords(pkg) ? html`<p class="unproven">${unprovenWords(pkg)}</p>` : ""}
-  <p><button type="button" class="btn btn-solid" data-install="${pkg.installSource}" hidden>Install on your AgentRun</button> <button type="button" class="btn btn-ghost" data-install-forget hidden>Change address</button></p>
+  <div class="install-actions">
+    <button type="button" class="btn btn-solid" data-install="${pkg.installSource}" hidden>Install on your AgentRun</button>
+    <div class="agent-onboarding template-onboarding" data-template-onboarding>
+      <button type="button" class="btn template-prompt-trigger" data-template-picker aria-haspopup="menu" aria-expanded="false" aria-controls="template-agent-menu" hidden>Install with your agent <span aria-hidden="true">⌄</span></button>
+      <div class="agent-menu template-agent-menu" id="template-agent-menu" role="menu" aria-label="Choose your agent" hidden></div>
+    </div>
+    <button type="button" class="btn btn-ghost" data-install-forget hidden>Change address</button>
+  </div>
+  <p class="agent-feedback" role="status" data-template-feedback></p>
+  <details data-template-prompt-fallback><summary>View installation prompt</summary><pre class="code template-prompt-text"><code>${prompt}</code></pre></details>
   <p class="meta" data-install-address></p>
   <p class="or">Or from a terminal on the machine where your AgentRun runs:</p>
   <div class="cmd"><pre class="code"><code>${cli}</code></pre><button type="button" class="btn btn-sm" data-copy="${cli}" hidden>Copy</button></div>
@@ -370,6 +420,18 @@ ${crumbNav(trail)}
     <p class="row"><button type="submit" class="btn btn-solid" value="ok">Open the install screen</button> <button type="button" class="btn" data-install-cancel>Cancel</button></p>
     <p class="meta">No AgentRun yet? <code>npx @parcha/agentrun</code> starts one on your machine.</p>
   </form>
+</dialog>
+
+<dialog class="setup-dialog" data-template-prompt-dialog aria-labelledby="template-prompt-title">
+  <div class="setup-dialog-top"><span>AGENT.RUN() / INSTALL TEMPLATE</span><button class="setup-close" type="button" data-template-prompt-close aria-label="Close installation prompt" autofocus>×</button></div>
+  <div class="setup-dialog-content">
+    <h2 id="template-prompt-title">Install ${pkg.displayName} with your agent.</h2>
+    <p>Give your coding agent this prompt to install the template on your existing AgentRun.</p>
+    <div class="setup-actions"><button class="button primary" type="button" data-template-prompt-copy>Copy prompt</button><button class="button outline" type="button" data-template-prompt-download>Download Markdown</button></div>
+    <p class="setup-status" role="status" data-template-prompt-status></p>
+    <textarea aria-label="Template installation prompt" readonly spellcheck="false">${prompt}</textarea>
+    <div class="setup-source"><a href="${pkg.treeUrl}">Read the template source</a></div>
+  </div>
 </dialog>
 
 <section aria-labelledby="sample">
@@ -410,7 +472,7 @@ ${crumbNav(trail)}
     ${pkg.mcp.map((need) => html`<dt>${mcpWords(need)} tools${need.required ? "" : " (optional)"}</dt><dd>${need.reason ? html`${need.reason} ` : ""}${need.tools.map((t, k) => html`${k ? ", " : ""}<code>${t}</code>`)}${need.allow.length ? html`. Runs without asking: ${need.allow.map((t, k) => html`${k ? ", " : ""}<code>${t}</code>`)}` : ""}.</dd>`)}
     <dt>Computer</dt><dd>${upperFirst(computerWords(pkg.computer))}${pkg.checkout === "pull_request" ? ", with the pull request checked out read-only" : ""}</dd>
     <dt>Keys</dt><dd>${keys.model}${keys.secrets.length ? html`, plus ${keys.secrets.map((s, k) => html`${k ? ", " : ""}<code>${s}</code>`)}` : ""}.</dd>
-    <dt>Learning</dt><dd>${pkg.learning ? "On: it keeps notes from your corrections and earlier runs." : "Off."}</dd>
+    <dt>Learning</dt><dd>${pkg.learning ? "On: it keeps your corrections and compiles a job it repeats into a workflow." : "Off."}</dd>
     ${pkg.approvals === "never" ? html`<dt>Approvals</dt><dd>Runs unattended: no tool asks. Pins and denials still hold.</dd>` : ""}
   </dl>
 </section>
@@ -463,6 +525,7 @@ ${crumbNav(trail)}
     mdPath: `/templates/${pkg.name}.md`,
     ogType: "article",
     mainClass: "tpl-main",
+    templatePrompt: true,
     title: `${clip(pkg.displayName, 50)}: AgentRun template`,
     ogTitle: pkg.displayName,
     // The search snippet: what it does (its first sentence), then the eval line, inside 158 characters.
@@ -506,6 +569,14 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
     "```",
     "",
     `Or open \`<your AgentRun address>/#/templates/install?src=${encodeURIComponent(pkg.installSource)}\`. Pinned to commit ${pkg.sha}.`,
+    "",
+    "### Install with your agent",
+    "",
+    "Copy this prompt into your coding agent:",
+    "",
+    "```text",
+    installPrompt(pkg),
+    "```",
     "",
     "## What it does",
     "",
@@ -565,6 +636,74 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
 }
 
 // ---------- list your template ----------
+
+/** The model the Ollama page pulls (one with tool calling that fits a laptop), and the copy of it with room for a
+ *  template's prompt: Ollama loads a model at 4,096 tokens of context, and a template's first request is about 12,000. */
+const OLLAMA_TAG = "qwen3:8b";
+const OLLAMA_LOCAL = "qwen3-8b-32k";
+
+/** How to run templates on a local model through Ollama, at no cost per run. */
+export function ollamaPage(site, packages) {
+  const anyFree = packages.some(isFree);
+  const path = "/ollama/";
+  const trail = [["Templates", "/"], ["Run on Ollama", path]];
+  const envs = `AGENT_MODEL_BASE_URL=http://localhost:11434/v1 AGENT_MODEL_GATEWAY_IDS=bare AGENT_MODEL=${OLLAMA_LOCAL} AGENT_MODEL_PRICE=0,0,0 AGENT_MODEL_API_KEY=none`;
+  const service = `~/.agentrun/bin/agentrun service install ${envs.split(" ").map((e) => `--env ${e}`).join(" ")}`;
+  const background = `~/.agentrun/bin/agentrun stop
+curl -fsSL https://agentrun.ai/install | ${envs} sh`;
+  const steps = [
+    ["Install Ollama.", "On macOS or Windows, download it from ollama.com/download. On Linux:", "curl -fsSL https://ollama.com/install.sh | sh"],
+    ["Pull a model that can call tools.", `Templates search, fetch pages and write files, so the model has to call tools. ${OLLAMA_TAG} can. Check any other model with ollama show <tag>: tools must be listed under Capabilities.`, `ollama pull ${OLLAMA_TAG}
+ollama show ${OLLAMA_TAG}`],
+    ["Give it room for a template's prompt.", `Ollama loads a model with 4,096 tokens of context. A template's first request is about 12,000, and Ollama drops the start, the question included, so the agent answers that it was never asked anything. Make a copy of the model with 32,768 tokens. It needs about 10 GB of memory. On Windows, put the two lines of the Modelfile in a file with any editor, then run ollama create.`, `printf 'FROM ${OLLAMA_TAG}\\nPARAMETER num_ctx 32768\\n' > Modelfile
+ollama create ${OLLAMA_LOCAL} -f Modelfile`],
+    ["Point AgentRun at it.", "If AgentRun runs as a service, install the service again with the model. It restarts and keeps the setting:", service],
+    ["Or, if AgentRun runs in the background, stop it and start it with the same five settings.", "A background start keeps only what that line sets.", background],
+    ["Install a template.", "Pick one on this site and press Install. Every run then goes to your model, whatever model the template names, and the model costs nothing. A template that calls a paid service (monid, Parallel) still pays that service, as its page says.", null],
+  ];
+  const notes = [
+    "AGENT_MODEL_API_KEY=none is a key Ollama ignores. Without a key set, AgentRun refuses each run.",
+    "AGENT_MODEL_PRICE=0,0,0 tells AgentRun a run costs $0, so a template's spend cap still works.",
+    "A template's Tested line is measured on its own model, not yours. A small local model passes fewer cases, and on a computer without a GPU a run takes 10 to 15 minutes.",
+    "The model is local, the web is not. Searches and page fetches still go out to the web. Search needs no key: it goes through Exa's keyless tier, or through Parallel when you set PARALLEL_API_KEY.",
+  ];
+  const body = html`
+<section class="hero">
+  <h1>Run templates on Ollama</h1>
+  <p class="lead">Ollama runs a model on your own computer. Point AgentRun at it and you pay nothing for the model, and nothing you send leaves your machine for a model provider. Paid tools a template calls still cost what they cost.</p>
+</section>
+<section aria-labelledby="steps">
+  <h2 id="steps" class="caps section-label">Set it up</h2>
+  <ol class="steps">${steps.map(([h, p, code]) => html`<li><strong>${h}</strong> ${p}${code ? html`<pre class="code" tabindex="0"><code>${code}</code></pre>` : ""}</li>`)}</ol>
+</section>
+<section aria-labelledby="know">
+  <h2 id="know" class="caps section-label">Before you start</h2>
+  <ul class="plain">${notes.map((n) => html`<li>${n}</li>`)}</ul>
+  ${anyFree ? html`<p>Templates that already prefer a free hosted model are on the <a href="/free/">Free</a> tab.</p>` : ""}
+</section>`;
+  return {
+    path,
+    mdPath: "/ollama.md",
+    title: `Run AgentRun templates on Ollama | ${SITE_NAME}`,
+    description: `Run AgentRun templates on a local model with Ollama: install it, pull ${OLLAMA_TAG} with room for a template's prompt, set five variables, and the model costs nothing.`,
+    jsonLd: { "@context": "https://schema.org", "@graph": [{ "@type": "HowTo", name: "Run AgentRun templates on Ollama", url: site.url(path), step: steps.map(([h], k) => ({ "@type": "HowToStep", position: k + 1, text: h })) }, crumbs(site, trail)] },
+    body,
+    md: [
+      "# Run templates on Ollama",
+      "",
+      "Ollama runs a model on your own computer. Point AgentRun at it and you pay nothing for the model, and nothing you send leaves your machine for a model provider. Paid tools a template calls still cost what they cost.",
+      "",
+      "## Set it up",
+      "",
+      ...steps.flatMap(([h, p, code], k) => [`${k + 1}. ${h} ${p}`, ...(code ? ["", "   ```sh", ...code.split("\n").map((l) => `   ${l}`), "   ```"] : []), ""]),
+      "## Before you start",
+      "",
+      ...notes.map((n) => `- ${n}`),
+      "",
+      ...(anyFree ? [`Templates that already prefer a free hosted model: ${site.url("/free.md")}`, ""] : []),
+    ].join("\n"),
+  };
+}
 
 export function listPage(site) {
   const path = "/list-your-template/";

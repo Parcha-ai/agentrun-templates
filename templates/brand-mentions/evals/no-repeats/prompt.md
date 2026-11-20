@@ -1,5 +1,5 @@
 ---
-description: "Yesterday's list already had a Show HN post about building on Ledgerly's API. Today it has more points but nothing else changed; a new Trustpilot review says a bank feed has failed for three days, and a new Glassdoor review appeared, which a learned note says the owner doesn't want. The list holds only the Trustpilot review, marked worth answering; the HN post sits in dropped_repeats."
+description: "Yesterday's list already had a Show HN post about building on Ledgerly's API. Today it has more points but nothing else changed; a new Trustpilot review says a bank feed has failed for three days, and a new Glassdoor review appeared, which the owner's correction says they don't want. The list holds only the Trustpilot review, marked worth answering; the HN post sits in dropped_repeats."
 runs: 3
 max_cost_usd: 1.50
 input:

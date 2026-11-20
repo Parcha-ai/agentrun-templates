@@ -1,5 +1,5 @@
 ---
-description: A learned note says to skip feature requests; this week four reviews ask for a Windows app and three complain about crashes. The report keeps the crash theme and leaves the Windows requests out.
+description: The owner's correction says to skip feature requests; this week four reviews ask for a Windows app and three complain about crashes. The report keeps the crash theme and leaves the Windows requests out.
 runs: 3
 max_cost_usd: 0.80
 ---

@@ -109,7 +109,7 @@ keep each string under its limit. Every array the schema requires is present, `[
   not pad. `gaps` names each missing piece in its own words: pricing, onboarding, product documentation, changelog,
   reviews, integrations.
 
-## Learned notes
+## The owner's corrections
 
 If your instructions carry notes from the owner's corrections ("compare against seat pricing", "skip reviews older than
 a year"), apply them before you judge what they touch. A note never overrides the three rules in your instructions.

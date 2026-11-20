@@ -5,21 +5,23 @@
 
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { GitHub } from "./lib/github.mjs";
 import { loadPackage, readIndex, SiteError } from "./lib/packages.mjs";
-import { CATEGORY_TEXT, isFree, requirements } from "./lib/describe.mjs";
-import { categoryPage, freePage, homePage, layout, listPage, notFoundPage, SITE_NAME, templatePage } from "./lib/pages.mjs";
+import { CATEGORY_TEXT, isFree, isTriggered, requirements } from "./lib/describe.mjs";
+import { categoryPage, freePage, homePage, layout, listPage, notFoundPage, SITE_NAME, ollamaPage, templatePage, triggersPage } from "./lib/pages.mjs";
+import { checkWebsite } from "./sync-website.mjs";
 import { mdText } from "./lib/util.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
-/** The console's two families (@fontsource, pinned in package.json); their latin 400 and 600 files are served. */
-const FONTS = ["jetbrains-mono", "schibsted-grotesk"];
+/** Self-host the website's typefaces and the weights this site uses. */
+const FONTS = { "jetbrains-mono": [400, 500, 600], inter: [400, 500, 600] };
 
 export async function build(options = {}) {
+  checkWebsite();
   const root = resolve(options.root ?? join(here, ".."));
   const out = resolve(options.out ?? join(here, "dist"));
   const baseUrl = String(options.baseUrl ?? process.env.SITE_BASE_URL ?? "https://marketplace.agentrun.ai").replace(/\/+$/, "");
@@ -56,7 +58,10 @@ export async function build(options = {}) {
 
   const assetsDir = join(here, "assets");
   const assetFiles = readdirSync(assetsDir).sort();
-  const assetVersion = createHash("sha256").update(assetFiles.map((f) => readFileSync(join(assetsDir, f))).join("\0")).digest("hex").slice(0, 10);
+  const assetVersion = createHash("sha256")
+    .update(assetFiles.map((f) => readFileSync(join(assetsDir, f))).join("\0"))
+    .update(readFileSync(join(here, "vendor/agentrun-website/source.json")))
+    .digest("hex").slice(0, 10);
   const site = {
     baseUrl,
     url: (path) => `${baseUrl}${path}`,
@@ -68,12 +73,14 @@ export async function build(options = {}) {
 
   const pages = [homePage(site, packages)];
   if (packages.some(isFree)) pages.push(freePage(site, packages));
+  if (packages.some(isTriggered)) pages.push(triggersPage(site, packages));
   for (const pkg of packages) pages.push(templatePage(site, pkg, stats.get(`${pkg.owner}/${pkg.repo}`)));
   for (const cat of Object.keys(CATEGORY_TEXT)) {
     const inCat = packages.filter((p) => p.category === cat);
     if (inCat.length) pages.push(categoryPage(site, cat, inCat, packages));
   }
   pages.push(listPage(site));
+  pages.push(ollamaPage(site, packages));
   const notFound = notFoundPage();
 
   rmSync(out, { recursive: true, force: true });
@@ -88,10 +95,11 @@ export async function build(options = {}) {
     if (page.mdPath) write(page.mdPath, page.md);
   }
   mkdirSync(join(out, "assets", "fonts"), { recursive: true });
+  cpSync(join(here, "vendor/agentrun-website/public"), out, { recursive: true });
   for (const f of assetFiles) copyFileSync(join(assetsDir, f), join(out, "assets", f));
-  for (const font of FONTS) {
+  for (const [font, weights] of Object.entries(FONTS)) {
     const pkg = join(here, "node_modules", "@fontsource", font);
-    for (const weight of [400, 600]) copyFileSync(join(pkg, "files", `${font}-latin-${weight}-normal.woff2`), join(out, "assets", "fonts", `${font}-latin-${weight}-normal.woff2`));
+    for (const weight of weights) copyFileSync(join(pkg, "files", `${font}-latin-${weight}-normal.woff2`), join(out, "assets", "fonts", `${font}-latin-${weight}-normal.woff2`));
     copyFileSync(join(pkg, "LICENSE"), join(out, "assets", "fonts", `${font}-LICENSE.txt`));
   }
   write(".nojekyll", "");

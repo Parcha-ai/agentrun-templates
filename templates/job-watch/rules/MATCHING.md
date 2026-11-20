@@ -36,8 +36,12 @@ undisclosed client", never guessed.
 
 ## Fresh, stale, closed
 
-- New: posted (or reopened) inside the window, or older but new to the record, still open and posted or refreshed in the
-  last 30 days, with its real date.
+- New: the skill's step 3 rule, and only that one: posted, reopened or refreshed inside the window, with its real date.
+  A posting dated before the window's start is not new.
+- Shown before: only what the last run's `watched` holds: the postings shown in the last 14 days, at most 150. When an
+  answer is too large to hand on whole, the next run gets its carried fields alone, the earliest shown dropped first to
+  fit; a posting not in `watched` is not known, and when it is reopened or re-dated inside the window it is reported
+  again.
 - Stale: older than about 30 days with no refresh. Dropped.
 - Closed: "no longer accepting applications", a 404 or a redirect to the jobs index. Never listed; a closed posting you
   reported before gets a line in `changes`.

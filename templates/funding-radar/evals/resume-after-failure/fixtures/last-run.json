@@ -1,0 +1,29 @@
+{
+  "agentrun": "3688f4156fc94c39e706a61a1b0ade28c8cb8acb",
+  "run_id": "01a1cf00-0000-7000-8000-00000000f202",
+  "ended_at": "2026-11-09T08:01:55Z",
+  "output": {
+    "window": {
+      "from": "2026-11-02",
+      "to": "2026-11-09"
+    },
+    "quiet": false,
+    "sectors": [
+      {
+        "query": "fintech",
+        "permalink": "fintech-e067",
+        "name": "FinTech"
+      }
+    ],
+    "rounds": [],
+    "matched_total": null,
+    "reported_deal_ids": [],
+    "unread_from": "2026-11-02",
+    "could_not_check": [
+      "Fundable deals search failed: monid could not be reached."
+    ],
+    "ignored_instructions": [],
+    "monid_calls": 2,
+    "report_markdown": "## Funding radar: fintech seed, 2026-11-02 to 2026-11-09\n\nThe Fundable deals search failed (monid could not be reached), so no round was read. Rounds added since 2026-11-02 could not be read; the next run reads them.\n\nmonid calls this run: 2"
+  }
+}

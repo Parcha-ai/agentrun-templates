@@ -1,0 +1,41 @@
+# Checks that every template's eval cases still parse under the latest released AgentRun server, the way
+# `agentrun-serve eval-template` reads them before its first run. Nothing runs: no model, no key, no spend.
+# A release can refuse a case field (beta.45 made a case's `learning` one corrections file); the daily run
+# catches that before a user's first eval does, even with no push here.
+name: evals-parse
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      AGENTRUN_TELEMETRY: "0"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.22.3
+      # No `# Learned` string and no "What you remember" heading in any template: the runtime names the owner's
+      # corrections itself, and a run's state travels only as its run history.
+      - run: node .github/lint-templates.mjs
+      # A scheduled run's last answer is handed whole under 32 KiB, else its `x-carried` fields alone, the oldest entries
+      # of its carried arrays dropped to fit: every carried field must be bounded, and the ones never cut fit 12,000 bytes.
+      - run: node --test .github/lint-handoff-size.test.mjs
+      - run: node .github/lint-handoff-size.mjs
+      # `latest` is the dist-tag every AgentRun release is published under.
+      - run: npm install --prefix "$RUNNER_TEMP/serve" --no-save --no-audit --no-fund --ignore-scripts @parcha/agentrun-serve@latest
+      - run: node .github/parse-evals.mjs "$RUNNER_TEMP/serve"
+      # Each template's own cap covers one step and an answer on every harness it lists, on the model it was measured on,
+      # as the server warns at save; below that, every run stops at its first tool call (inbox-assistant paused at once).
+      - run: node .github/lint-caps.mjs "$RUNNER_TEMP/serve"

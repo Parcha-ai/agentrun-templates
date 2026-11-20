@@ -1,5 +1,5 @@
-# The agent starts with one learned note, as if the owner had told an earlier run to skip framework agreements.
+# The agent starts with one correction, as if the owner had told an earlier run to skip framework agreements.
 parameters:
   offering: "penetration testing services"
   regions: ["Netherlands"]
-learning: fixtures/learning
+learning: fixtures/learning/corrections.md

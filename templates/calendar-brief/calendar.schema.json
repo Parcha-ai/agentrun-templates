@@ -63,7 +63,8 @@
           "note": { "type": "string", "minLength": 1, "maxLength": 600, "description": "1 to 3 sentences from the sources, or 'No public information found for <domain>.'" },
           "sources": { "type": "array", "maxItems": 3, "items": { "$ref": "#/$defs/link" } },
           "found": { "type": "boolean", "description": "false when nothing verifiable was found, or the domain is a personal-mail one" },
-          "repeat": { "type": "boolean", "description": "true when the note was reused from a brief of the last 7 days rather than looked up again" }
+          "repeat": { "type": "boolean", "description": "true when the note was reused from a brief of the last 7 days rather than looked up again" },
+          "noted_on": { "type": ["string", "null"], "format": "date", "description": "the day the note was looked up: today, or carried from the last brief when reused" }
         }
       }
     },

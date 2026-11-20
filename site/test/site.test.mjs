@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { frontMatter, parseYaml } from "../lib/yaml.mjs";
 import { fillParameters, parseGithubSource, readIndex, siteName } from "../lib/packages.mjs";
 import { markdownToHtml } from "../lib/markdown.mjs";
-import { cronWords, factsShort, isFree, keyWords, provenWords, requirements, testedLine, triggerLines, unprovenWords } from "../lib/describe.mjs";
+import { cronWords, factsShort, isFree, isTriggered, keyWords, provenWords, requirements, testedLine, triggerLines, unprovenWords } from "../lib/describe.mjs";
 import { build } from "../build.mjs";
 import { check } from "../check.mjs";
 import { CSP, SECURITY_HEADERS, siteServer } from "../lib/server.mjs";
@@ -239,6 +239,14 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.deepEqual(problems, []);
     const page = readFileSync(join(out, "templates", "sample-watch", "index.html"), "utf8");
     assert.match(page, new RegExp(`data-install="github:Parcha-ai/agentrun-templates/templates/sample-watch@${SHA}"`));
+    // The coding-agent path carries this listing's immutable source, distinct from header setup.
+    assert.match(page, /data-template-picker[^>]*>Install with your agent/);
+    assert.match(page, /<dialog class="setup-dialog" data-template-prompt-dialog aria-labelledby="template-prompt-title">/);
+    assert.match(page, /<textarea aria-label="Template installation prompt"[^>]*>Help me install the Sample watch template on my existing AgentRun\./);
+    assert.match(page, new RegExp(`Pinned template source: github:Parcha-ai/agentrun-templates/templates/sample-watch@${SHA}`));
+    assert.match(page, /<details data-template-prompt-fallback>/, "the prompt is readable without JavaScript");
+    assert.match(page, /<script src="\/assets\/template-prompt\.js\?v=[a-f0-9]+" defer><\/script>/);
+    assert.match(readFileSync(join(out, "templates", "sample-watch.md"), "utf8"), /### Install with your agent[\s\S]*Pinned template source: github:Parcha-ai\/agentrun-templates\/templates\/sample-watch@/);
     assert.match(page, /npx @parcha\/agentrun template install github:Parcha-ai\/agentrun-templates\/templates\/sample-watch@[0-9a-f]{40} --trust/);
     assert.match(page, /<code>company<\/code>/);
     assert.match(page, /integer, 1 to 50/);
@@ -262,9 +270,23 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.deepEqual([...reqs.matchAll(/<span class="req-tip">([^<]*)<\/span>/g)].map((m) => m[1]), ["Requires web search, through Exa", "Requires web fetch", "Runs on a schedule", "Can use GitHub, through the AgentRun GitHub App (optional)"]);
     assert.doesNotMatch(page, /Dependencies/);
     const home = readFileSync(join(out, "index.html"), "utf8");
+    assert.match(home, /<h1>Marketplace<\/h1>/);
+    assert.equal(home.match(/<h1>/g)?.length, 1);
+    assert.match(home, /class="hero gallery-hero hero-home"[\s\S]*?<a class="btn btn-sm gallery-action" href="\/list-your-template\/">List your template<\/a>/);
     // A card: title, summary, logos. No pills.
     assert.match(home, /<li class="card tpl" data-name="sample-watch">\s*<h3><a href="\/templates\/sample-watch\/">Sample watch<\/a><\/h3>\s*<p class="desc">Watches one topic every week and tells you what changed, each item dated and linked\.<\/p>\s*<ul class="reqs" aria-label="What it requires"><li class="req" tabindex="0"><img src="\/assets\/logo-exa\.svg[^>]*><span class="req-tip">[^<]*<\/span><\/li>[\s\S]*?<\/ul>\s*<\/li>/);
     assert.doesNotMatch(home, /median|\$0\.0|class="chip/, "no cost and no pills on a card");
+    // The shared website header is followed directly by page content, without a duplicate navigation row.
+    for (const file of ["index.html", "templates/sample-watch/index.html", "categories/research/index.html", "list-your-template/index.html", "404.html"]) {
+      const rendered = readFileSync(join(out, file), "utf8");
+      assert.equal(rendered.match(/<header class="marketing-header">/g)?.length, 1, file);
+      assert.match(rendered, /<link rel="stylesheet" href="\/assets\/header\.css\?v=[a-f0-9]+">/);
+      assert.match(rendered, /<a href="https:\/\/agentrun\.ai\/platform\/self-improving">/);
+      assert.doesNotMatch(rendered, /market-nav|Browse templates/);
+      assert.match(rendered, /<script type="module" src="\/assets\/header\.js\?v=[a-f0-9]+"><\/script>/);
+      assert.match(rendered, /<link rel="stylesheet" href="\/homepage\/onboarding\.css\?v=[a-f0-9]+">/);
+      assert.match(rendered, /data-shared-onboarding/);
+    }
     const listing = readFileSync(join(out, "list-your-template", "index.html"), "utf8");
     assert.match(listing, /<button[^>]*data-copy="Help me list my AgentRun template[^"]*template validate[^"]*"[^>]*hidden>Copy prompt<\/button>/, "the agent prompt has a copy button");
     assert.match(readFileSync(join(out, "list-your-template.md"), "utf8"), /## Have your agent list it[\s\S]*Help me list my AgentRun template/);
@@ -275,6 +297,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.doesNotMatch(home, /href="\/free\/"/);
     assert.equal(existsSync(join(out, "free", "index.html")), false);
     const category = readFileSync(join(out, "categories", "research", "index.html"), "utf8");
+    assert.match(category, /<a class="btn btn-sm gallery-action" href="\/list-your-template\/">List your template<\/a>/);
     assert.match(category, /<a href="\/categories\/research\/" aria-current="page">Research <span class="n">1<\/span><\/a>/);
     assert.match(category, /<input id="q" name="q" type="search"[^>]*data-search>/, "a category page searches its own cards");
     // The address box takes what people type ("agentrun.example.com"): the script adds https, the browser must not refuse it first.
@@ -282,7 +305,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.match(page, /<input id="ar-address" name="address" type="text" inputmode="url"/);
     // Sample output comes right after Install, before the details.
     assert.ok(page.indexOf('id="sample"') < page.indexOf('id="does"') && page.indexOf('id="install"') < page.indexOf('id="sample"'));
-    // Square corners everywhere: every radius in the stylesheet is 0.
+    // Marketplace surfaces stay square; shared website onboarding keeps its own styling.
     const css = readFileSync(join(out, "assets", "site.css"), "utf8");
     assert.deepEqual([...css.matchAll(/(?:border-radius|-radius):\s*([^;}]+)/g)].map((m) => m[1].trim()).filter((v) => v !== "0" && v !== "var(--ar-card-radius)" && v !== "var(--ar-control-radius)"), []);
     assert.match(css, /--ar-control-radius: 0;/);
@@ -295,7 +318,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.doesNotMatch(page, /<script>alert|<img src=x|href="javascript:/);
     assert.doesNotMatch(page, /googleapis|gstatic/);
     assert.doesNotMatch(page, /http-equiv/, "the CSP is a header the server sends, not a meta tag");
-    for (const f of ["jetbrains-mono-latin-400-normal.woff2", "schibsted-grotesk-latin-600-normal.woff2", "jetbrains-mono-LICENSE.txt"]) {
+    for (const f of ["jetbrains-mono-latin-400-normal.woff2", "inter-latin-600-normal.woff2", "jetbrains-mono-LICENSE.txt"]) {
       assert.ok(readFileSync(join(out, "assets", "fonts", f)).length > 0, f);
     }
     const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
@@ -393,6 +416,74 @@ test("a template that prefers a free model gets the Free tab and the /free/ page
   }
 });
 
+test("a template that starts on an event gets the Triggers tab and the /triggers/ page; a schedule alone does not", async () => {
+  // The fixture's only trigger is a schedule: no Triggers tab (the first build test checks its tabs). Add a feed.
+  assert.equal(isTriggered({ triggers: [{ source: { kind: "schedule", cron: "0 9 * * 1" } }] }), false);
+  assert.equal(isTriggered({ triggers: [] }), false);
+  assert.equal(isTriggered({}), false);
+  for (const kind of ["composio", "feed", "email", "github", "webhook"]) assert.equal(isTriggered({ triggers: [{ source: { kind } }] }), true, kind);
+  const root = mkdtempSync(join(tmpdir(), "site-triggers-"));
+  const out = mkdtempSync(join(tmpdir(), "site-dist-"));
+  const cache = mkdtempSync(join(tmpdir(), "site-cache-"));
+  try {
+    cpSync(fixture, root, { recursive: true });
+    const manifest = join(root, "templates", "sample-watch", "agent.md");
+    const text = readFileSync(manifest, "utf8");
+    const feed = text.replace("triggers:\n", 'triggers:\n  - name: news\n    source: { kind: feed, urls: ["https://example.com/feed.xml"] }\n    target: { kind: start_run, input: { content: "A new item." } }\n');
+    assert.notEqual(feed, text, "the fixture has a triggers list to add to");
+    writeFileSync(manifest, feed);
+    // A second template, on its schedule alone: in All, never on the Triggers page.
+    cpSync(join(root, "templates", "sample-watch"), join(root, "templates", "sample-digest"), { recursive: true });
+    writeFileSync(join(root, "templates", "sample-digest", "agent.md"), text.replace("name: sample-watch", "name: sample-digest").replace('display_name: "Sample watch:', 'display_name: "Sample digest:'));
+    const index = join(root, ".agentrun", "marketplace.json");
+    const market = JSON.parse(readFileSync(index, "utf8"));
+    market.templates.push({ ...market.templates[0], name: "sample-digest", source: "./templates/sample-digest", summary: "Sends one digest of a topic every week, on a schedule and nothing else." });
+    writeFileSync(index, JSON.stringify(market));
+    await build({ root, out, sha: SHA, offline: true, cacheDir: cache, log: () => {} });
+    assert.deepEqual(check({ dir: out, baseUrl: "https://marketplace.agentrun.ai" }).problems, []);
+    const home = readFileSync(join(out, "index.html"), "utf8");
+    assert.match(home, /<a href="\/" aria-current="page">All <span class="n">2<\/span><\/a><a href="\/triggers\/">Triggers <span class="n">1<\/span><\/a><a href="\/categories\/research\/">/);
+    assert.match(home, /<li class="card tpl" data-name="sample-digest">/, "the schedule-only template is in All");
+    const page = readFileSync(join(out, "triggers", "index.html"), "utf8");
+    assert.match(page, /<h1>Templates that start on an event<\/h1>/);
+    assert.match(page, /<a href="\/triggers\/" aria-current="page">Triggers <span class="n">1<\/span><\/a>/);
+    assert.match(page, /<form class="search" role="search" action="\/triggers\/" method="get">/);
+    assert.deepEqual([...page.matchAll(/<li class="card tpl" data-name="([^"]+)">/g)].map((m) => m[1]), ["sample-watch"]);
+    const md = readFileSync(join(out, "triggers.md"), "utf8");
+    assert.match(md, /^# Templates that start on an event\n[\s\S]*\[Sample watch\]\(https:\/\/marketplace\.agentrun\.ai\/templates\/sample-watch\.md\)/);
+    assert.doesNotMatch(md, /sample-digest|Sample digest/);
+    assert.match(readFileSync(join(out, "sitemap.xml"), "utf8"), /<loc>https:\/\/marketplace\.agentrun\.ai\/triggers\/<\/loc>/);
+    assert.match(readFileSync(join(out, "index.md"), "utf8"), /^Start on an event: https:\/\/marketplace\.agentrun\.ai\/triggers\.md$/m);
+  } finally {
+    for (const d of [root, out, cache]) rmSync(d, { recursive: true, force: true });
+  }
+});
+
+test("learning reads as on for true and for an object of the loop's settings, and says what it keeps", async () => {
+  const root = mkdtempSync(join(tmpdir(), "site-learning-"));
+  const cache = mkdtempSync(join(tmpdir(), "site-cache-"));
+  const outs = [];
+  try {
+    cpSync(fixture, root, { recursive: true });
+    const manifest = join(root, "templates", "sample-watch", "agent.md");
+    const text = readFileSync(manifest, "utf8");
+    for (const [value, on] of [["true", true], ["{ agree_on: [summary_markdown], compile_after: 5 }", true], ["false", false]]) {
+      const changed = text.replace(/^learning: true$/m, `learning: ${value}`);
+      assert.ok(value === "true" || changed !== text, "the fixture has learning: true to replace");
+      writeFileSync(manifest, changed);
+      const out = mkdtempSync(join(tmpdir(), "site-dist-"));
+      outs.push(out);
+      await build({ root, out, sha: SHA, offline: true, cacheDir: cache, log: () => {} });
+      const page = readFileSync(join(out, "templates", "sample-watch", "index.html"), "utf8");
+      const said = /<dt>Learning<\/dt><dd>([^<]*)<\/dd>/.exec(page)?.[1];
+      assert.equal(said, on ? "On: it keeps your corrections and compiles a job it repeats into a workflow." : "Off.", `learning: ${value}`);
+      assert.match(readFileSync(join(out, "templates", "sample-watch.md"), "utf8"), new RegExp(`^- Learning: ${on ? "on" : "off"}$`, "m"), `learning: ${value}`);
+    }
+  } finally {
+    for (const d of [root, cache, ...outs]) rmSync(d, { recursive: true, force: true });
+  }
+});
+
 test("a template proven live shows a logo saying against which accounts and when; a free model is recognised", () => {
   const pkg = { tools: [], triggers: [], mcp: [{ source: "composio", toolkit: "gmail", required: true }, { source: "composio", toolkit: "slack", required: true }], provenLive: "2026-11-20" };
   assert.equal(provenWords(pkg), "Proven live against real Gmail and Slack accounts on 2026-11-20");
@@ -403,4 +494,31 @@ test("a template proven live shows a logo saying against which accounts and when
   assert.equal(isFree({ model: { prefer: "openrouter/inclusionai/ling-3.2-flash:free" } }), true);
   assert.equal(isFree({ model: { prefer: "openrouter/inclusionai/ling-3.2-flash" } }), false);
   assert.equal(isFree({}), false);
+});
+
+test("the Ollama page gives the install, the pull and the five settings, and the footer links it", async () => {
+  const out = mkdtempSync(join(tmpdir(), "site-dist-"));
+  const cache = mkdtempSync(join(tmpdir(), "site-cache-"));
+  try {
+    await build({ root: fixture, out, sha: SHA, offline: true, cacheDir: cache, log: () => {} });
+    assert.deepEqual(check({ dir: out, baseUrl: "https://marketplace.agentrun.ai" }).problems, []);
+    const page = readFileSync(join(out, "ollama", "index.html"), "utf8");
+    assert.match(page, /<h1>Run templates on Ollama<\/h1>/);
+    assert.match(page, /curl -fsSL https:\/\/ollama\.com\/install\.sh \| sh/);
+    assert.match(page, /ollama pull qwen3:8b/);
+    // Ollama's 4,096-token default drops a template's question; the page makes a 32k copy and names that copy.
+    assert.match(page, /printf &#39;FROM qwen3:8b\\nPARAMETER num_ctx 32768\\n&#39; &gt; Modelfile\nollama create qwen3-8b-32k -f Modelfile/);
+    // The five settings a run needs, each as a service --env: the base URL, bare ids, the model, a $0 price and the ignored key.
+    for (const env of ["AGENT_MODEL_BASE_URL=http://localhost:11434/v1", "AGENT_MODEL_GATEWAY_IDS=bare", "AGENT_MODEL=qwen3-8b-32k", "AGENT_MODEL_PRICE=0,0,0", "AGENT_MODEL_API_KEY=none"]) {
+      assert.ok(page.includes(`--env ${env}`), env);
+    }
+    const md = readFileSync(join(out, "ollama.md"), "utf8");
+    assert.match(md, /^# Run templates on Ollama\n/);
+    assert.match(md, /^ {3}~\/\.agentrun\/bin\/agentrun service install --env AGENT_MODEL_BASE_URL=/m);
+    assert.match(readFileSync(join(out, "index.html"), "utf8"), /<li><a href="\/ollama\/">Run on Ollama<\/a><\/li>/);
+    assert.match(readFileSync(join(out, "index.md"), "utf8"), /^Run any template on a local model: https:\/\/marketplace\.agentrun\.ai\/ollama\.md$/m);
+    assert.match(readFileSync(join(out, "sitemap.xml"), "utf8"), /<loc>https:\/\/marketplace\.agentrun\.ai\/ollama\/<\/loc>/);
+  } finally {
+    for (const d of [out, cache]) rmSync(d, { recursive: true, force: true });
+  }
 });

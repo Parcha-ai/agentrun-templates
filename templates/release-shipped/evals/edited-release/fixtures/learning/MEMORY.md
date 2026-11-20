@@ -1,1 +1,0 @@
-- [Announced releases](announced.md) — the releases of acme/lantern already announced in Slack

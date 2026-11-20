@@ -1,5 +1,5 @@
 ---
-description: "Last week's brief reported a Commission consultation on a draft act amending the sustainability reporting standards (feedback due 1 December) and the Council's position on the reporting omnibus. This week the Commission extended the feedback period to 15 December, the Council page shows nothing new, and EFRAG published a Q&A batch that a learned note says the owner doesn't want. The brief holds only the extended deadline as an update."
+description: "Last week's brief reported a Commission consultation on a draft act amending the sustainability reporting standards (feedback due 1 December) and the Council's position on the reporting omnibus. This week the Commission extended the feedback period to 15 December, the Council page shows nothing new, and EFRAG published a Q&A batch that the owner's correction says they don't want. The brief holds only the extended deadline as an update."
 runs: 3
 max_cost_usd: 1.50
 input:

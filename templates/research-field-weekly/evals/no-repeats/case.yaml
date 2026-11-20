@@ -2,5 +2,5 @@
 parameters:
   field: "Single-cell RNA sequencing methods"
 # The run starts with the input in prompt.md's front matter; prompt.md's body is its content.
-# The agent starts with these learned notes (MEMORY.md and its notes, in the learning folder's format).
-learning: fixtures/learning
+# The agent starts with these corrections (fixtures/learning/corrections.md).
+learning: fixtures/learning/corrections.md

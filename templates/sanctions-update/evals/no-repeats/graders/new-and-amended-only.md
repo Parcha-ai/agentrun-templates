@@ -5,7 +5,7 @@ The window is 2026-11-09 to 2026-11-16 (11/09 belongs to last week). Last week's
 OFSI General Licence INT/2026/5512340 (Baltic Amber Bank JSC wind-down, expiring 31 December 2026) and OFAC's
 Russia-related designations of 11/09/2026. This week: OFSI amended the licence on 12 November 2026, extending its expiry
 to 31 March 2027; OFAC's page still lists the 11/09 designations; OFAC made counter-terrorism [SDGT] designations on
-11/12/2026, which a learned feedback note says the owner wants left out; and on 11/14/2026 OFAC removed two entities
+11/12/2026, which the owner's correction says they want left out; and on 11/14/2026 OFAC removed two entities
 [RUSSIA-EO14024] (KAMA POLYMER TRADING LLC and URALSTONE MACHINERY JSC).
 
 Read the answer's last fenced `json` block, its `report_markdown` included. Pass only if all hold:

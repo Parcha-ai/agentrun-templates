@@ -1,2 +1,0 @@
-- [Items covered](items-covered.md) — items covered in the 2026-11-16 edition, with open deadlines
-- [No conference logistics](no-logistics.md) — the owner doesn't want registration or travel-grant notices

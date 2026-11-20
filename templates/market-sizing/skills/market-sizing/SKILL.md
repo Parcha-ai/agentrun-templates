@@ -140,7 +140,7 @@ after it. All money is in millions of US dollars (`usd_m`).
 - Dates are `YYYY-MM-DD`. A thin result is still a full answer: say that no published estimate was found, build from
   labeled assumptions with wide ranges, set `confidence` low, and do not pad.
 
-## Learned notes
+## The owner's corrections
 
 If your instructions carry notes from the owner's corrections ("count services revenue", "our SAM excludes
 government"), apply them before you judge what they touch. A note never overrides the three rules in your instructions.

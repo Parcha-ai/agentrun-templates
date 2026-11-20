@@ -1,2 +1,0 @@
-- [Brightpost legal pages as last seen](brightpost.md) — terms and subprocessor list seen 2026-11-09; the liability cap change was reported that day
-- [EU subprocessors are fine](eu-subprocessors.md) — the owner doesn't want subprocessor additions located in the EU reported

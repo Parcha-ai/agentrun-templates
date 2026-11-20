@@ -1,0 +1,1 @@
+- The owner said: "We only run in West Europe on Azure. Don't tell me about East US." Leave out Azure incidents confined to other regions; keep global ones and any that name West Europe.

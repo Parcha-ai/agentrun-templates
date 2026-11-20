@@ -11,8 +11,8 @@ node site/serve.mjs          # http://127.0.0.1:7420/, with the production serve
 npm test --prefix site
 ```
 
-Node 24, git, and three pinned dependencies: `marked` for Markdown, and the console's fonts,
-`@fontsource/jetbrains-mono` and `@fontsource/schibsted-grotesk` (latin 400 and 600, copied into
+Node 24, git, and three pinned dependencies: `marked` for Markdown, and the website's fonts,
+`@fontsource/jetbrains-mono` and `@fontsource/inter` (latin 400, 500 and 600, copied into
 `dist/assets/fonts` with their OFL licence). A page loads nothing from another origin; `check.mjs` fails the build if
 one does.
 
@@ -54,7 +54,7 @@ one does.
 
 Package text (instructions, skills, sample reports) is third-party: raw HTML in it renders as text, links keep only
 http(s), mailto and in-page targets, and images become links. The server sends a Content-Security-Policy that allows
-only this site's own script, styles, fonts and images, nothing inline, and no framing.
+only this site's own scripts, styles, fonts and images, nothing inline, and no framing.
 
 Structured data is `SoftwareApplication` per template: a template is one installable, versioned, licensed package
 from a publisher, which is what that type describes. `HowTo` was the other option; Google stopped showing HowTo
@@ -63,19 +63,46 @@ and every page below the home has a `BreadcrumbList`.
 
 ## Look
 
-The site looks like agentrun.ai and the AgentRun console: the `agent.run()` wordmark, agentrun.ai's dark surfaces and
-orange, mono headings and nav in sentence case, dark words on orange buttons, square corners, and its footer columns.
-Light follows the system with the console's light tokens. Search matches a template's name, description, tags and what
-it requires ("slack", "free"); `/` focuses it and Escape clears it.
+The site uses agentrun.ai's dark graphite surfaces, orange accents, Inter headings and prose, JetBrains Mono
+controls, square marketplace cards and controls, and footer wordmark. Shared onboarding controls keep the website’s styling. It stays dark regardless of the system preference, like the website.
+Search matches a template's name, description, tags and what it requires ("slack", "free"); `/` focuses it and
+Escape clears it.
+
+Every page renders the same marketing header as the website, including its Platform dropdown, GitHub, Docs,
+Blog, Changelog and Cloud links, plus the Get started agent picker. The website owns its markup and CSS; a pinned copy lives in
+`vendor/agentrun-website/header.json` and `assets/header.css`. The marketplace renderer only makes website-relative
+links absolute so they work from template/category pages. The navigation uses static HTML; the Get started picker and setup dialog use the website’s shared native module.
+The logo, agent icons, setup instructions, onboarding styles and module are also pinned and served locally.
+The website's optional GitHub stars badge retains its generated hidden state; no third-party runtime request is added.
+Gallery pages put “List your template” beside the page title, with category tabs below. Template and listing pages use breadcrumbs, so no second navigation row repeats the marketplace title.
+
+To refresh the shared header from a reviewed website commit:
+
+```sh
+node site/sync-website.mjs --source /path/to/agentrun-website --ref <commit>
+node site/sync-website.mjs --check
+```
+
+The source commit and file hashes are saved in `vendor/agentrun-website/source.json`. Builds verify these hashes,
+so edit the website source and sync it instead of independently changing the marketplace header. Regular builds
+need no sibling checkout or network access for the header. The sync command reads committed files and leaves
+uncommitted website work alone.
 
 No small caps label sits above a page title, and section headings are sentence case at a readable size. A template
 page keeps its breadcrumb; no other page has one.
 
 ## Install button
 
-It asks once for the reader's AgentRun address, with or without `https://` (kept in this browser's localStorage under
-`agentrun.marketplace.address`, sent nowhere) and opens `<address>/#/templates/install?src=<source>@<sha>`. Without
-JavaScript the page still shows `npx @parcha/agentrun template install <source>@<sha> --trust`.
+It asks once for the reader's AgentRun address (kept in this browser's localStorage under
+`agentrun.marketplace.address`, sent nowhere) and opens `<address>/#/templates/install?src=<source>@<sha>`.
+Addresses without a scheme use HTTPS, except loopback addresses such as `localhost:7340` and `127.0.0.1:7340`,
+which use HTTP. Explicit HTTP or HTTPS is preserved. Use **Change address** to repair an older saved address.
+
+Each template also has an **Install with your agent** dropdown, with its own pinned install prompt. It opens
+supported coding apps or copies the prompt for terminal agents, and offers instructions you can read and copy
+manually. This uses the shared website's menu styles and icons with a separate marketplace runtime, so the
+header's Get started prompt still sets up AgentRun. Without JavaScript the prompt and
+`npx @parcha/agentrun template install <source>@<sha> --trust` remain readable.
 
 ## Deploy
 

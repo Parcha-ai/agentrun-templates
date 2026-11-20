@@ -1,5 +1,5 @@
-# The agent starts with one learned note, as if the owner had told an earlier run to skip small rounds.
+# The agent starts with one correction, as if the owner had told an earlier run to skip small rounds.
 parameters:
   sector: "industrial robotics"
   lookback_days: 7
-learning: fixtures/learning
+learning: fixtures/learning/corrections.md

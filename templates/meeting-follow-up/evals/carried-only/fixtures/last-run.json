@@ -1,0 +1,184 @@
+{
+  "agentrun": "3688f4156fc94c39e706a61a1b0ade28c8cb8acb",
+  "run_id": "01a1cf00-0000-7000-8000-00000000f121",
+  "ended_at": "2026-11-17T15:01:10Z",
+  "output": {
+    "date": "2026-11-17",
+    "cutoff": "2026-11-17T15:00:00Z",
+    "drafted": [
+      {
+        "event_id": "ev_acct_01",
+        "title": "Account review: Client A",
+        "start": "2026-11-17T08:00:00Z",
+        "recipient_email": "lee1@clienta.example",
+        "recipient_name": "Lee A",
+        "others": [],
+        "subject": "Account review: Client A: next steps",
+        "body": "Hi Lee,\n\nThanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] \n\nBest,\nMia",
+        "blanks": [
+          "what we agreed"
+        ],
+        "draft_id": "r-7731010",
+        "saved": true
+      },
+      {
+        "event_id": "ev_acct_02",
+        "title": "Account review: Client B",
+        "start": "2026-11-17T08:30:00Z",
+        "recipient_email": "lee2@clientb.example",
+        "recipient_name": "Lee B",
+        "others": [],
+        "subject": "Account review: Client B: next steps",
+        "body": "Hi Lee,\n\nThanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] \n\nBest,\nMia",
+        "blanks": [
+          "what we agreed"
+        ],
+        "draft_id": "r-7731011",
+        "saved": true
+      },
+      {
+        "event_id": "ev_globex_kickoff",
+        "title": "Globex pilot kickoff",
+        "start": "2026-11-17T09:00:00Z",
+        "recipient_email": "kim@globex.example",
+        "recipient_name": "Kim",
+        "others": [],
+        "subject": "Globex pilot kickoff: next steps",
+        "body": "Hi Kim,\n\nThanks for today's kickoff. [what we agreed]\n\nNext steps: [next step, who, by when]\n\nMia\n\nThanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] ",
+        "blanks": [
+          "what we agreed",
+          "next step, who, by when"
+        ],
+        "draft_id": "r-1f0c9a",
+        "saved": true
+      },
+      {
+        "event_id": "ev_acct_03",
+        "title": "Account review: Client C",
+        "start": "2026-11-17T09:00:00Z",
+        "recipient_email": "lee3@clientc.example",
+        "recipient_name": "Lee C",
+        "others": [],
+        "subject": "Account review: Client C: next steps",
+        "body": "Hi Lee,\n\nThanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] \n\nBest,\nMia",
+        "blanks": [
+          "what we agreed"
+        ],
+        "draft_id": "r-7731012",
+        "saved": true
+      },
+      {
+        "event_id": "ev_acct_04",
+        "title": "Account review: Client D",
+        "start": "2026-11-17T09:30:00Z",
+        "recipient_email": "lee4@clientd.example",
+        "recipient_name": "Lee D",
+        "others": [],
+        "subject": "Account review: Client D: next steps",
+        "body": "Hi Lee,\n\nThanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] \n\nBest,\nMia",
+        "blanks": [
+          "what we agreed"
+        ],
+        "draft_id": "r-7731013",
+        "saved": true
+      },
+      {
+        "event_id": "ev_acct_05",
+        "title": "Account review: Client E",
+        "start": "2026-11-17T10:00:00Z",
+        "recipient_email": "lee5@cliente.example",
+        "recipient_name": "Lee E",
+        "others": [],
+        "subject": "Account review: Client E: next steps",
+        "body": "Hi Lee,\n\nThanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] \n\nBest,\nMia",
+        "blanks": [
+          "what we agreed"
+        ],
+        "draft_id": "r-7731014",
+        "saved": true
+      },
+      {
+        "event_id": "ev_acct_06",
+        "title": "Account review: Client F",
+        "start": "2026-11-17T10:30:00Z",
+        "recipient_email": "lee6@clientf.example",
+        "recipient_name": "Lee F",
+        "others": [],
+        "subject": "Account review: Client F: next steps",
+        "body": "Hi Lee,\n\nThanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] \n\nBest,\nMia",
+        "blanks": [
+          "what we agreed"
+        ],
+        "draft_id": "r-7731015",
+        "saved": true
+      },
+      {
+        "event_id": "ev_acct_07",
+        "title": "Account review: Client G",
+        "start": "2026-11-17T11:00:00Z",
+        "recipient_email": "lee7@clientg.example",
+        "recipient_name": "Lee G",
+        "others": [],
+        "subject": "Account review: Client G: next steps",
+        "body": "Hi Lee,\n\nThanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] \n\nBest,\nMia",
+        "blanks": [
+          "what we agreed"
+        ],
+        "draft_id": "r-7731016",
+        "saved": true
+      },
+      {
+        "event_id": "ev_acct_08",
+        "title": "Account review: Client H",
+        "start": "2026-11-17T11:30:00Z",
+        "recipient_email": "lee8@clienth.example",
+        "recipient_name": "Lee H",
+        "others": [],
+        "subject": "Account review: Client H: next steps",
+        "body": "Hi Lee,\n\nThanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] \n\nBest,\nMia",
+        "blanks": [
+          "what we agreed"
+        ],
+        "draft_id": "r-7731017",
+        "saved": true
+      },
+      {
+        "event_id": "ev_acct_09",
+        "title": "Account review: Client I",
+        "start": "2026-11-17T12:00:00Z",
+        "recipient_email": "lee9@clienti.example",
+        "recipient_name": "Lee I",
+        "others": [],
+        "subject": "Account review: Client I: next steps",
+        "body": "Hi Lee,\n\nThanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] Thanks again for the time today. Below is my summary of what we covered and what each side owes the other before we next meet; correct anything I got wrong and I will update our shared notes. [what we agreed] \n\nBest,\nMia",
+        "blanks": [
+          "what we agreed"
+        ],
+        "draft_id": "r-7731018",
+        "saved": true
+      }
+    ],
+    "already_drafted": [
+      "ev_acct_01",
+      "ev_acct_02",
+      "ev_globex_kickoff",
+      "ev_acct_03",
+      "ev_acct_04",
+      "ev_acct_05",
+      "ev_acct_06",
+      "ev_acct_07",
+      "ev_acct_08",
+      "ev_acct_09"
+    ],
+    "already_drafted_dropped": 0,
+    "not_drafted": [
+      {
+        "event_id": "ev_brightpane_intro",
+        "title": "Intro: Brightpane",
+        "reason": "not ended"
+      }
+    ],
+    "ignored_instructions": [],
+    "report_markdown": "Ten new drafts wait in Gmail: the Globex pilot kickoff (to Kim) and nine account reviews. Fill [what we agreed] in each."
+  }
+}

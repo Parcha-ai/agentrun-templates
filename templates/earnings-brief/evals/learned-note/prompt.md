@@ -1,5 +1,5 @@
 ---
-description: A learned note says GAAP EPS only; the release gives both. The brief shows GAAP EPS and leaves the adjusted figure out.
+description: The owner's correction says GAAP EPS only; the release gives both. The brief shows GAAP EPS and leaves the adjusted figure out.
 runs: 3
 max_cost_usd: 1.50
 ---

@@ -5,5 +5,5 @@ parameters:
   held_identifiers: ["LOT 24-133"]
   lookback_days: 7
 # The run starts with this input, checked against the template's input schema; prompt.md is its content.
-# The agent starts with these learned notes (MEMORY.md and its notes, in the learning folder's format).
-learning: fixtures/learning
+# The agent starts with these corrections (fixtures/learning/corrections.md).
+learning: fixtures/learning/corrections.md

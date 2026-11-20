@@ -2,7 +2,7 @@
 name: pipeline-goal
 display_name: "Pipeline goal: ${parameters.goal_amount} in HubSpot"
 version: 0.1.0
-description: Checks your HubSpot pipeline every morning and posts one Slack message the first time the open deals add up past the goal you set. You choose the plain total or one weighted by each stage's win probability. Closed deals, other pipelines and deals with no amount don't count, and a missing amount is never guessed. It posts once per goal, never twice, and only reads HubSpot. It posts on its own only if you pick Never for approvals at install; it stays held to your pipeline and channel either way.
+description: Checks your HubSpot pipeline every morning and posts one Slack message the first time the open deals add up past the goal you set. You choose the plain total or one weighted by each stage's win probability. Closed deals, other pipelines and deals with no amount don't count, and a missing amount is never guessed. It posts once per goal, since each check is handed the last one's answer, and only reads HubSpot. It posts on its own only if you pick Never for approvals at install; it stays held to your pipeline and channel either way.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -42,13 +42,15 @@ parameters:
   timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in (Europe/Madrid, America/New_York): UTC unless you set it" }
 inputs:
   goal_amount: { type: number, required: false, minimum: 1, title: "Goal", description: "The schedule passes your saved goal. By hand, check against another figure.", examples: [500000] }
-budget: { per_run_usd: 0.25 }
+# Sized from the 2026-11-19 live walk (v0.1.0-beta.46): cap >= 2 x the highest harness's spend + $0.40 (the most
+# one codex step held before answering on 11-17), rounded up to $0.10; a cap under that stops a job halfway.
+# Live walk 2026-11-19: pi $0.02, claude-agent $0.07, codex $0.05, all finished. Sized: 2 x $0.07 + $0.40, rounded up.
+budget: { per_run_usd: 0.60 }
 learning: true
 # Suggested: never, so the scheduled post goes out unattended. The owner makes that choice at install; under ask the
 # post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
 approvals: never
 triggers:
-  # HubSpot's deal events through Composio need a HubSpot developer app; a daily check needs nothing more.
   - name: daily-check
     source: { kind: schedule, cron: "${parameters.cron}", timezone: "${parameters.timezone}" }
     target:
@@ -66,7 +68,7 @@ follow it step by step.
   ${parameters.currency}. Weighted by stage probability: ${parameters.weighted}.
 - The message goes to the Slack channel ${parameters.channel}, once per goal, and nowhere else.
 
-Your `# Learned` notes list the goals already reached. When this goal is there, post nothing.
+Each check is handed the last check's answer. When it says this goal was already posted, post nothing.
 
 You only read HubSpot. You never change a deal, a stage, a contact or an owner.
 

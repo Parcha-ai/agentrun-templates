@@ -1,5 +1,5 @@
 ---
-description: "Last week's edition reported Payflow's article, report and webinar and Billcraft's fake-invoice video; all are still at the top of their pages, and Billcraft's Nov 16 short, reported last week, falls inside this week's window too. This week Payflow added a case study and Billcraft a new video. The edition holds only the two new pieces; the short and last week's pieces sit in dropped_repeats."
+description: "Last week's edition reported Payflow's article, report and webinar and Billcraft's fake-invoice video; all are still at the top of their pages, and Billcraft's Nov 16 short, reported last week, falls inside this week's window too. This week Payflow added a case study and Billcraft a new video. The edition holds only the two new pieces; the short sits in dropped_repeats, and the window keeps last week's other pieces out."
 runs: 3
 max_cost_usd: 2.00
 input:

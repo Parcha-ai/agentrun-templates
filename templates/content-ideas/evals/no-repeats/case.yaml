@@ -3,7 +3,7 @@ parameters:
   company: "Ledgerly (ledgerly.example)"
   audience: "Finance teams at mid-size US companies"
 # The run starts with the input in prompt.md's front matter; prompt.md's body is its content.
-# The agent starts with these learned notes (MEMORY.md and its notes, in the learning folder's format).
-learning: fixtures/learning
+# The agent starts with these corrections (fixtures/learning/corrections.md).
+learning: fixtures/learning/corrections.md
 # The prompt's date: its runs' clock and the graders' (case.yaml now:, agentrun #2896).
 now: 2026-11-23T08:00:00Z

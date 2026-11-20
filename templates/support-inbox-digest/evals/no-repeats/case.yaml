@@ -4,12 +4,13 @@ parameters:
   query: label:support newer_than:7d
   channel: C0SUPPORT1
   team_domains: [acme.example]
+  cron: "0 9,15 * * 1,4"
 mcp:
   gmail: fixtures/gmail-mcp.json
   slack: fixtures/slack-mcp.json
 grants:
   - mcp:gmail/GMAIL_FETCH_EMAILS
+  - mcp:gmail/GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID
   - mcp:slack/SLACK_SEND_MESSAGE
-# The agent starts with learned notes (fixtures/learning/) from Thursday's digest.
-learning: fixtures/learning
+# The prompt ends with the last run's answer, the way the runtime hands a scheduled run its history.
 now: 2026-11-16T09:00:00Z

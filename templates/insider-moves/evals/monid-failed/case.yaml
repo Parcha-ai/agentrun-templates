@@ -1,0 +1,4 @@
+# Every monid call answers as monid does when it can't be reached: never sent, never charged.
+monid: unavailable
+parameters:
+  tickers: [AAPL, NVDA]

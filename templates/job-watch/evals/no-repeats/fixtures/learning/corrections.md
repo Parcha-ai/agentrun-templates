@@ -1,0 +1,1 @@
+- The person said: "Skip anything posted by a recruiter or agency, I only want to apply to employers directly."

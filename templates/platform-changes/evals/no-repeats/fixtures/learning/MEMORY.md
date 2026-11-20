@@ -1,1 +1,0 @@
-- [Only what breaks or costs more](no-new-features.md) — the owner doesn't want new features or betas reported, only breaking, deprecation, price and policy changes

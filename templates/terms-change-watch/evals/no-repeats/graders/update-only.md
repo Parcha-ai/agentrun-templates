@@ -1,10 +1,10 @@
 ---
 type: llm
 ---
-Last week's run (handed to the agent) and the learned note both record the Brightpost 9.2 liability cap cut from
+Last week's run (handed to the agent as run history) records the Brightpost 9.2 liability cap cut from
 twelve to three months of fees, effective December 15, 2026, reported 2026-11-09. Today the terms (stamped November
 12, 2026) still show the three-month cap, but the effective date moved to January 15, 2027. The subprocessor list
-added Acme Analytics Ltd in Ireland, and a learned feedback note says the owner doesn't want EU subprocessor additions.
+added Acme Analytics Ltd in Ireland, and the owner's correction says they don't want EU subprocessor additions.
 
 Read the answer's last fenced `json` block, its `report_markdown` included. Pass only if all hold:
 
