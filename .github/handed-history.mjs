@@ -3,7 +3,10 @@
 // ended_at, output}), the prompt's tail is what agentrun's previousResultOf hands a scheduled run whose trigger's last
 // completed run ended with that output, its schema's x-carried read from the template's *.schema.json: whole, carried
 // fields only, or carried fields less the oldest entries. It runs agentrun's built trigger-targets.js over a real
-// sqlite store, the way agentrun's packages/serve/test/trigger-targets.test.mjs (handedAfter) does.
+// sqlite store, the way agentrun's packages/serve/test/trigger-targets.test.mjs (handedAfter) does. agentrun hands on
+// only an answer its output schema checked, so each last-run.json's output is first checked against the template's
+// output schema (agent.md `output: { schema }`) with agentrun's own check (answer-json.js schemaCheck, the one a run's
+// answer meets), and a case whose output misses it fails before anything is handed.
 // Usage: node .github/handed-history.mjs <agentrun worktree, built> [--write]. Without --write it checks: exit 1 when
 // the worktree is not at the commit a last-run.json names, or a prompt's tail differs from what that commit hands.
 // --write records the worktree's commit in each last-run.json and rewrites each prompt's tail.
@@ -21,6 +24,7 @@ const dist = (p) => pathToFileURL(join(root, "packages/serve/dist", p)).href;
 const { openSqliteStore } = await import(dist("store/index.js"));
 const { triggerTargets } = await import(dist("trigger-targets.js"));
 const { readLaunchBody } = await import(dist("run-launch.js"));
+const { schemaCheck } = await import(dist("answer-json.js"));
 
 // The handed text starts with one of these: the whole result, or its carried fields.
 const STARTS = ["The result of this trigger's last completed run (", "The carried fields ("];
@@ -69,8 +73,19 @@ for (const name of dirs(templates)) {
     if (!existsSync(join(at, "fixtures", "last-run.json"))) continue;
     cases++;
     const last = JSON.parse(readFileSync(join(at, "fixtures", "last-run.json"), "utf8"));
-    const schemas = readdirSync(join(templates, name)).filter((f) => f.endsWith(".schema.json")).map((f) => JSON.parse(readFileSync(join(templates, name, f), "utf8")));
-    const carried = schemas.find((s) => s["x-carried"])?.["x-carried"];
+    const file = readFileSync(join(templates, name, "agent.md"), "utf8").match(/^output:\s*\{\s*schema:\s*([^\s,}]+)/m)?.[1];
+    if (!file) {
+      problems.push(`${name}/${c}: agent.md names no output schema`);
+      continue;
+    }
+    const schema = JSON.parse(readFileSync(join(templates, name, file), "utf8"));
+    const compiled = schemaCheck(schema);
+    const misses = "why" in compiled ? [`the schema ${compiled.why}`] : compiled.check(last.output);
+    if (misses.length) {
+      problems.push(`${name}/${c}: last-run.json's output does not meet ${file}: ${misses.slice(0, 3).join("; ")}`);
+      continue;
+    }
+    const carried = schema["x-carried"];
     const text = await handed({ runId: last.run_id, endedAt: last.ended_at, output: last.output, carried });
     const prompt = readFileSync(join(at, "prompt.md"), "utf8");
     const from = Math.max(...STARTS.map((s) => prompt.lastIndexOf(s)));
@@ -85,5 +100,5 @@ for (const name of dirs(templates)) {
   }
 }
 for (const p of problems) console.log(`FAIL ${p}`);
-console.log(`handed-history: ${cases} cases with a fixtures/last-run.json, ${problems.length} differ (agentrun ${sha})`);
+console.log(`handed-history: ${cases} cases with a fixtures/last-run.json, ${problems.length} failed (agentrun ${sha})`);
 process.exit(problems.length ? 1 : 0);
