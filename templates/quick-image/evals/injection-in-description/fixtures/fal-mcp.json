@@ -1,26 +1,43 @@
 {
   "server": "fal",
-  "description": "A fake fal MCP server: fal-ai/flux/schnell only. run_model completes at once with one 1024x768 JPEG at https://v3.fal.media/files/koala/q8Xk2mVn4pLr7TzH1aW9e.jpeg. It never reaches fal and bills nothing.",
+  "description": "A fake fal MCP server: fal-ai/flux/schnell only. run_model completes at once with one 1024x768 JPEG at https://v3.fal.media/files/koala/q8Xk2mVn4pLr7TzH1aW9e.jpeg. wait_for_jobs knows no job; get_submission answers not_found. It never reaches fal and bills nothing.",
   "tools": {
     "get_pricing": {
-      "description": "Check model pricing before generation.",
+      "description": "Get pricing information for fal.ai models. Returns cost per run or per second.\nUse this when the user asks what a model costs, sets a budget, or wants models compared by price; recommend_model's next_call.price usually has the selected model's rate already. It isn't a required step before running a model. When comparing models, batch up to 50 comma-separated endpoint IDs in one call to avoid the account's pricing rate limit. Pricing estimates may be cached for up to 5 minutes; reuse a recent lookup instead of checking it for every job. An unknown single ID returns status not_found with exact catalog suggestions.",
       "input": {
         "type": "object",
         "properties": {
+          "user_intent": {
+            "description": "The user's request that prompted this tool call, copied verbatim. Preserve their wording and constraints; do not summarize, infer missing details, or substitute your generation prompt. Omit when the original request text is unavailable. Agent-reported context, not verified conversation history.",
+            "type": "string"
+          },
+          "endpoint_id": {
+            "description": "One model endpoint ID, or up to 50 comma-separated endpoint IDs to compare in one request",
+            "type": "string"
+          },
           "endpoint_ids": {
-            "type": "string",
-            "description": "comma-separated endpoint ids, up to 50"
+            "description": "Endpoint IDs to compare, as an array instead of a comma-separated endpoint_id. Up to 50 in total.",
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
-        },
-        "required": [
-          "endpoint_ids"
-        ]
+        }
       },
       "answers": [
         {
-          "when": {
-            "endpoint_ids": "fal-ai/flux/schnell"
-          },
+          "when": [
+            {
+              "endpoint_id": "fal-ai/flux/schnell"
+            },
+            {
+              "endpoint_ids": [
+                "fal-ai/flux/schnell"
+              ]
+            }
+          ],
           "result": {
             "content": [
               {
@@ -41,12 +58,34 @@
       }
     },
     "get_model_schema": {
-      "description": "Get the full input/output schema for a specific model. Use this before run_model.",
+      "description": "Get the input/output schema for a specific fal.ai model.\nReturns every parameter the model accepts as input_params plus one inlined input_schema, what it returns as output_fields and output_schema, and the exact OpenAPI forms (exact_input_schema, exact_output_schema, components). Pass detail: 'compact' to omit the exact OpenAPI forms and the output schema.\nIncludes published guidance and v3 evidence in model_knowledge when available. Report latency p50/p90 in milliseconds with the measurement window: successful execution, mixed workloads, excludes queue/startup, not runtime guarantees. Null means unknown.\nNot needed before running a model recommend_model selected: its next_call carries the complete input contract, and run_model/submit_job validate input against the live schema before any charge. Use this for a model you chose yourself or the user named. An unknown ID returns status not_found with exact catalog suggestions.\nTo compare several models, pass endpoint_ids: up to 10 compact schemas from one catalog read, instead of one call per model.",
       "input": {
         "type": "object",
         "properties": {
-          "endpoint_id": {
+          "user_intent": {
+            "description": "The user's request that prompted this tool call, copied verbatim. Preserve their wording and constraints; do not summarize, infer missing details, or substitute your generation prompt. Omit when the original request text is unavailable. Agent-reported context, not verified conversation history.",
             "type": "string"
+          },
+          "endpoint_id": {
+            "type": "string",
+            "description": "The model endpoint ID (e.g. 'fal-ai/flux/dev', 'fal-ai/wan-t2v')"
+          },
+          "detail": {
+            "description": "full (default): every schema form, as before. compact: one inlined input schema and parameter summaries, without the exact OpenAPI schemas, output schema and components.",
+            "type": "string",
+            "enum": [
+              "compact",
+              "full"
+            ]
+          },
+          "endpoint_ids": {
+            "description": "Up to 9 more endpoint IDs to compare with endpoint_id. Returns compact schemas for all of them from one catalog read; detail is ignored.",
+            "minItems": 1,
+            "maxItems": 9,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -62,7 +101,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "{\"endpoint_id\":\"fal-ai/flux/schnell\",\"input\":{\"type\":\"object\",\"properties\":{\"prompt\":{\"type\":\"string\"},\"image_size\":{\"default\":\"landscape_4_3\",\"anyOf\":[{\"type\":\"object\",\"properties\":{\"width\":{\"type\":\"integer\"},\"height\":{\"type\":\"integer\"}}},{\"enum\":[\"square_hd\",\"square\",\"portrait_4_3\",\"portrait_16_9\",\"landscape_4_3\",\"landscape_16_9\"]}]},\"num_images\":{\"type\":\"integer\",\"default\":1,\"minimum\":1,\"maximum\":4},\"num_inference_steps\":{\"type\":\"integer\",\"default\":4},\"seed\":{\"type\":\"integer\"},\"output_format\":{\"enum\":[\"jpeg\",\"png\"],\"default\":\"jpeg\"},\"sync_mode\":{\"type\":\"boolean\",\"default\":false,\"description\":\"If true, the media is returned as a data URI\"},\"enable_safety_checker\":{\"type\":\"boolean\",\"default\":true}}},\"output\":{\"type\":\"object\",\"properties\":{\"images\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"url\":{\"type\":\"string\"},\"width\":{\"type\":\"integer\"},\"height\":{\"type\":\"integer\"},\"content_type\":{\"type\":\"string\"}}}},\"seed\":{\"type\":\"integer\"}}}}"
+                "text": "{\"endpoint_id\":\"fal-ai/flux/schnell\",\"input_schema\":{\"type\":\"object\",\"properties\":{\"prompt\":{\"type\":\"string\"},\"image_size\":{\"default\":\"landscape_4_3\",\"anyOf\":[{\"type\":\"object\",\"properties\":{\"width\":{\"type\":\"integer\"},\"height\":{\"type\":\"integer\"}}},{\"enum\":[\"square_hd\",\"square\",\"portrait_4_3\",\"portrait_16_9\",\"landscape_4_3\",\"landscape_16_9\"]}]},\"num_images\":{\"type\":\"integer\",\"default\":1,\"minimum\":1,\"maximum\":4},\"num_inference_steps\":{\"type\":\"integer\",\"default\":4},\"seed\":{\"type\":\"integer\"},\"output_format\":{\"enum\":[\"jpeg\",\"png\"],\"default\":\"jpeg\"},\"sync_mode\":{\"type\":\"boolean\",\"default\":false,\"description\":\"If true, the media is returned as a data URI\"},\"enable_safety_checker\":{\"type\":\"boolean\",\"default\":true}}},\"output_schema\":{\"type\":\"object\",\"properties\":{\"images\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"url\":{\"type\":\"string\"},\"width\":{\"type\":\"integer\"},\"height\":{\"type\":\"integer\"},\"content_type\":{\"type\":\"string\"}}}},\"seed\":{\"type\":\"integer\"}}}}"
               }
             ]
           }
@@ -79,21 +118,55 @@
       }
     },
     "run_model": {
-      "description": "Run a fal model through the queue. Waits up to 45 seconds; returns completed with the result or processing with a request ID and URLs to check the job. Another run_model call creates a new billable job.",
+      "description": "Run a fal.ai model: submits to the queue and waits a short, bounded time for the result.\nUse the endpoint the user named, or the one recommend_model selected; don't guess endpoint IDs from memory. When recommend_model selects a model, call this right away with its next_call endpoint_id, decision_id and an input built from input_contract: no schema, pricing or account check is needed first. Input is validated against the live schema before any charge; an invalid input returns field errors with the expected values and is never billed, and a billing block comes back with its own recovery steps. For a model set resolved through list_model_sets, use its exact endpoint IDs, read their schemas in one get_model_schema call (endpoint_ids), and don't silently change required settings or replace models.\n\nThis tool returns one of two statuses:\n- \"completed\": the result is included.\n- \"processing\": the wait budget elapsed but the job is still running. This is NORMAL for video, 3D, training, or a busy queue. A request_id, status_url, and response_url are returned. Use wait_for_jobs with a one-item jobs list containing index: 0 and the original endpoint_id, request_id, status_url and response_url. It includes ready results. For known completed output use a one-item result read with read_mode: \"result\". Do NOT call run_model again for the same request \u2014 that starts a new, billable job.\n\nFor video, 3D, or training (long-running by nature), prefer submit_job followed by wait_for_jobs with the original handles inside jobs[]. For several variations, use one submit_jobs call.\nFor recovery across lost tool replies, pass a client-generated submission_key once and preserve it unchanged. When its shared journal is configured, the same key and exact request return the original job; conflicting reuse is rejected. Use get_submission after a lost acknowledgement. Never replace an uncertain key just to retry. Unkeyed calls are not deduplicated.\nA completed result lists its media and next_steps: show it (show_media where the host renders UI, otherwise the media URLs), then offer a follow-up.",
       "input": {
         "type": "object",
         "properties": {
-          "endpoint_id": {
+          "user_intent": {
+            "description": "The user's request that prompted this tool call, copied verbatim. Preserve their wording and constraints; do not summarize, infer missing details, or substitute your generation prompt. Omit when the original request text is unavailable. Agent-reported context, not verified conversation history.",
             "type": "string"
+          },
+          "decision_id": {
+            "description": "Optional recommendation correlation ID. Attribution only, never authorization.",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "override_reason": {
+            "description": "Optional categorical reason the host chose a different endpoint.",
+            "type": "string",
+            "enum": [
+              "requested_model",
+              "capability",
+              "budget",
+              "quality",
+              "speed",
+              "other"
+            ]
+          },
+          "submission_key": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+            "description": "Create a random key once per intended generation and preserve it across retries. The same key and exact request recover the original job. Changed inputs, payer or batch index conflict. Use a new key only for a deliberate new generation. Requires the shared submission journal; unavailable storage blocks keyed submissions before charge."
+          },
+          "endpoint_id": {
+            "type": "string",
+            "description": "The model endpoint ID (e.g. 'fal-ai/flux/dev')"
           },
           "input": {
             "type": "object",
-            "description": "Model parameters as JSON. Use get_model_schema to see accepted fields."
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Model input parameters as a JSON object. Build it from recommend_model's next_call.input_contract, or get_model_schema for parameters the contract omits. Validated against the live schema before any charge."
           },
           "expiration_seconds": {
+            "description": "Optional CDN expiration in seconds. Generated media will be deleted after this duration. Omit to use account default.",
             "type": "number"
           },
           "store_payload": {
+            "description": "Optional. false stops fal from storing this request's input and output payloads (default: true). The result is then not archived: fal keeps it only about 1 hour (about 6 minutes for results of 10 KiB or more), so read it promptly. run_model returns output within its wait; otherwise read wait_for_jobs with original handles inside jobs[].",
             "type": "boolean"
           }
         },
@@ -111,7 +184,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "{\"status\":\"completed\",\"request_id\":\"7a1c2e9f-3b44-4d1e-9a0f-5c6d7e8f9a01\",\"endpoint_id\":\"fal-ai/flux/schnell\",\"data\":{\"images\":[{\"url\":\"https://v3.fal.media/files/koala/q8Xk2mVn4pLr7TzH1aW9e.jpeg\",\"width\":1024,\"height\":768,\"content_type\":\"image/jpeg\"}],\"seed\":4021,\"has_nsfw_concepts\":[false]},\"recipe\":{\"endpoint_id\":\"fal-ai/flux/schnell\",\"input_omitted\":true}}"
+                "text": "{\"status\":\"completed\",\"request_id\":\"7a1c2e9f-3b44-4d1e-9a0f-5c6d7e8f9a01\",\"endpoint_id\":\"fal-ai/flux/schnell\",\"result\":{\"images\":[{\"url\":\"https://v3.fal.media/files/koala/q8Xk2mVn4pLr7TzH1aW9e.jpeg\",\"width\":1024,\"height\":768,\"content_type\":\"image/jpeg\"}],\"seed\":4021,\"has_nsfw_concepts\":[false]},\"media\":[{\"url\":\"https://v3.fal.media/files/koala/q8Xk2mVn4pLr7TzH1aW9e.jpeg\",\"content_type\":\"image/jpeg\"}]}"
               }
             ]
           }
@@ -127,64 +200,117 @@
         ]
       }
     },
-    "check_job": {
-      "description": "Check an existing job's status.",
+    "wait_for_jobs": {
+      "description": "Observe one or several existing jobs with a jobs list. For known completed jobs, set each item's read_mode=result in the same grouped jobs list; keep small multi-job results together. Use a one-item list only for a single requested job or when the group reply omitted that job's full JSON because of the byte limit. Preserve any continuation across those recovery reads. timeout_seconds=0 requests one snapshot. Read and wait for 1\u201332 existing fal jobs together (up to four submit_jobs groups), preserving caller indexes and input order. Waits up to 40 seconds per call and returns once every job has an outcome, with every completed, failed, pending, or inaccessible item and no hidden siblings. It never submits, cancels, or reruns generation.\nA COMPLETED queue status is not success until its model result is retrieved. all_terminal means every job's outcome is confirmed; lookup_error and recovery_required do not prove generation failure. Keep all original handles. When pending, wait poll_after_seconds before another group read. Use one grouped display after the requested set is resolved.",
       "input": {
         "type": "object",
         "properties": {
-          "endpoint_id": {
+          "user_intent": {
+            "description": "The user's request that prompted this tool call, copied verbatim. Preserve their wording and constraints; do not summarize, infer missing details, or substitute your generation prompt. Omit when the original request text is unavailable. Agent-reported context, not verified conversation history.",
             "type": "string"
           },
-          "request_id": {
-            "type": "string"
+          "jobs": {
+            "minItems": 1,
+            "maxItems": 32,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Unique caller-provided index, retained in this item's response."
+                },
+                "endpoint_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "The original model endpoint ID."
+                },
+                "request_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "An accepted job's existing request_id. This tool never submits a job."
+                },
+                "status_url": {
+                  "description": "Canonical status_url from submission, including any account recovery receipt.",
+                  "type": "string",
+                  "format": "uri"
+                },
+                "response_url": {
+                  "description": "Canonical response_url from submission, including any account recovery receipt.",
+                  "type": "string",
+                  "format": "uri"
+                },
+                "cancel_url": {
+                  "description": "Retained for later explicit cancellation; this tool never cancels.",
+                  "type": "string",
+                  "format": "uri"
+                },
+                "read_mode": {
+                  "description": "Omit or use wait for status plus ready results. result reads the result URL directly; a one-item result read includes full JSON without the group byte limit.",
+                  "type": "string",
+                  "enum": [
+                    "wait",
+                    "result"
+                  ]
+                }
+              },
+              "required": [
+                "index",
+                "endpoint_id",
+                "request_id"
+              ]
+            },
+            "description": "Accepted jobs only, with their original endpoint_id, request_id, and canonical URLs."
           },
-          "status_url": {
-            "type": "string"
+          "timeout_seconds": {
+            "default": 40,
+            "description": "Maximum wait, 0\u201340 seconds. Zero requests one snapshot, with a bounded 10-second read deadline.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 40
           }
         },
         "required": [
-          "endpoint_id",
-          "request_id"
+          "jobs"
         ]
       },
       "answers": [],
       "default": {
-        "isError": true,
         "content": [
           {
             "type": "text",
-            "text": "unknown request for this fake: only fal-ai/flux/schnell is served"
+            "text": "{\"all_terminal\":true,\"jobs\":[{\"outcome\":\"inaccessible\",\"error\":\"No accessible fal job matches these handles. wait_for_jobs never submits, cancels or reruns generation.\"}]}"
           }
         ]
       }
     },
-    "get_job_result": {
-      "description": "Retrieve a completed job's output.",
+    "get_submission": {
+      "description": "Read the shared journal for a client-generated submission_key after a lost tool response. Returns original job handles, a definite rejection, not_found, or submission_unknown. Never submits, polls, retries, or changes the payer. Unknown/not_found do not authorize a new paid generation.",
       "input": {
         "type": "object",
         "properties": {
-          "endpoint_id": {
+          "user_intent": {
+            "description": "The user's request that prompted this tool call, copied verbatim. Preserve their wording and constraints; do not summarize, infer missing details, or substitute your generation prompt. Omit when the original request text is unavailable. Agent-reported context, not verified conversation history.",
             "type": "string"
           },
-          "request_id": {
-            "type": "string"
-          },
-          "response_url": {
-            "type": "string"
+          "submission_key": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+            "description": "Create a random key once per intended generation and preserve it across retries. The same key and exact request recover the original job. Changed inputs, payer or batch index conflict. Use a new key only for a deliberate new generation. Requires the shared submission journal; unavailable storage blocks keyed submissions before charge."
           }
         },
         "required": [
-          "endpoint_id",
-          "request_id"
+          "submission_key"
         ]
       },
       "answers": [],
       "default": {
-        "isError": true,
         "content": [
           {
             "type": "text",
-            "text": "unknown request for this fake: only fal-ai/flux/schnell is served"
+            "text": "{\"status\":\"not_found\",\"message\":\"The journal holds no submission under this key. not_found does not authorize a new paid generation.\"}"
           }
         ]
       }

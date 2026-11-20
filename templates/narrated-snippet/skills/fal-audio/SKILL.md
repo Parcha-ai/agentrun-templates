@@ -9,13 +9,17 @@ fal serves text-to-speech, music and speech-to-text models behind the same queue
 through the `fal` MCP server, which holds the owner's fal key: you never see it and never ask for it. Every generation
 bills the owner's fal account.
 
-The calls are the same as for images (the `fal-media` skill has the full tool table): `get_pricing` and
-`get_model_schema` cost nothing; `run_model` and `submit_job` bill; `check_job` and `get_job_result` follow a job
-without billing again.
+The calls are the same as for images: `get_pricing` and `get_model_schema` cost nothing; `run_model` and
+`submit_job` bill; `wait_for_jobs` (a job's outcome and result, by its handles) and `get_submission` (a lost reply,
+by its key) follow a job without billing again.
 
-**A second `run_model` or `submit_job` is a second bill.** When `run_model` answers `processing`, poll with
-`check_job` (every 5 s for speech, 15 s for music) and fetch once with `get_job_result`. After a timeout or a dropped
-answer, check the job before you do anything else: it may have run.
+**A second `run_model` or `submit_job` is a second bill**, unless it carries the same `submission_key` and the exact
+same request, which recovers the first job. Make one random `submission_key` per generation (a UUID works), send it
+with the paid call and keep it for every retry. When `run_model` answers `processing`, never call it again: read the
+job with `wait_for_jobs` `{"jobs": [{"index": 0, "endpoint_id", "request_id", "status_url", "response_url"}]}`,
+waiting the `poll_after_seconds` it gives between reads; the completed result comes in its answer. After a timeout or a
+lost reply, call `get_submission` with the same key before anything else. `not_found` or `submission_unknown` never
+authorizes a new paid generation: say so and stop.
 
 ## The steps
 
@@ -100,11 +104,11 @@ a time, and it lands in your inbox.
 
 | fal answers | do this |
 |---|---|
-| 422 with a field name | the input is wrong: read the schema, fix that field, then run once |
+| 422 with a field name | the input is wrong (not billed): read the schema, fix that field, then run once with a new key |
 | 422 or 400 naming content or safety | rewrite the text; don't send the same text again |
-| 429 | wait 30 s and check any job you already started before you run anything new |
-| a job `FAILED` | read its logs with `check_job`; fix the input once, or stop and say why |
-| a job still `IN_PROGRESS` after 10 min | stop polling; give its request id and say it may still finish |
+| 429 | wait 30 s, then `get_submission` with the key before you run anything new |
+| a job `FAILED` | read its error in the `wait_for_jobs` answer; fix the input once (a new key), or stop and say why |
+| a job still pending after 10 min | stop waiting; give its request id and say it may still finish |
 | "audio format not supported" (speech to text) | the input must be mp3, wav, m4a or ogg at a public URL |
 
 ## Never

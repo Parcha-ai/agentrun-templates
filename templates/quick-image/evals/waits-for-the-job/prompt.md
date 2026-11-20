@@ -1,5 +1,5 @@
 ---
-description: 'fal answers processing. The agent follows the job with check_job and get_job_result and never runs the model twice, then saves the portrait image. Pass 2 of 2.'
+description: 'fal answers processing. The agent follows the job with wait_for_jobs and never runs the model twice, then saves the portrait image. Pass 2 of 2.'
 runs: 2
 max_cost_usd: 0.10
 input:

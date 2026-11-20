@@ -15,10 +15,10 @@ tools: [read, web_save]
 mcp:
   - source: url
     toolkit: fal
-    tools: [get_pricing, get_model_schema, run_model, check_job, get_job_result]
+    tools: [get_pricing, get_model_schema, run_model, wait_for_jobs, get_submission]
     required: true
     reason: "Makes the image on fal.ai with your fal key, which this server keeps: the agent never sees it. Held to FLUX.1 schnell, so a run can't pick a costly model. One image per run, billed to your fal account; price, schema and job reads cost nothing."
-    allow: [get_pricing, get_model_schema, check_job, get_job_result, run_model]
+    allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, run_model]
     # One model, whatever the agent asks for: an unattended run can't reach a video model that costs dollars.
     pin:
       run_model: { endpoint_id: "fal-ai/flux/schnell" }
@@ -42,8 +42,9 @@ reading and say which.
 2. Make it with `mcp:fal/run_model` on `fal-ai/flux/schnell` (the server holds you to it), `num_images: 1`, and
    `image_size` from `shape`: square → `square_hd`, landscape → `landscape_4_3`, portrait → `portrait_4_3`, wide →
    `landscape_16_9`, tall → `portrait_16_9`. Read the schema with `mcp:fal/get_model_schema` first if a call is refused
-   on a field. Call `run_model` once: a second call is a second bill. If it answers `processing`, follow the job with
-   `check_job` and `get_job_result`, as the skill says.
+   on a field. Make one random `submission_key` for the image and send it with the call. Call `run_model` once: a
+   second call is a second bill. If it answers `processing`, follow the job with `wait_for_jobs`; after a lost reply,
+   `get_submission` with the same key; as the skill says.
 3. Save the image with `web_save` to `media/image.<ext>`, the extension from the image's `content_type` (png or jpg).
    If that path is taken, use `media/image-2.<ext>`.
 4. Answer with exactly one fenced `json` block that meets the output schema, and nothing after it.

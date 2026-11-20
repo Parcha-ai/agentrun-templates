@@ -15,10 +15,10 @@ tools: [read, web_fetch, web_save]
 mcp:
   - source: url
     toolkit: fal
-    tools: [get_pricing, get_model_schema, run_model, check_job, get_job_result]
+    tools: [get_pricing, get_model_schema, run_model, wait_for_jobs, get_submission]
     required: true
     reason: "Draws the card on fal.ai with your fal key, which this server keeps: the agent never sees it. Held to Ideogram 3, so a run can't pick a costly model. One card per run, billed to your fal account; price, schema and job reads cost nothing."
-    allow: [get_pricing, get_model_schema, check_job, get_job_result, run_model]
+    allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, run_model]
     # One model, whatever the agent asks for: a run can't reach a video model.
     pin:
       run_model: { endpoint_id: "fal-ai/ideogram/v3" }
@@ -48,8 +48,9 @@ likeliest reading and say which.
    words.
 4. Make it with `mcp:fal/run_model` on `fal-ai/ideogram/v3` (the server holds you to it): `image_size`
    `landscape_16_9`, `rendering_speed` `TURBO`, `num_images` 1, `style` `DESIGN` (`REALISTIC` for photo), and
-   `enable_prompt_expansion` false so your headline is drawn as written. Call it once: a second call is a second
-   bill. If it answers `processing`, follow the job with `check_job` and `get_job_result`.
+   `enable_prompt_expansion` false so your headline is drawn as written. Send one random `submission_key` made for
+   the card. Call it once: a second call is a second bill. If it answers `processing`, follow the job with
+   `wait_for_jobs`; after a lost reply, `get_submission` with the same key.
 5. Save it with `web_save` to `media/social-card.<ext>`, the extension from the image's `content_type`; if that path is
    taken, `media/social-card-2.<ext>`.
 6. Answer with exactly one fenced `json` block that meets the output schema, and nothing after it. `alt_text` says

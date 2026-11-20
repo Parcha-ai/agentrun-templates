@@ -1,4 +1,4 @@
-# fal's run_model answers processing; the job completes on the first check_job. Pass: 2 of 2 runs.
+# fal's run_model answers processing; the job completes on the first wait_for_jobs read of its handles. Pass: 2 of 2 runs.
 mcp:
   fal: fixtures/fal-mcp.json
 # fal's output file, as its CDN answers it to web_save (a tiny real image or sound); any other URL is refused.
@@ -8,6 +8,6 @@ grants:
   - mcp:fal/get_pricing
   - mcp:fal/get_model_schema
   - mcp:fal/run_model
-  - mcp:fal/check_job
-  - mcp:fal/get_job_result
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
 now: 2026-11-20T14:00:00Z

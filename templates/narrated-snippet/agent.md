@@ -15,10 +15,10 @@ tools: [read, web_save]
 mcp:
   - source: url
     toolkit: fal
-    tools: [get_pricing, get_model_schema, run_model, check_job, get_job_result]
+    tools: [get_pricing, get_model_schema, run_model, wait_for_jobs, get_submission]
     required: true
     reason: "Reads the script aloud on fal.ai with your fal key, which this server keeps: the agent never sees it. Held to ElevenLabs v3 text to speech. One voiceover per run, billed to your fal account by characters; price, schema and job reads cost nothing."
-    allow: [get_pricing, get_model_schema, check_job, get_job_result, run_model]
+    allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, run_model]
     # One model, whatever the agent asks for: a run can't reach a music or video model.
     pin:
       run_model: { endpoint_id: "fal-ai/elevenlabs/tts/eleven-v3" }
@@ -48,8 +48,9 @@ likeliest reading and say which.
    `[excited]`; serious: `[serious]`), and `[pauses]` where a listener needs a beat. At most one tag per sentence; never
    a tag inside a name or a figure.
 3. Make it with `mcp:fal/run_model` on `fal-ai/elevenlabs/tts/eleven-v3` (the server holds you to it): `text` your
-   script, `voice` the input's, `stability` 0.4 for upbeat, 0.5 for warm, 0.65 for calm or serious. Call it once: a
-   second call is a second bill. If it answers `processing`, follow the job with `check_job` and `get_job_result`.
+   script, `voice` the input's, `stability` 0.4 for upbeat, 0.5 for warm, 0.65 for calm or serious, and one random
+   `submission_key` made for the voiceover. Call it once: a second call is a second bill. If it answers `processing`,
+   follow the job with `wait_for_jobs`; after a lost reply, `get_submission` with the same key.
 4. Save the audio with `web_save` to `media/voiceover.mp3`; if that path is taken, `media/voiceover-2.mp3`.
 5. Answer with exactly one fenced `json` block that meets the output schema, and nothing after it.
 
