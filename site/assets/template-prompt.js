@@ -144,13 +144,20 @@
     // keeps that delayed event from immediately dismissing the new menu.
     if (!menu.contains(event.target)) position();
   }, { capture: true, passive: true });
-  dialog.querySelector("[data-template-prompt-close]").addEventListener("click", () => dialog.close());
+  // Cancel synchronously: the native close event arrives after pending promises can settle.
+  const dismiss = () => {
+    ++copyRequest;
+    dialog.close();
+  };
+  dialog.querySelector("[data-template-prompt-close]").addEventListener("click", dismiss);
   dialog.addEventListener("click", (event) => {
     if (event.target !== dialog) return;
     const bounds = dialog.getBoundingClientRect();
-    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dismiss();
   });
+  dialog.addEventListener("cancel", () => { ++copyRequest; });
   dialog.addEventListener("close", () => {
+    ++copyRequest;
     document.body.style.overflow = previousOverflow;
     opener.focus();
   });
