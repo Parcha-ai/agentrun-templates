@@ -41,7 +41,7 @@ Group what's left by `threadId`. A thread is the unit: three messages from one c
 ## 4. Themes
 
 Give each thread one theme, from its subjects and previews: the product problem or request it's about, named in a few
-plain words the team would use ("CSV export times out", "SSO login loop", "Double charge"). Two threads share a theme
+plain words the team would use, at most 40 characters ("CSV export times out", "SSO login loop", "Double charge"). Two threads share a theme
 when they describe the same problem, even in different words. Rank themes by the number of threads, then by how many
 are urgent. For each theme:
 - `threads`: the count;
@@ -61,11 +61,11 @@ link. A thread in your run history's `open_urgent` (else its `urgent`) that has 
 say how long it's been since. A new urgent thread has `still_open: false` and `first_reported` today.
 
 `open_urgent` is what the next digest needs to know a thread's age, even after a digest with no mail from it: every
-thread in this run's `urgent`, and every thread in the run history's `open_urgent` (else its `urgent`), each in short:
-its `thread_id`, its company domain and its `first_reported`. A thread leaves it 30 days after its `first_reported`.
-The next digest is handed this answer only while it is under 32 KiB, so `open_urgent` holds at most 45, what its share
-of 12,000 bytes holds beside `window` and `theme_counts`. A digest can report 20 urgent threads, so a bad month fills
-it: then the threads first reported earliest leave first until 45 remain;
+thread in this run's `urgent`, and every thread in the run history's `open_urgent` (else its `urgent`), each with only
+what the next digest compares: its `thread_id`, copied whole, and its `first_reported`. A thread leaves it 30 days
+after its `first_reported`. The next digest is handed this answer only while it is under 32 KiB, so `open_urgent` holds
+at most 60, what its share of 12,000 bytes holds beside `window` and `theme_counts`. A digest can report 20 urgent
+threads, so a bad month can fill it: then the threads first reported earliest leave first until 60 remain;
 `coverage.open_urgent_dropped` is how many left that way (else 0), and the post's last line says so. Never cut it any
 other way.
 

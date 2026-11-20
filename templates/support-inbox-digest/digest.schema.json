@@ -50,7 +50,7 @@
         "additionalProperties": false,
         "required": ["thread_id", "subject", "why", "url", "still_open"],
         "properties": {
-          "thread_id": { "type": "string", "maxLength": 40 },
+          "thread_id": { "type": "string", "maxLength": 40, "pattern": "^[0-9A-Za-z_\\-]{1,40}$", "description": "The Gmail thread id, copied whole" },
           "subject": { "type": "string", "maxLength": 300 },
           "company": { "type": ["string", "null"], "maxLength": 200, "description": "the sender's domain, never a name or address" },
           "why": { "type": "string", "maxLength": 200 },
@@ -63,15 +63,14 @@
     },
     "open_urgent": {
       "type": "array",
-      "maxItems": 45,
-      "description": "At most 45, what the 12,000-byte carried budget holds beside window and theme_counts; past that the earliest first reported leave first. Every urgent thread reported in the last 30 days, this digest's and the ones carried from the run history, so the next digest knows its age even after a quiet week.",
+      "maxItems": 60,
+      "description": "At most 60, what the 12,000-byte carried budget holds beside window and theme_counts; past that the earliest first reported leave first. Every urgent thread reported in the last 30 days, this digest's and the ones carried from the run history, so the next digest knows its age even after a quiet week.",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["thread_id", "company", "first_reported"],
+        "required": ["thread_id", "first_reported"],
         "properties": {
-          "thread_id": { "type": "string", "minLength": 1, "maxLength": 32 },
-          "company": { "type": "string", "maxLength": 60 },
+          "thread_id": { "type": "string", "minLength": 1, "maxLength": 40, "pattern": "^[0-9A-Za-z_\\-]{1,40}$" },
           "first_reported": { "type": "string", "format": "date" }
         }
       }
@@ -85,7 +84,7 @@
         "additionalProperties": false,
         "required": ["name", "threads"],
         "properties": {
-          "name": { "type": "string", "maxLength": 80 },
+          "name": { "type": "string", "maxLength": 40, "pattern": "^[^\\u0000-\\u001f\\ud800-\\udfff]{1,40}$", "description": "a few plain words, at most 40 characters" },
           "threads": { "type": "integer", "minimum": 1, "maximum": 9999 }
         }
       }
@@ -99,7 +98,7 @@
         "additionalProperties": false,
         "required": ["name", "threads", "last_week", "quotes", "examples"],
         "properties": {
-          "name": { "type": "string", "maxLength": 80 },
+          "name": { "type": "string", "maxLength": 40, "pattern": "^[^\\u0000-\\u001f\\ud800-\\udfff]{1,40}$", "description": "a few plain words, at most 40 characters" },
           "threads": { "type": "integer", "minimum": 1 },
           "last_week": { "type": ["integer", "null"], "minimum": 0 },
           "quotes": { "type": "array", "maxItems": 2, "items": { "type": "string", "maxLength": 200 } },
