@@ -36,3 +36,6 @@ jobs:
       # `latest` is the dist-tag every AgentRun release is published under.
       - run: npm install --prefix "$RUNNER_TEMP/serve" --no-save --no-audit --no-fund --ignore-scripts @parcha/agentrun-serve@latest
       - run: node .github/parse-evals.mjs "$RUNNER_TEMP/serve"
+      # Each template's own cap covers one step and an answer on every harness it lists, on the model it was measured on,
+      # as the server warns at save; below that, every run stops at its first tool call (inbox-assistant paused at once).
+      - run: node .github/lint-caps.mjs "$RUNNER_TEMP/serve"

@@ -36,8 +36,10 @@ parameters:
   channel: { type: string, pattern: "^[CG][A-Z0-9]{8,12}$", description: "the Slack channel ID the celebration goes to, like C0123ABCD (in Slack: the channel's details, at the bottom). Not a #name" }
 inputs:
   as_of: { type: string, format: date-time, required: false, title: "Check as of", description: "Check the period that holds this moment, by hand. Blank: now.", examples: ["2026-11-18T15:00:00Z"] }
-# One run an hour, capped at $0.10, however many payments come in.
-budget: { per_run_usd: 0.10 }
+# One run an hour, capped at $0.40, however many payments come in. On codex with a priced gpt-6.1-sol one step and an
+# answer alone come to about $0.20 (pi: $0.11), so $0.10 stopped every run at its first tool call; a typical run spends a
+# few cents. .github/lint-caps.mjs checks it.
+budget: { per_run_usd: 0.40 }
 learning: true
 # Suggested: never, so the scheduled post goes out unattended. The owner makes that choice at install; under ask the
 # post waits for an OK. Its one write is the pinned Slack post, held to the channel either way.
