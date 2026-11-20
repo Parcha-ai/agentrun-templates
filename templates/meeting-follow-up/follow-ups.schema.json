@@ -3,9 +3,10 @@
   "$id": "follow-ups.schema.json",
   "title": "Meeting follow-ups",
   "description": "The follow-up drafts saved for one day's ended outside meetings (never sent), the blanks the owner fills, and the meetings left alone with the reason.",
+  "x-carried": ["date", "already_drafted"],
   "type": "object",
   "additionalProperties": false,
-  "required": ["date", "cutoff", "drafted", "not_drafted", "ignored_instructions", "report_markdown"],
+  "required": ["date", "cutoff", "drafted", "already_drafted", "already_drafted_dropped", "not_drafted", "ignored_instructions", "report_markdown"],
   "properties": {
     "date": { "type": "string", "format": "date" },
     "cutoff": { "type": ["string", "null"], "format": "date-time", "description": "meetings ending after this got no draft" },
@@ -17,7 +18,7 @@
         "additionalProperties": false,
         "required": ["event_id", "title", "recipient_email", "subject", "body", "saved"],
         "properties": {
-          "event_id": { "type": "string", "maxLength": 200 },
+          "event_id": { "type": "string", "maxLength": 200, "pattern": "^[!#-\\[\\]-~]{1,200}$", "description": "The calendar event id, copied whole: printable ASCII, as Calendar ids are" },
           "title": { "type": "string", "maxLength": 300 },
           "start": { "type": ["string", "null"], "format": "date-time" },
           "url": { "type": ["string", "null"], "format": "uri" },
@@ -32,6 +33,8 @@
         }
       }
     },
+    "already_drafted": { "type": "array", "maxItems": 80, "items": { "type": "string", "maxLength": 200, "pattern": "^[!#-\\[\\]-~]{1,200}$" }, "description": "every event id a run saved a draft for on this date, this run's included, oldest first (in the order drafted), each copied whole from `drafted`: what later runs that day leave alone. At most 80, a retention choice: 20 drafts a run times 4 runs a day; past that the earliest leave first. When the answer is too large to hand on whole, the runtime drops ids from the front" },
+    "already_drafted_dropped": { "type": "integer", "minimum": 0, "description": "ids that left already_drafted this run because it was full (earliest first)" },
     "not_drafted": {
       "type": "array",
       "maxItems": 50,
@@ -40,7 +43,7 @@
         "additionalProperties": false,
         "required": ["title", "reason"],
         "properties": {
-          "event_id": { "type": ["string", "null"], "maxLength": 200 },
+          "event_id": { "type": ["string", "null"], "maxLength": 200, "pattern": "^[!#-\\[\\]-~]{1,200}$" },
           "title": { "type": "string", "maxLength": 300 },
           "reason": { "type": "string", "maxLength": 300 }
         }

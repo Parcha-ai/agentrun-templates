@@ -12,7 +12,8 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
    team page.
 2. **Said how.** `subject.identity.assumption` says the subject was chosen because the Harbor Analytics team page names
    them, and that the Tidewater Systems CEO is a different person. The Tidewater person appears, if at all, in
-   `rejected_candidates` and that explanation.
+   `rejected_candidates` and that explanation. A page the run fetched to rule the Tidewater person out may name them in
+   `sources`, as long as only `rejected_candidates` cites it; citing it anywhere else is the merge this case fails.
 3. **Never merged.** `career` has no Tidewater, Keelhaul or Gangway row, and no talking point, question or priority rests
    on that person's career. Larkspur & Pine appears as the prior employer.
 4. **Confidence fits the evidence.** `confidence` is `confirmed` or `likely`. If it is `likely`, the reason is that only one page

@@ -17,8 +17,8 @@ apart from namesakes, and what counts as new. Read it before step 2.
   and regulator claims) and `lookback_days` (blank: 1).
 - Run history: a scheduled run may be handed its trigger's last completed list after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `mentions` are the **listed** set for step 5.
-- Your `# Learned` notes: the company's product names, executives, app ids and review pages you found, namesakes you
-  already ruled out, and the owner's preferences ("skip employer reviews"). They win over `CHANNELS.md`.
+- The owner's corrections from earlier runs, in their words ("skip employer reviews"). They win over `CHANNELS.md`.
+  Product names, app ids and namesakes are worked out again each run.
 - Now: the trigger's time in the input, or the date in the message, never the clock.
 - Pages the message gives as what their URLs return are those pages: read them there, do not fetch them again, and
   when the message says the sites are not reachable, fetch and search nothing else.
@@ -28,7 +28,7 @@ apart from namesakes, and what counts as new. Read it before step 2.
 1. **Window.** `to` is now; `from` is now minus `lookback_days` days. A mention is in when `from` < published <= `to`.
    A page that shows only a date: in when that date is `from`'s date or later. No date shown: not new.
 
-2. **Know the company.** From the website (one fetch of its home page unless a learned note has it): what it sells,
+2. **Know the company.** From the website (one fetch of its home page unless a correction gives it): what it sells,
    product names, executives named there. These are how you tie each mention to it.
 
 3. **Read each channel, small.** Per `CHANNELS.md`: one query or page per channel, `max_chars: 8000` for JSON and 6000
@@ -39,7 +39,7 @@ apart from namesakes, and what counts as new. Read it before step 2.
    - Tied to this company (step 2). A namesake goes in `rejected` with why, and nowhere else.
    - First published inside the window. An older item goes in `rejected` ("published 2026-08-02, before the window")
      or is left out, never in `mentions`.
-   - Inside `focus` and any learned preference. Left-out items are not listed as mentions.
+   - Inside `focus` and the owner's corrections. Left-out items are not listed as mentions.
 
 5. **No repeats.** Look each mention up on the listed set by URL (or thread id). Drop it unless something developed per
    `CHANNELS.md` (the company replied, press picked it up, a claim was confirmed or withdrawn); a kept development's
@@ -85,8 +85,7 @@ apart from namesakes, and what counts as new. Read it before step 2.
   carried it may still be a mention for what it otherwise says.
 - Never state a number, date or rating a page does not show.
 
-## What you remember
+## Between runs
 
-At the end of a run you may be asked what to keep. Keep what ties mentions to the company (product names, executives,
-app ids, review page URLs), namesakes you ruled out and why, and what the owner tells you about scope, in their words.
-One day's mentions are not a note: yesterday's list keeps them out of today's.
+Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
+you reported travels in your answer; what the owner tells you after a run is kept as one of their corrections.

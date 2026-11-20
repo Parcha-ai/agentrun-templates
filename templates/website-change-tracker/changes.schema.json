@@ -34,7 +34,7 @@
             "additionalProperties": false,
             "required": ["kind", "date"],
             "properties": {
-              "kind": { "enum": ["learned_note", "last_run", "archive"] },
+              "kind": { "enum": ["last_run", "archive"] },
               "date": { "type": "string", "format": "date" },
               "url": { "type": ["string", "null"], "format": "uri", "description": "The archive capture's URL, when the before came from one." }
             }

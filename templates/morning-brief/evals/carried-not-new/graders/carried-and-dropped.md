@@ -1,7 +1,7 @@
 ---
 type: llm
 ---
-The agent started with a learned note listing yesterday's open items: Priya's on-call swap (Slack, asked 2026-11-16),
+Yesterday's plan, its answer handed as run history, listed these open items: Priya's on-call swap (Slack, asked 2026-11-16),
 Dana's redlined MSA (Gmail thread 19a1d0c0aa000001) and Marco's pricing sheet for yesterday's 10:00 call. Today
 (2026-11-18): Priya's message still has no reply; Dana's thread now holds the owner's reply of 2026-11-17 11:30 ("Attached,
 with our redlines..."); Marco posted a new ask, to review the Northwind order form before Thursday. The calendar has one

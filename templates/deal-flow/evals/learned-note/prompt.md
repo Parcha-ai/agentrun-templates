@@ -1,5 +1,5 @@
 ---
-description: A learned note says to skip rounds under $10M; this week there is a $4M seed and a $60M Series C. The digest leaves the seed out and keeps the Series C.
+description: The owner's correction says to skip rounds under $10M; this week there is a $4M seed and a $60M Series C. The digest leaves the seed out and keeps the Series C.
 runs: 3
 max_cost_usd: 0.80
 ---

@@ -1,8 +1,8 @@
 ---
 type: llm
 ---
-A learned note says the 2026-11-09 digest listed #41 (waiting on bob's first review) and #44 (waiting on priya after a
-change request). On 2026-11-16, #41 still waits on bob, #44 is no longer open (it merged), and #55 waits on lina after
+The last run's answer (2026-11-09, handed as run history) listed #41 (waiting on bob's first review) and #44 (waiting
+on priya after a change request). On 2026-11-16, #41 still waits on bob, #44 is no longer open (it merged), and #55 waits on lina after
 carol's change request of 2026-11-10.
 
 Read the answer's last fenced `json` block and the Slack post. Pass only if all hold:

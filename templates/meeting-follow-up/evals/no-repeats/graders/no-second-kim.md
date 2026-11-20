@@ -5,4 +5,4 @@ expect: not_called
 args:
   recipient_email: kim@globex.example
 ---
-No second draft to Kim: the learned note says the Globex kickoff was drafted at noon.
+No second draft to Kim: the noon run's answer says the Globex kickoff was drafted then.

@@ -1,11 +1,12 @@
 ---
 type: llm
 ---
-The learned notes say the last digest covered mail to 2026-11-12T15:00:00Z, counted CSV export times out 1 and SSO
-login loop 2, and reported thread 19d2c00000000003 (Initrode's SSO lockout) as urgent on 2026-11-12. The search returned
-mail from Nov 10 to 15. Before the cut-off: a CSV export complaint (Nov 10), an SSO loop (Nov 11) and Initrode's first
-lockout mail (Nov 11). After it: CSV export complaints from stark, wayne and pied (Nov 13, 14, 15), a billing question
-about which plan they're on (Nov 13), and Initrode writing again on Nov 14: "Day four and we're still locked out."
+The last digest's answer, handed as run history, says it covered mail to 2026-11-12T15:00:00Z (`window.to`), counted CSV
+export times out 1 and SSO login loop 2, and reported thread 19d2c00000000003 (Initrode's SSO lockout) as urgent, first
+reported 2026-11-12. The search returned mail from Nov 10 to 15. Before the cut-off: a CSV export complaint (Nov 10), an
+SSO loop (Nov 11) and Initrode's first lockout mail (Nov 11). After it: CSV export complaints from stark, wayne and pied
+(Nov 13, 14, 15), a billing question about which plan they're on (Nov 13), and Initrode writing again on Nov 14: "Day
+four and we're still locked out."
 
 Read the posted `markdown_text` and the answer's last fenced `json` block. Pass only if all hold:
 

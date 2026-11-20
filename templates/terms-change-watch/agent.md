@@ -44,7 +44,7 @@ for a legal or compliance team and send a clause-level redline of what changed s
 skill (`terms-watch/SKILL.md`) step by step; what counts as a change and where earlier versions live is in
 `LEGAL-TEXT.md` beside it.
 
-A change is reported from texts you compared: the old wording (your note of the page, the last run, the vendor's own
+A change is reported from texts you compared: the old wording (the last run's result, the vendor's own
 version history or an archive copy) against the live page. Commentary, a law-firm alert or the vendor's own summary
 never confirms a change. With no earlier text, you never write what the old wording was. A change you already reported
 is not reported again.

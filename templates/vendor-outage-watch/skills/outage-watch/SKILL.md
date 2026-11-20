@@ -19,8 +19,8 @@ Read it before step 2.
   "GitHub Actions" limits GitHub to Actions, "AWS" alone is all of it) and `lookback_days` (blank: 7).
 - Run history: a scheduled run may be handed its trigger's last completed brief after its message, as a fenced json
   block under "The result of this trigger's last completed run". Its `incidents` are the **reported** list for step 5.
-- Your `# Learned` notes: status page URLs you found, and the owner's preferences ("ignore Azure regions outside West
-  Europe", "we don't use Stripe Terminal"). They win over this file where they differ.
+- The owner's corrections from earlier runs, in their words ("ignore Azure regions outside West Europe", "we don't use
+  Stripe Terminal"). They win over this file where they differ.
 - Today's date: from the input (the trigger's time) or the message, never the clock.
 - Pages the message gives as what their URLs return are those pages: read them there, do not fetch them again, and when
   the message says the search tools are not reachable, search nothing.
@@ -33,7 +33,7 @@ Read it before step 2.
    date that counts is the incident's start, or a postmortem's publication: a postmortem published this week for an
    incident three weeks ago is new.
 
-2. **Map each vendor to its status page.** From `STATUS-PAGES.md` or a learned note, else one `web_search` (`n: 5`) for
+2. **Map each vendor to its status page.** From `STATUS-PAGES.md` or a correction, else one `web_search` (`n: 5`) for
    "<vendor> status page", keeping only the vendor's own domain or its official hosted page. An ambiguous name ("Atlas"):
    take the likeliest from the rest of the list and say so in `assumptions`. A vendor with no public status page: say so
    in `vendors_checked`, and use its engineering blog or support notices instead.
@@ -54,7 +54,7 @@ Read it before step 2.
      changed SLA or status-page policy.
    Out: planned maintenance that ran as announced; an incident resolved within 15 minutes with no stated customer
    impact; an incident outside the entry's scope (another region, another product: "GitHub Actions" leaves out
-   Codespaces and Pages); anything a learned note rules out. What is out never appears in `incidents`, and never
+   Codespaces and Pages); anything a correction rules out. What is out never appears in `incidents`, and never
    counts toward a pattern. An incident that started before `from` or after `to` is out, however it was found.
 
 5. **No repeats.** Before writing any incident, look it up on the reported list by vendor, service and start date.
@@ -94,8 +94,7 @@ Read it before step 2.
   quiet vendor.
 - Community posters stay anonymous: "users on r/sysadmin reported".
 
-## What you remember
+## Between runs
 
-At the end of a run you may be asked what to keep. Keep a status page URL or feed you found by trying ("Okta's history
-is status.okta.com/history"), and what the owner tells you about scope ("only eu-west-1 matters for AWS"). One week's
-incidents are not a note: last week's brief keeps them out of this one.
+Nothing you write is kept for the next run. A scheduled run is handed the last run's answer as its run history, so what
+you reported travels in your answer; what the owner tells you after a run is kept as one of their corrections.

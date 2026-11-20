@@ -7,7 +7,8 @@ GB; Stripe's 2026-11-12.acacia `customer_creation` breaking change. This week:
 - OpenAI updated the snapshot entry on 2026-11-19: the shutdown moves to February 11, 2027 (a development).
 - Stripe (2026-11-20): Smart Retries default to 8 attempts within 2 weeks, up from 4 within 1 week, for subscriptions
   created on or after January 5, 2027 (new, in scope: the team uses Billing).
-- Vercel (2026-11-18): Vercel Queues beta, a new feature; a learned note says the owner wants no new features or betas.
+- Vercel (2026-11-18): Vercel Queues beta, a new feature; the owner's correction says they want no new features or
+  betas.
 - The Assistants, Vercel price and acacia entries are unchanged.
 
 Read the answer's last fenced `json` block, its `report_markdown` included. Pass only if all hold:

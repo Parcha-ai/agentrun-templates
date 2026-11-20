@@ -1,5 +1,5 @@
 ---
-description: "Last week's run reported Quillforge's Team price rise to $59 and Business going to 'Contact sales', but the learned note of the page still holds the older prices. This week an Enterprise plan appeared and a logo strip with five customers was added, which a learned note says the owner doesn't want. The report holds only the new Enterprise plan; the Team and Business changes sit in dropped_repeats."
+description: "Last week's run reported Quillforge's Team price rise to $59 and Business going to 'Contact sales', and an archive capture from that morning shows the page as it saw it. This week an Enterprise plan appeared and a logo strip with five customers was added, which the owner's correction says they don't want. The report holds only the new Enterprise plan; the Team and Business changes sit in dropped_repeats."
 runs: 3
 max_cost_usd: 1.50
 input:
@@ -20,6 +20,16 @@ The sites below are not reachable from this run. The pages that follow are what 
 <div class="plan"><h2>Enterprise</h2><p class="price">From $40,000 per year</p><ul><li>Everything in Business</li><li>Dedicated region (EU or US)</li><li>99.95% uptime SLA</li></ul></div>
 </div>
 <section class="logos">Trusted by Ramp, Linear, Vercel, Notion and Retool</section>
+<footer>© 2026 Quillforge, Inc.</footer>
+
+--- https://web.archive.org/web/20261116/https://quillforge.example/pricing (lands on https://web.archive.org/web/20261116071144/https://quillforge.example/pricing) ---
+<h1>Pricing that grows with your docs</h1>
+<div class="plans">
+<div class="plan"><h2>Starter</h2><p class="price">$0</p><ul><li>Up to 3 editors</li><li>1 space</li></ul></div>
+<div class="plan"><h2>Team</h2><p class="price">$59 per user per month, billed annually</p><ul><li>Unlimited editors</li><li>20 spaces</li><li>AI search</li></ul></div>
+<div class="plan"><h2>Business</h2><p class="price">Contact sales</p><ul><li>SSO and SCIM</li><li>Audit log</li><li>Unlimited spaces</li></ul></div>
+</div>
+<blockquote class="testimonial">"Quillforge replaced three wikis for us." (Ramp)</blockquote>
 <footer>© 2026 Quillforge, Inc.</footer>
 
 The result of this trigger's last completed run:

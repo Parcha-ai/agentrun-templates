@@ -11,8 +11,8 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { GitHub } from "./lib/github.mjs";
 import { loadPackage, readIndex, SiteError } from "./lib/packages.mjs";
-import { CATEGORY_TEXT, isFree, requirements } from "./lib/describe.mjs";
-import { categoryPage, freePage, homePage, layout, listPage, notFoundPage, SITE_NAME, templatePage } from "./lib/pages.mjs";
+import { CATEGORY_TEXT, isFree, isTriggered, requirements } from "./lib/describe.mjs";
+import { categoryPage, freePage, homePage, layout, listPage, notFoundPage, SITE_NAME, ollamaPage, templatePage, triggersPage } from "./lib/pages.mjs";
 import { checkWebsite } from "./sync-website.mjs";
 import { mdText } from "./lib/util.mjs";
 
@@ -73,12 +73,14 @@ export async function build(options = {}) {
 
   const pages = [homePage(site, packages)];
   if (packages.some(isFree)) pages.push(freePage(site, packages));
+  if (packages.some(isTriggered)) pages.push(triggersPage(site, packages));
   for (const pkg of packages) pages.push(templatePage(site, pkg, stats.get(`${pkg.owner}/${pkg.repo}`)));
   for (const cat of Object.keys(CATEGORY_TEXT)) {
     const inCat = packages.filter((p) => p.category === cat);
     if (inCat.length) pages.push(categoryPage(site, cat, inCat, packages));
   }
   pages.push(listPage(site));
+  pages.push(ollamaPage(site, packages));
   const notFound = notFoundPage();
 
   rmSync(out, { recursive: true, force: true });

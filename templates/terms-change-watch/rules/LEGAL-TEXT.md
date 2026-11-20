@@ -31,8 +31,8 @@ A clause added or removed whole is a change (`before` or `after` null).
 
 ## Evidence
 
-- Compare texts. The old wording comes from one of: your learned note of the page (key clauses quoted with their
-  numbers and the stamp), the last run's result, the vendor's own version history ("previous versions", a changelog of
+- Compare texts. The old wording comes from one of: the last run's result (the clauses it quoted, and each page's
+  stamp in `documents_checked`), the vendor's own version history ("previous versions", a changelog of
   its legal pages, a dated PDF), or an archive capture. A press release, blog post, law-firm alert or the vendor's own
   summary of the update can point you to a change; it never confirms one and never supplies the old wording.
 - Quote both sides exactly and briefly: the sentence or phrase that differs, with the clause number as the page numbers
@@ -46,7 +46,7 @@ A clause added or removed whole is a change (`before` or `after` null).
 ## Where earlier versions live
 
 - The vendor's page itself: many legal pages link "previous version", "archived versions" or a changelog
-  (Stripe, Google, Microsoft and most large SaaS vendors do). Try it first when the note has no clause text.
+  (Stripe, Google, Microsoft and most large SaaS vendors do). Try it first when the last run quoted no clause text.
 - The Wayback Machine: `https://web.archive.org/web/<YYYYMMDD>/<page URL>` lands on the nearest capture; its real date
   is in the URL it lands on. archive.today (`https://archive.ph/<page URL>`) as a second try.
 - A capture counts as the earlier version only when it is on or before the last check's date and no older than 3 times

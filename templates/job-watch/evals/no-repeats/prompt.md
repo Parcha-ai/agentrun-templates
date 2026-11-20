@@ -1,5 +1,5 @@
 ---
-description: "Yesterday's run showed Tilda Health and Corvo Labs. Today Tilda is still open but now has a deadline, Corvo has closed, a climate company posted a new match, and an agency posted a full-time role for a client, which a learned note says to skip. The list holds only the new climate posting; Tilda's deadline and Corvo's closing are one line each in changes; the agency role is left out."
+description: "Yesterday's run showed Tilda Health and Corvo Labs. Today Tilda is still open but now has a deadline, Corvo has closed, a climate company posted a new match, and an agency posted a full-time role for a client, which the person's correction says to skip. A Solstice Health opening posted before the window is still up. The list holds only the new climate posting; Tilda's deadline and Corvo's closing are one line each in changes; the agency role is left out."
 runs: 3
 max_cost_usd: 2.00
 input:
@@ -20,6 +20,9 @@ The sites below are not reachable from this run. The pages that follow are what 
 
 --- https://jobs.ashby.example/mareva/510 (fetched 2026-11-17) ---
 <h1>Product Designer</h1><p>Mareva Energy · Remote, EU · Full-time · EUR 52,000 to 60,000. Posted November 16, 2026. Design tools for home battery owners; 3 to 5 years of experience.</p>
+
+--- https://careers.solstice-health.example/jobs/product-designer (fetched 2026-11-17) ---
+<h1>Product Designer</h1><p>Solstice Health · Lisbon, Portugal · Hybrid · Full-time · EUR 50,000 to 56,000. Posted November 11, 2026.</p>
 
 --- https://jobboard.example/jobs/product-designer-lisbon-fintech (fetched 2026-11-17) ---
 <h1>Product Designer, fintech client</h1><p>Posted by Harbor Talent for a client · Lisbon, hybrid · Full-time · EUR 50,000. Posted November 16, 2026.</p>

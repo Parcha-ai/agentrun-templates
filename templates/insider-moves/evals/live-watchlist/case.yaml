@@ -1,0 +1,4 @@
+# Applied with these parameters (POST /v2/templates/insider-moves/apply). Live: real monid calls, paid from the
+# eval's monid key; nothing is handed to the run.
+parameters:
+  tickers: [AAPL, NVDA, MSFT]

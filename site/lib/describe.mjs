@@ -168,6 +168,12 @@ export function isFree(pkg) {
   return typeof pkg.model?.prefer === "string" && pkg.model.prefer.endsWith(":free");
 }
 
+/** A template that starts on its own when something happens (an app event, a feed item, an email, a webhook), not
+ *  only on a schedule or by hand. */
+export function isTriggered(pkg) {
+  return (pkg.triggers ?? []).some((t) => typeof t?.source?.kind === "string" && t.source.kind !== "schedule");
+}
+
 const HARNESS_NAMES = { pi: "pi", "claude-agent": "Claude Code", codex: "Codex" };
 
 /** "a, b and c" */

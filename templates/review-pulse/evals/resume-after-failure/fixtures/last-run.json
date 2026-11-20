@@ -1,0 +1,63 @@
+{
+  "agentrun": "3688f4156fc94c39e706a61a1b0ade28c8cb8acb",
+  "run_id": "01a1cf00-0000-7000-8000-00000000f102",
+  "ended_at": "2026-11-09T08:02:30Z",
+  "output": {
+    "window": {
+      "from": "2026-11-02",
+      "to": "2026-11-09"
+    },
+    "quiet": false,
+    "listings": [
+      {
+        "product": "Quillpad",
+        "platform": "g2",
+        "id": "quillpad",
+        "status": "failed"
+      },
+      {
+        "product": "Quillpad",
+        "platform": "capterra",
+        "id": null,
+        "status": "skipped"
+      },
+      {
+        "product": "Quillpad",
+        "platform": "trustpilot",
+        "id": "quillpad.example",
+        "status": "read"
+      }
+    ],
+    "scoreboard": [
+      {
+        "product": "Quillpad",
+        "platform": "trustpilot",
+        "since": "2026-11-02",
+        "new_reviews": 2,
+        "avg_stars": 4.5,
+        "more_than_read": false
+      }
+    ],
+    "themes": [],
+    "changes_vs_last_week": [],
+    "unread_from": {
+      "g2": [
+        {
+          "product": "Quillpad",
+          "from": "2026-11-02"
+        }
+      ],
+      "capterra": [],
+      "trustpilot": []
+    },
+    "theme_summary": {
+      "themes": []
+    },
+    "could_not_check": [
+      "G2 reviews for Quillpad: the call failed (monid could not be reached)."
+    ],
+    "ignored_instructions": [],
+    "monid_calls": 3,
+    "report_markdown": "## Review pulse, 2026-11-02 to 2026-11-09\n\n### Quillpad\nG2: not read, the call failed (monid could not be reached). G2 for Quillpad could not be read; the next run reads its reviews from 2026-11-02.\nTrustpilot: 2 new, average 4.5\n\nThis is the first week, so nothing is compared.\n\nmonid calls this run: 3"
+  }
+}

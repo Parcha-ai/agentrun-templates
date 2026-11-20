@@ -4,5 +4,5 @@ parameters:
   channel: "Company blogs and YouTube on AP automation"
   your_outlet: "Ledgerly blog, read by controllers at mid-size US companies"
 # The run starts with the input in prompt.md's front matter; prompt.md's body is its content.
-# The agent starts with these corrections (fixtures/learning/corrections.md, served under # Learned).
-learning: fixtures/learning/corrections.md
+# The run's clock is the prompt's firing time, so its lookback window is the grader's.
+now: 2026-11-23T08:00:00Z

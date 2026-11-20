@@ -26,6 +26,13 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 24.22.3
+      # No `# Learned` string and no "What you remember" heading in any template: the runtime names the owner's
+      # corrections itself, and a run's state travels only as its run history.
+      - run: node .github/lint-templates.mjs
+      # A scheduled run's last answer is handed whole under 32 KiB, else its `x-carried` fields alone, the oldest entries
+      # of its carried arrays dropped to fit: every carried field must be bounded, and the ones never cut fit 12,000 bytes.
+      - run: node --test .github/lint-handoff-size.test.mjs
+      - run: node .github/lint-handoff-size.mjs
       # `latest` is the dist-tag every AgentRun release is published under.
       - run: npm install --prefix "$RUNNER_TEMP/serve" --no-save --no-audit --no-fund --ignore-scripts @parcha/agentrun-serve@latest
       - run: node .github/parse-evals.mjs "$RUNNER_TEMP/serve"

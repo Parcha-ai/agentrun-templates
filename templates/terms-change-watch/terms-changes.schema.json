@@ -40,7 +40,7 @@
             "additionalProperties": false,
             "required": ["kind", "date"],
             "properties": {
-              "kind": { "enum": ["learned_note", "last_run", "vendor_history", "archive", "none"] },
+              "kind": { "enum": ["last_run", "vendor_history", "archive", "none"] },
               "date": { "type": ["string", "null"], "format": "date", "description": "the date the earlier text was seen or captured" },
               "url": { "type": ["string", "null"], "description": "the archive capture or vendor history URL, when the old text came from one" }
             }

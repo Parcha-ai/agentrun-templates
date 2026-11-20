@@ -1,0 +1,17 @@
+# Applied with these parameters. Pass: 3 of 3 runs. The fixtures stand in for the owner's Composio Gmail and Slack;
+# every call is recorded for the graders.
+parameters:
+  query: label:support newer_than:7d
+  channel: C0SUPPORT1
+  team_domains: [acme.example]
+  cron: "0 9,15 * * 1,4"
+mcp:
+  gmail: fixtures/gmail-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:gmail/GMAIL_FETCH_EMAILS
+  - mcp:gmail/GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID
+  - mcp:slack/SLACK_SEND_MESSAGE
+# The prompt ends with what agentrun hands this run from fixtures/last-run.json (.github/handed-history.mjs): the whole
+# answer, under 32 KiB.
+now: 2026-11-16T09:00:00Z

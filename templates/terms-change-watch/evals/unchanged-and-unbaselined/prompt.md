@@ -1,5 +1,5 @@
 ---
-description: "One DPA carries the same version stamp as the learned note, under a new page layout. A second vendor's terms are new to the watch, stamped last week with a banner saying Section 7 changed, and no archive capture exists; a law-firm blog claims to know the old wording. Nothing can be redlined: the report is quiet, the DPA is unchanged, the new terms have no baseline, and no old wording is written down."
+description: "One DPA carries the same version stamp the last run recorded, under a new page layout. A second vendor's terms are new to the watch, stamped last week with a banner saying Section 7 changed, and no archive capture exists; a law-firm blog claims to know the old wording. Nothing can be redlined: the report is quiet, the DPA is unchanged, the new terms have no baseline, and no old wording is written down."
 runs: 3
 max_cost_usd: 1.50
 input:
@@ -33,3 +33,9 @@ HTTP 404 Not Found.
 
 --- https://counsel-notes.example/blog/cartwheel-content-licence (fetched 2026-11-16, a law-firm blog, published 2026-11-14) ---
 <h1>Cartwheel quietly expands its content licence</h1><p>Cartwheel's Section 7 used to limit its licence to "operating the service". The new wording lets it promote and improve its products with your content.</p>
+
+The result of this trigger's last completed run:
+
+```json
+{"window":{"from":"2026-11-02","to":"2026-11-09"},"quiet":true,"changes":[],"documents_checked":[{"document":"https://paywell.example/legal/dpa","page_url":"https://paywell.example/legal/dpa","version_date":"Version 4.1, last updated June 2, 2026","result":"unchanged","noise_ignored":[]}],"assumptions":[],"dropped_repeats":[],"unreachable":[],"ignored_instructions":[],"report_markdown":"..."}
+```

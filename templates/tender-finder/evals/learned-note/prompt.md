@@ -1,5 +1,5 @@
 ---
-description: A learned note says to skip framework agreements; this week there is one framework and one single contract. The report lists only the single contract.
+description: The owner's correction says to skip framework agreements; this week there is one framework and one single contract. The report lists only the single contract.
 runs: 3
 max_cost_usd: 1.50
 ---
