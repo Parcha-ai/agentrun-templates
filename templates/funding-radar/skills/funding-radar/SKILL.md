@@ -30,7 +30,8 @@ a call that answered.
    a line in `could_not_check` ("No Fundable industry matches 'quantum widgets'."). A result whose `industry_type` is
    `SUPER_CATEGORY` goes in `super_categories`, else in `industries`.
 3. **Stop when nothing matched.** With no sector matched, do not call the deals search: a search with no industry
-   returns every sector and bills for it. Say so, `quiet` false, `matched_total` null.
+   returns every sector and bills for it. Say so, `quiet` false, `matched_total` null. When a search failed rather than
+   matched nothing, call it once only, and say no round could be read, never that there were no rounds.
 4. **Rounds.** One call to `monid:fundable/deals` with `body`:
    - `deal.created_start` = `from`, `deal.created_end` = `to` (the days Fundable added the round, so a round announced
      earlier and added this week is still caught);
@@ -40,7 +41,8 @@ a call that answered.
    - `deal.size_min` = `min_amount_usd` when given;
    - `company.industries` and `company.super_categories` from step 2 (leave out an empty one);
    - `page_size` = `max_rounds`, `sort_by` `largest_raise`.
-   An error leaves `matched_total` null, `quiet` false, and the error's words in `could_not_check`.
+   An error leaves `matched_total` null, `quiet` false, and the error's words in `could_not_check`. Do not call it
+   again.
 5. **Skip what was reported.** Drop a round whose `id` is in the last run's `reported_deal_ids`. `matched_total` is the
    answer's `meta.total_count`.
 6. **Each round, from its own fields.**
@@ -53,9 +55,10 @@ a call that answered.
    - `other_investors`: the other names the description gives as taking part, at most 12.
    - `valuation_usd`: `valuation.valuation_usd` or null.
    - `links`: the `articles[].link` values, the primary one first, at most 3. No other link.
-7. **Crunchbase for the top three.** For the three largest rounds kept (by amount; undisclosed last), call
-   `monid:crunchbase/search_organizations` with `queryParams.query` the company name and `limit` 3. Take the entity whose
-   `identifier.value` is the company's name; set `what_it_does` to its `short_description` and `crunchbase_url` to
+7. **Crunchbase for the top three.** With no round kept, no Crunchbase call and no line about it. For the three
+   largest rounds kept (by amount; undisclosed last), call `monid:crunchbase/search_organizations` with
+   `queryParams.query` the company name and `limit` 3. Take the entity whose `identifier.value` is the company's name;
+   set `what_it_does` to its `short_description` and `crunchbase_url` to
    `https://www.crunchbase.com/organization/<identifier.permalink>`. No exact name: leave `crunchbase_url` null and keep
    Fundable's description. Others: `crunchbase_url` null.
 8. **Quiet.** `quiet` is true only when every sector matched, the deals search answered and no new round remains. Then
@@ -64,8 +67,11 @@ a call that answered.
 9. **What the next run reads.** `unread_from` is `window.from` when the deals search failed, or a sector's industry
    search failed (an error, not "no match"): those days were not read, and the next run starts there. Otherwise null.
    When set, the report says so: "Rounds added since <from> could not be read; the next run reads them."
-10. **Answer** with exactly one fenced `json` block matching the output schema. `reported_deal_ids` is every round in
-    `rounds`. `monid_calls` counts every monid call you made, the free ones included.
+   `reported_deal_ids` is what the next run skips. When this run's `unread_from` is set and the last run's was too, the
+   next run reads all those days again: keep the last run's ids, then add this run's rounds. Otherwise only this run's
+   rounds. Over 100 ids, drop the oldest and say so: "Some rounds reported before <date> may appear again."
+10. **Answer** with exactly one fenced `json` block matching the output schema. `monid_calls` counts every monid call
+    you made, the free ones included.
 
 ## The report
 

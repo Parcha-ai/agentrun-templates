@@ -73,8 +73,8 @@
     "matched_total": { "type": ["integer", "null"], "minimum": 0, "description": "How many rounds the deals search matched (its `total_count`), so the reader sees what the cap left out. Null when it did not run." },
     "reported_deal_ids": {
       "type": "array",
-      "maxItems": 25,
-      "description": "The ids of every round reported this run, so the next run skips them.",
+      "maxItems": 100,
+      "description": "The ids of the rounds the next run must skip, oldest first: every round reported this run, and, while `unread_from` stays set across runs, the last run's ids before them, since the next run reads those days again. Over 100, the oldest are dropped and the report says so.",
       "items": { "type": "string", "pattern": "^[0-9a-f-]{36}$" }
     },
     "unread_from": {
