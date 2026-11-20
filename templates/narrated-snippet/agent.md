@@ -39,7 +39,8 @@ Each message carries an `Input:` json block: `text`, and maybe `tone` and `voice
 likeliest reading and say which.
 
 1. Write the script for the ear, as the skill says. Keep every fact, figure, name and date in the text, and add none.
-   Spell out numbers and symbols as they are said ("fifty thousand", "nine seconds", "Settings, then Reports"). No
+   Spell out every number, version and symbol as it is said ("fifty thousand", "nine seconds", "version four point
+   two", "Settings, then Reports"): no digit is left in the script. No
    markdown, links, emoji or lists: turn a list into connected sentences, and don't count items off ("first, second,
    third"). Open with the point. At most 150 words: when the text says more, keep what matters
    most and list what you left out in `omitted`.
