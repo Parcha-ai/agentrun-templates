@@ -1,7 +1,7 @@
 ---
 type: llm
 ---
-The last run's `already_drafted` was full (90 ids); this run adds the Brightpane intro, so one earlier id leaves the list.
+The last run's `already_drafted` was full (55 ids); this run adds the Brightpane intro, so one earlier id leaves the list.
 
 Read the answer's last fenced `json` block. Pass only if `report_markdown` says that 1 earlier draft is no longer
 tracked (in any wording that gives the count), and `drafted` holds the Brightpane intro alone. Answer pass or fail, and

@@ -18,7 +18,7 @@
         "additionalProperties": false,
         "required": ["event_id", "title", "recipient_email", "subject", "body", "saved"],
         "properties": {
-          "event_id": { "type": "string", "maxLength": 200 },
+          "event_id": { "type": "string", "maxLength": 200, "pattern": "^[!#-\\[\\]-~]{1,200}$", "description": "The calendar event id, copied whole: printable ASCII, as Calendar ids are" },
           "title": { "type": "string", "maxLength": 300 },
           "start": { "type": ["string", "null"], "format": "date-time" },
           "url": { "type": ["string", "null"], "format": "uri" },
@@ -33,7 +33,7 @@
         }
       }
     },
-    "already_drafted": { "type": "array", "maxItems": 90, "items": { "type": "string", "maxLength": 120 }, "description": "every event id a run saved a draft for on this date, this run's included, earliest first: what later runs that day leave alone. At most 90, what the 12,000-byte carried budget holds (20 drafts a run x a bound of 4 runs a day, plus room); past that the earliest leave first" },
+    "already_drafted": { "type": "array", "maxItems": 55, "items": { "type": "string", "maxLength": 200, "pattern": "^[!#-\\[\\]-~]{1,200}$" }, "description": "every event id a run saved a draft for on this date, this run's included, earliest first, each copied whole from `drafted`: what later runs that day leave alone. At most 55, what the 12,000-byte carried budget holds; past that the earliest leave first" },
     "already_drafted_dropped": { "type": "integer", "minimum": 0, "description": "ids that left already_drafted this run because it was full (earliest first)" },
     "not_drafted": {
       "type": "array",
@@ -43,7 +43,7 @@
         "additionalProperties": false,
         "required": ["title", "reason"],
         "properties": {
-          "event_id": { "type": ["string", "null"], "maxLength": 200 },
+          "event_id": { "type": ["string", "null"], "maxLength": 200, "pattern": "^[!#-\\[\\]-~]{1,200}$" },
           "title": { "type": "string", "maxLength": 300 },
           "reason": { "type": "string", "maxLength": 300 }
         }

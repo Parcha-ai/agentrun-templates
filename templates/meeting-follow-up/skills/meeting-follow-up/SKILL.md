@@ -80,13 +80,13 @@ wait in Gmail, who to add, which blanks to fill. Say plainly when no meeting qua
 `already_drafted` is what the next run needs to leave alone, and all it reads back: every event id a run saved a draft
 for on this `date`, in the order they were drafted, earliest first. That is the run history's `already_drafted` (an
 older answer without it: the ids of its `drafted`) when its `date` is this run's, then the ids of this run's
-`drafted`. A run that skips a meeting as already drafted still carries its id here, so a third run that day doesn't
-draft it again.
+`drafted`. Each id is copied whole, exactly as the calendar gives it, never cut. A run that skips a meeting as already
+drafted still carries its id here, so a third run that day doesn't draft it again.
 
 The next run is handed this answer only while it is under 32 KiB, and `already_drafted` gets 12,000 bytes of it: at
-most 90 ids of up to 120 characters. A run drafts at most 20 (the `drafted` limit). Nothing in this skill bounds how
-many runs a day your schedule makes (the default is one, at 17:00), so the bound taken here is 4 a day: 80, plus
-room. When it would hold more, the earliest ids leave first until 90 remain;
+most 55 ids of up to 200 characters. A run drafts at most 20 (the `drafted` limit), so 55 holds two full runs and
+most of a third. Nothing in this skill bounds how many runs a day your schedule makes (the default is one, at 17:00);
+a busier day can fill it. When it would hold more, the earliest ids leave first until 55 remain;
 `already_drafted_dropped` is how many left that way (else 0), and `report_markdown` says in one line how many earlier
 drafts are no longer tracked (a later run may draft those meetings again). Never cut it any other way.
 
