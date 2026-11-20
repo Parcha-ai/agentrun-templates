@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Weekly insider moves",
-  "x-carried": ["window"],
+  "x-carried": ["window", "unread_from"],
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -12,6 +12,7 @@
     "thirteen_d",
     "thirteen_d_list_through",
     "institutions",
+    "unread_from",
     "could_not_check",
     "ignored_instructions",
     "monid_calls",
@@ -24,13 +25,13 @@
       "additionalProperties": false,
       "required": ["from", "to"],
       "properties": {
-        "from": { "type": "string", "format": "date", "description": "Filings reported on or after this day: the last run's `to`, else today minus the lookback." },
+        "from": { "type": "string", "format": "date", "description": "Filings reported on or after this day: the last run's `to`, else today minus the lookback. A ticker or the 13D list carried in the last run's `unread_from` starts earlier, on its own day." },
         "to": { "type": "string", "format": "date", "description": "Today. Filings reported before it are in; today's wait for the next run." }
       }
     },
     "quiet": {
       "type": "boolean",
-      "description": "True only when every ticker was read and none had an insider trade or 13D filing reported in the window. A ticker that failed or was not found makes it false."
+      "description": "True only when every ticker was read and none had an insider trade reported in the window, and no 13D filing for a watchlist ticker was found. A ticker that failed or was not found makes it false. It says nothing about 13D filings the list did not cover: see `unread_from.thirteen_d`."
     },
     "tickers": {
       "type": "array",
@@ -93,6 +94,33 @@
       "type": ["string", "null"],
       "format": "date",
       "description": "The newest report date in the 13D list monid returned, so the reader sees how current it is. Null when it was not read."
+    },
+    "unread_from": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tickers", "thirteen_d"],
+      "description": "Where the next run starts each read this run could not finish, so a failed read is read again instead of skipped.",
+      "properties": {
+        "tickers": {
+          "type": "array",
+          "maxItems": 10,
+          "description": "Each ticker whose filings search failed, with the first day it has not read: its own carried day, else `window.from`. A ticker read or not found is not listed.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ticker", "from"],
+            "properties": {
+              "ticker": { "type": "string", "pattern": "^[A-Z0-9.-]{1,10}$" },
+              "from": { "type": "string", "format": "date" }
+            }
+          }
+        },
+        "thirteen_d": {
+          "type": ["string", "null"],
+          "format": "date",
+          "description": "The first day no 13D read has covered: null when the list ran through the day before `window.to`; else the later of this run's 13D start and the day after the list's newest date (the 13D start when the call failed)."
+        }
+      }
     },
     "institutions": {
       "type": "array",

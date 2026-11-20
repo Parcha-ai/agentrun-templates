@@ -13,5 +13,7 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
    reported as this week's (a mention that today's filing waits for next week is fine).
 3. **Significant.** Harlow's buy is significant; the sale is not.
 4. **Window.** `window` is 2026-11-09 to 2026-11-16. `quiet` is false.
+5. **13D gap kept.** Last week carried `unread_from.thirteen_d` 2026-11-02 and the 13D list still stops in May, so
+   `unread_from.thirteen_d` stays 2026-11-02 and `unread_from.tickers` is empty.
 
 Answer pass or fail, and quote the field or line that decided it.

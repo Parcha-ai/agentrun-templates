@@ -3,6 +3,8 @@
   "title": "Weekly review pulse",
   "x-carried": [
     "window",
+    "unread_from",
+    "theme_summary",
     "listings",
     "scoreboard"
   ],
@@ -15,6 +17,8 @@
     "scoreboard",
     "themes",
     "changes_vs_last_week",
+    "unread_from",
+    "theme_summary",
     "could_not_check",
     "ignored_instructions",
     "monid_calls",
@@ -103,6 +107,7 @@
         "required": [
           "product",
           "platform",
+          "since",
           "new_reviews",
           "avg_stars",
           "more_than_read"
@@ -118,6 +123,11 @@
               "capterra",
               "trustpilot"
             ]
+          },
+          "since": {
+            "type": "string",
+            "format": "date",
+            "description": "The first day this count covers: `window.from`, or the earlier day carried for this listing in the last run's `unread_from`."
           },
           "new_reviews": {
             "type": "integer",
@@ -135,7 +145,7 @@
           },
           "more_than_read": {
             "type": "boolean",
-            "description": "True when every review on the page read was inside the window, so more may exist than were counted."
+            "description": "True when every review on the page read was inside the window, so more may exist than were counted: the count and average are partial, and no change is reported from them."
           }
         }
       }
@@ -239,7 +249,132 @@
         "type": "string",
         "maxLength": 240
       },
-      "description": "What moved against the last run's scoreboard and themes, one line each. Empty with no last run."
+      "description": "What moved against the last run's scoreboard and `theme_summary`, one line each. A count or average is compared only when both rows are complete and each covers one run's window. Empty with no last run."
+    },
+    "unread_from": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "g2",
+        "capterra",
+        "trustpilot"
+      ],
+      "description": "Per platform, each product whose listing could not be read this run (its search or its reviews call failed), with the first day not yet read: its own carried day, else `window.from`. The next run reads that listing from there. A listing read, not listed, ambiguous or skipped is not here.",
+      "properties": {
+        "g2": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "product",
+              "from"
+            ],
+            "properties": {
+              "product": {
+                "type": "string",
+                "pattern": "^[^\\u0000-\\u001f\\ud800-\\udfff]{1,30}$"
+              },
+              "from": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        },
+        "capterra": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "product",
+              "from"
+            ],
+            "properties": {
+              "product": {
+                "type": "string",
+                "pattern": "^[^\\u0000-\\u001f\\ud800-\\udfff]{1,30}$"
+              },
+              "from": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        },
+        "trustpilot": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "product",
+              "from"
+            ],
+            "properties": {
+              "product": {
+                "type": "string",
+                "pattern": "^[^\\u0000-\\u001f\\ud800-\\udfff]{1,30}$"
+              },
+              "from": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        }
+      }
+    },
+    "theme_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "themes"
+      ],
+      "description": "This run's themes, names and counts only, so the next run can say which are new and which complaints are gone.",
+      "properties": {
+        "themes": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "product",
+              "theme",
+              "sentiment",
+              "count"
+            ],
+            "properties": {
+              "product": {
+                "type": "string",
+                "pattern": "^[^\\u0000-\\u001f\\ud800-\\udfff]{1,30}$"
+              },
+              "theme": {
+                "type": "string",
+                "pattern": "^[^\\u0000-\\u001f\\ud800-\\udfff]{1,60}$",
+                "description": "The theme as this run's `themes` names it (the skill keeps names within 60 characters)."
+              },
+              "sentiment": {
+                "enum": [
+                  "praise",
+                  "complaint",
+                  "mixed"
+                ]
+              },
+              "count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 999
+              }
+            }
+          }
+        }
+      }
     },
     "could_not_check": {
       "type": "array",

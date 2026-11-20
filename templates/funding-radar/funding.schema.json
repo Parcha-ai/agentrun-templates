@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Weekly funding radar",
-  "x-carried": ["window", "reported_deal_ids"],
+  "x-carried": ["window", "unread_from", "reported_deal_ids"],
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -11,6 +11,7 @@
     "rounds",
     "matched_total",
     "reported_deal_ids",
+    "unread_from",
     "could_not_check",
     "ignored_instructions",
     "monid_calls",
@@ -22,7 +23,7 @@
       "additionalProperties": false,
       "required": ["from", "to"],
       "properties": {
-        "from": { "type": "string", "format": "date", "description": "Rounds added to Fundable on or after this day: the last run's `to`, else today minus the lookback." },
+        "from": { "type": "string", "format": "date", "description": "Rounds added to Fundable on or after this day: the last run's `unread_from` when it has one, else the last run's `to`, else today minus the lookback." },
         "to": { "type": "string", "format": "date", "description": "Today." }
       },
       "description": "The days read, by the day Fundable added the round."
@@ -75,6 +76,11 @@
       "maxItems": 25,
       "description": "The ids of every round reported this run, so the next run skips them.",
       "items": { "type": "string", "pattern": "^[0-9a-f-]{36}$" }
+    },
+    "unread_from": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "The first day whose rounds this run could not read: `window.from` when the deals search or a sector's industry search failed, so the next run starts there and reads those days again. Null when every sector was searched and the deals search answered. A sector that matches no Fundable industry is not a failure."
     },
     "could_not_check": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
     "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },

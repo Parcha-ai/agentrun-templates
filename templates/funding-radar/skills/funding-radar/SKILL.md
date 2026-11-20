@@ -15,13 +15,15 @@ a call that answered.
   `max_rounds` (8 when blank, never above 25), `min_amount_usd` (optional) and `lookback_days` (7 when blank). A field
   it leaves out falls back to the setup values in your instructions.
 - Run history: a scheduled run is handed its trigger's last completed answer after its message, as a fenced json block
-  under "The result of this trigger's last completed run". From it you read `window` and `reported_deal_ids`.
+  under "The result of this trigger's last completed run". From it you read `window`, `unread_from` and
+  `reported_deal_ids`.
 - Today's date: the run's date.
 - When the run's message already gives what the endpoints return, work from those answers alone: call nothing.
 
 ## Steps
 
-1. **Window.** `to` is today. `from` is the last run's `window.to`; with no last run, today minus `lookback_days`.
+1. **Window.** `to` is today. `from` is the last run's `unread_from` when it is set: that run could not read those
+   days, so this one reads them. Otherwise the last run's `window.to`; with no last run, today minus `lookback_days`.
 2. **Sectors.** For each sector, call `monid:fundable/industry/search` (free) with `queryParams.name` the sector. Take
    the result whose `name` is the sector, ignoring case, spaces and hyphens ("Climate Tech" for "climate tech"); else
    the first result whose name contains the sector's main word; else none. Record `permalink` and `name`, or nulls with
@@ -59,8 +61,11 @@ a call that answered.
 8. **Quiet.** `quiet` is true only when every sector matched, the deals search answered and no new round remains. Then
    the report says "No new <stages> rounds in <sectors> added since <from>." With no new round but a sector unmatched,
    say there were no rounds in the sectors that matched, and name the one that did not.
-9. **Answer** with exactly one fenced `json` block matching the output schema. `reported_deal_ids` is every round in
-   `rounds`. `monid_calls` counts every monid call you made, the free ones included.
+9. **What the next run reads.** `unread_from` is `window.from` when the deals search failed, or a sector's industry
+   search failed (an error, not "no match"): those days were not read, and the next run starts there. Otherwise null.
+   When set, the report says so: "Rounds added since <from> could not be read; the next run reads them."
+10. **Answer** with exactly one fenced `json` block matching the output schema. `reported_deal_ids` is every round in
+    `rounds`. `monid_calls` counts every monid call you made, the free ones included.
 
 ## The report
 

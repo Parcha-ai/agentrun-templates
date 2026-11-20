@@ -30,5 +30,8 @@ Read the answer's last fenced `json` block, its `report_markdown` included. Pass
    `https://www.trustpilot.com/review/brightnote.example` (Brightnote's Trustpilot page, which its search found even
    though the reviews read failed). No other link appears: none to `brightnote-clipper`, none to a single review.
 6. **First week.** `changes_vs_last_week` is empty, and the report says this is the first week (or has no comparison).
+7. **Failed read carried.** `unread_from.trustpilot` holds Brightnote from 2026-11-09, and nothing else is listed
+   under any platform (Brightnote's G2 `not_listed` is not carried). The report says the next run reads Brightnote's
+   Trustpilot reviews from 2026-11-09, in any wording.
 
 Answer pass or fail, and quote the field or line that decided it.
