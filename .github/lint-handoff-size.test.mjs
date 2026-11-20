@@ -35,9 +35,11 @@ test("a lone surrogate counts as its \\uDXXX escape", () => {
   coversValue({ type: "string", maxLength: 10, pattern: "^[^\\u0000-\\u001f]{0,10}$" }, "\ud800".repeat(10)); // 6 bytes each
 });
 
-test("maxLength alone bounds no bytes: AgentRun's check counts grapheme clusters", () => {
-  // typebox 1.3.27 (the submit tool's check) takes "e" plus any number of combining marks as one character.
-  const { problems } = measureCarried(carrying({ type: "string", maxLength: 2 }));
+test("a field without a pattern counts at 6 B a character, and is still reported", () => {
+  // typebox 1.3.27 (the submit tool's check) takes "e" plus any number of combining marks as one character, so even
+  // 6 B a character is no bound: the total counts it there and the field fails until it declares a pattern.
+  const { bytes, problems } = measureCarried(carrying({ type: "string", maxLength: 10 }));
+  assert.equal(bytes, handedOn("\u0001".repeat(10)));
   assert.equal(problems.length, 1);
   assert.match(problems[0], /grapheme/);
 });
