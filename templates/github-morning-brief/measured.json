@@ -10,5 +10,13 @@
     "codex": "4/4"
   },
   "stand_ins": true,
-  "build": "0.1.0-beta.47"
+  "build": "0.1.0-beta.47",
+  "note": "Live on a real repository (2026-11-20, pi): passed, read-only. No brief issue was set and the server denied comments, so nothing was posted.",
+  "live": {
+    "cases": 1,
+    "median_usd": 0.0399,
+    "passed": {
+      "pi": "1/1"
+    }
+  }
 }
