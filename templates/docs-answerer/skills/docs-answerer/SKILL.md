@@ -43,7 +43,9 @@ When neither tool is yours or both fail, write with what you have and say what c
 
 - **Only what a docs page you read says.** Every point's `sources` lists docs pages you fetched (or scraped) in this
   run that say all of it, and its `quote` is those pages' own words, copied. A search snippet alone is not a source:
-  open the page or leave the point out.
+  open the page or leave the point out. A point cites only pages whose text holds it: when one page sends the reader
+  to another for a detail ("set the variable described in Environment variables"), the detail cites the page that
+  names it, and its `quote` is from that page.
 - **Copied, never made.** Commands, flags, settings, environment variables, file paths, versions, limits and prices are
   copied exactly as the docs write them. Never build a command the docs don't show, never fill a default from memory.
 - **Not in the docs is an answer.** When the pages you read don't answer a part, put it in `not_covered` with the pages
