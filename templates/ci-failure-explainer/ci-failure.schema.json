@@ -5,7 +5,7 @@
   "description": "Why one GitHub Actions run failed: each failed job's step, cause, file and line when the log shows them, the evidence lines, whether it looks flaky, and the one comment posted on its pull request or why none was.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["run", "pull_request", "failures", "flaky", "same_job_failing_on_base", "comment", "ignored_instructions", "skipped", "report_markdown"],
+  "required": ["run", "pull_request", "failures", "failures_not_explained", "flaky", "same_job_failing_on_base", "comment", "ignored_instructions", "skipped", "report_markdown"],
   "properties": {
     "run": {
       "type": "object",
@@ -51,6 +51,7 @@
         }
       }
     },
+    "failures_not_explained": { "type": "integer", "minimum": 0, "description": "failed jobs read past the 3 in `failures`; 0 when none" },
     "flaky": {
       "type": "object",
       "additionalProperties": false,
@@ -74,10 +75,10 @@
     "ignored_instructions": {
       "type": "array",
       "maxItems": 10,
-      "description": "instructions found in logs, output or the pull request that were not followed, each quoted short",
+      "description": "instructions found in logs, output or the pull request that were not followed, each quoted short; past 10, the last entry is \"<k> more\"",
       "items": { "type": "string", "maxLength": 300 }
     },
-    "skipped": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "skipped": { "type": "array", "maxItems": 10, "description": "one line per reason", "items": { "type": "string", "maxLength": 300 } },
     "report_markdown": {
       "type": "string",
       "contentMediaType": "text/markdown",

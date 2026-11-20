@@ -50,7 +50,7 @@
           "author": { "type": "string", "maxLength": 100 },
           "waiting_since": { "type": "string", "format": "date-time" },
           "hours_waiting": { "type": "integer", "minimum": 0 },
-          "waiting_for": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 100 }, "description": "requested reviewers and teams; empty when nobody was asked" }
+          "waiting_for": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 100 }, "description": "requested reviewers and teams; empty when nobody was asked; past 20, the last entry is \"<k> more\"" }
         }
       }
     },
@@ -60,7 +60,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["number", "title", "url", "checks"],
+        "required": ["number", "title", "url", "checks", "checks_not_listed"],
         "properties": {
           "number": { "type": "integer", "minimum": 1 },
           "title": { "type": "string", "maxLength": 300 },
@@ -69,6 +69,7 @@
             "type": "array",
             "minItems": 1,
             "maxItems": 20,
+            "description": "the first 20 failing checks read",
             "items": {
               "type": "object",
               "additionalProperties": false,
@@ -79,7 +80,8 @@
                 "url": { "type": ["string", "null"], "maxLength": 500 }
               }
             }
-          }
+          },
+          "checks_not_listed": { "type": "integer", "minimum": 0, "description": "failing checks read past the 20 listed; 0 when none" }
         }
       }
     },
@@ -96,7 +98,7 @@
           "url": { "type": "string", "format": "uri" },
           "author": { "type": "string", "maxLength": 100 },
           "created_at": { "type": "string", "format": "date-time" },
-          "labels": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 100 } }
+          "labels": { "type": "array", "maxItems": 100, "description": "GitHub allows at most 100 labels on an issue", "items": { "type": "string", "maxLength": 100 } }
         }
       }
     },
@@ -131,8 +133,8 @@
         "why_not": { "type": "string", "maxLength": 300, "description": "when nothing was posted: no brief issue, a quiet window, or a refused write" }
       }
     },
-    "not_checked": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 300 } },
-    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "not_checked": { "type": "array", "maxItems": 20, "description": "one line per kind of gap, the pull request numbers joined in it", "items": { "type": "string", "maxLength": 300 } },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "description": "each quoted short; past 10, the last entry is \"<k> more\"", "items": { "type": "string", "maxLength": 300 } },
     "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 8000 }
   }
 }
