@@ -3,6 +3,7 @@
   "$id": "follow-ups.schema.json",
   "title": "Meeting follow-ups",
   "description": "The follow-up drafts saved for one day's ended outside meetings (never sent), the blanks the owner fills, and the meetings left alone with the reason.",
+  "x-carried": ["date", "drafted", "already_drafted"],
   "type": "object",
   "additionalProperties": false,
   "required": ["date", "cutoff", "drafted", "already_drafted", "already_drafted_dropped", "not_drafted", "ignored_instructions", "report_markdown"],

@@ -3,6 +3,7 @@
   "$id": "digest.schema.json",
   "title": "Support inbox digest",
   "description": "One week of support mail from the owner's Gmail search: urgent threads with links, themes ranked by thread count with last week's count and trimmed quotes, what was dropped, and where it was posted.",
+  "x-carried": ["window", "themes", "urgent", "open_urgent"],
   "type": "object",
   "additionalProperties": false,
   "required": ["window", "coverage", "urgent", "open_urgent", "themes", "delivery", "ignored_instructions", "report_markdown"],

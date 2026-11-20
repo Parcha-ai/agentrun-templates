@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "New matching job postings",
+  "x-carried": ["window", "watched"],
   "type": "object",
   "additionalProperties": false,
   "required": ["window", "quiet", "interpretation", "postings", "changes", "near_misses", "dropped_repeats", "watched", "watched_dropped", "unreachable", "ignored_instructions", "report_markdown"],
