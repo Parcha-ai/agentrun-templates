@@ -239,6 +239,14 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.deepEqual(problems, []);
     const page = readFileSync(join(out, "templates", "sample-watch", "index.html"), "utf8");
     assert.match(page, new RegExp(`data-install="github:Parcha-ai/agentrun-templates/templates/sample-watch@${SHA}"`));
+    // The coding-agent path carries this listing's immutable source, distinct from header setup.
+    assert.match(page, /data-template-picker[^>]*>Install with your agent/);
+    assert.match(page, /<dialog class="setup-dialog" data-template-prompt-dialog aria-labelledby="template-prompt-title">/);
+    assert.match(page, /<textarea aria-label="Template installation prompt"[^>]*>Help me install the Sample watch template on my existing AgentRun\./);
+    assert.match(page, new RegExp(`Pinned template source: github:Parcha-ai/agentrun-templates/templates/sample-watch@${SHA}`));
+    assert.match(page, /<details data-template-prompt-fallback>/, "the prompt is readable without JavaScript");
+    assert.match(page, /<script src="\/assets\/template-prompt\.js\?v=[a-f0-9]+" defer><\/script>/);
+    assert.match(readFileSync(join(out, "templates", "sample-watch.md"), "utf8"), /### Install with your agent[\s\S]*Pinned template source: github:Parcha-ai\/agentrun-templates\/templates\/sample-watch@/);
     assert.match(page, /npx @parcha\/agentrun template install github:Parcha-ai\/agentrun-templates\/templates\/sample-watch@[0-9a-f]{40} --trust/);
     assert.match(page, /<code>company<\/code>/);
     assert.match(page, /integer, 1 to 50/);
@@ -262,9 +270,23 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.deepEqual([...reqs.matchAll(/<span class="req-tip">([^<]*)<\/span>/g)].map((m) => m[1]), ["Requires web search, through Exa", "Requires web fetch", "Runs on a schedule", "Can use GitHub, through the AgentRun GitHub App (optional)"]);
     assert.doesNotMatch(page, /Dependencies/);
     const home = readFileSync(join(out, "index.html"), "utf8");
+    assert.match(home, /<h1>Marketplace<\/h1>/);
+    assert.equal(home.match(/<h1>/g)?.length, 1);
+    assert.match(home, /class="hero gallery-hero hero-home"[\s\S]*?<a class="btn btn-sm gallery-action" href="\/list-your-template\/">List your template<\/a>/);
     // A card: title, summary, logos. No pills.
     assert.match(home, /<li class="card tpl" data-name="sample-watch">\s*<h3><a href="\/templates\/sample-watch\/">Sample watch<\/a><\/h3>\s*<p class="desc">Watches one topic every week and tells you what changed, each item dated and linked\.<\/p>\s*<ul class="reqs" aria-label="What it requires"><li class="req" tabindex="0"><img src="\/assets\/logo-exa\.svg[^>]*><span class="req-tip">[^<]*<\/span><\/li>[\s\S]*?<\/ul>\s*<\/li>/);
     assert.doesNotMatch(home, /median|\$0\.0|class="chip/, "no cost and no pills on a card");
+    // The shared website header is followed directly by page content, without a duplicate navigation row.
+    for (const file of ["index.html", "templates/sample-watch/index.html", "categories/research/index.html", "list-your-template/index.html", "404.html"]) {
+      const rendered = readFileSync(join(out, file), "utf8");
+      assert.equal(rendered.match(/<header class="marketing-header">/g)?.length, 1, file);
+      assert.match(rendered, /<link rel="stylesheet" href="\/assets\/header\.css\?v=[a-f0-9]+">/);
+      assert.match(rendered, /<a href="https:\/\/agentrun\.ai\/platform\/self-improving">/);
+      assert.doesNotMatch(rendered, /market-nav|Browse templates/);
+      assert.match(rendered, /<script type="module" src="\/assets\/header\.js\?v=[a-f0-9]+"><\/script>/);
+      assert.match(rendered, /<link rel="stylesheet" href="\/homepage\/onboarding\.css\?v=[a-f0-9]+">/);
+      assert.match(rendered, /data-shared-onboarding/);
+    }
     const listing = readFileSync(join(out, "list-your-template", "index.html"), "utf8");
     assert.match(listing, /<button[^>]*data-copy="Help me list my AgentRun template[^"]*template validate[^"]*"[^>]*hidden>Copy prompt<\/button>/, "the agent prompt has a copy button");
     assert.match(readFileSync(join(out, "list-your-template.md"), "utf8"), /## Have your agent list it[\s\S]*Help me list my AgentRun template/);
@@ -275,6 +297,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.doesNotMatch(home, /href="\/free\/"/);
     assert.equal(existsSync(join(out, "free", "index.html")), false);
     const category = readFileSync(join(out, "categories", "research", "index.html"), "utf8");
+    assert.match(category, /<a class="btn btn-sm gallery-action" href="\/list-your-template\/">List your template<\/a>/);
     assert.match(category, /<a href="\/categories\/research\/" aria-current="page">Research <span class="n">1<\/span><\/a>/);
     assert.match(category, /<input id="q" name="q" type="search"[^>]*data-search>/, "a category page searches its own cards");
     // The address box takes what people type ("agentrun.example.com"): the script adds https, the browser must not refuse it first.
@@ -282,7 +305,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.match(page, /<input id="ar-address" name="address" type="text" inputmode="url"/);
     // Sample output comes right after Install, before the details.
     assert.ok(page.indexOf('id="sample"') < page.indexOf('id="does"') && page.indexOf('id="install"') < page.indexOf('id="sample"'));
-    // Square corners everywhere: every radius in the stylesheet is 0.
+    // Marketplace surfaces stay square; shared website onboarding keeps its own styling.
     const css = readFileSync(join(out, "assets", "site.css"), "utf8");
     assert.deepEqual([...css.matchAll(/(?:border-radius|-radius):\s*([^;}]+)/g)].map((m) => m[1].trim()).filter((v) => v !== "0" && v !== "var(--ar-card-radius)" && v !== "var(--ar-control-radius)"), []);
     assert.match(css, /--ar-control-radius: 0;/);
@@ -295,7 +318,7 @@ test("builds the fixture into pages that pass the checker", async () => {
     assert.doesNotMatch(page, /<script>alert|<img src=x|href="javascript:/);
     assert.doesNotMatch(page, /googleapis|gstatic/);
     assert.doesNotMatch(page, /http-equiv/, "the CSP is a header the server sends, not a meta tag");
-    for (const f of ["jetbrains-mono-latin-400-normal.woff2", "schibsted-grotesk-latin-600-normal.woff2", "jetbrains-mono-LICENSE.txt"]) {
+    for (const f of ["jetbrains-mono-latin-400-normal.woff2", "inter-latin-600-normal.woff2", "jetbrains-mono-LICENSE.txt"]) {
       assert.ok(readFileSync(join(out, "assets", "fonts", f)).length > 0, f);
     }
     const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
