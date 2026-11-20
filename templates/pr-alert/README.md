@@ -9,10 +9,11 @@ and text aimed at AI tools. It is not a code review: no line comments and no ver
 ## Runs for $0
 
 - Model: `openrouter/nvidia/nemotron-3.5-super-vl:free` (Nemotron 3.5 Super VL), served by NVIDIA, on pi. Put an
-  `OPENROUTER_API_KEY` in your server's environment; no credits are needed. Free OpenRouter models allow 50 requests a
-  day with no credits (1,000 a day after a one-time $10) and 20 a minute. The endpoint takes up to 868,928 tokens in
-  and 131,072 out. How long a model stays free is OpenRouter's call. The template left Ling 3.2 Flash (free) on
-  2026-11-20, when its shared upstream pool answered most requests with a rate-limit error.
+  `OPENROUTER_API_KEY` in your server's environment; no credits are needed. OpenRouter's free models allow 20 requests
+  a minute and, per account, 50 a day until the account has bought $10 of credits in all, then 1,000 a day; the day
+  resets at 00:00 UTC. The endpoint takes up to 868,928 tokens in and 131,072 out. How long a model stays free is
+  OpenRouter's call. The template left Ling 3.2 Flash (free) on 2026-11-20, when its shared upstream pool answered
+  most requests with a rate-limit error.
 - GitHub: read anonymously over `api.github.com` (60 requests an hour per IP address), by the trigger and by the run's
   `web_fetch`. No GitHub App, no webhook and no token, so it runs on a laptop with no public address. Public
   repositories only: a private one answers 404 to an anonymous read.
@@ -29,9 +30,9 @@ and text aimed at AI tools. It is not a code review: no line comments and no ver
 | Each new PR | 2 to 6 measured: read the skill while fetching the PR's files and its author's history, then the answer | 1 or 2 |
 
 The trigger reads the list twice an hour, 48 GitHub requests a day, and a quiet repository costs no model request. The
-free allowance (50 model requests a day without credits) covers about 8 to 25 new PRs a day; a busier repository needs
-the one-time $10 (1,000 a day). The allowance is per OpenRouter key, so other agents on the same key share it. The
-GitHub limit is per IP address, so other tools reading GitHub anonymously from the same machine share it too.
+free allowance (50 model requests a day until $10 of credits is bought) covers about 8 to 25 new PRs a day; a busier
+repository needs the $10 (1,000 a day). The allowance is per OpenRouter account, so every key and agent on it shares
+it. The GitHub limit is per IP address, so other tools reading GitHub anonymously from the same machine share it too.
 
 ## How it knows what is new
 
