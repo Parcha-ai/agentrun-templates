@@ -336,6 +336,42 @@ test("the Markdown twin points every link, image and definition naming a media f
   assert.ok(md.includes("Code stays code: `![Preview](media/dot.png \"Preview\")`, even"), "code before an identical link stays as written");
 }));
 
+test("the twin rewrites a repeated media link at each place it stands", async () => {
+  const report = [
+    "Twice: ![x](media/dot.png) and ![x](media/dot.png).",
+    "",
+    "As an image and a link: ![d](media/dot.png) then [d](media/dot.png), and [![d](media/dot.png)](media/dot.png).",
+    "",
+    "- In a list: [x](media/tiny.mp4) [x](media/tiny.mp4)",
+    "",
+    "One definition, used twice: ![r][dot] and [r][dot].",
+    "",
+    "[dot]: media/dot.png",
+    "",
+  ].join("\n");
+  const root = repoWith({ "dot.png": "dot.png", "tiny.mp4": "tiny.mp4" }, report);
+  const out = await built(root);
+  try {
+    const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
+    const dot = `${BASE}${URL_OF("dot.png")}`;
+    const mp4 = `${BASE}${URL_OF("tiny.mp4")}`;
+    assert.ok(md.includes(`Twice: ![x](${dot}) and ![x](${dot}).`), "the same token twice on one line");
+    assert.ok(md.includes(`As an image and a link: ![d](${dot}) then [d](${dot}), and [![d](${dot})](${dot}).`), "one target as an image, a link, and both nested");
+    assert.ok(md.includes(`- In a list: [x](${mp4}) [x](${mp4})`), "the same link twice in a list item");
+    assert.ok(md.includes(`One definition, used twice: ![r][dot] and [r][dot].`), "reference uses stay as written");
+    assert.ok(md.includes(`[dot]: ${dot}`), "the definition points at the full URL");
+    assert.doesNotMatch(md, /\]\((?:\.\/)?media\//, "no relative media target is left");
+    assert.equal(md.split(dot).length - 1, 7 + 1, "each dot.png target once, plus the Media list line");
+    // The page renders the same tokens: every one of them is the copy.
+    const page = readFileSync(join(out, "templates", "sample-watch", "index.html"), "utf8");
+    const html = /<article class="report card">([\s\S]*?)<\/article>/.exec(page)[1];
+    assert.equal(html.match(new RegExp(`(src|href)="${URL_OF("dot.png")}"`, "g"))?.length, 8);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(out, { recursive: true, force: true });
+  }
+});
+
 test("the CSP lets media load from this site only", () => {
   assert.match(CSP, /(^|; )media-src 'self'(;|$)/);
   assert.doesNotMatch(CSP, /https?:|\*/, "no other origin, no wildcard");

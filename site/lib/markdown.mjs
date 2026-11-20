@@ -96,15 +96,23 @@ const TITLE = `(?:"(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*'|\\((?:[^()\\\\]|\\
 export function absoluteMediaLinks(text, media, urlOf) {
   const src = String(text ?? "").replace(/\r\n?/g, "\n");
   if (!media.length) return src;
-  const md = instance(2);
   const edits = [];
+  // Where the next token can start. A token is found from here; its children are found inside it, and the token
+  // after it is found past its end, so the same text twice is two places, and code is skipped whole.
   let cursor = 0;
-  md.walkTokens(md.lexer(src), (t) => {
+  const visit = (t) => {
     const at = typeof t.raw === "string" ? src.indexOf(t.raw, cursor) : -1;
-    if (at < 0) return;
-    if (t.type === "code" || t.type === "codespan" || t.type === "html") { cursor = at + t.raw.length; return; }
+    if (at >= 0) {
+      cursor = at;
+      edit(t, at);
+    }
+    // marked's own walkTokens order: a table's cells, a list's items, else the token's inline or block children.
+    const children = t.type === "table" ? [...t.header, ...t.rows.flat()] : t.type === "list" ? t.items : t.tokens ?? [];
+    for (const child of children) visit(child);
+    if (at >= 0) cursor = Math.max(cursor, at + t.raw.length);
+  };
+  const edit = (t, at) => {
     if (t.type !== "link" && t.type !== "image" && t.type !== "def") return;
-    cursor = t.type === "def" ? at + t.raw.length : at;
     const item = mediaTarget(t.href, media);
     if (!item) return;
     const dest = `(?:\\./)?media/${reEscape(item.file)}`;
@@ -113,7 +121,8 @@ export function absoluteMediaLinks(text, media, urlOf) {
       ? new RegExp(`^( {0,3}\\[(?:[^\\]\\\\]|\\\\.)+\\]:[ \\t]*\\n?[ \\t]*<?)(${dest})`).exec(t.raw)
       : new RegExp(`(\\([ \\t]*\\n?[ \\t]*<?)(${dest})>?(?:\\s+${TITLE})?\\s*\\)$`).exec(t.raw);
     if (m) edits.push({ at: at + m.index + m[1].length, length: m[2].length, url: urlOf(item) });
-  });
+  };
+  for (const t of instance(2).lexer(src)) visit(t);
   let out = src;
   for (const e of edits.sort((a, b) => b.at - a.at)) out = out.slice(0, e.at) + e.url + out.slice(e.at + e.length);
   return out;
