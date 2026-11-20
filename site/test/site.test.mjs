@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { frontMatter, parseYaml } from "../lib/yaml.mjs";
 import { fillParameters, parseGithubSource, readIndex, siteName } from "../lib/packages.mjs";
 import { markdownToHtml } from "../lib/markdown.mjs";
-import { cronWords, factsShort, isFree, keyWords, provenWords, requirements, testedLine, triggerLines, unprovenWords } from "../lib/describe.mjs";
+import { cronWords, factsShort, isFree, isTriggered, keyWords, provenWords, requirements, testedLine, triggerLines, unprovenWords } from "../lib/describe.mjs";
 import { build } from "../build.mjs";
 import { check } from "../check.mjs";
 import { CSP, SECURITY_HEADERS, siteServer } from "../lib/server.mjs";
@@ -393,6 +393,39 @@ test("a template that prefers a free model gets the Free tab and the /free/ page
   }
 });
 
+test("a template that starts on an event gets the Triggers tab and the /triggers/ page; a schedule alone does not", async () => {
+  // The fixture's only trigger is a schedule: no Triggers tab (the first build test checks its tabs). Add a feed.
+  assert.equal(isTriggered({ triggers: [{ source: { kind: "schedule", cron: "0 9 * * 1" } }] }), false);
+  assert.equal(isTriggered({ triggers: [] }), false);
+  assert.equal(isTriggered({}), false);
+  for (const kind of ["composio", "feed", "email", "github", "webhook"]) assert.equal(isTriggered({ triggers: [{ source: { kind } }] }), true, kind);
+  const root = mkdtempSync(join(tmpdir(), "site-triggers-"));
+  const out = mkdtempSync(join(tmpdir(), "site-dist-"));
+  const cache = mkdtempSync(join(tmpdir(), "site-cache-"));
+  try {
+    cpSync(fixture, root, { recursive: true });
+    const manifest = join(root, "templates", "sample-watch", "agent.md");
+    const text = readFileSync(manifest, "utf8");
+    const feed = text.replace("triggers:\n", 'triggers:\n  - name: news\n    source: { kind: feed, urls: ["https://example.com/feed.xml"] }\n    target: { kind: start_run, input: { content: "A new item." } }\n');
+    assert.notEqual(feed, text, "the fixture has a triggers list to add to");
+    writeFileSync(manifest, feed);
+    await build({ root, out, sha: SHA, offline: true, cacheDir: cache, log: () => {} });
+    assert.deepEqual(check({ dir: out, baseUrl: "https://marketplace.agentrun.ai" }).problems, []);
+    const home = readFileSync(join(out, "index.html"), "utf8");
+    assert.match(home, /<a href="\/" aria-current="page">All <span class="n">1<\/span><\/a><a href="\/triggers\/">Triggers <span class="n">1<\/span><\/a><a href="\/categories\/research\/">/);
+    const page = readFileSync(join(out, "triggers", "index.html"), "utf8");
+    assert.match(page, /<h1>Templates that start on an event<\/h1>/);
+    assert.match(page, /<a href="\/triggers\/" aria-current="page">Triggers <span class="n">1<\/span><\/a>/);
+    assert.match(page, /<form class="search" role="search" action="\/triggers\/" method="get">/);
+    assert.match(page, /<li class="card tpl" data-name="sample-watch">/);
+    assert.match(readFileSync(join(out, "triggers.md"), "utf8"), /^# Templates that start on an event\n[\s\S]*\[Sample watch\]\(https:\/\/marketplace\.agentrun\.ai\/templates\/sample-watch\.md\)/);
+    assert.match(readFileSync(join(out, "sitemap.xml"), "utf8"), /<loc>https:\/\/marketplace\.agentrun\.ai\/triggers\/<\/loc>/);
+    assert.match(readFileSync(join(out, "index.md"), "utf8"), /^Start on an event: https:\/\/marketplace\.agentrun\.ai\/triggers\.md$/m);
+  } finally {
+    for (const d of [root, out, cache]) rmSync(d, { recursive: true, force: true });
+  }
+});
+
 test("learning reads as on for true and for an object of the loop's settings, and says what it keeps", async () => {
   const root = mkdtempSync(join(tmpdir(), "site-learning-"));
   const cache = mkdtempSync(join(tmpdir(), "site-cache-"));
@@ -428,4 +461,29 @@ test("a template proven live shows a logo saying against which accounts and when
   assert.equal(isFree({ model: { prefer: "openrouter/inclusionai/ling-3.2-flash:free" } }), true);
   assert.equal(isFree({ model: { prefer: "openrouter/inclusionai/ling-3.2-flash" } }), false);
   assert.equal(isFree({}), false);
+});
+
+test("the Ollama page gives the install, the pull and the five settings, and the footer links it", async () => {
+  const out = mkdtempSync(join(tmpdir(), "site-dist-"));
+  const cache = mkdtempSync(join(tmpdir(), "site-cache-"));
+  try {
+    await build({ root: fixture, out, sha: SHA, offline: true, cacheDir: cache, log: () => {} });
+    assert.deepEqual(check({ dir: out, baseUrl: "https://marketplace.agentrun.ai" }).problems, []);
+    const page = readFileSync(join(out, "ollama", "index.html"), "utf8");
+    assert.match(page, /<h1>Run templates on Ollama<\/h1>/);
+    assert.match(page, /curl -fsSL https:\/\/ollama\.com\/install\.sh \| sh/);
+    assert.match(page, /ollama pull qwen3:8b/);
+    // The five settings a run needs, each as a service --env: the base URL, bare ids, the model, a $0 price and the ignored key.
+    for (const env of ["AGENT_MODEL_BASE_URL=http://localhost:11434/v1", "AGENT_MODEL_GATEWAY_IDS=bare", "AGENT_MODEL=qwen3:8b", "AGENT_MODEL_PRICE=0,0,0", "AGENT_MODEL_API_KEY=none"]) {
+      assert.ok(page.includes(`--env ${env}`), env);
+    }
+    const md = readFileSync(join(out, "ollama.md"), "utf8");
+    assert.match(md, /^# Run templates on Ollama\n/);
+    assert.match(md, /^ {3}~\/\.agentrun\/bin\/agentrun service install --env AGENT_MODEL_BASE_URL=/m);
+    assert.match(readFileSync(join(out, "index.html"), "utf8"), /<li><a href="\/ollama\/">Run on Ollama<\/a><\/li>/);
+    assert.match(readFileSync(join(out, "index.md"), "utf8"), /^Run any template on a local model: https:\/\/marketplace\.agentrun\.ai\/ollama\.md$/m);
+    assert.match(readFileSync(join(out, "sitemap.xml"), "utf8"), /<loc>https:\/\/marketplace\.agentrun\.ai\/ollama\/<\/loc>/);
+  } finally {
+    for (const d of [out, cache]) rmSync(d, { recursive: true, force: true });
+  }
 });

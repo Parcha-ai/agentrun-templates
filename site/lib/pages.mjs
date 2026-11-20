@@ -1,6 +1,6 @@
 // The pages: each is real HTML a crawler reads (no client-side rendering), plus a Markdown twin with the same content.
 
-import { CATEGORY_TEXT, computerWords, factsShort, isFree, keyWords, mcpWords, modelChoices, modelWords, requirements, testedLine, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
+import { CATEGORY_TEXT, computerWords, factsShort, isFree, isTriggered, keyWords, mcpWords, modelChoices, modelWords, requirements, testedLine, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
 import { markdownToHtml } from "./markdown.mjs";
 import { clip, html, mdCode, mdText, plural, raw, upperFirst } from "./util.mjs";
 
@@ -72,6 +72,7 @@ ${page.body}
         <div><h2>Marketplace</h2><ul>
           <li><a href="/">All templates</a></li>
           <li><a href="/list-your-template/">List your template</a></li>
+          <li><a href="/ollama/">Run on Ollama</a></li>
           <li><a href="${site.repoUrl}">Templates on GitHub</a></li>
           <li><a href="/llms.txt">For your agents</a></li>
         </ul></div>
@@ -131,16 +132,22 @@ function starWords(stats) {
   return [stats?.stars ? plural(stats.stars, "star") : null, stats?.forks ? plural(stats.forks, "fork") : null].filter(Boolean).join(", ");
 }
 
-// ---------- gallery (home, free, one category) ----------
+// ---------- gallery (home, free, triggers, one category) ----------
 
-/** The tabs over every gallery page: all, free (when any template is), then each category that has templates. Each is
+/** Each gallery page that isn't a category, by its tab id: where its search form posts. */
+const GALLERY_PATHS = { all: "/", free: "/free/", triggers: "/triggers/" };
+
+/** The tabs over every gallery page: all, free and triggers (each when any template is), then each category that has
+ *  templates. Each is
  *  a real page, so they work without the script and a crawler follows them. */
 function tabs(packages, current) {
   const cats = Object.keys(CATEGORY_TEXT).filter((c) => packages.some((p) => p.category === c));
   const free = packages.filter(isFree).length;
+  const triggered = packages.filter(isTriggered).length;
   const items = [
     ["all", "/", "All", packages.length],
     ...(free ? [["free", "/free/", "Free", free]] : []),
+    ...(triggered ? [["triggers", "/triggers/", "Triggers", triggered]] : []),
     ...cats.map((c) => [c, `/categories/${c}/`, CATEGORY_TEXT[c].title, packages.filter((p) => p.category === c).length]),
   ];
   return html`<nav class="tabs" id="categories" aria-label="Categories">${items.map(([id, href, label, n]) =>
@@ -157,7 +164,7 @@ function gallery(site, { title, lead, current, all, shown }) {
 
 <section aria-label="Templates" class="gallery">
   ${tabs(all, current)}
-  <form class="search" role="search" action="${current === "all" ? "/" : current === "free" ? "/free/" : `/categories/${current}/`}" method="get">
+  <form class="search" role="search" action="${GALLERY_PATHS[current] ?? `/categories/${current}/`}" method="get">
     <label class="sr" for="q">Search ${plural(shown.length, "template")}</label>
     <input id="q" name="q" type="search" autocomplete="off" placeholder="Search ${plural(shown.length, "template")}: slack, pull requests, competitors…" data-search>
     <kbd class="key" aria-hidden="true">/</kbd>
@@ -208,7 +215,7 @@ export function homePage(site, packages) {
 export function freePage(site, packages) {
   const free = packages.filter(isFree);
   const path = "/free/";
-  const lead = "These run on a free model, so a run costs nothing. Each page lists the free tier's limits.";
+  const lead = "These run on a free model, so a run costs nothing. Each page lists the free tier's limits. Any template runs free on your own computer with Ollama.";
   return {
     path,
     mdPath: "/free.md",
@@ -217,6 +224,22 @@ export function freePage(site, packages) {
     jsonLd: { "@context": "https://schema.org", "@graph": [{ "@type": "CollectionPage", name: "Free templates", url: site.url(path), mainEntity: itemList(site, free) }, crumbs(site, [["Templates", "/"], ["Free", path]])] },
     body: gallery(site, { title: "Free templates", lead, current: "free", all: packages, shown: free }),
     md: ["# Free templates", "", lead, "", ...free.map((p) => `- [${mdText(p.displayName)}](${site.url(`/templates/${p.name}.md`)}): ${mdText(p.description)}`), ""].join("\n"),
+  };
+}
+
+/** The templates that start on their own when something happens, on their own page. */
+export function triggersPage(site, packages) {
+  const shown = packages.filter(isTriggered);
+  const path = "/triggers/";
+  const lead = "These start on their own when something happens: a new issue, a failed payment, a new feed item, an email. Each page says what starts it.";
+  return {
+    path,
+    mdPath: "/triggers.md",
+    title: `Agent templates that start on an event | ${SITE_NAME}`,
+    description: clip(`${plural(shown.length, "agent template")} for AgentRun that start on an app event, a feed or an email: ${shown.map((p) => p.displayName).join(", ")}.`, 160),
+    jsonLd: { "@context": "https://schema.org", "@graph": [{ "@type": "CollectionPage", name: "Templates that start on an event", url: site.url(path), mainEntity: itemList(site, shown) }, crumbs(site, [["Templates", "/"], ["Triggers", path]])] },
+    body: gallery(site, { title: "Templates that start on an event", lead, current: "triggers", all: packages, shown }),
+    md: ["# Templates that start on an event", "", lead, "", ...shown.map((p) => `- [${mdText(p.displayName)}](${site.url(`/templates/${p.name}.md`)}): ${mdText(p.description)}`), ""].join("\n"),
   };
 }
 
@@ -243,6 +266,9 @@ function homeMd(site, packages, cats) {
     ...cats.map((c) => `- [${CATEGORY_TEXT[c].title}](${site.url(`/categories/${c}.md`)}): ${CATEGORY_TEXT[c].blurb}`),
     "",
     ...(packages.some(isFree) ? [`Free to run: ${site.url("/free.md")}`, ""] : []),
+    ...(packages.some(isTriggered) ? [`Start on an event: ${site.url("/triggers.md")}`, ""] : []),
+    `Run any template on a local model: ${site.url("/ollama.md")}`,
+    "",
     `List your own: ${site.url("/list-your-template.md")}`,
     "",
   ].join("\n");
@@ -565,6 +591,70 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
 }
 
 // ---------- list your template ----------
+
+/** The model the Ollama page pulls: one with tool calling that fits a laptop. */
+const OLLAMA_TAG = "qwen3:8b";
+
+/** How to run templates on a local model through Ollama, at no cost per run. */
+export function ollamaPage(site, packages) {
+  const anyFree = packages.some(isFree);
+  const path = "/ollama/";
+  const trail = [["Templates", "/"], ["Run on Ollama", path]];
+  const envs = `AGENT_MODEL_BASE_URL=http://localhost:11434/v1 AGENT_MODEL_GATEWAY_IDS=bare AGENT_MODEL=${OLLAMA_TAG} AGENT_MODEL_PRICE=0,0,0 AGENT_MODEL_API_KEY=none`;
+  const service = `~/.agentrun/bin/agentrun service install ${envs.split(" ").map((e) => `--env ${e}`).join(" ")}`;
+  const background = `~/.agentrun/bin/agentrun stop
+curl -fsSL https://agentrun.ai/install | ${envs} sh`;
+  const steps = [
+    ["Install Ollama.", "On macOS or Windows, download it from ollama.com/download. On Linux:", "curl -fsSL https://ollama.com/install.sh | sh"],
+    ["Pull a model that can call tools.", `Templates search, fetch pages and write files, so the model has to call tools. ${OLLAMA_TAG} does and needs about 6 GB of memory. Check any other model with ollama show <tag>: tools must be listed under Capabilities.`, `ollama pull ${OLLAMA_TAG}
+ollama show ${OLLAMA_TAG}`],
+    ["Point AgentRun at it.", "If AgentRun runs as a service, install the service again with the model. It restarts and keeps the setting:", service],
+    ["Or, if AgentRun runs in the background, stop it and start it with the same five settings.", "A background start keeps only what that line sets.", background],
+    ["Install a template.", "Pick one on this site and press Install. Every run then goes to your model, whatever model the template names, and costs nothing.", null],
+  ];
+  const notes = [
+    "AGENT_MODEL_API_KEY=none is a key Ollama ignores. Without a key set, AgentRun refuses each run.",
+    "AGENT_MODEL_PRICE=0,0,0 tells AgentRun a run costs $0, so a template's spend cap still works.",
+    "A template's Tested line is measured on its own model, not yours. A small local model passes fewer cases, and on a computer without a GPU a run takes minutes.",
+    "The model is local, the web is not. Searches and page fetches still go out to the web. Search needs no key: it goes through Exa's keyless tier, or through Parallel when you set PARALLEL_API_KEY.",
+  ];
+  const body = html`
+<section class="hero">
+  <h1>Run templates on Ollama</h1>
+  <p class="lead">Ollama runs a model on your own computer. Point AgentRun at it and every run is free, and nothing you send leaves your machine for a model provider.</p>
+</section>
+<section aria-labelledby="steps">
+  <h2 id="steps" class="caps section-label">Set it up</h2>
+  <ol class="steps">${steps.map(([h, p, code]) => html`<li><strong>${h}</strong> ${p}${code ? html`<pre class="code" tabindex="0"><code>${code}</code></pre>` : ""}</li>`)}</ol>
+</section>
+<section aria-labelledby="know">
+  <h2 id="know" class="caps section-label">Before you start</h2>
+  <ul class="plain">${notes.map((n) => html`<li>${n}</li>`)}</ul>
+  ${anyFree ? html`<p>Templates that already prefer a free hosted model are on the <a href="/free/">Free</a> tab.</p>` : ""}
+</section>`;
+  return {
+    path,
+    mdPath: "/ollama.md",
+    title: `Run AgentRun templates on Ollama | ${SITE_NAME}`,
+    description: `Run AgentRun templates on a local model with Ollama: install it, pull ${OLLAMA_TAG}, set five variables, and every run costs nothing.`,
+    jsonLd: { "@context": "https://schema.org", "@graph": [{ "@type": "HowTo", name: "Run AgentRun templates on Ollama", url: site.url(path), step: steps.map(([h], k) => ({ "@type": "HowToStep", position: k + 1, text: h })) }, crumbs(site, trail)] },
+    body,
+    md: [
+      "# Run templates on Ollama",
+      "",
+      "Ollama runs a model on your own computer. Point AgentRun at it and every run is free, and nothing you send leaves your machine for a model provider.",
+      "",
+      "## Set it up",
+      "",
+      ...steps.flatMap(([h, p, code], k) => [`${k + 1}. ${h} ${p}`, ...(code ? ["", "   ```sh", ...code.split("\n").map((l) => `   ${l}`), "   ```"] : []), ""]),
+      "## Before you start",
+      "",
+      ...notes.map((n) => `- ${n}`),
+      "",
+      ...(anyFree ? [`Templates that already prefer a free hosted model: ${site.url("/free.md")}`, ""] : []),
+    ].join("\n"),
+  };
+}
 
 export function listPage(site) {
   const path = "/list-your-template/";
