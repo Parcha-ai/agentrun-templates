@@ -60,8 +60,10 @@ For each one:
 - **Tenure.** From `start_date` to `canceled_at`, in months (and years past 12), rounded down: "1 yr 8 mo", "5 mo",
   "under a month".
 - **MRR lost.** Each item's `price.unit_amount` x `quantity`, per month: a yearly price / 12, a weekly one x 52 / 12, a
-  `interval_count` of more than 1 divides by it. A subscription that never paid (it ended in its trial, or its status
-  went from `incomplete` to cancelled) lost no revenue: say "0, ended in trial" or "never paid".
+  `interval_count` of more than 1 divides by it. Work in the minor unit and divide by 100 last, and write the sum down:
+  `unit_amount` 360000 yearly is 360000 / 12 = 30000 a month, so $300.00/month. A subscription that never paid (it ended
+  in its trial, or its status went from `incomplete` to cancelled) lost no revenue: say "0, ended in trial" or
+  "never paid".
 - **Last payment.** `STRIPE_LIST_INVOICES` with `customer`, `subscription` the sub's id, `status: paid`, `limit: 1`:
   its `amount_paid` and the date (`status_transitions.paid_at`, else `created`). None: "never paid".
 - **Why.** `cancellation_details.reason` (`cancellation_requested`, `payment_failed`, `payment_disputed`) and
