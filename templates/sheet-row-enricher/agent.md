@@ -18,15 +18,16 @@ computer: [none]
 mcp:
   - source: composio
     toolkit: googlesheets
-    tools: [GOOGLESHEETS_VALUES_GET, GOOGLESHEETS_UPDATE_VALUES_BATCH]
+    tools: [GOOGLESHEETS_BATCH_GET, GOOGLESHEETS_VALUES_GET, GOOGLESHEETS_UPDATE_VALUES_BATCH]
     required: true
     reason: "Reads the header and the new row of the one spreadsheet you set, and writes that row's blank cells, as plain text. It can't read or change another spreadsheet, and can't add or delete rows or sheets."
-    allow: [GOOGLESHEETS_VALUES_GET]
-    # Both pinned to the spreadsheet the owner set. The write's ranges sit inside its data array, which no pin can bound,
+    allow: [GOOGLESHEETS_BATCH_GET, GOOGLESHEETS_VALUES_GET]
+    # All pinned to the spreadsheet the owner set. The write's ranges sit inside its data array, which no pin can bound,
     # so the write stays out of allow (the owner ticks it at apply and sees the cells under ask) and the skill writes
     # only the blank cells of the row the event names (a test checks the exact ranges). RAW stores every value as text,
     # so nothing a page says can become a formula that fetches or copies other cells.
     pin:
+      GOOGLESHEETS_BATCH_GET: { spreadsheet_id: "${parameters.spreadsheet_id}" }
       GOOGLESHEETS_VALUES_GET: { spreadsheet_id: "${parameters.spreadsheet_id}" }
       GOOGLESHEETS_UPDATE_VALUES_BATCH: { spreadsheet_id: "${parameters.spreadsheet_id}", valueInputOption: RAW, includeValuesInResponse: [null, false] }
 parameters:

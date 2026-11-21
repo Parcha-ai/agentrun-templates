@@ -17,8 +17,9 @@ A trigger run: the event in `<trigger-payload ... event="GOOGLESHEETS_NEW_ROWS_T
 `data.row_number` is the row, `data.sheet_name` the tab. A run by hand: the row number in the message. No row number,
 or a tab other than the Tab setting: stop with `action` `skipped`.
 
-Read the sheet fresh, since the event's `row_data` can be stale or cut: one `GOOGLESHEETS_VALUES_GET` with `range`
-`'<tab>'!A1:Z<row>`. Row 1 is the header; the row's cells are the last line of `values` (a short line means its last
+Read the sheet fresh, since the event's `row_data` can be stale or cut, and read only the header and this row: one
+`GOOGLESHEETS_BATCH_GET` with `ranges` `["'<tab>'!A1:Z1", "'<tab>'!A<row>:Z<row>"]`. Never a range that spans the
+rows in between. The first of `valueRanges` is the header, the second the row (a short line, or none, means its last
 cells are blank). Columns are A, B, C... in header order.
 
 ## 2. What to fill
