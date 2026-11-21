@@ -39,20 +39,27 @@ export const SECURITY_HEADERS = {
 export const MEDIA_CONTENT_TYPES = {
   ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".gif": "image/gif",
   ".mp4": "video/mp4", ".mp3": "audio/mpeg", ".m4a": "audio/mp4", ".wav": "audio/wav", ".ogg": "audio/ogg",
-  ".vtt": "text/vtt; charset=utf-8",
+  ".vtt": "text/vtt; charset=utf-8", ".md": "text/plain; charset=utf-8", ".txt": "text/plain; charset=utf-8",
 };
 
-const TYPES = {
+/** The site's own files. A .md here is a page's Markdown twin, so these win outside a sample's media. */
+const SITE_TYPES = {
   ".html": "text/html; charset=utf-8", ".md": "text/markdown; charset=utf-8", ".txt": "text/plain; charset=utf-8",
   ".json": "application/json", ".xml": "application/xml", ".css": "text/css", ".js": "text/javascript", ".svg": "image/svg+xml", ".woff2": "font/woff2",
-  ...MEDIA_CONTENT_TYPES,
 };
+const TYPES = { ...MEDIA_CONTENT_TYPES, ...SITE_TYPES };
+
+/** Whether a URL is a file the build copied from a sample's media/, which keeps its media type and a day's cache. */
+function sampleMedia(urlPath) {
+  return /^\/templates\/[^/]+\/samples\//.test(urlPath) && Object.hasOwn(MEDIA_CONTENT_TYPES, extname(urlPath).toLowerCase());
+}
 
 /** How long a browser may keep a file: assets and sample media a day (css and js carry a ?v= of their content),
  *  pages five minutes. */
 function cacheFor(urlPath, { dev }) {
   if (dev) return "no-store";
-  const media = Object.hasOwn(MEDIA_CONTENT_TYPES, extname(urlPath).toLowerCase());
+  const ext = extname(urlPath).toLowerCase();
+  const media = sampleMedia(urlPath) || (Object.hasOwn(MEDIA_CONTENT_TYPES, ext) && !Object.hasOwn(SITE_TYPES, ext));
   return urlPath.startsWith("/assets/") || media ? "public, max-age=86400" : "public, max-age=300";
 }
 
@@ -106,7 +113,8 @@ export function siteHandler({ root, dev = false }) {
     const target = file ?? join(root, "404.html");
     let size;
     try { size = (await stat(target)).size; } catch { return send(404, { "content-type": "text/plain; charset=utf-8" }, "not found\n"); }
-    const headers = { "content-type": TYPES[extname(target).toLowerCase()] ?? "application/octet-stream", "cache-control": cacheFor(file ? url.pathname : "/404.html", { dev }) };
+    const type = file && sampleMedia(url.pathname) ? MEDIA_CONTENT_TYPES[extname(url.pathname).toLowerCase()] : TYPES[extname(target).toLowerCase()];
+    const headers = { "content-type": type ?? "application/octet-stream", "cache-control": cacheFor(file ? url.pathname : "/404.html", { dev }) };
     let status = file ? 200 : 404;
     let range = null;
     if (file) {

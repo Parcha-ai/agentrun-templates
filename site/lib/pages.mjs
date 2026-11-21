@@ -346,7 +346,7 @@ function sampleSection(pkg) {
   }
   return pkg.examples.map((ex) => {
     const shown = sampleMarkdown(pkg, ex);
-    // The report plays the media it names; the rest follow it, each under its file name.
+    // The report plays the media it names; the rest follow it, each under its file name. A document is its name as a link.
     const used = new Set();
     const report = shown ? markdownToHtml(shown, { shift: 2, media: ex.media, used }) : "";
     const rest = ex.media.filter((m) => m.kind !== "captions" && !used.has(m.file));
@@ -354,7 +354,7 @@ function sampleSection(pkg) {
   ${pkg.examples.length > 1 ? html`<h3 class="caps">${ex.name}</h3>` : ""}
   ${ex.input !== undefined ? html`<details><summary class="caps">Input</summary>${jsonBlock(ex.input)}</details>` : ""}
   ${shown ? html`<article class="report card">${raw(report)}</article>` : ""}
-  ${rest.length ? html`<div class="sample-media">${rest.map((m) => html`<figure>${raw(mediaPlayer(m))}<figcaption><code>${m.file}</code></figcaption></figure>`)}</div>` : ""}
+  ${rest.length ? html`<div class="sample-media">${rest.map((m) => m.kind === "document" ? html`<figure><figcaption><a href="${m.url}"><code>${m.file}</code></a></figcaption></figure>` : html`<figure>${raw(mediaPlayer(m))}<figcaption><code>${m.file}</code></figcaption></figure>`)}</div>` : ""}
   ${ex.output !== undefined ? html`<details><summary class="caps">The full answer as JSON</summary>${jsonBlock(ex.output)}</details>` : ""}
 </div>`;
   });

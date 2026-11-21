@@ -38,8 +38,10 @@ one does.
 - The sample output is `samples/<template>/<name>/output.md` when there is one, else the `contentMediaType: text/markdown`
   field (`report_markdown`) of `samples/<template>/<name>/output.json`.
 - `samples/<template>/<name>/media/` holds the files a sample run made, with no subfolders: images (.jpg .jpeg .png
-  .webp .gif), video (.mp4, H.264), audio (.mp3 .m4a .wav .ogg), and captions (.vtt, for the .mp4 with the same
-  name). Any other file there fails the build. The build copies them to `/templates/<template>/samples/<name>/`.
+  .webp .gif), video (.mp4, H.264), audio (.mp3 .m4a .wav .ogg), captions (.vtt, for the .mp4 with the same
+  name), and documents (.md .txt). Any other file there fails the build. A document is a link only: a link to it
+  opens the copy, an image token naming it stays text, and one the report never names follows it as its name. The
+  server sends it as `text/plain` with `nosniff`, so a browser shows the text and never renders it. The build copies them to `/templates/<template>/samples/<name>/`.
   An image or link in the report whose target is `media/<file>` plays that file on the page: an image, a video
   player with its captions, or an audio player. Files the report never names follow it, each under its name. The
   Markdown twin lists every file by its full URL, and its links, images and reference definitions to `media/<file>`

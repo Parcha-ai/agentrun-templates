@@ -18,6 +18,9 @@ export const MEDIA_TYPES = {
   ".wav": { kind: "audio", type: "audio/wav" },
   ".ogg": { kind: "audio", type: "audio/ogg" },
   ".vtt": { kind: "captions", type: "text/vtt; charset=utf-8" },
+  // A document is a link only, never shown inline: the server sends it as plain text so no browser renders it.
+  ".md": { kind: "document", type: "text/plain; charset=utf-8" },
+  ".txt": { kind: "document", type: "text/plain; charset=utf-8" },
 };
 
 /** A media file name: one path segment of plain characters, so its URL and its Markdown href are the same text. */

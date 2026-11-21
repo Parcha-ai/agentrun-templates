@@ -142,7 +142,8 @@ export function check({ dir, baseUrl }) {
     }
     if (/@import/.test(readFileSync(join(root, css), "utf8"))) bad(css, "@import loads another stylesheet");
   }
-  for (const md of files.filter((f) => f.endsWith(".md"))) if (!readFileSync(join(root, md), "utf8").startsWith("# ")) bad(md, "does not start with a # title");
+  // A sample's .md under templates/<t>/samples/ is the run's own document, served as plain text, not a page.
+  for (const md of files.filter((f) => f.endsWith(".md") && !/^templates\/[^/]+\/samples\//.test(f))) if (!readFileSync(join(root, md), "utf8").startsWith("# ")) bad(md, "does not start with a # title");
   if (!existsSync(join(root, "404.html"))) bad("404.html", "missing");
 
   // Sample media (templates/<t>/samples/<case>/<file>): an allowed type, video at most 720p, 8 MiB a template.

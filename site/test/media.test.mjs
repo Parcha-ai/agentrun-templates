@@ -138,7 +138,7 @@ test("a sample with only media and no report shows every file", async () => {
 
 test("a file in media/ the site doesn't play fails the build, naming it", async () => {
   for (const [files, message] of [
-    [{ "notes.txt": Buffer.from("x") }, /samples\/sample-watch\/acme\/media\/notes\.txt: \.txt isn't a media type/],
+    [{ "page.html": Buffer.from("<p>x</p>") }, /samples\/sample-watch\/acme\/media\/page\.html: \.html isn't a media type/],
     [{ "movie.mov": Buffer.from("x") }, /media\/movie\.mov: \.mov isn't a media type/],
     [{ "sub/dot.png": "dot.png" }, /media\/sub\/dot\.png: media\/ is flat/],
     [{ "two words.png": "dot.png" }, /media\/two words\.png: name media files with/],
@@ -163,7 +163,7 @@ test("check fails a template over the media budget, a video over 720p, and a typ
     const total = 2124 + pad.length + 96 + 1;
     assert.deepEqual(problems.sort(), [
       "templates/sample-watch: sample media acme/big.mp4 is 1600x900; a video's shorter side is 720 px at most",
-      "templates/sample-watch: sample media acme/stray.exe: .exe isn't an allowed type (.jpg .jpeg .png .webp .gif .mp4 .mp3 .m4a .wav .ogg .vtt)",
+      "templates/sample-watch: sample media acme/stray.exe: .exe isn't an allowed type (.jpg .jpeg .png .webp .gif .mp4 .mp3 .m4a .wav .ogg .vtt .md .txt)",
       `templates/sample-watch: sample media total ${total} bytes (${(total / 1048576).toFixed(2)} MiB), over the 8.00 MiB a template may ship; the largest file is acme/pad.wav at ${pad.length} bytes`,
     ]);
   } finally {
@@ -261,16 +261,17 @@ test("the server answers a byte range with 206, an impossible one with 416, stre
 
 test("an uppercase extension the build accepts is served with its type and kept a day", async () => {
   const dir = mkdtempSync(join(tmpdir(), "site-media-case-"));
-  mkdirSync(join(dir, "m"), { recursive: true });
+  mkdirSync(join(dir, "templates", "t", "samples", "c"), { recursive: true });
   writeFileSync(join(dir, "404.html"), "missing");
-  copyFileSync(join(media, "tiny.vtt"), join(dir, "m", "tiny.VTT"));
-  copyFileSync(join(media, "dot.jpg"), join(dir, "m", "dot.JPG"));
+  copyFileSync(join(media, "tiny.vtt"), join(dir, "templates", "t", "samples", "c", "tiny.VTT"));
+  copyFileSync(join(media, "dot.jpg"), join(dir, "templates", "t", "samples", "c", "dot.JPG"));
+  writeFileSync(join(dir, "templates", "t", "samples", "c", "KIT.MD"), "# Kit\n");
   const server = siteServer({ root: dir });
   await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
   const base = `http://127.0.0.1:${server.address().port}`;
   try {
-    for (const [file, type] of [["tiny.VTT", "text/vtt; charset=utf-8"], ["dot.JPG", "image/jpeg"]]) {
-      const res = await fetch(`${base}/m/${file}`);
+    for (const [file, type] of [["tiny.VTT", "text/vtt; charset=utf-8"], ["dot.JPG", "image/jpeg"], ["KIT.MD", "text/plain; charset=utf-8"]]) {
+      const res = await fetch(`${base}/templates/t/samples/c/${file}`);
       await res.arrayBuffer();
       assert.equal(res.status, 200, file);
       assert.equal(res.headers.get("content-type"), type, file);
@@ -369,6 +370,69 @@ test("the twin rewrites a repeated media link at each place it stands", async ()
   } finally {
     rmSync(root, { recursive: true, force: true });
     rmSync(out, { recursive: true, force: true });
+  }
+});
+
+test("a document in media/ (.md, .txt) is a link to its copy, never a player, and counts toward the budget", async () => {
+  const kit = Buffer.from("# Brand kit\n\nPalette: #0b1f3a, #19c3e6.\n\n<script>alert(1)</script>\n");
+  const report = "Full kit: [media/brand-kit.md](media/brand-kit.md). As an image it stays text: ![the kit](media/brand-kit.md).\n";
+  const root = repoWith({ "brand-kit.md": kit, "notes.txt": Buffer.from("plain notes\n"), "dot.png": "dot.png" }, report);
+  const out = await built(root);
+  try {
+    assert.deepEqual(check({ dir: out, baseUrl: BASE }).problems, []);
+    assert.deepEqual(readFileSync(join(out, URL_OF("brand-kit.md"))), kit, "copied byte for byte");
+    const page = readFileSync(join(out, "templates", "sample-watch", "index.html"), "utf8");
+    const html = /<article class="report card">([\s\S]*?)<\/article>/.exec(page)[1];
+    assert.match(html, new RegExp(`Full kit: <a href="${URL_OF("brand-kit.md")}">media/brand-kit\\.md</a>\\. As an image it stays text: the kit\\.`));
+    // The files the report never names follow it: a document as a link under its name, no player.
+    const rest = /<div class="sample-media">([\s\S]*?)<\/div>/.exec(page)[1];
+    assert.match(rest, new RegExp(`<figure><figcaption><a href="${URL_OF("notes.txt")}"><code>notes\\.txt</code></a></figcaption></figure>`));
+    assert.doesNotMatch(page, /<(img|video|audio|track)[^>]*\.(md|txt)"/, "no player names a document");
+    assert.doesNotMatch(page, /<script>alert/, "the document's text never reaches the page");
+    const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
+    assert.ok(md.includes(`Full kit: [media/brand-kit.md](${BASE}${URL_OF("brand-kit.md")})`), "the twin's link is the full URL");
+    for (const f of ["brand-kit.md", "notes.txt"]) assert.ok(md.includes(`- [${f}](${BASE}${URL_OF(f)})`), f);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(out, { recursive: true, force: true });
+  }
+  // A document counts toward the 8 MiB like any media file.
+  const big = repoWith({ "huge.txt": Buffer.alloc(9 * 1024 * 1024) });
+  const bigOut = await built(big);
+  try {
+    assert.match(check({ dir: bigOut, baseUrl: BASE }).problems.join("\n"), /sample media total 9437184 bytes \(9\.00 MiB\), over the 8\.00 MiB a template may ship; the largest file is acme\/huge\.txt/);
+  } finally {
+    rmSync(big, { recursive: true, force: true });
+    rmSync(bigOut, { recursive: true, force: true });
+  }
+});
+
+test("a document in a sample is served as plain text with nosniff, while the site's own .md twin stays Markdown", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "site-media-doc-"));
+  mkdirSync(join(dir, "templates", "t", "samples", "c"), { recursive: true });
+  writeFileSync(join(dir, "404.html"), "missing");
+  writeFileSync(join(dir, "templates", "t", "samples", "c", "brand-kit.md"), "# Kit\n<script>alert(1)</script>\n");
+  writeFileSync(join(dir, "templates", "t", "samples", "c", "notes.txt"), "notes\n");
+  writeFileSync(join(dir, "templates", "t.md"), "# T\n");
+  const server = siteServer({ root: dir });
+  await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  try {
+    for (const path of ["/templates/t/samples/c/brand-kit.md", "/templates/t/samples/c/notes.txt"]) {
+      const res = await fetch(base + path);
+      await res.arrayBuffer();
+      assert.equal(res.status, 200, path);
+      assert.equal(res.headers.get("content-type"), "text/plain; charset=utf-8", path);
+      assert.equal(res.headers.get("x-content-type-options"), "nosniff", path);
+      assert.equal(res.headers.get("cache-control"), "public, max-age=86400", path);
+    }
+    const twin = await fetch(`${base}/templates/t.md`);
+    await twin.arrayBuffer();
+    assert.equal(twin.headers.get("content-type"), "text/markdown; charset=utf-8");
+    assert.equal(twin.headers.get("cache-control"), "public, max-age=300");
+  } finally {
+    await new Promise((ok) => server.close(ok));
+    rmSync(dir, { recursive: true, force: true });
   }
 });
 

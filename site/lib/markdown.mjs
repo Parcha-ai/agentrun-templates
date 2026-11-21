@@ -15,12 +15,12 @@ function safeUrl(href) {
 }
 
 /** The file in `media` a Markdown target names (media/<file> or ./media/<file>), or undefined. A link may name
- *  captions; a player (`player: true`) is never captions. */
+ *  captions or a document; a player (`player: true`) is never either. */
 function mediaTarget(href, media, { player = false } = {}) {
   let url = String(href ?? "").trim();
   try { url = decodeURI(url); } catch {}
   const m = /^(?:\.\/)?media\/([^/?#]+)$/.exec(url);
-  return m ? media.find((x) => x.file === m[1] && !(player && x.kind === "captions")) : undefined;
+  return m ? media.find((x) => x.file === m[1] && !(player && (x.kind === "captions" || x.kind === "document"))) : undefined;
 }
 
 // The sample media of the call in progress. marked is synchronous, so one parse runs at a time.
