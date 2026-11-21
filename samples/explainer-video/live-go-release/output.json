@@ -1,0 +1,92 @@
+{
+  "status": "saved",
+  "source": "https://go.dev/blog/go1.23",
+  "doc_read": true,
+  "script": "[warm] Go one point twenty-three is out. Range loops can now run over iterator functions, so you can write your own sequences. Collecting a map's keys into a sorted slice takes one line: slices dot Sorted, maps dot Keys. There are three new standard library packages: iter, structs and unique. Timers and tickers got a rework. The go command has new conveniences, and Go telemetry is opt-in.",
+  "word_count": 66,
+  "length_s": 30,
+  "audio_seconds": 27.5,
+  "audio_seconds_source": "estimate",
+  "presenter": "a friendly woman in her thirties with curly dark hair and a mustard sweater, in a bright studio with plants",
+  "portrait_prompt": "Photorealistic head-and-shoulders portrait of a presenter, a friendly woman in her thirties with curly dark hair and a mustard sweater, facing the camera and looking into the lens, mouth closed in a relaxed friendly expression, face large and centered in the frame, shoulders square to the camera, soft even studio lighting, a bright studio with plants softly out of focus behind, plain unbranded clothing.",
+  "voice": "Aria",
+  "quality_requested": "standard",
+  "quality_used": "standard",
+  "avatar_model": "veed/fabric-1.0",
+  "resolution": "480p",
+  "max_fal_usd": 6,
+  "plan_usd": 2.48,
+  "cheaper_plan": null,
+  "steps": [
+    {
+      "step": "portrait",
+      "endpoint": "fal-ai/nano-banana",
+      "units": 1,
+      "unit": "images",
+      "fal_cost_usd": 0.04,
+      "status": "done",
+      "request_id": "01a1fafa-c64f-7931-8787-220d6c229d42"
+    },
+    {
+      "step": "voiceover",
+      "endpoint": "fal-ai/elevenlabs/tts/eleven-v3",
+      "units": 400,
+      "unit": "characters",
+      "fal_cost_usd": 0.04,
+      "status": "done",
+      "request_id": "01a1fafa-c5aa-7761-9387-c444f9ff5404"
+    },
+    {
+      "step": "avatar",
+      "endpoint": "veed/fabric-1.0",
+      "units": 27.5,
+      "unit": "seconds",
+      "fal_cost_usd": 2.2,
+      "status": "done",
+      "request_id": "01a1fafb-0f63-7d02-83de-6d5035504409"
+    }
+  ],
+  "fal_cost_usd": 2.28,
+  "files": [
+    {
+      "path": "media/portrait.png",
+      "kind": "portrait",
+      "fal_url": "https://v3b.fal.media/files/b/0ab346ba/Lz4FjpjQPn6YoOIk7CfZ4_BsQgv78m.png"
+    },
+    {
+      "path": "media/voiceover.mp3",
+      "kind": "voiceover",
+      "fal_url": "https://v3b.fal.media/files/b/0ab346ba/nutMiPsifCPFwvfg5l8Lf_output.mp3"
+    },
+    {
+      "path": "media/explainer.mp4",
+      "kind": "video",
+      "fal_url": "https://v3b.fal.media/files/b/0ab346c2/TYURdHWFU3qUxxbXx2Cuy_tmp6d29jt_8.mp4"
+    },
+    {
+      "path": "media/explainer.vtt",
+      "kind": "captions",
+      "fal_url": null
+    }
+  ],
+  "failed_step": null,
+  "error": null,
+  "likeness_declined": null,
+  "omitted": [
+    "Go 1.23 support for generic type aliases (preview)",
+    "The go vet check for symbols too new for the intended Go version",
+    "The go mod tidy -diff and go env -changed command details",
+    "Faster profile-guided optimization build times and performance on 386 and amd64",
+    "Experimental OpenBSD on 64-bit RISC-V support, and other platform changes",
+    "The unique package and the follow-up posts promised by the blog"
+  ],
+  "ignored_instructions": [],
+  "notes": [
+    "Length 30 s at standard quality: the default, with the $6 cap.",
+    "Audio length is estimated at 66 words divided by 2.4 words per second: 27.5 s. The avatar's billed duration was not reported, so its cost uses that estimate.",
+    "Caption timings are split by each phrase's share of the characters, so they are approximate.",
+    "The timers line paraphrases the doc's note that timer and ticker implementations were improved.",
+    "The voiceover's character count is estimated at about 400 including the audio tag."
+  ],
+  "report_markdown": "![Explainer](media/explainer.mp4)\n\n**Presenter:** a made-up friendly woman in her thirties with curly dark hair and a mustard sweater, in a bright studio with plants. **Voice:** Aria.\n\n**Script (66 words, about 27.5 s):**\n> [warm] Go one point twenty-three is out. Range loops can now run over iterator functions, so you can write your own sequences. Collecting a map's keys into a sorted slice takes one line: slices dot Sorted, maps dot Keys. There are three new standard library packages: iter, structs and unique. Timers and tickers got a rework. The go command has new conveniences, and Go telemetry is opt-in.\n\n**Files:** media/portrait.png, media/voiceover.mp3, media/explainer.mp4, media/explainer.vtt\n\n**Cost:** portrait about $0.04 (fal-ai/nano-banana, 1 image); voiceover about $0.04 (ElevenLabs v3, about 400 characters); avatar about $2.20 (veed/fabric-1.0 at 480p, 27.5 s estimated). Total about $2.28."
+}

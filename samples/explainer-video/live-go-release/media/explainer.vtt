@@ -1,0 +1,29 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:02.407
+Go one point twenty-three is out.
+
+00:00:02.407 --> 00:00:04.450
+Range loops can now run over
+
+00:00:04.450 --> 00:00:08.534
+iterator functions, so you can write
+your own sequences.
+
+00:00:08.534 --> 00:00:14.224
+Collecting a map's keys into a sorted
+slice takes one line: slices dot Sorted,
+
+00:00:14.224 --> 00:00:15.245
+maps dot Keys.
+
+00:00:15.245 --> 00:00:20.496
+There are three new standard library
+packages: iter, structs and unique.
+
+00:00:20.496 --> 00:00:22.830
+Timers and tickers got a rework.
+
+00:00:22.830 --> 00:00:27.500
+The go command has new conveniences,
+and Go telemetry is opt-in.
