@@ -21,12 +21,13 @@ mcp:
     allow: [GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID, GMAIL_FETCH_EMAILS, GMAIL_LIST_DRAFTS]
     # The draft's recipient and thread are the thread's own, different each run, so neither can be pinned: the draft
     # stays out of allow (the owner ticks it at apply) and can only ever be a draft. Every argument that would add a
-    # recipient, reach another mailbox or attach a file is held absent. The thread listing and the drafts list are held
-    # to one page of ids, senders and times (no bodies); bodies are read one message at a time, at most five a run.
+    # recipient, reach another mailbox or attach a file is held absent. The thread listing is held to one page of ids,
+    # senders and times (no bodies). The drafts list returns ids only and may be paged (a waiting draft can be on any
+    # page; the skill reads at most five). Bodies are read one message at a time, at most five a run.
     pin:
       GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID: { user_id: null }
       GMAIL_FETCH_EMAILS: { user_id: null, verbose: false, include_payload: false, ids_only: [null, false], label_ids: null, include_spam_trash: [null, false], max_results: 50, page_token: null }
-      GMAIL_LIST_DRAFTS: { user_id: null, verbose: false, max_results: 100, page_token: null }
+      GMAIL_LIST_DRAFTS: { user_id: null, verbose: false, max_results: 100 }
       GMAIL_CREATE_EMAIL_DRAFT: { cc: null, bcc: null, extra_recipients: null, user_id: null, attachment: null }
   - source: composio
     toolkit: googlecalendar

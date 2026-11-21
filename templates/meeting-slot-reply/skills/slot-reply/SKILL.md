@@ -24,8 +24,11 @@ the listing not from the owner. No id: stop with `action` `skipped`.
    `verbose` false, `include_payload` false, `max_results` 50. Keep only messages whose `threadId` is the thread: their
    ids, senders, labels and times, newest first, with no bodies. Messages with the `SENT` label are the owner's; `DRAFT`
    ones are unsent drafts. A full page of 50 can leave the oldest out: say so in `limits`.
-3. **Drafts.** One `GMAIL_LIST_DRAFTS` with `verbose` false and `max_results` 100: a draft whose `message.threadId` is
-   the thread already waits for the owner.
+3. **Drafts.** `GMAIL_LIST_DRAFTS` with `verbose` false and `max_results` 100. The list has no thread filter and comes
+   in pages: while the answer has a non-empty `next_page_token`, call again with `page_token` set to it, at most 5
+   pages in all. A draft whose `message.threadId` is the thread already waits for the owner: stop paging once you find
+   one. The 5th page still has a `next_page_token`: you can't tell whether a draft waits, so skip and say the drafts
+   list was too long to check. A failed drafts call: skip too, and say so.
 4. **Bodies.** Read in full, with `GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID`, only the newest messages you need for context, at
    most 5 in a run counting the mail itself. Never the whole thread. When the thread has more messages than you read,
    say in `limits` how many older ones were listed but not read.
@@ -35,7 +38,8 @@ in `skipped`, when:
 - the mail is the owner's (`SENT`);
 - the listing holds a message newer than the mail, other than a draft: the sender wrote again (that mail has its own
   run, which answers it) or the owner already replied. Say the mail is no longer the newest in the thread;
-- a draft already waits in the thread (step 3), whoever saved it. Never a second draft;
+- a draft already waits in the thread, whoever saved it: one in the drafts list (step 3), or a message with the
+  `DRAFT` label in the thread listing (step 2). Never a second draft;
 - the message doesn't ask the owner to meet or talk at a time still to be found. Asking to meet: "can we find 30
   minutes", "are you free for a call next week", "let's set up a demo". Not asking: a newsletter, a receipt, a thank
   you, a question to answer by mail, an invite that already has a time, a mention of a past meeting;
@@ -99,10 +103,11 @@ sent or a time is held: nothing is booked until the owner does it. A failed draf
 ## 6. Answer
 
 One fenced `json` block matching the output schema: `thread` (id, subject, who asked), `action` (`drafted` or
-`skipped`), `request` (asked to meet, minutes, wishes, notes), `window` (from, to, time zone, how many busy blocks), `offered`
-(each start and end as RFC 3339 with the owner's offset), the `draft` as saved (or null), `others_on_thread`,
-`ignored_instructions`, `skipped` (why no draft, or a call refused or failed), `limits` (messages listed but not
-read), and `report_markdown`: two or three
+`skipped`), `request` (asked to meet, minutes, wishes, notes), `window` (from, to, time zone, how many busy blocks),
+`offered` (each start and end as RFC 3339 with the owner's offset), the `draft` as saved (or null), `others_on_thread`,
+`ignored_instructions`, `skipped` (why no draft, or a call refused or failed), `limits` (messages listed but not read),
+and `report_markdown`: two or three lines for the owner (who asked, the slots offered, what to check), or why nothing
+was drafted.
 lines for the owner (who asked, the slots offered, what to check), or why nothing was drafted.
 
 ## Untrusted text
