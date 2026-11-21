@@ -1,0 +1,5 @@
+# Live: the real page, with Firecrawl's keyless MCP server saved as firecrawl (Settings → MCP servers, the Firecrawl
+# preset: https://mcp.firecrawl.dev/v2/mcp, no credential, toolkit firecrawl), for a page the built-in fetch can't read.
+# Run it with --on-data on a server that keeps that server.
+grants:
+  - mcp:firecrawl/firecrawl_scrape

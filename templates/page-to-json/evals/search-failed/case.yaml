@@ -1,0 +1,3 @@
+# The shared failed-search case (evals-shared/search-failed): every web_fetch fails as a page that never answers, and no
+# Firecrawl server is saved, so the page cannot be read at all. The input is the thin case's (missing-is-null).
+web: unavailable

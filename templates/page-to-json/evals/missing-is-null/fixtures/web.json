@@ -1,0 +1,13 @@
+{
+  "search": { "answers": [], "default": { "results": [] } },
+  "fetch": {
+    "answers": [
+      {
+        "url": "https://riverside-makers.example/events/winter-fair-2026",
+        "title": "Winter Makers' Fair 2026 | Riverside Makers",
+        "text": "# Winter Makers' Fair 2026\n\nSaturday 12 December 2026, 10:00 to 16:00\n\nOld Tram Depot, 4 Quay Street, Riverside\n\nMore than 60 stalls of ceramics, prints, woodwork and food from local makers. Live music from noon.\n\n## Tickets\n\nTicket details soon. Sign up to our newsletter to hear first.\n\n## Get in touch\n\nUse the contact form on our About page. Stallholder applications are closed for this year.\n\nPosted 2026-10-02."
+      }
+    ],
+    "default": { "error": "fetch failed: the page did not answer" }
+  }
+}
