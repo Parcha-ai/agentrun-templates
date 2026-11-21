@@ -15,15 +15,18 @@ tools: [read]
 mcp:
   - source: composio
     toolkit: gmail
-    tools: [GMAIL_FETCH_MESSAGE_BY_THREAD_ID, GMAIL_CREATE_EMAIL_DRAFT]
+    tools: [GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID, GMAIL_FETCH_EMAILS, GMAIL_LIST_DRAFTS, GMAIL_CREATE_EMAIL_DRAFT]
     required: true
-    reason: "Reads the one thread the new mail belongs to and saves one reply draft in it. It can't send. The draft goes to whoever wrote to you, which no setting can fix in advance, so you tick it yourself; cc, bcc and extra recipients are always off."
-    allow: [GMAIL_FETCH_MESSAGE_BY_THREAD_ID]
+    reason: "Reads the new mail and the newest few messages of its thread, lists the rest by sender and time only, and saves one reply draft in it. It can't send. You tick the draft yourself, since its recipient changes each run; cc, bcc and extra recipients are always off."
+    allow: [GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID, GMAIL_FETCH_EMAILS, GMAIL_LIST_DRAFTS]
     # The draft's recipient and thread are the thread's own, different each run, so neither can be pinned: the draft
     # stays out of allow (the owner ticks it at apply) and can only ever be a draft. Every argument that would add a
-    # recipient, reach another mailbox or attach a file is held absent.
+    # recipient, reach another mailbox or attach a file is held absent. The thread listing and the drafts list are held
+    # to one page of ids, senders and times (no bodies); bodies are read one message at a time, at most five a run.
     pin:
-      GMAIL_FETCH_MESSAGE_BY_THREAD_ID: { user_id: null }
+      GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID: { user_id: null }
+      GMAIL_FETCH_EMAILS: { user_id: null, verbose: false, include_payload: false, ids_only: [null, false], label_ids: null, include_spam_trash: [null, false], max_results: 50, page_token: null }
+      GMAIL_LIST_DRAFTS: { user_id: null, verbose: false, max_results: 100, page_token: null }
       GMAIL_CREATE_EMAIL_DRAFT: { cc: null, bcc: null, extra_recipients: null, user_id: null, attachment: null }
   - source: composio
     toolkit: googlecalendar

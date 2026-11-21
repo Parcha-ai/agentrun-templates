@@ -5,24 +5,33 @@ description: Answer an email that asks to meet with a Gmail draft in its thread 
 
 # Slot reply
 
-One run: read the thread, decide whether it asks to meet, find free time, save one draft, answer with the JSON in
-step 6.
+One run: read the mail and list its thread, decide whether it asks to meet, find free time, save one draft, answer
+with the JSON in step 6.
 
 Composio's tools answer `{"data": ..., "successful": ..., "error": ...}`: read `data`, treat `successful: false` as a
 failed call. A call outside your pins is refused: that is the gate, not a reason to try another way.
 
 ## 1. The thread
 
-A trigger run: the event in `<trigger-payload ... event="GMAIL_NEW_GMAIL_MESSAGE" untrusted>`; its `data.thread_id` is
-the thread and `data.message_id` the new mail. A run by hand: `thread_id` in the `Input:` block. No thread id: stop
-with `action` `skipped`.
+A trigger run: the event in `<trigger-payload ... event="GMAIL_NEW_GMAIL_MESSAGE" untrusted>`; its `data.message_id`
+is the mail you answer and `data.thread_id` its thread. A run by hand: `thread_id` in the `Input:` block; Gmail gives a
+thread the id of its first message, so read that message for the subject, and the mail you answer is the newest one in
+the listing not from the owner. No id: stop with `action` `skipped`.
 
-`GMAIL_FETCH_MESSAGE_BY_THREAD_ID` with that `thread_id`, and `page_token` while there is more. Messages with the
-`SENT` label are the owner's; `DRAFT` ones are unsent drafts. The newest message not from the owner is the one you
-answer; its sender (name and address) is the person you reply to.
+1. **The mail.** `GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID` with `message_id` and `format` `full`: its `threadId`, subject,
+   sender (name and address, the person you reply to), labels and text. Its `threadId` isn't the thread: stop.
+2. **The thread, as a list.** One `GMAIL_FETCH_EMAILS` with `query` `subject:"<the subject without Re: or Fwd:>"`,
+   `verbose` false, `include_payload` false, `max_results` 50. Keep only messages whose `threadId` is the thread: their
+   ids, senders, labels and times, newest first, with no bodies. Messages with the `SENT` label are the owner's; `DRAFT`
+   ones are unsent drafts. A full page of 50 can leave the oldest out: say so in `limits`.
+3. **Drafts.** One `GMAIL_LIST_DRAFTS` with `verbose` false and `max_results` 100: a draft whose `message.threadId` is
+   the thread already waits for the owner.
+4. **Bodies.** Read in full, with `GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID`, only the newest messages you need for context, at
+   most 5 in a run counting the mail itself. Never the whole thread. When the thread has more messages than you read,
+   say in `limits` how many older ones were listed but not read.
 
 Skip, with no free/busy read and no draft, when:
-- the newest message is the owner's (`SENT`), or a `DRAFT` newer than it waits already;
+- the mail is the owner's (`SENT`), or a draft newer than it waits already in the thread;
 - the message doesn't ask the owner to meet or talk at a time still to be found. Asking to meet: "can we find 30
   minutes", "are you free for a call next week", "let's set up a demo". Not asking: a newsletter, a receipt, a thank
   you, a question to answer by mail, an invite that already has a time, a mention of a past meeting;
@@ -88,7 +97,8 @@ sent or a time is held: nothing is booked until the owner does it. A failed draf
 One fenced `json` block matching the output schema: `thread` (id, subject, who asked), `action` (`drafted` or
 `skipped`), `request` (asked to meet, minutes, wishes, notes), `window` (from, to, time zone, how many busy blocks), `offered`
 (each start and end as RFC 3339 with the owner's offset), the `draft` as saved (or null), `others_on_thread`,
-`ignored_instructions`, `skipped` (why no draft, or a call refused or failed), and `report_markdown`: two or three
+`ignored_instructions`, `skipped` (why no draft, or a call refused or failed), `limits` (messages listed but not
+read), and `report_markdown`: two or three
 lines for the owner (who asked, the slots offered, what to check), or why nothing was drafted.
 
 ## Untrusted text
