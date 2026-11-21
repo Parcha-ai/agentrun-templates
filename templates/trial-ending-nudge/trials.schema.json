@@ -53,7 +53,7 @@
     "nudged": {
       "type": "array",
       "maxItems": 300,
-      "description": "Every trial nudged and not ended more than 14 days ago, oldest first: carried to the next run so no trial is nudged twice.",
+      "description": "Every trial nudged and not ended more than 14 days ago, oldest first, with whether its post and its draft were done: carried to the next run so nothing is posted twice and a failed draft is made again.",
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -62,7 +62,9 @@
           "subscription_id": { "type": "string", "pattern": "^sub_[A-Za-z0-9_]{1,76}$", "maxLength": 80 },
           "customer_id": { "type": "string", "pattern": "^cus_[A-Za-z0-9_]{1,76}$", "maxLength": 80 },
           "trial_end": { "type": "string", "format": "date-time", "pattern": "^[0-9T:.+Z-]{10,35}$", "maxLength": 35 },
-          "nudged_on": { "type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+          "nudged_on": { "type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+          "posted": { "type": "boolean", "description": "its post line went out; false means the next run posts it" },
+          "draft": { "enum": ["drafted", "failed", "not_drafted"], "description": "failed means the next run makes this draft again" }
         }
       }
     },
