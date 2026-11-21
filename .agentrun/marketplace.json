@@ -943,6 +943,38 @@
         "media"
       ],
       "summary": "Turns a short text into a voiceover with ElevenLabs v3 through fal. Billed to your fal account."
+    },
+    {
+      "name": "launch-video",
+      "source": "./templates/launch-video",
+      "category": "marketing",
+      "tags": [
+        "video",
+        "launch",
+        "voiceover",
+        "music",
+        "fal",
+        "kling",
+        "elevenlabs",
+        "media"
+      ],
+      "summary": "Turns a product or release page into a 30 or 45 second launch video with voiceover, music and captions. Billed to your fal account."
+    },
+    {
+      "name": "brand-kit",
+      "source": "./templates/brand-kit",
+      "category": "marketing",
+      "tags": [
+        "brand",
+        "logo",
+        "palette",
+        "image",
+        "video",
+        "fal",
+        "ideogram",
+        "kling"
+      ],
+      "summary": "A starter kit for your own brand: palette, fonts, voice, logo concepts, hero images and a promo clip. Billed to your fal account."
     }
   ]
 }

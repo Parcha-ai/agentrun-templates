@@ -2,8 +2,9 @@
 // the resolved sha), into the one model the pages render. It reads only the index and those packages.
 
 import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
-import { join, relative, resolve, sep } from "node:path";
+import { extname, join, relative, resolve, sep } from "node:path";
 import { frontMatter, parseYaml } from "./yaml.mjs";
+import { MEDIA_NAME, MEDIA_TYPES, mediaSize } from "./media.mjs";
 import { validRepo } from "./github.mjs";
 
 export const CATEGORIES = ["engineering", "security", "sales", "marketing", "research", "finance", "operations", "compliance", "personal"];
@@ -78,6 +79,7 @@ function localReader(root, rel) {
     list: () => [...files.keys()].sort(),
     size: (f) => files.get(f),
     read: (f) => (files.has(f) ? readFileSync(join(dir, f), "utf8") : undefined),
+    path: (f) => (files.has(f) ? join(dir, f) : undefined),
   };
 }
 
@@ -161,8 +163,11 @@ export async function loadPackage(entry, ctx) {
     try { return JSON.parse(text); } catch (err) { throw new SiteError(`samples/${entry.name}/${f}: ${err.message}`); }
   };
   for (const name of [...new Set((samples?.list() ?? []).filter((f) => f.includes("/")).map((f) => f.split("/")[0]))].sort()) {
-    const ex = { name, input: sampleJson(`${name}/input.json`), output: sampleJson(`${name}/output.json`), outputMd: samples.read(`${name}/output.md`) };
-    if (ex.input !== undefined || ex.output !== undefined || ex.outputMd !== undefined) examples.push(ex);
+    const ex = {
+      name, input: sampleJson(`${name}/input.json`), output: sampleJson(`${name}/output.json`), outputMd: samples.read(`${name}/output.md`),
+      media: sampleMedia(entry.name, name, samples),
+    };
+    if (ex.input !== undefined || ex.output !== undefined || ex.outputMd !== undefined || ex.media.length) examples.push(ex);
   }
 
   let measured = readJson("measured.json", { optional: true });
@@ -238,6 +243,33 @@ export async function loadPackage(entry, ctx) {
     measured,
     fill,
   };
+}
+
+/** The files in samples/<template>/<sample>/media/, each with the URL the build copies it to, beside the template's
+ *  page. Captions (.vtt) go on the .mp4 with the same base name. Any other file there fails the build. */
+function sampleMedia(template, sample, samples) {
+  const prefix = `${sample}/media/`;
+  const names = samples.list().filter((f) => f.startsWith(prefix)).map((f) => f.slice(prefix.length));
+  if (!names.length) return [];
+  const where = (f) => `samples/${template}/${prefix}${f}`;
+  if (!MEDIA_NAME.test(sample)) throw new SiteError(`samples/${template}/${sample}: a sample with media needs a plain folder name (letters, digits, ".", "_", "-")`);
+  const items = [];
+  for (const f of names) {
+    if (f.includes("/")) throw new SiteError(`${where(f)}: media/ is flat; move the file up out of its folder`);
+    if (!MEDIA_NAME.test(f)) throw new SiteError(`${where(f)}: name media files with letters, digits, ".", "_" and "-" only`);
+    const known = MEDIA_TYPES[extname(f).toLowerCase()];
+    if (!known) throw new SiteError(`${where(f)}: ${extname(f) || "no extension"} isn't a media type the site plays (${Object.keys(MEDIA_TYPES).join(" ")})`);
+    const path = samples.path(prefix + f);
+    const dims = known.kind === "image" || known.kind === "video" ? mediaSize(readFileSync(path), f) : null;
+    items.push({ file: f, kind: known.kind, type: known.type, path, bytes: samples.size(prefix + f), url: `/templates/${template}/samples/${sample}/${f}`, ...dims });
+  }
+  const base = (f) => f.slice(0, f.length - extname(f).length);
+  for (const vtt of items.filter((m) => m.kind === "captions")) {
+    const video = items.find((m) => m.kind === "video" && base(m.file) === base(vtt.file));
+    if (!video) throw new SiteError(`${where(vtt.file)}: captions need the .mp4 with the same name, ${base(vtt.file)}.mp4`);
+    video.captions = vtt;
+  }
+  return items.sort((a, b) => a.file.localeCompare(b.file));
 }
 
 /** The first top-level string property marked text/markdown (the report field), else report_markdown if present. */
