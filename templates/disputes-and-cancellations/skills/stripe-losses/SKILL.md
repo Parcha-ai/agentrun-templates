@@ -47,9 +47,12 @@ dispute's later changes (won, lost) are not followed.
 
 ## 3. New cancellations
 
-`STRIPE_SEARCH_SUBSCRIPTIONS` with `query` `status:'canceled' AND canceled_at>since` (the number) and `limit: 100`;
-while `has_more`, call again with `page` its `next_page`. Search can lag a minute behind Stripe. Keep each subscription
-with `canceled_at` above `since`, at most `until`, and not in `reported_cancellations`.
+Search can lag behind Stripe, so a cancellation from just before the last run's `checked_through` may first appear
+now. With run history, search from `from` = since - 172800 (48 hours earlier); with none, `from` = since. Write `from`
+as a Unix number. `STRIPE_SEARCH_SUBSCRIPTIONS` with `query` `status:'canceled' AND canceled_at>from` (the number) and
+`limit: 100`; while `has_more`, call again with `page` its `next_page`. Keep each subscription with `canceled_at` above
+`from`, at most `until`, and whose `id` is not in the history's `reported_cancellations`: that list is what stops the
+overlap from reporting one twice.
 
 For each one:
 - **Who.** `STRIPE_RETRIEVE_CUSTOMER` with its `customer`: the name, as for a dispute.
@@ -92,7 +95,8 @@ No mention of anyone. A failed post is not retried another way; say so in `poste
 `{"id", "reported_on"}` entry per dispute reported this run at the end, `reported_on` today's date;
 `reported_cancellations` the same for subscriptions. A carried entry keeps its `reported_on`. A bare ID string from an
 older run becomes an entry with `reported_on` the date of the history's `checked_through`. Drop entries whose
-`reported_on` is more than 90 days before today. When the post failed, nothing was reported: keep `checked_through` at the window's start and add nothing
+`reported_on` is more than 90 days before today. When the post failed, nothing was reported: keep
+`checked_through` at the window's start and add nothing
 to the lists, so the next run reports them. When a list or search call failed, keep `checked_through` at the window's
 start too (what you did report is in the lists, so it isn't repeated), and the post says which part couldn't be read:
 never "no disputes" or "no cancellations" for a part that failed.
