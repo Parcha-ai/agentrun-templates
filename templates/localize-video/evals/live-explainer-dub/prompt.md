@@ -1,5 +1,5 @@
 ---
-description: 'Live fal: the explainer-video template''s live output (about 28 s, AI-generated presenter and English voice) dubbed into Spanish on the default plan: the source''s voice taken and transcribed for its length and language, the plan priced, the dub queued and followed, saved with captions written from a transcript of the dub''s voice. Pass 1 of 1.'
+description: 'Live fal: the explainer-video template''s live output (about 28 s, AI-generated presenter and English voice) dubbed into Spanish on the default plan: the source saved first for its length (web_save''s duration_s), its voice taken and transcribed for its language, the plan priced, the dub queued and followed, saved with captions written from a transcript of the dub''s voice. Pass 1 of 1.'
 runs: 1
 max_cost_usd: 1.00
 input:

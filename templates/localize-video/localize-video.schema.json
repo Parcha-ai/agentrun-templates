@@ -23,7 +23,7 @@
     "status": { "enum": ["saved", "partial", "not_saved", "over_budget", "failed"], "description": "saved: every language dubbed and saved (with captions when asked); partial: a dub or captions failed and the rest is saved; not_saved: fal made everything and a save failed; over_budget: the plan was over max_fal_usd and nothing was dubbed; failed: nothing was dubbed (the transcript failed, the video is too long or has no speech, or every dub failed)" },
     "video_url": { "type": "string" },
     "source_language": { "type": ["string", "null"], "description": "ISO 639-1, from the source transcript" },
-    "duration_s": { "type": ["number", "null"], "description": "the source's length as priced: its last word's end rounded up to 10 s" },
+    "duration_s": { "type": ["number", "null"], "description": "the source's length as priced: web_save's duration_s for the saved video, rounded up to 10 s; null when it gave none" },
     "captions": { "type": "boolean" },
     "transcript": { "type": "string", "maxLength": 4000, "description": "the source transcript's text, empty when there is none" },
     "plan": { "anyOf": [{ "$ref": "#/$defs/plan" }, { "type": "null" }], "description": "the plan as asked, priced before the first dub; null when the transcript didn't run" },

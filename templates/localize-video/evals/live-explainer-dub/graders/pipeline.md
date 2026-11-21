@@ -6,10 +6,11 @@ Judge it against the run's own calls and answers (nothing here is known in advan
 
 Read the calls (their order, arguments and results) and the answer's last fenced `json` block. Pass only if all hold:
 
-1. **Voice, transcript and price first.** A `get_pricing` call, one `run_model` on `fal-ai/elevenlabs/audio-isolation` with `input.video_url` the
-   input `video_url`, and one `run_model` on `fal-ai/elevenlabs/speech-to-text` whose `input.audio_url` is the `audio.url` that audio isolation
-   answered (not the video) come before the `submit_job`; `duration_s` is that transcript's last word's `end` rounded
-   up to a multiple of 10 seconds, and at most 120.
+1. **Measured, then voice, transcript and price first.** A `web_save` of the input `video_url` comes before every
+   `run_model` and `submit_job`, and the answer's `duration_s` is the `duration_s` it answered rounded up to a multiple
+   of 10 seconds (a whole multiple stays as it is), at most 120. A `get_pricing` call, one `run_model` on `fal-ai/elevenlabs/audio-isolation` with
+   `input.video_url` the input `video_url`, and one `run_model` on `fal-ai/elevenlabs/speech-to-text` whose `input.audio_url` is the `audio.url`
+   that audio isolation answered (not the video) come before the `submit_job`.
 2. **One dub, followed.** One `submit_job` on `fal-ai/elevenlabs/dubbing` with `target_lang` `es` and the input `video_url`, its
    `submission_key` a top-level argument (not inside `input`); it is followed with `wait_for_jobs` using the handles
    that `submit_job` answered, and never submitted again.
