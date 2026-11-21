@@ -66,14 +66,30 @@
     "reported_disputes": {
       "type": "array",
       "maxItems": 500,
-      "description": "dispute IDs reported in the last 90 days, oldest first",
-      "items": { "type": "string", "pattern": "^du_[A-Za-z0-9_]{1,76}$", "maxLength": 80 }
+      "description": "disputes reported in the last 90 days, oldest first, each with the date it was reported",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reported_on"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^du_[A-Za-z0-9_]{1,76}$", "maxLength": 80 },
+          "reported_on": { "type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+        }
+      }
     },
     "reported_cancellations": {
       "type": "array",
       "maxItems": 500,
-      "description": "subscription IDs reported cancelled in the last 90 days, oldest first",
-      "items": { "type": "string", "pattern": "^sub_[A-Za-z0-9_]{1,76}$", "maxLength": 80 }
+      "description": "subscriptions reported cancelled in the last 90 days, oldest first, each with the date it was reported",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reported_on"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^sub_[A-Za-z0-9_]{1,76}$", "maxLength": 80 },
+          "reported_on": { "type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+        }
+      }
     },
     "posted": {
       "type": "object",
