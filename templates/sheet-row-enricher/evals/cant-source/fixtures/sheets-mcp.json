@@ -2,6 +2,41 @@
   "server": "googlesheets",
   "description": "A fake Composio Google Sheets: tab Leads, rows 2-6 filled, row 7 the new Quietfield Labs row. Any write succeeds.",
   "tools": {
+    "GOOGLESHEETS_BATCH_GET": {
+      "description": "Retrieves data from one or more ranges of a spreadsheet (spreadsheet_id, ranges in A1 notation).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "spreadsheet_id": {
+            "type": "string"
+          },
+          "ranges": {
+            "type": "array"
+          },
+          "majorDimension": {
+            "type": "string"
+          },
+          "valueRenderOption": {
+            "type": "string"
+          },
+          "dateTimeRenderOption": {
+            "type": "string"
+          },
+          "empty_strings_filtered": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"spreadsheetId\":\"1QxA7bC3dE9fG2hJ4kL6mN8pR0sT5vW7yZ1aB3cD5eF\",\"valueRanges\":[{\"range\":\"Leads!A1:Z1\",\"majorDimension\":\"ROWS\",\"values\":[[\"company\",\"website\",\"size\",\"what it does\",\"hq\",\"sources\",\"owner\"]]},{\"range\":\"Leads!A7:Z7\",\"majorDimension\":\"ROWS\",\"values\":[[\"Quietfield Labs\",\"\",\"\",\"\",\"\",\"\",\"Lee\"]]}]},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
     "GOOGLESHEETS_VALUES_GET": {
       "description": "Returns a range of values from a spreadsheet (spreadsheet_id, range in A1 notation).",
       "input": {
@@ -32,7 +67,7 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"data\":{\"range\":\"Leads!A1:G7\",\"majorDimension\":\"ROWS\",\"values\":[[\"company\",\"website\",\"size\",\"what it does\",\"hq\",\"sources\",\"owner\"],[\"Hooli\",\"https://hooli.example\",\"~1,200\",\"Search and cloud software for enterprises\",\"Palo Alto, California, US\",\"website: https://hooli.example | size: https://hooli.example/about\",\"Dana\"],[\"Soylent\",\"https://soylent.example\",\"51-200\",\"Meal-replacement drinks sold online\",\"Los Angeles, California, US\",\"website: https://soylent.example\",\"Lee\"],[\"Initrode\",\"https://initrode.example\",\"11-50\",\"Office supplies for small firms\",\"Dayton, Ohio, US\",\"website: https://initrode.example\",\"Lee\"],[\"Vandelay\",\"https://vandelay.example\",\"201-500\",\"Import and export of latex goods\",\"New York, New York, US\",\"website: https://vandelay.example\",\"Dana\"],[\"Umbrella\",\"https://umbrella.example\",\"~3,000\",\"Pharmaceutical research\",\"Raccoon City, US\",\"website: https://umbrella.example\",\"Lee\"],[\"Quietfield Labs\",\"\",\"\",\"\",\"\",\"\",\"Lee\"]],\"display_url\":\"https://docs.google.com/spreadsheets/d/1QxA7bC3dE9fG2hJ4kL6mN8pR0sT5vW7yZ1aB3cD5eF/edit\"},\"successful\":true,\"error\":null}"
+            "text": "{\"data\":{\"range\":\"Leads!A7:Z7\",\"majorDimension\":\"ROWS\",\"values\":[[\"Quietfield Labs\",\"\",\"\",\"\",\"\",\"\",\"Lee\"]],\"display_url\":\"https://docs.google.com/spreadsheets/d/1QxA7bC3dE9fG2hJ4kL6mN8pR0sT5vW7yZ1aB3cD5eF/edit\"},\"successful\":true,\"error\":null}"
           }
         ]
       }

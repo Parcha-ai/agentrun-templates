@@ -2,6 +2,41 @@
   "server": "googlesheets",
   "description": "A fake Composio Google Sheets: tab Leads, row 2 Hooli filled, row 3 the new Initech row with its website. Any write succeeds.",
   "tools": {
+    "GOOGLESHEETS_BATCH_GET": {
+      "description": "Retrieves data from one or more ranges of a spreadsheet (spreadsheet_id, ranges in A1 notation).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "spreadsheet_id": {
+            "type": "string"
+          },
+          "ranges": {
+            "type": "array"
+          },
+          "majorDimension": {
+            "type": "string"
+          },
+          "valueRenderOption": {
+            "type": "string"
+          },
+          "dateTimeRenderOption": {
+            "type": "string"
+          },
+          "empty_strings_filtered": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"spreadsheetId\":\"1QxA7bC3dE9fG2hJ4kL6mN8pR0sT5vW7yZ1aB3cD5eF\",\"valueRanges\":[{\"range\":\"Leads!A1:Z1\",\"majorDimension\":\"ROWS\",\"values\":[[\"company\",\"website\",\"size\",\"what it does\",\"hq\",\"sources\",\"owner\"]]},{\"range\":\"Leads!A3:Z3\",\"majorDimension\":\"ROWS\",\"values\":[[\"Initech\",\"https://initech.example\",\"\",\"\",\"\",\"\",\"Dana\"]]}]},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
     "GOOGLESHEETS_VALUES_GET": {
       "description": "Returns a range of values from a spreadsheet (spreadsheet_id, range in A1 notation).",
       "input": {
@@ -32,7 +67,7 @@
         "content": [
           {
             "type": "text",
-            "text": "{\"data\":{\"range\":\"Leads!A1:G3\",\"majorDimension\":\"ROWS\",\"values\":[[\"company\",\"website\",\"size\",\"what it does\",\"hq\",\"sources\",\"owner\"],[\"Hooli\",\"https://hooli.example\",\"~1,200\",\"Search and cloud software for enterprises\",\"Palo Alto, California, US\",\"website: https://hooli.example | size: https://hooli.example/about\",\"Dana\"],[\"Initech\",\"https://initech.example\",\"\",\"\",\"\",\"\",\"Dana\"]],\"display_url\":\"https://docs.google.com/spreadsheets/d/1QxA7bC3dE9fG2hJ4kL6mN8pR0sT5vW7yZ1aB3cD5eF/edit\"},\"successful\":true,\"error\":null}"
+            "text": "{\"data\":{\"range\":\"Leads!A3:Z3\",\"majorDimension\":\"ROWS\",\"values\":[[\"Initech\",\"https://initech.example\",\"\",\"\",\"\",\"\",\"Dana\"]],\"display_url\":\"https://docs.google.com/spreadsheets/d/1QxA7bC3dE9fG2hJ4kL6mN8pR0sT5vW7yZ1aB3cD5eF/edit\"},\"successful\":true,\"error\":null}"
           }
         ]
       }
