@@ -38,7 +38,8 @@ At most 4 `web_search` calls and 3 `web_fetch` calls in a run.
 
 1. `web_search` for the company name (with its website when the row has one). Find its own site: the result whose
    domain matches the name or the row's website. A same-name company elsewhere is not it: check what the result says.
-2. `web_fetch` its home or about page. It usually states what it does, and often its size and headquarters.
+2. `web_fetch` its home or about page, always, before any write. It usually states what it does, and often its size
+   and headquarters.
 3. For a value still missing, one `web_search` such as `"<company>" headquarters employees`, and fetch at most one
    result that is plainly about this company.
 
@@ -54,13 +55,19 @@ failed" and the reason the call gave, never "no source found". The report leads 
 
 Each value comes from a page or result you read in this run, and its source is that URL. Nothing from memory.
 - `website`: the company's home page, `https://<domain>`.
-- `size`: employees as the source gives it ("about 240 employees" → `~240`; "51-200" → `51-200`). A revenue or a
-  customer count is not size.
+- `size`: employees exactly as the source gives it: "600 employees" → `600`, "about 240 employees" → `~240`,
+  "51-200" → `51-200`. A `~` only where the source says about or approximately. A revenue or a customer count is not
+  size.
 - `what it does`: one plain line, at most 120 characters, in your words from the source: what it makes and for whom.
 - `hq`: city, region, country as the source gives them.
 
-No source states it, sources disagree with no way to tell which is newer, or the only source is about another company:
-the cell stays blank and goes in `left_blank` with the reason. A wrong value is worse than a blank one.
+Sources that disagree (headcounts often do): write the value whose result shows the newest date, as that result's
+text or `published` field gives it ("as of June 2026", "Updated: 10/6/2026"), never a date from memory, and put the
+date in the value: `~8,958 (June 2026)`. A result that shows no date can't win. When the newest can't be told apart,
+leave the cell blank.
+
+No source states it, or the only source is about another company: the cell stays blank and goes in `left_blank` with
+the reason. A wrong value is worse than a blank one.
 
 Sources column: when its cell is blank, write each filled column and its URL, `<header>: <url>`, joined by ` | `. When
 it has a value, leave it and give the sources in the answer only.

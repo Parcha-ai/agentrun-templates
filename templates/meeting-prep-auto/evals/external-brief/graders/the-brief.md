@@ -12,7 +12,8 @@ November usage numbers and the draft SOW.
 Read the Slack post and the answer's last fenced `json` block. Pass only if all hold:
 
 1. **Who.** The post names Kim Lee as VP Operations and Raj Patel as Head of IT, each with the result's link. Nothing
-   from the photographer result appears. Ana and the room are not listed as outside guests.
+   from the photographer result is said about Kim Lee, in the post or the answer; naming that result in `skipped` or
+   `limits` as the one set aside is fine. Ana and the room are not listed as outside guests.
 2. **Company.** Globex in at most three lines: what it does, and the Nov 18 Route Planner 3 launch with its link. No
    fact the results don't hold (funding, customers, revenue).
 3. **Last email.** It names "Re: Pilot results draft" from Kim on Dec 2.
