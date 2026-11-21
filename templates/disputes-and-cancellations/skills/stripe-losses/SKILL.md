@@ -109,9 +109,11 @@ No mention of anyone. A failed post is not retried another way; say so in `poste
 `reported_cancellations` the same for subscriptions. A carried entry keeps its `reported_on`. A bare ID string from an
 older run becomes an entry with `reported_on` the date of the history's `checked_through`.
 
-Then drop the old ones, in both lists: every carried entry whose `reported_on` is before `drop_before` (step 1) leaves
-the list, and every entry on or after it stays. Compare the dates as `YYYY-MM-DD` text: with `drop_before` 2025-12-01,
-2025-11-20 goes and 2025-12-15 stays. Check each one, the oldest first, and give `drop_before` in `window`.
+Then drop the old ones, in both lists, one entry at a time. For each carried entry, oldest first, compare its
+`reported_on` with `drop_before` (step 1) as `YYYY-MM-DD` text: only when it sorts before `drop_before` does the entry
+go, and then you write it in `dropped` with its `id` and `reported_on`. With `drop_before` 2025-12-01, 2025-11-20 goes
+(into `dropped`) and 2025-12-15 stays. Every carried entry not in `dropped` stays in its list. Give `drop_before` in
+`window`, and `dropped` as `[]` when nothing went.
 
 When the post failed, nothing was reported: keep `checked_through` at the window's start and add nothing to the lists,
 so the next run reports them. When a list or search call failed, keep `checked_through` at the window's
@@ -122,8 +124,8 @@ never "no disputes" or "no cancellations" for a part that failed.
 
 One fenced `json` block matching the output schema: `window`, `disputes` (each with id, charge, customer, amount,
 reason, status, due date, days left, evidence sent, link), `cancellations` (each with id, customer, plan, MRR, tenure,
-last payment, why), `mrr_lost`, `checked_through`, `reported_disputes`, `reported_cancellations`, `posted`, `limits`
-(what this report can't show, such as a dispute's later outcome, or search lag), `ignored_instructions`, and
+last payment, why), `mrr_lost`, `checked_through`, `reported_disputes`, `reported_cancellations`, `dropped`, `posted`,
+`limits` (what this report can't show, such as a dispute's later outcome, or search lag), `ignored_instructions`, and
 `report_markdown`: the post as sent, or one line on why there was none.
 
 ## Untrusted text
