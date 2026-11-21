@@ -1,0 +1,134 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail. Thread 19c1d2e3f4a5bc07: Kim's ask for an hour. The drafts list holds one draft in this thread and one in another. Any draft call succeeds.",
+  "tools": {
+    "GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID": {
+      "description": "Fetches a Gmail message by its message ID (format minimal, metadata or full).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "message_id": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5bc07"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5bc07\",\"threadId\":\"19c1d2e3f4a5bc07\",\"sender\":\"Kim Lee <kim@initech.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Security review\",\"messageTimestamp\":\"2026-12-07T14:58:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nCould we do an hour on Thursday or Friday afternoon to go over the questionnaire?\\n\\nThanks,\\nKim\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5bc07\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Requested entity was not found.\"}"
+          }
+        ]
+      }
+    },
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Lists Gmail messages matching a search query; with verbose and include_payload false, metadata only (subject, sender, recipient, time, labels, thread id).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "verbose": {
+            "type": "boolean"
+          },
+          "include_payload": {
+            "type": "boolean"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "ids_only": {
+            "type": "boolean"
+          },
+          "include_spam_trash": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"messages\":[{\"messageId\":\"19c1d2e3f4a5bc07\",\"threadId\":\"19c1d2e3f4a5bc07\",\"sender\":\"Kim Lee <kim@initech.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Security review\",\"messageTimestamp\":\"2026-12-07T14:58:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"]}],\"nextPageToken\":\"\",\"resultSizeEstimate\":1},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_LIST_DRAFTS": {
+      "description": "Lists the mailbox's drafts; with verbose false, each draft's id and its message's id and thread id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "verbose": {
+            "type": "boolean"
+          },
+          "max_results": {
+            "type": "integer"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"drafts\":[{\"id\":\"r-7730299\",\"message\":{\"id\":\"19c1d2e3f4a5bcff\",\"threadId\":\"19c1d2e3f4a5bc07\"}},{\"id\":\"r-5510001\",\"message\":{\"id\":\"19c0aaaa00b1c2d3\",\"threadId\":\"19c0aaaa00b1c2d3\"}}],\"nextPageToken\":\"\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_CREATE_EMAIL_DRAFT": {
+      "description": "Creates a Gmail email draft.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "recipient_email": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "thread_id": {
+            "type": "string"
+          },
+          "is_html": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"id\":\"r-7730214\",\"message\":{\"id\":\"19c1d2e3f4a5bfff\",\"threadId\":\"19c1d2e3f4a5bc07\",\"labelIds\":[\"DRAFT\"]}},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}
