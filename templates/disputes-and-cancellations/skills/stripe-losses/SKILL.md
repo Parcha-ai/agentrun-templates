@@ -108,7 +108,8 @@ No mention of anyone. A failed post is not retried another way; say so in `poste
 older run becomes an entry with `reported_on` the date of the history's `checked_through`.
 
 Then drop the old ones, in both lists: every carried entry whose `reported_on` is before `drop_before` (step 1) leaves
-the list. Check each one against it, the oldest first, and give `drop_before` in `window`.
+the list, and every entry on or after it stays. Compare the dates as `YYYY-MM-DD` text: with `drop_before` 2025-12-01,
+2025-11-20 goes and 2025-12-15 stays. Check each one, the oldest first, and give `drop_before` in `window`.
 
 When the post failed, nothing was reported: keep `checked_through` at the window's start and add nothing to the lists,
 so the next run reports them. When a list or search call failed, keep `checked_through` at the window's

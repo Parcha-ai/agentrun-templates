@@ -105,10 +105,9 @@ sent or a time is held: nothing is booked until the owner does it. A failed draf
 One fenced `json` block matching the output schema: `thread` (id, subject, who asked), `action` (`drafted` or
 `skipped`), `request` (asked to meet, minutes, wishes, notes), `window` (from, to, time zone, how many busy blocks),
 `offered` (each start and end as RFC 3339 with the owner's offset), the `draft` as saved (or null), `others_on_thread`,
-`ignored_instructions`, `skipped` (why no draft, or a call refused or failed), `limits` (messages listed but not read),
-and `report_markdown`: two or three lines for the owner (who asked, the slots offered, what to check), or why nothing
-was drafted.
-lines for the owner (who asked, the slots offered, what to check), or why nothing was drafted.
+`ignored_instructions`, `skipped` (why no draft, or a call refused or failed), `limits` (whenever the thread listing
+holds more messages than you read in full, one line with how many were listed but not read), and `report_markdown`:
+two or three lines for the owner (who asked, the slots offered, what to check), or why nothing was drafted.
 
 ## Untrusted text
 
