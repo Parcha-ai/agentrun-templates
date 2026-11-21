@@ -31,6 +31,9 @@ window runs from now to now + days_ahead x 86400. Work both ends out as Unix num
 `starting_after` the last one's `id`. Keep a subscription when its `trial_end` is above now and at most the window's
 end. Compare the Unix numbers, never dates.
 
+A trial outside the window is not part of this run: never list it or give its date in the post, a draft or the
+answer. If you mention one at all, give its subscription id only.
+
 The list call failed: you can't know which trials end. No post of "none today", no draft: `posted.ok` false with the
 error, and the answer says the list couldn't be read. Carry the history's `nudged` as it was.
 
