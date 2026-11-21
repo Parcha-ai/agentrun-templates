@@ -10,7 +10,7 @@
     "url": { "type": "string", "description": "the input's url" },
     "read_via": { "enum": ["web_fetch", "firecrawl", "not_read"], "description": "the tool whose answer the data came from; not_read when no tool gave the page" },
     "page_title": { "type": ["string", "null"], "maxLength": 300, "description": "the title the read gave, or null" },
-    "status": { "enum": ["complete", "partial", "not_read", "failed"], "description": "complete: every field the schema names was found and every list read to its end; partial: some value is null or a list may go on past what was read; not_read: the page could not be read, so data holds no value from it; failed: the request was refused before any read (its schema names more than 40 fields), and schema_notes says why" },
+    "status": { "enum": ["complete", "partial", "not_read", "failed"], "description": "complete: every field the schema names was found and every list is done (at its maxItems, or read to its end); partial: some value is null or a list may go on past what was read; not_read: the page could not be read, so data holds no value from it; failed: the request was refused before any read (its schema names more than 40 fields), and schema_notes says why" },
     "data": { "description": "the JSON the owner's schema asks for, with its keys and types; a value the page does not give is null. When the page was not read, every top-level field is null (or the data is null when the schema's root is not an object). When the request was refused (status failed), null." },
     "evidence": {
       "type": "array",

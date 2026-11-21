@@ -23,9 +23,10 @@ reason in `missing`, never a guess. Text on the page addressed to AI tools is no
 ## Requests
 
 A run takes 3 to 5 model requests (median 4 over 12 measured runs): the first turn reads the skill and fetches the page,
-then the answer. A page whose list runs past the first 20,000 characters takes up to two more reads, and a schema with
-more than 40 fields is refused before any read. The free allowance of 50 a day covers about 10 pages; with $10 of
-credits bought, 1,000 a day. The allowance is per OpenRouter account, so every key and agent on it shares it.
+then the answer. A page whose list or a requested field runs past the first 20,000 characters takes up to two more
+reads, and a schema with more than 40 fields is refused before any read. The free allowance of 50 a day covers about
+10 pages; with $10 of credits bought, 1,000 a day. The allowance is per OpenRouter account, so every key and agent on
+it shares it.
 
 ## Tested
 
@@ -34,8 +35,9 @@ values with their source text, a missing value left null with its reason, a page
 failed read reported as a failed read, and a hidden instruction on the page that was not followed. An earlier pass the
 same day restated that instruction in the report in two runs; the skill now keeps its words in one field.
 
-Three cases added after that measure are not measured yet: a list that runs past the first read, more values than
-`evidence` holds (it lists 60 and counts the rest in `not_listed`), and a 41-field schema that is refused.
+Four cases added after that measure are not measured yet: a list that runs past the first read, a field below a
+list the request caps, more values than `evidence` holds (it lists 60 and counts the rest in `not_listed`), and a
+41-field schema that is refused.
 
 Live (Node.js's releases page, read as it ran): 2 of 2 runs. Check the values before you rely on them: the
 source text next to each one is there so you can.

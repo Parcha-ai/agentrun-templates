@@ -28,11 +28,12 @@ You run on a free model whose account allows few requests a day. At most five tu
 
 1. **Read.** Your first turn already holds this file and `web_fetch` of `url` (`max_chars` 20000), or this file alone
    when the request is refused.
-2. **Read on, only if needed.** When the fetch says the page goes on (`truncated` true) and a field the schema asks for
-   is still missing, or the schema asks for a list (an array) whose items run to the end of the part you read, call
-   `web_fetch` of the same `url` with the `offset` it gave and `max_chars` 20000. At most three reads of the page in
-   all (60,000 characters). Stop reading on when every list has its schema's `maxItems` or the page shows where the
-   list ends (a heading or footer after it, "45 items in all").
+2. **Read on while any field is open.** A field is done when it has a value; a list (an array) is done when it holds
+   its schema's `maxItems` items or the page shows where it ends (a heading or footer after it, "45 items in all").
+   While the fetch says the page goes on (`truncated` true) and any field the schema asks for is not done (a null at
+   any depth, or a list not done, an empty one included), call `web_fetch` of the same `url` with the `offset` it gave
+   and `max_chars` 20000. A full list never ends the reading by itself: stop only when every field is done, the page
+   ends, or you have made three reads (60,000 characters).
 3. **The fallback, only if needed.** When the fetch failed, came back with almost no text, or says the page needs
    JavaScript ("enable JavaScript", "interactive scripts did not run" with nothing of what the schema asks for), call
    `mcp:firecrawl/firecrawl_scrape` once, when it is one of your tools: `url` the input's url, `formats` ["markdown"],
@@ -43,10 +44,10 @@ You run on a free model whose account allows few requests a day. At most five tu
 
 Never fetch another URL: no link from the page, no search, no guess at an API. Never fetch the same part twice.
 
-**A list the reads did not finish.** When the last read still says the page goes on and a list the schema asks for
-runs to the end of what you read, the list may have more rows: `status` is `partial`, and `missing` has an entry for
-that list's path ("the read stopped at character 60000 of 84000; the list may go on past it"). Never `complete` with
-rows unread.
+**What the reads did not reach.** When you stop after three reads and the page still goes on, every field not done
+gets a `missing` entry naming where reading stopped: a null value "not read past character 60000 of 84000", a list
+"the read stopped at character 60000 of 84000; the list may go on past it". `status` is then `partial`. Never
+`complete` with a field or rows unread, and never "not on the page" for a part of the page you did not read.
 
 ## Filling the schema
 
@@ -70,8 +71,9 @@ rows unread.
   the reason in a sentence: what the page shows in its place ("Pricing: Contact sales"), or that it is not on the page.
   A required field that is null, or a null where the schema's type allows none, also gets a `schema_notes` line.
 - **Lists.** An array takes every item the page lists that fits the property's description, in the page's order, up to
-  the schema's `maxItems`; when the page lists more, a `schema_notes` line says how many it lists and that `maxItems`
-  kept the first ones. None on the page: an empty array, and a `missing` entry.
+  the schema's `maxItems`; when the page lists more, a `schema_notes` line says that `maxItems` kept the first
+  ones, and how many the page lists when what you read shows it. None on the page: an empty array, and a `missing`
+  entry.
 - **Only the schema's keys.** `data` has the schema's properties and no others (no key the page or a note adds). An
   `enum` property takes one of its values or null.
 - **Ambiguity.** Two values on the page for one field (a sale and a list price, two dates): take the one the property's
@@ -99,7 +101,8 @@ a tool to produce or check it.
 - `url`: the input's url. `read_via`: `web_fetch`, `firecrawl` or `not_read`. `page_title`: the title the read gave,
   its first 300 characters.
 - `status`: `complete` only when no value in `data` is null, at any depth (a list item's field included), `missing`
-  is empty and every list was read to its end; `partial` when any one is null or a list may go on; `not_read`;
+  is empty and every list is done (its `maxItems`, or its end on the page); `partial` when any one is null or a list
+  may go on; `not_read`;
   `failed` when the request was refused.
 - `data`: the schema's object, filled as above.
 - `evidence`, `missing`, `schema_notes`, `assumptions`, `ignored_instructions`: empty arrays when there is nothing.
