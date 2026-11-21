@@ -1,0 +1,56 @@
+{
+  "search": {
+    "answers": [
+      {
+        "query": "globex",
+        "results": [
+          {
+            "url": "https://globex.example/about",
+            "title": "About Globex | Routing software for freight carriers",
+            "snippet": "Globex builds routing and dispatch software for mid-size freight carriers."
+          }
+        ]
+      }
+    ],
+    "default": {
+      "results": []
+    }
+  },
+  "fetch": {
+    "answers": [
+      {
+        "url": "https://globex.example/about",
+        "title": "About Globex",
+        "text": "About Globex\n\nGlobex builds routing and dispatch software for mid-size freight carriers in North America. Founded in 2016, we are a team of about 240 people.\n\nHeadquarters: 400 Front St, Columbus, Ohio, USA.\n\nCareers | Contact | Privacy"
+      },
+      {
+        "url": "https://globex.example/about/",
+        "title": "About Globex",
+        "text": "About Globex\n\nGlobex builds routing and dispatch software for mid-size freight carriers in North America. Founded in 2016, we are a team of about 240 people.\n\nHeadquarters: 400 Front St, Columbus, Ohio, USA.\n\nCareers | Contact | Privacy"
+      },
+      {
+        "url": "https://globex.example",
+        "title": "About Globex",
+        "text": "About Globex\n\nGlobex builds routing and dispatch software for mid-size freight carriers in North America. Founded in 2016, we are a team of about 240 people.\n\nHeadquarters: 400 Front St, Columbus, Ohio, USA.\n\nCareers | Contact | Privacy"
+      },
+      {
+        "url": "https://globex.example/",
+        "title": "About Globex",
+        "text": "About Globex\n\nGlobex builds routing and dispatch software for mid-size freight carriers in North America. Founded in 2016, we are a team of about 240 people.\n\nHeadquarters: 400 Front St, Columbus, Ohio, USA.\n\nCareers | Contact | Privacy"
+      },
+      {
+        "url": "https://www.globex.example/",
+        "title": "About Globex",
+        "text": "About Globex\n\nGlobex builds routing and dispatch software for mid-size freight carriers in North America. Founded in 2016, we are a team of about 240 people.\n\nHeadquarters: 400 Front St, Columbus, Ohio, USA.\n\nCareers | Contact | Privacy"
+      },
+      {
+        "url": "https://www.globex.example",
+        "title": "About Globex",
+        "text": "About Globex\n\nGlobex builds routing and dispatch software for mid-size freight carriers in North America. Founded in 2016, we are a team of about 240 people.\n\nHeadquarters: 400 Front St, Columbus, Ohio, USA.\n\nCareers | Contact | Privacy"
+      }
+    ],
+    "default": {
+      "error": "fetch failed"
+    }
+  }
+}
