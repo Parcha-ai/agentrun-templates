@@ -1,0 +1,193 @@
+{
+  "status": "saved",
+  "url": "https://www.python.org/downloads/release/python-3130/",
+  "page_read": true,
+  "product_name": "Python 3.13.0",
+  "tone": "playful",
+  "length_s": 30,
+  "voice": "Aria",
+  "video_model": "fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
+  "script": "[playfully] Meet Python three point thirteen. [pauses] It packs many new features and optimizations over Python three point twelve. It brings a new interactive interpreter, with multi-line editing and color. Tracebacks are colorized too. Try the experimental free-threaded build, which lets threads run more concurrently, or the preliminary JIT. Read what's new in its guide. Get the installers for Windows, macOS, and source code at python dot org.",
+  "word_count": 67,
+  "shots": [
+    {
+      "n": 1,
+      "prompt": "A glowing paper lantern drifts slowly down a moss-covered stone path at dawn, soft mist, golden light, slow push-in, playful mood, cinematic, 16:9.",
+      "saved_path": "media/clip-1.mp4"
+    },
+    {
+      "n": 2,
+      "prompt": "A row of clear glass jars on a weathered wooden shelf, one lid lifting as bright sparks drift upward, warm morning light, slow dolly along the shelf, playful mood, cinematic, 16:9.",
+      "saved_path": "media/clip-2.mp4"
+    },
+    {
+      "n": 3,
+      "prompt": "Bright coral and teal paint splashes bloom in slow motion across a sheet of white paper on a sunlit desk, shallow depth of field, macro camera drifting sideways, playful mood, cinematic, 16:9.",
+      "saved_path": "media/clip-3.mp4"
+    },
+    {
+      "n": 4,
+      "prompt": "A dozen small wooden paper boats drift side by side down a sunlit stream over smooth pebbles, gentle ripples, camera tracking alongside at water level, playful mood, cinematic, 16:9.",
+      "saved_path": "media/clip-4.mp4"
+    },
+    {
+      "n": 5,
+      "prompt": "A hot air balloon rises slowly over misty green hills at sunrise, soft clouds drifting past, drone glide upward, warm light, playful mood, cinematic, 16:9.",
+      "saved_path": "media/clip-5.mp4"
+    },
+    {
+      "n": 6,
+      "prompt": "A wooden door swings open onto a sunlit meadow of wildflowers, butterflies floating in warm light, slow push-in toward the open doorway, playful mood, cinematic, 16:9.",
+      "saved_path": "media/clip-6.mp4"
+    }
+  ],
+  "music_prompt": "Soft, sparse, low-key instrumental bed with gentle plucked marimba and light pizzicato strings, playful and steady, around 100 BPM, no vocals, no big drops or builds.",
+  "plans": [
+    {
+      "video_model": "fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
+      "clips": 6,
+      "clip_seconds": 5,
+      "estimated_usd": 2.451
+    },
+    {
+      "video_model": "fal-ai/minimax/hailuo-02/standard/text-to-video",
+      "clips": 5,
+      "clip_seconds": 6,
+      "estimated_usd": 1.701
+    }
+  ],
+  "cheaper_plan": null,
+  "fal_cost_usd": {
+    "steps": [
+      {
+        "step": "clip-1",
+        "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
+        "units": 5,
+        "unit": "seconds",
+        "rate_usd": 0.07,
+        "usd": 0.35
+      },
+      {
+        "step": "clip-2",
+        "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
+        "units": 5,
+        "unit": "seconds",
+        "rate_usd": 0.07,
+        "usd": 0.35
+      },
+      {
+        "step": "clip-3",
+        "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
+        "units": 5,
+        "unit": "seconds",
+        "rate_usd": 0.07,
+        "usd": 0.35
+      },
+      {
+        "step": "clip-4",
+        "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
+        "units": 5,
+        "unit": "seconds",
+        "rate_usd": 0.07,
+        "usd": 0.35
+      },
+      {
+        "step": "clip-5",
+        "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
+        "units": 5,
+        "unit": "seconds",
+        "rate_usd": 0.07,
+        "usd": 0.35
+      },
+      {
+        "step": "clip-6",
+        "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
+        "units": 5,
+        "unit": "seconds",
+        "rate_usd": 0.07,
+        "usd": 0.35
+      },
+      {
+        "step": "voiceover",
+        "endpoint_id": "fal-ai/elevenlabs/tts/eleven-v3",
+        "units": 0.449,
+        "unit": "1000 characters",
+        "rate_usd": 0.1,
+        "usd": 0.045
+      },
+      {
+        "step": "music",
+        "endpoint_id": "fal-ai/elevenlabs/music",
+        "units": 0.5,
+        "unit": "minutes",
+        "rate_usd": 0.6,
+        "usd": 0.3
+      },
+      {
+        "step": "cut",
+        "endpoint_id": "fal-ai/ffmpeg-api/compose",
+        "units": 30,
+        "unit": "seconds",
+        "rate_usd": 0.0002,
+        "usd": 0.006
+      }
+    ],
+    "total": 2.451
+  },
+  "files": [
+    {
+      "what": "clip-1",
+      "saved_path": "media/clip-1.mp4",
+      "fal_url": "https://v3b.fal.media/files/b/0ab346a5/zUUScHcaAqRLX2PbZuOKo_output.mp4"
+    },
+    {
+      "what": "clip-2",
+      "saved_path": "media/clip-2.mp4",
+      "fal_url": "https://v3b.fal.media/files/b/0ab346a4/8XW0z43I2_6mOmDJLsw33_output.mp4"
+    },
+    {
+      "what": "clip-3",
+      "saved_path": "media/clip-3.mp4",
+      "fal_url": "https://v3b.fal.media/files/b/0ab346a7/CxtURr1Fuq8ueSVm5vYsM_output.mp4"
+    },
+    {
+      "what": "clip-4",
+      "saved_path": "media/clip-4.mp4",
+      "fal_url": "https://v3b.fal.media/files/b/0ab346a7/pdEkOhwFnUEggdNjaHdlP_output.mp4"
+    },
+    {
+      "what": "clip-5",
+      "saved_path": "media/clip-5.mp4",
+      "fal_url": "https://v3b.fal.media/files/b/0ab346a8/GU37QhGwRa3wguS9FL3dd_output.mp4"
+    },
+    {
+      "what": "clip-6",
+      "saved_path": "media/clip-6.mp4",
+      "fal_url": "https://v3b.fal.media/files/b/0ab346a4/A5a7rRu3SmCVoZINc0VT5_output.mp4"
+    },
+    {
+      "what": "voiceover",
+      "saved_path": "media/voiceover.mp3",
+      "fal_url": "https://v3b.fal.media/files/b/0ab34672/CTsD1uzQoGSVYSh4Z-v4Y_output.mp3"
+    },
+    {
+      "what": "music",
+      "saved_path": "media/music.mp3",
+      "fal_url": "https://v3b.fal.media/files/b/0ab34672/D80Akda4VzfjTJzHEGcal_music_generated.mp3"
+    },
+    {
+      "what": "launch",
+      "saved_path": "media/launch.mp4",
+      "fal_url": "https://v3b.fal.media/files/b/0ab346ad/TskWC-ZsQlhAMNdzGn8qf_output.mp4"
+    },
+    {
+      "what": "captions",
+      "saved_path": "media/launch.vtt",
+      "fal_url": null
+    }
+  ],
+  "failed_step": null,
+  "error": null,
+  "ignored_instructions": [],
+  "report_markdown": "![Launch video](media/launch.mp4)\n\n**Script (Aria, playful, 67 words):** Meet Python three point thirteen. It packs many new features and optimizations over Python three point twelve. It brings a new interactive interpreter, with multi-line editing and color. Tracebacks are colorized too. Try the experimental free-threaded build, which lets threads run more concurrently, or the preliminary JIT. Read what's new in its guide. Get the installers for Windows, macOS, and source code at python dot org.\n\n**Shots (Kling, 5 s each):** 1 lantern on a mossy stone path at dawn; 2 glass jars on a shelf with sparks; 3 coral and teal paint splashes on paper; 4 paper boats down a sunlit stream; 5 hot air balloon over misty hills; 6 a door opening onto a wildflower meadow. No people, logos or text.\n\n**Cost (estimates from fal's rates, not the invoice):**\n| step | units | rate | USD |\n|---|---|---|---|\n| clips 1–6 (Kling) | 5 s each, 30 s | $0.07/s | $2.100 |\n| voiceover (eleven-v3) | 449 chars | $0.10/1000 | $0.045 |\n| music (ElevenLabs) | 0.5 min | $0.60/min | $0.300 |\n| cut (compose) | 30 s | $0.0002/s | $0.006 |\n| **total** | | | **$2.451** |\n\nThe Hailuo plan would have cost about $1.701, but the Kling plan fit the $4 budget, so it was used.\n\n**Mix:** the music bed is asked for soft and steady, and compose can't duck it, so it plays under the voiceover at its own level. Captions are in `media/launch.vtt`; their timings come from the word-count formula and are approximate. The page says 3.13.0 is superseded by 3.13.18, so the video doesn't call it the latest release. No step failed."
+}

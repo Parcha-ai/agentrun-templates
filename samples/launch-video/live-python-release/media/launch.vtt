@@ -1,0 +1,28 @@
+WEBVTT
+
+00:00:00.500 --> 00:00:02.500
+Meet Python three point thirteen.
+
+00:00:02.500 --> 00:00:07.300
+It packs many new features and optimizations over Python three point twelve.
+
+00:00:07.300 --> 00:00:11.700
+It brings a new interactive interpreter, with multi-line editing and color.
+
+00:00:11.700 --> 00:00:13.300
+Tracebacks are colorized too.
+
+00:00:13.300 --> 00:00:17.700
+Try the experimental free-threaded build, which lets threads run more concurrently,
+
+00:00:17.700 --> 00:00:19.300
+or the preliminary JIT.
+
+00:00:19.300 --> 00:00:21.700
+Read what's new in its guide.
+
+00:00:21.700 --> 00:00:23.700
+Get the installers for Windows,
+
+00:00:23.700 --> 00:00:26.900
+macOS, and source code at python dot org.
