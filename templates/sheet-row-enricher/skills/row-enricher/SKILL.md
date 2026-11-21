@@ -5,8 +5,8 @@ description: Fill the blank cells of one new Google Sheets row with facts about 
 
 # Row enricher
 
-One run: read the header and the row, decide which cells to fill, look the company up, write once, answer with the
-JSON in step 6.
+One run: read the header and the row, decide which cells to fill, look the company up, read the row again, write once,
+answer with the JSON in step 6.
 
 Composio's tools answer `{"data": ..., "successful": ..., "error": ...}`: read `data`, treat `successful: false` as a
 failed call. A call outside your pins is refused: that is the gate, not a reason to try another way.
@@ -75,6 +75,14 @@ it has a value, leave it and give the sources in the answer only.
 
 ## 5. Write, once
 
+A person may edit the row while you look it up. Just before writing, read the row again: one `GOOGLESHEETS_VALUES_GET`
+with `range` `'<tab>'!A<row>:Z<row>`.
+- The company cell now says something else: write nothing, `action` `skipped`, and say in `skipped` and the report that
+  row <n>'s company changed from <old> to <new> during the run. Don't look the new one up.
+- A cell you meant to fill now has a value: drop it from the write and put it in `already_filled`. Leave its source
+  out of the sources cell, and drop the sources cell too when it now has a value.
+- The re-read failed: write nothing, and say the row couldn't be checked before writing.
+
 Nothing to write: no call. Otherwise one `GOOGLESHEETS_UPDATE_VALUES_BATCH` with `spreadsheet_id` the Spreadsheet
 setting, `valueInputOption` `RAW`, and `data` one entry per cell: `{"range": "'<tab>'!<column letter><row>",
 "values": [["<value>"]]}`. Only blank cells of this row, from the listed columns and the sources column. Never the
@@ -84,7 +92,8 @@ header, another row, a filled cell or a cell outside those columns. A value is p
 ## 6. Answer
 
 One fenced `json` block matching the output schema: `row` (tab, number, company), `action` (`filled`; `nothing_found`
-when the lookups answered and nothing could be sourced; `lookup_failed` when they errored; `skipped`), `filled` (each column, cell, value, source), `left_blank` (each column, cell, why), `already_filled`,
+when the lookups answered and nothing could be sourced; `lookup_failed` when they errored; `skipped`), `filled` (each
+column, cell, value, source), `left_blank` (each column, cell, why), `already_filled`,
 `write` (ok, ranges), `searches`, `ignored_instructions`, `skipped`, `limits` (a search or fetch that failed), and
 `report_markdown`: two or three lines for the owner (what was filled, from where, what stayed blank and why).
 
