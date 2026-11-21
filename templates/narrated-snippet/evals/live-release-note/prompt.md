@@ -1,0 +1,14 @@
+---
+description: 'Live fal: the Fernlight 4.2 release notes voiced on the real ElevenLabs v3. One paid call with the chosen voice, a script written for the ear with every fact kept and the numbers spelled out, saved as media/voiceover.mp3 from the URL fal answered. Pass 1 of 1.'
+runs: 1
+max_cost_usd: 0.15
+input:
+  text: |
+    ## What's new in Fernlight 4.2
+    - Exports are faster: a 50,000-row report now takes 9 seconds instead of 58.
+    - Scheduled exports (beta): pick a day and time in Settings > Reports and the CSV is emailed to you.
+    - Fixed: the date filter no longer resets when you switch tabs.
+  tone: upbeat
+  voice: Aria
+---
+Turn this into a voiceover.
