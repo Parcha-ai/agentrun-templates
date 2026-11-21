@@ -97,7 +97,8 @@ If none suits, send me a couple of times that do.
 <sign-off>
 ```
 
-Short and in the owner's register. No line about who else is busy or what fills the calendar. Never say an invite is
+Short and in the owner's register. The draft says nothing about the calendar beyond the slots offered: no line about
+what else is open, who else is busy or what fills the calendar. Never say an invite is
 sent or a time is held: nothing is booked until the owner does it. A failed draft is not retried another way.
 
 ## 6. Answer
