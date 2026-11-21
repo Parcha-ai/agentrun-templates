@@ -920,22 +920,6 @@
       "summary": "Turns a product or release page into a 30 or 45 second launch video with voiceover, music and captions. Billed to your fal account."
     },
     {
-      "name": "explainer-video",
-      "source": "./templates/explainer-video",
-      "category": "marketing",
-      "tags": [
-        "video",
-        "avatar",
-        "explainer",
-        "voiceover",
-        "captions",
-        "fal",
-        "elevenlabs",
-        "media"
-      ],
-      "summary": "Turns a doc into a 30 to 60 second explainer read by a made-up presenter, with captions, made on fal. Billed to your fal account."
-    },
-    {
       "name": "brand-kit",
       "source": "./templates/brand-kit",
       "category": "marketing",
