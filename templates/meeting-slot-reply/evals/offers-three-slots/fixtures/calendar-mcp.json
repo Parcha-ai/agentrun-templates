@@ -1,0 +1,41 @@
+{
+  "server": "googlecalendar",
+  "description": "A fake Composio Google Calendar free/busy for the primary calendar, Mon Dec 7 to Mon Dec 14 2026, in Eastern time (EST, -05:00). Busy: Mon 7 13-14; Tue 8 9-12 and 12:30-17; Wed 9 9-17; Thu 10 10-11:30 and 14-15; Fri 11 9-16:30; Mon 14 13-14. The answer is the same whatever the arguments.",
+  "tools": {
+    "GOOGLECALENDAR_FREE_BUSY_QUERY": {
+      "description": "Returns busy intervals for calendars between timeMin and timeMax (items: calendars by id).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array"
+          },
+          "timeMin": {
+            "type": "string"
+          },
+          "timeMax": {
+            "type": "string"
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "groupExpansionMax": {
+            "type": "integer"
+          },
+          "calendarExpansionMax": {
+            "type": "integer"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"kind\":\"calendar#freeBusy\",\"timeMin\":\"2026-12-08T05:00:00.000Z\",\"timeMax\":\"2026-12-15T05:00:00.000Z\",\"calendars\":{\"primary\":{\"busy\":[{\"start\":\"2026-12-07T13:00:00-05:00\",\"end\":\"2026-12-07T14:00:00-05:00\"},{\"start\":\"2026-12-08T09:00:00-05:00\",\"end\":\"2026-12-08T12:00:00-05:00\"},{\"start\":\"2026-12-08T12:30:00-05:00\",\"end\":\"2026-12-08T17:00:00-05:00\"},{\"start\":\"2026-12-09T09:00:00-05:00\",\"end\":\"2026-12-09T17:00:00-05:00\"},{\"start\":\"2026-12-10T10:00:00-05:00\",\"end\":\"2026-12-10T11:30:00-05:00\"},{\"start\":\"2026-12-10T14:00:00-05:00\",\"end\":\"2026-12-10T15:00:00-05:00\"},{\"start\":\"2026-12-11T09:00:00-05:00\",\"end\":\"2026-12-11T16:30:00-05:00\"},{\"start\":\"2026-12-14T13:00:00-05:00\",\"end\":\"2026-12-14T14:00:00-05:00\"}]}}},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

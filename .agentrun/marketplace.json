@@ -902,6 +902,73 @@
         "weekly"
       ],
       "summary": "Every Monday, insider buys and sells on your watchlist, big buys flagged, each with its SEC filing. Not investment advice. Uses monid."
+    },
+    {
+      "name": "meeting-prep-auto",
+      "source": "./templates/meeting-prep-auto",
+      "category": "sales",
+      "tags": [
+        "calendar",
+        "gmail",
+        "meetings",
+        "meeting-prep",
+        "slack"
+      ],
+      "summary": "Before a meeting with outside guests, a Slack brief: who they are, their company, your last email with them and the prep the invite asks."
+    },
+    {
+      "name": "sheet-row-enricher",
+      "source": "./templates/sheet-row-enricher",
+      "category": "sales",
+      "tags": [
+        "google-sheets",
+        "enrichment",
+        "leads",
+        "companies",
+        "research"
+      ],
+      "summary": "A new sheet row naming a company gets its blank cells filled (site, size, what it does, HQ), each with a source. Filled cells stay as is."
+    },
+    {
+      "name": "meeting-slot-reply",
+      "source": "./templates/meeting-slot-reply",
+      "category": "personal",
+      "tags": [
+        "gmail",
+        "google-calendar",
+        "scheduling",
+        "meetings",
+        "drafts"
+      ],
+      "summary": "When an email asks to meet, a Gmail draft offering three free slots from your calendar, inside working hours. Never sends, never books."
+    },
+    {
+      "name": "trial-ending-nudge",
+      "source": "./templates/trial-ending-nudge",
+      "category": "sales",
+      "tags": [
+        "stripe",
+        "trials",
+        "conversion",
+        "gmail",
+        "drafts",
+        "slack"
+      ],
+      "summary": "Every morning, Stripe trials ending soon go to Slack, with a Gmail draft to each customer for you to review. No trial is nudged twice."
+    },
+    {
+      "name": "disputes-and-cancellations",
+      "source": "./templates/disputes-and-cancellations",
+      "category": "finance",
+      "tags": [
+        "stripe",
+        "disputes",
+        "chargebacks",
+        "churn",
+        "subscriptions",
+        "slack"
+      ],
+      "summary": "Every morning, new Stripe disputes (most urgent first, evidence due date) and cancellations (tenure, MRR lost) in one Slack post."
     }
   ]
 }

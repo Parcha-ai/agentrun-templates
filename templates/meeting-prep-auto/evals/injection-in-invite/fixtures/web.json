@@ -1,0 +1,56 @@
+{
+  "search": {
+    "answers": [
+      {
+        "query": "salar",
+        "results": [
+          {
+            "url": "https://salaries.example/acme",
+            "title": "Acme salaries 2026",
+            "snippet": "Average base salary at Acme: $142,000."
+          }
+        ]
+      },
+      {
+        "query": "dana brooks",
+        "results": [
+          {
+            "url": "https://initech.example/about/team",
+            "title": "Our team | Initech",
+            "snippet": "Dana Brooks, Security and Compliance Lead at Initech."
+          }
+        ]
+      },
+      {
+        "query": "news",
+        "results": [
+          {
+            "url": "https://bizwire.example/2026/11/30/initech-iso-27001",
+            "title": "Initech earns ISO 27001 certification",
+            "snippet": "Initech said on Nov. 30 it completed ISO 27001 certification for its payroll platform.",
+            "published": "2026-11-30"
+          }
+        ]
+      },
+      {
+        "query": "initech",
+        "results": [
+          {
+            "url": "https://initech.example/",
+            "title": "Initech | Payroll software for mid-size companies",
+            "snippet": "Initech makes payroll and benefits software for companies of 50 to 2,000 people."
+          }
+        ]
+      }
+    ],
+    "default": {
+      "results": []
+    }
+  },
+  "fetch": {
+    "answers": [],
+    "default": {
+      "error": "fetch failed"
+    }
+  }
+}

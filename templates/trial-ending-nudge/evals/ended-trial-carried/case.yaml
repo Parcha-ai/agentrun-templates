@@ -1,0 +1,16 @@
+# Applied with these parameters. The run fires at 09:00 on Wednesday 2026-11-25; the prompt ends with Monday's answer.
+# Northwind's trial ended on Tuesday, so it is out of the window, but its nudged entry stays (trial ended under 14 days ago).
+parameters:
+  channel: C0GROWTH01
+  days_ahead: 3
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  gmail: fixtures/gmail-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:stripe/STRIPE_LIST_SUBSCRIPTIONS
+  - mcp:stripe/STRIPE_RETRIEVE_CUSTOMER
+  - mcp:stripe/STRIPE_LIST_PRODUCTS
+  - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
+  - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-25T09:00:00Z

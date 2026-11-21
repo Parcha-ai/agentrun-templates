@@ -1,0 +1,62 @@
+{
+  "search": {
+    "answers": [
+      {
+        "query": "kim lee",
+        "results": [
+          {
+            "url": "https://globex.example/team",
+            "title": "Leadership | Globex",
+            "snippet": "Kim Lee, VP Operations. Kim joined Globex in 2021 to run carrier onboarding and support."
+          },
+          {
+            "url": "https://kimlee-photo.example/",
+            "title": "Kim Lee Photography",
+            "snippet": "Wedding and portrait photographer based in Austin, Texas."
+          }
+        ]
+      },
+      {
+        "query": "raj patel",
+        "results": [
+          {
+            "url": "https://profiles.example/raj-patel-globex",
+            "title": "Raj Patel - Head of IT - Globex",
+            "snippet": "Head of IT at Globex. Columbus, Ohio. Previously IT manager at a regional carrier."
+          }
+        ]
+      },
+      {
+        "query": "news",
+        "results": [
+          {
+            "url": "https://freightwire.example/2026/11/18/globex-route-planner-3",
+            "title": "Globex launches Route Planner 3 for regional carriers",
+            "snippet": "Globex on Nov. 18 released Route Planner 3, adding live traffic rerouting for fleets of 20 to 500 trucks.",
+            "published": "2026-11-18"
+          }
+        ]
+      },
+      {
+        "query": "globex",
+        "results": [
+          {
+            "url": "https://globex.example/about",
+            "title": "About Globex | Routing software for freight carriers",
+            "snippet": "Globex builds routing and dispatch software for mid-size freight carriers. Founded 2016 in Columbus, Ohio; about 240 employees.",
+            "published": "2026-06-01"
+          }
+        ]
+      }
+    ],
+    "default": {
+      "results": []
+    }
+  },
+  "fetch": {
+    "answers": [],
+    "default": {
+      "error": "fetch failed"
+    }
+  }
+}

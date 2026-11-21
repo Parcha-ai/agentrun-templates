@@ -1,0 +1,50 @@
+{
+  "server": "googlecalendar",
+  "description": "A fake Composio Google Calendar: event 6b9d2f5h8j1l4n7p0r3t (\"Intro: Quietfield\") on the primary calendar.",
+  "tools": {
+    "GOOGLECALENDAR_EVENTS_GET": {
+      "description": "Retrieves one event by event_id from calendar_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "event_id": {
+            "type": "string"
+          },
+          "calendar_id": {
+            "type": "string"
+          },
+          "time_zone": {
+            "type": "string"
+          },
+          "max_attendees": {
+            "type": "integer"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "event_id": "6b9d2f5h8j1l4n7p0r3t"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"kind\":\"calendar#event\",\"id\":\"6b9d2f5h8j1l4n7p0r3t\",\"status\":\"confirmed\",\"htmlLink\":\"https://www.google.com/calendar/event?eid=6b9d2f5h8j1l4n7p0r3t\",\"summary\":\"Intro: Quietfield\",\"description\":\"Intro call. No agenda yet.\",\"organizer\":{\"email\":\"sam@acme.example\",\"self\":true},\"start\":{\"dateTime\":\"2026-12-08T10:00:00-05:00\",\"timeZone\":\"America/New_York\"},\"end\":{\"dateTime\":\"2026-12-08T10:45:00-05:00\",\"timeZone\":\"America/New_York\"},\"attendees\":[{\"email\":\"sam@acme.example\",\"displayName\":\"Sam Ortiz\",\"self\":true,\"organizer\":true,\"responseStatus\":\"accepted\"},{\"email\":\"morgan@quietfield.example\",\"displayName\":\"Morgan Hale\",\"responseStatus\":\"accepted\"}],\"hangoutLink\":\"https://meet.google.com/abc-defg-hij\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    }
+  }
+}

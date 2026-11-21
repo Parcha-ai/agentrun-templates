@@ -1,0 +1,150 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail. Thread 19c1d2e3f4a5bb06: Dana's ask for 30 minutes (15:05 UTC, the event's message) and her follow-up at 15:08 preferring Thursday afternoon. No drafts. Any draft call succeeds.",
+  "tools": {
+    "GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID": {
+      "description": "Fetches a Gmail message by its message ID (format minimal, metadata or full).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "message_id": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5bb06"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5bb06\",\"threadId\":\"19c1d2e3f4a5bb06\",\"sender\":\"Dana Reyes <dana@globex.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Rollout walkthrough\",\"messageTimestamp\":\"2026-12-07T15:05:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nCould we find 30 minutes next week to walk through the rollout plan with my team?\\n\\nDana\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5bb06\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5bb2a"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5bb2a\",\"threadId\":\"19c1d2e3f4a5bb06\",\"sender\":\"Dana Reyes <dana@globex.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Rollout walkthrough\",\"messageTimestamp\":\"2026-12-07T15:08:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"],\"messageText\":\"One more thing: Thursday afternoon would be ideal if you have it.\\n\\nDana\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5bb2a\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Requested entity was not found.\"}"
+          }
+        ]
+      }
+    },
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Lists Gmail messages matching a search query; with verbose and include_payload false, metadata only (subject, sender, recipient, time, labels, thread id).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "verbose": {
+            "type": "boolean"
+          },
+          "include_payload": {
+            "type": "boolean"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "ids_only": {
+            "type": "boolean"
+          },
+          "include_spam_trash": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"messages\":[{\"messageId\":\"19c1d2e3f4a5bb2a\",\"threadId\":\"19c1d2e3f4a5bb06\",\"sender\":\"Dana Reyes <dana@globex.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Rollout walkthrough\",\"messageTimestamp\":\"2026-12-07T15:08:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5bb06\",\"threadId\":\"19c1d2e3f4a5bb06\",\"sender\":\"Dana Reyes <dana@globex.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Rollout walkthrough\",\"messageTimestamp\":\"2026-12-07T15:05:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]}],\"nextPageToken\":\"\",\"resultSizeEstimate\":2},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_LIST_DRAFTS": {
+      "description": "Lists the mailbox's drafts, one page at a time; with verbose false, each draft's id and its message's id and thread id, and next_page_token while more pages remain.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "verbose": {
+            "type": "boolean"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"drafts\":[],\"next_page_token\":\"\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_CREATE_EMAIL_DRAFT": {
+      "description": "Creates a Gmail email draft.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "recipient_email": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "thread_id": {
+            "type": "string"
+          },
+          "is_html": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"id\":\"r-7730214\",\"message\":{\"id\":\"19c1d2e3f4a5bfff\",\"threadId\":\"19c1d2e3f4a5bb06\",\"labelIds\":[\"DRAFT\"]}},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

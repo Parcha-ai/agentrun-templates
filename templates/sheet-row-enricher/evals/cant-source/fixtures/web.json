@@ -1,0 +1,61 @@
+{
+  "search": {
+    "answers": [
+      {
+        "query": "quietfield",
+        "results": [
+          {
+            "url": "https://quietfield.example/",
+            "title": "Quietfield Labs | Soil sensors for vineyards",
+            "snippet": "Quietfield Labs makes wireless soil-moisture sensors for vineyards and orchards."
+          },
+          {
+            "url": "https://quietfieldfarm.example/",
+            "title": "Quietfield Farm - Organic eggs from Vermont",
+            "snippet": "Quietfield Farm is a family farm in Barnet, Vermont with 12 employees."
+          }
+        ]
+      }
+    ],
+    "default": {
+      "results": []
+    }
+  },
+  "fetch": {
+    "answers": [
+      {
+        "url": "https://quietfield.example",
+        "title": "Quietfield Labs",
+        "text": "Quietfield Labs\n\nWireless soil-moisture sensors for vineyards and orchards. Know when to water, block by block.\n\nRequest a demo: hello@quietfield.example"
+      },
+      {
+        "url": "https://quietfield.example/",
+        "title": "Quietfield Labs",
+        "text": "Quietfield Labs\n\nWireless soil-moisture sensors for vineyards and orchards. Know when to water, block by block.\n\nRequest a demo: hello@quietfield.example"
+      },
+      {
+        "url": "https://www.quietfield.example/",
+        "title": "Quietfield Labs",
+        "text": "Quietfield Labs\n\nWireless soil-moisture sensors for vineyards and orchards. Know when to water, block by block.\n\nRequest a demo: hello@quietfield.example"
+      },
+      {
+        "url": "https://quietfield.example/about",
+        "title": "Quietfield Labs",
+        "text": "Quietfield Labs\n\nWireless soil-moisture sensors for vineyards and orchards. Know when to water, block by block.\n\nRequest a demo: hello@quietfield.example"
+      },
+      {
+        "url": "https://quietfieldfarm.example",
+        "title": "Quietfield Farm",
+        "text": "Quietfield Farm, Barnet, Vermont. Organic eggs and maple syrup. 12 employees."
+      },
+      {
+        "url": "https://quietfieldfarm.example/",
+        "title": "Quietfield Farm",
+        "text": "Quietfield Farm, Barnet, Vermont. Organic eggs and maple syrup. 12 employees."
+      }
+    ],
+    "default": {
+      "error": "fetch failed"
+    }
+  }
+}

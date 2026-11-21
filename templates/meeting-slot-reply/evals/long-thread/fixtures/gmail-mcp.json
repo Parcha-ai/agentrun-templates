@@ -1,0 +1,514 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail. Thread 19c1d2e3f4a5c100: 30 messages between Jordan (Vandelay) and Sam, Nov 16 to Dec 7; the newest asks for 45 minutes on Wednesday or Thursday. The listing answers metadata for every message (and one other thread with the same subject); a message read answers the full message. A draft in another thread exists. Any draft call succeeds.",
+  "tools": {
+    "GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID": {
+      "description": "Fetches a Gmail message by its message ID (format minimal, metadata or full).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "message_id": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c100"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c100\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Vandelay pilot\",\"messageTimestamp\":\"2026-11-16T14:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on the pilot scope: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c100\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c101"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c101\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-17T06:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the data export: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c101\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c102"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c102\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-17T22:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on SSO setup: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c102\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c103"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c103\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-18T14:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the security questionnaire: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c103\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c104"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c104\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-19T06:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on pricing tiers: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c104\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c105"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c105\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-19T22:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the onboarding checklist: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c105\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c106"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c106\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-20T14:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on the API limits: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c106\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c107"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c107\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-21T06:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the invoice schedule: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c107\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c108"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c108\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-21T22:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on the support SLA: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c108\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c109"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c109\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-22T14:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the training plan: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c109\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c10a"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c10a\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-23T06:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on the pilot scope: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c10a\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c10b"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c10b\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-23T22:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the data export: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c10b\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c10c"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c10c\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-24T14:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on SSO setup: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c10c\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c10d"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c10d\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-25T06:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the security questionnaire: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c10d\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c10e"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c10e\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-25T22:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on pricing tiers: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c10e\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c10f"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c10f\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-26T14:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the onboarding checklist: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c10f\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c110"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c110\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-27T06:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on the API limits: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c110\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c111"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c111\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-27T22:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the invoice schedule: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c111\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c112"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c112\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-28T14:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on the support SLA: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c112\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c113"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c113\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-29T06:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the training plan: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c113\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c114"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c114\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-29T22:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on the pilot scope: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c114\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c115"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c115\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-30T14:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the data export: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c115\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c116"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c116\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-01T06:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on SSO setup: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c116\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c117"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c117\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-01T22:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the security questionnaire: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c117\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c118"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c118\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-02T14:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on pricing tiers: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c118\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c119"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c119\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-03T06:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the onboarding checklist: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c119\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c11a"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c11a\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-03T22:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on the API limits: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c11a\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c11b"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c11b\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-04T14:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"Hi Jordan,\\n\\nThanks. On the invoice schedule: that works on our side, I'll send the details.\\n\\nBest, Sam\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c11b\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c11c"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c11c\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-05T06:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nQuick one on the support SLA: can you confirm how it works for our team?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c11c\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5c11d"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5c11d\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-07T15:04:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nWe've covered a lot over email. Could we get 45 minutes on Wednesday or Thursday this week to walk through the rollout before the holidays?\\n\\nJordan\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5c11d\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Requested entity was not found.\"}"
+          }
+        ]
+      }
+    },
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Lists Gmail messages matching a search query; with verbose and include_payload false, metadata only (subject, sender, recipient, time, labels, thread id).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "verbose": {
+            "type": "boolean"
+          },
+          "include_payload": {
+            "type": "boolean"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "ids_only": {
+            "type": "boolean"
+          },
+          "include_spam_trash": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"messages\":[{\"messageId\":\"19c1d2e3f4a5c11d\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-07T15:04:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c0ffee00a1b2c3\",\"threadId\":\"19c0ffee00a1b2c3\",\"sender\":\"News <news@pilotweekly.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-06T10:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_UPDATES\"]},{\"messageId\":\"19c1d2e3f4a5c11c\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-05T06:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c11b\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-04T14:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c11a\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-03T22:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c119\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-03T06:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c118\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-02T14:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c117\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-01T22:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c116\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-12-01T06:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c115\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-30T14:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c114\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-29T22:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c113\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-29T06:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c112\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-28T14:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c111\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-27T22:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c110\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-27T06:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c10f\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-26T14:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c10e\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-25T22:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c10d\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-25T06:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c10c\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-24T14:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c10b\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-23T22:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c10a\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-23T06:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c109\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-22T14:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c108\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-21T22:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c107\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-21T06:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c106\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-20T14:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c105\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-19T22:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c104\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-19T06:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c103\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-18T14:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c102\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-17T22:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]},{\"messageId\":\"19c1d2e3f4a5c101\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"jordan@vandelay.example\",\"subject\":\"Re: Vandelay pilot\",\"messageTimestamp\":\"2026-11-17T06:00:00Z\",\"labelIds\":[\"SENT\"]},{\"messageId\":\"19c1d2e3f4a5c100\",\"threadId\":\"19c1d2e3f4a5c100\",\"sender\":\"Jordan Kim <jordan@vandelay.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Vandelay pilot\",\"messageTimestamp\":\"2026-11-16T14:00:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"]}],\"nextPageToken\":\"\",\"resultSizeEstimate\":31},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_LIST_DRAFTS": {
+      "description": "Lists the mailbox's drafts, one page at a time; with verbose false, each draft's id and its message's id and thread id, and next_page_token while more pages remain.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "verbose": {
+            "type": "boolean"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"drafts\":[{\"id\":\"r-5510001\",\"message\":{\"id\":\"19c0aaaa00b1c2d3\",\"threadId\":\"19c0aaaa00b1c2d3\"}}],\"next_page_token\":\"\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_CREATE_EMAIL_DRAFT": {
+      "description": "Creates a Gmail email draft.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "recipient_email": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "thread_id": {
+            "type": "string"
+          },
+          "is_html": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"id\":\"r-7730214\",\"message\":{\"id\":\"19c1d2e3f4a5cfff\",\"threadId\":\"19c1d2e3f4a5c100\",\"labelIds\":[\"DRAFT\"]}},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}
