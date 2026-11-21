@@ -4,16 +4,16 @@
   "model": "openrouter/nvidia/nemotron-3.5-super-vl:free",
   "harness": "pi",
   "measured_on": "2026-11-21",
-  "build": "30473b5b8c00a5bf25fa9a79ae4a69c66f393c0f",
+  "build": "53e6693e375ded93bf713143c589970c8c059c40",
   "passed": {
-    "pi": "3/4"
+    "pi": "4/4"
   },
   "free": {
     "model": "openrouter/nvidia/nemotron-3.5-super-vl:free",
     "limits": [
       "Nemotron 3.5 Super VL (free), served by NVIDIA through OpenRouter: 868,928 tokens in, 131,072 out (OpenRouter's endpoint list, 2026-11-20)",
       "OpenRouter free models, per account: 20 requests a minute, and 50 a day until you have bought $10 of credits in all, 1,000 a day after; the day resets at 00:00 UTC",
-      "A run takes about 7 model requests (median of 10 measured runs; the most was 21, and 2 took more than 15 when the model re-read its own skill turn after turn)",
+      "A run takes about 6 model requests (median of 10 measured runs; the most was 21, when the model re-read its own skill turn after turn)",
       "Exa keyless search: about 150 searches a day per IP address and 3 a second (Exa changelog, 2026-02-02)",
       "The search, and Firecrawl when you add it, see each query and URL",
       "NVIDIA's free endpoint keeps data: under NVIDIA's API trial terms it may log what it is sent and use it to improve its products, AI models included, and asks you not to send confidential or personal data. It is not on OpenRouter's zero-retention list, so OpenRouter's \"ZDR only\" setting turns it off",
