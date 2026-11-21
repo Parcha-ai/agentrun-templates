@@ -97,7 +97,9 @@ Otherwise one `SLACK_SEND_MESSAGE` with `channel` the Post-to setting exactly as
 • <name>: <plan>, <MRR>/month. Customer <tenure>. Last paid <amount> on <Mon D YYYY>. Why: <reason, feedback>.
 ```
 
-Leave out a section that has nothing in it. Money as Money above says (`$1,200.00`, `¥4,500`).
+In the post, `<reason>` and `<status>` are plain words ("duplicate charge", "needs a response", "under review"), never
+Stripe's codes (`duplicate`, `warning_needs_response`); the codes stay in the JSON fields. Leave out a section that has
+nothing in it. Money as Money above says (`$1,200.00`, `¥4,500`).
 No mention of anyone. A failed post is not retried another way; say so in `posted`.
 
 ## 5. Carry forward
