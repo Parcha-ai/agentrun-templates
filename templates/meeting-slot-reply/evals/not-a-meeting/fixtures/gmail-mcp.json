@@ -2,15 +2,15 @@
   "server": "gmail",
   "description": "A fake Composio Gmail. Thread 19c1d2e3f4a5b803: Lee's request to resend an invoice with a PO number. Any draft call succeeds.",
   "tools": {
-    "GMAIL_FETCH_MESSAGE_BY_THREAD_ID": {
-      "description": "Retrieves messages from a Gmail thread using its thread_id.",
+    "GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID": {
+      "description": "Fetches a Gmail message by its message ID (format minimal, metadata or full).",
       "input": {
         "type": "object",
         "properties": {
-          "thread_id": {
+          "message_id": {
             "type": "string"
           },
-          "page_token": {
+          "format": {
             "type": "string"
           }
         }
@@ -18,13 +18,13 @@
       "answers": [
         {
           "when": {
-            "thread_id": "19c1d2e3f4a5b803"
+            "message_id": "19c1d2e3f4a5b803"
           },
           "result": {
             "content": [
               {
                 "type": "text",
-                "text": "{\"data\":{\"messages\":[{\"messageId\":\"19c1d2e3f4a5b803\",\"threadId\":\"19c1d2e3f4a5b803\",\"sender\":\"Lee Park <ap@umbrella.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Invoice INV-2041\",\"messageTimestamp\":\"2026-12-07T15:02:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nThanks for the call last Thursday, it was useful. Could you resend invoice INV-2041 with our PO number 7781 on it? Our system rejects it without one.\\n\\nThanks,\\nLee\"}]},\"successful\":true,\"error\":null}"
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5b803\",\"threadId\":\"19c1d2e3f4a5b803\",\"sender\":\"Lee Park <ap@umbrella.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Invoice INV-2041\",\"messageTimestamp\":\"2026-12-07T15:02:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nThanks for the call last Thursday, it was useful. Could you resend invoice INV-2041 with our PO number 7781 on it? Our system rejects it without one.\\n\\nThanks,\\nLee\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5b803\"},\"successful\":true,\"error\":null}"
               }
             ]
           }
@@ -36,6 +36,64 @@
           {
             "type": "text",
             "text": "{\"data\":{},\"successful\":false,\"error\":\"Requested entity was not found.\"}"
+          }
+        ]
+      }
+    },
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Lists Gmail messages matching a search query; with verbose and include_payload false, metadata only (subject, sender, recipient, time, labels, thread id).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "verbose": {
+            "type": "boolean"
+          },
+          "include_payload": {
+            "type": "boolean"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "ids_only": {
+            "type": "boolean"
+          },
+          "include_spam_trash": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"messages\":[{\"messageId\":\"19c1d2e3f4a5b803\",\"threadId\":\"19c1d2e3f4a5b803\",\"sender\":\"Lee Park <ap@umbrella.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Invoice INV-2041\",\"messageTimestamp\":\"2026-12-07T15:02:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"]}],\"nextPageToken\":\"\",\"resultSizeEstimate\":1},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_LIST_DRAFTS": {
+      "description": "Lists the mailbox's drafts; with verbose false, each draft's id and its message's id and thread id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "verbose": {
+            "type": "boolean"
+          },
+          "max_results": {
+            "type": "integer"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"drafts\":[],\"nextPageToken\":\"\"},\"successful\":true,\"error\":null}"
           }
         ]
       }

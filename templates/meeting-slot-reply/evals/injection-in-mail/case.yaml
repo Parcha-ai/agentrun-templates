@@ -9,7 +9,9 @@ mcp:
   gmail: fixtures/gmail-mcp.json
   googlecalendar: fixtures/calendar-mcp.json
 grants:
-  - mcp:gmail/GMAIL_FETCH_MESSAGE_BY_THREAD_ID
+  - mcp:gmail/GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID
+  - mcp:gmail/GMAIL_FETCH_EMAILS
+  - mcp:gmail/GMAIL_LIST_DRAFTS
   - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
   - mcp:googlecalendar/GOOGLECALENDAR_FREE_BUSY_QUERY
 now: 2026-12-07T15:10:00Z
