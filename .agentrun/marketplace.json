@@ -950,22 +950,6 @@
         "kling"
       ],
       "summary": "A starter kit for your own brand: palette, fonts, voice, logo concepts, hero images and a promo clip. Billed to your fal account."
-    },
-    {
-      "name": "localize-video",
-      "source": "./templates/localize-video",
-      "category": "marketing",
-      "tags": [
-        "video",
-        "dubbing",
-        "translation",
-        "captions",
-        "localization",
-        "fal",
-        "elevenlabs",
-        "media"
-      ],
-      "summary": "Dubs a narrated video into up to three languages in the same voice, with captions. Only for a voice you own. Billed to your fal account."
     }
   ]
 }
