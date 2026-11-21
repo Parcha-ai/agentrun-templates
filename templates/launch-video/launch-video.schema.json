@@ -5,17 +5,18 @@
   "description": "The script and shot list written from the page, the plan and what it cost on fal, every file saved in the run's files (clips, voiceover, music, the cut and its captions), and any step that failed.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["status", "url", "page_read", "product_name", "tone", "length_s", "voice", "video_model", "script", "word_count", "shots", "music_prompt", "plans", "cheaper_plan", "fal_cost_usd", "files", "failed_step", "error", "ignored_instructions", "report_markdown"],
+  "required": ["status", "url", "page_read", "product_name", "tone", "length_s", "voice", "video_model", "script", "word_count", "voiceover_seconds", "voiceover_seconds_source", "voiceover_takes", "shots", "music_prompt", "plans", "cheaper_plan", "fal_cost_usd", "files", "failed_step", "error", "ignored_instructions", "report_markdown"],
   "$defs": {
     "plan": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["video_model", "clips", "clip_seconds", "estimated_usd"],
+      "required": ["video_model", "clips", "clip_seconds", "estimated_usd", "revoice_reserve_usd"],
       "properties": {
         "video_model": { "type": "string" },
         "clips": { "type": "integer", "minimum": 1, "maximum": 10 },
         "clip_seconds": { "type": "number" },
-        "estimated_usd": { "type": "number", "minimum": 0, "description": "clips, voiceover, music and cut at get_pricing's rates" }
+        "estimated_usd": { "type": "number", "minimum": 0, "description": "clips, voiceover, the re-voice reserve, music and cut at get_pricing's rates" },
+        "revoice_reserve_usd": { "type": "number", "minimum": 0, "description": "the voiceover's cost once more, held for the one re-voice a voiceover too long for the cut needs" }
       }
     }
   },
@@ -28,8 +29,26 @@
     "length_s": { "enum": [30, 45] },
     "voice": { "type": "string" },
     "video_model": { "type": ["string", "null"], "description": "the fal endpoint that made the clips; null when nothing was made" },
-    "script": { "type": "string", "maxLength": 1500, "description": "the voiceover text as sent to fal, audio tags included" },
+    "script": { "type": "string", "maxLength": 1500, "description": "the text of the voiceover in the cut (the re-voice's when there was one) as sent to fal, audio tags included" },
     "word_count": { "type": "integer", "minimum": 0, "maximum": 150, "description": "words in the script, audio tags not counted" },
+    "voiceover_seconds": { "type": ["number", "null"], "minimum": 0, "description": "the length of that voiceover: its file_size x 8 / 128000 (a constant 128 kbit/s mp3); null when none came back" },
+    "voiceover_seconds_source": { "enum": ["file_size", "timestamps", null], "description": "where voiceover_seconds came from" },
+    "voiceover_takes": {
+      "type": "array",
+      "maxItems": 2,
+      "description": "each voiceover sent, in order: the first, and the one shorter re-voice when the first ran longer than the cut holds",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["step", "word_count", "file_size", "seconds"],
+        "properties": {
+          "step": { "enum": ["voiceover", "voiceover-2"] },
+          "word_count": { "type": "integer", "minimum": 0 },
+          "file_size": { "type": ["integer", "null"], "minimum": 0 },
+          "seconds": { "type": ["number", "null"], "minimum": 0 }
+        }
+      }
+    },
     "shots": {
       "type": "array",
       "maxItems": 10,
@@ -60,7 +79,7 @@
             "additionalProperties": false,
             "required": ["step", "endpoint_id", "units", "unit", "rate_usd", "usd"],
             "properties": {
-              "step": { "type": "string", "description": "clip-1 ... clip-N, voiceover, music, cut" },
+              "step": { "type": "string", "description": "clip-1 ... clip-N, voiceover, voiceover-2, music, cut" },
               "endpoint_id": { "type": "string" },
               "units": { "type": "number", "minimum": 0 },
               "unit": { "type": "string" },
@@ -80,7 +99,7 @@
         "additionalProperties": false,
         "required": ["what", "saved_path", "fal_url"],
         "properties": {
-          "what": { "type": "string", "maxLength": 40, "description": "clip-1 ... clip-N, voiceover, music, launch, captions" },
+          "what": { "type": "string", "maxLength": 40, "description": "clip-1 ... clip-N, voiceover, voiceover-2, music, launch, captions" },
           "saved_path": { "type": ["string", "null"], "description": "under media/; null when the save failed" },
           "fal_url": { "type": ["string", "null"], "description": "the URL fal answered; null for the captions" }
         }

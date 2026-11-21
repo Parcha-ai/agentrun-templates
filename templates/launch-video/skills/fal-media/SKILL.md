@@ -98,7 +98,8 @@ submit a job again because a sibling failed or is slow. Match results to jobs by
 is `tracks`: exactly one visual track (`type` `video` or `image`) and any number of `audio` tracks, each `{id, type,
 keyframes}`. A keyframe is `{url, timestamp, duration}`, both in **milliseconds**: where it starts on the timeline and
 how long it plays. Lay clips back to back (`timestamp` 0, 5000, 10000 ... for 5 s clips); a `duration` shorter than the
-file trims it. Use the URLs fal answered, never a saved path: compose fetches them. It has no volume, fade or ducking
+file trims it, which is fine for b-roll and wrong for a voice: check a voice's length first (fal-audio) and never
+let a keyframe cut off its last words. Use the URLs fal answered, never a saved path: compose fetches them. It has no volume, fade or ducking
 setting: every audio track plays at the level it was made, mixed together. Clips from one model share one size; don't
 mix models in one video track. It bills per second of output and usually finishes in seconds to a minute; on
 `processing`, follow it with `wait_for_jobs`.

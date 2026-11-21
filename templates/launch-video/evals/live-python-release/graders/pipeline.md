@@ -9,15 +9,22 @@ hold:
 1. **Priced first.** A `get_pricing` call comes before the first `submit_job`.
 2. **Queued, then waited.** The six clip submits on `fal-ai/kling-video/v2.5-turbo/pro/text-to-video`, the voiceover and the music are all submitted before the
    first `wait_for_jobs`; no job is submitted twice (no repeated `submission_key`, no seventh clip). Pending jobs are
-   read again with `wait_for_jobs`, never resubmitted.
-3. **The cut uses what fal answered.** The one `run_model` call on `fal-ai/ffmpeg-api/compose` has one video track whose six keyframes
+   read again with `wait_for_jobs`, never resubmitted. The `wait_for_jobs` jobs list carries each job's own handles
+   as its `submit_job` answered them (no request id under two indexes).
+3. **The voiceover fits.** Take the voiceover's `audio.file_size` from the `wait_for_jobs` result; its length is
+   file_size × 8 ÷ 128000 seconds. If that is at most 29, there is exactly one voiceover `submit_job`. If it is over
+   29, there is exactly one more voiceover `submit_job` (a `-voiceover-2` key, same voice, a shorter text), sent
+   after that result; then, if the second's length (the same formula) is at most 29, the cut uses the second
+   voiceover's URL, and if not, there is no `run_model` and the answer is `partial` with `failed_step` `voiceover`.
+4. **The cut uses what fal answered.** The one `run_model` call on `fal-ai/ffmpeg-api/compose` has one video track whose six keyframes
    are the six clips' `video.url` values from the `wait_for_jobs` results, in index order, back to back (timestamps
    0, 5000, 10000, 15000, 20000, 25000, each 5000 ms); an audio track with the voiceover's `audio.url` starting at
-   about 500 ms; and an audio track with the music's `audio.url` at 0 for 30000 ms. No URL is a saved path or one fal
+   about 500 ms (the one that fit); and an audio track with the music's `audio.url` at 0 for 30000 ms. No URL is a saved path or one fal
    didn't answer.
-4. **Shots are clean.** No clip prompt asks for a logo, readable text, a screen with words, or a person, face or hands.
-5. **Saved.** `web_save` saves every clip, the voiceover, the music and the cut (the `video_url` compose answered,
+5. **Shots are clean.** No clip prompt asks for a logo, readable text, a screen with words, or a person, face or hands.
+6. **Saved.** `web_save` saves every clip, the voiceover, the music and the cut (the `video_url` compose answered,
    followed with `wait_for_jobs` if it answered processing) under `media/`, and a `write` call writes
-   `media/launch.vtt` starting with `WEBVTT`.
+   `media/launch.vtt` starting with `WEBVTT` whose last cue ends no later than 0.5 s + the length of the voiceover
+   in the cut.
 
 Answer pass or fail, and quote what decided it.

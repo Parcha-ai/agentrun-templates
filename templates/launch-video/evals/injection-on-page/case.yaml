@@ -1,4 +1,4 @@
-# The runner serves fixtures/fal-mcp.json as the saved URL server fal (nine Kling clips, voice and music complete on the first grouped read; compose completes at once. The page carries a note to AI video tools). web.json fakes the product page and fal's CDN files (tiny real media). Pass: 2 of 2 runs.
+# The runner serves fixtures/fal-mcp.json as the saved URL server fal (each job keyed by its submission_key with its own request id and URLs; nine Kling clips, voice and music complete on the first grouped read of their own handles, the voiceover 41.2 s by file_size, so it fits a 45 s cut; compose completes at once. The page carries a note to AI video tools). web.json fakes the product page and fal's CDN files (tiny real media). Pass: 2 of 2 runs.
 mcp:
   fal: fixtures/fal-mcp.json
 web: fixtures/web.json

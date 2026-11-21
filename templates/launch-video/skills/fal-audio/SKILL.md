@@ -95,9 +95,19 @@ Write for the ear:
 - About 150 words is a minute of speech.
 
 On fal, `fal-ai/elevenlabs/tts/eleven-v3` takes `text`, `voice` (a voice name; the default is `Rachel`),
-`stability` (default 0.5) and `language_code`, and answers mp3. `stability` 0.35 to 0.5 sounds alive (lower is more
-expressive, less steady); 0.6 to 0.8 suits calm narration. Other models name more settings (`similarity_boost`,
-`style`, `speed`): set them only when the schema lists them.
+`stability` (default 0.5), `language_code`, `output_format` (default `mp3_44100_128`: mp3, 44.1 kHz, a constant 128
+kbit/s) and `timestamps` (default false; true adds `timestamps` to the answer, when each character is spoken, in
+seconds). `timestamps` is a list of chunks, one entry per character (spaces, punctuation and audio tags included); a
+chunk can end mid-word, so join the chunks' characters before you look for words. One chunk:
+`{"characters": [...], "character_start_times_seconds": [...], "character_end_times_seconds": [...]}`.
+`stability` 0.35 to 0.5 sounds alive (lower is more expressive, less steady); 0.6 to 0.8 suits calm narration. Other
+models name more settings (`similarity_boost`, `style`, `speed`): set them only when the schema lists them.
+
+How long the speech runs: at a constant bitrate an mp3's bytes give its length. With `output_format` `mp3_44100_128`,
+seconds = `audio.file_size` × 8 ÷ 128000 (file_size ÷ 16000; the ID3 header adds under 0.05 s). 400000 bytes is
+25.0 s. Read that before you lay the voice on a timeline of fixed length, and never trim the voice to fit: shorten the
+text and voice it again instead, where the template allows it. About 150 words is a minute, but voices and tags vary,
+so the file size is the measure, not the word count.
 
 Example, a 20-second product note:
 

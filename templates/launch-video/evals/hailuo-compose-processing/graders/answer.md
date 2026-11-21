@@ -15,6 +15,9 @@ Pass only if all hold:
    music, cut) with units, rate and usd; `fal_cost_usd.total` is their sum and between 1.6 and 1.8.
 4. **Files.** `files` names `media/launch.mp4`, `media/launch.vtt`, `media/voiceover.mp3` and each `media/clip-<n>.mp4`.
    `report_markdown` embeds `![Launch video](media/launch.mp4)` and says the music is not ducked (plays at its own level).
-5. **Status.** `status` is `saved`; `plans` prices both plans (Kling above $2, Hailuo at or under it).
+5. **Status.** `status` is `saved`; `plans` prices both plans (Kling above $2, Hailuo at or under it), each with a
+   `revoice_reserve_usd` that is the voiceover's own cost (between 0.02 and 0.09) and counted in its `estimated_usd`.
+6. **Voiceover length.** `voiceover_seconds` is 27.4 (27.35 to 27.45, from fal's `file_size` 438400 × 8 ÷ 128000),
+   `voiceover_seconds_source` is `file_size`, and `voiceover_takes` holds one take.
 
 Answer pass or fail, and quote what decided it.

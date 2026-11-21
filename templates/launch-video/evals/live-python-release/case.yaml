@@ -1,6 +1,7 @@
 # Live: no fakes. The run uses the fal MCP server saved in the owner's data (toolkit fal, their own key), reads the real
 # page, and web_save downloads the real files, so this case runs only with --on-data on a data folder that has fal saved.
-# About $2.45 of fal (six Kling clips, a voiceover, a 30 s music bed, one compose); max_cost_usd 3.20 covers it with the
+# About $2.45 of fal (six Kling clips, a voiceover, a 30 s music bed, one compose; about 4 cents more when the voiceover runs
+# longer than the cut holds and is voiced once more); max_cost_usd 3.20 covers it with the
 # model, since the run's cap counts the fal jobs. Pass: 1 of 1.
 # Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
 grants:

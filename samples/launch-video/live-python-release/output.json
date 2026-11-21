@@ -7,53 +7,71 @@
   "length_s": 30,
   "voice": "Aria",
   "video_model": "fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
-  "script": "[playfully] Meet Python three point thirteen. [pauses] It packs many new features and optimizations over Python three point twelve. It brings a new interactive interpreter, with multi-line editing and color. Tracebacks are colorized too. Try the experimental free-threaded build, which lets threads run more concurrently, or the preliminary JIT. Read what's new in its guide. Get the installers for Windows, macOS, and source code at python dot org.",
-  "word_count": 67,
+  "script": "[playfully] Meet Python three point thirteen point zero, with a new and improved interactive interpreter. It brings multi-line editing, color support, and colorized tracebacks. Try the experimental free-threaded build. Download it for Windows, macOS, or source, right from python dot org.",
+  "word_count": 40,
+  "voiceover_seconds": 20.2,
+  "voiceover_seconds_source": "file_size",
+  "voiceover_takes": [
+    {
+      "step": "voiceover",
+      "word_count": 66,
+      "file_size": 557601,
+      "seconds": 34.85
+    },
+    {
+      "step": "voiceover-2",
+      "word_count": 40,
+      "file_size": 323126,
+      "seconds": 20.2
+    }
+  ],
   "shots": [
     {
       "n": 1,
-      "prompt": "A glowing paper lantern drifts slowly down a moss-covered stone path at dawn, soft mist, golden light, slow push-in, playful mood, cinematic, 16:9.",
+      "prompt": "An open notebook resting on a moss-covered boulder in a sunlit forest clearing, pages fluttering in a light breeze, slow push-in, soft golden light, playful cheerful mood, cinematic, 16:9.",
       "saved_path": "media/clip-1.mp4"
     },
     {
       "n": 2,
-      "prompt": "A row of clear glass jars on a weathered wooden shelf, one lid lifting as bright sparks drift upward, warm morning light, slow dolly along the shelf, playful mood, cinematic, 16:9.",
+      "prompt": "Colorful marbles rolling down a wooden ramp in a sunlit workshop, slow dolly alongside, warm light through dusty air, playful bouncy mood, cinematic, 16:9.",
       "saved_path": "media/clip-2.mp4"
     },
     {
       "n": 3,
-      "prompt": "Bright coral and teal paint splashes bloom in slow motion across a sheet of white paper on a sunlit desk, shallow depth of field, macro camera drifting sideways, playful mood, cinematic, 16:9.",
+      "prompt": "Ribbons of bright teal and violet light swirling through a dark misty valley, drone glide over the glowing trails, whimsical playful mood, cinematic, 16:9.",
       "saved_path": "media/clip-3.mp4"
     },
     {
       "n": 4,
-      "prompt": "A dozen small wooden paper boats drift side by side down a sunlit stream over smooth pebbles, gentle ripples, camera tracking alongside at water level, playful mood, cinematic, 16:9.",
+      "prompt": "Wooden toy blocks stacking themselves neatly into a tower on a sunlit tabletop, slow push-in, soft morning light, cheerful playful mood, cinematic, 16:9.",
       "saved_path": "media/clip-4.mp4"
     },
     {
       "n": 5,
-      "prompt": "A hot air balloon rises slowly over misty green hills at sunrise, soft clouds drifting past, drone glide upward, warm light, playful mood, cinematic, 16:9.",
+      "prompt": "Tiny green sprouts pushing up through cracks in a sunlit stone courtyard, macro close-up with slow tilt up, gentle light, optimistic playful mood, cinematic, 16:9.",
       "saved_path": "media/clip-5.mp4"
     },
     {
       "n": 6,
-      "prompt": "A wooden door swings open onto a sunlit meadow of wildflowers, butterflies floating in warm light, slow push-in toward the open doorway, playful mood, cinematic, 16:9.",
+      "prompt": "A hot air balloon lifting off over rolling green hills at sunrise, drone glide upward, warm golden light, joyful playful mood, cinematic, 16:9.",
       "saved_path": "media/clip-6.mp4"
     }
   ],
-  "music_prompt": "Soft, sparse, low-key instrumental bed with gentle plucked marimba and light pizzicato strings, playful and steady, around 100 BPM, no vocals, no big drops or builds.",
+  "music_prompt": "Soft, steady instrumental bed for a playful tone: light ukulele and pizzicato strings at about 100 BPM, sparse and low-key, no vocals, no big drops or builds, gentle and even throughout.",
   "plans": [
     {
       "video_model": "fal-ai/kling-video/v2.5-turbo/pro/text-to-video",
       "clips": 6,
       "clip_seconds": 5,
-      "estimated_usd": 2.451
+      "estimated_usd": 2.498,
+      "revoice_reserve_usd": 0.046
     },
     {
       "video_model": "fal-ai/minimax/hailuo-02/standard/text-to-video",
       "clips": 5,
       "clip_seconds": 6,
-      "estimated_usd": 1.701
+      "estimated_usd": 1.748,
+      "revoice_reserve_usd": 0.046
     }
   ],
   "cheaper_plan": null,
@@ -110,10 +128,18 @@
       {
         "step": "voiceover",
         "endpoint_id": "fal-ai/elevenlabs/tts/eleven-v3",
-        "units": 0.449,
-        "unit": "1000 characters",
+        "units": 0.455,
+        "unit": "1000 characters (estimated count)",
         "rate_usd": 0.1,
-        "usd": 0.045
+        "usd": 0.046
+      },
+      {
+        "step": "voiceover-2",
+        "endpoint_id": "fal-ai/elevenlabs/tts/eleven-v3",
+        "units": 0.28,
+        "unit": "1000 characters (estimated count)",
+        "rate_usd": 0.1,
+        "usd": 0.028
       },
       {
         "step": "music",
@@ -132,53 +158,58 @@
         "usd": 0.006
       }
     ],
-    "total": 2.451
+    "total": 2.48
   },
   "files": [
     {
       "what": "clip-1",
       "saved_path": "media/clip-1.mp4",
-      "fal_url": "https://v3b.fal.media/files/b/0ab346a5/zUUScHcaAqRLX2PbZuOKo_output.mp4"
+      "fal_url": "https://v3b.fal.media/files/b/0ab35256/q0WBei5_a6BIZs4comI-b_output.mp4"
     },
     {
       "what": "clip-2",
       "saved_path": "media/clip-2.mp4",
-      "fal_url": "https://v3b.fal.media/files/b/0ab346a4/8XW0z43I2_6mOmDJLsw33_output.mp4"
+      "fal_url": "https://v3b.fal.media/files/b/0ab3524e/qGmONUEPZVpxOYO8VLXgm_output.mp4"
     },
     {
       "what": "clip-3",
       "saved_path": "media/clip-3.mp4",
-      "fal_url": "https://v3b.fal.media/files/b/0ab346a7/CxtURr1Fuq8ueSVm5vYsM_output.mp4"
+      "fal_url": "https://v3b.fal.media/files/b/0ab35251/8rge8i9d5GE3ABvMyCBGA_output.mp4"
     },
     {
       "what": "clip-4",
       "saved_path": "media/clip-4.mp4",
-      "fal_url": "https://v3b.fal.media/files/b/0ab346a7/pdEkOhwFnUEggdNjaHdlP_output.mp4"
+      "fal_url": "https://v3b.fal.media/files/b/0ab35257/7ttUKrKSebeVPd-Gci3Hb_output.mp4"
     },
     {
       "what": "clip-5",
       "saved_path": "media/clip-5.mp4",
-      "fal_url": "https://v3b.fal.media/files/b/0ab346a8/GU37QhGwRa3wguS9FL3dd_output.mp4"
+      "fal_url": "https://v3b.fal.media/files/b/0ab3524f/ooq224_8q8lDHO8onz2DP_output.mp4"
     },
     {
       "what": "clip-6",
       "saved_path": "media/clip-6.mp4",
-      "fal_url": "https://v3b.fal.media/files/b/0ab346a4/A5a7rRu3SmCVoZINc0VT5_output.mp4"
+      "fal_url": "https://v3b.fal.media/files/b/0ab35251/76HL8zxJz6gGQWzaDMKS3_output.mp4"
     },
     {
       "what": "voiceover",
       "saved_path": "media/voiceover.mp3",
-      "fal_url": "https://v3b.fal.media/files/b/0ab34672/CTsD1uzQoGSVYSh4Z-v4Y_output.mp3"
+      "fal_url": "https://v3b.fal.media/files/b/0ab35244/RgJXUmqtVeZb0yO46TdR6_output.mp3"
+    },
+    {
+      "what": "voiceover-2",
+      "saved_path": "media/voiceover-2.mp3",
+      "fal_url": "https://v3b.fal.media/files/b/0ab35249/nofcbhfeeS9eV-Jw11BEf_output.mp3"
     },
     {
       "what": "music",
       "saved_path": "media/music.mp3",
-      "fal_url": "https://v3b.fal.media/files/b/0ab34672/D80Akda4VzfjTJzHEGcal_music_generated.mp3"
+      "fal_url": "https://v3b.fal.media/files/b/0ab35243/4QxOof3FrOxQLebox6LxI_music_generated.mp3"
     },
     {
       "what": "launch",
       "saved_path": "media/launch.mp4",
-      "fal_url": "https://v3b.fal.media/files/b/0ab346ad/TskWC-ZsQlhAMNdzGn8qf_output.mp4"
+      "fal_url": "https://v3b.fal.media/files/b/0ab3525e/DA1k4W7C72QQaGMp_GRVn_output.mp4"
     },
     {
       "what": "captions",
@@ -189,5 +220,5 @@
   "failed_step": null,
   "error": null,
   "ignored_instructions": [],
-  "report_markdown": "![Launch video](media/launch.mp4)\n\n**Script (Aria, playful, 67 words):** Meet Python three point thirteen. It packs many new features and optimizations over Python three point twelve. It brings a new interactive interpreter, with multi-line editing and color. Tracebacks are colorized too. Try the experimental free-threaded build, which lets threads run more concurrently, or the preliminary JIT. Read what's new in its guide. Get the installers for Windows, macOS, and source code at python dot org.\n\n**Shots (Kling, 5 s each):** 1 lantern on a mossy stone path at dawn; 2 glass jars on a shelf with sparks; 3 coral and teal paint splashes on paper; 4 paper boats down a sunlit stream; 5 hot air balloon over misty hills; 6 a door opening onto a wildflower meadow. No people, logos or text.\n\n**Cost (estimates from fal's rates, not the invoice):**\n| step | units | rate | USD |\n|---|---|---|---|\n| clips 1–6 (Kling) | 5 s each, 30 s | $0.07/s | $2.100 |\n| voiceover (eleven-v3) | 449 chars | $0.10/1000 | $0.045 |\n| music (ElevenLabs) | 0.5 min | $0.60/min | $0.300 |\n| cut (compose) | 30 s | $0.0002/s | $0.006 |\n| **total** | | | **$2.451** |\n\nThe Hailuo plan would have cost about $1.701, but the Kling plan fit the $4 budget, so it was used.\n\n**Mix:** the music bed is asked for soft and steady, and compose can't duck it, so it plays under the voiceover at its own level. Captions are in `media/launch.vtt`; their timings come from the word-count formula and are approximate. The page says 3.13.0 is superseded by 3.13.18, so the video doesn't call it the latest release. No step failed."
+  "report_markdown": "![Launch video](media/launch.mp4)\n\n**Script (re-voiced, 40 words, Aria, playful, stability 0.4):** [playfully] Meet Python three point thirteen point zero, with a new and improved interactive interpreter. It brings multi-line editing, color support, and colorized tracebacks. Try the experimental free-threaded build. Download it for Windows, macOS, or source, right from python dot org.\n\n**Voiceover length:** The first take (66 words) came to 34.85 s from its file size, over the 29 s a 30 s cut holds, so it was re-voiced once from a shorter script. The second take is 20.20 s and fits. The first take was not used in the cut.\n\n**Shots (Kling 2.5 Turbo, 6 × 5 s, 16:9):**\n1. An open notebook on a moss-covered boulder in a sunlit forest clearing, slow push-in.\n2. Colorful marbles rolling down a wooden ramp in a sunlit workshop, slow dolly.\n3. Teal and violet light ribbons over a misty valley, drone glide.\n4. Wooden toy blocks stacking into a tower, slow push-in.\n5. Green sprouts through cracks in a stone courtyard, macro tilt up.\n6. A hot air balloon lifting off at sunrise, drone glide upward.\n\nNo people, text or logos were prompted.\n\n**Mix:** The music bed (ukulele and pizzicato, about 100 BPM, instrumental) and the voiceover are both at their own generated levels. Compose has no ducking, so the music is not ducked. The bed was asked to stay soft and steady.\n\n**Cost (estimates from get_pricing):** clips 6 × $0.35 = $2.10; voiceover $0.046; re-voice $0.028; music $0.30; cut $0.006; **total $2.480**. Kling plan estimate $2.498 and Hailuo plan $1.748, both under the $4 budget.\n\n**Note:** The page says 3.13.0 has been superseded by 3.13.18. The video describes 3.13.0 as the page does and does not claim it is the latest. No step failed."
 }

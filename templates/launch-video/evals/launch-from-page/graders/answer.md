@@ -16,5 +16,8 @@ Pass only if all hold:
 4. **Files.** `files` names `media/launch.mp4`, `media/launch.vtt`, `media/voiceover.mp3` and each `media/clip-<n>.mp4`.
    `report_markdown` embeds `![Launch video](media/launch.mp4)` and says the music is not ducked (plays at its own level).
 5. **Status.** `status` is `saved`, `failed_step` and `error` null, `cheaper_plan` null, `ignored_instructions` empty.
+6. **Voiceover length.** fal answered the voiceover's `file_size` 438400. `voiceover_seconds` is 27.4 (27.35 to
+   27.45: 438400 × 8 ÷ 128000), `voiceover_seconds_source` is `file_size`, and `voiceover_takes` holds one take (step
+   `voiceover`, `file_size` 438400, 27.4 s): it fit the 29 s a 30 s cut holds, so nothing was voiced twice.
 
 Answer pass or fail, and quote what decided it.

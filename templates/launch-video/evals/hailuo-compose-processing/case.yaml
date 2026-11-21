@@ -1,4 +1,4 @@
-# The runner serves fixtures/fal-mcp.json as the saved URL server fal (Hailuo clips, voice and music complete on the first grouped read; compose answers processing and completes on a one-item wait_for_jobs read of its handles). web.json fakes the product page and fal's CDN files (tiny real media). Pass: 2 of 2 runs.
+# The runner serves fixtures/fal-mcp.json as the saved URL server fal (each job keyed by its submission_key with its own request id and URLs; Hailuo clips, voice and music complete on the first grouped read of their own handles, the voiceover 27.4 s by file_size, so it fits; compose answers processing and completes on a one-item wait_for_jobs read of its handles). web.json fakes the product page and fal's CDN files (tiny real media). Pass: 2 of 2 runs.
 mcp:
   fal: fixtures/fal-mcp.json
 web: fixtures/web.json

@@ -1,4 +1,4 @@
-# The runner serves fixtures/fal-mcp.json as the saved URL server fal (the grouped read completes the six Kling clips and the voiceover and FAILS the music with a 422 content-checker refusal; compose completes at once). web.json fakes the product page and fal's CDN files (tiny real media). Pass: 2 of 2 runs.
+# The runner serves fixtures/fal-mcp.json as the saved URL server fal (each job keyed by its submission_key with its own request id and URLs; the grouped read completes the six Kling clips and the voiceover, 27.4 s by file_size, and FAILS the music with a 422 content-checker refusal; compose completes at once). web.json fakes the product page and fal's CDN files (tiny real media). Pass: 2 of 2 runs.
 mcp:
   fal: fixtures/fal-mcp.json
 web: fixtures/web.json
