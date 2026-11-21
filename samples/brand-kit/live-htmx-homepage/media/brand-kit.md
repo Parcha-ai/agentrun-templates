@@ -1,86 +1,90 @@
 # htmx
 
-htmx is a small, dependency-free JavaScript library that gives plain HTML access to AJAX, CSS transitions, WebSockets and server-sent events. It is for web developers who want to build modern interfaces with hypermedia rather than a heavy front-end framework.
+htmx gives HTML direct access to AJAX, CSS transitions, WebSockets and server-sent events through attributes. It serves developers who want to build modern interfaces with hypertext, without a heavy JavaScript framework.
+
+Source: https://htmx.org/ (page read 2026-11-20). Vibe requested: playful, retro web.
 
 ## Logos
-
-Three new concepts, made on Ideogram 3 (`TURBO`, `DESIGN`). The brand name is set in quotes in each prompt.
 
 ![Logo 1](logo-1.png)
 ![Logo 2](logo-2.png)
 ![Logo 3](logo-3.png)
 
-- Logo 1: a wordmark, "htmx".
-- Logo 2: a lettermark, "h", in a rounded badge.
-- Logo 3: a symbol of angle brackets joined by a lightning bolt, beside "htmx".
+Three new concepts, made on Ideogram 3: a wordmark, a lettermark, and a symbol beside the name.
 
 ## Palette
 
 | Hex | Role | Source |
 |---|---|---|
-| #2B5FD9 | primary | chosen |
-| #FF8C42 | secondary | chosen |
-| #E8457C | accent | chosen |
+| #1F3A93 | primary | chosen |
+| #F2B705 | secondary | chosen |
+| #E4572E | accent | chosen |
 | #FFF6E0 | background | chosen |
-| #1E1B3A | text | chosen |
+| #1A1A1A | text | chosen |
 
-The page's stylesheet was not readable, and the text shows no hex colors, so all five colors were chosen to fit the playful retro brief.
+The page's text view showed no color values, so all five colors were chosen to fit the playful, retro tone. Background and text are high contrast.
 
 ## Type pairing
 
-- Heading: Righteous (Google Fonts)
-- Body: Nunito (Google Fonts)
+- Heading: **Bungee**
+- Body: **Space Mono**
 
-Righteous has the chunky, retro-web character of the vibe. Nunito is rounded and easy to read at small sizes, so it balances the heading without competing with it.
+Why: Bungee's chunky display letters carry the retro, playful register; Space Mono's monospace body suits a web-tool brand that talks about HTML.
 
 ## Voice
 
-- Confident and direct: it states what htmx does in short, plain sentences, the way the homepage's "high power tools for HTML" does.
-- Playful and a little irreverent: the page's haiku, its "uwu" shirts and its Montana note make room for humor without losing the technical point.
-- Plain-spoken for developers: it names the real mechanisms (AJAX, WebSockets, SSE) and avoids hype.
+- Plainspoken and confident: it states what the tool does without hype.
+- Playful with the reader: it jokes lightly and invites tinkering.
+- Technical but warm: it explains hypertext simply and treats the developer as a peer.
 
 ## Do and don't
 
 Do:
-- Use the blue primary and cream background together for the main layout, with the orange and pink accents sparingly.
-- Keep the logos on a plain background and leave clear space around them.
-- Set headings in Righteous and body text in Nunito.
-- Keep copy short and concrete, with the technical terms spelled out once.
+- Use the primary blue for headings and the cream background for large areas.
+- Use the orange-red accent sparingly, for links and highlights.
+- Keep the wordmark on a plain cream or white background with clear space around it.
+- Set headlines in Bungee and body text in Space Mono.
 
 Don't:
-- Don't recolor the logos outside this palette.
-- Don't put the wordmark in a scene or next to other marks.
-- Don't use Righteous for body text or long paragraphs.
-- Don't claim a feature htmx does not have, or describe it as a framework.
+- Don't stretch, rotate or recolor the logos outside this palette.
+- Don't put the wordmark over busy photos or other logos.
+- Don't use more than two accent colors on one screen.
+- Don't use Space Mono for long body copy.
 
 ## Heroes
-
-Headline on hero 1, from the page's own claim: "high power tools for HTML".
 
 ![Hero 1](hero-1.png)
 ![Hero 2](hero-2.png)
 ![Hero 3](hero-3.png)
 
+- Hero 1 carries the headline "high power tools for HTML", taken from the page title.
+- Heroes 2 and 3 are text-free scenes.
+
 ## Promo
 
 ![Promo](promo.mp4)
 
-A 5-second clip made from hero 2: a slow push-in with light drifting across the scene, no text.
+A 5-second clip animated from Hero 2: a slow push-in with light drifting across the scene.
 
-## How it was made and what it cost
+## How the images and clip were made
 
-- Logos 1–3: `fal-ai/ideogram/v3`, `TURBO`, `DESIGN`, `square_hd`, one image each. $0.03 each, $0.09 total.
-  - Logo 1 prompt: "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. The name \"htmx\" set in a chunky retro rounded typeface, bold and playful. The name in double quotes is the only text."
-  - Logo 2 prompt: "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. A simple bold rounded geometric badge holding the lettermark \"h\" in a chunky retro style. The letter in double quotes is the only text."
-  - Logo 3 prompt: "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. A simple symbol of angle brackets joined by a lightning bolt, beside the name \"htmx\" in a chunky retro rounded typeface. The name in double quotes is the only text."
-- Hero 1: `fal-ai/ideogram/v3`, `TURBO`, `DESIGN`, `landscape_16_9`. $0.03. Prompt: "A bold retro web poster on a cream background with blue and orange shapes. A chunky headline \"high power tools for HTML\" set in large playful letters. One visual idea: a glowing hypertext arrow linking two HTML tag brackets. Flat graphic style, clean layout."
-- Hero 2: `fal-ai/ideogram/v3`, `TURBO`, `GENERAL`, `landscape_16_9`, negative prompt `text, letters, words, logo, watermark`. $0.03. Prompt: "Wide scene of a retro desk with a vintage CRT monitor showing a simple web page of colorful buttons, soft warm light, flat illustration style, no people visible."
-- Hero 3: `fal-ai/ideogram/v3`, `TURBO`, `GENERAL`, `landscape_16_9`, negative prompt `text, letters, words, logo, watermark`. $0.03. Prompt: "Wide scene of a retro pixel-art network of glowing hyperlinks joining floating browser windows across a blue sky at sunset, warm light, flat illustration style, no people."
-- Promo: `fal-ai/kling-video/v2.5-turbo/pro/image-to-video` from hero 2, 5 seconds at $0.07 a second. $0.35. Prompt: "A slow push-in toward the glowing center of the scene; warm light gradually drifts across the surfaces from left to right; a gentle, steady drift of the camera. Motion of camera and light only." Negative prompt: `blur, distort, low quality, text, letters`.
+All prompts were built from the palette and the brand's own name. Ideogram 3 was used at TURBO speed, without prompt expansion.
 
-Total fal cost: $0.53, against a plan price of $0.53 and a cap of $1.50.
+- **logo-1** (`fal-ai/ideogram/v3`, DESIGN): "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. The wordmark "htmx" set in a chunky retro rounded display typeface, deep blue letters with a mustard drop shadow. The name in double quotes is the only text."
+- **logo-2** (`fal-ai/ideogram/v3`, DESIGN): "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. A lettermark: the letter "h" in a bold retro monoline style inside a simple deep blue rounded square, with an orange-red angle bracket accent. The letter in double quotes is the only text."
+- **logo-3** (`fal-ai/ideogram/v3`, DESIGN): "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. A simple symbol of a lightning bolt crossed with an angle bracket in orange-red, placed beside the name "htmx" in deep blue chunky retro lettering. The name in double quotes is the only text."
+- **hero-1** (`fal-ai/ideogram/v3`, DESIGN): "A retro web-era poster scene: a glowing orange-red hypertext link arcs across a cream sky above a chunky mustard toolbox. The headline "high power tools for HTML" set in bold blue retro display letters across the top third, with empty space for it."
+- **hero-2** (`fal-ai/ideogram/v3`, GENERAL, negative prompt "text, letters, words, logo, watermark"): "A retro 1990s computer desk seen from a distance, a beige CRT monitor glowing with a web page, orange-red light lines flowing from its screen across the desk toward a row of chunky mustard tool handles. Warm cream and deep blue palette, soft light moving across the scene, flat illustration style."
+- **hero-3** (`fal-ai/ideogram/v3`, GENERAL, negative prompt "text, letters, words, logo, watermark"): "A retro workshop bench in a sunlit room, a neat row of vintage hand tools and a small beige desktop computer, with a tangle of orange-red light threads being tied neatly into a tidy knot. Cream walls, deep blue shadows, mustard accents, flat illustration style, no people."
+- **promo** (`fal-ai/kling-video/v2.5-turbo/pro/image-to-video`, 5 s, from hero-2): "A slow push-in toward the glowing monitor; soft light drifts gently across the cream and deep blue scene, orange-red light lines pulse slowly, camera holds steady with a gentle drift." Negative prompt: "blur, distort, low quality, text, letters".
 
-## Notes on the run
+## fal cost
 
-- The first six submissions used keys of the form `bk-htmx.org-20261120-<name>`. fal answered each with a 409 conflict, meaning the key was bound to another request. Nothing was billed for those. The logo-1 key was tied to an earlier Recraft job, which this kit did not use. All six were resubmitted under `bk-htmx.org-20261120r2-<name>` keys, and those are the images in this kit.
-- Logo 1 through hero 3 were saved under their media paths by an earlier script step, which also reported an error at its end. The save refusals since then show each file is in place.
+| Step | Endpoint | Units | Unit price | Cost |
+|---|---|---|---|---|
+| Logos | fal-ai/ideogram/v3 | 3 images | $0.03 | $0.09 |
+| Heroes | fal-ai/ideogram/v3 | 3 images | $0.03 | $0.09 |
+| Promo | fal-ai/kling-video/v2.5-turbo/pro/image-to-video | 5 s | $0.07 | $0.35 |
+| **Total** | | | | **$0.53** |
+
+Budget cap: $1.00. Plan price: $0.53. Nothing failed, and every file was saved.
