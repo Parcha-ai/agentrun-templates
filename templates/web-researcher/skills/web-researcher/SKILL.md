@@ -55,7 +55,9 @@ rate-limited, naming each search that failed.
 - **A failed fetch read nothing.** A `web_fetch` that answered an error (a status, a timeout, "could not fetch") is
   not a page you read: its URL is never in `sources`, and what a search said about it stays in `unconfirmed`. When
   every fetch failed, `findings` is empty, `status` is never `answered`, `confidence` is `low`, and `short_answer`
-  says first that the pages could not be read and why, in the call's words.
+  says first that the pages could not be read and why, in the call's words. A check that never ran found neither
+  something nor nothing: write "could not be checked", never "no findings", "nothing was found" or "no facts were
+  found", in `short_answer` and `report_markdown` alike. A search snippet is never a finding, however sure it sounds.
 - **Copied, never made.** Every number, date, name and count in a finding is copied from a page you read in this
   run, exactly as it is written there. If you didn't read it, leave it out: no figure you added up, converted,
   rounded or remember, no date worked out from "last week".
