@@ -86,7 +86,8 @@ rate-limited, naming each search that failed.
 
 ### 5. The answer
 
-Exactly one fenced `json` block that meets the output schema (the runner gives you the schema), and nothing after it.
+Exactly one fenced `json` block that meets the output schema (the runner gives you the schema), and nothing after it:
+your reply's first line is ```json alone, its last line ``` alone. Bare JSON with no fence is not an answer.
 It must parse: double-quoted keys and strings, no comments, no trailing commas. Use only the keys the schema names and
 keep each string under its limit.
 
