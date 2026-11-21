@@ -72,8 +72,11 @@ before reading any, then read them together. This is faster than one after anoth
    answers at once with `request_id`, `status_url` and `response_url`: keep them per job. Only one call per job: a
    job that answered is queued, even if it isn't finished.
 3. **Keys for a run of several jobs.** Each job's `submission_key` is
-   `<prefix>-<host>-<YYYYMMDD>-<name>`: the template's prefix, the input page's host without `www.` (lower case), today's
-   date and the job's file name without its extension, for example `bk-fernlight.example-20261118-hero-2`. Send it as
+   `<prefix>-<host>-<YYYYMMDD>-<name>`: the template's prefix, the input page's host without `www.` (lower case) cut to
+   its first 40 characters, today's date and the job's file name without its extension, for example
+   `bk-fernlight.example-20261118-hero-2`. fal refuses a key over 128 characters, and the cut keeps every key under it
+   whatever the host: `docs.a-very-long-subdomain-name-for-the-product.example` (55 characters) gives
+   `bk-docs.a-very-long-subdomain-name-for-the--20261118-hero-2`. Send it as
    its own argument, beside `endpoint_id` and `input`, never inside `input`. One key per job, unique in the run, the
    same on any retry of that job. If fal rejects a key as already used for a different
    request (an earlier run on the same day), nothing was billed: put `r2` after the date in every key of this run
