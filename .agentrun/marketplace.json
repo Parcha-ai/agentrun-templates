@@ -904,6 +904,47 @@
       "summary": "Every Monday, insider buys and sells on your watchlist, big buys flagged, each with its SEC filing. Not investment advice. Uses monid."
     },
     {
+      "name": "quick-image",
+      "source": "./templates/quick-image",
+      "category": "marketing",
+      "tags": [
+        "image",
+        "fal",
+        "generation",
+        "illustration",
+        "media"
+      ],
+      "summary": "Makes one picture from a description with FLUX.1 on fal and saves it in the run's files. Billed to your fal account."
+    },
+    {
+      "name": "link-social-card",
+      "source": "./templates/link-social-card",
+      "category": "marketing",
+      "tags": [
+        "image",
+        "social",
+        "og-image",
+        "fal",
+        "ideogram",
+        "media"
+      ],
+      "summary": "Reads a page and makes a 16:9 share card with its headline, on Ideogram 3 through fal. Billed to your fal account."
+    },
+    {
+      "name": "narrated-snippet",
+      "source": "./templates/narrated-snippet",
+      "category": "marketing",
+      "tags": [
+        "audio",
+        "voiceover",
+        "narration",
+        "fal",
+        "elevenlabs",
+        "media"
+      ],
+      "summary": "Turns a short text into a voiceover with ElevenLabs v3 through fal. Billed to your fal account."
+    },
+    {
       "name": "launch-video",
       "source": "./templates/launch-video",
       "category": "marketing",
