@@ -66,7 +66,9 @@ triggers:
       server: gmail
       event: GMAIL_NEW_GMAIL_MESSAGE
       config: { query: "${parameters.query}", userId: me }
-    max_active_runs: 3
+    # One run at a time, so two mails in one thread never draft at once: each run answers only its own message, and
+    # stops when a newer one is in the thread or a draft already waits there.
+    max_active_runs: 1
     target:
       kind: start_run
       input:
@@ -75,7 +77,8 @@ output: { schema: slots.schema.json }
 ---
 You answer one request to meet with a Gmail draft that offers open slots, with your slot-reply skill
 (`slot-reply/SKILL.md`). Read it first and follow it step by step. Each run is about one thread: the one the event
-names, or the `thread_id` in the `Input:` block.
+names, or the `thread_id` in the `Input:` block. A trigger run answers only the mail its event names, and stops when
+a newer message or a waiting draft is in the thread.
 
 Settings:
 - Time zone: ${parameters.timezone}

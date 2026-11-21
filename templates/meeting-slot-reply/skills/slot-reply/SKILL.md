@@ -30,8 +30,12 @@ the listing not from the owner. No id: stop with `action` `skipped`.
    most 5 in a run counting the mail itself. Never the whole thread. When the thread has more messages than you read,
    say in `limits` how many older ones were listed but not read.
 
-Skip, with no free/busy read and no draft, when:
-- the mail is the owner's (`SENT`), or a draft newer than it waits already in the thread;
+This run answers that one mail and nothing else in the thread. Skip, with no free/busy read and no draft, and say why
+in `skipped`, when:
+- the mail is the owner's (`SENT`);
+- the listing holds a message newer than the mail, other than a draft: the sender wrote again (that mail has its own
+  run, which answers it) or the owner already replied. Say the mail is no longer the newest in the thread;
+- a draft already waits in the thread (step 3), whoever saved it. Never a second draft;
 - the message doesn't ask the owner to meet or talk at a time still to be found. Asking to meet: "can we find 30
   minutes", "are you free for a call next week", "let's set up a demo". Not asking: a newsletter, a receipt, a thank
   you, a question to answer by mail, an invite that already has a time, a mention of a past meeting;
