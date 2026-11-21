@@ -237,6 +237,15 @@ main summary:hover { color: hsl(var(--foreground)); }
 .prose pre, .report pre { background: hsl(var(--muted)); padding: 12px; border-radius: var(--ar-control-radius); overflow-x: auto; font-size: 13px; }
 .prose blockquote, .report blockquote { margin: 0 0 16px; border-left: 2px solid hsl(var(--primary)); padding-left: 12px; color: hsl(var(--muted-foreground)); }
 .prose blockquote p, .report blockquote p { font-size: 14px; margin: 4px 0; }
+/* A sample's media: players shrink to the column, keep the file's own shape, and stay square. */
+.report :is(img, video), .sample-media :is(img, video) { display: block; max-width: 100%; height: auto; border-radius: 0; margin: 12px 0; }
+.report audio, .sample-media audio { display: block; width: 100%; max-width: 520px; margin: 12px 0; border-radius: 0; }
+/* Chrome draws its audio and video controls in a rounded box of their own; square that too. */
+:is(.report, .sample-media) :is(audio, video)::-webkit-media-controls-enclosure, :is(.report, .sample-media) :is(audio, video)::-webkit-media-controls-panel { border-radius: 0; }
+.sample-media { display: grid; gap: 16px; margin: 12px 0; }
+.sample-media figure { margin: 0; }
+.sample-media figure > :is(img, video, audio) { margin: 0 0 6px; }
+.sample-media figcaption { font-family: var(--font-mono); font-size: 12px; color: hsl(var(--muted-foreground)); }
 
 /* What a template requires: a row of logos, each with its line on hover and on keyboard focus. The logos are black
    on transparent; the dark theme inverts them. The line stays in the page for a screen reader. */
