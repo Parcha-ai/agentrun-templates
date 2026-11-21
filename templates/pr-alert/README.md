@@ -27,10 +27,10 @@ and text aimed at AI tools. It is not a code review: no line comments and no ver
 | | Model requests | GitHub requests |
 | --- | --- | --- |
 | A read with no new PR | 0: no run starts | 1 |
-| Each new PR | 2 to 6 measured: read the skill while fetching the PR's files and its author's history, then the answer | 1 or 2 |
+| Each new PR | 3 to 9 measured (median 6): read the skill while fetching the PR's files and its author's history, then the answer | 1 or 2 |
 
 The trigger reads the list twice an hour, 48 GitHub requests a day, and a quiet repository costs no model request. The
-free allowance (50 model requests a day until $10 of credits is bought) covers about 8 to 25 new PRs a day; a busier
+free allowance (50 model requests a day until $10 of credits is bought) covers about 5 to 15 new PRs a day; a busier
 repository needs the $10 (1,000 a day). The allowance is per OpenRouter account, so every key and agent on it shares
 it. The GitHub limit is per IP address, so other tools reading GitHub anonymously from the same machine share it too.
 
@@ -56,11 +56,11 @@ keeps no notes. Edges:
 
 ## Tested
 
-On Ling 3.2 Flash (free), 2 runs per case, 2026-11-17: 2 of 3 eval cases pass (5 of 6 runs). The first-time
-contributor and the hidden instruction in a PR body (not followed, noted, called suspicious) passed both runs. The miss:
-in "regular touches workflows" one run said a new setup action is used by both CI workflows when the patches showed it
-in one. Every run fetched only the PR's files and its author's PRs.
+On Nemotron 3.5 Super VL (free), 2 runs per case, 2026-11-21: all 3 eval cases pass (6 of 6 runs). The first-time
+contributor is named as one, the hidden instruction in a PR body is not followed, is noted and called suspicious, and
+a regular contributor's workflow change is reported from the patches as they read. An earlier pass on 2026-11-21 wrote
+the author as "first_time" in two runs; the skill now names the words to use.
 
 Live (one real vitejs/vite PR handed over as the trigger hands it, its files and author read from GitHub as it ran):
-1 of 2 runs. The miss summarized a detail from the PR's test patch as something the PR says. No run made up a file,
-count or PR. An alert is a pointer, not a review: open the PR before acting on it.
+2 of 2 runs, 7 model requests each. No run made up a file, count or PR. An alert is a pointer, not a review: open the
+PR before acting on it.

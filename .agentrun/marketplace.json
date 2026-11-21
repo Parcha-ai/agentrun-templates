@@ -844,7 +844,7 @@
         "fact-finding"
       ],
       "summary": "Answers one question from the open web: a short answer, each finding with its link, and where sources disagree.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 6 of them. Search is Exa's keyless tier, about 150 a day; the Parallel Search preset adds more and sees each query. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 9 of them. Search is Exa's keyless tier, about 150 a day; the Parallel Search preset adds more and sees each query. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
     },
     {
       "name": "upgrade-watch",
@@ -915,7 +915,7 @@
         "weekly"
       ],
       "summary": "Every week, the top posts from your RSS and Atom feeds for what you care about, each with a two-line why and its link, never repeated.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 6 of them. It reads only your feeds, so it needs no search provider. NVIDIA, which serves the free model, may use what you send it to improve its AI models, so send nothing private."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 4 of them. It reads only your feeds, so it needs no search provider. NVIDIA, which serves the free model, may use what you send it to improve its AI models, so send nothing private."
     },
     {
       "name": "field-monitor",
@@ -930,7 +930,7 @@
         "citations"
       ],
       "summary": "A weekly report on what changed in one topic, each change dated and cited to the page that says it, with what it could not check.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 6 of them. Search is Exa's keyless tier, about 150 a day; Firecrawl's preset searches past that and sees each query and URL. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 10 of them. Search is Exa's keyless tier, about 150 a day; Firecrawl's preset searches past that and sees each query and URL. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
     },
     {
       "name": "page-to-json",
@@ -944,7 +944,7 @@
         "structured-data"
       ],
       "summary": "Give it a URL and a JSON Schema; it returns typed JSON from that page, each value with its source text, each missing one null with why.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 6 of them. Add Firecrawl's preset (Settings → MCP servers) for pages drawn by JavaScript; it sees each URL. NVIDIA, which serves the model, may use what you send to improve its AI models: use public pages only."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 4 of them. Add Firecrawl's preset (Settings → MCP servers) for pages drawn by JavaScript; it sees each URL. NVIDIA, which serves the model, may use what you send to improve its AI models: use public pages only."
     },
     {
       "name": "ai-search-visibility",
@@ -960,7 +960,7 @@
         "audit"
       ],
       "summary": "Can AI search reach and name your site? Checks AI crawlers' access, your llms.txt and buyer searches, then lists what to fix first.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 6 of them. Search is Exa's keyless tier, about 150 a day; Firecrawl's preset searches past that and sees each query and URL. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 7 of them. Search is Exa's keyless tier, about 150 a day; Firecrawl's preset searches past that and sees each query and URL. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
     },
     {
       "name": "docs-answerer",
@@ -974,7 +974,7 @@
         "citations"
       ],
       "summary": "Answers a question from one product's own docs, each point linked to the page that says it, and says plainly what the docs don't cover.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 6 of them. Search is Exa's keyless tier, about 150 a day; Firecrawl's preset searches past that and sees each query and URL. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 8 of them. Search is Exa's keyless tier, about 150 a day; Firecrawl's preset searches past that and sees each query and URL. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
     }
   ]
 }
