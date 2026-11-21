@@ -48,6 +48,8 @@ When neither tool is yours or both fail, write with what you have and say what c
   names it, and its `quote` is from that page.
 - **Copied, never made.** Commands, flags, settings, environment variables, file paths, versions, limits and prices are
   copied exactly as the docs write them. Never build a command the docs don't show, never fill a default from memory.
+  A command and an option the page shows apart stay apart: quote the command as written, then name the option to add
+  (`python -m tool /path`, with `--flag` added), never one combined command no page prints.
 - **Not in the docs is an answer.** When the pages you read don't answer a part, put it in `not_covered` with the pages
   and searches you checked, and set `status` to `partly_answered` or `not_in_docs`. The `answer` says plainly that the
   docs don't cover it. What the docs list (supported platforms, plans, options) may be stated as what they list, with
