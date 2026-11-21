@@ -89,15 +89,17 @@ Every fix has `evidence`: the quoted rule, the status, or the search's result li
 shows. When nothing needs fixing, `fixes` is empty and the report says so.
 
 Say only what the reads show: a rule refuses a crawler, a search lists the site or not. Never say what an AI engine
-will answer, cite, retrieve or surface ("won't be cited in AI answers", "retrieval will not surface it"): no read
-shows an engine at work. A `not_found` fix says the search did not list the site, and nothing about why.
+will answer, cite, retrieve or surface ("won't be cited in AI answers", "keeps the site out of its answers",
+"retrieval will not surface it"): no read shows an engine at work. A high fix says which crawler the rule refuses; a
+`not_found` fix says the search did not list the site, and nothing about why.
 
 ## When the reads failed
 
 A failed fetch or search is never a finding: robots.txt that could not be read is `unreachable`, not missing, and its
 crawlers `unknown`; a failed search is `search_failed`, never `not_found`. Each goes in `could_not_check` with the
 reason the call gave. When every read failed, `fixes` is empty and the report says the site could not be checked and
-why, never that it has no problem.
+why, never that it has no problem. An unread file says nothing: never "no rule blocks any bot" or "no llms.txt was
+found". `llms_txt.note` for an `unreachable` fetch gives the error, and the report says each check could not run.
 
 ## 5. The answer
 
