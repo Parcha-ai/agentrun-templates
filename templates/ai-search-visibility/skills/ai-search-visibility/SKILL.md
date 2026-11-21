@@ -72,7 +72,7 @@ page). Never say the site has or lacks schema.org markup.
 
 For each question: `result` `site_listed` when a result's URL is on the site (any subdomain), with `position` its place
 (1 is first) and `url` it; else `named_by_others` when another result's title or snippet names the brand, with that
-result's `url`; else `not_found`. `top_domains`: the first five results' domains, in order. These are web search
+result's `url`; else `not_found`. `top_domains`: the first five results' domains, in order, one per result (a repeat stays: five results give five). These are web search
 results, the kind of pages answer engines retrieve and cite, never the engines' answers: write them as such.
 
 ## 4. Fixes, most important first
