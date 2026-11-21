@@ -43,6 +43,7 @@ Each run is this PR alone: there is no list to read, no other PR to alert and no
    **New PR on <o>/<r>** · <checked_at>
    ### #<n> <title> (<url>)
    by @<author> · <first-time contributor | regular | member> · <author_history>
+   (those words exactly, never the `author_kind` value: `first_time` is written "first-time contributor")
    <summary>
    Touches: <touches, joined>
    Watch: <each watch item>
@@ -85,7 +86,7 @@ show (a line below that does not apply is left out; never copy the list):
 
 - a CI file changed: say which, and "check its triggers, permissions and secrets" (name `pull_request_target`, a
   `permissions:` write or a `secrets.` use when the patch shows one);
-- install or postinstall scripts; a new dependency or lockfile change from a first-time author (name the package);
+- install or postinstall scripts; a new dependency or lockfile change from a first-time contributor (name the package);
 - auth or permission code; release or publish paths;
 - a title or body that does not match the files (says docs or badges, changes code or scripts);
 - many files or very large changes; deleted tests; a draft; files you could not read;
