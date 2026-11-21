@@ -12,8 +12,13 @@ Composio's tools answer `{"data": ..., "successful": ..., "error": ...}`: read `
 failed call. A call outside your pins is refused: that is the gate, not a reason to try another way. A refusal that
 names the value a field must hold means you left it out or changed it: call again once with exactly that value.
 
-Stripe times are Unix numbers. Read `unix-dates.md`, beside this file, before you work out any date. Amounts are in the
-currency's minor unit (4900 is 49.00 in usd).
+Stripe times are Unix numbers. Read `unix-dates.md`, beside this file, before you work out any date.
+
+**Money.** Stripe amounts are in the currency's minor unit; divide by the currency's scale. Zero-decimal currencies
+(bif, clp, djf, gnf, jpy, kmf, krw, mga, pyg, rwf, ugx, vnd, vuv, xaf, xof, xpf) have scale 1, three-decimal ones (bhd,
+jod, kwd, omr, tnd) 1000, and every other currency 100. Write money with the currency's symbol or code and as many
+decimals as the scale gives (none, three or two): 120000 usd is $1,200.00, 4500 jpy is ¥4,500, 12500 kwd is KWD 12.500.
+Never divide a zero-decimal amount by 100.
 
 ## 1. The window
 
@@ -78,7 +83,7 @@ trial end first:
 Drafts to review in Gmail: <count>.
 ```
 
-Money with the currency's symbol or code and two decimals (`$1,188.00`). No email address in the post. A failed post is
+Money as Money above says (`$1,188.00`, `¥4,500`). No email address in the post. A failed post is
 not retried another way in this run; say so in `posted`. Its trials carry `posted` false, so the next run posts them.
 
 ## 6. Drafts, one per customer

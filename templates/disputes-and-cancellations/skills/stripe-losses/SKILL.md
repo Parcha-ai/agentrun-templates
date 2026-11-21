@@ -11,7 +11,13 @@ Composio's tools answer `{"data": ..., "successful": ..., "error": ...}`: read `
 failed call. A call outside your pins is refused: that is the gate, not a reason to try another way.
 
 Stripe times are Unix numbers. Read `unix-dates.md`, beside this file, before you work out any date, and compare times
-by their numbers. Amounts are in the currency's minor unit (120000 is 1,200.00 in usd).
+by their numbers.
+
+**Money.** Stripe amounts are in the currency's minor unit; divide by the currency's scale. Zero-decimal currencies
+(bif, clp, djf, gnf, jpy, kmf, krw, mga, pyg, rwf, ugx, vnd, vuv, xaf, xof, xpf) have scale 1, three-decimal ones (bhd,
+jod, kwd, omr, tnd) 1000, and every other currency 100. Write money with the currency's symbol or code and as many
+decimals as the scale gives (none, three or two): 120000 usd is $1,200.00, 4500 jpy is ¥4,500, 12500 kwd is KWD 12.500.
+Never divide a zero-decimal amount by 100.
 
 ## 1. The window
 
@@ -62,8 +68,9 @@ For each one:
 - **Tenure.** From `start_date` to `canceled_at`, in months (and years past 12), rounded down: "1 yr 8 mo", "5 mo",
   "under a month".
 - **MRR lost.** Each item's `price.unit_amount` x `quantity`, per month: a yearly price / 12, a weekly one x 52 / 12, a
-  `interval_count` of more than 1 divides by it. Work in the minor unit and divide by 100 last, and write the sum down:
-  `unit_amount` 360000 yearly is 360000 / 12 = 30000 a month, so $300.00/month. A subscription that never paid (it ended
+  `interval_count` of more than 1 divides by it. Work in the minor unit and divide by the currency's scale
+  last (see Money), and write the sum down: `unit_amount` 360000 usd yearly is 360000 / 12 = 30000 a month, so
+  $300.00/month. A subscription that never paid (it ended
   in its trial, or its status went from `incomplete` to cancelled) lost no revenue: say "0, ended in trial" or
   "never paid".
 - **Last payment.** `STRIPE_LIST_INVOICES` with `customer`, `subscription` the sub's id, `status: paid`, `limit: 1`:
@@ -90,7 +97,7 @@ Otherwise one `SLACK_SEND_MESSAGE` with `channel` the Post-to setting exactly as
 • <name>: <plan>, <MRR>/month. Customer <tenure>. Last paid <amount> on <Mon D YYYY>. Why: <reason, feedback>.
 ```
 
-Leave out a section that has nothing in it. Money with the currency's symbol or code and two decimals (`$1,200.00`).
+Leave out a section that has nothing in it. Money as Money above says (`$1,200.00`, `¥4,500`).
 No mention of anyone. A failed post is not retried another way; say so in `posted`.
 
 ## 5. Carry forward
