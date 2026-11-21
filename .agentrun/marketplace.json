@@ -902,6 +902,38 @@
         "weekly"
       ],
       "summary": "Every Monday, insider buys and sells on your watchlist, big buys flagged, each with its SEC filing. Not investment advice. Uses monid."
+    },
+    {
+      "name": "launch-video",
+      "source": "./templates/launch-video",
+      "category": "marketing",
+      "tags": [
+        "video",
+        "launch",
+        "voiceover",
+        "music",
+        "fal",
+        "kling",
+        "elevenlabs",
+        "media"
+      ],
+      "summary": "Turns a product or release page into a 30 or 45 second launch video with voiceover, music and captions. Billed to your fal account."
+    },
+    {
+      "name": "brand-kit",
+      "source": "./templates/brand-kit",
+      "category": "marketing",
+      "tags": [
+        "brand",
+        "logo",
+        "palette",
+        "image",
+        "video",
+        "fal",
+        "ideogram",
+        "kling"
+      ],
+      "summary": "A starter kit for your own brand: palette, fonts, voice, logo concepts, hero images and a promo clip. Billed to your fal account."
     }
   ]
 }
