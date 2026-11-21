@@ -89,7 +89,11 @@ Write for the ear:
 - About 150 words is a minute of speech.
 
 On fal, `fal-ai/elevenlabs/tts/eleven-v3` takes `text`, `voice` (a voice name; the default is `Rachel`),
-`stability` (default 0.5) and `language_code`, and answers mp3. `stability` 0.35 to 0.5 sounds alive (lower is more
+`stability` (default 0.5), `language_code`, `output_format` (default "mp3_44100_128": MP3 at a constant 128 kbps, so
+its length in seconds is `file_size` × 8 ÷ 128000) and `timestamps` (true: the answer adds `timestamps`, when each
+character is spoken, in seconds), and answers mp3. `timestamps` is a list of chunks, one entry per character (spaces,
+punctuation and audio tags included); a chunk can end mid-word, so join the chunks' characters before you look for
+words. One chunk: `{"characters": [...], "character_start_times_seconds": [...], "character_end_times_seconds": [...]}`. `stability` 0.35 to 0.5 sounds alive (lower is more
 expressive, less steady); 0.6 to 0.8 suits calm narration. Other models name more settings (`similarity_boost`,
 `style`, `speed`): set them only when the schema lists them.
 

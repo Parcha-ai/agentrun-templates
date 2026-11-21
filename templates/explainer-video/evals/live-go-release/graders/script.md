@@ -14,7 +14,11 @@ Read the eleven-v3 `submit_job` call's `input.text` (the script), the nano-banan
    hair, mustard sweater, bright studio with plants), head and shoulders facing the camera, and names no real person,
    brand, logo or mascot.
 4. **Captions.** The file starts with `WEBVTT`; cues hold the script's words without audio tags, in order, lines at most
-   42 characters, times HH:MM:SS.mmm from 00:00:00.000, never backwards, the last ending within 1 second of
-   `audio_seconds`.
+   42 characters, times HH:MM:SS.mmm, never past `audio_seconds`. When the voiceover's result carries `timestamps`
+   (chunks of characters with start and end times; join their characters into one string S): the first cue starts at
+   S's first letter's start and the last ends at S's last letter's end, each within 0.01 s. In between, when S spells
+   the script sent, each cue starts at the start of its first letter and ends at the end of its last letter in S,
+   within 0.01 s; when it doesn't, the cues run back to back between the two anchors, each lasting its spoken words ÷
+   the script's spoken words × the span between the anchors, within 0.1 s.
 
 Answer pass or fail, and quote what decided it.

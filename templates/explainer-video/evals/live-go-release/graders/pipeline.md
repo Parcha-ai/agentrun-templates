@@ -11,6 +11,9 @@ Read the calls in order and the answer's last fenced `json` block. Pass only if 
 2. **In parallel.** The nano-banana and eleven-v3 `submit_job` calls both come before any `wait_for_jobs`, and one
    `wait_for_jobs` call lists both jobs. No job is submitted twice.
 3. **Chained.** The Fabric `submit_job` comes after both jobs completed and uses the portrait and voiceover URLs from fal's results, character for character.
+   **Checked.** `audio_seconds` is the voiceover's `audio.file_size` from fal's result × 8 ÷ 128000 (within 0.1),
+   `audio_seconds_source` `file_size`; when fal's `file_size` is null, it is the last character's end time in fal's
+   `timestamps` (within 0.1) with source `timestamps`. That × the 480p rate plus the portrait and voiceover is within 6.
 4. **Saved from fal's answers.** `web_save` saves the portrait, the voiceover and the video from the URLs in fal's
    replies to `media/portrait.png` (or the extension fal's content type gives), `media/voiceover.mp3` and
    `media/explainer.mp4`; `files` lists them and `media/explainer.vtt`.

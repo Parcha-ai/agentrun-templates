@@ -16,7 +16,8 @@ Read the calls in order and the answer's last fenced `json` block. Pass only if 
 3. **From the page.** Every claim and figure in the script (the eleven-v3 `input.text`) is on the page; no digit is
    left in it; at most 75 spoken words. Default voice: the voice sent is a women's voice (Rachel unless the answer says
    why), and the portrait prompt describes a woman, or names no gender while the voice is River.
-4. **Answer.** `status` `saved`, `doc_read` true, `source` the page's URL, `audio_seconds` the script's spoken words ÷ 2.4 within 2 s, and `files` lists
+4. **Answer.** `status` `saved`, `doc_read` true, `source` the page's URL, `audio_seconds` 29.16 within 0.1 (the
+   voiceover's `file_size` 466560 × 8 ÷ 128000) with `audio_seconds_source` `file_size`, and `files` lists
    `media/explainer.mp4`, `media/portrait.png`, `media/voiceover.mp3` and `media/explainer.vtt`.
    `report_markdown` contains `![Explainer](media/explainer.mp4)`.
 

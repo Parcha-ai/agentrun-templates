@@ -103,7 +103,9 @@ output video, which is the length of the audio, so price them from the audio's l
 | `fal-ai/bytedance/omnihuman/v1.5` | `image_url`, `audio_url`; `resolution` `720p` or `1080p` (default 1080p); `prompt`, `turbo_mode` optional | $0.16 per second; audio under 60 s at 720p, under 30 s at 1080p; answers `{"video": {...}, "duration"}` (the seconds billed) |
 
 Both take the image as jpg, jpeg, png, webp, gif, avif, heic or heif, and the audio as mp3, ogg, wav, m4a or aac, at a
-public URL (fal's own result URLs are). Neither needs the audio's duration as an input.
+public URL (fal's own result URLs are). Neither needs the audio's duration as an input. Both bill the audio's real length,
+not the length asked for: read it from the voiceover's result (a constant-bitrate MP3's `file_size` × 8 ÷ its
+bitrate) before you submit, and hold it to the model's audio limit.
 
 A portrait that lip-syncs well: one person, head and shoulders, facing the camera, eyes to the lens, mouth closed and
 relaxed, the face large in the frame and evenly lit, a plain background, nothing in front of the face (no hand, mic or

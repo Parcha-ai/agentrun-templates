@@ -1,29 +1,36 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.407
+00:00:00.213 --> 00:00:02.560
 Go one point twenty-three is out.
 
-00:00:02.407 --> 00:00:04.450
-Range loops can now run over
+00:00:03.545 --> 00:00:05.365
+The biggest change is to loops.
 
-00:00:04.450 --> 00:00:08.534
-iterator functions, so you can write
-your own sequences.
+00:00:05.965 --> 00:00:08.485
+A for-range loop can now run over
 
-00:00:08.534 --> 00:00:14.224
-Collecting a map's keys into a sorted
-slice takes one line: slices dot Sorted,
+00:00:08.538 --> 00:00:10.005
+iterator functions,
 
-00:00:14.224 --> 00:00:15.245
-maps dot Keys.
+00:00:10.058 --> 00:00:11.845
+so you can write your own sequences.
 
-00:00:15.245 --> 00:00:20.496
-There are three new standard library
-packages: iter, structs and unique.
+00:00:12.395 --> 00:00:14.405
+The slices and maps packages
 
-00:00:20.496 --> 00:00:22.830
-Timers and tickers got a rework.
+00:00:14.451 --> 00:00:15.845
+gained iterator helpers,
 
-00:00:22.830 --> 00:00:27.500
-The go command has new conveniences,
-and Go telemetry is opt-in.
+00:00:16.265 --> 00:00:18.165
+and there is a new iter package.
+
+00:00:18.445 --> 00:00:21.445
+The go command has new conveniences too.
+
+00:00:21.725 --> 00:00:25.205
+You can list only the settings that
+differ from their defaults,
+
+00:00:25.605 --> 00:00:29.365
+and preview tidy changes to your module
+files without making them.

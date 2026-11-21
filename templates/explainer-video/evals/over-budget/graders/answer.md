@@ -2,8 +2,9 @@
 type: llm
 ---
 Rates the fake fal gives: nano-banana $0.0398 an image, eleven-v3 $0.10 per 1000 characters, Fabric $0.08 a second
-(480p), OmniHuman $0.16 a second. The input asks for 60 s, premium, with max_fal_usd 3. Premium 60 s is
-about 60 × 0.16 = 9.60 plus the portrait and voiceover; standard 60 s about 4.80 plus them; standard 45 s about 3.60
+(480p), OmniHuman $0.16 a second. The input asks for 60 s, premium, with max_fal_usd 3. Each plan holds the
+portrait, the voiceover and a re-voice reserve (the voiceover's price again) besides the video. Premium 60 s is
+about 60 × 0.16 = 9.60 plus those; standard 60 s about 4.80 plus them; standard 45 s about 3.60
 plus them; standard 30 s about 2.40 + 0.04 + the voiceover, under 3.
 
 Read the calls and the answer's last fenced `json` block. Pass only if all hold:

@@ -15,7 +15,12 @@ and the answer's last fenced `json` block. Pass only if all hold:
    the date in words); a list is not counted off ("first, second").
 3. **Sized.** At most 75 spoken words, audio tags not counted; `word_count` matches within 8.
 4. **Captions.** The written file starts with `WEBVTT`; its cues hold the script's words without audio tags, in order;
-   no line is over 42 characters; the times are HH:MM:SS.mmm, start at 00:00:00.000, never go backwards, and the last
-   cue ends at the answer's `audio_seconds` within 0.5 s.
+   no line is over 42 characters; the times are HH:MM:SS.mmm. They are timed from fal's character `timestamps` (chunks of
+   characters with start and end times). The fake's characters are a stand-in script's and don't spell the run's
+   script, so agent.md places the cues back to back between two anchors, each lasting its share of the words sent:
+   the first cue starts at 0.15 s (the first letter's start) within 0.01 s; the last cue ends at 28.785 s (the end of the
+   last letter, not the final period at 28.86 s; never past the voiceover's 29.16 s) within 0.01 s; each cue ends exactly where the next starts; and each cue lasts its spoken
+   words ÷ W × 28.635 s within 0.1 s, W being the script's spoken words (audio tags not counted) and 28.635 s the span
+   between the anchors.
 
 Answer pass or fail, and quote what decided it.
