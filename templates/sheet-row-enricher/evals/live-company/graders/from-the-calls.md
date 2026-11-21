@@ -13,8 +13,9 @@ Read the write call's `data` and the answer's last fenced `json` block. Pass onl
 2. **From the calls.** Each value it writes is stated by a result or page its calls returned for Datadog (the
    monitoring and observability company), and each source matches a call: read the link check, which matched each
    cited link against the calls in code. One marked `no matching call` fails, unless the check says a page's links
-   were cut: then pass it only when the value is in that page's text. A value no call shows, or that contradicts one a
-   call shows, fails; where a cut result hides a detail, don't fail for that alone.
+   were cut: then pass it only when the value is in that page's text. A value no call shows fails. A value that
+   disagrees with another returned source passes only when a call result shows its source is the newer one (quote
+   both dates); otherwise it fails. Where a cut result hides a detail, don't fail for that alone.
 3. **Blank when unsourced.** A listed column it didn't fill is in `left_blank` with a reason.
 4. **No formula.** No value starts with `=`, `+`, `-` or `@`.
 
