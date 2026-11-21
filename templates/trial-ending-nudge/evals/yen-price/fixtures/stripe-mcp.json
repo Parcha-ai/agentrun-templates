@@ -1,0 +1,122 @@
+{
+  "server": "stripe",
+  "description": "A fake Composio Stripe on 2026-11-23: one trialing subscription, Hanamura KK's Team at unit_amount 9800 jpy monthly (¥9,800 a month: yen has no minor unit), trial ends 2026-11-25 10:00 UTC, card on file.",
+  "tools": {
+    "STRIPE_LIST_SUBSCRIPTIONS": {
+      "description": "Retrieves a list of Stripe subscriptions, filtered by status, customer, price and dates (limit, starting_after).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "starting_after": {
+            "type": "string"
+          },
+          "customer": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "created": {
+            "type": "object"
+          },
+          "current_period_end": {
+            "type": "object"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "status": "trialing"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"sub_1TrialHNM08\",\"object\":\"subscription\",\"status\":\"trialing\",\"customer\":\"cus_Hanamura08\",\"livemode\":true,\"currency\":\"jpy\",\"collection_method\":\"charge_automatically\",\"created\":1794391200,\"start_date\":1794391200,\"trial_start\":1794391200,\"trial_end\":1795600800,\"current_period_start\":1794391200,\"current_period_end\":1795600800,\"cancel_at_period_end\":false,\"canceled_at\":null,\"default_payment_method\":\"pm_1HanamuraJcb\",\"default_source\":null,\"metadata\":{},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1TrialHNM08\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_TeamMonthlyJpy\",\"object\":\"price\",\"product\":\"prod_TeamPlan01\",\"currency\":\"jpy\",\"unit_amount\":9800,\"recurring\":{\"interval\":\"month\",\"interval_count\":1},\"type\":\"recurring\",\"nickname\":null,\"livemode\":true},\"quantity\":1,\"current_period_start\":1794391200,\"current_period_end\":1795600800}],\"has_more\":false},\"trial_settings\":{\"end_behavior\":{\"missing_payment_method\":\"create_invoice\"}}}],\"has_more\":false,\"url\":\"/v1/subscriptions\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"sub_1TrialHNM08\",\"object\":\"subscription\",\"status\":\"trialing\",\"customer\":\"cus_Hanamura08\",\"livemode\":true,\"currency\":\"jpy\",\"collection_method\":\"charge_automatically\",\"created\":1794391200,\"start_date\":1794391200,\"trial_start\":1794391200,\"trial_end\":1795600800,\"current_period_start\":1794391200,\"current_period_end\":1795600800,\"cancel_at_period_end\":false,\"canceled_at\":null,\"default_payment_method\":\"pm_1HanamuraJcb\",\"default_source\":null,\"metadata\":{},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1TrialHNM08\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_TeamMonthlyJpy\",\"object\":\"price\",\"product\":\"prod_TeamPlan01\",\"currency\":\"jpy\",\"unit_amount\":9800,\"recurring\":{\"interval\":\"month\",\"interval_count\":1},\"type\":\"recurring\",\"nickname\":null,\"livemode\":true},\"quantity\":1,\"current_period_start\":1794391200,\"current_period_end\":1795600800}],\"has_more\":false},\"trial_settings\":{\"end_behavior\":{\"missing_payment_method\":\"create_invoice\"}}}],\"has_more\":false,\"url\":\"/v1/subscriptions\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_RETRIEVE_CUSTOMER": {
+      "description": "Retrieve a customer by customer_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "customer_id": "cus_Hanamura08"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Hanamura08\",\"object\":\"customer\",\"name\":\"Hanamura KK\",\"email\":\"keiri@hanamura.example\",\"description\":null,\"created\":1794358800,\"delinquent\":false,\"livemode\":true,\"metadata\":{},\"invoice_settings\":{\"default_payment_method\":\"pm_1HanamuraJcb\",\"custom_fields\":null,\"footer\":null},\"default_source\":null},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such customer\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_PRODUCTS": {
+      "description": "List products; `ids` returns only those products (limit, active, starting_after).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "starting_after": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"prod_TeamPlan01\",\"object\":\"product\",\"name\":\"Team\",\"active\":true,\"livemode\":true,\"description\":\"Up to 10 seats\"},{\"id\":\"prod_ProPlan02\",\"object\":\"product\",\"name\":\"Pro\",\"active\":true,\"livemode\":true,\"description\":\"Unlimited seats, SSO\"}],\"has_more\":false,\"url\":\"/v1/products\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}
