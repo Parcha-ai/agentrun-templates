@@ -133,8 +133,9 @@ minutes". No word of time ("today", "now", "just shipped"): the film is watched 
 
 **The script**: 55 to 70 words, spoken English for the ear (fal-audio), one or two audio tags for `tone` (confident
 `[warm]`, playful `[playfully]`, calm `[calm]`, bold `[excited]`), versions and numbers spelled as said ("beta fifty
-one", "version two point one"), and no package scope, path, flag, URL or identifier read aloud: the voice says what it
-is ("one npx command", "the jobs flag") and the screen shows the exact text. Write the storyboard now, with `write`, to `film/STORYBOARD.md`, before you price
+one", "version two point one"), and no package scope, path, flag, URL or identifier read aloud: the voice names the thing
+("the install line", "the jobs flag") and the screen shows the exact text. No count of commands or steps ("one
+command", "two steps") unless the notes give that count. Write the storyboard now, with `write`, to `film/STORYBOARD.md`, before you price
 anything (step 3): each beat's seconds, the words it puts on screen, the words of the script it sits under. Every run
 that gets this far leaves that file, the over-budget one too; step 4 builds the film from it.
 
