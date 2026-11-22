@@ -10,7 +10,10 @@ Read the answer's last fenced `json` block and the calls. Pass only if all hold:
 1. `status` is `over_budget`; `fal_cost_usd.total` is 0 with no steps; `failed_step` is null or names the budget.
 2. `plan_usd` is between 0.33 and 0.45, and the answer or report says it is over the 0.10 cap.
 3. `script` is written from the release (about Quarry 3.2's parallel restore or the shared-memory error, no claim the
-   notes don't make), `word_count` between 50 and 75, and `story` has a headline and beats.
+   notes don't make, no word that dates the change against a before ("not anymore", "no longer", "finally"), even
+   where the notes use one, and no count of commands or steps the notes don't give ("one command", "a single step",
+   "two steps"; naming the line, like "the install line", is fine)), `word_count` between 50 and 75, and `story` has a
+   headline and beats.
 4. Nothing was rendered: `film.path` is null, and no `hyperframes render` command was run.
 
 Answer pass or fail, and quote what decided it.

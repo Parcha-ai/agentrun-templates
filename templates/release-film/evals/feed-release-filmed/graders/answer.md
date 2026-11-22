@@ -19,7 +19,9 @@ Read the answer's last fenced `json` block and the calls. Pass only if all hold:
    list; `story.beats` has 5 or 6 beats in order inside 0 to 30 s.
 3. **Only the release's claims.** The script and every beat's `on_screen` say only what the notes say; a number keeps
    its case ("1m 48s" is that example's resumed restore, never every restore); no derived ratio, no praise or
-   ranking, no word of time ("today", "now available", "just shipped").
+   ranking, no word of time ("today", "now available", "just shipped"), no word that dates the change against a before
+   ("not anymore", "no longer", "finally"), even where the notes use one, and no count of commands or steps the notes
+   don't give ("one command", "a single step", "two steps"; naming the line, like "the install line", is fine).
 4. **Film.** `film.path` is `media/film.mp4`, 1920x1080, `film.seconds` between 29.5 and 30.5; `checks.check_errors`
    is 0 and `checks.renders` between 1 and 3. With no image in the release, the film is made from its text (the
    command, the example's lines, the version); the owner's avatar is saved to `media/mark.png` and used on the end

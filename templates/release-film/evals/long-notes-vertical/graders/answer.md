@@ -14,15 +14,21 @@ Read the answer's last fenced `json` block and the calls. Pass only if all hold:
 2. **Only the release's claims.** Judge `story.headline`, every sentence of the script and each beat's `on_screen`
    against the quoted notes, one claim at a time: each says only what the notes say (a playful framing of a stated
    change is fine); on-screen words are real text from the notes (a field name, a command, an error, a number) or
-   short titles. No invented figure, praise or promise. Quote the notes' words for any claim you fail.
+   short titles. No invented figure, praise or promise, no word that dates the change against a before ("not anymore",
+   "no longer", "finally"), even where the notes use one, and no count of commands or steps the notes don't give ("one
+   command", "a single step", "two steps"; naming the line, like "the install line", is fine). Quote the notes' words
+   for any
+   claim you fail.
 3. **Filmed though a pre-release.** `status` is `completed`, `release.prerelease` true, `release.tag`
    `v0.1.0-beta.51`.
 4. **Vertical.** `film.width` 1080, `film.height` 1920, `film.seconds` between 29.5 and 30.5, as an `ffprobe` call in
    the run shows; `checks.check_errors` is 0; any `outside_safe_zone` warning is fixed or kept with a reason.
 5. **Type alone.** No release image was saved (there is none); the avatar was saved to `media/mark.png` and used on
    the end card; no interface, dashboard or logo was drawn.
-6. **Script.** `word_count` between 50 and 75, matching the script within 8 words; "beta fifty one" (or similar) is
-   spelled as said.
+6. **Script.** The first voiceover's script (the `text` of the `submit_job` keyed `...-voiceover`) has 50 to 75
+   words, audio tags not counted. When the run voiced again (`...-voiceover-2`), the second script has at most
+   floor(W × 27 ÷ V × 0.9) words, W the first script's words and V the first voiceover's seconds as the run measured
+   them, and no lower bound. `word_count` matches the script of the voice in the film within 8 words; "beta fifty one" (or similar) is spelled as said.
 
 Answer pass or fail, and quote what decided it.
 

@@ -20,11 +20,15 @@ Read the answer's last fenced `json` block. Pass only if all hold:
 2. **Only the release's claims.** The script and every beat's `on_screen` say only what the notes or the
    screenshots say. No figure the
    notes don't give: "6x", "six times faster", "84% faster" or any derived ratio fails; "38 minutes to 6 minutes"
-   passes. No praise, ranking or promise ("the best", "blazing", "game-changer"), and no word of time ("today",
+   passes. No praise, ranking or promise ("the best", "blazing", "game-changer"), no word of time ("today",
    "now available", "just shipped"; "now" inside a sentence that repeats the notes, like "restores now stream in
-   parallel", is fine).
-3. **Script.** `word_count` is between 50 and 75 and matches the script within 8 words, audio tags not counted; numbers
-   in the script are spelled as said.
+   parallel", is fine), no word that dates the change against a before ("not anymore", "no longer", "finally"), even
+   where the notes use one, and no count of commands or steps the notes don't give ("one command", "a single step",
+   "two steps"; naming the line, like "the install line", is fine).
+3. **Script.** The first voiceover's script (the `text` of the `submit_job` keyed `...-voiceover`) has 50 to 75
+   words, audio tags not counted. When the run voiced again (`...-voiceover-2`), the second script has at most
+   floor(W × 27 ÷ V × 0.9) words, W the first script's words and V the first voiceover's seconds as the run measured
+   them, and no lower bound. `word_count` matches the script of the voice in the film within 8 words; numbers in the script are spelled as said.
 4. **Film.** `status` is `completed`; `film.path` is `media/film.mp4`, `film.width` 1920, `film.height` 1080,
    `film.seconds` between 29.5 and 30.5; `checks.check_errors` is 0 and `checks.renders` between 1 and 3.
 5. **Voice and captions.** `voiceover_seconds` is between 23.7 and 23.85; `captions_timing` is `anchored` (or
