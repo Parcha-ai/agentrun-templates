@@ -1,5 +1,5 @@
 {
-  "description": "acme/quarry's release feed, as GitHub serves releases.atom: v3.2.1 and v3.2.0 before the run, then v3.3.0-rc.1, a pre-release, is published and the trigger fires on it.",
+  "description": "acme/quarry's release feed, as GitHub serves releases.atom: v3.2.1 and v3.2.0 before the run, then v3.3.0, a stable release, is published and the trigger fires on it.",
   "format": "atom",
   "title": "Release notes from quarry",
   "items": [
@@ -21,11 +21,11 @@
     }
   ],
   "item": {
-    "id": "tag:github.com,2008:Repository/810042/v3.3.0-rc.1",
-    "link": "https://github.com/acme/quarry/releases/tag/v3.3.0-rc.1",
-    "title": "Quarry 3.3.0-rc.1",
+    "id": "tag:github.com,2008:Repository/810042/v3.3.0",
+    "link": "https://github.com/acme/quarry/releases/tag/v3.3.0",
+    "title": "Quarry 3.3.0",
     "updated": "2026-11-21T09:00:00Z",
     "author": "dana-q",
-    "content": "<p>Release candidate for 3.3. Please try it and report what breaks.</p>\n<h2>What's new</h2>\n<ul>\n<li><code>quarry restore --resume</code> picks up an interrupted restore where it stopped (#850)</li>\n<li><code>quarry snapshot --compress zstd</code> (#846)</li>\n</ul>"
+    "content": "<p>Quarry 3.3 lets an interrupted restore pick up where it stopped.</p>\n<h2>Highlights</h2>\n<h3>Resume a restore</h3>\n<p>A restore cut off by a dropped connection, a reboot or Ctrl-C used to start over from the first table. <code>quarry restore --resume</code> now picks up at the table it was on...</p>"
   }
 }

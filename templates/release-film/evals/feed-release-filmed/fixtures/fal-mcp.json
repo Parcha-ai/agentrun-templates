@@ -1,6 +1,6 @@
 {
  "server": "fal",
- "description": "A fake fal MCP server for release-film on acme/quarry v3.3.0-rc.1, a pre-release the triggers leave out by default: it would queue and complete both jobs. Bills nothing.",
+ "description": "A fake fal MCP server for release-film on acme/quarry v3.3.0, filmed by the feed trigger: submit_job queues the voiceover and the music by their keys rf-acme-quarry-v3.3.0-<step>; wait_for_jobs completes both (23.77 s voiceover with stand-in timestamps, 30 s music). Bills nothing.",
  "tools": {
   "get_pricing": {
    "description": "Get pricing information for fal.ai models. Returns cost per run or per second.\nUse this when the user asks what a model costs, sets a budget, or wants models compared by price; recommend_model's next_call.price usually has the selected model's rate already. It isn't a required step before running a model. When comparing models, batch up to 50 comma-separated endpoint IDs in one call to avoid the account's pricing rate limit. Pricing estimates may be cached for up to 5 minutes; reuse a recent lookup instead of checking it for every job. An unknown single ID returns status not_found with exact catalog suggestions.",
@@ -232,13 +232,13 @@
     {
      "when": {
       "endpoint_id": "fal-ai/elevenlabs/tts/eleven-v3",
-      "submission_key": "rf-acme-quarry-v3.3.0-rc.1-voiceover"
+      "submission_key": "rf-acme-quarry-v3.3.0-voiceover"
      },
      "result": {
       "content": [
        {
         "type": "text",
-        "text": "{\"status\":\"queued\",\"endpoint_id\":\"fal-ai/elevenlabs/tts/eleven-v3\",\"request_id\":\"8c9d0e1f-2a3b-4c4d-9e5f-6a7b8c9d0e1f\",\"status_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/8c9d0e1f-2a3b-4c4d-9e5f-6a7b8c9d0e1f/status\",\"response_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/8c9d0e1f-2a3b-4c4d-9e5f-6a7b8c9d0e1f\",\"submission_key\":\"rf-acme-quarry-v3.3.0-rc.1-voiceover\",\"message\":\"Submitted; nothing is billed twice for this request. Follow it with wait_for_jobs and these original handles inside jobs[]; never submit it again.\"}"
+        "text": "{\"status\":\"queued\",\"endpoint_id\":\"fal-ai/elevenlabs/tts/eleven-v3\",\"request_id\":\"8c9d0e1f-2a3b-4c4d-9e5f-6a7b8c9d0e1f\",\"status_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/8c9d0e1f-2a3b-4c4d-9e5f-6a7b8c9d0e1f/status\",\"response_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/8c9d0e1f-2a3b-4c4d-9e5f-6a7b8c9d0e1f\",\"submission_key\":\"rf-acme-quarry-v3.3.0-voiceover\",\"message\":\"Submitted; nothing is billed twice for this request. Follow it with wait_for_jobs and these original handles inside jobs[]; never submit it again.\"}"
        }
       ]
      }
@@ -246,13 +246,13 @@
     {
      "when": {
       "endpoint_id": "fal-ai/elevenlabs/music",
-      "submission_key": "rf-acme-quarry-v3.3.0-rc.1-music"
+      "submission_key": "rf-acme-quarry-v3.3.0-music"
      },
      "result": {
       "content": [
        {
         "type": "text",
-        "text": "{\"status\":\"queued\",\"endpoint_id\":\"fal-ai/elevenlabs/music\",\"request_id\":\"9d0e1f2a-3b4c-4d5e-8f6a-7b8c9d0e1f2a\",\"status_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/9d0e1f2a-3b4c-4d5e-8f6a-7b8c9d0e1f2a/status\",\"response_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/9d0e1f2a-3b4c-4d5e-8f6a-7b8c9d0e1f2a\",\"submission_key\":\"rf-acme-quarry-v3.3.0-rc.1-music\",\"message\":\"Submitted; nothing is billed twice for this request. Follow it with wait_for_jobs and these original handles inside jobs[]; never submit it again.\"}"
+        "text": "{\"status\":\"queued\",\"endpoint_id\":\"fal-ai/elevenlabs/music\",\"request_id\":\"9d0e1f2a-3b4c-4d5e-8f6a-7b8c9d0e1f2a\",\"status_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/9d0e1f2a-3b4c-4d5e-8f6a-7b8c9d0e1f2a/status\",\"response_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/9d0e1f2a-3b4c-4d5e-8f6a-7b8c9d0e1f2a\",\"submission_key\":\"rf-acme-quarry-v3.3.0-music\",\"message\":\"Submitted; nothing is billed twice for this request. Follow it with wait_for_jobs and these original handles inside jobs[]; never submit it again.\"}"
        }
       ]
      }
@@ -846,7 +846,7 @@
    "answers": [
     {
      "when": {
-      "submission_key": "rf-acme-quarry-v3.3.0-rc.1-voiceover"
+      "submission_key": "rf-acme-quarry-v3.3.0-voiceover"
      },
      "result": {
       "content": [
@@ -859,7 +859,7 @@
     },
     {
      "when": {
-      "submission_key": "rf-acme-quarry-v3.3.0-rc.1-music"
+      "submission_key": "rf-acme-quarry-v3.3.0-music"
      },
      "result": {
       "content": [

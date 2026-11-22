@@ -29,13 +29,13 @@ mcp:
     pin:
       submit_job: { endpoint_id: ["fal-ai/elevenlabs/tts/eleven-v3", "fal-ai/elevenlabs/music"] }
 parameters:
-  owner: { type: string, pattern: "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", description: "the GitHub account or organization that owns the repository, like Parcha-ai" }
-  repo: { type: string, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "the repository's name without the owner, like agentrun" }
+  owner: { type: string, pattern: "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", description: "the GitHub account or organization that owns the repository, like Parcha-ai. Set once when you add the agent: the triggers watch this repository, and a run by hand films only its releases (a run's release URL cannot set it)" }
+  repo: { type: string, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "the repository's name without the owner, like agentrun. A run by hand needs only the release URL, which must be of this repository" }
   app_trigger: { type: boolean, default: false, required: false, description: "film each release published on this repository, from this server's GitHub App (Settings → GitHub). Turn on this or the feed, not both" }
   feed_trigger: { type: boolean, default: false, required: false, description: "film each release from the repository's public release feed, read every 15 minutes (public repositories only, no GitHub App needed). Turn on this or the App, not both" }
   include_prereleases: { type: boolean, default: false, required: false, description: "on the triggers, also film releases GitHub marks as pre-release (betas, release candidates). A run you start by hand films any release" }
 inputs:
-  url: { type: string, format: uri, required: false, maxLength: 300, title: "Release", description: "A release of this repository, as https://github.com/<owner>/<repo>/releases/tag/<tag>. Leave it out to film the latest release. Its notes go to fal and its model providers.", examples: ["https://github.com/Parcha-ai/agentrun/releases/tag/v0.1.0-beta.51"] }
+  url: { type: string, format: uri, required: false, maxLength: 300, title: "Release", description: "A release of this repository, as https://github.com/<owner>/<repo>/releases/tag/<tag>. Leave it out to film the latest release. A URL of another repository is refused (the agent films only the repository it was added for). Its notes go to fal and its model providers.", examples: ["https://github.com/Parcha-ai/agentrun/releases/tag/v0.1.0-beta.51"] }
   product_name: { type: string, required: false, maxLength: 40, title: "Product name", description: "How the film and the voice name the product, when the repository's name isn't it." }
   tone: { type: string, required: false, enum: [confident, playful, calm, bold], default: confident, title: "Tone", description: "How the voice, the cuts and the music feel" }
   aspect: { type: string, required: false, enum: ["16:9", "1:1", "9:16"], default: "16:9", title: "Aspect", description: "16:9 (1920x1080) for a page or a talk, 1:1 (1080x1080) for a feed, 9:16 (1080x1920) for stories and shorts" }
