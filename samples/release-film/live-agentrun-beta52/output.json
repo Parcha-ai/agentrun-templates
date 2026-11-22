@@ -14,42 +14,42 @@
   "aspect": "16:9",
   "voice": "Aria",
   "story": {
-    "headline": "A run counts fal's jobs: each is priced before it is sent and held under the run's spend cap",
-    "hook": "Over the cap, a fal job used to run",
+    "headline": "A run counts fal's jobs under its spend cap, priced before they are sent",
+    "hook": "A run counts fal's jobs",
     "beats": [
       {
         "name": "hook",
         "start_s": 0,
-        "end_s": 4.8,
-        "on_screen": "Over the cap, a fal job / used to run",
+        "end_s": 7.4,
+        "on_screen": "AgentRun spend cap / A run counts fal's jobs",
         "image": null
       },
       {
         "name": "reveal",
-        "start_s": 4.8,
-        "end_s": 7.6,
+        "start_s": 7.4,
+        "end_s": 10,
         "on_screen": "v0.1.0-beta.52 / AgentRun",
         "image": null
       },
       {
         "name": "proof-a",
-        "start_s": 7.6,
-        "end_s": 13.6,
-        "on_screen": "Priced first, per job / get_pricing × units / run_model / submit_job, submit_jobs",
+        "start_s": 10,
+        "end_s": 14.9,
+        "on_screen": "Booked as tool cost / get_pricing / unit price / × units the input states",
         "image": null
       },
       {
         "name": "proof-b",
-        "start_s": 13.6,
-        "end_s": 20.9,
-        "on_screen": "Run spend cap / held under / spend cap / refused unsent / #3353",
-        "image": "type wall, slow push-in"
+        "start_s": 14.9,
+        "end_s": 19.2,
+        "on_screen": "On a fal MCP server / run_model / submit_job / submit_jobs / refused unsent",
+        "image": null
       },
       {
         "name": "payoff",
-        "start_s": 20.9,
+        "start_s": 19.2,
         "end_s": 24,
-        "on_screen": "Your cap covers fal / priced before it is sent",
+        "on_screen": "Priced before it's sent / held under the run's spend cap",
         "image": null
       },
       {
@@ -57,14 +57,14 @@
         "start_s": 24,
         "end_s": 30,
         "on_screen": "AgentRun / v0.1.0-beta.52 / npx @parcha/agentrun-serve@0.1.0-beta.52",
-        "image": "media/mark.jpg, carried in"
+        "image": "media/mark.jpg carried in with a scale-and-rotate settle"
       }
     ],
     "cta": "npx @parcha/agentrun-serve@0.1.0-beta.52"
   },
-  "script": "[warm] A fal job the cap couldn't take used to run anyway. [pauses] AgentRun, beta fifty two, prices every fal job before it is sent. Run model, submit job, submit jobs: each is held under the run's spend cap. A job the cap can't take is refused unsent. Your spend cap covers fal. Upgrade with one npx command.",
-  "word_count": 57,
-  "voiceover_seconds": 25.81,
+  "script": "[warm] A run counts fal's jobs. Each is priced before it's sent, then held under the run's spend cap. Agent Run, beta fifty two. The price is fal's list price times the units the job states. A job the cap can't take is refused unsent. [excited] Priced before it's sent. Upgrade with the install line.",
+  "word_count": 53,
+  "voiceover_seconds": 22.52,
   "captions_timing": "aligned",
   "film": {
     "path": "media/film.mp4",
@@ -75,26 +75,33 @@
   "checks": {
     "check_errors": 0,
     "warnings_kept": [
-      "timeline_track_too_dense on captions, endcard and proof-b files: by design, scenes and caption groups are many small timed elements"
+      "timeline_track_too_dense on captions, endcard and proof-b-type: expected, each file holds only a few timed elements"
     ],
     "review_fixes": [
-      "hook words too small → font 20cqmin",
-      "proof-a panel and title too small → larger type",
-      "proof-b rows too small → 15cqmin",
-      "endcard command raised and enlarged so captions stay clear of it"
+      "payoff: 'IT'SSENT' ran together -> added word spacing",
+      "proof-a and proof-b type too small -> enlarged",
+      "proof-b: refused row touched a caption -> wall moved up and rows reduced"
     ],
     "renders": 1
   },
-  "plan_usd": 0.362,
+  "plan_usd": 0.37,
   "fal_cost_usd": {
     "steps": [
       {
         "step": "voiceover",
         "endpoint_id": "fal-ai/elevenlabs/tts/eleven-v3",
-        "units": 310,
+        "units": 350,
         "unit": "characters",
         "rate_usd": 0.0001,
-        "usd": 0.031
+        "usd": 0.035
+      },
+      {
+        "step": "voiceover-2",
+        "endpoint_id": "fal-ai/elevenlabs/tts/eleven-v3",
+        "units": 300,
+        "unit": "characters",
+        "rate_usd": 0.0001,
+        "usd": 0.03
       },
       {
         "step": "music",
@@ -105,7 +112,7 @@
         "usd": 0.3
       }
     ],
-    "total": 0.331
+    "total": 0.365
   },
   "files": [
     {
@@ -116,16 +123,21 @@
     {
       "what": "voiceover",
       "saved_path": "media/voiceover.mp3",
-      "source_url": "https://v3b.fal.media/files/b/0ab37e2c/ste8pd3fJS4-6Kz9rZO41_output.mp3"
+      "source_url": "https://v3b.fal.media/files/b/0ab38237/tQFmMD8fTUbb7g_4Uphlf_output.mp3"
+    },
+    {
+      "what": "voiceover-2",
+      "saved_path": "media/voiceover-2.mp3",
+      "source_url": "https://v3b.fal.media/files/b/0ab3823a/Rb2hdJornndjtp6-jHELT_output.mp3"
     },
     {
       "what": "music",
       "saved_path": "media/music.mp3",
-      "source_url": "https://v3b.fal.media/files/b/0ab37e2c/VeNSboWgklBObXcodM8dD_music_generated.mp3"
+      "source_url": "https://v3b.fal.media/files/b/0ab38237/OCWBGwiQYuwtOkPnd0_8C_music_generated.mp3"
     },
     {
       "what": "captions",
-      "saved_path": "media/captions.vtt",
+      "saved_path": "media/film.vtt",
       "source_url": null
     },
     {
@@ -147,5 +159,5 @@
   "failed_step": null,
   "error": null,
   "ignored_instructions": [],
-  "report_markdown": "![Release film](media/film.mp4)\n\n![Share card](media/share-card.png)\n\n**Headline:** a run counts fal's jobs: each is priced before it is sent and held under the run's spend cap; a job the cap can't take is refused unsent.\n\n**Script:** [warm] A fal job the cap couldn't take used to run anyway. [pauses] AgentRun, beta fifty two, prices every fal job before it is sent. Run model, submit job, submit jobs: each is held under the run's spend cap. A job the cap can't take is refused unsent. Your spend cap covers fal. Upgrade with one npx command.\n\n| Beat | Seconds | On screen |\n|---|---|---|\n| hook | 0-4.8 | Over the cap, a fal job / used to run |\n| reveal | 4.8-7.6 | v0.1.0-beta.52 / AgentRun |\n| proof-a | 7.6-13.6 | get_pricing × units / run_model / submit_job, submit_jobs |\n| proof-b | 13.6-20.9 | held under / spend cap / refused unsent / #3353 |\n| payoff | 20.9-24 | Your cap covers fal |\n| endcard | 24-30 | AgentRun, v0.1.0-beta.52, npx command |\n\n| Step | Units | Rate | USD |\n|---|---|---|---|\n| voiceover | 310 chars | $0.10/1000 | 0.031 |\n| music | 0.5 min | $0.60/min | 0.300 |\n| total | | | 0.331 |\n\nChecks: 0 errors, 1 render, 3 dense-track warnings kept on purpose. Music is generated by fal's model, whose license governs its use."
+  "report_markdown": "![Release film](media/film.mp4)\n\n![Share card](media/share-card.png)\n\n**Headline:** a run counts fal's jobs under its spend cap, priced before they are sent (AgentRun v0.1.0-beta.52).\n\n**Script:** [warm] A run counts fal's jobs. Each is priced before it's sent, then held under the run's spend cap. Agent Run, beta fifty two. The price is fal's list price times the units the job states. A job the cap can't take is refused unsent. [excited] Priced before it's sent. Upgrade with the install line.\n\nThe first voiceover ran 28.53 s, over the 27.0 s limit, so one shorter re-voice (22.52 s) is used.\n\n| Beat | s | On screen |\n|---|---|---|\n| hook | 0-7.4 | A run counts fal's jobs |\n| reveal | 7.4-10 | v0.1.0-beta.52 / AgentRun |\n| proof-a | 10-14.9 | get_pricing, unit price, units |\n| proof-b | 14.9-19.2 | run_model, submit_job, submit_jobs, refused unsent |\n| payoff | 19.2-24 | Priced before it's sent |\n| endcard | 24-30 | mark, version, npx command |\n\n| Step | Cost |\n|---|---|\n| voiceover | $0.035 |\n| voiceover-2 | $0.030 |\n| music | $0.300 |\n| total | $0.365 |\n\nChecks: 0 errors; 3 expected density warnings kept; 1 render. Left out of the film: max_requests, learning reset, API-only DELETE, usage attempts, the trigger_ids breaking change and the store migrations."
 }
