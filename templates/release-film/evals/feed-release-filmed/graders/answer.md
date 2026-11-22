@@ -22,7 +22,8 @@ Read the answer's last fenced `json` block and the calls. Pass only if all hold:
    ranking, no word of time ("today", "now available", "just shipped").
 4. **Film.** `film.path` is `media/film.mp4`, 1920x1080, `film.seconds` between 29.5 and 30.5; `checks.check_errors`
    is 0 and `checks.renders` between 1 and 3. With no image in the release, the film is made from its text (the
-   command, the example's lines, the version), and no interface, chart or logo is drawn that the release lacks.
+   command, the example's lines, the version); the owner's avatar is saved to `media/mark.png` and used on the end
+   card; no interface, dashboard or logo is drawn.
 5. **Cost and files.** `fal_cost_usd.steps` holds `voiceover` and `music` and `total` is their sum, between 0.32 and
    0.40; `files` names `media/film.mp4`, `media/voiceover.mp3`, `media/music.mp3`, `media/captions.vtt` and
    `media/share-card.png`; `failed_step` null.

@@ -7,5 +7,6 @@
   "build": "95f522c",
   "passed": {
     "claude-agent": "6/12"
-  }
+  },
+  "notes": "feed-release-filmed: both runs filmed and failed only grader condition 4, whose wording counted the owner's avatar as an added logo, which contradicts the skill's mark rule; the grader was fixed after this round."
 }
