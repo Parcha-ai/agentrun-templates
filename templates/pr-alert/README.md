@@ -14,8 +14,7 @@ and text aimed at AI tools. It is not a code review: no line comments and no ver
   resets at 00:00 UTC. The endpoint takes up to 868,928 tokens in and 131,072 out. How long a model stays free is
   OpenRouter's call. The template left Ling 3.2 Flash (free) on 2026-11-20, when its shared upstream pool answered
   most requests with a rate-limit error.
-- Set AGENTRUN_FREE_MODEL_REQUESTS=20 on your server so one bad run uses at most 20 of your daily free requests (the
-  default is 60).
+- Each run stops after 20 free-model requests, so one bad run uses at most 20 of your daily free requests.
 - GitHub: read anonymously over `api.github.com` (60 requests an hour per IP address), by the trigger and by the run's
   `web_fetch`. No GitHub App, no webhook and no token, so it runs on a laptop with no public address. Public
   repositories only: a private one answers 404 to an anonymous read.

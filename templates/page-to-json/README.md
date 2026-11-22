@@ -12,8 +12,7 @@ reason in `missing`, never a guess. Text on the page addressed to AI tools is no
   a minute and, per account, 50 a day until the account has bought $10 of credits in all, then 1,000 a day; the day
   resets at 00:00 UTC. The endpoint takes up to 868,928 tokens in and 131,072 out. How long a model stays free is
   OpenRouter's call.
-- Set AGENTRUN_FREE_MODEL_REQUESTS=20 on your server so one bad run uses at most 20 of your daily free requests (the
-  default is 60).
+- Each run stops after 20 free-model requests, so one bad run uses at most 20 of your daily free requests.
 - Reading: the built-in `web_fetch`. For a page drawn by JavaScript, add Firecrawl's preset (Settings, MCP servers):
   keyless, under a daily limit Firecrawl does not publish, and Firecrawl sees the URL.
 - NVIDIA's free endpoint keeps data. Under NVIDIA's API trial terms it may log what it is sent and use it to improve

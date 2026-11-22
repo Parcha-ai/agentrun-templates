@@ -18,7 +18,7 @@ tools: [read, web_fetch]
 parameters:
   owner: { type: string, pattern: "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", description: "the GitHub account or organization that owns the public repository, like vitejs" }
   repo: { type: string, pattern: "^[A-Za-z0-9._-]{1,100}$", description: "the public repository's name without the owner, like vite" }
-budget: { per_run_usd: 0.25 }
+budget: { per_run_usd: 0.25, max_requests: 20 }
 # No learning and no mark: the feed trigger keeps the PR numbers it has seen, so each new PR starts one run, once.
 # Learning's reflect turn would cost one more model request a run.
 # Runs unattended: no tool asks. It has no write tool.

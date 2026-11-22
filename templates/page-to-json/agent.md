@@ -23,7 +23,7 @@ inputs:
   url: { type: string, format: uri, title: "Page URL", description: "The one public page to read. Firecrawl, when you added it, sees this URL.", examples: ["https://nodejs.org/en/about/previous-releases"] }
   schema: { type: string, minLength: 2, maxLength: 8000, title: "JSON Schema", description: "The JSON Schema the data must meet, as JSON text, with at most 40 fields (every property at any depth); a larger one is refused before the page is read. Each property's description is read as what to copy into it.", examples: ["{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"price\":{\"type\":\"number\",\"description\":\"the price shown, without the currency sign\"}},\"required\":[\"name\",\"price\"]}"] }
   notes: { type: string, required: false, maxLength: 600, title: "How to read the page", description: "Which table or section, which currency or unit, what to do with ranges. Blank: the schema alone.", examples: ["Take prices from the 'Annual' column."] }
-budget: { per_run_usd: 0.25 }
+budget: { per_run_usd: 0.25, max_requests: 20 }
 output: { schema: page-to-json.schema.json }
 ---
 FIRST: count the input's `schema` fields (every property name at any depth, a list's item properties once). More than
