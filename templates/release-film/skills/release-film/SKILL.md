@@ -142,7 +142,9 @@ node .agents/skills/release-film/kit/build-captions.mjs --script media/vo.txt \
   --film film --vtt media/captions.vtt
 ```
 
-`media/vo.txt` is the exact text you sent to fal, tags included (`write` it first). The script writes
+`media/vo.txt` is the exact text you sent to fal, tags included (`write` it first). With a re-voice, `vo.txt` holds the
+second script, and the command takes `--timestamps media/voiceover-2-timestamps.json` and the second voice's ffprobe
+seconds; it refuses that file while `media/voiceover-timestamps.json`, the first voice's, is missing. The script writes
 `film/compositions/captions.html` (word-by-word caption groups over the scenes), `film/words.json` (every word's start
 and end on the film's clock) and the WebVTT file, and prints one JSON line: its `method` is `captions_timing` in the
 answer. `aligned` uses fal's character times; `anchored` (fal's characters don't spell the script) and `measured` (no

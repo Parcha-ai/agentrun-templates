@@ -167,8 +167,9 @@ Follow both with **one** `wait_for_jobs` (`index` 0 the voiceover, 1 the music),
 character for character as fal answered them. While one is pending, wait the `poll_after_seconds` it gives and read
 it again; after 10 minutes treat it as failed with its request id. Never submit a job again: a second submit is a
 second bill. After a lost reply, `get_submission` with its key. Then `web_save` the voiceover's `audio.url` to
-`media/voiceover.mp3` and the music's to `media/music.mp3`, and `write` the voiceover's `timestamps` value, exactly as
-fal answered it (the whole list), to `media/voiceover-timestamps.json`.
+`media/voiceover.mp3` and the music's to `media/music.mp3`, and in the same step, before you measure the voice (step
+5), `write` the voiceover's `timestamps` value, exactly as fal answered it (the whole list), to
+`media/voiceover-timestamps.json`. Every voice fal answers keeps its timestamps, one you replace too.
 
 ## 4. Build, check and render the film
 
@@ -186,7 +187,7 @@ with `ffprobe`, as the skill says). It plays from 0.5 s and must end by `film_se
 27.0 s. Over that, voice it once more from a shorter script: at most floor(W × 27 ÷ V × 0.9) words, W the first
 script's words (tags not counted), whole phrases cut, the hook and the call to action kept. `submit_job` it once with
 key `...-voiceover-2`, the same voice and settings, read it with `wait_for_jobs`, save it to `media/voiceover-2.mp3`
-and its timestamps to `media/voiceover-2-timestamps.json`, and use it. If it still runs over 27.0 s, the film runs
+and `write` its timestamps the same way to `media/voiceover-2-timestamps.json`, and use it. If it still runs over 27.0 s, the film runs
 longer instead: `film_seconds` = ceil(V + 3), at most 35, said in the report. Never trim a voice, and never voice more
 than twice.
 

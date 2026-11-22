@@ -23,7 +23,7 @@
 //    between the first letter's start and the last letter's end, each by its share of the script's letters.
 // 3. measured: no timestamps; the words share 0.05 s to (duration - 0.1 s) the same way.
 // It prints one line of JSON saying which, so the run can report it. None of them is an error.
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 
 const args = Object.fromEntries(
@@ -38,6 +38,16 @@ const filmDir = need("film");
 const vttPath = need("vtt");
 const offset = Number(args.offset ?? 0.5);
 const maxWords = Math.max(2, Math.min(6, Number(args["max-words"] ?? 4)));
+// Every voice fal answers keeps its timestamps: a re-voice's captions (voiceover-2-timestamps.json) are refused while
+// the first take's file, voiceover-timestamps.json beside it, is missing.
+const take = /^(.*?)voiceover-(\d+)-timestamps\.json$/.exec(args.timestamps ?? "");
+if (take && !existsSync(`${take[1]}voiceover-timestamps.json`)) {
+  console.error(
+    `${take[1]}voiceover-timestamps.json is missing: write the first voice's timestamps there, exactly as fal answered them, ` +
+      `before captions from take ${take[2]} (every voice fal answers keeps its timestamps)`,
+  );
+  process.exit(2);
+}
 let chunks = [];
 if (args.timestamps) {
   try {
