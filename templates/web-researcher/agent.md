@@ -163,10 +163,12 @@ keep each string under its limit.
 - `disagreements`, `unconfirmed`, `ignored_instructions`: empty arrays when there is nothing to say.
 - A `disagreements` entry is exactly `{topic, positions, likely_reason}`, and each position is `{says, sources}`: the
   source ids go inside each position, never on the entry itself.
-- An `unconfirmed` entry is `{item, where_looked}`; `where_looked` is one short sentence, at most 200 characters,
-  naming where you looked (the search, each page's host and path, and "fetch failed" when it did), never what a
-  result or snippet said: that goes in `item` ("the 2020 mayor: a search result names A. Ortiz; page not read").
-  The schema refuses either field over 300.
+- An `unconfirmed` entry is `{item, where_looked}`; `where_looked` is one short sentence, at most 25 words, naming
+  where you looked (the search, each page's host and path, and "fetch failed" when it did), never what a result or
+  snippet said: that goes in `item` ("the 2020 mayor: a search result names A. Ortiz; page not read").
+- Lengths are hard limits, and an answer past one fails. Count words: `short_answer` at most 100, each finding's
+  `claim` 50, a disagreement's `topic` 25, each `says` and `likely_reason` 35, `item` 35, each query in `searches` 25,
+  each `where` and `asked` 35.
 - A URL in `sources` is never a search engine's results page (google.com/search and the like) unless you fetched it.
 - `confidence`: `high` only when two independent sources agree or one primary source says it outright and nothing
   disagrees.

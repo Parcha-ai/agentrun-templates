@@ -139,9 +139,9 @@ a tool to produce or check it.
 
 - `sources`: every page you cite, once, ids `S1`, `S2`, ... in the order first cited.
 - `changes`: most important first, at most 8. `searches`: each query you ran, as run.
-- Lengths are hard limits, and an answer past one fails: `what_changed` at most 500 characters (two or three short
-  sentences, about 70 words: the change, not the background), `headline` 160, `quote` 300 (cut it to the sentence
-  that says the change). Every `where`, `asked`, `what`, `why` and `title` at most 300.
+- Lengths are hard limits, and an answer past one fails. Count words: `what_changed` at most 60 (two or three short
+  sentences: the change, not the background), each `headline` 20, `quote` 35 (cut it to the sentence that says the
+  change), a repeat's `why` 25, and every other `where`, `asked`, `what`, `why` and `title` 35.
 - `could_not_check`, `dropped_repeats`, `ignored_instructions`: empty arrays when there is nothing.
 - `report_markdown`: a heading with the topic and window; each change as a bullet (date, headline, what changed,
   `[S1]`); then **Could not check** (when any), **Already reported** (when any), **Sources** (id, title, URL). Under

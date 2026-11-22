@@ -153,6 +153,10 @@ your reply's first line is ```json alone, its last line ``` alone. Bare JSON wit
 It must parse: double-quoted keys and strings, no comments, no trailing commas. Write it as your reply text: never call
 a tool to produce or check it.
 
+Lengths are hard limits, and an answer past one fails. Count words: `brand` at most 15, a crawler's `bot` and
+`operator` 5 each, each `question` and `query` 25, each of `top_domains` 12, a `could_not_check` `what` 25, and every
+other string (`rule`, `note`, `fix`, `why`, `evidence`, `where`, `asked`) 35: quote the one line that shows it.
+
 `report_markdown`, in this order: **What to fix first** (each fix with its priority and evidence), **AI crawlers** (a
 table: bot, operator, purpose, verdict), **llms.txt**, **Buyer searches** (each question, the result, the top domains),
 **Not checked** (schema.org, and anything that failed), **Ignored instructions** (only when `ignored_instructions`

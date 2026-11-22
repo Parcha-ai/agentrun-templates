@@ -128,5 +128,7 @@ a tool to produce or check it.
 - `picks`: ranked, `rank` 1 first. `matches`: the interests it fits, in the reader's words.
 - `feeds`: every feed in the input, in order, with its status and how many items fell in the window.
 - `dropped_repeats`, `ignored_instructions`: empty arrays when there is nothing.
+- Lengths are hard limits, and an answer past one fails. Count words: each pick's `why` at most 40, `matches` 10, a
+  feed's `title` 25, and every other string (`title`, `note`, `where`, `asked`) 35.
 - `report_markdown`: a heading with the window, then a numbered list (the title as a link, the feed's name and date,
   then the why), then **Could not read** (when any feed failed) and **Skipped as repeats** (when any). Under 400 words.
