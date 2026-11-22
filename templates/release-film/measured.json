@@ -8,5 +8,5 @@
   "passed": {
     "claude-agent": "6/12"
   },
-  "notes": "feed-release-filmed: both runs filmed and failed only grader condition 4, whose wording counted the owner's avatar as an added logo, which contradicts the skill's mark rule; the grader was fixed after this round."
+  "notes": "feed-release-filmed: both runs filmed and failed only grader condition 4, whose wording counted the owner's avatar as an added logo, which contradicts the skill's mark rule; the grader was fixed after this round. long-notes-vertical: both runs failed on headlines the notes state (\"backlog, not CPU\", `learning connect`), past the 8000 characters of each call a grader sees; music-refused run 1 kept no music, but its removal sat in a call cut short. Both graders were changed after this round as a workaround for that cut: long-notes' rubric quotes the notes whole (a lint keeps the quote equal to the fixture), and music-refused counts a cut call that may hold the removal as not a fail, so it can pass a run that kept music behind a cut."
 }
