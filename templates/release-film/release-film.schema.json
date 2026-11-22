@@ -44,7 +44,8 @@
               "name": { "type": "string", "maxLength": 40, "description": "hook, reveal, proof-a, proof-b, payoff, endcard" },
               "start_s": { "type": "number", "minimum": 0 },
               "end_s": { "type": "number", "minimum": 0 },
-              "on_screen": { "type": "string", "maxLength": 400, "description": "the words and images the beat shows" }
+              "on_screen": { "type": "string", "maxLength": 400, "description": "the exact words the beat puts on screen, as they appear; no directions" },
+              "image": { "type": ["string", "null"], "maxLength": 200, "description": "the image the beat shows and its move (a file and a direction such as a push-in), or null" }
             }
           }
         },

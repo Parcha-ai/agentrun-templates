@@ -126,8 +126,9 @@ never "a new release"; one change, not two joined with "and" or "both", even whe
 failing before that same change in the release's own words as the hook, the reveal (the product and the
 version), two proof beats built from real text in the notes (a command, an error message, a config line, a number,
 a screenshot), a payoff and the end card with the call to action (the notes' own upgrade or install line, else the
-release's URL). Every claim, number and name on screen or in the voice comes from the release; nothing it doesn't say,
-and no word of time ("today", "now", "just shipped"): the film is watched long after.
+release's URL). Every claim, number and name on screen or in the voice comes from the release; nothing it doesn't say.
+A number keeps the case it was measured on: "38 minutes to 6 on their 40 GB benchmark", never "big restores in six
+minutes". No word of time ("today", "now", "just shipped"): the film is watched long after.
 
 **The script**: 55 to 70 words, spoken English for the ear (fal-audio), one or two audio tags for `tone` (confident
 `[warm]`, playful `[playfully]`, calm `[calm]`, bold `[excited]`), versions and numbers spelled as said ("beta fifty
@@ -206,7 +207,8 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
 
 - `release`: what was filmed (`owner`, `repo`, `tag`, `name`, `url`, `published_at`, `prerelease`), every field null
   when none was found.
-- `story`: the headline, the hook, the beats (each with its seconds and on-screen words) and the call to action;
+- `story`: the headline, the hook, the beats (each with its seconds, its on-screen words exactly as shown in `on_screen`, and the
+  image with its move in `image`) and the call to action;
   `script` and `word_count` (tags not counted) of the voiceover in the film.
 - `voiceover_seconds` (V of that voiceover, 2 decimals) and `captions_timing` as the caption script printed it
   (`aligned`, `anchored` or `measured`; a mismatch between fal's characters and the script is still fal's timing, never

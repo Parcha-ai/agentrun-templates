@@ -35,7 +35,8 @@ The beats follow the voice: once the timestamps exist, move each scene's start t
 
 **Copy**: on-screen titles at most 6 words a line, no trailing period; the screen never repeats the spoken sentence
 word for word (it shows the proof the voice talks about). Real text from the release only: a command, an error string,
-a field name, a number. No "Introducing", "Meet", "unlock", "seamless", "supercharge", "game-changer", "effortless",
+a field name, a number, and a number with the case it was measured on (the notes' benchmark, dataset or setup, said
+or shown with it; never widened to every case). No "Introducing", "Meet", "unlock", "seamless", "supercharge", "game-changer", "effortless",
 "in seconds". Spell out in the voice what is read aloud ("beta fifty one"), but write it as printed on screen
 (`v0.1.0-beta.51`).
 
