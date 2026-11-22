@@ -120,7 +120,8 @@ At 9:16, look hardest at line lengths: a title that fits 1920 wide wraps at 1080
 the floor. At 9:16 the end card's command is the shortest install or upgrade line in the notes: the card breaks it
 only at a space, never inside a package name, and keeps one with no space on one line at the size that fits. The
 hook's struck line is 2 to 4 words at 9:16 (the telling part of the error), so it fills the column's
-width; a longer line fits only by getting small.
+width; a longer line fits only by getting small. At 16:9 and 1:1 the hook's script fits the struck line to the
+frame's width at its held frame the same way, so set no font size on it by hand.
 
 ## 5. Voice and music
 

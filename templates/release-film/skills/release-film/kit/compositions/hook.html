@@ -1,8 +1,9 @@
 <!-- Hook (about 12-15%): the old way failing, in the release's own words (the error message it fixes, the step it
      removes, the complaint from the issue it closes), full frame on the alert ground. Frame 0 already shows the
      context line and the first word (it is the thumbnail). The words slam in one by one, hold long enough to read,
-     then a bar strikes through each word and the frame jolts before the cut. Keep the line to 3-8 words (2-4 at 9:16,
-     where it fills the column's width); a longer error is cut to its telling part, never shrunk. -->
+     then a bar strikes through each word and the frame jolts before the cut. Keep the line to 3-8 words (2-4 at 9:16);
+     the script fits it to the frame's width at every aspect (the column's at 9:16), so a longer error is cut to its
+     telling part, never shrunk. -->
 <template>
   <style>
     #root { position: absolute; inset: 0; background: var(--alert); container-type: size; overflow: hidden; }
@@ -57,6 +58,11 @@
       const label = rfFit(document.getElementById("hook-label"), { w: col.w, max: 0.08 * innerWidth });
       // The words take all the height the label and the gap leave, less the push's 3%.
       rfFit(line, { w: 0.97 * col.w, h: (col.h - label.height - 0.04 * innerHeight) / 1.03, max: 0.2 * innerWidth, units: [...line.querySelectorAll(".hw")].map((e) => e.textContent) });
+    } else {
+      // 16:9 and 1:1: the words fill the width between the margins at the held frame, the push's 8% included, and
+      // stay above the captions (the line starts at 30% of the height and ends by 74% after the push).
+      const line = document.getElementById("hook-line");
+      rfFit(line, { w: 0.84 * innerWidth / 1.08, h: 0.41 * innerHeight, max: 0.2 * innerWidth, units: [...line.querySelectorAll(".hw")].map((e) => e.textContent) });
     }
     const tl = gsap.timeline({ paused: true });
     // The camera: a slow push on the words for the whole hold, so the frame is never still.
