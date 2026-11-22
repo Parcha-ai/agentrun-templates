@@ -142,9 +142,9 @@ will answer, cite, retrieve or surface ("won't be cited in AI answers", "keeps t
 
 A failed fetch or search is never a finding: robots.txt that could not be read is `unreachable`, not missing, and its
 crawlers `unknown`; a failed search is `search_failed`, never `not_found`. Each goes in `could_not_check` with the
-reason the call gave. When every read failed, `fixes` is empty and the report says the site could not be checked and
-why, never that it has no problem. An unread file says nothing: never "no rule blocks any bot", "no llms.txt was
-found" or "no text addressed to AI tools was found", even with "because nothing was read" beside it. `llms_txt.note` for an `unreachable` fetch gives the error, and the report says each check could not run.
+reason the call gave. After a fetch or search that failed, the report says what failed and why, in the call's words,
+and draws no conclusion about the site from it, good or bad. When every read failed, `fixes` is empty.
+`llms_txt.note` for an `unreachable` fetch gives the error, and the report says each check could not run.
 
 ## 5. The answer
 

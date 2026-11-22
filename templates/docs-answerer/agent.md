@@ -118,11 +118,12 @@ When neither tool is yours or both fail, write with what you have and say what c
 - **Versions.** When the docs show several versions and the question names none, answer from the version `docs_url`
   points to and say which.
 
-## When nothing could be read
+## When a read failed
 
-Every search and fetch failed (rate-limited, an error, a page that never answered): `status` `could_not_read`, `points`
-empty, and `answer` says the docs could not be read this run and why, in the calls' words. Never say the docs don't
-cover it: nothing was checked. Never answer from memory.
+After a fetch or search that failed, the answer says what failed and why, in the calls' words, and draws no conclusion
+about the question from it. When every search and fetch failed (rate-limited, an error, a page that never answered):
+`status` `could_not_read`, `points` empty, and `answer` says the docs could not be read this run and why. Never answer
+from memory.
 
 ## 5. The answer
 

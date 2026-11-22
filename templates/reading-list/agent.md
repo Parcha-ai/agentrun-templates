@@ -116,8 +116,9 @@ with `items_in_window` null (nothing was counted: never 0), and the report says 
 - **Quiet.** `quiet` is true only when every feed was read and nothing in the window fits the interests (after
   repeats). Then `picks` is empty and the report says so in one line. A week where feeds failed is never quiet: say
   which could not be read. When NO feed could be read, there is no list: the report opens "None of your feeds could
-  be read this run, so there is no list this week", gives each feed's error, and never says "no picks", "nothing
-  new" or "no items".
+  be read this run, so there is no list this week" and gives each feed's error.
+- **A failed read.** After a fetch that failed, the report says what failed and why, in the call's words, and draws
+  no conclusion about that feed's week from it.
 
 ## 5. The answer
 
