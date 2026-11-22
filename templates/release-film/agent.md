@@ -84,11 +84,12 @@ or a feed item instead, and the defaults. Never stop to ask: take the likeliest 
 
 - **By hand with `url`**: it must be `https://github.com/${parameters.owner}/${parameters.repo}/releases/tag/<tag>`
   (owner and repo in any case). Any other URL: make nothing, `status: "failed"`, and say this agent films only
-  ${parameters.owner}/${parameters.repo}. The tag is the URL's last segment, URL-decoded.
+  ${parameters.owner}/${parameters.repo}. The tag is the whole path after `/releases/tag/`, URL-decoded: a tag may hold
+  a `/` (`release/v1.2.3`).
 - **By hand without `url`**: the newest release, pre-releases included: the first item of
   `https://api.github.com/repos/${parameters.owner}/${parameters.repo}/releases?per_page=1` (`max_chars` 60000; it is
   the whole release, so read nothing more).
-- **The App's event**: the tag is `release.tag_name`. **A feed item**: the tag is its link's last segment; an item
+- **The App's event**: the tag is `release.tag_name`. **A feed item**: the tag is the whole path after `/releases/tag/` in its link, URL-decoded; an item
   with `"update": true` is a release edited after it was published, not a new one: make nothing, call nothing, answer
   `status: "skipped"`.
 - On a trigger's run, a release GitHub marks `prerelease` is filmed only when

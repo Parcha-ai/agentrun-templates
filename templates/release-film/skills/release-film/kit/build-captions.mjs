@@ -182,7 +182,8 @@ const timed = groups.map((g, i) => {
   const start = Math.max(0.15, g[0].start - 0.05);
   const nextStart = groups[i + 1] ? Math.max(0.15, groups[i + 1][0].start - 0.05) : filmLength;
   const end = Math.min(nextStart, g[g.length - 1].end + 0.35, filmLength);
-  return { start: r3(start), end: r3(Math.max(end, start + 0.3)), words: g };
+  // At least 0.3 s on screen, but never into the next group's time or past the film: two groups never share the spot.
+  return { start: r3(start), end: r3(Math.min(nextStart, filmLength, Math.max(end, start + 0.3))), words: g };
 });
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");

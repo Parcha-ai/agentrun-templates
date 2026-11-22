@@ -1,7 +1,8 @@
 // node review.mjs <out> [snapshot options]: runs `hyperframes snapshot` into <out> (`--review` when no options are
 // given), then saves a copy of any sheet larger than 1900 px on a side as <name>-s.jpg, scaled to fit 1900x1900 with
 // FFmpeg, because `read` refuses an image over 2000x2000 (the 9:16 beat and phone sheets are taller than that).
-// It prints the sheets to `read`, one path per line: the -s copy wherever one was made.
+// It prints the sheets to `read`, one path per line: the -s copy wherever one was made. With snapshot options it prints
+// the .png frames they wrote the same way.
 import { spawnSync } from "node:child_process";
 import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -21,7 +22,8 @@ if (snap.status !== 0) {
   process.exit(1);
 }
 
-const sheets = readdirSync(out).filter((f) => f.endsWith(".jpg") && !f.endsWith("-s.jpg")).sort();
+// A targeted snapshot (`--at`) writes .png frames, not sheets: those are printed (and scaled) too.
+const sheets = readdirSync(out).filter((f) => (f.endsWith(".jpg") || (options.length > 0 && f.endsWith(".png"))) && !f.endsWith("-s.jpg")).sort();
 for (const f of sheets) {
   const path = join(out, f);
   const probe = spawnSync("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", path], { encoding: "utf8" });
@@ -34,7 +36,7 @@ for (const f of sheets) {
     console.log(path);
     continue;
   }
-  const small = path.replace(/\.jpg$/, "-s.jpg");
+  const small = path.replace(/\.(jpg|png)$/, "-s.jpg");
   const scale = spawnSync("ffmpeg", ["-y", "-v", "error", "-i", path, "-vf", `scale=${MAX}:${MAX}:force_original_aspect_ratio=decrease`, "-q:v", "3", small], { encoding: "utf8" });
   if (scale.status !== 0) {
     console.error(`ffmpeg could not scale ${path}: ${(scale.stderr ?? "").trim()}`);
