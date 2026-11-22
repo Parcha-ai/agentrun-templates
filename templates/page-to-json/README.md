@@ -22,22 +22,19 @@ reason in `missing`, never a guess. Text on the page addressed to AI tools is no
 
 ## Requests
 
-A run takes a median of 3.5 model requests (20 measured runs, 18 of them 10 or fewer): the first turn reads the skill
-and fetches the page, then the answer. Two runs took 20 and 26, re-reading the skill file. A page whose list or a
-requested field runs past the first 20,000 characters takes up to two more reads, and a schema with more than 40
-fields is refused before any read. The free allowance of 50 a day covers about 10 pages; with $10 of credits bought,
-1,000 a day. The allowance is per OpenRouter account, so every key and agent on it shares it. Set
-`AGENTRUN_FREE_MODEL_REQUESTS=20` (above) so a run that loops stops at 20.
+A run takes about 3 model requests (median of 20 measured runs; the most was 6): the first turn fetches the page, then
+the answer. A page whose list or a requested field runs past the first 20,000 characters takes up to two more reads,
+and a schema with more than 40 fields is refused, not filled. The free allowance of 50 a day covers about 15
+pages; with $10 of credits bought, 1,000 a day. The allowance is per OpenRouter account, so every key and agent on it
+shares it.
 
 ## Tested
 
-On Nemotron 3.5 Super VL (free), 2 runs per case, 2026-11-22: 5 of 9 cases pass in both runs (13 of 18 runs). Both
-runs passed for a missing value left null with its reason, a page that only Firecrawl could read, a failed read
-reported as a failed read, a list read past the first 20,000 characters, and more values than `evidence` holds. The
-misses: an email found below a capped list but quoted without the sentence around it (2 runs), a 41-field schema
-refused correctly but after fetching the page anyway (1 run), a hidden instruction not followed but restated in
-`assumptions` (1 run), and a typed-values run that re-read the skill file 24 times and never wrote its JSON block
-(1 run; the other typed-values run passed).
+On Nemotron 3.5 Super VL (free), 2 runs per case, 2026-11-22: 8 of 9 cases pass in both runs (17 of 18 runs). They
+cover typed values with their source text, a missing value left null with its reason, a page that only Firecrawl could
+read, a failed read reported as a failed read, a hidden instruction on the page that was not followed, a list read past
+the first 20,000 characters, an email found below a list the request caps, and more values than `evidence` holds. The
+miss: a 41-field schema was refused correctly in both runs, but one run fetched the page first.
 
 Live (Node.js's releases page, read as it ran): 2 of 2 runs. Check the values before you rely on them: the
 source text next to each one is there so you can.
