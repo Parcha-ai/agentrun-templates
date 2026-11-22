@@ -146,7 +146,9 @@ rate-limited, naming each search that failed.
 ### 5. The answer
 
 Exactly one fenced `json` block that meets the output schema (the runner gives you the schema), and nothing after it:
-your reply's first line is ```json alone, its last line ``` alone. Bare JSON with no fence is not an answer.
+your reply's first line is ```json alone, its last line ``` alone. Bare JSON with no fence is not an answer, and a
+sentence before the fence is not allowed either. When the runner says your answer did not meet the schema, the fix is
+the same: the corrected block alone, with no sentence about what was wrong.
 It must parse: double-quoted keys and strings, no comments, no trailing commas. Use only the keys the schema names and
 keep each string under its limit.
 
@@ -157,8 +159,10 @@ keep each string under its limit.
 - `disagreements`, `unconfirmed`, `ignored_instructions`: empty arrays when there is nothing to say.
 - A `disagreements` entry is exactly `{topic, positions, likely_reason}`, and each position is `{says, sources}`: the
   source ids go inside each position, never on the entry itself.
-- An `unconfirmed` entry is `{item, where_looked}`; `where_looked` is one sentence naming the pages or searches, under
-  300 characters.
+- An `unconfirmed` entry is `{item, where_looked}`; `where_looked` is one short sentence, at most 200 characters,
+  naming where you looked (the search, each page's host and path, and "fetch failed" when it did), never what a
+  result or snippet said: that goes in `item` ("the 2020 mayor: a search result names A. Ortiz; page not read").
+  The schema refuses either field over 300.
 - A URL in `sources` is never a search engine's results page (google.com/search and the like) unless you fetched it.
 - `confidence`: `high` only when two independent sources agree or one primary source says it outright and nothing
   disagrees.
