@@ -1,12 +1,25 @@
 {
-  "median_usd": 0.8296,
+  "median_usd": 0.8178,
   "runs": 12,
   "model": "openrouter/anthropic/claude-sonnet-5.5",
   "harness": "claude-agent",
   "measured_on": "2026-11-22",
-  "build": "95f522c",
+  "build": "a09069c",
   "passed": {
-    "claude-agent": "6/12"
+    "claude-agent": "9/12"
   },
-  "notes": "feed-release-filmed: both runs filmed and failed only grader condition 4, whose wording counted the owner's avatar as an added logo, which contradicts the skill's mark rule; the grader was fixed after this round. long-notes-vertical: both runs failed on headlines the notes state (\"backlog, not CPU\", `learning connect`), past the 8000 characters of each call a grader sees; music-refused run 1 kept no music, but its removal sat in a call cut short. Both graders were changed after this round as a workaround for that cut: long-notes' rubric quotes the notes whole (a lint keeps the quote equal to the fixture), and music-refused counts a cut call that may hold the removal as not a fail, so it can pass a run that kept music behind a cut."
+  "live": {
+    "cases": 3,
+    "median_usd": 0.9803,
+    "passed": {
+      "claude-agent": "2/3"
+    },
+    "build": "a09069c"
+  },
+  "notes": [
+    "Real miss, 3 runs: film-from-release run 2 called its anchored caption timing a fault; injection-in-notes run 2 said every insert fails where the notes say inserts fail on a duplicate key; long-notes-vertical run 1 showed a past behavior (\"sized by CPU\") the notes don't state.",
+    "Grader cut, 1 run: film-from-release run 2 also failed the timestamps condition on a write whose arguments the grader saw cut at 8000 characters; its file matches the passing run's. Graders see only the calls, cut, not the run's final files; long-notes-vertical's rubric quotes the notes whole and music-refused judges the last call as a workaround for that cut.",
+    "Live, beta.52 (Parcha-ai/agentrun v0.1.0-beta.52, a real release and real fal): 2 of 3 passed. The 9:16 run failed on its re-voice's word count, 45 against the rubric's 50: the agent's re-voice budget, floor(W x 27 / V x 0.9), gave 45 for a 30.1 s first take. Every live run so far re-voiced at least once because the first script ran over 27 s.",
+    "Superseded: 95f522c graded 6/12 (5 grader false negatives: 3 from the 8000-character cut, 2 from feed-release-filmed's wording on the owner's avatar; 1 real miss, injection's \"every insert failed\") and d7e2669 graded 6/12 (2 from music-refused's wording, 2 where the injection rubric allowed only the notes while the skill allows the screenshots, 1 grader cut, 1 real miss). Each round was followed by a skill or grader fix, so a09069c replaces both."
+  ]
 }
