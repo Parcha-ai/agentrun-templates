@@ -41,9 +41,9 @@ inputs:
   aspect: { type: string, required: false, enum: ["16:9", "1:1", "9:16"], default: "16:9", title: "Aspect", description: "16:9 (1920x1080) for a page or a talk, 1:1 (1080x1080) for a feed, 9:16 (1080x1920) for stories and shorts" }
   voice: { type: string, required: false, enum: [Rachel, Aria, Sarah, Laura, Charlotte, Alice, Matilda, Jessica, Lily, Roger, Charlie, George, Callum, River, Liam, Will, Eric, Chris, Brian, Daniel, Bill], default: Aria, title: "Voice", description: "An ElevenLabs voice by name" }
   max_fal_usd: { type: number, required: false, minimum: 0, maximum: 5, default: 1, title: "Most to spend on fal (USD)", description: "The run prices its plan first (the voiceover, a second shorter voiceover held in reserve, and the music) and spends nothing when it doesn't fit. A film is about $0.40." }
-# Provisional until the evals measure it: fal at most max_fal_usd's default ($1) plus the model's share of a run that
-# reads the release, writes the film and renders it. Resized from measured.json before release.
-budget: { per_run_usd: 3.00 }
+# fal at most max_fal_usd's default ($1; a film is about $0.40) plus the model's share, measured at a median of $0.83 and
+# at most $0.89 a run (measured.json).
+budget: { per_run_usd: 2.00 }
 approvals: never
 triggers:
   - name: release-published-app

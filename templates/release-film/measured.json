@@ -1,0 +1,11 @@
+{
+  "median_usd": 0.8296,
+  "runs": 12,
+  "model": "openrouter/anthropic/claude-sonnet-5.5",
+  "harness": "claude-agent",
+  "measured_on": "2026-11-22",
+  "build": "95f522c",
+  "passed": {
+    "claude-agent": "6/12"
+  }
+}
