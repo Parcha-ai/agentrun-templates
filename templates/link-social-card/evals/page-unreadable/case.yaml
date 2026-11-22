@@ -1,0 +1,12 @@
+# The page answers 503 and no headline is given, so there is nothing to set on a card: no paid call. Pass: 2 of 2 runs.
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/run_model
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-20T14:00:00Z

@@ -37,6 +37,16 @@ one does.
   through Composio and that isn't listed says "Integration not yet proven live" on its page. A name not in the index fails the build.
 - The sample output is `samples/<template>/<name>/output.md` when there is one, else the `contentMediaType: text/markdown`
   field (`report_markdown`) of `samples/<template>/<name>/output.json`.
+- `samples/<template>/<name>/media/` holds the files a sample run made, with no subfolders: images (.jpg .jpeg .png
+  .webp .gif), video (.mp4, H.264), audio (.mp3 .m4a .wav .ogg), captions (.vtt, for the .mp4 with the same
+  name), and documents (.md .txt). Any other file there fails the build. A document is a link only: a link to it
+  opens the copy, an image token naming it stays text, and one the report never names follows it as its name. The
+  server sends it as `text/plain` with `nosniff`, so a browser shows the text and never renders it. The build copies them to `/templates/<template>/samples/<name>/`.
+  An image or link in the report whose target is `media/<file>` plays that file on the page: an image, a video
+  player with its captions, or an audio player. Files the report never names follow it, each under its name. The
+  Markdown twin lists every file by its full URL, and its links, images and reference definitions to `media/<file>`
+  point there too. A link may name the captions file; an image token naming it stays text. `check.mjs` holds a template's media to 8 MiB in all and its
+  videos to 720p (the shorter side 720 px or less, read from the mp4's `tkhd` box).
 
 `--offline` builds from the cache only. A broken manifest or index entry fails the build with the file and the line.
 
@@ -53,8 +63,8 @@ one does.
 | `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/search.json`, `/404.html` | |
 
 Package text (instructions, skills, sample reports) is third-party: raw HTML in it renders as text, links keep only
-http(s), mailto and in-page targets, and images become links. The server sends a Content-Security-Policy that allows
-only this site's own scripts, styles, fonts and images, nothing inline, and no framing.
+http(s), mailto and in-page targets, and images become links, except a sample's own media files. The server sends a Content-Security-Policy that allows
+only this site's own scripts, styles, fonts, images and media, nothing inline, and no framing.
 
 Structured data is `SoftwareApplication` per template: a template is one installable, versioned, licensed package
 from a publisher, which is what that type describes. `HowTo` was the other option; Google stopped showing HowTo
@@ -114,13 +124,14 @@ The server (`lib/server.mjs`) sends these on every answer, 404s and redirects in
 
 | Header | Value |
 | --- | --- |
-| `Content-Security-Policy` | `default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'` |
+| `Content-Security-Policy` | `default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'` |
 | `Strict-Transport-Security` | `max-age=63072000; includeSubDomains` |
 | `X-Content-Type-Options` | `nosniff` |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` |
-| `Permissions-Policy` | camera, microphone, geolocation, payment, usb and interest-cohort off |
+| `Permissions-Policy` | camera, microphone, geolocation, payment and usb off |
 | `Cross-Origin-Opener-Policy`, `Cross-Origin-Resource-Policy` | `same-origin` |
 | `X-Frame-Options` | `DENY` |
 
-Pages are cached 5 minutes and `/assets/` a day (CSS and JS carry a `?v=` of their content). It answers GET and HEAD
-only. `.github/workflows/site.yml` runs the same tests, build and check on every pull request and deploys nothing.
+Pages are cached 5 minutes, and `/assets/` and sample media a day (CSS and JS carry a `?v=` of their content). It
+answers GET and HEAD only, streams files, and answers a single `Range: bytes=` with 206 or 416, which Safari needs
+to play video and audio. `.github/workflows/site.yml` runs the same tests, build and check on every pull request and deploys nothing.

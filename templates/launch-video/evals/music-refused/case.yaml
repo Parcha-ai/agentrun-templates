@@ -1,0 +1,13 @@
+# The runner serves fixtures/fal-mcp.json as the saved URL server fal (each job keyed by its submission_key with its own request id and URLs; the grouped read completes the six Kling clips and the voiceover, 27.4 s by file_size, and FAILS the music with a 422 content-checker refusal; compose completes at once). web.json fakes the product page and fal's CDN files (tiny real media). Pass: 2 of 2 runs.
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/run_model
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-20T14:00:00Z
