@@ -18,14 +18,15 @@
     .eseg { display: inline-block; white-space: nowrap; }
     #ec-cmd { display: inline-block; padding: 1.4cqmin 2.6cqmin; background: var(--ink); color: var(--paper);
       font-family: var(--font-mono); font-weight: 700; font-size: 4cqmin; }
+    #ec-cur { display: inline-block; width: 0.55em; height: 1em; margin-left: 0.3em; vertical-align: -0.15em; background: var(--paper); }
     /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
        11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
     @container (max-aspect-ratio: 3/4) {
-      #ec-stack { left: 12cqw; right: 29cqw; top: 17cqh; bottom: auto; align-items: flex-start; justify-content: flex-start; gap: 2.2cqh; }
+      #ec-stack { left: 11.5cqw; right: 30cqw; top: 16cqh; bottom: 36cqh; align-items: flex-start; gap: 2.2cqh; }
       #ec-lock { justify-content: flex-start; }
       #ec-markwrap { width: 12cqw; height: 12cqw; }
       #ec-name { font-size: 8.6cqw; }
-      #ec-ver { text-align: left; font-size: 19cqw; line-height: 1; transform-origin: 0% 50%; }
+      #ec-ver { align-self: stretch; text-align: left; line-height: 1; transform-origin: 0% 50%; }
       #ec-cmd { font-size: 3.6cqw; }
     }
   </style>
@@ -37,12 +38,18 @@
         <div id="ec-name" class="clip" data-start="0.6" data-duration="5">KIT name</div>
       </div>
       <div id="ec-ver" class="clip" data-start="0.9" data-duration="4.7"><span class="eseg">KIT2.4.0</span></div>
-      <div id="ec-cta" class="clip" data-start="1.6" data-duration="4"><span id="ec-cmd">KIT the command to run</span></div>
+      <div id="ec-cta" class="clip" data-start="1.6" data-duration="4"><span id="ec-cmd">KIT the command to run<span id="ec-cur"></span></span></div>
     </div>
   </div>
   <script>
     // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
     const tall = window.innerHeight > window.innerWidth;
+    rfReady(["ec-name", "ec-ver", "ec-cmd"]).then(() => {
+    // 9:16: the version fills the column across, its parts on two lines at most.
+    if (tall) {
+      const col = rfCol(), ver = document.getElementById("ec-ver");
+      rfFit(ver, { w: 0.97 * col.w, h: 0.68 * col.h, max: 0.5 * innerWidth, units: [...ver.querySelectorAll(".eseg")].map((e) => e.textContent), sep: "" });
+    }
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#ec-flood", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.4, ease: "power2.inOut" }, 0);
     tl.fromTo("#ec-markwrap", { scale: 0.55, rotation: -10, filter: "blur(10px)" }, { scale: 1, rotation: 0, filter: "blur(0px)", duration: 0.5, ease: "back.out(1.4)" }, 0.3);
@@ -53,6 +60,9 @@
     tl.fromTo("#ec-cmd", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 1.6);
     // The command types itself in the box, which is already its own size.
     tl.fromTo("#ec-cmd", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.6, ease: "steps(28)" }, 1.6);
+    // Then the cursor waits at the end of it, blinking until the cut.
+    for (let i = 0, t = 2.3; t < 5.5; i++, t += 0.5) tl.set("#ec-cur", { opacity: i % 2 ? 1 : 0 }, t);
     window.__timelines["endcard"] = tl;
+    });
   </script>
 </template>

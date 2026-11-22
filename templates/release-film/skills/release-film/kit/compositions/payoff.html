@@ -15,8 +15,8 @@
     /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
        11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
     @container (max-aspect-ratio: 3/4) {
-      #po-stack { left: 13cqw; right: 29cqw; top: 18cqh; gap: 3cqh; }
-      #po-line { font-size: 15cqw; }
+      #po-stack { left: 11.5cqw; right: 30cqw; top: 16cqh; bottom: 36cqh; justify-content: center; gap: 3cqh; }
+      #po-line .pow { vertical-align: top; }
       #po-sub { font-size: 3.8cqw; }
     }
   </style>
@@ -30,6 +30,12 @@
   <script>
     // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
     const tall = window.innerHeight > window.innerWidth;
+    rfReady(["po-line", "po-sub"]).then(() => {
+    // 9:16: the hero line takes every size the column holds, across and down.
+    if (tall) {
+      const col = rfCol(), line = document.getElementById("po-line");
+      rfFit(line, { w: 0.94 * col.w, h: 0.76 * col.h, max: 0.3 * innerWidth, units: [...line.querySelectorAll(".pow")].map((e) => e.textContent) });
+    }
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#po-ground", { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(75% at 50% 50%)", duration: 0.3, ease: "power3.out" }, 0);
     tl.fromTo("#po-line .pow", { opacity: 0, y: 50, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.32, stagger: 0.1, ease: "expo.out" }, 0.1);
@@ -37,5 +43,6 @@
     tl.fromTo("#po-band", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "expo.out" }, 1.1);
     tl.fromTo("#po-sub", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 1.6);
     window.__timelines["payoff"] = tl;
+    });
   </script>
 </template>

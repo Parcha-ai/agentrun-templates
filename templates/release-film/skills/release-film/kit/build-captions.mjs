@@ -177,11 +177,11 @@ const timed = groups.map((g, i) => {
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const portrait = H > W;
-const bottom = portrait ? 36 : W === H ? 10 : 9; // % of height: above every 9:16 safe area, 80-120 px at 1080p
+const bottom = portrait ? 22 : W === H ? 10 : 9; // % of height: 9:16 in the lower third, where phone captions sit; 80-120 px at 1080p
 const groupHtml = timed
   .map((g, gi) => {
     const spans = g.words.map((w, wi) => `<span class="cw" id="cw-${gi}-${wi}">${esc(w.text)}</span>`).join(" ");
-    return `    <div id="cap-${gi}" class="clip cap" data-start="${g.start}" data-duration="${r3(g.end - g.start)}"><div class="cap-in" id="cap-in-${gi}">${spans}</div></div>`;
+    return `    <div id="cap-${gi}" class="clip cap"${portrait ? " data-layout-allow-safe-zone" : ""} data-start="${g.start}" data-duration="${r3(g.end - g.start)}"><div class="cap-in" id="cap-in-${gi}">${spans}</div></div>`;
   })
   .join("\n");
 const tweens = timed

@@ -10,6 +10,57 @@
   <head>
     <meta charset="UTF-8" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <script>
+      // For the 9:16 scenes. rfCol: the column each scene centres in the clear area (left 11.5cqw, right 30cqw,
+      // top 16cqh, bottom 36cqh, as every scene's 9:16 block sets it), in px.
+      window.rfCol = () => ({ w: 0.585 * innerWidth, h: 0.48 * innerHeight });
+      // rfJoint: where a string longer than a 9:16 line takes breaks best: the joint nearest its middle, after a
+      // / . - _, at a space, or where a lower-case letter meets a capital (".agents/" "skills", "Workspace" "Error");
+      // -1 when it has none.
+      window.rfJoint = (t) => {
+        let best = -1;
+        for (let i = 1; i < t.length; i++) {
+          const a = t[i - 1], b = t[i];
+          if (("/.-_".includes(a) || b === " " || (/[a-z]/.test(a) && /[A-Z]/.test(b))) && (best < 0 || Math.abs(i - t.length / 2) < Math.abs(best - t.length / 2))) best = i;
+        }
+        return best;
+      };
+      // rfReady: load the faces of the elements with these ids, so a fit measures the real letters.
+      window.rfReady = (ids) => Promise.all(ids.map((id) => {
+        const cs = getComputedStyle(document.getElementById(id));
+        return document.fonts.load(`${cs.fontWeight} 100px ${cs.fontFamily}`).catch(() => {});
+      }));
+      // rfFit: the largest font size (whole px, at most max) at which el's units, set into lines at most w px wide (pad em
+      // of side padding included), take at most h px of height; set on el, and returned with that height. Units are
+      // el's text, or the given strings joined by sep (" " for words, "" for .rseg parts), or one a line with each.
+      // Measured on a canvas in the face of `face` (el by default), so it works while the scene is off screen; called
+      // once, before the scene builds its timeline.
+      const rfCtx = document.createElement("canvas").getContext("2d");
+      window.rfFit = (el, { w, h = Infinity, max, units, sep = " ", each = false, pad = 0, face = el }) => {
+        const cs = getComputedStyle(face);
+        const fs = parseFloat(cs.fontSize) || 100;
+        const ls = cs.letterSpacing === "normal" ? 0 : parseFloat(cs.letterSpacing) / fs;
+        const lh = cs.lineHeight === "normal" ? 1.2 : parseFloat(cs.lineHeight) / fs;
+        rfCtx.font = `${cs.fontStyle} ${cs.fontWeight} 100px ${cs.fontFamily}`;
+        const cased = (t) => cs.textTransform === "uppercase" ? t.toUpperCase() : t;
+        const em = (t) => rfCtx.measureText(cased(t)).width / 100 + ls * t.length;
+        const parts = (units || [el.textContent.trim()]).map(em), gap = sep ? em(sep) : 0;
+        const lines = (s) => {
+          let n = 1, x = 0;
+          for (const p of parts) {
+            if ((p + pad) * s > w) return Infinity;
+            if (x && (each || (x + gap + p + pad) * s > w)) { n++; x = p; } else x += (x ? gap : 0) + p;
+          }
+          return n;
+        };
+        const ok = (s) => { const n = lines(s); return n !== Infinity && n * lh * s <= h; };
+        // A scan down from max, not a bisection: a smaller size can wrap into more lines and stop fitting again.
+        let lo = max;
+        while (lo > 8 && !ok(lo)) lo -= 1;
+        el.style.fontSize = lo + "px";
+        return { size: lo, height: lines(lo) * lh * lo };
+      };
+    </script>
     <style>
       :root {
         /* The palette: take it from the release's own images or the brand's mark when there are any. */

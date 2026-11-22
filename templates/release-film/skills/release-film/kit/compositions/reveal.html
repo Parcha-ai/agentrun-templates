@@ -16,9 +16,9 @@
     /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
        11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
     @container (max-aspect-ratio: 3/4) {
-      #reveal-stack { left: 12cqw; right: 29cqw; top: 17cqh; gap: 2cqh; }
-      #reveal-version { font-size: 21cqw; line-height: 1.02; text-align: left; }
-      #reveal-name { font-size: 7cqw; text-align: left; }
+      #reveal-stack { left: 11.5cqw; right: 30cqw; top: 16cqh; bottom: 36cqh; justify-content: center; gap: 2cqh; }
+      #reveal-version { line-height: 1; text-align: left; transform-origin: 0% 50%; }
+      #reveal-name { text-align: left; white-space: nowrap; }
     }
   </style>
   <div id="root" data-composition-id="reveal" data-width="1920" data-height="1080">
@@ -31,6 +31,13 @@
   <script>
     // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
     const tall = window.innerHeight > window.innerWidth;
+    rfReady(["reveal-version", "reveal-name"]).then(() => {
+    // 9:16: the version fills the column across, its parts on two lines at most; the name fits under it.
+    if (tall) {
+      const col = rfCol(), ver = document.getElementById("reveal-version");
+      rfFit(document.getElementById("reveal-name"), { w: col.w, max: 0.09 * innerWidth });
+      rfFit(ver, { w: 0.97 * col.w, h: 0.75 * col.h, max: 0.5 * innerWidth, units: [...ver.querySelectorAll(".rseg")].map((e) => e.textContent), sep: "" });
+    }
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#reveal-flood", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "power2.inOut" }, 0);
     tl.fromTo("#reveal-version .rl", { opacity: 0.3, filter: "blur(8px)", y: tall ? 0 : 40 }, { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.3, stagger: 0.06, ease: "expo.out" }, 0.3);
@@ -38,5 +45,6 @@
     tl.fromTo("#reveal-version", { scale: 1 }, { scale: tall ? 1.03 : 1.07, duration: 2.6, ease: "none" }, 0.3);
     tl.to("#reveal-version", { x: -60, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 2.88);
     window.__timelines["reveal"] = tl;
+    });
   </script>
 </template>

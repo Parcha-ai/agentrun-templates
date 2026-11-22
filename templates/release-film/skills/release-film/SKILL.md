@@ -109,8 +109,10 @@ esac && sed -i "s/data-width=\"1920\"/data-width=\"$W\"/g; s/data-height=\"1080\
 
 Each scene's `<style>` already holds two container-query blocks: `@container (max-aspect-ratio: 5/4)` for 1:1 and
 `@container (max-aspect-ratio: 3/4)` for 9:16. The 9:16 block keeps every word inside the area that TikTok, Reels and
-Shorts all leave clear: 15-65% of the height, 11-82% of the width (11-72% in the top 44%). The captions sit just
-under it, so in portrait nothing a scene shows goes below 65% of the height. When you restyle a scene, restyle its
+Shorts all leave clear: 15-65% of the height, 11-82% of the width (11-72% below 44% of the height). Each scene
+centres one column in that area and fits its words to the column's width in its script (`rfFit`, from index.html),
+so a short string fills the width. The captions sit in the lower third, under it, so nothing a scene shows goes
+below 65% of the height. When you restyle a scene, restyle its
 blocks too, and `check` reports `outside_safe_zone` or `text_occluded` when they are wrong. The card stays 1200x630.
 At 9:16, look hardest at line lengths: a title that fits 1920 wide wraps at 1080. Cut words, never shrink type below
 the floor.

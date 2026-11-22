@@ -1,12 +1,13 @@
 <!-- Proof, type kind: for a release with no screenshot of this change (most releases). The release's own strings,
      as big as the frame takes them: the command, the flag, the changed name, the error it no longer throws, the
-     version. 3 to 5 rows, each at most about 16 characters (14 at 9:16), each slamming in from its side on the word
+     version. 3 to 5 rows, each at most about 16 characters (at 9:16 one over 9 breaks at its joint), each slamming in from its side on the word
      the voice names it, the one that matters on the accent band. The whole wall pushes in the whole time. Nothing on it
      the release does not print: no drawn interface, no invented number. To use it, point the proof-b host in
      index.html at compositions/proof-b-type.html. -->
 <template>
   <style>
     #root { position: absolute; inset: 0; background: var(--night); container-type: size; overflow: hidden; }
+    #pt-stage { position: absolute; inset: 0; }
     #pt-label { position: absolute; left: 7cqw; right: 7cqw; top: 8cqh; font-family: var(--font-text); font-weight: 900;
       font-size: 5.6cqmin; letter-spacing: -0.02em; line-height: 1.05; color: var(--paper); }
     #pt-wall { position: absolute; left: 7cqw; right: 7cqw; top: 25cqh; transform-origin: 0% 30%; }
@@ -16,14 +17,19 @@
     .pt-key { position: relative; isolation: isolate; color: var(--accent-ink); padding: 0 0.12em; margin-left: -0.12em; }
     .pt-band { position: absolute; left: 0; right: 0; top: 0.1em; bottom: 0.06em; background: var(--accent); z-index: -1; transform-origin: left center; }
     /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
-       11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
+       11-82% of the width (11-72% below 44%): captions and buttons own the rest. One column centred in it; the
+       script fits each row to the column's width on its own, then shrinks them all together if the wall is too tall. */
     @container (max-aspect-ratio: 3/4) {
-      #pt-label { left: 12cqw; right: 18cqw; top: 16cqh; font-size: 6.4cqw; }
-      #pt-wall { left: 12cqw; right: 31cqw; top: 26cqh; }
-      .pt-row { font-size: 6.6cqw; line-height: 1.2; }
+      #pt-stage { left: 11.5cqw; right: 30cqw; top: 16cqh; bottom: 36cqh; display: flex; flex-direction: column;
+        justify-content: center; gap: 3cqh; }
+      #pt-label, #pt-wall { position: relative; left: auto; right: auto; top: auto; }
+      #pt-label { white-space: nowrap; }
+      .pt-row { max-width: 96%; line-height: 1.12; }
+      .pt-key { display: inline-block; }
     }
   </style>
   <div id="root" data-composition-id="proof-b" data-width="1920" data-height="1080">
+    <div id="pt-stage">
     <div id="pt-label" class="clip" data-start="0.2" data-duration="5"><span class="ptl">KIT</span> <span class="ptl">what</span> <span class="ptl">changed</span></div>
     <div id="pt-wall" data-layout-allow-overflow>
       <div class="pt-row clip" id="pt-r1" data-start="0.35" data-duration="4.85">KIT --flag</div>
@@ -31,13 +37,36 @@
       <div class="pt-row clip" id="pt-r3" data-start="1.5" data-duration="3.7"><span class="pt-key"><span class="pt-band"></span>KIT new_name</span></div>
       <div class="pt-row pt-dim clip" id="pt-r4" data-start="2.1" data-duration="3.1">KIT v2.4.0</div>
     </div>
+    </div>
   </div>
   <script>
     // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
     const tall = window.innerHeight > window.innerWidth;
+    rfReady(["pt-label", "pt-r1"]).then(() => {
+    // 9:16: a row longer than 9 characters breaks onto two lines at its joint (rfJoint). Then every row is as big as
+    // the column takes it across, so the wall fills the column; if it runs taller than the column, every row shrinks
+    // by the same factor.
+    const halves = (row) => {
+      const walk = document.createTreeWalker(row, NodeFilter.SHOW_TEXT);
+      let node;
+      while ((node = walk.nextNode()) && !node.data.trim());
+      const t = node ? node.data : "", i = t.length > 9 ? rfJoint(t) : -1;
+      if (i < 0) return [t.trim()];
+      const rest = node.splitText(i);
+      rest.data = rest.data.replace(/^ /, "");
+      rest.parentNode.insertBefore(document.createElement("br"), rest);
+      return [node.data.trim(), rest.data];
+    };
+    if (tall) {
+      const col = rfCol(), rows = [...document.querySelectorAll("#pt-wall .pt-row")];
+      const label = rfFit(document.getElementById("pt-label"), { w: col.w, max: 0.08 * innerWidth });
+      const fits = rows.map((r) => rfFit(r, { w: 0.95 * col.w, max: 0.3 * innerWidth, pad: 0.12, units: halves(r), each: true }));
+      const sum = fits.reduce((a, f) => a + f.height, 0), room = col.h - label.height - 0.03 * innerHeight;
+      if (sum > room) rows.forEach((r, i) => { r.style.fontSize = fits[i].size * (room / sum) * 0.98 + "px"; });
+    }
     const tl = gsap.timeline({ paused: true });
     // The camera: the wall pushes in and rises for the whole scene.
-    tl.fromTo("#pt-wall", { scale: 1, y: 0 }, { scale: tall ? 1.05 : 1.14, y: -18, duration: 5.0, ease: "none" }, 0);
+    tl.fromTo("#pt-wall", { scale: 1, y: 0 }, { scale: tall ? 1.04 : 1.14, y: -18, duration: 5.0, ease: "none" }, 0);
     tl.fromTo("#pt-label .ptl", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.07, ease: "power4.out" }, 0.2);
     // Rows slam in from alternating sides, each on the word that names it (move these times onto words.json).
     tl.fromTo("#pt-r1", { x: -420, opacity: 0, filter: "blur(14px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.24, ease: "expo.out" }, 0.35);
@@ -47,5 +76,6 @@
     tl.fromTo("#pt-r4", { x: 420, opacity: 0, filter: "blur(14px)" }, { x: 0, opacity: 0.45, filter: "blur(0px)", duration: 0.24, ease: "expo.out" }, 2.1);
     tl.to("#pt-wall", { y: -60, filter: "blur(12px)", opacity: 0, duration: 0.18, ease: "power3.in" }, 5.0);
     window.__timelines["proof-b"] = tl;
+    });
   </script>
 </template>

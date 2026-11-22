@@ -19,10 +19,14 @@
       #hook-line { font-size: 8.4cqw; }
     }
     /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
-       11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
+       11-82% of the width (11-72% below 44%): captions and buttons own the rest. One column centred
+       in it; the script fits each line to the column's width. */
     @container (max-aspect-ratio: 3/4) {
-      #hook-label { left: 12cqw; right: 18cqw; top: 16cqh; font-size: 6.2cqw; }
-      #hook-line { left: 12cqw; right: 20cqw; top: 25cqh; font-size: 7.4cqw; }
+      #hook-all { left: 11.5cqw; right: 30cqw; top: 16cqh; bottom: 36cqh; display: flex; flex-direction: column;
+        justify-content: center; gap: 4cqh; transform-origin: 0% 50%; }
+      #hook-label, #hook-line { position: relative; left: auto; right: auto; top: auto; }
+      #hook-label { white-space: nowrap; }
+      #hook-line { overflow-wrap: normal; line-height: 1.1; }
     }
   </style>
   <div id="root" data-composition-id="hook" data-width="1920" data-height="1080">
@@ -32,11 +36,27 @@
     </div>
   </div>
   <script>
+    // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
+    const tall = window.innerHeight > window.innerWidth;
+    // 9:16: a word longer than 9 characters becomes two at its joint (rfJoint), so the line can be set bigger.
+    if (tall) document.querySelectorAll("#hook-line .hw").forEach((w) => {
+      const t = w.textContent, i = t.length > 9 ? rfJoint(t) : -1;
+      if (i < 0) return;
+      const rest = w.cloneNode();
+      rest.textContent = t.slice(i).replace(/^ /, "");
+      w.textContent = t.slice(0, i);
+      w.after(rest);
+    });
     // One strike bar inside each word, so the strike crosses every word wherever the line wraps (untimed, made
     // once before the timeline is built).
     document.querySelectorAll("#hook-line .hw").forEach((w) => { const bar = document.createElement("i"); bar.className = "hs"; w.appendChild(bar); });
-    // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
-    const tall = window.innerHeight > window.innerWidth;
+    rfReady(["hook-label", "hook-line"]).then(() => {
+    // 9:16: the context line fits the column across; the words take every size the column holds.
+    if (tall) {
+      const col = rfCol(), line = document.getElementById("hook-line");
+      rfFit(document.getElementById("hook-label"), { w: col.w, max: 0.08 * innerWidth });
+      rfFit(line, { w: 0.97 * col.w, h: 0.6 * col.h, max: 0.2 * innerWidth, units: [...line.querySelectorAll(".hw")].map((e) => e.textContent) });
+    }
     const tl = gsap.timeline({ paused: true });
     // The camera: a slow push on the words for the whole hold, so the frame is never still.
     tl.fromTo("#hook-all", { scale: 1 }, { scale: tall ? 1.03 : 1.08, duration: 4.2, ease: "none" }, 0);
@@ -50,5 +70,6 @@
     tl.set("#hook-all", { x: 0 }, 4.33);
     tl.to("#hook-all", { x: -220, filter: "blur(14px)", duration: 0.13, ease: "power3.in" }, 4.37);
     window.__timelines["hook"] = tl;
+    });
   </script>
 </template>
