@@ -174,8 +174,8 @@ fal answered it (the whole list), to `media/voiceover-timestamps.json`.
 
 Follow the skill's sandbox loop: copy the kit to `film/`, set its canvas for `aspect`, write each scene from the
 storyboard with the release's own words and images, place the voice and the music, build the captions from the
-timestamps with the kit's script, then `hyperframes lint`, `hyperframes check --json` and `hyperframes snapshot
---review`, look at the sheets, fix what they find, and render `media/film.mp4`. Then the share card,
+timestamps with the kit's script, then `hyperframes lint`, `hyperframes check --json` and the kit's review script
+(`hyperframes snapshot --review`), look at the sheets, fix what they find, and render `media/film.mp4`. Then the share card,
 `media/share-card.png`, from the kit's card, and the captions file `media/captions.vtt`. Each step's exact commands
 are in the skill.
 

@@ -116,7 +116,8 @@ After the first snapshot, name every default the frames use anyway, add it to th
    briefly to read), `dead_stretch` (more than 3 s with nothing changing), `text_below_floor`, `first_frame_empty`.
    A warning is a question: fix it, or keep it on purpose and say why.
 2. `hyperframes snapshot --review` writes sheets: each scene just after it starts and at its middle, a strip across
-   every cut (−0.2 s to +0.2 s), and the beat frames at phone width (360 px). Look at all of them.
+   every cut (−0.2 s to +0.2 s), and the beat frames at phone width (360 px). Look at all of them. The kit's
+   `review.mjs` runs it and prints the sheets to read, a copy scaled to 1900 px for any sheet larger than that.
 3. Describe each beat frame in one sentence as a stranger would, naming every object; one you would have to explain
    is a P0. Then ask, once per question: does it read as what it is; does the subject separate from the ground;
    framing and contact (crops, text at the edge, collisions at a seam); timing as a first-time viewer (a read

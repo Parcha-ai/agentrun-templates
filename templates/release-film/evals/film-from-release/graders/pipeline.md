@@ -21,7 +21,8 @@ Read the calls (their order, arguments and results) and judge the pipeline. Pass
    restore, the second the row counts) to `media/release-<n>.png` numbered from 1 in the notes' order, and
    `https://github.com/acme.png` to `media/mark.png`; the voiceover's timestamps are written to `media/voiceover-timestamps.json`.
 4. **Made in the sandbox.** Shell commands copy the kit, run `hyperframes lint` and `hyperframes check`, run
-   `hyperframes snapshot --review`, and the run views at least one review sheet image with `read`; then
+   the review (`node review.mjs`, the kit's script that runs `hyperframes snapshot --review`, or that command itself),
+   and the run views at least one review sheet image with `read` (a refused read does not count); then
    `hyperframes render` writes `media/film.mp4` (at most 3 render commands) and an `ffprobe` of it shows width 1920,
    height 1080 and a duration between 29.5 and 30.5 s. The share card is made with `hyperframes snapshot` and its
    probe shows 1200x630. No call composes or renders anything on fal (no fal endpoint but the two above).

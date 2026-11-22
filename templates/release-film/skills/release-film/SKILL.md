@@ -67,7 +67,7 @@ values, the faces with their sizes, the eases. Change it when the review changes
 
 `kit/` beside this file is a complete project that renders as it is: `index.html` (the root: palette, six scene hosts,
 the captions host, the voice and the music), `compositions/` (one file a scene, plus the captions file the script
-writes), `card/index.html` (the 1200x630 share card) and `build-captions.mjs`. Copy it:
+writes), `card/index.html` (the 1200x630 share card), `build-captions.mjs` and `review.mjs` (step 7). Copy it:
 
 ```sh
 mkdir -p film && cp -r .agents/skills/release-film/kit/. film/ && mkdir -p film/assets film/card/assets && ls film film/compositions
@@ -166,14 +166,16 @@ of a `var()` colour.
 Then look at it:
 
 ```sh
-cd film && hyperframes snapshot --review -o ../media/review 2>&1 | tail -5 && ls ../media/review
+cd film && node review.mjs ../media/review
 ```
 
-`read` the `review-*.jpg` sheets it lists (the beats, the phone width, one strip per cut; they are images; the
-`beat-*.png` and `seam-*.png` frames are there for a closer look). Describe each beat frame in one sentence as a stranger would; then go
+`review.mjs` runs `hyperframes snapshot --review` and prints the sheets to `read`, one path per line (the beats, the
+phone width, one strip per cut; they are images). A sheet over 1900 px on a side, as the 9:16 beat and phone sheets
+are, is printed as its `-s.jpg` copy scaled to fit, because `read` refuses an image over 2000x2000: read the printed
+paths. The `beat-*.png` and `seam-*.png` frames are there for a closer look. Describe each beat frame in one sentence as a stranger would; then go
 through the review questions in the reference (does it read, does the subject separate, framing, timing, the banned
 defaults, the pictures alone, the phone sheet). Write each problem as `t=4.2s · where · problem → change`, fix every
-P0 and the P1s, then snapshot only what changed (`hyperframes snapshot --at 4.2,11.0 -o ../media/review-2`) and look
+P0 and the P1s, then snapshot only what changed (`node review.mjs ../media/review-2 --at 4.2,11.0`) and look
 once more. List what you fixed in `checks.review_fixes`.
 
 ## 8. Render
