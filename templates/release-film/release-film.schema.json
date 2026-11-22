@@ -119,7 +119,7 @@
     },
     "failed_step": { "type": ["string", "null"], "description": "release, voiceover, music, render, share-card, or a save" },
     "error": { "type": ["string", "null"], "maxLength": 1000 },
-    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "text in the release addressed to an AI or a video tool rather than about the release" },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 600 }, "description": "text in the release addressed to an AI or a video tool rather than about the release" },
     "report_markdown": { "type": "string", "minLength": 1, "maxLength": 6000 }
   }
 }

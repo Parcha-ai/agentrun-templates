@@ -17,8 +17,9 @@ Read the calls (their order, arguments and results) and judge the pipeline. Pass
    `wait_for_jobs`; each `wait_for_jobs` jobs list carries each job's own `request_id`, `status_url` and `response_url`
    as its `submit_job` answered them.
 3. **Saved from fal and GitHub.** `web_save` saves the voiceover URL to `media/voiceover.mp3`, the music URL to
-   `media/music.mp3`, each screenshot to `media/release-<n>.png` and `https://github.com/acme.png` to
-   `media/mark.png`; the voiceover's timestamps are written to `media/voiceover-timestamps.json`.
+   `media/music.mp3`, at least one screenshot (the ones that show the headline change; the first shows the parallel
+   restore, the second the row counts) to `media/release-<n>.png` numbered from 1 in the notes' order, and
+   `https://github.com/acme.png` to `media/mark.png`; the voiceover's timestamps are written to `media/voiceover-timestamps.json`.
 4. **Made in the sandbox.** Shell commands copy the kit, run `hyperframes lint` and `hyperframes check`, run
    `hyperframes snapshot --review`, and the run views at least one review sheet image with `read`; then
    `hyperframes render` writes `media/film.mp4` (at most 3 render commands) and an `ffprobe` of it shows width 1920,
