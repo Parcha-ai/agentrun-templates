@@ -131,8 +131,9 @@ version), two proof beats built from real text in the notes (a command, an error
 a screenshot), a payoff and the end card with the call to action (the notes' own upgrade or install line, else the
 release's URL). Every claim, number and name on screen or in the voice comes from the release; nothing it doesn't say.
 A number keeps the case it was measured on: "38 minutes to 6 on their 40 GB benchmark", never "big restores in six
-minutes". No word of time ("today", "now", "just shipped"), and none that marks the change as new against a before ("not
-anymore", "no longer", "finally", "at last"; the hook's quoted before-state is not one): the film is watched long after.
+minutes". None of the words "today", "now", "just shipped", "not anymore", "no longer", "finally" or "at last", even
+where the notes use one: they date the film, which is watched long after. Other words that set the change against
+the old way, like "used to" or "instead", are fine.
 
 **The script**: 55 to 70 words, spoken English for the ear (fal-audio), one or two audio tags for `tone` (confident
 `[warm]`, playful `[playfully]`, calm `[calm]`, bold `[excited]`), versions and numbers spelled as said ("beta fifty
