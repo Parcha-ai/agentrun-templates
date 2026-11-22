@@ -1,21 +1,28 @@
-<!-- Proof, screen kind: a real screenshot from the release, never a drawn one. It enters by a whip, then pushes in
-     slowly (1.0 to 1.08) while a label names what changed. The image is a timed clip; the push is on its
-     untimed wrapper. With no screenshot for this change, use the text kind instead. -->
+<!-- Proof, screen kind: a real screenshot from the release, never a drawn one. It whips in big, holds while the
+     label names what changed, then punches in to the part that matters (set the focus: the transformOrigin below,
+     as x% y% of the image, at the control or the line the voice names). The image is a timed clip; the moves are on
+     its untimed wrapper. With no screenshot for this change, rebuild this scene as a second text proof. -->
 <template>
   <style>
     #root { position: absolute; inset: 0; background: var(--field); container-type: size; overflow: hidden; }
     #pb-label { position: absolute; left: 7cqw; right: 7cqw; top: 7cqh; font-family: var(--font-text); font-weight: 900;
-      font-size: 6cqmin; letter-spacing: -0.02em; color: var(--field-ink); }
-    #pb-frame { position: absolute; left: 12cqw; right: 12cqw; top: 24cqh; bottom: 18cqh; overflow: hidden;
+      font-size: 6.8cqmin; letter-spacing: -0.02em; line-height: 1.05; color: var(--field-ink); }
+    #pb-frame { position: absolute; left: 6cqw; right: 6cqw; top: 22cqh; bottom: 7cqh; overflow: hidden;
       background: var(--paper); }
     #pb-push { position: absolute; inset: 0; }
     #pb-shot { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: contain; }
     .pbw { display: inline-block; }
+    /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
+       11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
+    @container (max-aspect-ratio: 3/4) {
+      #pb-label { left: 12cqw; right: 18cqw; top: 16cqh; font-size: 7.4cqw; }
+      #pb-frame { left: 11.5cqw; right: 18cqw; top: 29cqh; bottom: 40cqh; }
+    }
   </style>
   <div id="root" data-composition-id="proof-b" data-width="1920" data-height="1080">
     <div id="pb-label" class="clip" data-start="0.35" data-duration="4.85"><span class="pbw">KIT</span> <span class="pbw">what</span> <span class="pbw">the</span> <span class="pbw">screen</span> <span class="pbw">shows</span></div>
     <div id="pb-frame">
-      <div id="pb-push">
+      <div id="pb-push" data-layout-allow-overflow>
         <img id="pb-shot" class="clip" src="assets/shot.png" alt="" data-start="0" data-duration="5.2" />
       </div>
     </div>
@@ -23,7 +30,9 @@
   <script>
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#pb-frame", { x: 700, filter: "blur(18px)" }, { x: 0, filter: "blur(0px)", duration: 0.3, ease: "expo.out" }, 0);
-    tl.fromTo("#pb-push", { scale: 1 }, { scale: 1.08, duration: 4.9, ease: "power1.inOut" }, 0.3);
+    tl.set("#pb-push", { transformOrigin: "50% 50%" }, 0);
+    tl.fromTo("#pb-push", { scale: 1 }, { scale: 1.04, duration: 2.1, ease: "power1.out" }, 0.3);
+    tl.to("#pb-push", { scale: 1.6, duration: 0.55, ease: "power3.inOut" }, 2.5);
     tl.fromTo("#pb-label .pbw", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.07, ease: "power4.out" }, 0.35);
     window.__timelines["proof-b"] = tl;
   </script>

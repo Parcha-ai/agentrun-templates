@@ -9,18 +9,24 @@
     #reveal-name { position: absolute; left: 0; right: 0; top: 62cqh; text-align: center; font-family: var(--font-text);
       font-weight: 900; font-size: 5.6cqmin; color: var(--accent-ink); letter-spacing: -0.02em; }
     .rl, .rw { display: inline-block; }
+    /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
+       11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
+    @container (max-aspect-ratio: 3/4) {
+      #reveal-version { left: 11cqw; right: 18cqw; top: 18cqh; font-size: 30cqw; }
+      #reveal-name { left: 11cqw; right: 18cqw; top: 38cqh; font-size: 7cqw; }
+    }
   </style>
   <div id="root" data-composition-id="reveal" data-width="1920" data-height="1080">
-    <div id="reveal-flood" class="clip" data-start="0" data-duration="3.4"></div>
-    <div id="reveal-version" class="clip" data-start="0.3" data-duration="3.1"><span class="rl">K</span><span class="rl">I</span><span class="rl">T</span><span class="rl">2</span><span class="rl">.</span><span class="rl">4</span></div>
-    <div id="reveal-name" class="clip" data-start="0.7" data-duration="2.7"><span class="rw">KIT</span> <span class="rw">product</span> <span class="rw">name</span></div>
+    <div id="reveal-flood" class="clip" data-start="0" data-duration="3.1"></div>
+    <div id="reveal-version" class="clip" data-start="0.3" data-duration="2.8"><span class="rl">K</span><span class="rl">I</span><span class="rl">T</span><span class="rl">2</span><span class="rl">.</span><span class="rl">4</span></div>
+    <div id="reveal-name" class="clip" data-start="0.7" data-duration="2.4"><span class="rw">KIT</span> <span class="rw">product</span> <span class="rw">name</span></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#reveal-flood", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "power2.inOut" }, 0);
     tl.fromTo("#reveal-version .rl", { opacity: 0.3, filter: "blur(8px)", y: 40 }, { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.3, stagger: 0.06, ease: "expo.out" }, 0.3);
     tl.fromTo("#reveal-name .rw", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.08, ease: "power4.out" }, 0.75);
-    tl.to("#reveal-version", { x: -60, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 3.15);
+    tl.to("#reveal-version", { x: -60, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 2.88);
     window.__timelines["reveal"] = tl;
   </script>
 </template>
