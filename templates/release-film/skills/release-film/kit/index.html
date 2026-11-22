@@ -75,10 +75,12 @@
         --font-display: "League Gothic";
         --font-text: "Inter";
         --font-mono: "JetBrains Mono";
-        /* Captions read on any scene: light words on a dark scrim sized to the text. */
+        /* Captions read on any scene: light words on a dark scrim sized to the text, with a light edge so the box
+           shows on a dark scene too. */
         --cap-font: "Inter";
         --cap-ink: #ffffff;
         --cap-bg: rgba(12, 12, 14, 0.86);
+        --cap-edge: rgba(255, 255, 255, 0.5);
       }
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 100%; height: 100%; overflow: hidden; background: var(--night); }

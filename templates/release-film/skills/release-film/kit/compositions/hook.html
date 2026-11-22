@@ -1,8 +1,8 @@
 <!-- Hook (about 12-15%): the old way failing, in the release's own words (the error message it fixes, the step it
      removes, the complaint from the issue it closes), full frame on the alert ground. Frame 0 already shows the
      context line and the first word (it is the thumbnail). The words slam in one by one, hold long enough to read,
-     then a bar strikes through each word and the frame jolts before the cut. Keep the line to 3-8 words; a longer error
-     is cut to its telling part, never shrunk. -->
+     then a bar strikes through each word and the frame jolts before the cut. Keep the line to 3-8 words (2-4 at 9:16,
+     where it fills the column's width); a longer error is cut to its telling part, never shrunk. -->
 <template>
   <style>
     #root { position: absolute; inset: 0; background: var(--alert); container-type: size; overflow: hidden; }
@@ -51,11 +51,12 @@
     // once before the timeline is built).
     document.querySelectorAll("#hook-line .hw").forEach((w) => { const bar = document.createElement("i"); bar.className = "hs"; w.appendChild(bar); });
     rfReady(["hook-label", "hook-line"]).then(() => {
-    // 9:16: the context line fits the column across; the words take every size the column holds.
+    // 9:16: the context line fits the column across; the words fill the rest of the column.
     if (tall) {
       const col = rfCol(), line = document.getElementById("hook-line");
-      rfFit(document.getElementById("hook-label"), { w: col.w, max: 0.08 * innerWidth });
-      rfFit(line, { w: 0.97 * col.w, h: 0.6 * col.h, max: 0.2 * innerWidth, units: [...line.querySelectorAll(".hw")].map((e) => e.textContent) });
+      const label = rfFit(document.getElementById("hook-label"), { w: col.w, max: 0.08 * innerWidth });
+      // The words take all the height the label and the gap leave, less the push's 3%.
+      rfFit(line, { w: 0.97 * col.w, h: (col.h - label.height - 0.04 * innerHeight) / 1.03, max: 0.2 * innerWidth, units: [...line.querySelectorAll(".hw")].map((e) => e.textContent) });
     }
     const tl = gsap.timeline({ paused: true });
     // The camera: a slow push on the words for the whole hold, so the frame is never still.

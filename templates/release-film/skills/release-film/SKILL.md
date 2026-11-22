@@ -29,7 +29,7 @@ other changes you left out.
 | hook | 0 – 4.5 | the old way failing, in the release's own words: the error message it fixes, the step it removes, the issue it closes. Frame 0 already shows it |
 | reveal | 4.5 – 7.5 | the product's name and the version land, big |
 | proof-a | 7.5 – 13 | the change in its own text: the command, the config line, the field, the before → after |
-| proof-b | 13 – 18.5 | the change seen: the release's screenshot pushed to 1.6–2x, or with no screenshot the type wall: the release's own strings as big as the frame takes them |
+| proof-b | 13 – 18.5 | the change seen: the release's whole screenshot, from its first line, then the line the voice names boxed and punched in on, or with no screenshot the type wall: the release's own strings as big as the frame takes them |
 | payoff | 18.5 – 24.5 | the one line to remember, in the biggest type of the film, one accent word |
 | endcard | 24.5 – 30 | the mark carried in, the name, the call to action (the upgrade or install line from the notes), the version; holds 2 s, at most 6 s in all |
 
@@ -87,7 +87,9 @@ reference holds. Each scene's comment says its job.
   the CLI and need no file. Keep them unless the brand's own font files are in the release.
 - **Images**: `cp media/release-1.png film/assets/shot.png` (proof-b shows `assets/shot.png`); the mark: `cp
   media/mark.png film/assets/mark.png && cp media/mark.png film/card/assets/mark.png`. Keep each file's real extension
-  and change the `src` to it. No screenshot (most releases): point the proof-b host in `index.html` at
+  and change the `src` to it. Set the box on the line the voice names: `--fx`, `--fw`, `--fy` and `--fh` on
+  `#pb-push`, that line's left, width, top and height as % of the image (read them off the image), the box no wider
+  than the line. No screenshot (most releases): point the proof-b host in `index.html` at
   `compositions/proof-b-type.html`, the type wall, and fill its rows with the release's own strings (the command,
   the flag, the changed name, the error it no longer throws, the issue number); never a drawn interface. Delete the
   proof-b file you don't use, so no `KIT` is left in it. No mark: the end card shows the name alone.
@@ -115,7 +117,8 @@ so a short string fills the width. The captions sit in the lower third, under it
 below 65% of the height. When you restyle a scene, restyle its
 blocks too, and `check` reports `outside_safe_zone` or `text_occluded` when they are wrong. The card stays 1200x630.
 At 9:16, look hardest at line lengths: a title that fits 1920 wide wraps at 1080. Cut words, never shrink type below
-the floor.
+the floor. The hook's struck line is 2 to 4 words at 9:16 (the telling part of the error), so it fills the column's
+width; a longer line fits only by getting small.
 
 ## 5. Voice and music
 

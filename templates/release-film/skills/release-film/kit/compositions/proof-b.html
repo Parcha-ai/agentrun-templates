@@ -1,21 +1,30 @@
-<!-- Proof, screen kind: a real screenshot from the release, never a drawn one. It whips in big, holds while the
-     label names what changed, then punches in to the part that matters (set the focus: the transformOrigin below,
-     as x% y% of the image, at the control or the line the voice names). The image is a timed clip; the moves are on
-     its untimed wrapper. With no screenshot for this change, rebuild this scene as a second text proof. -->
+<!-- Proof, screen kind: a real screenshot from the release, never a drawn one. It whips in whole, from its first
+     line, while the label names what changed; then the rest of it dims and a box draws around the line the voice
+     names (set --fx, --fw, --fy and --fh on #pb-push: that line's left, width, top and height as % of the image, the
+     box no wider than the line). The camera pushes in from the top-left corner, then punches in as far as keeps the
+     first line and that line in frame. The frame stops above the caption band. The image is a timed clip; the moves
+     are on its untimed wrapper. With no screenshot for this change, rebuild this scene as a second text proof. -->
 <template>
   <style>
     #root { position: absolute; inset: 0; background: var(--field); container-type: size; overflow: hidden; }
     #pb-label { position: absolute; left: 7cqw; right: 7cqw; top: 7cqh; font-family: var(--font-text); font-weight: 900;
       font-size: 6.8cqmin; letter-spacing: -0.02em; line-height: 1.05; color: var(--field-ink); }
-    #pb-frame { position: absolute; left: 6cqw; right: 6cqw; top: 22cqh; bottom: 7cqh; overflow: hidden; }
-    #pb-push { position: absolute; inset: 0; }
-    #pb-shot { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: contain; }
+    /* The frame holds the whole image above the captions (they sit 9-17% from the bottom); the wrapper is the
+       image's own size, so --fx, --fw, --fy and --fh land on its lines. */
+    #pb-frame { position: absolute; left: 6cqw; right: 6cqw; top: 22cqh; bottom: 19cqh; overflow: hidden; }
+    #pb-push { position: relative; display: inline-block; vertical-align: top; --fx: 0%; --fw: 100%; --fy: 80%; --fh: 8%; }
+    #pb-shot { display: block; width: auto; height: auto; max-width: 88cqw; max-height: 59cqh; }
+    .pb-dim { position: absolute; left: 0; right: 0; background: var(--field); opacity: 0; }
+    #pb-dim-a { top: 0; height: var(--fy); }
+    #pb-dim-b { top: calc(var(--fy) + var(--fh)); bottom: 0; }
+    #pb-mark { position: absolute; left: var(--fx); width: var(--fw); top: var(--fy); height: var(--fh); box-shadow: inset 0 0 0 0.6cqmin var(--accent); }
     .pbw { display: inline-block; }
     /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
        11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
     @container (max-aspect-ratio: 3/4) {
       #pb-label { left: 12cqw; right: 18cqw; top: 16cqh; font-size: 7.4cqw; }
-      #pb-frame { left: 11.5cqw; right: 18cqw; top: 29cqh; bottom: 40cqh; }
+      #pb-frame { left: 11.5cqw; right: 28cqw; top: 29cqh; bottom: 40cqh; }
+      #pb-shot { max-width: none; max-height: none; height: 31cqh; }
     }
   </style>
   <div id="root" data-composition-id="proof-b" data-width="1920" data-height="1080">
@@ -23,16 +32,41 @@
     <div id="pb-frame">
       <div id="pb-push" data-layout-allow-overflow>
         <img id="pb-shot" class="clip" src="assets/shot.png" alt="" data-start="0" data-duration="5.2" />
+        <div id="pb-dim-a" class="pb-dim"></div>
+        <div id="pb-dim-b" class="pb-dim"></div>
+        <div id="pb-mark"></div>
       </div>
     </div>
   </div>
   <script>
+    // 9:16: the column is narrow, so the screenshot fills the frame's height and pans across to the line the voice
+    // names, instead of shrinking to the column's width.
+    const tall = window.innerHeight > window.innerWidth;
+    const shot = document.getElementById("pb-shot");
+    (shot.decode ? shot.decode().catch(() => {}) : Promise.resolve()).then(() => {
+    const push = getComputedStyle(document.getElementById("pb-push"));
+    const fx = parseFloat(push.getPropertyValue("--fx")), fw = parseFloat(push.getPropertyValue("--fw"));
+    const fy = parseFloat(push.getPropertyValue("--fy")), fh = parseFloat(push.getPropertyValue("--fh"));
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#pb-frame", { x: 700, filter: "blur(18px)" }, { x: 0, filter: "blur(0px)", duration: 0.3, ease: "expo.out" }, 0);
-    tl.set("#pb-push", { transformOrigin: "50% 50%" }, 0);
-    tl.fromTo("#pb-push", { scale: 1 }, { scale: 1.04, duration: 2.1, ease: "power1.out" }, 0.3);
-    tl.to("#pb-push", { scale: 1.6, duration: 0.55, ease: "power3.inOut" }, 2.5);
+    // The camera pushes in from the top-left corner, so the first line stays in frame.
+    tl.set("#pb-push", { transformOrigin: "0% 0%" }, 0);
+    tl.fromTo("#pb-push", { scale: 1 }, { scale: 1.04, duration: 2.2, ease: "none" }, 0.3);
+    // When the voice names it, the camera punches in from above the line, as far as keeps the first line and the
+    // line it names both in frame (at most 1.6x); at 9:16 it pans to the line instead. The rest dims and a box draws
+    // around the line.
+    let punch = Math.max(1.05, Math.min(1.6, 98 / (fy + fh), 98 / (fx + fw))), pan = 0;
+    if (tall && shot.naturalWidth) {
+      const imgW = 0.31 * innerHeight * shot.naturalWidth / shot.naturalHeight, frameW = 0.605 * innerWidth;
+      pan = Math.min(Math.max(0, ((fx + fw / 2) / 100) * imgW - frameW / 2), Math.max(0, imgW - frameW));
+      punch = 1.05;
+    }
+    tl.to("#pb-push", { x: -pan, scale: punch, duration: 0.55, ease: "power3.inOut" }, 2.5);
+    tl.to("#pb-push", { scale: punch * 1.02, duration: 2.15, ease: "none" }, 3.05);
+    tl.fromTo(".pb-dim", { opacity: 0 }, { opacity: 0.5, duration: 0.35, ease: "power2.out" }, 2.5);
+    tl.fromTo("#pb-mark", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.3, ease: "power3.out" }, 2.5);
     tl.fromTo("#pb-label .pbw", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.07, ease: "power4.out" }, 0.35);
     window.__timelines["proof-b"] = tl;
+    });
   </script>
 </template>

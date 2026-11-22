@@ -200,7 +200,8 @@ const captionsHtml = `<template>
   <style>
     #root { position: absolute; inset: 0; container-type: size; pointer-events: none; }
     .cap { position: absolute; left: 0; right: 0; bottom: ${bottom}cqh; text-align: center; overflow: visible; }
-    .cap-in { display: inline-block; max-width: 84cqw; padding: 0.18em 0.42em; background: var(--cap-bg);
+    /* The light edge keeps the chip's box visible on a dark scene too. */
+    .cap-in { display: inline-block; max-width: 84cqw; padding: 0.18em 0.42em; background: var(--cap-bg); box-shadow: inset 0 0 0 0.05em var(--cap-edge);
       font-family: var(--cap-font); font-weight: 700; font-size: 5.4cqmin; line-height: 1.15; letter-spacing: -0.01em; }
     .cw { color: var(--cap-ink); opacity: 0.5; white-space: nowrap; }
     ${portrait ? ".cap { left: 11.5cqw; right: 28cqw; } .cap-in { font-size: 5cqw; } /* portrait-cap: inside every 9:16 clear area */" : ""}
