@@ -66,9 +66,10 @@
       rfFit(line, { w: 0.97 * col.w, h: (col.h - label.height - 0.04 * innerHeight) / 1.03, max: 0.2 * innerWidth, units: [...line.querySelectorAll(".hw")].map((e) => e.textContent) });
     } else {
       // 16:9 and 1:1: the words fill the width between the margins at the held frame, the push's 8% included, and
-      // stay above the captions (the line starts at 30% of the height and ends by 74% after the push).
+      // stay above the captions. The height is held to 30% of the frame so a short line ("one at a time") stays on one
+      // line across the width rather than taking a slightly larger size on two.
       const line = document.getElementById("hook-line");
-      rfFit(line, { w: 0.84 * innerWidth / 1.08, h: 0.41 * innerHeight, max: 0.2 * innerWidth, units: [...line.querySelectorAll(".hw")].map((e) => e.textContent) });
+      rfFit(line, { w: 0.84 * innerWidth / 1.08, h: 0.30 * innerHeight, max: 0.2 * innerWidth, units: [...line.querySelectorAll(".hw")].map((e) => e.textContent) });
     }
     const tl = gsap.timeline({ paused: true });
     // The camera: a slow push on the words for the whole hold, so the frame is never still.
