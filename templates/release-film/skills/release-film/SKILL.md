@@ -21,12 +21,19 @@ say what the user can now do ("restores of empty tables finish"), never the fix'
 follows (an error class crossing a process boundary, a store migration) is never the headline while the release has
 anything else. Never "a new release", "bug fixes", or the longest section. One change, not two: two related changes ("faster restores, and the restore error is gone") are
 still two films, so take the one with the more visible proof. The hook is the old way of that same change, every beat
-serves it, and the script never says "both". Everything else in the notes is left out; say in the report which
+serves it, and the script never says "both".
+
+**The hook's before-state comes from the notes.** Strike only a before-state the notes give: an error message the
+change fixes, a step it removes, an issue it closes, a line like "used to run", quoted word for word or nearly. When the
+notes say only what is new, there is no before-state to strike: never write one ("the old way needed a wrapper",
+"sized by CPU" from notes that say "by backlog"). Then the hook takes the **plain-headline form**: the headline
+change itself, in the notes' words, slammed in on the field ground with no strike (`class="plain"` on the hook's
+`#root`). Everything else in the notes is left out; say in the report which
 other changes you left out.
 
 | Beat | Seconds (30 s) | Job |
 |---|---|---|
-| hook | 0 – 4.5 | the old way failing, in the release's own words: the error message it fixes, the step it removes, the issue it closes. Frame 0 already shows it |
+| hook | 0 – 4.5 | the old way failing, quoted from a before-state the notes give: the error message it fixes, the step it removes, the issue it closes; with none, the plain headline. Frame 0 already shows it |
 | reveal | 4.5 – 7.5 | the product's name and the version land, big |
 | proof-a | 7.5 – 13 | the change in its own text: the command, the config line, the field, the before → after |
 | proof-b | 13 – 18.5 | the change seen: the release's whole screenshot, from its first line, then the line the voice names boxed and punched in on, or with no screenshot the type wall: the release's own strings as big as the frame takes them |

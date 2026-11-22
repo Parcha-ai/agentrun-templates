@@ -1,5 +1,7 @@
-<!-- Hook (about 12-15%): the old way failing, in the release's own words (the error message it fixes, the step it
-     removes, the complaint from the issue it closes), full frame on the alert ground. Frame 0 already shows the
+<!-- Hook (about 12-15%): the old way failing, quoted from a before-state the notes give (the error message it fixes,
+     the step it removes, the complaint from the issue it closes), full frame on the alert ground. When the notes give
+     no before-state, add class="plain" to #root: the plain-headline form, the headline change in the notes' words on
+     the field ground, with no strike and no fade. Frame 0 already shows the
      context line and the first word (it is the thumbnail). The words slam in one by one, hold long enough to read,
      then a bar strikes through each word and the frame jolts before the cut. Keep the line to 3-8 words (2-4 at 9:16);
      the script fits it to the frame's width at every aspect (the column's at 9:16), so a longer error is cut to its
@@ -15,6 +17,9 @@
     .hs { position: absolute; left: -0.06em; right: -0.06em; top: 50%; height: 0.12em; background: var(--ink);
       transform-origin: left center; }
     .hw { display: inline-block; position: relative; }
+    /* The plain-headline form: no before-state in the notes, so nothing is struck. */
+    #root.plain { background: var(--field); }
+    #root.plain #hook-label, #root.plain #hook-line { color: var(--field-ink); }
     /* Square (1:1): the same words in a narrower frame. */
     @container (max-aspect-ratio: 5/4) {
       #hook-line { font-size: 8.4cqw; }
@@ -50,7 +55,8 @@
     });
     // One strike bar inside each word, so the strike crosses every word wherever the line wraps (untimed, made
     // once before the timeline is built).
-    document.querySelectorAll("#hook-line .hw").forEach((w) => { const bar = document.createElement("i"); bar.className = "hs"; w.appendChild(bar); });
+    const plain = document.getElementById("root").classList.contains("plain");
+    if (!plain) document.querySelectorAll("#hook-line .hw").forEach((w) => { const bar = document.createElement("i"); bar.className = "hs"; w.appendChild(bar); });
     rfReady(["hook-label", "hook-line"]).then(() => {
     // 9:16: the context line fits the column across; the words fill the rest of the column.
     if (tall) {
@@ -69,8 +75,10 @@
     tl.fromTo("#hook-all", { scale: 1 }, { scale: tall ? 1.03 : 1.08, duration: 4.2, ease: "none" }, 0);
     // The first word is already there at 0; the rest slam in 0.11 s apart.
     tl.fromTo("#hook-line .hw:not(:first-child)", { opacity: 0, scale: 1.35, filter: "blur(10px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.16, stagger: 0.11, ease: "expo.out" }, 0.25);
-    tl.fromTo("#hook-line .hs", { scaleX: 0 }, { scaleX: 1, duration: 0.14, stagger: 0.06, ease: "expo.out" }, 2.9);
-    tl.to("#hook-line .hw", { opacity: 0.4, duration: 0.2, ease: "power2.out" }, 3.0);
+    if (!plain) {
+      tl.fromTo("#hook-line .hs", { scaleX: 0 }, { scaleX: 1, duration: 0.14, stagger: 0.06, ease: "expo.out" }, 2.9);
+      tl.to("#hook-line .hw", { opacity: 0.4, duration: 0.2, ease: "power2.out" }, 3.0);
+    }
     // The jolt: three hard frames of offset before the cut, deterministic.
     tl.set("#hook-all", { x: -14 }, 4.2);
     tl.set("#hook-all", { x: 10 }, 4.27);

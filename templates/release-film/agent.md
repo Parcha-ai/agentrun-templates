@@ -123,13 +123,16 @@ name. The version is `tag_name` as written.
 
 Follow the skill's story section. In short: one headline (the change a user of this product will care about most: a
 new capability, then a speedup, then a new surface; a fix only when the release is all fixes, told as what the user
-can now do; never "a new release"; one change, not two joined with "and" or "both", even when two are related), the old way
-failing before that same change in the release's own words as the hook, the reveal (the product and the
+can now do; never "a new release"; one change, not two joined with "and" or "both", even when two are related), as the hook,
+the old way failing before that same change, quoted from a before-state the notes give, word for word or nearly (when
+the notes give none, the headline itself in the plain form: the skill's story section; never a before-state the notes
+don't state), the reveal (the product and the
 version), two proof beats built from real text in the notes (a command, an error message, a config line, a number,
 a screenshot), a payoff and the end card with the call to action (the notes' own upgrade or install line, else the
 release's URL). Every claim, number and name on screen or in the voice comes from the release; nothing it doesn't say.
 A number keeps the case it was measured on: "38 minutes to 6 on their 40 GB benchmark", never "big restores in six
-minutes". No word of time ("today", "now", "just shipped"): the film is watched long after.
+minutes". No word of time ("today", "now", "just shipped"), and none that dates the change against a before ("not anymore",
+"no longer", "finally"): the film is watched long after.
 
 **The script**: 55 to 70 words, spoken English for the ear (fal-audio), one or two audio tags for `tone` (confident
 `[warm]`, playful `[playfully]`, calm `[calm]`, bold `[excited]`), versions and numbers spelled as said ("beta fifty
