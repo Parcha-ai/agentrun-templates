@@ -1,0 +1,9 @@
+# The shared failed-search case (evals-shared/search-failed): every web_search answers the rate-limited free search's
+# own words and every web_fetch fails, so no feed can be read. The input is the thin case's.
+parameters:
+  feeds: ["https://dbweekly.example/feed.xml", "https://ferrous-notes.example/atom.xml", "https://opsreview.example/rss"]
+  interests: "Postgres and database internals, Rust performance work, incident postmortems and reliability engineering"
+  top_n: 5
+  lookback_days: 7
+web: unavailable
+now: 2026-11-16T07:00:00Z
