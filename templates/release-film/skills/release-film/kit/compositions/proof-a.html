@@ -1,0 +1,35 @@
+<!-- Proof, text kind (part of about 40%): one change shown as the release's own strings, a command, a field, an
+     error code, a config line, revealed line by line as the voice names them. Paper ground, ink panel. Use it when
+     the release has no screenshot for this change. Never a feature list: one change, its real words. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--paper); container-type: size; overflow: hidden; }
+    #pa-title { position: absolute; left: 8cqw; right: 8cqw; top: 12cqh; font-family: var(--font-text); font-weight: 900;
+      font-size: 7.2cqmin; line-height: 1.02; letter-spacing: -0.03em; color: var(--ink); }
+    #pa-panel { position: absolute; left: 8cqw; right: 8cqw; top: 42cqh; padding: 3.2cqmin 3.6cqmin; background: var(--ink); }
+    .pa-line { font-family: var(--font-mono); font-weight: 400; font-size: 3.5cqmin; line-height: 1.5; color: var(--paper); white-space: pre; }
+    .pa-hi { color: var(--accent); font-weight: 700; }
+    .ptw { display: inline-block; }
+    #pa-all { position: absolute; inset: 0; }
+  </style>
+  <div id="root" data-composition-id="proof-a" data-width="1920" data-height="1080">
+   <div id="pa-all">
+    <div id="pa-title" class="clip" data-start="0.15" data-duration="5.45"><span class="ptw">KIT</span> <span class="ptw">the</span> <span class="ptw">change,</span> <span class="ptw">in</span> <span class="ptw">six</span> <span class="ptw">words</span></div>
+    <div id="pa-panel" class="clip" data-start="0.5" data-duration="5.1">
+      <div class="pa-line" id="pa-l1">$ KIT the release's own command</div>
+      <div class="pa-line" id="pa-l2">KIT a field it adds: <span class="pa-hi">KIT_value</span></div>
+      <div class="pa-line" id="pa-l3">KIT what it answers now</div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#pa-title", { x: 260, filter: "blur(14px)", opacity: 0 }, { x: 0, filter: "blur(0px)", opacity: 1, duration: 0.3, ease: "expo.out" }, 0.15);
+    tl.fromTo("#pa-panel", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }, 0.5);
+    tl.fromTo("#pa-l1", { opacity: 0 }, { opacity: 1, duration: 0.12 }, 0.9);
+    tl.fromTo("#pa-l2", { opacity: 0 }, { opacity: 1, duration: 0.12 }, 2.0);
+    tl.fromTo("#pa-l3", { opacity: 0 }, { opacity: 1, duration: 0.12 }, 3.1);
+    tl.to("#pa-all", { x: -200, filter: "blur(12px)", opacity: 0, duration: 0.18, ease: "power3.in" }, 5.4);
+    window.__timelines["proof-a"] = tl;
+  </script>
+</template>

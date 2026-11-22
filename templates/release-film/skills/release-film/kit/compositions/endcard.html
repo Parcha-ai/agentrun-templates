@@ -1,0 +1,36 @@
+<!-- End card (last 15-20%): the mark carried in once, with weight, then the name wipes in beside it, then the call
+     to action in the release's own words (the install command, the upgrade line), held 2-3 s. The mark is the
+     owner's own image file, never redrawn. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--paper); container-type: size; overflow: hidden; }
+    #ec-flood { position: absolute; inset: 0; background: var(--accent); }
+    #ec-lock { position: absolute; left: 0; right: 0; top: 26cqh; display: flex; align-items: center; justify-content: center; gap: 3cqmin; }
+    #ec-markwrap { width: 16cqmin; height: 16cqmin; }
+    #ec-mark { width: 100%; height: 100%; object-fit: cover; }
+    #ec-name { font-family: var(--font-text); font-weight: 900; font-size: 10cqmin; letter-spacing: -0.04em; color: var(--accent-ink); }
+    #ec-cta { position: absolute; left: 0; right: 0; top: 58cqh; text-align: center; }
+    #ec-cmd { display: inline-block; padding: 1.4cqmin 2.6cqmin; background: var(--ink); color: var(--paper);
+      font-family: var(--font-mono); font-weight: 700; font-size: 3.8cqmin; }
+    #ec-ver { position: absolute; left: 0; right: 0; top: 75cqh; text-align: center; font-family: var(--font-mono);
+      font-size: 2.6cqmin; color: var(--accent-ink); letter-spacing: 0.08em; }
+  </style>
+  <div id="root" data-composition-id="endcard" data-width="1920" data-height="1080">
+    <div id="ec-flood" class="clip" data-start="0" data-duration="5.6"></div>
+    <div id="ec-lock">
+      <div id="ec-markwrap"><img id="ec-mark" class="clip" src="assets/mark.png" alt="" data-start="0.3" data-duration="5.3" /></div>
+      <div id="ec-name" class="clip" data-start="0.7" data-duration="4.9">KIT name</div>
+    </div>
+    <div id="ec-cta" class="clip" data-start="1.4" data-duration="4.2"><span id="ec-cmd">KIT the command to run</span></div>
+    <div id="ec-ver" class="clip" data-start="1.8" data-duration="3.8">KIT v2.4.0</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#ec-flood", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.4, ease: "power2.inOut" }, 0);
+    tl.fromTo("#ec-markwrap", { scale: 0.2, rotation: -12, filter: "blur(10px)" }, { scale: 1, rotation: 0, filter: "blur(0px)", duration: 0.5, ease: "back.out(1.4)" }, 0.3);
+    tl.fromTo("#ec-name", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "power3.out" }, 0.7);
+    tl.fromTo("#ec-cmd", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 1.4);
+    tl.fromTo("#ec-ver", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power2.out" }, 1.8);
+    window.__timelines["endcard"] = tl;
+  </script>
+</template>
