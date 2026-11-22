@@ -107,8 +107,8 @@ gets a `missing` entry naming where reading stopped: a null value "not read past
   `quote` (the page's own words, exactly, at most 300 characters) and `rule` when the value is not the quote itself.
   A value in a table, list or row is quoted with its label: the whole row ("Standard seat $40"), never the value
   alone ("$40"); a row longer than 300 characters, the part of it that holds the label and the value. A value found in
-  prose is quoted with the words that say what it is ("write to bookings@example.org", never the address alone). A
-  list of more than 15 items: one entry per item, quoting its row.
+  prose is quoted with the words that say what it is ("write to bookings@example.org", never the address alone).
+  Lists of any length keep one entry per non-null leaf value, reusing the row quote for each field.
 - **Capped lists count what they leave out.** `evidence` holds the first 60 entries in `data`'s order, `missing` the
   first 40, `schema_notes` 10, `assumptions` 8, `ignored_instructions` 5. `not_listed` counts, for each, the entries
   it leaves out, and is 0 for each one that holds them all (64 values: 60 evidence entries and `not_listed.evidence`
