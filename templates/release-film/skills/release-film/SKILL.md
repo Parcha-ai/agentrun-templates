@@ -51,8 +51,11 @@ the captions host, the voice and the music), `compositions/` (one file a scene, 
 writes), `card/index.html` (the 1200x630 share card) and `build-captions.mjs`. Copy it:
 
 ```sh
-cp -r .agents/skills/release-film/kit film && mkdir -p film/assets film/card/assets && ls film film/compositions
+mkdir -p film && cp -r .agents/skills/release-film/kit/. film/ && mkdir -p film/assets film/card/assets && ls film film/compositions
 ```
+
+(`kit/.` into `film/` puts the kit's files beside `film/STORYBOARD.md`, which is already there; the kit has no file of
+that name.)
 
 Every placeholder word starts with `KIT`. Change the copy, never the kit: every scene is a template to fill, not a
 fixed design. You may restyle any scene, move or drop elements, and change any tween, as long as the contract in the

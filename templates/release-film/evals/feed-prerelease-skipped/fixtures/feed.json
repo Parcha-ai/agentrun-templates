@@ -1,0 +1,31 @@
+{
+  "description": "acme/quarry's release feed, as GitHub serves releases.atom: v3.2.1 and v3.2.0 before the run, then v3.3.0-rc.1, a pre-release, is published and the trigger fires on it.",
+  "format": "atom",
+  "title": "Release notes from quarry",
+  "items": [
+    {
+      "id": "tag:github.com,2008:Repository/810042/v3.2.1",
+      "link": "https://github.com/acme/quarry/releases/tag/v3.2.1",
+      "title": "Quarry 3.2.1",
+      "updated": "2026-11-20T10:00:00Z",
+      "author": "dana-q",
+      "content": "<h2>Fixes</h2>\n<ul>\n<li><code>quarry restore --jobs</code> no longer hangs when a table has no rows (#831)</li>\n</ul>"
+    },
+    {
+      "id": "tag:github.com,2008:Repository/810042/v3.2.0",
+      "link": "https://github.com/acme/quarry/releases/tag/v3.2.0",
+      "title": "Quarry 3.2.0",
+      "updated": "2026-11-18T15:00:00Z",
+      "author": "dana-q",
+      "content": "<p>Quarry 3.2 makes restores of big databases fast and stops the restore error people hit most.</p>"
+    }
+  ],
+  "item": {
+    "id": "tag:github.com,2008:Repository/810042/v3.3.0-rc.1",
+    "link": "https://github.com/acme/quarry/releases/tag/v3.3.0-rc.1",
+    "title": "Quarry 3.3.0-rc.1",
+    "updated": "2026-11-21T09:00:00Z",
+    "author": "dana-q",
+    "content": "<p>Release candidate for 3.3. Please try it and report what breaks.</p>\n<h2>What's new</h2>\n<ul>\n<li><code>quarry restore --resume</code> picks up an interrupted restore where it stopped (#850)</li>\n<li><code>quarry snapshot --compress zstd</code> (#846)</li>\n</ul>"
+  }
+}
