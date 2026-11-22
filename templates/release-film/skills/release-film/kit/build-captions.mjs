@@ -14,7 +14,7 @@
 // --film        the HyperFrames project: its index.html gives the canvas and the film's length; this writes
 //               compositions/captions.html and words.json there
 // --vtt         where the WebVTT file goes
-// --max-words   most words in one caption group (default 4)
+// --max-words   most words in one caption group (default 4; a clause of one more with no good place to cut stays whole)
 //
 // Timing, in order of preference:
 // 1. aligned: the chunks' letters and digits spell the script's words in order; each word starts at its first
@@ -128,19 +128,45 @@ for (const w of words) {
   w.end = r3(Math.max(w.end + offset, w.start + 0.04));
 }
 
-// Caption groups: at most maxWords, broken after a sentence or clause mark, or before a pause of 0.15 s or more.
-const groups = [];
-let cur = [];
+// Caption groups end at phrase ends. First the script is cut into clauses: after a sentence or clause mark, or at a
+// pause of 0.3 s or more in the voice. A clause longer than maxWords is cut again, one cut at a time, at the best
+// place inside it: the longest pause between two words (fal's character times show where the speaker breathes),
+// before a word that opens a phrase ("as", "with", "to", "when"...), never after one that needs the next word ("a",
+// "the", "of", "at"...), and near the middle. A clause of maxWords + 1 with no good place stays whole.
+const OPENS = new Set("as with and but or so to in on for from into at by when where which that who because if without now then than while after before until".split(" "));
+const NEEDS_NEXT = new Set("a an the its their your our my his her this these those of to at in on for with and or as by from into is are was were be than".split(" "));
+const gapAt = (ws, i) => ws[i].start - ws[i - 1].end; // the pause before word i
+function cutClause(ws) {
+  if (ws.length <= maxWords) return [ws];
+  let best = -1;
+  let bestScore = -Infinity;
+  for (let i = 1; i < ws.length; i++) {
+    if (i < 2 && ws.length > 2) continue; // no one-word chunk at the front
+    if (ws.length - i < 2 && ws.length > 2) continue; // nor at the back
+    let score = Math.min(gapAt(ws, i), 0.6) * 20; // a real pause decides first
+    if (OPENS.has(ws[i].key)) score += 3;
+    if (NEEDS_NEXT.has(ws[i - 1].key)) score -= 6;
+    score -= Math.abs(i - ws.length / 2) * 0.8; // then balance
+    if (i <= maxWords && ws.length - i <= maxWords) score += 1; // one cut that leaves both sides short
+    if (score > bestScore) {
+      bestScore = score;
+      best = i;
+    }
+  }
+  if (ws.length === maxWords + 1 && bestScore < 0) return [ws];
+  return [...cutClause(ws.slice(0, best)), ...cutClause(ws.slice(best))];
+}
+const clauses = [];
+let clause = [];
 words.forEach((w, i) => {
-  cur.push(w);
+  clause.push(w);
   const next = words[i + 1];
-  const breakHere =
-    !next || cur.length >= maxWords || /[.!?;:,]$/.test(w.text) || (next && next.start - w.end >= 0.15);
-  if (breakHere) {
-    groups.push(cur);
-    cur = [];
+  if (!next || /[.!?;:,]$/.test(w.text) || next.start - w.end >= 0.3) {
+    clauses.push(clause);
+    clause = [];
   }
 });
+const groups = clauses.flatMap(cutClause);
 // A group opens at its first word (never before 0.15 s) and closes after its last, before the next one opens.
 const timed = groups.map((g, i) => {
   const start = Math.max(0.15, g[0].start - 0.05);

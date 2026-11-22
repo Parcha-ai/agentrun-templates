@@ -121,8 +121,9 @@ name. The version is `tag_name` as written.
 
 ## 2. The story and the storyboard
 
-Follow the skill's story section. In short: one headline (the change a user of this product will care about most,
-never "a new release"; one change, not two joined with "and" or "both", even when two are related), the old way
+Follow the skill's story section. In short: one headline (the change a user of this product will care about most: a
+new capability, then a speedup, then a new surface; a fix only when the release is all fixes, told as what the user
+can now do; never "a new release"; one change, not two joined with "and" or "both", even when two are related), the old way
 failing before that same change in the release's own words as the hook, the reveal (the product and the
 version), two proof beats built from real text in the notes (a command, an error message, a config line, a number,
 a screenshot), a payoff and the end card with the call to action (the notes' own upgrade or install line, else the
@@ -132,7 +133,8 @@ minutes". No word of time ("today", "now", "just shipped"): the film is watched 
 
 **The script**: 55 to 70 words, spoken English for the ear (fal-audio), one or two audio tags for `tone` (confident
 `[warm]`, playful `[playfully]`, calm `[calm]`, bold `[excited]`), versions and numbers spelled as said ("beta fifty
-one", "version two point one"). Write the storyboard now, with `write`, to `film/STORYBOARD.md`, before you price
+one", "version two point one"), and no package scope, path, flag, URL or identifier read aloud: the voice says what it
+is ("one npx command", "the jobs flag") and the screen shows the exact text. Write the storyboard now, with `write`, to `film/STORYBOARD.md`, before you price
 anything (step 3): each beat's seconds, the words it puts on screen, the words of the script it sits under. Every run
 that gets this far leaves that file, the over-budget one too; step 4 builds the film from it.
 

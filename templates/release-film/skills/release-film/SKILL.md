@@ -14,9 +14,12 @@ follows (story, the spec's banned defaults, motion, captions, review). Read it o
 
 ## 1. The story
 
-A release is many changes; a film is one. Pick the **headline**: the change a user of this product feels most (a
-failure that stops happening, a step that goes away, a number that moves), never "a new release", "bug fixes", or the
-longest section. One change, not two: two related changes ("faster restores, and the restore error is gone") are
+A release is many changes; a film is one. Pick the **headline**: the change a user of this product would care about
+most, in this order: a new capability (something they can do now that they couldn't), a speedup (a number that
+moves), a new surface (a command, a page, an integration). Lead on a fix only when the release is all fixes, and then
+say what the user can now do ("restores of empty tables finish"), never the fix's internals. A fix only an insider
+follows (an error class crossing a process boundary, a store migration) is never the headline while the release has
+anything else. Never "a new release", "bug fixes", or the longest section. One change, not two: two related changes ("faster restores, and the restore error is gone") are
 still two films, so take the one with the more visible proof. The hook is the old way of that same change, every beat
 serves it, and the script never says "both". Everything else in the notes is left out; say in the report which
 other changes you left out.
@@ -39,6 +42,11 @@ the proof, type builds on the word that names it, a cut lands on a word. Each ki
 slow scale of its words for the scene's length) and its builds; two still frames in a row is a fault, so keep them
 when you restyle. **Boxes fit their content**: a panel is as wide as its longest line and grows as lines type in;
 never draw a box bigger than what is in it. All corners are square: no `border-radius` anywhere.
+
+**The voice says it like a person**: it never reads a package scope, a path, a flag, a URL or an identifier aloud
+("at parcha slash agentrun-serve", "dash dash jobs", "dot agents slash skills"). It says what that is ("one npx
+command", "the jobs flag", "the skills folder") while the screen shows the exact text. A number and a version are
+said as words ("beta fifty one").
 
 **Copy**: on-screen titles at most 6 words a line, no trailing period; the screen never repeats the spoken sentence
 word for word (it shows the proof the voice talks about). Real text from the release only: a command, an error string,
