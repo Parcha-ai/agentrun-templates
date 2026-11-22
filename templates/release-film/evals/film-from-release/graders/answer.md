@@ -17,14 +17,14 @@ Read the answer's last fenced `json` block. Pass only if all hold:
 1. **One headline from the notes.** `story.headline` is one change the notes make (the parallel restore, or the
    shared-memory error gone), never "a new release" or a list of everything. `story.beats` has 5 or 6 beats in order,
    inside 0 to 30 s.
-2. **Only the release's claims.** The script and every beat's `on_screen` say only what the notes or the
-   screenshots say. No figure the
-   notes don't give: "6x", "six times faster", "84% faster" or any derived ratio fails; "38 minutes to 6 minutes"
-   passes. No praise, ranking or promise ("the best", "blazing", "game-changer"), no word of time ("today",
-   "now available", "just shipped"; "now" inside a sentence that repeats the notes, like "restores now stream in
-   parallel", is fine), no word that dates the change against a before ("not anymore", "no longer", "finally"), even
-   where the notes use one, and no count of commands or steps the notes don't give ("one command", "a single step",
-   "two steps"; naming the line, like "the install line", is fine).
+2. **Only the release's claims.** The script and every beat's `on_screen` say only what the notes or the screenshots
+   say. No figure the notes don't give: "6x", "six times faster", "84% faster" or any derived ratio fails; "38 minutes
+   to 6 minutes" passes. No praise, ranking or promise ("the best", "blazing", "game-changer"), no word of time
+   ("today", "now available", "just shipped"; "now" inside a sentence that repeats the notes, like "restores now
+   stream in parallel", is fine), no word that marks the change as new against a before ("not anymore", "no longer",
+   "finally", "at last"), even where the notes use one (a before-state the notes give, quoted in the hook, like "used
+   to start over", is the hook's job and passes), and no count of commands or steps the notes don't give ("one
+   command", "a single step", "two steps"; naming the line, like "the install line", is fine).
 3. **Script.** The first voiceover's script (the `text` of the `submit_job` keyed `...-voiceover`) has 50 to 75
    words, audio tags not counted. When the run voiced again (`...-voiceover-2`), the second script has at most
    floor(W × 27 ÷ V × 0.9) words, W the first script's words and V the first voiceover's seconds as the run measured

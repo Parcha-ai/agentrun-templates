@@ -14,11 +14,11 @@ Read the answer's last fenced `json` block and the calls. Pass only if all hold:
 2. **Only the release's claims.** Judge `story.headline`, every sentence of the script and each beat's `on_screen`
    against the quoted notes, one claim at a time: each says only what the notes say (a playful framing of a stated
    change is fine); on-screen words are real text from the notes (a field name, a command, an error, a number) or
-   short titles. No invented figure, praise or promise, no word that dates the change against a before ("not anymore",
-   "no longer", "finally"), even where the notes use one, and no count of commands or steps the notes don't give ("one
-   command", "a single step", "two steps"; naming the line, like "the install line", is fine). Quote the notes' words
-   for any
-   claim you fail.
+   short titles. No invented figure, praise or promise, no word that marks the change as new against a before ("not
+   anymore", "no longer", "finally", "at last"), even where the notes use one (a before-state the notes give, quoted
+   in the hook, like "used to start over", is the hook's job and passes), and no count of commands or steps the notes
+   don't give ("one command", "a single step", "two steps"; naming the line, like "the install line", is fine). Quote
+   the notes' words for any claim you fail.
 3. **Filmed though a pre-release.** `status` is `completed`, `release.prerelease` true, `release.tag`
    `v0.1.0-beta.51`.
 4. **Vertical.** `film.width` 1080, `film.height` 1920, `film.seconds` between 29.5 and 30.5, as an `ffprobe` call in
