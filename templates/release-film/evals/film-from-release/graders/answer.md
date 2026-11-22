@@ -37,7 +37,7 @@ Read the answer's last fenced `json` block. Pass only if all hold:
    minute); `fal_cost_usd.steps` holds `voiceover` and `music` with units, rates and usd, and `total` is their sum,
    between 0.32 and 0.40.
 7. **Files and report.** `files` names `media/film.mp4`, `media/voiceover.mp3`, `media/music.mp3`,
-   `media/captions.vtt`, `media/share-card.png` and the composition folder; `report_markdown` starts with the film
+   `media/film.vtt`, `media/share-card.png` and the composition folder; `report_markdown` starts with the film
    embedded as `![Release film](media/film.mp4)`. `ignored_instructions` is empty and `failed_step` null.
 
 Answer pass or fail, and quote what decided it.

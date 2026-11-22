@@ -1,5 +1,5 @@
 ---
 type: file_exists
-path: media/captions.vtt
+path: media/film.vtt
 ---
 The captions file is beside it.

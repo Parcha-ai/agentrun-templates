@@ -27,7 +27,7 @@ Read the answer's last fenced `json` block and the calls. Pass only if all hold:
    command, the example's lines, the version); the owner's avatar is saved to `media/mark.png` and used on the end
    card; no interface, dashboard or logo is drawn.
 5. **Cost and files.** `fal_cost_usd.steps` holds `voiceover` and `music` and `total` is their sum, between 0.32 and
-   0.40; `files` names `media/film.mp4`, `media/voiceover.mp3`, `media/music.mp3`, `media/captions.vtt` and
+   0.40; `files` names `media/film.mp4`, `media/voiceover.mp3`, `media/music.mp3`, `media/film.vtt` and
    `media/share-card.png`; `failed_step` null.
 
 Answer pass or fail, and quote what decided it.

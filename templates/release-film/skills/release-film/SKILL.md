@@ -147,7 +147,7 @@ The voice's `<audio>` starts at 0.5 s; the music runs the whole film at `data-vo
 ```sh
 node .agents/skills/release-film/kit/build-captions.mjs --script media/vo.txt \
   --timestamps media/voiceover-timestamps.json --duration <ffprobe seconds> --offset 0.5 \
-  --film film --vtt media/captions.vtt
+  --film film --vtt media/film.vtt
 ```
 
 `media/vo.txt` is the exact text you sent to fal, tags included (`write` it first). With a re-voice, `vo.txt` holds the

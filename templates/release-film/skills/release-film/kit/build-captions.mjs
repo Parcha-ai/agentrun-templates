@@ -4,7 +4,7 @@
 // author reads words.json to time scenes to the words that name them.
 //
 //   node build-captions.mjs --script vo.txt --timestamps vo-timestamps.json --duration 27.4 --offset 0.5 \
-//     --film film --vtt media/captions.vtt
+//     --film film --vtt media/film.vtt
 //
 // --script      the exact text sent to ElevenLabs v3, audio tags included
 // --timestamps  fal's `timestamps` value as it answered it: a list of chunks, each {characters,

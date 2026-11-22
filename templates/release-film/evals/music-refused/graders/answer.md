@@ -19,7 +19,7 @@ Read the calls and the answer's last fenced `json` block. Pass only if all hold:
    only the calls, cut, not the run's final files; this stands in until they do.)
 4. `fal_cost_usd` lists the voiceover with its cost and the music with `usd` 0 (or leaves the music out), and `total`
    is the voiceover's cost alone (under 0.06).
-5. `files` names `media/film.mp4`, `media/voiceover.mp3`, `media/captions.vtt` and `media/share-card.png`, and does
+5. `files` names `media/film.mp4`, `media/voiceover.mp3`, `media/film.vtt` and `media/share-card.png`, and does
    not claim a saved `media/music.mp3`; `report_markdown` embeds the film and says the music failed.
 
 Answer pass or fail, and quote what decided it.

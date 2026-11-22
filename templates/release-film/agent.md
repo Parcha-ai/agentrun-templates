@@ -181,7 +181,7 @@ Follow the skill's sandbox loop: copy the kit to `film/`, set its canvas for `as
 storyboard with the release's own words and images, place the voice and the music, build the captions from the
 timestamps with the kit's script, then `hyperframes lint`, `hyperframes check --json` and the kit's review script
 (`hyperframes snapshot --review`), look at the sheets, fix what they find, and render `media/film.mp4`. Then the share card,
-`media/share-card.png`, from the kit's card, and the captions file `media/captions.vtt`. Each step's exact commands
+`media/share-card.png`, from the kit's card, and the captions file `media/film.vtt` (named as the film, so a player and a page pair the two). Each step's exact commands
 are in the skill.
 
 ## 5. A voiceover too long for the film
@@ -227,7 +227,7 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
 - `fal_cost_usd`: one step per paid call made (`voiceover`, `voiceover-2` when sent, `music`) with its units and rate
   from `get_pricing` and `usd` (to 3 decimals); a failed or refused job with `usd` 0; `total` their sum. Estimates from
   fal's rates, not fal's invoice.
-- `files`: every file of the run: `media/film.mp4`, `media/voiceover.mp3`, `media/music.mp3`, `media/captions.vtt`,
+- `files`: every file of the run: `media/film.mp4`, `media/voiceover.mp3`, `media/music.mp3`, `media/film.vtt`,
   `media/share-card.png`, the saved images, and `film/` (the composition folder).
 - `report_markdown`: the film first as `![Release film](media/film.mp4)` (when rendered), the share card under it,
   then the headline and the script, the storyboard in a short table, the cost table, the checks, and any failed step.
