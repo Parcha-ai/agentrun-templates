@@ -1,31 +1,41 @@
 <!-- Reveal (about 8-12%): the release named as a title. The accent floods the frame from the left, then the
-     version lands letter by letter in the display face, the product's name under it word by word. -->
+     version lands letter by letter in the display face, the product's name under it word by word. Each part of the
+     version is one .rseg (v0.1.0- and beta.51 are two), so a long version wraps between parts, never inside one. -->
 <template>
   <style>
     #root { position: absolute; inset: 0; background: var(--night); container-type: size; overflow: hidden; }
     #reveal-flood { position: absolute; inset: 0; background: var(--accent); }
-    #reveal-version { position: absolute; left: 0; right: 0; top: 18cqh; text-align: center; font-family: var(--font-display);
-      font-size: 42cqmin; line-height: 0.9; color: var(--accent-ink); letter-spacing: -0.01em; }
-    #reveal-name { position: absolute; left: 0; right: 0; top: 62cqh; text-align: center; font-family: var(--font-text);
+    /* The version and the name stack in one column, so a version that wraps pushes the name down, never under it. */
+    #reveal-stack { position: absolute; left: 0; right: 0; top: 16cqh; display: flex; flex-direction: column; align-items: stretch; gap: 4cqh; }
+    #reveal-version { position: relative; text-align: center; font-family: var(--font-display);
+      font-size: 42cqmin; line-height: 0.9; transform-origin: 50% 40%; color: var(--accent-ink); letter-spacing: -0.01em; }
+    #reveal-name { position: relative; text-align: center; font-family: var(--font-text);
       font-weight: 900; font-size: 5.6cqmin; color: var(--accent-ink); letter-spacing: -0.02em; }
     .rl, .rw { display: inline-block; }
+    .rseg { display: inline-block; white-space: nowrap; }
     /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
        11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
     @container (max-aspect-ratio: 3/4) {
-      #reveal-version { left: 11cqw; right: 18cqw; top: 18cqh; font-size: 30cqw; }
-      #reveal-name { left: 11cqw; right: 18cqw; top: 38cqh; font-size: 7cqw; }
+      #reveal-stack { left: 12cqw; right: 29cqw; top: 17cqh; gap: 2cqh; }
+      #reveal-version { font-size: 21cqw; line-height: 1.02; text-align: left; }
+      #reveal-name { font-size: 7cqw; text-align: left; }
     }
   </style>
   <div id="root" data-composition-id="reveal" data-width="1920" data-height="1080">
     <div id="reveal-flood" class="clip" data-start="0" data-duration="3.1"></div>
-    <div id="reveal-version" class="clip" data-start="0.3" data-duration="2.8"><span class="rl">K</span><span class="rl">I</span><span class="rl">T</span><span class="rl">2</span><span class="rl">.</span><span class="rl">4</span></div>
-    <div id="reveal-name" class="clip" data-start="0.7" data-duration="2.4"><span class="rw">KIT</span> <span class="rw">product</span> <span class="rw">name</span></div>
+    <div id="reveal-stack">
+      <div id="reveal-version" class="clip" data-start="0.3" data-duration="2.8"><span class="rseg"><span class="rl">K</span><span class="rl">I</span><span class="rl">T</span><span class="rl">2</span><span class="rl">.</span><span class="rl">4</span></span></div>
+      <div id="reveal-name" class="clip" data-start="0.7" data-duration="2.4"><span class="rw">KIT</span> <span class="rw">product</span> <span class="rw">name</span></div>
+    </div>
   </div>
   <script>
+    // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
+    const tall = window.innerHeight > window.innerWidth;
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#reveal-flood", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "power2.inOut" }, 0);
-    tl.fromTo("#reveal-version .rl", { opacity: 0.3, filter: "blur(8px)", y: 40 }, { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.3, stagger: 0.06, ease: "expo.out" }, 0.3);
+    tl.fromTo("#reveal-version .rl", { opacity: 0.3, filter: "blur(8px)", y: tall ? 0 : 40 }, { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.3, stagger: 0.06, ease: "expo.out" }, 0.3);
     tl.fromTo("#reveal-name .rw", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.08, ease: "power4.out" }, 0.75);
+    tl.fromTo("#reveal-version", { scale: 1 }, { scale: tall ? 1.03 : 1.07, duration: 2.6, ease: "none" }, 0.3);
     tl.to("#reveal-version", { x: -60, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 2.88);
     window.__timelines["reveal"] = tl;
   </script>

@@ -1,24 +1,25 @@
 <!-- Proof, text kind (part of about 40%): one change shown as the release's own strings, a command, a field, an
      error code, a config line, typed in line by line as the voice names them. Paper ground, a big ink panel. Use it
      when the release has no screenshot for this change. Never a feature list: one change, its real words. Lines
-     wrap, so keep each under about 40 characters (26 at 1:1 and 9:16). Move each line's tween onto the word that
+     wrap, so keep each under about 30 characters (26 at 1:1 and 9:16). Move each line's tween onto the word that
      names it. -->
 <template>
   <style>
     #root { position: absolute; inset: 0; background: var(--paper); container-type: size; overflow: hidden; }
     #pa-title { position: absolute; left: 8cqw; right: 8cqw; top: 12cqh; font-family: var(--font-text); font-weight: 900;
       font-size: 8.4cqmin; line-height: 1.02; letter-spacing: -0.03em; color: var(--ink); }
-    #pa-panel { position: absolute; left: 6cqw; right: 6cqw; top: 38cqh; padding: 3.6cqmin 4cqmin; background: var(--ink); }
-    .pa-line { font-family: var(--font-mono); font-weight: 400; font-size: 4.6cqmin; line-height: 1.42; color: var(--paper); white-space: pre-wrap; }
+    /* The panel is as wide as its longest line and as tall as the lines typed so far: never a box bigger than its
+       content. */
+    #pa-panel { position: absolute; left: 6cqw; width: fit-content; max-width: 88cqw; top: 38cqh; padding: 3.6cqmin 4cqmin; background: var(--ink); }
+    .pa-line { font-family: var(--font-mono); font-weight: 400; font-size: 6cqmin; line-height: 1.6; color: var(--paper); white-space: pre-wrap; overflow: hidden; }
     .pa-hi { color: var(--accent); font-weight: 700; }
-    .pa-line + .pa-line { margin-top: 0.35em; }
     .ptw { display: inline-block; }
-    #pa-all { position: absolute; inset: 0; }
+    #pa-all { position: absolute; inset: 0; transform-origin: 40% 40%; }
     /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
        11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
     @container (max-aspect-ratio: 3/4) {
-      #pa-title { left: 12cqw; right: 18cqw; top: 16cqh; font-size: 8.4cqw; }
-      #pa-panel { left: 11.5cqw; right: 28cqw; top: 31cqh; padding: 3cqw 3.2cqw; }
+      #pa-title { left: 12cqw; right: 20cqw; top: 17cqh; font-size: 8.4cqw; }
+      #pa-panel { left: 12cqw; max-width: 58cqw; top: 31cqh; padding: 3cqw 3.2cqw; }
       .pa-line { font-size: 3.9cqw; }
     }
   </style>
@@ -33,12 +34,17 @@
    </div>
   </div>
   <script>
+    // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
+    const tall = window.innerHeight > window.innerWidth;
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#pa-title", { x: 260, filter: "blur(14px)", opacity: 0 }, { x: 0, filter: "blur(0px)", opacity: 1, duration: 0.3, ease: "expo.out" }, 0.15);
     tl.fromTo("#pa-panel", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }, 0.5);
-    // Each line types in: a stepped wipe, about 0.02 s a character.
+    tl.fromTo("#pa-all", { scale: 1 }, { scale: tall ? 1.03 : 1.06, duration: 5.4, ease: "none" }, 0);
+    // Each line opens its row, then types in: a stepped wipe, about 0.02 s a character. The panel grows with it.
     tl.fromTo("#pa-l1", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "steps(24)" }, 0.8);
+    tl.fromTo("#pa-l2", { height: 0 }, { height: "auto", duration: 0.12, ease: "power2.out" }, 1.58);
     tl.fromTo("#pa-l2", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "steps(24)" }, 1.7);
+    tl.fromTo("#pa-l3", { height: 0 }, { height: "auto", duration: 0.12, ease: "power2.out" }, 2.48);
     tl.fromTo("#pa-l3", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "steps(24)" }, 2.6);
     tl.to("#pa-all", { x: -200, filter: "blur(12px)", opacity: 0, duration: 0.18, ease: "power3.in" }, 5.4);
     window.__timelines["proof-a"] = tl;

@@ -1,10 +1,13 @@
 <!-- End card (last 15-20%): the mark carried in once, with weight, then the name wipes in beside it, then the call
      to action in the release's own words (the install command, the upgrade line), held 2-3 s. The mark is the
-     owner's own image file, never redrawn. -->
+     owner's own image file, never redrawn. Behind it the version, as tall as the frame, slides the whole time, so a
+     long hold still moves; keep the end card at most 6 s. -->
 <template>
   <style>
     #root { position: absolute; inset: 0; background: var(--paper); container-type: size; overflow: hidden; }
     #ec-flood { position: absolute; inset: 0; background: var(--accent); }
+    #ec-ghost { position: absolute; left: 0; top: -6cqh; white-space: nowrap; font-family: var(--font-display);
+      font-size: 118cqh; line-height: 1; color: var(--accent-ink); opacity: 0.09; }
     #ec-lock { position: absolute; left: 0; right: 0; top: 26cqh; display: flex; align-items: center; justify-content: center; gap: 3cqmin; }
     #ec-markwrap { width: 18cqmin; height: 18cqmin; }
     #ec-mark { width: 100%; height: 100%; object-fit: cover; }
@@ -23,10 +26,12 @@
       #ec-cta { left: 11.5cqw; right: 18cqw; top: 33cqh; }
       #ec-cmd { font-size: 4.2cqw; }
       #ec-ver { left: 11.5cqw; right: 28cqw; top: 47cqh; font-size: 3.4cqw; }
+      #ec-ghost { top: 64cqh; font-size: 34cqh; }
     }
   </style>
   <div id="root" data-composition-id="endcard" data-width="1920" data-height="1080">
     <div id="ec-flood" class="clip" data-start="0" data-duration="5.6"></div>
+    <div id="ec-ghost" class="clip" data-start="0.2" data-duration="5.4" data-layout-ignore>KIT v2.4.0</div>
     <div id="ec-lock">
       <div id="ec-markwrap"><img id="ec-mark" class="clip" src="assets/mark.png" alt="" data-start="0.3" data-duration="5.3" /></div>
       <div id="ec-name" class="clip" data-start="0.7" data-duration="4.9">KIT name</div>
@@ -39,7 +44,10 @@
     tl.fromTo("#ec-flood", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.4, ease: "power2.inOut" }, 0);
     tl.fromTo("#ec-markwrap", { scale: 0.55, rotation: -10, filter: "blur(10px)" }, { scale: 1, rotation: 0, filter: "blur(0px)", duration: 0.5, ease: "back.out(1.4)" }, 0.3);
     tl.fromTo("#ec-name", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "power3.out" }, 0.7);
+    tl.fromTo("#ec-ghost", { xPercent: 0 }, { xPercent: -38, duration: 5.4, ease: "none" }, 0.2);
     tl.fromTo("#ec-cmd", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 1.4);
+    // The command types itself in the box, which is already its own size.
+    tl.fromTo("#ec-cmd", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.6, ease: "steps(28)" }, 1.4);
     tl.fromTo("#ec-ver", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power2.out" }, 1.8);
     window.__timelines["endcard"] = tl;
   </script>

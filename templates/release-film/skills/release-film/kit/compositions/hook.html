@@ -6,7 +6,7 @@
 <template>
   <style>
     #root { position: absolute; inset: 0; background: var(--alert); container-type: size; overflow: hidden; }
-    #hook-all { position: absolute; inset: 0; }
+    #hook-all { position: absolute; inset: 0; transform-origin: 46% 35%; }
     #hook-label { position: absolute; left: 8cqw; right: 8cqw; top: 14cqh; font-family: var(--font-text); font-weight: 900;
       font-size: 5.4cqmin; letter-spacing: -0.02em; line-height: 1.1; color: var(--ink); }
     #hook-line { position: absolute; left: 8cqw; right: 8cqw; top: 30cqh; font-family: var(--font-mono); font-weight: 700;
@@ -21,8 +21,8 @@
     /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
        11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
     @container (max-aspect-ratio: 3/4) {
-      #hook-label { left: 12cqw; right: 18cqw; top: 16cqh; font-size: 6cqw; }
-      #hook-line { left: 12cqw; right: 18cqw; top: 25cqh; font-size: 7.4cqw; }
+      #hook-label { left: 12cqw; right: 18cqw; top: 16cqh; font-size: 6.2cqw; }
+      #hook-line { left: 12cqw; right: 20cqw; top: 25cqh; font-size: 7.4cqw; }
     }
   </style>
   <div id="root" data-composition-id="hook" data-width="1920" data-height="1080">
@@ -35,7 +35,11 @@
     // One strike bar inside each word, so the strike crosses every word wherever the line wraps (untimed, made
     // once before the timeline is built).
     document.querySelectorAll("#hook-line .hw").forEach((w) => { const bar = document.createElement("i"); bar.className = "hs"; w.appendChild(bar); });
+    // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
+    const tall = window.innerHeight > window.innerWidth;
     const tl = gsap.timeline({ paused: true });
+    // The camera: a slow push on the words for the whole hold, so the frame is never still.
+    tl.fromTo("#hook-all", { scale: 1 }, { scale: tall ? 1.03 : 1.08, duration: 4.2, ease: "none" }, 0);
     // The first word is already there at 0; the rest slam in 0.11 s apart.
     tl.fromTo("#hook-line .hw:not(:first-child)", { opacity: 0, scale: 1.35, filter: "blur(10px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.16, stagger: 0.11, ease: "expo.out" }, 0.25);
     tl.fromTo("#hook-line .hs", { scaleX: 0 }, { scaleX: 1, duration: 0.14, stagger: 0.06, ease: "expo.out" }, 2.9);

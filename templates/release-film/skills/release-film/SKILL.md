@@ -26,12 +26,19 @@ other changes you left out.
 | hook | 0 – 4.5 | the old way failing, in the release's own words: the error message it fixes, the step it removes, the issue it closes. Frame 0 already shows it |
 | reveal | 4.5 – 7.5 | the product's name and the version land, big |
 | proof-a | 7.5 – 13 | the change in its own text: the command, the config line, the field, the before → after |
-| proof-b | 13 – 18.5 | the change seen: the release's screenshot pushed to 1.6–2x, or a second piece of real text |
+| proof-b | 13 – 18.5 | the change seen: the release's screenshot pushed to 1.6–2x, or with no screenshot the type wall: the release's own strings as big as the frame takes them |
 | payoff | 18.5 – 24.5 | the one line to remember, in the biggest type of the film, one accent word |
-| endcard | 24.5 – 30 | the mark carried in, the name, the call to action (the upgrade or install line from the notes), the version; holds 2 s |
+| endcard | 24.5 – 30 | the mark carried in, the name, the call to action (the upgrade or install line from the notes), the version; holds 2 s, at most 6 s in all |
 
 The beats follow the voice: once the timestamps exist, move each scene's start to the word that names it
-(`film/words.json`, step 6), keeping each scene at least 2.5 s.
+(`film/words.json`, step 6), keeping each scene at least 2.5 s. When the voice ends early, the payoff holds longer,
+never the end card past 6 s.
+
+**Motion**: every beat moves the whole time it is on screen, and each move has a cause: the camera pushes in on
+the proof, type builds on the word that names it, a cut lands on a word. Each kit scene already has its push (a
+slow scale of its words for the scene's length) and its builds; two still frames in a row is a fault, so keep them
+when you restyle. **Boxes fit their content**: a panel is as wide as its longest line and grows as lines type in;
+never draw a box bigger than what is in it. All corners are square: no `border-radius` anywhere.
 
 **Copy**: on-screen titles at most 6 words a line, no trailing period; the screen never repeats the spoken sentence
 word for word (it shows the proof the voice talks about). Real text from the release only: a command, an error string,
@@ -72,8 +79,10 @@ reference holds. Each scene's comment says its job.
   the CLI and need no file. Keep them unless the brand's own font files are in the release.
 - **Images**: `cp media/release-1.png film/assets/shot.png` (proof-b shows `assets/shot.png`); the mark: `cp
   media/mark.png film/assets/mark.png && cp media/mark.png film/card/assets/mark.png`. Keep each file's real extension
-  and change the `src` to it. No screenshot: rebuild proof-b as a second text proof (copy proof-a's panel), never a
-  drawn interface. No mark: the end card shows the name alone.
+  and change the `src` to it. No screenshot (most releases): point the proof-b host in `index.html` at
+  `compositions/proof-b-type.html`, the type wall, and fill its rows with the release's own strings (the command,
+  the flag, the changed name, the error it no longer throws, the issue number); never a drawn interface. Delete the
+  proof-b file you don't use, so no `KIT` is left in it. No mark: the end card shows the name alone.
 - **Timing**: each host in `index.html` has `data-start` and `data-duration`; the scene's root inside has the same
   duration; every tween inside a scene is on the scene's own clock (0 = the scene's start). When a scene's length
   changes, move its later tweens and clips to fit inside it.
@@ -166,7 +175,8 @@ duration. A failed render: read the log's error, fix, render again (at most 3 re
 
 ## 9. The share card
 
-Fill `film/card/index.html` with the payoff line (at most 8 words), the name and the version, and the palette. Then:
+Fill `film/card/index.html` with the version (the biggest thing on the card: as large as fits on one line), the payoff
+line (at most 8 words), the name, and the palette. Then:
 
 ```sh
 cd film && hyperframes snapshot card --at 0.5 --no-end -o ../media/card && cp ../media/card/frame-00-at-0.5s.png ../media/share-card.png && ffprobe -v error -show_entries stream=width,height -of csv=p=0 ../media/share-card.png
