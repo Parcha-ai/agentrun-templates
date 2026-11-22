@@ -915,7 +915,7 @@
         "structured-data"
       ],
       "summary": "Give it a URL and a JSON Schema; it returns typed JSON from that page, each value with its source text, each missing one null with why.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 3 of them. Add Firecrawl's preset (Settings → MCP servers) for pages drawn by JavaScript; it sees each URL. NVIDIA, which serves the model, may use what you send to improve its AI models: use public pages only."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 4 of them. Add Firecrawl's preset (Settings → MCP servers) for pages drawn by JavaScript; it sees each URL. NVIDIA, which serves the model, may use what you send to improve its AI models: use public pages only."
     },
     {
       "name": "quick-image",
