@@ -16,7 +16,10 @@ follows (story, the spec's banned defaults, motion, captions, review). Read it o
 
 A release is many changes; a film is one. Pick the **headline**: the change a user of this product feels most (a
 failure that stops happening, a step that goes away, a number that moves), never "a new release", "bug fixes", or the
-longest section. Everything else in the notes is left out; say in the report which other changes you left out.
+longest section. One change, not two: two related changes ("faster restores, and the restore error is gone") are
+still two films, so take the one with the more visible proof. The hook is the old way of that same change, every beat
+serves it, and the script never says "both". Everything else in the notes is left out; say in the report which
+other changes you left out.
 
 | Beat | Seconds (30 s) | Job |
 |---|---|---|
