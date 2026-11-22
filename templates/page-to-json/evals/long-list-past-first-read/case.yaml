@@ -1,0 +1,4 @@
+# The registry page is fixtures/web.json's answer to its URL; nothing reaches the network. Its 45 entries run to about
+# 26,000 characters, so a first read of 20,000 ends inside entry 35 and entries 36 to 45 come only from reading on.
+web: fixtures/web.json
+now: 2026-11-16T09:00:00Z
