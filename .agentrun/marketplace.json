@@ -831,7 +831,7 @@
         "contributors"
       ],
       "summary": "Tells you about each new pull request on a public GitHub repo: who sent it, what it touches and what to watch.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed, and no GitHub token. It reads the repo's open pull requests every 30 minutes and sends one alert per new PR, on the free Ling 3.2 Flash model. GitHub is read anonymously, so point it only at a public repository."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits or GitHub token needed. Every 30 minutes it reads a public repo's open PRs and alerts once per new PR. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a PR takes about 6 of them. NVIDIA, which serves the free model, may use what it reads to improve its AI models."
     },
     {
       "name": "web-researcher",
@@ -902,6 +902,20 @@
         "weekly"
       ],
       "summary": "Every Monday, insider buys and sells on your watchlist, big buys flagged, each with its SEC filing. Not investment advice. Uses monid."
+    },
+    {
+      "name": "page-to-json",
+      "source": "./templates/page-to-json",
+      "category": "engineering",
+      "tags": [
+        "free",
+        "extraction",
+        "json-schema",
+        "scraping",
+        "structured-data"
+      ],
+      "summary": "Give it a URL and a JSON Schema; it returns typed JSON from that page, each value with its source text, each missing one null with why.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 4 of them. Add Firecrawl's preset (Settings → MCP servers) for pages drawn by JavaScript; it sees each URL. NVIDIA, which serves the model, may use what you send to improve its AI models: use public pages only."
     },
     {
       "name": "quick-image",

@@ -8,27 +8,32 @@ and text aimed at AI tools. It is not a code review: no line comments and no ver
 
 ## Runs for $0
 
-- Model: `openrouter/inclusionai/ling-3.2-flash:free` (Ling 3.2 Flash) on pi. Put an `OPENROUTER_API_KEY` in your
-  server's environment; no credits are needed. Free OpenRouter models allow 50 requests a day with no credits (1,000 a
-  day after a one-time $10) and 20 a minute. How long a model stays free is OpenRouter's call. Nemotron 3 Ultra
-  (free) read pages beyond the skill's URL list and wrote from them, so the template moved to Ling.
+- Model: `openrouter/nvidia/nemotron-3.5-super-vl:free` (Nemotron 3.5 Super VL), served by NVIDIA, on pi. Put an
+  `OPENROUTER_API_KEY` in your server's environment; no credits are needed. OpenRouter's free models allow 20 requests
+  a minute and, per account, 50 a day until the account has bought $10 of credits in all, then 1,000 a day; the day
+  resets at 00:00 UTC. The endpoint takes up to 868,928 tokens in and 131,072 out. How long a model stays free is
+  OpenRouter's call. The template left Ling 3.2 Flash (free) on 2026-11-20, when its shared upstream pool answered
+  most requests with a rate-limit error.
+- Each run stops after 20 free-model requests, so one bad run uses at most 20 of your daily free requests.
 - GitHub: read anonymously over `api.github.com` (60 requests an hour per IP address), by the trigger and by the run's
   `web_fetch`. No GitHub App, no webhook and no token, so it runs on a laptop with no public address. Public
   repositories only: a private one answers 404 to an anonymous read.
-- Ling's free endpoint is on OpenRouter's zero-retention list, so OpenRouter's "ZDR only" setting keeps it on. Point
-  it only at public repositories: it reads GitHub anonymously, and a private one's PRs never reach it.
+- NVIDIA's free endpoint keeps data. Under NVIDIA's API trial terms it may log what it is sent and use it to improve
+  its products, AI models included, and the terms ask you not to send confidential or personal data. It is not on
+  OpenRouter's zero-retention list, so OpenRouter's "ZDR only" setting turns it off. Point it only at public
+  repositories: it reads GitHub anonymously, and a private one's PRs never reach it.
 
 ## Requests
 
 | | Model requests | GitHub requests |
 | --- | --- | --- |
 | A read with no new PR | 0: no run starts | 1 |
-| Each new PR | 2 to 6 measured: read the skill while fetching the PR's files and its author's history, then the answer | 1 or 2 |
+| Each new PR | 3 to 9 measured (median 6): read the skill while fetching the PR's files and its author's history, then the answer | 1 or 2 |
 
 The trigger reads the list twice an hour, 48 GitHub requests a day, and a quiet repository costs no model request. The
-free allowance (50 model requests a day without credits) covers about 8 to 25 new PRs a day; a busier repository needs
-the one-time $10 (1,000 a day). The allowance is per OpenRouter key, so other agents on the same key share it. The
-GitHub limit is per IP address, so other tools reading GitHub anonymously from the same machine share it too.
+free allowance (50 model requests a day until $10 of credits is bought) covers about 5 to 15 new PRs a day; a busier
+repository needs the $10 (1,000 a day). The allowance is per OpenRouter account, so every key and agent on it shares
+it. The GitHub limit is per IP address, so other tools reading GitHub anonymously from the same machine share it too.
 
 ## How it knows what is new
 
@@ -52,11 +57,11 @@ keeps no notes. Edges:
 
 ## Tested
 
-On Ling 3.2 Flash (free), 2 runs per case, 2026-11-17: 2 of 3 eval cases pass (5 of 6 runs). The first-time
-contributor and the hidden instruction in a PR body (not followed, noted, called suspicious) passed both runs. The miss:
-in "regular touches workflows" one run said a new setup action is used by both CI workflows when the patches showed it
-in one. Every run fetched only the PR's files and its author's PRs.
+On Nemotron 3.5 Super VL (free), 2 runs per case, 2026-11-21: all 3 eval cases pass (6 of 6 runs). The first-time
+contributor is named as one, the hidden instruction in a PR body is not followed, is noted and called suspicious, and
+a regular contributor's workflow change is reported from the patches as they read. An earlier pass on 2026-11-21 wrote
+the author as "first_time" in two runs; the skill now names the words to use.
 
 Live (one real vitejs/vite PR handed over as the trigger hands it, its files and author read from GitHub as it ran):
-1 of 2 runs. The miss summarized a detail from the PR's test patch as something the PR says. No run made up a file,
-count or PR. An alert is a pointer, not a review: open the PR before acting on it.
+2 of 2 runs, 7 model requests each. No run made up a file, count or PR. An alert is a pointer, not a review: open the
+PR before acting on it.
