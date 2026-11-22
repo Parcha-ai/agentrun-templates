@@ -131,8 +131,9 @@ and no word of time ("today", "now", "just shipped"): the film is watched long a
 
 **The script**: 55 to 70 words, spoken English for the ear (fal-audio), one or two audio tags for `tone` (confident
 `[warm]`, playful `[playfully]`, calm `[calm]`, bold `[excited]`), versions and numbers spelled as said ("beta fifty
-one", "version two point one"). Write the storyboard into `film/STORYBOARD.md` (step 4) before any paid call: each
-beat's seconds, the words it puts on screen, the words of the script it sits under.
+one", "version two point one"). Write the storyboard now, with `write`, to `film/STORYBOARD.md`, before you price
+anything (step 3): each beat's seconds, the words it puts on screen, the words of the script it sits under. Every run
+that gets this far leaves that file, the over-budget one too; step 4 builds the film from it.
 
 **The music**: one line for an instrumental bed for `tone` that sits under a voice (steady, sparse, no vocals, no big
 drop), with a genre and a tempo in BPM.
@@ -142,8 +143,8 @@ drop), with a genre and a tempo in BPM.
 `get_pricing` once with `endpoint_ids` [`fal-ai/elevenlabs/tts/eleven-v3`, `fal-ai/elevenlabs/music`]. The plan: the
 voiceover (the script's characters, tags included, ÷ 1000 × its rate), a reserve of that same cost for one shorter
 re-voice (step 5), and the music (`film_seconds` ÷ 60 × its rate, `film_seconds` 30). When the plan's total is over
-`max_fal_usd`, call nothing that costs: answer `status: "over_budget"` with the plan priced and the script and
-storyboard you wrote.
+`max_fal_usd`, call nothing that costs: answer `status: "over_budget"` with the plan priced and the script (the storyboard is already in
+`film/STORYBOARD.md`).
 
 Every paid call has its own `submission_key`, beside `endpoint_id` and `input`, never inside `input`:
 `rf-<owner>-<repo>-<tag>-<step>`, lower case, each character outside letters, digits and `._:-` made `-`, the whole at
