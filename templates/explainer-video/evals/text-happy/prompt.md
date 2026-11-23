@@ -1,7 +1,7 @@
 ---
 description: 'A pasted help doc with figures, a named presenter look and voice Laura, standard 30 s. The script keeps every fact with the numbers spelled out; the portrait (Nano Banana, 16:9) and the voiceover (ElevenLabs v3) are submitted together and read in one wait; Fabric animates the portrait at 480p from fal''s URLs; captions and every file are saved under media/, with the cost of each step. Pass 2 of 2.'
 runs: 2
-max_cost_usd: 3.00
+max_cost_usd: 3.50
 input:
   text: |
     # Scheduled exports
