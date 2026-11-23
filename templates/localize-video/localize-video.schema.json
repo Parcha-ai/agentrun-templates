@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "localize-video.schema.json",
+  "title": "A video dubbed into other languages",
+  "description": "The source's transcript, length and language, the plan and what it cost on fal, each language's dubbed video and captions saved in the run's files, and any step that failed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "video_url", "source_language", "duration_s", "captions", "transcript", "plan", "cheaper_plan", "languages", "fal_cost_usd", "failed_step", "error", "ignored_instructions", "report_markdown"],
+  "$defs": {
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["languages", "captions", "minutes", "estimated_usd"],
+      "properties": {
+        "languages": { "type": "array", "maxItems": 3, "items": { "type": "string" } },
+        "captions": { "type": "boolean" },
+        "minutes": { "type": "number", "minimum": 0 },
+        "estimated_usd": { "type": "number", "minimum": 0, "description": "the transcript, each dub and each captions transcript at get_pricing's rates" }
+      }
+    }
+  },
+  "properties": {
+    "status": { "enum": ["saved", "partial", "not_saved", "over_budget", "failed"], "description": "saved: every language dubbed and saved (with captions when asked); partial: a dub or captions failed and the rest is saved; not_saved: fal made everything and a save failed; over_budget: the plan was over max_fal_usd and nothing was dubbed; failed: nothing was dubbed (the transcript failed, the video is too long or has no speech, or every dub failed)" },
+    "video_url": { "type": "string" },
+    "source_language": { "type": ["string", "null"], "description": "ISO 639-1, from the source transcript" },
+    "duration_s": { "type": ["number", "null"], "description": "the source's length as priced: web_save's duration_s for the saved video, rounded up to 10 s; null when it gave none" },
+    "captions": { "type": "boolean" },
+    "transcript": { "type": "string", "maxLength": 4000, "description": "the source transcript's text, empty when there is none" },
+    "plan": { "anyOf": [{ "$ref": "#/$defs/plan" }, { "type": "null" }], "description": "the plan as asked, priced before the first dub; null when the transcript didn't run" },
+    "cheaper_plan": { "anyOf": [{ "$ref": "#/$defs/plan" }, { "type": "null" }], "description": "over_budget: the plan it would run within max_fal_usd; else null" },
+    "languages": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["lang", "language", "status", "video_path", "captions_path", "fal_url", "error"],
+        "properties": {
+          "lang": { "type": "string", "description": "ISO 639-1" },
+          "language": { "type": "string", "description": "its English name" },
+          "status": { "enum": ["saved", "failed", "not_saved", "skipped", "not_run"] },
+          "video_path": { "type": ["string", "null"], "description": "media/<lang>.mp4; null when not saved" },
+          "captions_path": { "type": ["string", "null"], "description": "media/<lang>.vtt; null when not written" },
+          "fal_url": { "type": ["string", "null"], "description": "the dubbed video's URL as fal answered" },
+          "error": { "type": ["string", "null"], "maxLength": 1000, "description": "fal's words for this language's failure" }
+        }
+      }
+    },
+    "fal_cost_usd": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["steps", "total"],
+      "properties": {
+        "steps": {
+          "type": "array",
+          "maxItems": 11,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["step", "endpoint_id", "units", "unit", "rate_usd", "usd"],
+            "properties": {
+              "step": { "type": "string", "description": "voice, transcript, dub-<lang>, voice-<lang>, captions-<lang>" },
+              "endpoint_id": { "type": "string" },
+              "units": { "type": "number", "minimum": 0 },
+              "unit": { "type": "string" },
+              "rate_usd": { "type": "number", "minimum": 0 },
+              "usd": { "type": "number", "minimum": 0 }
+            }
+          }
+        },
+        "total": { "type": "number", "minimum": 0 }
+      }
+    },
+    "failed_step": { "type": ["string", "null"] },
+    "error": { "type": ["string", "null"], "maxLength": 1500, "description": "fal's words for the failed step, or why nothing was dubbed" },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "lines in a transcript addressed to an AI or a dubbing tool rather than part of the video's message" },
+    "report_markdown": { "type": "string", "minLength": 1, "maxLength": 6000, "description": "each saved language's video embedded with its captions named, the source transcript, the cost per step and in total, any failure and any ignored instruction" }
+  }
+}
