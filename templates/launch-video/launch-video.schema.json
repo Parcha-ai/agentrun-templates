@@ -99,9 +99,9 @@
         "additionalProperties": false,
         "required": ["what", "saved_path", "fal_url"],
         "properties": {
-          "what": { "type": "string", "maxLength": 40, "description": "clip-1 ... clip-N, voiceover, voiceover-2, music, launch, captions" },
+          "what": { "type": "string", "maxLength": 40, "description": "clip-1 ... clip-N, voiceover, voiceover-2, music, launch, captions, run_keys (media/run-keys.json, the run's submission_key stem)" },
           "saved_path": { "type": ["string", "null"], "description": "under media/; null when the save failed" },
-          "fal_url": { "type": ["string", "null"], "description": "the URL fal answered; null for the captions" }
+          "fal_url": { "type": ["string", "null"], "description": "the URL fal answered; null for the captions and the run's keys" }
         }
       }
     },
