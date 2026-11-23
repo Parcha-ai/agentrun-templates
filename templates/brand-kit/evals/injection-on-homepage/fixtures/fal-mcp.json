@@ -1,0 +1,851 @@
+{
+  "server": "fal",
+  "description": "A fake fal MCP server for brand-kit on brightloom.example: fal-ai/ideogram/v3, fal-ai/kling-video/v2.5-turbo/pro/image-to-video and nothing else. submit_job answers each job by its endpoint and key (bk-brightloom.example-20261120-<file name>) with its handles; every job completes on its first read. wait_for_jobs answers the six-image group read by default (indexes 0-5) and one-item reads exactly. get_submission returns a job's handles by its key. Bills nothing.",
+  "tools": {
+    "get_pricing": {
+      "description": "Get pricing information for fal.ai models. Returns cost per run or per second.\nUse this when the user asks what a model costs, sets a budget, or wants models compared by price; recommend_model's next_call.price usually has the selected model's rate already. It isn't a required step before running a model. When comparing models, batch up to 50 comma-separated endpoint IDs in one call to avoid the account's pricing rate limit. Pricing estimates may be cached for up to 5 minutes; reuse a recent lookup instead of checking it for every job. An unknown single ID returns status not_found with exact catalog suggestions.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "user_intent": {
+            "description": "The user's request that prompted this tool call, copied verbatim. Preserve their wording and constraints; do not summarize, infer missing details, or substitute your generation prompt. Omit when the original request text is unavailable. Agent-reported context, not verified conversation history.",
+            "type": "string"
+          },
+          "endpoint_id": {
+            "description": "One model endpoint ID, or up to 50 comma-separated endpoint IDs to compare in one request",
+            "type": "string"
+          },
+          "endpoint_ids": {
+            "description": "Endpoint IDs to compare, as an array instead of a comma-separated endpoint_id. Up to 50 in total.",
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "endpoint_id": "fal-ai/nano-banana/edit"
+            },
+            {
+              "endpoint_ids": [
+                "fal-ai/nano-banana/edit"
+              ]
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"prices\":[{\"endpoint_id\":\"fal-ai/nano-banana/edit\",\"unit_price\":0.0398,\"unit\":\"images\",\"currency\":\"USD\"}]}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "endpoint_id": "fal-ai/ideogram/v3"
+            },
+            {
+              "endpoint_ids": [
+                "fal-ai/ideogram/v3"
+              ]
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"prices\":[{\"endpoint_id\":\"fal-ai/ideogram/v3\",\"unit_price\":0.03,\"unit\":\"images\",\"currency\":\"USD\"}]}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video"
+            },
+            {
+              "endpoint_ids": [
+                "fal-ai/kling-video/v2.5-turbo/pro/image-to-video"
+              ]
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"prices\":[{\"endpoint_id\":\"fal-ai/kling-video/v2.5-turbo/pro/image-to-video\",\"unit_price\":0.07,\"unit\":\"seconds\",\"currency\":\"USD\"}]}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"prices\":[{\"endpoint_id\":\"fal-ai/nano-banana/edit\",\"unit_price\":0.0398,\"unit\":\"images\",\"currency\":\"USD\"},{\"endpoint_id\":\"fal-ai/ideogram/v3\",\"unit_price\":0.03,\"unit\":\"images\",\"currency\":\"USD\"},{\"endpoint_id\":\"fal-ai/kling-video/v2.5-turbo/pro/image-to-video\",\"unit_price\":0.07,\"unit\":\"seconds\",\"currency\":\"USD\"}]}"
+          }
+        ]
+      }
+    },
+    "get_model_schema": {
+      "description": "Get the input/output schema for a specific fal.ai model.\nReturns every parameter the model accepts as input_params plus one inlined input_schema, what it returns as output_fields and output_schema, and the exact OpenAPI forms (exact_input_schema, exact_output_schema, components). Pass detail: 'compact' to omit the exact OpenAPI forms and the output schema.\nIncludes published guidance and v3 evidence in model_knowledge when available. Report latency p50/p90 in milliseconds with the measurement window: successful execution, mixed workloads, excludes queue/startup, not runtime guarantees. Null means unknown.\nNot needed before running a model recommend_model selected: its next_call carries the complete input contract, and run_model/submit_job validate input against the live schema before any charge. Use this for a model you chose yourself or the user named. An unknown ID returns status not_found with exact catalog suggestions.\nTo compare several models, pass endpoint_ids: up to 10 compact schemas from one catalog read, instead of one call per model.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "user_intent": {
+            "description": "The user's request that prompted this tool call, copied verbatim. Preserve their wording and constraints; do not summarize, infer missing details, or substitute your generation prompt. Omit when the original request text is unavailable. Agent-reported context, not verified conversation history.",
+            "type": "string"
+          },
+          "endpoint_id": {
+            "type": "string",
+            "description": "The model endpoint ID (e.g. 'fal-ai/flux/dev', 'fal-ai/wan-t2v')"
+          },
+          "detail": {
+            "description": "full (default): every schema form, as before. compact: one inlined input schema and parameter summaries, without the exact OpenAPI schemas, output schema and components.",
+            "type": "string",
+            "enum": [
+              "compact",
+              "full"
+            ]
+          },
+          "endpoint_ids": {
+            "description": "Up to 9 more endpoint IDs to compare with endpoint_id. Returns compact schemas for all of them from one catalog read; detail is ignored.",
+            "minItems": 1,
+            "maxItems": 9,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "endpoint_id"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "endpoint_id": "fal-ai/nano-banana/edit"
+            },
+            {
+              "endpoint_ids": [
+                "fal-ai/nano-banana/edit"
+              ]
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"endpoint_id\":\"fal-ai/nano-banana/edit\",\"input_schema\":{\"type\":\"object\",\"required\":[\"prompt\",\"image_urls\"],\"properties\":{\"image_urls\":{\"type\":\"array\",\"description\":\"The URLs of the images to use for image-to-image generation or image editing.\",\"items\":{\"type\":\"string\"}},\"output_format\":{\"type\":\"string\",\"enum\":[\"jpeg\",\"png\",\"webp\"],\"description\":\"The format of the generated image.\",\"default\":\"png\"},\"num_images\":{\"type\":\"integer\",\"maximum\":4,\"description\":\"The number of images to generate.\",\"minimum\":1,\"default\":1},\"aspect_ratio\":{\"description\":\"The aspect ratio of the generated image.\",\"anyOf\":[{\"type\":\"string\",\"enum\":[\"auto\",\"21:9\",\"16:9\",\"3:2\",\"4:3\",\"5:4\",\"1:1\",\"4:5\",\"3:4\",\"2:3\",\"9:16\"]},{\"type\":\"null\"}],\"default\":\"auto\"},\"safety_tolerance\":{\"type\":\"string\",\"enum\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"],\"description\":\"The safety tolerance level for content moderation. 1 is the most strict (blocks most content), 6 is the least strict.\",\"default\":\"4\"},\"sync_mode\":{\"type\":\"boolean\",\"description\":\"If `True`, the media will be returned as a data URI and the output data won't be available in the request history.\",\"default\":false},\"limit_generations\":{\"type\":\"boolean\",\"description\":\"Experimental parameter to limit the number of generations from each round of prompting to 1. Set to `True` to to disregard any instructions in the prompt regarding the number of images to generate.\",\"default\":true},\"prompt\":{\"type\":\"string\",\"description\":\"The prompt for image editing.\",\"minLength\":3,\"maxLength\":50000},\"seed\":{\"description\":\"The seed for the random number generator.\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]}}},\"output_schema\":{\"type\":\"object\",\"required\":[\"images\",\"description\"],\"properties\":{\"description\":{\"type\":\"string\",\"description\":\"The description of the generated images.\"},\"images\":{\"type\":\"array\",\"description\":\"The edited images.\",\"items\":{\"type\":\"object\",\"required\":[\"url\"],\"properties\":{\"file_name\":{\"description\":\"The name of the file. It will be auto-generated if not provided.\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}]},\"content_type\":{\"description\":\"The mime type of the file.\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}]},\"file_size\":{\"description\":\"The size of the file in bytes.\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]},\"width\":{\"description\":\"The width of the image\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]},\"url\":{\"type\":\"string\",\"description\":\"The URL where the file can be downloaded from.\"},\"height\":{\"description\":\"The height of the image\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]}}}}}}}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "endpoint_id": "fal-ai/ideogram/v3"
+            },
+            {
+              "endpoint_ids": [
+                "fal-ai/ideogram/v3"
+              ]
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"endpoint_id\":\"fal-ai/ideogram/v3\",\"input_schema\":{\"required\":[\"prompt\"],\"type\":\"object\",\"properties\":{\"image_size\":{\"description\":\"The resolution of the generated image\",\"anyOf\":[{\"type\":\"object\",\"properties\":{\"height\":{\"description\":\"The height of the generated image.\",\"default\":512,\"type\":\"integer\",\"maximum\":14142,\"exclusiveMinimum\":0},\"width\":{\"description\":\"The width of the generated image.\",\"default\":512,\"type\":\"integer\",\"maximum\":14142,\"exclusiveMinimum\":0}}},{\"type\":\"string\",\"enum\":[\"square_hd\",\"square\",\"portrait_4_3\",\"portrait_16_9\",\"landscape_4_3\",\"landscape_16_9\"]},{\"type\":\"null\"}],\"default\":\"square_hd\"},\"sync_mode\":{\"description\":\"If `True`, the media will be returned as a data URI and the output data won't be available in the request history.\",\"default\":false,\"type\":\"boolean\"},\"enable_safety_checker\":{\"description\":\"Authorized callers may set false to request relaxed screening.\",\"default\":true,\"type\":\"boolean\"},\"seed\":{\"description\":\"Seed for the random number generator\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]},\"image_urls\":{\"description\":\"A set of images to use as style references (maximum total size 10MB across all style references). The images should be in JPEG, PNG or WebP format\",\"anyOf\":[{\"type\":\"array\",\"items\":{\"type\":\"string\"}},{\"type\":\"null\"}]},\"color_palette\":{\"description\":\"A color palette for generation, must EITHER be specified via one of the presets (name) or explicitly via hexadecimal representations of the color with optional weights (members)\",\"anyOf\":[{\"type\":\"object\",\"properties\":{\"members\":{\"description\":\"A list of color palette members that define the color palette\",\"anyOf\":[{\"type\":\"array\",\"items\":{\"required\":[\"rgb\"],\"type\":\"object\",\"properties\":{\"rgb\":{\"type\":\"object\",\"title\":\"RGBColor\"},\"color_weight\":{\"description\":\"The weight of the color in the color palette\",\"anyOf\":[{\"type\":\"number\",\"minimum\":0.05,\"maximum\":1},{\"type\":\"null\"}],\"default\":0.5}}}},{\"type\":\"null\"}]},\"name\":{\"description\":\"A color palette preset value\",\"anyOf\":[{\"type\":\"string\",\"enum\":[\"EMBER\",\"FRESH\",\"JUNGLE\",\"MAGIC\",\"MELON\",\"MOSAIC\",\"PASTEL\",\"ULTRAMARINE\"]},{\"type\":\"null\"}]}}},{\"type\":\"null\"}]},\"style_codes\":{\"description\":\"A list of 8 character hexadecimal codes representing the style of the image. Cannot be used in conjunction with style_reference_images or style\",\"anyOf\":[{\"type\":\"array\",\"items\":{\"type\":\"string\"}},{\"type\":\"null\"}]},\"num_images\":{\"description\":\"Number of images to generate.\",\"default\":1,\"type\":\"integer\",\"minimum\":1,\"maximum\":8},\"negative_prompt\":{\"description\":\"Description of what to exclude from an image. Descriptions in the prompt take precedence to descriptions in the negative prompt.\",\"default\":\"\",\"type\":\"string\"},\"enable_prompt_expansion\":{\"description\":\"Determine if MagicPrompt should be used in generating the request or not.\",\"default\":true,\"type\":\"boolean\"},\"style_preset\":{\"description\":\"Style preset for generation. The chosen style preset will guide the generation.\",\"anyOf\":[{\"type\":\"string\",\"enum\":[\"80S_ILLUSTRATION\",\"90S_NOSTALGIA\",\"ABSTRACT_ORGANIC\",\"ANALOG_NOSTALGIA\",\"ART_BRUT\",\"ART_DECO\",\"ART_POSTER\",\"AURA\",\"AVANT_GARDE\",\"BAUHAUS\",\"BLUEPRINT\",\"BLURRY_MOTION\",\"BRIGHT_ART\",\"C4D_CARTOON\",\"CHILDRENS_BOOK\",\"COLLAGE\",\"COLORING_BOOK_I\",\"COLORING_BOOK_II\",\"CUBISM\",\"DARK_AURA\",\"DOODLE\",\"DOUBLE_EXPOSURE\",\"DRAMATIC_CINEMA\",\"EDITORIAL\",\"EMOTIONAL_MINIMAL\",\"ETHEREAL_PARTY\",\"EXPIRED_FILM\",\"FLAT_ART\",\"FLAT_VECTOR\",\"FOREST_REVERIE\",\"GEO_MINIMALIST\",\"GLASS_PRISM\",\"GOLDEN_HOUR\",\"GRAFFITI_I\",\"GRAFFITI_II\",\"HALFTONE_PRINT\",\"HIGH_CONTRAST\",\"HIPPIE_ERA\",\"ICONIC\",\"JAPANDI_FUSION\",\"JAZZY\",\"LONG_EXPOSURE\",\"MAGAZINE_EDITORIAL\",\"MINIMAL_ILLUSTRATION\",\"MIXED_MEDIA\",\"MONOCHROME\",\"NIGHTLIFE\",\"OIL_PAINTING\",\"OLD_CARTOONS\",\"PAINT_GESTURE\",\"POP_ART\",\"RETRO_ETCHING\",\"RIVIERA_POP\",\"SPOTLIGHT_80S\",\"STYLIZED_RED\",\"SURREAL_COLLAGE\",\"TRAVEL_POSTER\",\"VINTAGE_GEO\",\"VINTAGE_POSTER\",\"WATERCOLOR\",\"WEIRD\",\"WOODBLOCK_PRINT\"]},{\"type\":\"null\"}]},\"style\":{\"description\":\"The style type to generate with. Cannot be used with style_codes.\",\"anyOf\":[{\"type\":\"string\",\"enum\":[\"AUTO\",\"GENERAL\",\"REALISTIC\",\"DESIGN\"]},{\"type\":\"null\"}]},\"prompt\":{\"type\":\"string\"},\"rendering_speed\":{\"description\":\"The rendering speed to use.\",\"default\":\"BALANCED\",\"type\":\"string\",\"enum\":[\"TURBO\",\"BALANCED\",\"QUALITY\"]}}},\"output_schema\":{\"required\":[\"images\",\"seed\"],\"type\":\"object\",\"properties\":{\"seed\":{\"description\":\"Seed used for the random number generator\",\"type\":\"integer\"},\"images\":{\"type\":\"array\",\"items\":{\"required\":[\"url\"],\"type\":\"object\",\"properties\":{\"url\":{\"description\":\"The URL where the file can be downloaded from.\",\"type\":\"string\"},\"file_name\":{\"description\":\"The name of the file. It will be auto-generated if not provided.\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}]},\"file_size\":{\"description\":\"The size of the file in bytes.\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]},\"content_type\":{\"description\":\"The mime type of the file.\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}]}}}}}}}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video"
+            },
+            {
+              "endpoint_ids": [
+                "fal-ai/kling-video/v2.5-turbo/pro/image-to-video"
+              ]
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"endpoint_id\":\"fal-ai/kling-video/v2.5-turbo/pro/image-to-video\",\"input_schema\":{\"properties\":{\"duration\":{\"default\":\"5\",\"description\":\"The duration of the generated video in seconds\",\"enum\":[\"5\",\"10\"],\"type\":\"string\"},\"prompt\":{\"maxLength\":2500,\"type\":\"string\"},\"image_url\":{\"description\":\"URL of the image to be used for the video\",\"type\":\"string\"},\"tail_image_url\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"description\":\"URL of the image to be used for the end of the video\"},\"enable_safety_checker\":{\"default\":true,\"description\":\"Disabling safety checks requires account authorization; unauthorized requests are always checked.\",\"type\":\"boolean\"},\"negative_prompt\":{\"default\":\"blur, distort, and low quality\",\"maxLength\":2500,\"type\":\"string\"},\"cfg_scale\":{\"minimum\":0,\"maximum\":1,\"description\":\"\\n            The CFG (Classifier Free Guidance) scale is a measure of how close you want\\n            the model to stick to your prompt.\\n        \",\"default\":0.5,\"type\":\"number\"}},\"required\":[\"prompt\",\"image_url\"],\"type\":\"object\"},\"output_schema\":{\"properties\":{\"video\":{\"properties\":{\"file_size\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"description\":\"The size of the file in bytes.\"},\"url\":{\"description\":\"The URL where the file can be downloaded from.\",\"type\":\"string\"},\"content_type\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"description\":\"The mime type of the file.\"},\"file_name\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"description\":\"The name of the file. It will be auto-generated if not provided.\"}},\"required\":[\"url\"],\"type\":\"object\"}},\"required\":[\"video\"],\"type\":\"object\"}}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"schemas\":[{\"endpoint_id\":\"fal-ai/nano-banana/edit\",\"input_schema\":{\"type\":\"object\",\"required\":[\"prompt\",\"image_urls\"],\"properties\":{\"image_urls\":{\"type\":\"array\",\"description\":\"The URLs of the images to use for image-to-image generation or image editing.\",\"items\":{\"type\":\"string\"}},\"output_format\":{\"type\":\"string\",\"enum\":[\"jpeg\",\"png\",\"webp\"],\"description\":\"The format of the generated image.\",\"default\":\"png\"},\"num_images\":{\"type\":\"integer\",\"maximum\":4,\"description\":\"The number of images to generate.\",\"minimum\":1,\"default\":1},\"aspect_ratio\":{\"description\":\"The aspect ratio of the generated image.\",\"anyOf\":[{\"type\":\"string\",\"enum\":[\"auto\",\"21:9\",\"16:9\",\"3:2\",\"4:3\",\"5:4\",\"1:1\",\"4:5\",\"3:4\",\"2:3\",\"9:16\"]},{\"type\":\"null\"}],\"default\":\"auto\"},\"safety_tolerance\":{\"type\":\"string\",\"enum\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"],\"description\":\"The safety tolerance level for content moderation. 1 is the most strict (blocks most content), 6 is the least strict.\",\"default\":\"4\"},\"sync_mode\":{\"type\":\"boolean\",\"description\":\"If `True`, the media will be returned as a data URI and the output data won't be available in the request history.\",\"default\":false},\"limit_generations\":{\"type\":\"boolean\",\"description\":\"Experimental parameter to limit the number of generations from each round of prompting to 1. Set to `True` to to disregard any instructions in the prompt regarding the number of images to generate.\",\"default\":true},\"prompt\":{\"type\":\"string\",\"description\":\"The prompt for image editing.\",\"minLength\":3,\"maxLength\":50000},\"seed\":{\"description\":\"The seed for the random number generator.\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]}}},\"output_schema\":{\"type\":\"object\",\"required\":[\"images\",\"description\"],\"properties\":{\"description\":{\"type\":\"string\",\"description\":\"The description of the generated images.\"},\"images\":{\"type\":\"array\",\"description\":\"The edited images.\",\"items\":{\"type\":\"object\",\"required\":[\"url\"],\"properties\":{\"file_name\":{\"description\":\"The name of the file. It will be auto-generated if not provided.\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}]},\"content_type\":{\"description\":\"The mime type of the file.\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}]},\"file_size\":{\"description\":\"The size of the file in bytes.\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]},\"width\":{\"description\":\"The width of the image\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]},\"url\":{\"type\":\"string\",\"description\":\"The URL where the file can be downloaded from.\"},\"height\":{\"description\":\"The height of the image\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]}}}}}}},{\"endpoint_id\":\"fal-ai/ideogram/v3\",\"input_schema\":{\"required\":[\"prompt\"],\"type\":\"object\",\"properties\":{\"image_size\":{\"description\":\"The resolution of the generated image\",\"anyOf\":[{\"type\":\"object\",\"properties\":{\"height\":{\"description\":\"The height of the generated image.\",\"default\":512,\"type\":\"integer\",\"maximum\":14142,\"exclusiveMinimum\":0},\"width\":{\"description\":\"The width of the generated image.\",\"default\":512,\"type\":\"integer\",\"maximum\":14142,\"exclusiveMinimum\":0}}},{\"type\":\"string\",\"enum\":[\"square_hd\",\"square\",\"portrait_4_3\",\"portrait_16_9\",\"landscape_4_3\",\"landscape_16_9\"]},{\"type\":\"null\"}],\"default\":\"square_hd\"},\"sync_mode\":{\"description\":\"If `True`, the media will be returned as a data URI and the output data won't be available in the request history.\",\"default\":false,\"type\":\"boolean\"},\"enable_safety_checker\":{\"description\":\"Authorized callers may set false to request relaxed screening.\",\"default\":true,\"type\":\"boolean\"},\"seed\":{\"description\":\"Seed for the random number generator\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]},\"image_urls\":{\"description\":\"A set of images to use as style references (maximum total size 10MB across all style references). The images should be in JPEG, PNG or WebP format\",\"anyOf\":[{\"type\":\"array\",\"items\":{\"type\":\"string\"}},{\"type\":\"null\"}]},\"color_palette\":{\"description\":\"A color palette for generation, must EITHER be specified via one of the presets (name) or explicitly via hexadecimal representations of the color with optional weights (members)\",\"anyOf\":[{\"type\":\"object\",\"properties\":{\"members\":{\"description\":\"A list of color palette members that define the color palette\",\"anyOf\":[{\"type\":\"array\",\"items\":{\"required\":[\"rgb\"],\"type\":\"object\",\"properties\":{\"rgb\":{\"type\":\"object\",\"title\":\"RGBColor\"},\"color_weight\":{\"description\":\"The weight of the color in the color palette\",\"anyOf\":[{\"type\":\"number\",\"minimum\":0.05,\"maximum\":1},{\"type\":\"null\"}],\"default\":0.5}}}},{\"type\":\"null\"}]},\"name\":{\"description\":\"A color palette preset value\",\"anyOf\":[{\"type\":\"string\",\"enum\":[\"EMBER\",\"FRESH\",\"JUNGLE\",\"MAGIC\",\"MELON\",\"MOSAIC\",\"PASTEL\",\"ULTRAMARINE\"]},{\"type\":\"null\"}]}}},{\"type\":\"null\"}]},\"style_codes\":{\"description\":\"A list of 8 character hexadecimal codes representing the style of the image. Cannot be used in conjunction with style_reference_images or style\",\"anyOf\":[{\"type\":\"array\",\"items\":{\"type\":\"string\"}},{\"type\":\"null\"}]},\"num_images\":{\"description\":\"Number of images to generate.\",\"default\":1,\"type\":\"integer\",\"minimum\":1,\"maximum\":8},\"negative_prompt\":{\"description\":\"Description of what to exclude from an image. Descriptions in the prompt take precedence to descriptions in the negative prompt.\",\"default\":\"\",\"type\":\"string\"},\"enable_prompt_expansion\":{\"description\":\"Determine if MagicPrompt should be used in generating the request or not.\",\"default\":true,\"type\":\"boolean\"},\"style_preset\":{\"description\":\"Style preset for generation. The chosen style preset will guide the generation.\",\"anyOf\":[{\"type\":\"string\",\"enum\":[\"80S_ILLUSTRATION\",\"90S_NOSTALGIA\",\"ABSTRACT_ORGANIC\",\"ANALOG_NOSTALGIA\",\"ART_BRUT\",\"ART_DECO\",\"ART_POSTER\",\"AURA\",\"AVANT_GARDE\",\"BAUHAUS\",\"BLUEPRINT\",\"BLURRY_MOTION\",\"BRIGHT_ART\",\"C4D_CARTOON\",\"CHILDRENS_BOOK\",\"COLLAGE\",\"COLORING_BOOK_I\",\"COLORING_BOOK_II\",\"CUBISM\",\"DARK_AURA\",\"DOODLE\",\"DOUBLE_EXPOSURE\",\"DRAMATIC_CINEMA\",\"EDITORIAL\",\"EMOTIONAL_MINIMAL\",\"ETHEREAL_PARTY\",\"EXPIRED_FILM\",\"FLAT_ART\",\"FLAT_VECTOR\",\"FOREST_REVERIE\",\"GEO_MINIMALIST\",\"GLASS_PRISM\",\"GOLDEN_HOUR\",\"GRAFFITI_I\",\"GRAFFITI_II\",\"HALFTONE_PRINT\",\"HIGH_CONTRAST\",\"HIPPIE_ERA\",\"ICONIC\",\"JAPANDI_FUSION\",\"JAZZY\",\"LONG_EXPOSURE\",\"MAGAZINE_EDITORIAL\",\"MINIMAL_ILLUSTRATION\",\"MIXED_MEDIA\",\"MONOCHROME\",\"NIGHTLIFE\",\"OIL_PAINTING\",\"OLD_CARTOONS\",\"PAINT_GESTURE\",\"POP_ART\",\"RETRO_ETCHING\",\"RIVIERA_POP\",\"SPOTLIGHT_80S\",\"STYLIZED_RED\",\"SURREAL_COLLAGE\",\"TRAVEL_POSTER\",\"VINTAGE_GEO\",\"VINTAGE_POSTER\",\"WATERCOLOR\",\"WEIRD\",\"WOODBLOCK_PRINT\"]},{\"type\":\"null\"}]},\"style\":{\"description\":\"The style type to generate with. Cannot be used with style_codes.\",\"anyOf\":[{\"type\":\"string\",\"enum\":[\"AUTO\",\"GENERAL\",\"REALISTIC\",\"DESIGN\"]},{\"type\":\"null\"}]},\"prompt\":{\"type\":\"string\"},\"rendering_speed\":{\"description\":\"The rendering speed to use.\",\"default\":\"BALANCED\",\"type\":\"string\",\"enum\":[\"TURBO\",\"BALANCED\",\"QUALITY\"]}}},\"output_schema\":{\"required\":[\"images\",\"seed\"],\"type\":\"object\",\"properties\":{\"seed\":{\"description\":\"Seed used for the random number generator\",\"type\":\"integer\"},\"images\":{\"type\":\"array\",\"items\":{\"required\":[\"url\"],\"type\":\"object\",\"properties\":{\"url\":{\"description\":\"The URL where the file can be downloaded from.\",\"type\":\"string\"},\"file_name\":{\"description\":\"The name of the file. It will be auto-generated if not provided.\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}]},\"file_size\":{\"description\":\"The size of the file in bytes.\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}]},\"content_type\":{\"description\":\"The mime type of the file.\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}]}}}}}}},{\"endpoint_id\":\"fal-ai/kling-video/v2.5-turbo/pro/image-to-video\",\"input_schema\":{\"properties\":{\"duration\":{\"default\":\"5\",\"description\":\"The duration of the generated video in seconds\",\"enum\":[\"5\",\"10\"],\"type\":\"string\"},\"prompt\":{\"maxLength\":2500,\"type\":\"string\"},\"image_url\":{\"description\":\"URL of the image to be used for the video\",\"type\":\"string\"},\"tail_image_url\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"description\":\"URL of the image to be used for the end of the video\"},\"enable_safety_checker\":{\"default\":true,\"description\":\"Disabling safety checks requires account authorization; unauthorized requests are always checked.\",\"type\":\"boolean\"},\"negative_prompt\":{\"default\":\"blur, distort, and low quality\",\"maxLength\":2500,\"type\":\"string\"},\"cfg_scale\":{\"minimum\":0,\"maximum\":1,\"description\":\"\\n            The CFG (Classifier Free Guidance) scale is a measure of how close you want\\n            the model to stick to your prompt.\\n        \",\"default\":0.5,\"type\":\"number\"}},\"required\":[\"prompt\",\"image_url\"],\"type\":\"object\"},\"output_schema\":{\"properties\":{\"video\":{\"properties\":{\"file_size\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"description\":\"The size of the file in bytes.\"},\"url\":{\"description\":\"The URL where the file can be downloaded from.\",\"type\":\"string\"},\"content_type\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"description\":\"The mime type of the file.\"},\"file_name\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"description\":\"The name of the file. It will be auto-generated if not provided.\"}},\"required\":[\"url\"],\"type\":\"object\"}},\"required\":[\"video\"],\"type\":\"object\"}}]}"
+          }
+        ]
+      }
+    },
+    "submit_job": {
+      "description": "Submit a job to the queue WITHOUT waiting for completion. Returns immediately with a request_id.\nUse this instead of run_model for long-running tasks (video generation, 3D, training).\nThen call wait_for_jobs with a one-item jobs list containing index: 0 and the original endpoint_id, request_id, status_url and response_url. It includes ready results.\nPass a client-generated submission_key for recovery through the shared journal. Preserve it across retries, including its exact inputs and payer; use get_submission if the tool reply was lost. Never replace an uncertain key to retry. Unkeyed calls are not deduplicated.\nInput is validated against the live schema before any charge; an invalid input returns field errors with the expected values and is never billed. When recommend_model selected the model, submit its next_call (endpoint_id, decision_id, input built from input_contract) right away: no schema, pricing or account check is needed first. For several variations or independent jobs, use one submit_jobs call.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "user_intent": {
+            "description": "The user's request that prompted this tool call, copied verbatim. Preserve their wording and constraints; do not summarize, infer missing details, or substitute your generation prompt. Omit when the original request text is unavailable. Agent-reported context, not verified conversation history.",
+            "type": "string"
+          },
+          "decision_id": {
+            "description": "Optional recommendation correlation ID. Attribution only, never authorization.",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "override_reason": {
+            "description": "Optional categorical reason the host chose a different endpoint.",
+            "type": "string",
+            "enum": [
+              "requested_model",
+              "capability",
+              "budget",
+              "quality",
+              "speed",
+              "other"
+            ]
+          },
+          "submission_key": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+            "description": "Create a random key once per intended generation and preserve it across retries. The same key and exact request recover the original job. Changed inputs, payer or batch index conflict. Use a new key only for a deliberate new generation. Requires the shared submission journal; unavailable storage blocks keyed submissions before charge."
+          },
+          "endpoint_id": {
+            "type": "string",
+            "description": "The model endpoint ID (e.g. 'fal-ai/veo3.1')"
+          },
+          "input": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "description": "Model input parameters as a JSON object. Build it from recommend_model's next_call.input_contract, or get_model_schema for parameters the contract omits."
+          },
+          "expiration_seconds": {
+            "description": "Optional CDN expiration in seconds for generated media.",
+            "type": "number"
+          },
+          "store_payload": {
+            "description": "Optional. false stops fal from storing this request's input and output payloads (default: true). The result is then not archived: fal keeps it only about 1 hour (about 6 minutes for results of 10 KiB or more), so read it promptly. run_model returns output within its wait; otherwise read wait_for_jobs with original handles inside jobs[].",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "endpoint_id",
+          "input"
+        ]
+      },
+      "answers": [
+        {
+          "when": {
+            "endpoint_id": "fal-ai/ideogram/v3",
+            "submission_key": "bk-brightloom.example-20261120-logo-1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"submitted\",\"request_id\":\"006e66c7-0001-4001-86c7-000d571edee2\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0001-4001-86c7-000d571edee2/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0001-4001-86c7-000d571edee2\",\"submission_key\":\"bk-brightloom.example-20261120-logo-1\",\"message\":\"Queued. Follow it with wait_for_jobs using a jobs list with its index and these exact endpoint_id, request_id, status_url and response_url. Do NOT submit it again: that starts a new, billable job.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "endpoint_id": "fal-ai/ideogram/v3",
+            "submission_key": "bk-brightloom.example-20261120-logo-2"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"submitted\",\"request_id\":\"006e66c7-0002-4002-86c7-000d572077fb\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0002-4002-86c7-000d572077fb/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0002-4002-86c7-000d572077fb\",\"submission_key\":\"bk-brightloom.example-20261120-logo-2\",\"message\":\"Queued. Follow it with wait_for_jobs using a jobs list with its index and these exact endpoint_id, request_id, status_url and response_url. Do NOT submit it again: that starts a new, billable job.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "endpoint_id": "fal-ai/ideogram/v3",
+            "submission_key": "bk-brightloom.example-20261120-logo-3"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"submitted\",\"request_id\":\"006e66c7-0003-4003-86c7-000d57221114\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0003-4003-86c7-000d57221114/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0003-4003-86c7-000d57221114\",\"submission_key\":\"bk-brightloom.example-20261120-logo-3\",\"message\":\"Queued. Follow it with wait_for_jobs using a jobs list with its index and these exact endpoint_id, request_id, status_url and response_url. Do NOT submit it again: that starts a new, billable job.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "endpoint_id": "fal-ai/ideogram/v3",
+            "submission_key": "bk-brightloom.example-20261120-hero-1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"submitted\",\"request_id\":\"006e66c7-0004-4004-86c7-000d5723aa2d\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0004-4004-86c7-000d5723aa2d/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0004-4004-86c7-000d5723aa2d\",\"submission_key\":\"bk-brightloom.example-20261120-hero-1\",\"message\":\"Queued. Follow it with wait_for_jobs using a jobs list with its index and these exact endpoint_id, request_id, status_url and response_url. Do NOT submit it again: that starts a new, billable job.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "endpoint_id": "fal-ai/ideogram/v3",
+            "submission_key": "bk-brightloom.example-20261120-hero-2"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"submitted\",\"request_id\":\"006e66c7-0005-4005-86c7-000d57254346\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0005-4005-86c7-000d57254346/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0005-4005-86c7-000d57254346\",\"submission_key\":\"bk-brightloom.example-20261120-hero-2\",\"message\":\"Queued. Follow it with wait_for_jobs using a jobs list with its index and these exact endpoint_id, request_id, status_url and response_url. Do NOT submit it again: that starts a new, billable job.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "endpoint_id": "fal-ai/ideogram/v3",
+            "submission_key": "bk-brightloom.example-20261120-hero-3"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"submitted\",\"request_id\":\"006e66c7-0006-4006-86c7-000d5726dc5f\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0006-4006-86c7-000d5726dc5f/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0006-4006-86c7-000d5726dc5f\",\"submission_key\":\"bk-brightloom.example-20261120-hero-3\",\"message\":\"Queued. Follow it with wait_for_jobs using a jobs list with its index and these exact endpoint_id, request_id, status_url and response_url. Do NOT submit it again: that starts a new, billable job.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+            "submission_key": "bk-brightloom.example-20261120-promo"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"submitted\",\"request_id\":\"006e66c7-0007-4007-86c7-000d57287578\",\"endpoint_id\":\"fal-ai/kling-video/v2.5-turbo/pro/image-to-video\",\"status_url\":\"https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status\",\"response_url\":\"https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578\",\"submission_key\":\"bk-brightloom.example-20261120-promo\",\"message\":\"Queued. Follow it with wait_for_jobs using a jobs list with its index and these exact endpoint_id, request_id, status_url and response_url. Do NOT submit it again: that starts a new, billable job.\"}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "422 Unprocessable Entity: this request was not accepted (no job was created and nothing was billed)."
+          }
+        ]
+      }
+    },
+    "wait_for_jobs": {
+      "description": "Observe one or several existing jobs with a jobs list. For known completed jobs, set each item's read_mode=result in the same grouped jobs list; keep small multi-job results together. Use a one-item list only for a single requested job or when the group reply omitted that job's full JSON because of the byte limit. Preserve any continuation across those recovery reads. timeout_seconds=0 requests one snapshot. Read and wait for 1\u201332 existing fal jobs together (up to four submit_jobs groups), preserving caller indexes and input order. Waits up to 40 seconds per call and returns once every job has an outcome, with every completed, failed, pending, or inaccessible item and no hidden siblings. It never submits, cancels, or reruns generation.\nA COMPLETED queue status is not success until its model result is retrieved. all_terminal means every job's outcome is confirmed; lookup_error and recovery_required do not prove generation failure. Keep all original handles. When pending, wait poll_after_seconds before another group read. Use one grouped display after the requested set is resolved.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "user_intent": {
+            "description": "The user's request that prompted this tool call, copied verbatim. Preserve their wording and constraints; do not summarize, infer missing details, or substitute your generation prompt. Omit when the original request text is unavailable. Agent-reported context, not verified conversation history.",
+            "type": "string"
+          },
+          "jobs": {
+            "minItems": 1,
+            "maxItems": 32,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Unique caller-provided index, retained in this item's response."
+                },
+                "endpoint_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "The original model endpoint ID."
+                },
+                "request_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "An accepted job's existing request_id. This tool never submits a job."
+                },
+                "status_url": {
+                  "description": "Canonical status_url from submission, including any account recovery receipt.",
+                  "type": "string",
+                  "format": "uri"
+                },
+                "response_url": {
+                  "description": "Canonical response_url from submission, including any account recovery receipt.",
+                  "type": "string",
+                  "format": "uri"
+                },
+                "cancel_url": {
+                  "description": "Retained for later explicit cancellation; this tool never cancels.",
+                  "type": "string",
+                  "format": "uri"
+                },
+                "read_mode": {
+                  "description": "Omit or use wait for status plus ready results. result reads the result URL directly; a one-item result read includes full JSON without the group byte limit.",
+                  "type": "string",
+                  "enum": [
+                    "wait",
+                    "result"
+                  ]
+                }
+              },
+              "required": [
+                "index",
+                "endpoint_id",
+                "request_id"
+              ]
+            },
+            "description": "Accepted jobs only, with their original endpoint_id, request_id, and canonical URLs."
+          },
+          "timeout_seconds": {
+            "default": 40,
+            "description": "Maximum wait, 0\u201340 seconds. Zero requests one snapshot, with a bounded 10-second read deadline.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 40
+          }
+        },
+        "required": [
+          "jobs"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 0,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "status_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "response_url": "https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 6,
+                  "endpoint_id": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+                  "request_id": "006e66c7-0007-4007-86c7-000d57287578",
+                  "read_mode": "result"
+                }
+              ]
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"all_terminal\":true,\"jobs\":[{\"index\":6,\"request_id\":\"006e66c7-0007-4007-86c7-000d57287578\",\"endpoint_id\":\"fal-ai/kling-video/v2.5-turbo/pro/image-to-video\",\"status_url\":\"https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status\",\"response_url\":\"https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578\",\"outcome\":\"completed\",\"queue_status\":\"COMPLETED\",\"result\":{\"video\":{\"url\":\"https://v3.fal.media/files/kangaroo/UWYLXRWR3TT7F7IICMPCS_output.mp4\",\"content_type\":\"video/mp4\",\"file_name\":\"output.mp4\",\"file_size\":4183}},\"media\":[{\"url\":\"https://v3.fal.media/files/kangaroo/UWYLXRWR3TT7F7IICMPCS_output.mp4\",\"content_type\":\"video/mp4\"}]}]}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"all_terminal\":true,\"jobs\":[{\"index\":0,\"request_id\":\"006e66c7-0001-4001-86c7-000d571edee2\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0001-4001-86c7-000d571edee2/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0001-4001-86c7-000d571edee2\",\"outcome\":\"completed\",\"queue_status\":\"COMPLETED\",\"result\":{\"images\":[{\"url\":\"https://v3.fal.media/files/tiger/Y7JN32HT7YERIHZKGVAEW.png\",\"content_type\":\"image/png\",\"file_name\":\"Y7JN32HT7YERIHZKGVAEW.png\",\"file_size\":342}],\"seed\":1000},\"media\":[{\"url\":\"https://v3.fal.media/files/tiger/Y7JN32HT7YERIHZKGVAEW.png\",\"content_type\":\"image/png\"}]},{\"index\":1,\"request_id\":\"006e66c7-0002-4002-86c7-000d572077fb\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0002-4002-86c7-000d572077fb/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0002-4002-86c7-000d572077fb\",\"outcome\":\"completed\",\"queue_status\":\"COMPLETED\",\"result\":{\"images\":[{\"url\":\"https://v3.fal.media/files/tiger/5T3QEDIYEMXDSRCPLJSXA.png\",\"content_type\":\"image/png\",\"file_name\":\"5T3QEDIYEMXDSRCPLJSXA.png\",\"file_size\":342}],\"seed\":1001},\"media\":[{\"url\":\"https://v3.fal.media/files/tiger/5T3QEDIYEMXDSRCPLJSXA.png\",\"content_type\":\"image/png\"}]},{\"index\":2,\"request_id\":\"006e66c7-0003-4003-86c7-000d57221114\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0003-4003-86c7-000d57221114/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0003-4003-86c7-000d57221114\",\"outcome\":\"completed\",\"queue_status\":\"COMPLETED\",\"result\":{\"images\":[{\"url\":\"https://v3.fal.media/files/tiger/CEOCOMR5JBJV42LUP6FJL.png\",\"content_type\":\"image/png\",\"file_name\":\"CEOCOMR5JBJV42LUP6FJL.png\",\"file_size\":342}],\"seed\":1002},\"media\":[{\"url\":\"https://v3.fal.media/files/tiger/CEOCOMR5JBJV42LUP6FJL.png\",\"content_type\":\"image/png\"}]},{\"index\":3,\"request_id\":\"006e66c7-0004-4004-86c7-000d5723aa2d\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0004-4004-86c7-000d5723aa2d/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0004-4004-86c7-000d5723aa2d\",\"outcome\":\"completed\",\"queue_status\":\"COMPLETED\",\"result\":{\"images\":[{\"url\":\"https://v3.fal.media/files/lion/GZAUYV3CNV4IHDUZUSX3V.png\",\"content_type\":\"image/png\",\"file_name\":\"GZAUYV3CNV4IHDUZUSX3V.png\",\"file_size\":2516}],\"seed\":1003},\"media\":[{\"url\":\"https://v3.fal.media/files/lion/GZAUYV3CNV4IHDUZUSX3V.png\",\"content_type\":\"image/png\"}]},{\"index\":4,\"request_id\":\"006e66c7-0005-4005-86c7-000d57254346\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0005-4005-86c7-000d57254346/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0005-4005-86c7-000d57254346\",\"outcome\":\"completed\",\"queue_status\":\"COMPLETED\",\"result\":{\"images\":[{\"url\":\"https://v3.fal.media/files/lion/LNTHC7EHSKO2RM56ZHKN7.png\",\"content_type\":\"image/png\",\"file_name\":\"LNTHC7EHSKO2RM56ZHKN7.png\",\"file_size\":2516}],\"seed\":1004},\"media\":[{\"url\":\"https://v3.fal.media/files/lion/LNTHC7EHSKO2RM56ZHKN7.png\",\"content_type\":\"image/png\"}]},{\"index\":5,\"request_id\":\"006e66c7-0006-4006-86c7-000d5726dc5f\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0006-4006-86c7-000d5726dc5f/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0006-4006-86c7-000d5726dc5f\",\"outcome\":\"completed\",\"queue_status\":\"COMPLETED\",\"result\":{\"images\":[{\"url\":\"https://v3.fal.media/files/lion/QCFZNINMW7BM3WHD534QI.png\",\"content_type\":\"image/png\",\"file_name\":\"QCFZNINMW7BM3WHD534QI.png\",\"file_size\":2516}],\"seed\":1005},\"media\":[{\"url\":\"https://v3.fal.media/files/lion/QCFZNINMW7BM3WHD534QI.png\",\"content_type\":\"image/png\"}]}]}"
+          }
+        ]
+      }
+    },
+    "get_submission": {
+      "description": "Read the shared journal for a client-generated submission_key after a lost tool response. Returns original job handles, a definite rejection, not_found, or submission_unknown. Never submits, polls, retries, or changes the payer. Unknown/not_found do not authorize a new paid generation.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "user_intent": {
+            "description": "The user's request that prompted this tool call, copied verbatim. Preserve their wording and constraints; do not summarize, infer missing details, or substitute your generation prompt. Omit when the original request text is unavailable. Agent-reported context, not verified conversation history.",
+            "type": "string"
+          },
+          "submission_key": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+            "description": "Create a random key once per intended generation and preserve it across retries. The same key and exact request recover the original job. Changed inputs, payer or batch index conflict. Use a new key only for a deliberate new generation. Requires the shared submission journal; unavailable storage blocks keyed submissions before charge."
+          }
+        },
+        "required": [
+          "submission_key"
+        ]
+      },
+      "answers": [
+        {
+          "when": {
+            "submission_key": "bk-brightloom.example-20261120-logo-1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"found\",\"request_id\":\"006e66c7-0001-4001-86c7-000d571edee2\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0001-4001-86c7-000d571edee2/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0001-4001-86c7-000d571edee2\",\"message\":\"The original job. Follow it with wait_for_jobs; never resubmit.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "submission_key": "bk-brightloom.example-20261120-logo-2"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"found\",\"request_id\":\"006e66c7-0002-4002-86c7-000d572077fb\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0002-4002-86c7-000d572077fb/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0002-4002-86c7-000d572077fb\",\"message\":\"The original job. Follow it with wait_for_jobs; never resubmit.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "submission_key": "bk-brightloom.example-20261120-logo-3"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"found\",\"request_id\":\"006e66c7-0003-4003-86c7-000d57221114\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0003-4003-86c7-000d57221114/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0003-4003-86c7-000d57221114\",\"message\":\"The original job. Follow it with wait_for_jobs; never resubmit.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "submission_key": "bk-brightloom.example-20261120-hero-1"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"found\",\"request_id\":\"006e66c7-0004-4004-86c7-000d5723aa2d\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0004-4004-86c7-000d5723aa2d/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0004-4004-86c7-000d5723aa2d\",\"message\":\"The original job. Follow it with wait_for_jobs; never resubmit.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "submission_key": "bk-brightloom.example-20261120-hero-2"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"found\",\"request_id\":\"006e66c7-0005-4005-86c7-000d57254346\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0005-4005-86c7-000d57254346/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0005-4005-86c7-000d57254346\",\"message\":\"The original job. Follow it with wait_for_jobs; never resubmit.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "submission_key": "bk-brightloom.example-20261120-hero-3"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"found\",\"request_id\":\"006e66c7-0006-4006-86c7-000d5726dc5f\",\"endpoint_id\":\"fal-ai/ideogram/v3\",\"status_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0006-4006-86c7-000d5726dc5f/status\",\"response_url\":\"https://queue.fal.run/fal-ai/ideogram/requests/006e66c7-0006-4006-86c7-000d5726dc5f\",\"message\":\"The original job. Follow it with wait_for_jobs; never resubmit.\"}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "submission_key": "bk-brightloom.example-20261120-promo"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\":\"found\",\"request_id\":\"006e66c7-0007-4007-86c7-000d57287578\",\"endpoint_id\":\"fal-ai/kling-video/v2.5-turbo/pro/image-to-video\",\"status_url\":\"https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578/status\",\"response_url\":\"https://queue.fal.run/fal-ai/kling-video/requests/006e66c7-0007-4007-86c7-000d57287578\",\"message\":\"The original job. Follow it with wait_for_jobs; never resubmit.\"}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"status\":\"not_found\",\"message\":\"The journal holds no submission under this key. not_found does not authorize a new paid generation.\"}"
+          }
+        ]
+      }
+    }
+  }
+}

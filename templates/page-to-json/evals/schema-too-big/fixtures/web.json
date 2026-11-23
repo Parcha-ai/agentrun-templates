@@ -1,0 +1,20 @@
+{
+  "search": {
+    "answers": [],
+    "default": {
+      "results": []
+    }
+  },
+  "fetch": {
+    "answers": [
+      {
+        "url": "https://kestrel-cameras.example/k7",
+        "title": "Kestrel K7 | Kestrel Cameras",
+        "text": "# Kestrel K7 mirrorless camera\n\n$1,849.00 body only. In stock.\n\n## Specs\n\n| Sensor | 33 MP full frame |\n| ISO | 100-51200 |\n| Shutter | 1/8000 s mechanical |\n| Burst | 12 fps |\n| Video | 4K 60p |\n| Weight | 658 g |\n| Battery | 520 shots (CIPA) |\n| Mount | K-mount |\n"
+      }
+    ],
+    "default": {
+      "error": "fetch failed: the page did not answer"
+    }
+  }
+}

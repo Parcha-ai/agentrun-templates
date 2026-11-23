@@ -1,0 +1,12 @@
+# A homepage whose host is 120 characters: keys carry its first 40 characters, so each stays under fal's 128-character limit. The fake accepts only those keys. Pass: 2 of 2 runs.
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-20T14:00:00Z
