@@ -89,8 +89,10 @@ verdict is `unknown`.
 
 Read every group in the whole file before any verdict, its parts in order as one text: a bot's group can be the last
 one in a long file. When the last part read still says `truncated` or `beyond_read`, the file was not read whole:
-`could_not_check` says which characters were not read, the report says robots.txt was read only in part, and a bot
-with no group of its own in what was read is `unknown` with `rule` null, never `allowed`.
+- Its last group in what was read is unfinished, its rules may go on past the cut: every bot that group's `User-agent`
+  lines name is `unknown` with `rule` null, and `could_not_check` names that group. A full group before it stands.
+- A bot with no group of its own in what was read is `unknown` with `rule` null, never `allowed`.
+- `could_not_check` says which characters were not read, and the report says robots.txt was read only in part.
 
 | bot | operator | purpose |
 |---|---|---|
