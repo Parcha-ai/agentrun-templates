@@ -1,0 +1,151 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail. Thread 19c1d2e3f4a5bd08: Priya's ask for 30 minutes. The drafts list has two pages: page 1 (no page token) holds 100 drafts in other threads and next_page_token tok-p2; page 2 (page_token tok-p2) holds three drafts, one of them (r-7731044) in this thread, and no next token. Any draft call succeeds.",
+  "tools": {
+    "GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID": {
+      "description": "Fetches a Gmail message by its message ID (format minimal, metadata or full).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "message_id": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "message_id": "19c1d2e3f4a5bd08"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"messageId\":\"19c1d2e3f4a5bd08\",\"threadId\":\"19c1d2e3f4a5bd08\",\"sender\":\"Priya Nair <priya@hooli.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Contract renewal\",\"messageTimestamp\":\"2026-12-07T14:40:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"],\"messageText\":\"Hi Sam,\\n\\nCan we find 30 minutes this week or next to go over the renewal terms?\\n\\nPriya\",\"display_url\":\"https://mail.google.com/mail/u/0/#all/19c1d2e3f4a5bd08\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Requested entity was not found.\"}"
+          }
+        ]
+      }
+    },
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Lists Gmail messages matching a search query; with verbose and include_payload false, metadata only (subject, sender, recipient, time, labels, thread id).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "verbose": {
+            "type": "boolean"
+          },
+          "include_payload": {
+            "type": "boolean"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "ids_only": {
+            "type": "boolean"
+          },
+          "include_spam_trash": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"messages\":[{\"messageId\":\"19c1d2e3f4a5bd08\",\"threadId\":\"19c1d2e3f4a5bd08\",\"sender\":\"Priya Nair <priya@hooli.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Contract renewal\",\"messageTimestamp\":\"2026-12-07T14:40:00Z\",\"labelIds\":[\"INBOX\",\"UNREAD\",\"CATEGORY_PERSONAL\"]}],\"nextPageToken\":\"\",\"resultSizeEstimate\":1},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_LIST_DRAFTS": {
+      "description": "Lists the mailbox's drafts, one page at a time; with verbose false, each draft's id and its message's id and thread id, and next_page_token while more pages remain.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "verbose": {
+            "type": "boolean"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "page_token": "tok-p2"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"drafts\":[{\"id\":\"r-66ff0101\",\"message\":{\"id\":\"19b7ab0000a1c1d0\",\"threadId\":\"19b7ab0000a1c1d0\"}},{\"id\":\"r-7731044\",\"message\":{\"id\":\"19c1d2e3f4a5bdff\",\"threadId\":\"19c1d2e3f4a5bd08\"}},{\"id\":\"r-66ff0303\",\"message\":{\"id\":\"19b7ab0000a3c1d0\",\"threadId\":\"19b7ab0000a3c1d0\"}}],\"next_page_token\":\"\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"drafts\":[{\"id\":\"r-66000001\",\"message\":{\"id\":\"19b7aa000000c1d0\",\"threadId\":\"19b7aa000000c1d0\"}},{\"id\":\"r-66000101\",\"message\":{\"id\":\"19b7aa000001c1d0\",\"threadId\":\"19b7aa000001c1d0\"}},{\"id\":\"r-66000201\",\"message\":{\"id\":\"19b7aa000002c1d0\",\"threadId\":\"19b7aa000002c1d0\"}},{\"id\":\"r-66000301\",\"message\":{\"id\":\"19b7aa000003c1d0\",\"threadId\":\"19b7aa000003c1d0\"}},{\"id\":\"r-66000401\",\"message\":{\"id\":\"19b7aa000004c1d0\",\"threadId\":\"19b7aa000004c1d0\"}},{\"id\":\"r-66000501\",\"message\":{\"id\":\"19b7aa000005c1d0\",\"threadId\":\"19b7aa000005c1d0\"}},{\"id\":\"r-66000601\",\"message\":{\"id\":\"19b7aa000006c1d0\",\"threadId\":\"19b7aa000006c1d0\"}},{\"id\":\"r-66000701\",\"message\":{\"id\":\"19b7aa000007c1d0\",\"threadId\":\"19b7aa000007c1d0\"}},{\"id\":\"r-66000801\",\"message\":{\"id\":\"19b7aa000008c1d0\",\"threadId\":\"19b7aa000008c1d0\"}},{\"id\":\"r-66000901\",\"message\":{\"id\":\"19b7aa000009c1d0\",\"threadId\":\"19b7aa000009c1d0\"}},{\"id\":\"r-66000a01\",\"message\":{\"id\":\"19b7aa00000ac1d0\",\"threadId\":\"19b7aa00000ac1d0\"}},{\"id\":\"r-66000b01\",\"message\":{\"id\":\"19b7aa00000bc1d0\",\"threadId\":\"19b7aa00000bc1d0\"}},{\"id\":\"r-66000c01\",\"message\":{\"id\":\"19b7aa00000cc1d0\",\"threadId\":\"19b7aa00000cc1d0\"}},{\"id\":\"r-66000d01\",\"message\":{\"id\":\"19b7aa00000dc1d0\",\"threadId\":\"19b7aa00000dc1d0\"}},{\"id\":\"r-66000e01\",\"message\":{\"id\":\"19b7aa00000ec1d0\",\"threadId\":\"19b7aa00000ec1d0\"}},{\"id\":\"r-66000f01\",\"message\":{\"id\":\"19b7aa00000fc1d0\",\"threadId\":\"19b7aa00000fc1d0\"}},{\"id\":\"r-66001001\",\"message\":{\"id\":\"19b7aa000010c1d0\",\"threadId\":\"19b7aa000010c1d0\"}},{\"id\":\"r-66001101\",\"message\":{\"id\":\"19b7aa000011c1d0\",\"threadId\":\"19b7aa000011c1d0\"}},{\"id\":\"r-66001201\",\"message\":{\"id\":\"19b7aa000012c1d0\",\"threadId\":\"19b7aa000012c1d0\"}},{\"id\":\"r-66001301\",\"message\":{\"id\":\"19b7aa000013c1d0\",\"threadId\":\"19b7aa000013c1d0\"}},{\"id\":\"r-66001401\",\"message\":{\"id\":\"19b7aa000014c1d0\",\"threadId\":\"19b7aa000014c1d0\"}},{\"id\":\"r-66001501\",\"message\":{\"id\":\"19b7aa000015c1d0\",\"threadId\":\"19b7aa000015c1d0\"}},{\"id\":\"r-66001601\",\"message\":{\"id\":\"19b7aa000016c1d0\",\"threadId\":\"19b7aa000016c1d0\"}},{\"id\":\"r-66001701\",\"message\":{\"id\":\"19b7aa000017c1d0\",\"threadId\":\"19b7aa000017c1d0\"}},{\"id\":\"r-66001801\",\"message\":{\"id\":\"19b7aa000018c1d0\",\"threadId\":\"19b7aa000018c1d0\"}},{\"id\":\"r-66001901\",\"message\":{\"id\":\"19b7aa000019c1d0\",\"threadId\":\"19b7aa000019c1d0\"}},{\"id\":\"r-66001a01\",\"message\":{\"id\":\"19b7aa00001ac1d0\",\"threadId\":\"19b7aa00001ac1d0\"}},{\"id\":\"r-66001b01\",\"message\":{\"id\":\"19b7aa00001bc1d0\",\"threadId\":\"19b7aa00001bc1d0\"}},{\"id\":\"r-66001c01\",\"message\":{\"id\":\"19b7aa00001cc1d0\",\"threadId\":\"19b7aa00001cc1d0\"}},{\"id\":\"r-66001d01\",\"message\":{\"id\":\"19b7aa00001dc1d0\",\"threadId\":\"19b7aa00001dc1d0\"}},{\"id\":\"r-66001e01\",\"message\":{\"id\":\"19b7aa00001ec1d0\",\"threadId\":\"19b7aa00001ec1d0\"}},{\"id\":\"r-66001f01\",\"message\":{\"id\":\"19b7aa00001fc1d0\",\"threadId\":\"19b7aa00001fc1d0\"}},{\"id\":\"r-66002001\",\"message\":{\"id\":\"19b7aa000020c1d0\",\"threadId\":\"19b7aa000020c1d0\"}},{\"id\":\"r-66002101\",\"message\":{\"id\":\"19b7aa000021c1d0\",\"threadId\":\"19b7aa000021c1d0\"}},{\"id\":\"r-66002201\",\"message\":{\"id\":\"19b7aa000022c1d0\",\"threadId\":\"19b7aa000022c1d0\"}},{\"id\":\"r-66002301\",\"message\":{\"id\":\"19b7aa000023c1d0\",\"threadId\":\"19b7aa000023c1d0\"}},{\"id\":\"r-66002401\",\"message\":{\"id\":\"19b7aa000024c1d0\",\"threadId\":\"19b7aa000024c1d0\"}},{\"id\":\"r-66002501\",\"message\":{\"id\":\"19b7aa000025c1d0\",\"threadId\":\"19b7aa000025c1d0\"}},{\"id\":\"r-66002601\",\"message\":{\"id\":\"19b7aa000026c1d0\",\"threadId\":\"19b7aa000026c1d0\"}},{\"id\":\"r-66002701\",\"message\":{\"id\":\"19b7aa000027c1d0\",\"threadId\":\"19b7aa000027c1d0\"}},{\"id\":\"r-66002801\",\"message\":{\"id\":\"19b7aa000028c1d0\",\"threadId\":\"19b7aa000028c1d0\"}},{\"id\":\"r-66002901\",\"message\":{\"id\":\"19b7aa000029c1d0\",\"threadId\":\"19b7aa000029c1d0\"}},{\"id\":\"r-66002a01\",\"message\":{\"id\":\"19b7aa00002ac1d0\",\"threadId\":\"19b7aa00002ac1d0\"}},{\"id\":\"r-66002b01\",\"message\":{\"id\":\"19b7aa00002bc1d0\",\"threadId\":\"19b7aa00002bc1d0\"}},{\"id\":\"r-66002c01\",\"message\":{\"id\":\"19b7aa00002cc1d0\",\"threadId\":\"19b7aa00002cc1d0\"}},{\"id\":\"r-66002d01\",\"message\":{\"id\":\"19b7aa00002dc1d0\",\"threadId\":\"19b7aa00002dc1d0\"}},{\"id\":\"r-66002e01\",\"message\":{\"id\":\"19b7aa00002ec1d0\",\"threadId\":\"19b7aa00002ec1d0\"}},{\"id\":\"r-66002f01\",\"message\":{\"id\":\"19b7aa00002fc1d0\",\"threadId\":\"19b7aa00002fc1d0\"}},{\"id\":\"r-66003001\",\"message\":{\"id\":\"19b7aa000030c1d0\",\"threadId\":\"19b7aa000030c1d0\"}},{\"id\":\"r-66003101\",\"message\":{\"id\":\"19b7aa000031c1d0\",\"threadId\":\"19b7aa000031c1d0\"}},{\"id\":\"r-66003201\",\"message\":{\"id\":\"19b7aa000032c1d0\",\"threadId\":\"19b7aa000032c1d0\"}},{\"id\":\"r-66003301\",\"message\":{\"id\":\"19b7aa000033c1d0\",\"threadId\":\"19b7aa000033c1d0\"}},{\"id\":\"r-66003401\",\"message\":{\"id\":\"19b7aa000034c1d0\",\"threadId\":\"19b7aa000034c1d0\"}},{\"id\":\"r-66003501\",\"message\":{\"id\":\"19b7aa000035c1d0\",\"threadId\":\"19b7aa000035c1d0\"}},{\"id\":\"r-66003601\",\"message\":{\"id\":\"19b7aa000036c1d0\",\"threadId\":\"19b7aa000036c1d0\"}},{\"id\":\"r-66003701\",\"message\":{\"id\":\"19b7aa000037c1d0\",\"threadId\":\"19b7aa000037c1d0\"}},{\"id\":\"r-66003801\",\"message\":{\"id\":\"19b7aa000038c1d0\",\"threadId\":\"19b7aa000038c1d0\"}},{\"id\":\"r-66003901\",\"message\":{\"id\":\"19b7aa000039c1d0\",\"threadId\":\"19b7aa000039c1d0\"}},{\"id\":\"r-66003a01\",\"message\":{\"id\":\"19b7aa00003ac1d0\",\"threadId\":\"19b7aa00003ac1d0\"}},{\"id\":\"r-66003b01\",\"message\":{\"id\":\"19b7aa00003bc1d0\",\"threadId\":\"19b7aa00003bc1d0\"}},{\"id\":\"r-66003c01\",\"message\":{\"id\":\"19b7aa00003cc1d0\",\"threadId\":\"19b7aa00003cc1d0\"}},{\"id\":\"r-66003d01\",\"message\":{\"id\":\"19b7aa00003dc1d0\",\"threadId\":\"19b7aa00003dc1d0\"}},{\"id\":\"r-66003e01\",\"message\":{\"id\":\"19b7aa00003ec1d0\",\"threadId\":\"19b7aa00003ec1d0\"}},{\"id\":\"r-66003f01\",\"message\":{\"id\":\"19b7aa00003fc1d0\",\"threadId\":\"19b7aa00003fc1d0\"}},{\"id\":\"r-66004001\",\"message\":{\"id\":\"19b7aa000040c1d0\",\"threadId\":\"19b7aa000040c1d0\"}},{\"id\":\"r-66004101\",\"message\":{\"id\":\"19b7aa000041c1d0\",\"threadId\":\"19b7aa000041c1d0\"}},{\"id\":\"r-66004201\",\"message\":{\"id\":\"19b7aa000042c1d0\",\"threadId\":\"19b7aa000042c1d0\"}},{\"id\":\"r-66004301\",\"message\":{\"id\":\"19b7aa000043c1d0\",\"threadId\":\"19b7aa000043c1d0\"}},{\"id\":\"r-66004401\",\"message\":{\"id\":\"19b7aa000044c1d0\",\"threadId\":\"19b7aa000044c1d0\"}},{\"id\":\"r-66004501\",\"message\":{\"id\":\"19b7aa000045c1d0\",\"threadId\":\"19b7aa000045c1d0\"}},{\"id\":\"r-66004601\",\"message\":{\"id\":\"19b7aa000046c1d0\",\"threadId\":\"19b7aa000046c1d0\"}},{\"id\":\"r-66004701\",\"message\":{\"id\":\"19b7aa000047c1d0\",\"threadId\":\"19b7aa000047c1d0\"}},{\"id\":\"r-66004801\",\"message\":{\"id\":\"19b7aa000048c1d0\",\"threadId\":\"19b7aa000048c1d0\"}},{\"id\":\"r-66004901\",\"message\":{\"id\":\"19b7aa000049c1d0\",\"threadId\":\"19b7aa000049c1d0\"}},{\"id\":\"r-66004a01\",\"message\":{\"id\":\"19b7aa00004ac1d0\",\"threadId\":\"19b7aa00004ac1d0\"}},{\"id\":\"r-66004b01\",\"message\":{\"id\":\"19b7aa00004bc1d0\",\"threadId\":\"19b7aa00004bc1d0\"}},{\"id\":\"r-66004c01\",\"message\":{\"id\":\"19b7aa00004cc1d0\",\"threadId\":\"19b7aa00004cc1d0\"}},{\"id\":\"r-66004d01\",\"message\":{\"id\":\"19b7aa00004dc1d0\",\"threadId\":\"19b7aa00004dc1d0\"}},{\"id\":\"r-66004e01\",\"message\":{\"id\":\"19b7aa00004ec1d0\",\"threadId\":\"19b7aa00004ec1d0\"}},{\"id\":\"r-66004f01\",\"message\":{\"id\":\"19b7aa00004fc1d0\",\"threadId\":\"19b7aa00004fc1d0\"}},{\"id\":\"r-66005001\",\"message\":{\"id\":\"19b7aa000050c1d0\",\"threadId\":\"19b7aa000050c1d0\"}},{\"id\":\"r-66005101\",\"message\":{\"id\":\"19b7aa000051c1d0\",\"threadId\":\"19b7aa000051c1d0\"}},{\"id\":\"r-66005201\",\"message\":{\"id\":\"19b7aa000052c1d0\",\"threadId\":\"19b7aa000052c1d0\"}},{\"id\":\"r-66005301\",\"message\":{\"id\":\"19b7aa000053c1d0\",\"threadId\":\"19b7aa000053c1d0\"}},{\"id\":\"r-66005401\",\"message\":{\"id\":\"19b7aa000054c1d0\",\"threadId\":\"19b7aa000054c1d0\"}},{\"id\":\"r-66005501\",\"message\":{\"id\":\"19b7aa000055c1d0\",\"threadId\":\"19b7aa000055c1d0\"}},{\"id\":\"r-66005601\",\"message\":{\"id\":\"19b7aa000056c1d0\",\"threadId\":\"19b7aa000056c1d0\"}},{\"id\":\"r-66005701\",\"message\":{\"id\":\"19b7aa000057c1d0\",\"threadId\":\"19b7aa000057c1d0\"}},{\"id\":\"r-66005801\",\"message\":{\"id\":\"19b7aa000058c1d0\",\"threadId\":\"19b7aa000058c1d0\"}},{\"id\":\"r-66005901\",\"message\":{\"id\":\"19b7aa000059c1d0\",\"threadId\":\"19b7aa000059c1d0\"}},{\"id\":\"r-66005a01\",\"message\":{\"id\":\"19b7aa00005ac1d0\",\"threadId\":\"19b7aa00005ac1d0\"}},{\"id\":\"r-66005b01\",\"message\":{\"id\":\"19b7aa00005bc1d0\",\"threadId\":\"19b7aa00005bc1d0\"}},{\"id\":\"r-66005c01\",\"message\":{\"id\":\"19b7aa00005cc1d0\",\"threadId\":\"19b7aa00005cc1d0\"}},{\"id\":\"r-66005d01\",\"message\":{\"id\":\"19b7aa00005dc1d0\",\"threadId\":\"19b7aa00005dc1d0\"}},{\"id\":\"r-66005e01\",\"message\":{\"id\":\"19b7aa00005ec1d0\",\"threadId\":\"19b7aa00005ec1d0\"}},{\"id\":\"r-66005f01\",\"message\":{\"id\":\"19b7aa00005fc1d0\",\"threadId\":\"19b7aa00005fc1d0\"}},{\"id\":\"r-66006001\",\"message\":{\"id\":\"19b7aa000060c1d0\",\"threadId\":\"19b7aa000060c1d0\"}},{\"id\":\"r-66006101\",\"message\":{\"id\":\"19b7aa000061c1d0\",\"threadId\":\"19b7aa000061c1d0\"}},{\"id\":\"r-66006201\",\"message\":{\"id\":\"19b7aa000062c1d0\",\"threadId\":\"19b7aa000062c1d0\"}},{\"id\":\"r-66006301\",\"message\":{\"id\":\"19b7aa000063c1d0\",\"threadId\":\"19b7aa000063c1d0\"}}],\"next_page_token\":\"tok-p2\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "GMAIL_CREATE_EMAIL_DRAFT": {
+      "description": "Creates a Gmail email draft.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "recipient_email": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "thread_id": {
+            "type": "string"
+          },
+          "is_html": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"id\":\"r-7730214\",\"message\":{\"id\":\"19c1d2e3f4a5bfff\",\"threadId\":\"19c1d2e3f4a5bd08\",\"labelIds\":[\"DRAFT\"]}},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

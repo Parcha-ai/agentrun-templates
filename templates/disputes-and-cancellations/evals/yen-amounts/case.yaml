@@ -1,0 +1,16 @@
+# Applied with these parameters. A first run (no history) at 08:00 on Monday 2026-11-23, looking back 7 days.
+parameters:
+  channel: C0REVENUE1
+  first_run_days: 7
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:stripe/STRIPE_LIST_DISPUTES
+  - mcp:stripe/STRIPE_RETRIEVE_CHARGE
+  - mcp:stripe/STRIPE_RETRIEVE_CUSTOMER
+  - mcp:stripe/STRIPE_SEARCH_SUBSCRIPTIONS
+  - mcp:stripe/STRIPE_LIST_INVOICES
+  - mcp:stripe/STRIPE_LIST_PRODUCTS
+  - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-23T08:00:00Z

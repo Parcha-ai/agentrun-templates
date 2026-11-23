@@ -1,0 +1,17 @@
+# Applied with these parameters (the rest at their defaults: 09:00 to 17:00, 5 working days, 30-minute slots,
+# primary). The run fires at 10:10 Eastern on Monday 2026-12-07, so the window is Tue Dec 8 to Mon Dec 14. The fixtures
+# stand in for the owner's Composio Gmail and Calendar and record every call for the graders. The event names Dana's first mail (15:05 UTC), but she wrote again at 15:08 in the same
+# thread; that newer mail has its own trigger run.
+parameters:
+  timezone: America/New_York
+  sign_off: "Best, Sam"
+mcp:
+  gmail: fixtures/gmail-mcp.json
+  googlecalendar: fixtures/calendar-mcp.json
+grants:
+  - mcp:gmail/GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID
+  - mcp:gmail/GMAIL_FETCH_EMAILS
+  - mcp:gmail/GMAIL_LIST_DRAFTS
+  - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
+  - mcp:googlecalendar/GOOGLECALENDAR_FREE_BUSY_QUERY
+now: 2026-12-07T15:10:00Z

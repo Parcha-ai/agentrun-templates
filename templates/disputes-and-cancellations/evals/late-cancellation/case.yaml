@@ -1,0 +1,17 @@
+# Applied with these parameters. The run fires at 08:00 on Tuesday 2026-11-24; the prompt ends with Monday's answer.
+# Umbrella Corp's cancellation (2026-11-23 07:58:40 UTC) is before Monday's checked_through but was not in Monday's
+# search, which can lag. The fake search answers every cancelled subscription whatever the query.
+parameters:
+  channel: C0REVENUE1
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:stripe/STRIPE_LIST_DISPUTES
+  - mcp:stripe/STRIPE_RETRIEVE_CHARGE
+  - mcp:stripe/STRIPE_RETRIEVE_CUSTOMER
+  - mcp:stripe/STRIPE_SEARCH_SUBSCRIPTIONS
+  - mcp:stripe/STRIPE_LIST_INVOICES
+  - mcp:stripe/STRIPE_LIST_PRODUCTS
+  - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-24T08:00:00Z

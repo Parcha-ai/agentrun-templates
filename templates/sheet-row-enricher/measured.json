@@ -1,0 +1,23 @@
+{
+  "median_usd": 0.0202,
+  "runs": 14,
+  "model": "openrouter/openai/gpt-6.1-sol",
+  "harness": "pi",
+  "measured_on": "2026-11-21",
+  "build": "27abab88e6",
+  "passed": {
+    "pi": "7/7",
+    "claude-agent": "7/7",
+    "codex": "7/7"
+  },
+  "stand_ins": true,
+  "live": {
+    "cases": 1,
+    "median_usd": 0.0988,
+    "passed": {
+      "pi": "1/1",
+      "claude-agent": "1/1",
+      "codex": "1/1"
+    }
+  }
+}

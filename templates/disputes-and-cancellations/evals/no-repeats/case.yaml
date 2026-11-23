@@ -1,0 +1,17 @@
+# Applied with these parameters. The run fires at 08:00 on Tuesday 2026-11-24; the prompt ends with Monday's answer, the
+# way the runtime hands a scheduled run its history. The fake list answers every dispute and cancellation whatever the
+# filter, as a list read without one would.
+parameters:
+  channel: C0REVENUE1
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:stripe/STRIPE_LIST_DISPUTES
+  - mcp:stripe/STRIPE_RETRIEVE_CHARGE
+  - mcp:stripe/STRIPE_RETRIEVE_CUSTOMER
+  - mcp:stripe/STRIPE_SEARCH_SUBSCRIPTIONS
+  - mcp:stripe/STRIPE_LIST_INVOICES
+  - mcp:stripe/STRIPE_LIST_PRODUCTS
+  - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-24T08:00:00Z

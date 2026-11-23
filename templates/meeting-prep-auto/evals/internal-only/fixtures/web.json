@@ -1,0 +1,20 @@
+{
+  "search": {
+    "answers": [],
+    "default": {
+      "results": [
+        {
+          "url": "https://acme.example/",
+          "title": "Acme",
+          "snippet": "Acme makes things."
+        }
+      ]
+    }
+  },
+  "fetch": {
+    "answers": [],
+    "default": {
+      "error": "fetch failed"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "server": "googlecalendar",
+  "description": "A fake Composio Google Calendar: event 5q8n2c4v7m1x3z6b9k0r (\"Globex pilot review\") on the primary calendar.",
+  "tools": {
+    "GOOGLECALENDAR_EVENTS_GET": {
+      "description": "Retrieves one event by event_id from calendar_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "event_id": {
+            "type": "string"
+          },
+          "calendar_id": {
+            "type": "string"
+          },
+          "time_zone": {
+            "type": "string"
+          },
+          "max_attendees": {
+            "type": "integer"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "event_id": "5q8n2c4v7m1x3z6b9k0r"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"kind\":\"calendar#event\",\"id\":\"5q8n2c4v7m1x3z6b9k0r\",\"status\":\"confirmed\",\"htmlLink\":\"https://www.google.com/calendar/event?eid=5q8n2c4v7m1x3z6b9k0r\",\"summary\":\"Globex pilot review\",\"description\":\"Agenda: November pilot results and next steps.\\nPlease bring usage numbers for November and the draft SOW.\",\"organizer\":{\"email\":\"sam@acme.example\",\"self\":true},\"start\":{\"dateTime\":\"2026-12-08T10:00:00-05:00\",\"timeZone\":\"America/New_York\"},\"end\":{\"dateTime\":\"2026-12-08T10:45:00-05:00\",\"timeZone\":\"America/New_York\"},\"attendees\":[{\"email\":\"sam@acme.example\",\"displayName\":\"Sam Ortiz\",\"self\":true,\"organizer\":true,\"responseStatus\":\"accepted\"},{\"email\":\"ana@acme.example\",\"displayName\":\"Ana Ruiz\",\"responseStatus\":\"accepted\"},{\"email\":\"kim.lee@globex.example\",\"displayName\":\"Kim Lee\",\"responseStatus\":\"accepted\"},{\"email\":\"raj@globex.example\",\"displayName\":\"Raj Patel\",\"responseStatus\":\"needsAction\"},{\"email\":\"c_1889a2b3room4a@resource.calendar.google.com\",\"displayName\":\"NYC-4A\",\"resource\":true,\"responseStatus\":\"accepted\"}],\"hangoutLink\":\"https://meet.google.com/abc-defg-hij\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"Not Found\"}"
+          }
+        ]
+      }
+    }
+  }
+}

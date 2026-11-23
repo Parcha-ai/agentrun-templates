@@ -1,0 +1,381 @@
+{
+  "server": "stripe",
+  "description": "A fake Composio Stripe on 2026-11-24. Disputes: the three Monday reported plus Brightpane $310.00 product_unacceptable needs_response, created 2026-11-23 19:00 UTC, due 2026-12-08. Cancelled: Monday's Initrode and Soylent, plus Northwind Labs' Pro monthly ($99.00, started 2026-08-23, cancelled 2026-11-23 21:00 UTC, switched_service, last paid 2026-10-23).",
+  "tools": {
+    "STRIPE_LIST_DISPUTES": {
+      "description": "List disputes, newest first (created {gt, gte, lt, lte}, charge, payment_intent, limit, starting_after).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "created": {
+            "type": "object"
+          },
+          "charge": {
+            "type": "string"
+          },
+          "payment_intent": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "starting_after": {
+            "type": "string"
+          },
+          "ending_before": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"du_1BrightPU05\",\"object\":\"dispute\",\"amount\":31000,\"currency\":\"usd\",\"charge\":\"ch_3BrightAddon05\",\"payment_intent\":\"pi_3BrightAddon05\",\"created\":1795460400,\"livemode\":true,\"reason\":\"product_unacceptable\",\"status\":\"needs_response\",\"is_charge_refundable\":false,\"metadata\":{},\"evidence\":{\"customer_name\":null,\"customer_email_address\":null,\"product_description\":null,\"uncategorized_text\":null},\"evidence_details\":{\"due_by\":1796774399,\"has_evidence\":false,\"past_due\":false,\"submission_count\":0},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"case_type\":\"chargeback\",\"network_reason_code\":\"10.4\"}}},{\"id\":\"du_1SoylentPNR02\",\"object\":\"dispute\",\"amount\":8900,\"currency\":\"usd\",\"charge\":\"ch_3SoylentShip02\",\"payment_intent\":\"pi_3SoylentShip02\",\"created\":1795359600,\"livemode\":true,\"reason\":\"product_not_received\",\"status\":\"needs_response\",\"is_charge_refundable\":false,\"metadata\":{},\"evidence\":{\"customer_name\":null,\"customer_email_address\":null,\"product_description\":null,\"uncategorized_text\":null},\"evidence_details\":{\"due_by\":1796515199,\"has_evidence\":false,\"past_due\":false,\"submission_count\":0},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"case_type\":\"chargeback\",\"network_reason_code\":\"10.4\"}}},{\"id\":\"du_1HooliDup03\",\"object\":\"dispute\",\"amount\":4500,\"currency\":\"usd\",\"charge\":\"ch_3HooliSeat03\",\"payment_intent\":\"pi_3HooliSeat03\",\"created\":1795253400,\"livemode\":true,\"reason\":\"duplicate\",\"status\":\"warning_needs_response\",\"is_charge_refundable\":false,\"metadata\":{},\"evidence\":{\"customer_name\":null,\"customer_email_address\":null,\"product_description\":null,\"uncategorized_text\":null},\"evidence_details\":{\"due_by\":1795651199,\"has_evidence\":false,\"past_due\":false,\"submission_count\":0},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"case_type\":\"chargeback\",\"network_reason_code\":\"10.4\"}}},{\"id\":\"du_1GlobexFraud01\",\"object\":\"dispute\",\"amount\":120000,\"currency\":\"usd\",\"charge\":\"ch_3GlobexAnnual01\",\"payment_intent\":\"pi_3GlobexAnnual01\",\"created\":1795168800,\"livemode\":true,\"reason\":\"fraudulent\",\"status\":\"needs_response\",\"is_charge_refundable\":false,\"metadata\":{},\"evidence\":{\"customer_name\":null,\"customer_email_address\":null,\"product_description\":null,\"uncategorized_text\":null},\"evidence_details\":{\"due_by\":1795737599,\"has_evidence\":false,\"past_due\":false,\"submission_count\":0},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"case_type\":\"chargeback\",\"network_reason_code\":\"10.4\"}}}],\"has_more\":false,\"url\":\"/v1/disputes\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_RETRIEVE_CHARGE": {
+      "description": "Retrieve a charge by charge_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "charge_id": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "charge_id": "ch_3GlobexAnnual01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3GlobexAnnual01\",\"object\":\"charge\",\"amount\":120000,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"disputed\":true,\"customer\":\"cus_Globex01\",\"created\":1793354400,\"livemode\":true,\"description\":\"Pro annual\",\"billing_details\":{\"name\":null,\"email\":null},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\"}}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "charge_id": "ch_3SoylentShip02"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3SoylentShip02\",\"object\":\"charge\",\"amount\":8900,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"disputed\":true,\"customer\":\"cus_Soylent02\",\"created\":1793804400,\"livemode\":true,\"description\":\"Starter kit\",\"billing_details\":{\"name\":null,\"email\":null},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\"}}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "charge_id": "ch_3HooliSeat03"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3HooliSeat03\",\"object\":\"charge\",\"amount\":4500,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"disputed\":true,\"customer\":\"cus_Hooli03\",\"created\":1793523600,\"livemode\":true,\"description\":\"Extra seat\",\"billing_details\":{\"name\":null,\"email\":null},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\"}}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "charge_id": "ch_3BrightAddon05"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3BrightAddon05\",\"object\":\"charge\",\"amount\":31000,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"disputed\":true,\"customer\":\"cus_Bright06\",\"created\":1794337200,\"livemode\":true,\"description\":\"Analytics add-on\",\"billing_details\":{\"name\":null,\"email\":null},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\"}}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such charge\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_RETRIEVE_CUSTOMER": {
+      "description": "Retrieve a customer by customer_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "customer_id": "cus_Globex01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Globex01\",\"object\":\"customer\",\"name\":\"Globex\",\"email\":\"billing@globex.example\",\"created\":1761818400,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer_id": "cus_Soylent02"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Soylent02\",\"object\":\"customer\",\"name\":\"Soylent\",\"email\":\"billing@soylent.example\",\"created\":1793804400,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer_id": "cus_Hooli03"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Hooli03\",\"object\":\"customer\",\"name\":\"Hooli XYZ\",\"email\":\"billing@hooli.example\",\"created\":1772355600,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer_id": "cus_Bright06"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Bright06\",\"object\":\"customer\",\"name\":\"Brightpane\",\"email\":\"billing@brightpane.example\",\"created\":1770750000,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer_id": "cus_Initrode04"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Initrode04\",\"object\":\"customer\",\"name\":\"Initrode\",\"email\":\"billing@initrode.example\",\"created\":1750420800,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer_id": "cus_Northwind07"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Northwind07\",\"object\":\"customer\",\"name\":\"Northwind Labs\",\"email\":\"billing@northwind.example\",\"created\":1787486400,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such customer\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_SEARCH_SUBSCRIPTIONS": {
+      "description": "Search subscriptions with Stripe's Search Query Language (status, canceled_at, created, metadata).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"search_result\",\"data\":[{\"id\":\"sub_1NorthwindPro04\",\"object\":\"subscription\",\"status\":\"canceled\",\"customer\":\"cus_Northwind07\",\"livemode\":true,\"start_date\":1787486400,\"created\":1787486400,\"canceled_at\":1795467600,\"ended_at\":1795467600,\"trial_end\":null,\"cancel_at_period_end\":false,\"cancellation_details\":{\"reason\":\"cancellation_requested\",\"feedback\":\"switched_service\",\"comment\":null},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1NorthwindPro04\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_ProMonthly\",\"object\":\"price\",\"product\":\"prod_ProPlan02\",\"currency\":\"usd\",\"unit_amount\":9900,\"recurring\":{\"interval\":\"month\",\"interval_count\":1},\"type\":\"recurring\"},\"quantity\":1}],\"has_more\":false}},{\"id\":\"sub_1SoylentTeam02\",\"object\":\"subscription\",\"status\":\"canceled\",\"customer\":\"cus_Soylent02\",\"livemode\":true,\"start_date\":1780304400,\"created\":1780304400,\"canceled_at\":1795352700,\"ended_at\":1795352700,\"trial_end\":null,\"cancel_at_period_end\":false,\"cancellation_details\":{\"reason\":\"payment_failed\",\"feedback\":null,\"comment\":null},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1SoylentTeam02\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_TeamMonthly\",\"object\":\"price\",\"product\":\"prod_TeamPlan01\",\"currency\":\"usd\",\"unit_amount\":4900,\"recurring\":{\"interval\":\"month\",\"interval_count\":1},\"type\":\"recurring\"},\"quantity\":5}],\"has_more\":false}},{\"id\":\"sub_1InitrodeProY01\",\"object\":\"subscription\",\"status\":\"canceled\",\"customer\":\"cus_Initrode04\",\"livemode\":true,\"start_date\":1741600800,\"created\":1741600800,\"canceled_at\":1795278000,\"ended_at\":1795278000,\"trial_end\":null,\"cancel_at_period_end\":false,\"cancellation_details\":{\"reason\":\"cancellation_requested\",\"feedback\":\"too_expensive\",\"comment\":\"Budget cut for next year.\"},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1InitrodeProY01\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_ProYearly\",\"object\":\"price\",\"product\":\"prod_ProPlan02\",\"currency\":\"usd\",\"unit_amount\":240000,\"recurring\":{\"interval\":\"year\",\"interval_count\":1},\"type\":\"recurring\"},\"quantity\":1}],\"has_more\":false}}],\"has_more\":false,\"next_page\":null,\"url\":\"/v1/subscriptions/search\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_INVOICES": {
+      "description": "List invoices, newest first (customer, subscription, status, created, limit).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "customer": {
+            "type": "string"
+          },
+          "subscription": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "created": {
+            "type": "object"
+          },
+          "starting_after": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "subscription": "sub_1NorthwindPro04"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"in_1NorthOct\",\"object\":\"invoice\",\"customer\":\"cus_Northwind07\",\"subscription\":\"sub_1NorthwindPro04\",\"status\":\"paid\",\"amount_paid\":9900,\"currency\":\"usd\",\"created\":1792756980,\"status_transitions\":{\"paid_at\":1792756980},\"number\":\"INV-1NORTH\"}],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "subscription": "sub_1SoylentTeam02"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"in_1SoylNov\",\"object\":\"invoice\",\"customer\":\"cus_Soylent02\",\"subscription\":\"sub_1SoylentTeam02\",\"status\":\"paid\",\"amount_paid\":24500,\"currency\":\"usd\",\"created\":1793523840,\"status_transitions\":{\"paid_at\":1793523840},\"number\":\"INV-1SOYLN\"}],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "subscription": "sub_1InitrodeProY01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"in_1InitY2026\",\"object\":\"invoice\",\"customer\":\"cus_Initrode04\",\"subscription\":\"sub_1InitrodeProY01\",\"status\":\"paid\",\"amount_paid\":240000,\"currency\":\"usd\",\"created\":1773137100,\"status_transitions\":{\"paid_at\":1773137100},\"number\":\"INV-1INITY\"}],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer": "cus_Northwind07"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"in_1NorthOct\",\"object\":\"invoice\",\"customer\":\"cus_Northwind07\",\"subscription\":\"sub_1NorthwindPro04\",\"status\":\"paid\",\"amount_paid\":9900,\"currency\":\"usd\",\"created\":1792756980,\"status_transitions\":{\"paid_at\":1792756980},\"number\":\"INV-1NORTH\"}],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer": "cus_Soylent02"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"in_1SoylNov\",\"object\":\"invoice\",\"customer\":\"cus_Soylent02\",\"subscription\":\"sub_1SoylentTeam02\",\"status\":\"paid\",\"amount_paid\":24500,\"currency\":\"usd\",\"created\":1793523840,\"status_transitions\":{\"paid_at\":1793523840},\"number\":\"INV-1SOYLN\"}],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer": "cus_Initrode04"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"in_1InitY2026\",\"object\":\"invoice\",\"customer\":\"cus_Initrode04\",\"subscription\":\"sub_1InitrodeProY01\",\"status\":\"paid\",\"amount_paid\":240000,\"currency\":\"usd\",\"created\":1773137100,\"status_transitions\":{\"paid_at\":1773137100},\"number\":\"INV-1INITY\"}],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_PRODUCTS": {
+      "description": "List products; `ids` returns only those products (limit, active).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"prod_TeamPlan01\",\"object\":\"product\",\"name\":\"Team\",\"active\":true},{\"id\":\"prod_ProPlan02\",\"object\":\"product\",\"name\":\"Pro\",\"active\":true}],\"has_more\":false,\"url\":\"/v1/products\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

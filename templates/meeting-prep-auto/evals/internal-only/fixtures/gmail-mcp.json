@@ -1,0 +1,47 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail: any query answers one internal mail.",
+  "tools": {
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Fetches a list of email messages matching a Gmail search query (query, max_results, include_payload, verbose, ...).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "include_payload": {
+            "type": "boolean"
+          },
+          "verbose": {
+            "type": "boolean"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "ids_only": {
+            "type": "boolean"
+          },
+          "page_token": {
+            "type": "string"
+          },
+          "include_spam_trash": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"messages\":[{\"messageId\":\"19d3c2b1a0f9e803\",\"threadId\":\"19d3c2b1a0f9e803\",\"sender\":\"Lee Chen <lee.chen@acme.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Pipeline sheet\",\"messageTimestamp\":\"2026-12-07T18:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"\",\"preview\":{\"subject\":\"Pipeline sheet\",\"body\":\"Updated the sheet with the renewals.\"},\"attachmentList\":[],\"display_url\":\"https://mail.google.com/mail/u/0/#inbox/19d3c2b1a0f9e803\"}],\"nextPageToken\":null,\"resultSizeEstimate\":1},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

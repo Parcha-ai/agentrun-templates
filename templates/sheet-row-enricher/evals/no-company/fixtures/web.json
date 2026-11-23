@@ -1,0 +1,20 @@
+{
+  "search": {
+    "answers": [],
+    "default": {
+      "results": [
+        {
+          "url": "https://dana.example/",
+          "title": "Dana",
+          "snippet": "A page."
+        }
+      ]
+    }
+  },
+  "fetch": {
+    "answers": [],
+    "default": {
+      "error": "fetch failed"
+    }
+  }
+}

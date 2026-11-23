@@ -1,0 +1,264 @@
+{
+  "server": "stripe",
+  "description": "A fake Composio Stripe on 2026-11-23. One dispute: du_1HanamuraFr07, 15000 jpy (yen has no minor unit: ¥15,000), fraudulent, needs response, due 2026-11-30, on Hanamura KK's charge. Two cancellations in the last 7 days: Hanamura KK's Team monthly at 10000 jpy (¥10,000 a month, started 2026-05-01, cancelled 2026-11-21, too_expensive, last paid 10000 jpy on 2026-11-01) and Soylent's Team monthly (5 x $49.00, cancelled 2026-11-22 for payment_failed, last paid $245.00 on 2026-11-01).",
+  "tools": {
+    "STRIPE_LIST_DISPUTES": {
+      "description": "List disputes, newest first (created {gt, gte, lt, lte}, charge, payment_intent, limit, starting_after).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "created": {
+            "type": "object"
+          },
+          "charge": {
+            "type": "string"
+          },
+          "payment_intent": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "starting_after": {
+            "type": "string"
+          },
+          "ending_before": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"du_1HanamuraFr07\",\"object\":\"dispute\",\"amount\":15000,\"currency\":\"jpy\",\"charge\":\"ch_3HanamuraSeat07\",\"payment_intent\":\"pi_3HanamuraSeat07\",\"created\":1795143600,\"livemode\":true,\"reason\":\"fraudulent\",\"status\":\"needs_response\",\"is_charge_refundable\":false,\"metadata\":{},\"evidence\":{\"customer_name\":null,\"customer_email_address\":null,\"product_description\":null,\"uncategorized_text\":null},\"evidence_details\":{\"due_by\":1796083199,\"has_evidence\":false,\"past_due\":false,\"submission_count\":0},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"case_type\":\"chargeback\",\"network_reason_code\":\"10.4\"}}}],\"has_more\":false,\"url\":\"/v1/disputes\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_RETRIEVE_CHARGE": {
+      "description": "Retrieve a charge by charge_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "charge_id": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "charge_id": "ch_3HanamuraSeat07"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"ch_3HanamuraSeat07\",\"object\":\"charge\",\"amount\":15000,\"currency\":\"jpy\",\"status\":\"succeeded\",\"paid\":true,\"disputed\":true,\"customer\":\"cus_Hanamura09\",\"created\":1793588400,\"livemode\":true,\"description\":\"Extra seats\",\"billing_details\":{\"name\":null,\"email\":null},\"payment_method_details\":{\"type\":\"card\",\"card\":{\"brand\":\"visa\",\"last4\":\"4242\"}}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such charge\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_RETRIEVE_CUSTOMER": {
+      "description": "Retrieve a customer by customer_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "customer_id": "cus_Hanamura09"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Hanamura09\",\"object\":\"customer\",\"name\":\"Hanamura KK\",\"email\":\"billing@hanamura.example\",\"created\":1777597200,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer_id": "cus_Soylent02"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Soylent02\",\"object\":\"customer\",\"name\":\"Soylent\",\"email\":\"billing@soylent.example\",\"created\":1793804400,\"livemode\":true,\"description\":null,\"metadata\":{}},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such customer\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_SEARCH_SUBSCRIPTIONS": {
+      "description": "Search subscriptions with Stripe's Search Query Language (status, canceled_at, created, metadata).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"search_result\",\"data\":[{\"id\":\"sub_1SoylentTeam02\",\"object\":\"subscription\",\"status\":\"canceled\",\"customer\":\"cus_Soylent02\",\"livemode\":true,\"start_date\":1780304400,\"created\":1780304400,\"canceled_at\":1795352700,\"ended_at\":1795352700,\"trial_end\":null,\"cancel_at_period_end\":false,\"cancellation_details\":{\"reason\":\"payment_failed\",\"feedback\":null,\"comment\":null},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1SoylentTeam02\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_TeamMonthly\",\"object\":\"price\",\"product\":\"prod_TeamPlan01\",\"currency\":\"usd\",\"unit_amount\":4900,\"recurring\":{\"interval\":\"month\",\"interval_count\":1},\"type\":\"recurring\"},\"quantity\":5}],\"has_more\":false}},{\"id\":\"sub_1HanamuraTeam09\",\"object\":\"subscription\",\"status\":\"canceled\",\"customer\":\"cus_Hanamura09\",\"livemode\":true,\"start_date\":1777597200,\"created\":1777597200,\"canceled_at\":1795226400,\"ended_at\":1795226400,\"trial_end\":null,\"cancel_at_period_end\":false,\"cancellation_details\":{\"reason\":\"cancellation_requested\",\"feedback\":\"too_expensive\",\"comment\":null},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1HanamuraTeam09\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_TeamMonthlyJpy\",\"object\":\"price\",\"product\":\"prod_TeamPlan01\",\"currency\":\"jpy\",\"unit_amount\":10000,\"recurring\":{\"interval\":\"month\",\"interval_count\":1},\"type\":\"recurring\"},\"quantity\":1}],\"has_more\":false}}],\"has_more\":false,\"next_page\":null,\"url\":\"/v1/subscriptions/search\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_INVOICES": {
+      "description": "List invoices, newest first (customer, subscription, status, created, limit).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "customer": {
+            "type": "string"
+          },
+          "subscription": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "created": {
+            "type": "object"
+          },
+          "starting_after": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "subscription": "sub_1SoylentTeam02"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"in_1SoylNov\",\"object\":\"invoice\",\"customer\":\"cus_Soylent02\",\"subscription\":\"sub_1SoylentTeam02\",\"status\":\"paid\",\"amount_paid\":24500,\"currency\":\"usd\",\"created\":1793523840,\"status_transitions\":{\"paid_at\":1793523840},\"number\":\"INV-1SOYLN\"}],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "subscription": "sub_1HanamuraTeam09"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"in_1HanaNov\",\"object\":\"invoice\",\"customer\":\"cus_Hanamura09\",\"subscription\":\"sub_1HanamuraTeam09\",\"status\":\"paid\",\"amount_paid\":10000,\"currency\":\"jpy\",\"created\":1793495040,\"status_transitions\":{\"paid_at\":1793495040},\"number\":\"INV-1HANAN\"}],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer": "cus_Soylent02"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"in_1SoylNov\",\"object\":\"invoice\",\"customer\":\"cus_Soylent02\",\"subscription\":\"sub_1SoylentTeam02\",\"status\":\"paid\",\"amount_paid\":24500,\"currency\":\"usd\",\"created\":1793523840,\"status_transitions\":{\"paid_at\":1793523840},\"number\":\"INV-1SOYLN\"}],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer": "cus_Hanamura09"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"in_1HanaNov\",\"object\":\"invoice\",\"customer\":\"cus_Hanamura09\",\"subscription\":\"sub_1HanamuraTeam09\",\"status\":\"paid\",\"amount_paid\":10000,\"currency\":\"jpy\",\"created\":1793495040,\"status_transitions\":{\"paid_at\":1793495040},\"number\":\"INV-1HANAN\"}],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[],\"has_more\":false,\"url\":\"/v1/invoices\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_PRODUCTS": {
+      "description": "List products; `ids` returns only those products (limit, active).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"prod_TeamPlan01\",\"object\":\"product\",\"name\":\"Team\",\"active\":true},{\"id\":\"prod_ProPlan02\",\"object\":\"product\",\"name\":\"Pro\",\"active\":true}],\"has_more\":false,\"url\":\"/v1/products\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

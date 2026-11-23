@@ -1,0 +1,41 @@
+{
+  "server": "googlecalendar",
+  "description": "A fake Composio Google Calendar free/busy: Tue Dec 8 10-11 busy. The answer is the same whatever the arguments.",
+  "tools": {
+    "GOOGLECALENDAR_FREE_BUSY_QUERY": {
+      "description": "Returns busy intervals for calendars between timeMin and timeMax (items: calendars by id).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array"
+          },
+          "timeMin": {
+            "type": "string"
+          },
+          "timeMax": {
+            "type": "string"
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "groupExpansionMax": {
+            "type": "integer"
+          },
+          "calendarExpansionMax": {
+            "type": "integer"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"kind\":\"calendar#freeBusy\",\"timeMin\":\"2026-12-08T05:00:00.000Z\",\"timeMax\":\"2026-12-15T05:00:00.000Z\",\"calendars\":{\"primary\":{\"busy\":[{\"start\":\"2026-12-08T10:00:00-05:00\",\"end\":\"2026-12-08T11:00:00-05:00\"}]}}},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}
