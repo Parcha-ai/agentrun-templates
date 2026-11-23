@@ -77,11 +77,12 @@ If `web_search` answers that free search is rate-limited, never call it again in
 
 robots.txt is plain text in groups: one or more `User-agent:` lines, then `Allow:` and `Disallow:` lines. For each bot
 below, its group is the one whose `User-agent` names its token (any case); with none, the `User-agent: *` group; with
-none of either, it is allowed. In its group: `Disallow: /` with no `Allow` line at all is `blocked`; `Disallow: /` with
-an `Allow` of a narrower path (`Allow: /public/`) is `partly_blocked`, and `rule` quotes both lines; other `Disallow`
-paths are `partly_blocked`; no `Disallow`, an empty one, or an `Allow: /` is `allowed`. `rule` quotes the group's lines
-that decide it. A 404 is
-`not_found`: every bot is `allowed` with `rule` null. A failed fetch is `unreachable`: every verdict is `unknown`.
+none of either, it is allowed. In its group, take the first that fits: `Disallow: /` with no `Allow` line is `blocked`.
+`Disallow: /` with an `Allow` of a narrower path (`Allow: /public/`) is `partly_blocked`, and `rule` quotes both lines.
+Any other non-empty `Disallow` (`Disallow: /docs/`) is `partly_blocked`, even beside an `Allow: /`. Otherwise (no
+`Disallow`, only empty ones, or `Disallow: /` matched by an `Allow: /`) it is `allowed`. `rule` quotes the group's lines
+that decide it. A 404 is `not_found`: every bot is `allowed` with `rule` null. A failed fetch is `unreachable`: every
+verdict is `unknown`.
 
 | bot | operator | purpose |
 |---|---|---|
