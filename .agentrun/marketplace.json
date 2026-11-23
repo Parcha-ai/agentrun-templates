@@ -1187,7 +1187,7 @@
         "fal",
         "elevenlabs"
       ],
-      "summary": "A weekly 45 second film of last week's Stripe revenue, net of refunds and fees, per currency, against the week before. Billed to your fal account."
+      "summary": "A 45-second film each week of last week's Stripe revenue, net of refunds and fees, per currency, against the week before."
     }
   ]
 }
