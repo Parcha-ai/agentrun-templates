@@ -174,9 +174,8 @@ Never make a second stem in a run: a retry and a resume reuse it. With the stem 
 `ns-k7m2p9qa-voice-cold-open` and lead A's clip `ns-k7m2p9qa-anchor-lead-a`. No date goes in a key; the show's date
 stays in the files and the answer. When fal refuses a key because it already holds a job for other inputs (a resumed
 run whose script changed), the run before already sent that step's job, and fal may have billed it. Never send it
-again under another key: call `get_submission` with that same key and follow what it answers, as after a lost reply.
-A completed job's output is that step's output, a pending one is followed with `wait_for_jobs`, and `not_found` or
-`submission_unknown` makes the step failed, never a new paid job.
+again under another key, and never take that job's output either: it was made from other inputs. The step is
+failed, and the answer names its key; no new paid job.
 
 `submit_job` the nine voices, in the segments' order, then the still (only when the plan animates the anchor and
 there is no anchor image), with no other call between them:
