@@ -1,0 +1,48 @@
+<!-- Payoff (about 20%, 60-80% in): the biggest moment, once. An iris opens from the centre onto one hero line,
+     its key word under an accent band that wipes in on the word the voice lands on. Real words, real numbers. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--ink); container-type: size; overflow: hidden; }
+    #po-ground { position: absolute; inset: 0; background: var(--paper); }
+    #po-stack { position: absolute; left: 6cqw; right: 6cqw; top: 30cqh; display: flex; flex-direction: column; gap: 5cqh; }
+    #po-line { transform-origin: 50% 40%; position: relative; text-align: center; font-family: var(--font-display);
+      font-size: 19cqmin; line-height: 0.95; color: var(--ink); text-transform: uppercase; }
+    #po-key { position: relative; display: inline-block; padding: 0 0.12em; isolation: isolate; }
+    #po-band { position: absolute; left: 0; right: 0; top: 0.08em; bottom: 0.02em; background: var(--accent); transform-origin: left center; z-index: -1; }
+    #po-sub { position: relative; text-align: center; font-family: var(--font-mono);
+      font-size: 4cqmin; color: var(--ink); }
+    .pow { display: inline-block; }
+    /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
+       11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
+    @container (max-aspect-ratio: 3/4) {
+      #po-stack { left: 11.5cqw; right: 30cqw; top: 16cqh; bottom: 36cqh; justify-content: center; gap: 3cqh; }
+      #po-line .pow { vertical-align: top; }
+      #po-sub { font-size: 3.8cqw; }
+    }
+  </style>
+  <div id="root" data-composition-id="payoff" data-width="1920" data-height="1080">
+    <div id="po-ground" class="clip" data-start="0" data-duration="6"></div>
+    <div id="po-stack">
+      <div id="po-line" class="clip" data-start="0.1" data-duration="5.9" data-layout-allow-overlap><span class="pow">KIT</span> <span class="pow">hero</span> <span id="po-key" class="pow"><span id="po-band"></span>line</span></div>
+      <div id="po-sub" class="clip" data-start="1.6" data-duration="4.4">KIT the release's own figure or field</div>
+    </div>
+  </div>
+  <script>
+    // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
+    const tall = window.innerHeight > window.innerWidth;
+    rfReady(["po-line", "po-sub"]).then(() => {
+    // 9:16: the hero line takes every size the column holds, across and down.
+    if (tall) {
+      const col = rfCol(), line = document.getElementById("po-line");
+      rfFit(line, { w: 0.94 * col.w, h: 0.76 * col.h, max: 0.3 * innerWidth, units: [...line.querySelectorAll(".pow")].map((e) => e.textContent) });
+    }
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#po-ground", { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(75% at 50% 50%)", duration: 0.3, ease: "power3.out" }, 0);
+    tl.fromTo("#po-line .pow", { opacity: 0, y: 50, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.32, stagger: 0.1, ease: "expo.out" }, 0.1);
+    tl.fromTo("#po-line", { scale: 1 }, { scale: tall ? 1.03 : 1.08, duration: 5.6, ease: "none" }, 0.1);
+    tl.fromTo("#po-band", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "expo.out" }, 1.1);
+    tl.fromTo("#po-sub", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 1.6);
+    window.__timelines["payoff"] = tl;
+    });
+  </script>
+</template>

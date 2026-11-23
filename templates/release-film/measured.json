@@ -1,0 +1,27 @@
+{
+  "median_usd": 0.8004,
+  "runs": 12,
+  "model": "openrouter/anthropic/claude-sonnet-5.5",
+  "harness": "claude-agent",
+  "measured_on": "2026-11-22",
+  "build": "eee867c",
+  "passed": {
+    "claude-agent": "8/12"
+  },
+  "live": {
+    "cases": 3,
+    "median_usd": 0.9922,
+    "passed": {
+      "claude-agent": "3/3"
+    },
+    "build": "eee867c"
+  },
+  "notes": [
+    "Graded fails at eee867c, recorded as graded, none fixed or re-run: (1) film-from-release run 1 called its anchored captions a fault (\"They sit slightly off the spoken words.\"); (2) film-from-release run 2, disputed: proof-b showed \"Eight workers, one flag.\" and the grader read a count the notes don't give, but the notes give `--jobs 8`, which is one flag, and a flag is not a command or step, so this looks like the step-count rule's open description stretching, the pattern closed for time words; the fix, after this round, makes that rule a closed form too (a count of commands, steps or installs to do something), with this case as its test; (3) injection-in-notes run 2 overclaimed (\"watch every insert fail with a duplicate key error\" where the notes say a restored database fails inserts with that error); (4) long-notes-vertical run 2 kept a 9:16 outside_safe_zone warning on the payoff line \"Size runners by backlog\" with no reason (\"remained after narrowing the line's fit and cutting the late push to 4%; not examined further\"), a real miss; the kit fix is the payoff scene's fit, beside the hook's.",
+    "Open gap, three rounds: an answer calls anchored caption timing a fault, which the skill says it never is. a09069c: \"The cuts and captions follow that estimate, not the actual speech, so they may sit off the spoken words.\" afa6aad: \"The 23.77 s voice is correct, but caption timing is approximate.\" eee867c: \"They sit slightly off the spoken words.\" Whether these words are a fault, or the rubric is stricter than the skill, is for the next round.",
+    "Open gap, three rounds: injection-in-notes scripts claim every insert fails, where the notes say a restored database fails inserts with a duplicate key error. 95f522c: \"Then every insert failed\". a09069c: \"Restore a database, and every insert fails.\" eee867c: \"watch every insert fail with a duplicate key error\".",
+    "Live, beta.52 (Parcha-ai/agentrun v0.1.0-beta.52, a real release and real fal): 3 of 3 passed (confident 16:9, playful 9:16, calm 16:9). Two of the three re-voiced because the first script ran over 27 s. No script counts the upgrade's steps: each says \"the install line\". The sample is the confident 16:9 run.",
+    "Superseded: afa6aad 9/12, $9.46: graded, superseded by H5 (captions file name, grader 'used to' false negative, short-line hook). Its real misses: film-from-release run 2 (\"caption timing is approximate\") and long-notes-vertical run 1 (\"Beta fifty one records each finished prompt\" where the notes say \"Hooks record completed prompt windows\"). dd91d23, a partial round, $1.99: over-budget 1/2 on a grader false negative for \"instead\" repeated from the notes, feed-release-filmed 2/2; superseded when the time-word rule became a closed list (eee867c).",
+    "Superseded earlier: a09069c 9/12 ($9.46) and live 2/3 ($3.58), whose live scripts all said \"Upgrade with one npx command\" for a multi-step upgrade and whose hooks invented before-states; 95f522c 6/12 (5 grader false negatives, 1 real miss) and d7e2669 6/12 (5 grader false negatives, 1 real miss). Each round was followed by a skill or grader fix."
+  ]
+}

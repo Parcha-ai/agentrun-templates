@@ -1,0 +1,91 @@
+<!-- Hook (about 12-15%): the old way failing, quoted from a before-state the notes give (the error message it fixes,
+     the step it removes, the complaint from the issue it closes), full frame on the alert ground. When the notes give
+     no before-state, add class="plain" to #root: the plain-headline form, the headline change in the notes' words on
+     the field ground, with no strike and no fade. Frame 0 already shows the
+     context line and the first word (it is the thumbnail). The words slam in one by one, hold long enough to read,
+     then a bar strikes through each word and the frame jolts before the cut. Keep the line to 3-8 words (2-4 at 9:16);
+     the script fits it to the frame's width at every aspect (the column's at 9:16), so a longer error is cut to its
+     telling part, never shrunk. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--alert); container-type: size; overflow: hidden; }
+    #hook-all { position: absolute; inset: 0; transform-origin: 46% 35%; }
+    #hook-label { position: absolute; left: 8cqw; right: 8cqw; top: 14cqh; font-family: var(--font-text); font-weight: 900;
+      font-size: 5.4cqmin; letter-spacing: -0.02em; line-height: 1.1; color: var(--ink); }
+    #hook-line { position: absolute; left: 8cqw; right: 8cqw; top: 30cqh; font-family: var(--font-mono); font-weight: 700;
+      font-size: 11cqmin; line-height: 1.06; letter-spacing: -0.04em; color: var(--ink); overflow-wrap: break-word; }
+    .hs { position: absolute; left: -0.06em; right: -0.06em; top: 50%; height: 0.12em; background: var(--ink);
+      transform-origin: left center; }
+    .hw { display: inline-block; position: relative; }
+    /* The plain-headline form: no before-state in the notes, so nothing is struck. */
+    #root.plain { background: var(--field); }
+    #root.plain #hook-label, #root.plain #hook-line { color: var(--field-ink); }
+    /* Square (1:1): the same words in a narrower frame. */
+    @container (max-aspect-ratio: 5/4) {
+      #hook-line { font-size: 8.4cqw; }
+    }
+    /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
+       11-82% of the width (11-72% below 44%): captions and buttons own the rest. One column centred
+       in it; the script fits each line to the column's width. */
+    @container (max-aspect-ratio: 3/4) {
+      #hook-all { left: 11.5cqw; right: 30cqw; top: 16cqh; bottom: 36cqh; display: flex; flex-direction: column;
+        justify-content: center; gap: 4cqh; transform-origin: 0% 50%; }
+      #hook-label, #hook-line { position: relative; left: auto; right: auto; top: auto; }
+      #hook-label { white-space: nowrap; }
+      #hook-line { overflow-wrap: normal; line-height: 1.1; }
+    }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1920" data-height="1080">
+    <div id="hook-all">
+      <div id="hook-label" class="clip" data-start="0" data-duration="4.5">KIT what used to happen</div>
+      <div id="hook-line" class="clip" data-start="0" data-duration="4.5"><span class="hw">"KIT</span> <span class="hw">error</span> <span class="hw">string</span> <span class="hw">here"</span></div>
+    </div>
+  </div>
+  <script>
+    // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
+    const tall = window.innerHeight > window.innerWidth;
+    // 9:16: a word longer than 9 characters becomes two at its joint (rfJoint), so the line can be set bigger.
+    if (tall) document.querySelectorAll("#hook-line .hw").forEach((w) => {
+      const t = w.textContent, i = t.length > 9 ? rfJoint(t) : -1;
+      if (i < 0) return;
+      const rest = w.cloneNode();
+      rest.textContent = t.slice(i).replace(/^ /, "");
+      w.textContent = t.slice(0, i);
+      w.after(rest);
+    });
+    // One strike bar inside each word, so the strike crosses every word wherever the line wraps (untimed, made
+    // once before the timeline is built).
+    const plain = document.getElementById("root").classList.contains("plain");
+    if (!plain) document.querySelectorAll("#hook-line .hw").forEach((w) => { const bar = document.createElement("i"); bar.className = "hs"; w.appendChild(bar); });
+    rfReady(["hook-label", "hook-line"]).then(() => {
+    // 9:16: the context line fits the column across; the words fill the rest of the column.
+    if (tall) {
+      const col = rfCol(), line = document.getElementById("hook-line");
+      const label = rfFit(document.getElementById("hook-label"), { w: col.w, max: 0.08 * innerWidth });
+      // The words take all the height the label and the gap leave, less the push's 3%.
+      rfFit(line, { w: 0.97 * col.w, h: (col.h - label.height - 0.04 * innerHeight) / 1.03, max: 0.2 * innerWidth, units: [...line.querySelectorAll(".hw")].map((e) => e.textContent) });
+    } else {
+      // 16:9 and 1:1: the words fill the width between the margins at the held frame, the push's 8% included, and
+      // stay above the captions. The height is held to 30% of the frame so a short line ("one at a time") stays on one
+      // line across the width rather than taking a slightly larger size on two.
+      const line = document.getElementById("hook-line");
+      rfFit(line, { w: 0.84 * innerWidth / 1.08, h: 0.30 * innerHeight, max: 0.2 * innerWidth, units: [...line.querySelectorAll(".hw")].map((e) => e.textContent) });
+    }
+    const tl = gsap.timeline({ paused: true });
+    // The camera: a slow push on the words for the whole hold, so the frame is never still.
+    tl.fromTo("#hook-all", { scale: 1 }, { scale: tall ? 1.03 : 1.08, duration: 4.2, ease: "none" }, 0);
+    // The first word is already there at 0; the rest slam in 0.11 s apart.
+    tl.fromTo("#hook-line .hw:not(:first-child)", { opacity: 0, scale: 1.35, filter: "blur(10px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.16, stagger: 0.11, ease: "expo.out" }, 0.25);
+    if (!plain) {
+      tl.fromTo("#hook-line .hs", { scaleX: 0 }, { scaleX: 1, duration: 0.14, stagger: 0.06, ease: "expo.out" }, 2.9);
+      tl.to("#hook-line .hw", { opacity: 0.4, duration: 0.2, ease: "power2.out" }, 3.0);
+    }
+    // The jolt: three hard frames of offset before the cut, deterministic.
+    tl.set("#hook-all", { x: -14 }, 4.2);
+    tl.set("#hook-all", { x: 10 }, 4.27);
+    tl.set("#hook-all", { x: 0 }, 4.33);
+    tl.to("#hook-all", { x: -220, filter: "blur(14px)", duration: 0.13, ease: "power3.in" }, 4.37);
+    window.__timelines["hook"] = tl;
+    });
+  </script>
+</template>
