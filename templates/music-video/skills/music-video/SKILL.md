@@ -41,9 +41,9 @@ node film/beats.mjs plan --song media/song.mp3 --film film --cut <cut_seconds> [
 - **Bars.** 4/4: of the four beats, the one whose onsets in the low band (the kick, the bass note) are strongest
   starts each bar. Bar lines run every four beats from it to the song's end. Each bar's loudness is its mean power in
   dB.
-- **The cut.** A song shorter than `--cut` is used whole. Otherwise the cut is the whole number of bars nearest
-  `--cut` (at most 90 s): from the bar line nearest `--start` when given (shortened when the song ends first, printed
-  `SHORTENED`), else the loudest run of that many bars, starting on a bar line.
+- **The cut.** A song shorter than `--cut` is used whole. Otherwise the cut is the whole number of bars nearest `--cut`
+  (at least 10 s, at most 90 s): from the bar line nearest `--start` when given (shortened when the song ends first,
+  printed `SHORTENED`), else the loudest run of that many bars, starting on a bar line.
 - **Shots.** Whole bars (a whole song's first and last shots also hold its lead-in and its tail), each 3 to 10 s, as
   even as the bars allow around 5 s each, together exactly the cut; among equally even plans, the longer shots fall
   where the song is quieter. Each shot's clip is its seconds rounded up to a whole second (`clip_seconds`), at least 3.
@@ -143,12 +143,13 @@ time on the beat grid either way, so the cut still lands on its bar line.
 ## 8. The cost
 
 ```sh
-node film/beats.mjs cost --film film --stem <the stem beats.mjs stem printed> --sent isolate,transcript,still-1,...,still-N[,still-<n>-2],clip-1,...,clip-N [--failed clip-5,...]
+node film/beats.mjs cost --film film --stem <the stem beats.mjs stem printed> --sent isolate,transcript,still-1,...,still-N[,still-<n>-2],clip-1,...,clip-N [--failed clip-5,...] [--pending clip-7,...]
 ```
 
 `--sent` names every paid step the run sent (only those sent: no lyrics steps when lyrics are off, no clip that was
-never submitted); `--failed` those fal failed or refused (they bill 0 here). It prints `fal_cost_usd` at the rates
-`price` used: copy it into the answer exactly as printed.
+never submitted); `--failed` those fal failed or refused (they bill 0 here); `--pending` those still pending when the
+run stopped waiting (they count at their full price, marked `pending`: fal may yet finish and bill them). It prints
+`fal_cost_usd` at the rates `price` used: copy it into the answer exactly as printed.
 
 ## Never
 

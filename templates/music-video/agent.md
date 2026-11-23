@@ -181,8 +181,8 @@ With no other call in between, `submit_job` each shot's still once, in shot orde
 
 Then **one** `wait_for_jobs` whose `jobs` list holds every still's own handles, at `index` n − 1 for still n. While any
 is pending, wait the `poll_after_seconds` it gives and read the pending ones again (each at its own index); after 10
-minutes treat what is still pending as failed. Copy each handle exactly as fal returned it, character for character.
-`web_save` each still's `images[0].url` to `media/still-<n>.png`.
+minutes treat what is still pending as failed (for the cost it stays `--pending`, at its price). Copy each handle
+exactly as fal returned it, character for character. `web_save` each still's `images[0].url` to `media/still-<n>.png`.
 
 **Look at them, and remake at most two.** `read` each saved still. Remake one only when it breaks a rule of step 6 (a
 word, letter or logo in it, a face that reads as a real person) or plainly misses its picture; a still that failed is
@@ -249,8 +249,9 @@ When the film is rendered, `node film/beats.mjs cost` (the skill's step 8) gives
   in plain words (lyrics off, no words in the song, none in the cut, or the step that failed); else null.
 - `plan_usd` and `cheaper_plan` as priced in step 3 (null when nothing was priced).
 - `fal_cost_usd`: as `beats.mjs cost` printed it, one step per paid call sent with its key, units, rate and `usd` (a
-  failed or refused job 0), and `total`; no steps and 0 when nothing was paid. Estimates from fal's rates, not fal's
-  invoice. A run that stops after paying but before the film still runs `cost` for what it sent.
+  failed or refused job 0; one still pending when the run stopped waiting at its price, marked `pending`), and `total`;
+  no steps and 0 when nothing was paid. Estimates from fal's rates, not fal's invoice. A run that stops after paying but
+  before the film still runs `cost` for what it sent.
 - `key_stem`: the run's stem (null when nothing was keyed); `held_keys`: every key fal refused as held for other
   inputs (step 4), else empty.
 - `film`: `path`, `seconds`, `width`, `height` as ffprobe read them, null fields when none was rendered. `checks`:

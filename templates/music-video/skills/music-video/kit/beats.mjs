@@ -10,7 +10,7 @@
 //   node beats.mjs lyrics --film film --words media/transcript.json --vtt media/lyrics.vtt
 //   node beats.mjs place  --film film
 //   node beats.mjs stem   --file media/run-keys.json
-//   node beats.mjs cost   --film film --stem <stem> --sent isolate,transcript,still-1,...,clip-12 [--failed clip-5,...]
+//   node beats.mjs cost   --film film --stem <stem> --sent isolate,transcript,still-1,...,clip-12 [--failed clip-5,...] [--pending clip-7,...]
 //
 // plan    decodes the song (mono, 11025 Hz), builds an onset curve from three frequency bands, finds the tempo by
 //         autocorrelation (60 to 200 BPM, weighted toward 120), fits a beat grid to the whole song, snaps it to the
@@ -30,8 +30,9 @@
 //         captions host when lyrics are on and there are words; then reads everything back.
 // stem    prints the run's key stem: the one in the file when it holds one (a resumed run), else a new one from the
 //         sandbox's random bytes, written there first. A model never makes one.
-// cost    the answer's fal_cost_usd from the steps sent (a failed or refused one at 0), at the rates price used, each
-//         with its key mu-<stem>-<step>.
+// cost    the answer's fal_cost_usd from the steps sent (a failed or refused one at 0; one still pending when the run
+//         stopped waiting at its full price, marked pending, since fal may yet finish and bill it), at the rates price
+//         used, each with its key mu-<stem>-<step>.
 //
 // Exit 2: wrong arguments, or a film whose files don't match the plan (place reads every shot back after writing it;
 // the message names the shot); 3: the song can't be decoded, is too short, or has no beat to cut on; 0: done.
@@ -353,6 +354,8 @@ function cutOf(song, cutAsked, startAsked, barsWanted) {
   const barLen = song.period * 4;
   let B = barsWanted ?? Math.round(cutAsked / barLen);
   while (B * barLen > CUT_MAX + 1e-6) B--;
+  // The nearest whole bars can fall under the shortest cut (10 s at 100 BPM is 4 bars, 9.6 s): take one bar more.
+  while (B * barLen < CUT_MIN - 1e-6 && (B + 1) * barLen <= CUT_MAX + 1e-6) B++;
   B = Math.min(B, bars.length);
   if (startAsked !== undefined) {
     // From the bar line nearest start_s, never moved: a cut that would run past the song's end is shortened to the
@@ -612,13 +615,14 @@ function lyrics() {
     console.log(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify({ words_in_song: all.length, words_in_cut: 0, lines: 0, vtt_path: null })}`);
     return;
   }
-  // Lines: a pause of LINE_GAP s, a sentence's end or LINE_WORDS words ends one. Each line shows from its first word to
-  // its last word's end, held at least one beat, never into the next line or past the film.
+  // Lines: a pause of LINE_GAP s, a sentence's end or LINE_WORDS words ends one, once it has run 0.2 s (a word sooner
+  // than that joins it, so two lines never start closer than 0.2 s). Each line shows from its first word to its last
+  // word's end, held at least one beat, then cut short of the next line and the film's end: those limits come last.
   const lines = [];
   let cur = [];
   for (const w of inCut) {
     const prev = cur[cur.length - 1];
-    if (prev && (w.start - prev.end >= LINE_GAP || cur.length >= LINE_WORDS || /[.!?]["')\]]*$/.test(prev.text))) {
+    if (prev && w.start - cur[0].start >= 0.2 && (w.start - prev.end >= LINE_GAP || cur.length >= LINE_WORDS || /[.!?]["')\]]*$/.test(prev.text))) {
       lines.push(cur);
       cur = [];
     }
@@ -629,7 +633,7 @@ function lyrics() {
   result.lines = lines.map((ws, i) => {
     const start = ws[0].start, nextStart = i + 1 < lines.length ? lines[i + 1][0].start : C;
     const end = Math.min(Math.max(ws[ws.length - 1].end, start + beat), nextStart - 0.04, C);
-    return { n: i + 1, start_s: r3(start), end_s: r3(Math.max(end, start + 0.2)), text: ws.map((w) => w.text).join(" ") };
+    return { n: i + 1, start_s: r3(start), end_s: r3(end), text: ws.map((w) => w.text).join(" ") };
   });
   result.under_shots = data.cut.shots.map((s) => {
     const fa = s.start_s - a, fb = s.end_s - a;
@@ -716,8 +720,10 @@ function place() {
   mkdirSync(join(film, "assets"), { recursive: true });
   const seg = join(film, "assets", "song.m4a");
   const endsWithSong = Math.abs(data.cut.end_s - data.song.seconds) < 0.05;
-  const fades = [`afade=t=in:st=0:d=0.02`, ...(endsWithSong ? [] : [`afade=t=out:st=${r3(Math.max(0, C - 1.5))}:d=1.5`])].join(",");
-  const cut = spawnSync("ffmpeg", ["-v", "error", "-nostdin", "-y", "-i", data.song.path, "-ss", String(data.cut.start_s), "-t", String(C), "-vn", "-ac", "2", "-ar", "44100", "-af", fades, "-c:a", "aac", "-b:a", "192k", seg], { encoding: "utf8" });
+  // atrim cuts on the song's clock and asetpts restarts the segment at 0, so both fades are on the segment's own clock
+  // (an output-side -ss trims after the filters, which would fade on the song's clock and leave the end silent).
+  const fades = [`atrim=start=${data.cut.start_s}:duration=${C}`, "asetpts=PTS-STARTPTS", `afade=t=in:st=0:d=0.02`, ...(endsWithSong ? [] : [`afade=t=out:st=${r3(Math.max(0, C - 1.5))}:d=1.5`])].join(",");
+  const cut = spawnSync("ffmpeg", ["-v", "error", "-nostdin", "-y", "-i", data.song.path, "-vn", "-ac", "2", "-ar", "44100", "-af", fades, "-c:a", "aac", "-b:a", "192k", seg], { encoding: "utf8" });
   if (cut.status !== 0) fail(3, `ffmpeg could not cut the song's segment: ${(cut.stderr || "").trim().split("\n").slice(-3).join(" ")}`);
   const segLen = probeSeconds(seg);
   const media = [
@@ -801,15 +807,17 @@ function cost() {
   if (!existsSync(pricePath)) fail(2, `${pricePath} is missing: run price first`);
   const p = JSON.parse(readFileSync(pricePath, "utf8"));
   const list = (k) => (args[k] && args[k] !== "true" ? args[k].split(",").map((s) => s.trim()).filter(Boolean) : []);
-  const sent = list("sent"), failed = new Set(list("failed"));
+  const sent = list("sent"), failed = new Set(list("failed")), pending = new Set(list("pending"));
   const stem = args.stem === undefined ? null : args.stem;
   if (stem !== null && !/^[a-z0-9]{8}$/.test(stem)) fail(2, "--stem is the run's key stem from media/run-keys.json: 8 lowercase letters and digits");
   for (const f of failed) if (!sent.includes(f)) fail(2, `--failed names ${f}, which --sent doesn't`);
+  for (const f of pending) if (!sent.includes(f)) fail(2, `--pending names ${f}, which --sent doesn't`);
+  for (const f of pending) if (failed.has(f)) fail(2, `${f} is in both --failed and --pending: a job fal failed or refused is --failed; one with no answer yet is --pending`);
   const steps = sent.map((step) => {
     const remake = step.match(/^still-(\d+)-2$/);
     const line = p.lines.find((l) => l.step === step && !l.reserve) ?? (remake ? p.lines.find((l) => l.step === `still-${remake[1]}`) : undefined);
     if (!line) fail(2, `--sent names ${step}, which the plan has no line for (its steps: isolate, transcript, still-<n>, still-<n>-2, clip-<n>)`);
-    return { step, key: stem ? `mu-${stem}-${step}` : null, endpoint_id: line.endpoint_id, units: line.units, unit: line.unit, rate_usd: line.rate_usd, usd: failed.has(step) ? 0 : line.usd };
+    return { step, key: stem ? `mu-${stem}-${step}` : null, endpoint_id: line.endpoint_id, units: line.units, unit: line.unit, rate_usd: line.rate_usd, usd: failed.has(step) ? 0 : line.usd, ...(pending.has(step) ? { pending: true } : {}) };
   });
   const remakes = sent.filter((s) => /^still-\d+-2$/.test(s)).length;
   if (remakes > RESERVE) fail(2, `--sent holds ${remakes} remade stills: at most ${RESERVE}`);
