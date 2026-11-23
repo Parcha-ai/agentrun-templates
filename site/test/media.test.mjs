@@ -373,6 +373,35 @@ test("the twin rewrites a repeated media link at each place it stands", async ()
   }
 });
 
+test("the twin rewrites a media target written percent-encoded, as the page resolves it", async () => {
+  // The page decodes a target before naming its file (media/%64ot.png is dot.png), so the twin must find it as written.
+  const report = [
+    "Encoded: ![Dot](media/%64ot.png) and [the clip](./media/tiny%2Emp4), and a lower-case escape ![d](media/dot%2epng).",
+    "",
+    "By reference: ![r][enc].",
+    "",
+    "[enc]: media/%64%6Ft.png",
+    "",
+  ].join("\n");
+  const root = repoWith({ "dot.png": "dot.png", "tiny.mp4": "tiny.mp4" }, report);
+  const out = await built(root);
+  try {
+    const md = readFileSync(join(out, "templates", "sample-watch.md"), "utf8");
+    const dot = `${BASE}${URL_OF("dot.png")}`;
+    const mp4 = `${BASE}${URL_OF("tiny.mp4")}`;
+    assert.ok(md.includes(`Encoded: ![Dot](${dot}) and [the clip](${mp4}), and a lower-case escape ![d](${dot}).`), "inline targets, encoded");
+    assert.ok(md.includes(`[enc]: ${dot}`), "a definition's target, encoded");
+    assert.doesNotMatch(md, /(\]\(|\]:\s*)(?:\.\/)?media\//, "no relative media target is left");
+    // The page already resolves them: the twin now matches it.
+    const page = readFileSync(join(out, "templates", "sample-watch", "index.html"), "utf8");
+    const html = /<article class="report card">([\s\S]*?)<\/article>/.exec(page)[1];
+    assert.equal(html.match(new RegExp(`(src|href)="${URL_OF("dot.png")}"`, "g"))?.length, 3);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(out, { recursive: true, force: true });
+  }
+});
+
 test("a document in media/ (.md, .txt) is a link to its copy, never a player, and counts toward the budget", async () => {
   const kit = Buffer.from("# Brand kit\n\nPalette: #0b1f3a, #19c3e6.\n\n<script>alert(1)</script>\n");
   const report = "Full kit: [media/brand-kit.md](media/brand-kit.md). As an image it stays text: ![the kit](media/brand-kit.md).\n";
