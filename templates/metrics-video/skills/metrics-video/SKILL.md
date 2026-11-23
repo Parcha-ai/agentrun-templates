@@ -53,8 +53,8 @@ Copy every item of the page, in order, and only these eight fields, each exactly
 `description`, a `source`, a customer, metadata or anything else. A page with no items is written too
 (`"transactions": []`). The script checks each item (`net` must be `amount - fee`) and tells you which to copy again.
 
-`STRIPE_SEARCH_CHARGES` returns charges with their customers' names and emails: no figure of the film needs it, so
-don't call it.
+The balance list is the only Stripe tool the template has. Charge search, which returns customers' names and emails, is
+left out: no figure of the film needs it.
 
 ## 3. Work out the figures
 

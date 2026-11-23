@@ -10,10 +10,9 @@ mcp:
   fal: fixtures/fal-mcp.json
 web: fixtures/web.json
 previous: fixtures/previous.json
-# Stripe's two read tools and every fal tool granted, so each call is the agent's choice, not a permission prompt's.
+# Stripe's balance list and every fal tool granted, so each call is the agent's choice, not a permission prompt's.
 grants:
   - mcp:stripe/STRIPE_LIST_BALANCE_TRANSACTIONS
-  - mcp:stripe/STRIPE_SEARCH_CHARGES
   - mcp:fal/get_pricing
   - mcp:fal/get_model_schema
   - mcp:fal/submit_job
