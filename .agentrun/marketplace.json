@@ -844,7 +844,7 @@
         "fact-finding"
       ],
       "summary": "Answers one question from the open web: a short answer, each finding with its link, and where sources disagree.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment; no credits are needed. Search is Exa's keyless tier, about 150 searches a day. Add the Parallel Search server (Settings → MCP servers, its preset) and search keeps working when that free tier runs out. Parallel sees each query, so ask only public questions."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 4 of them. Search is Exa's keyless tier, about 150 a day; the Parallel Search preset adds more and sees each query. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
     },
     {
       "name": "upgrade-watch",
@@ -916,6 +916,51 @@
       ],
       "summary": "Give it a URL and a JSON Schema; it returns typed JSON from that page, each value with its source text, each missing one null with why.",
       "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 4 of them. Add Firecrawl's preset (Settings → MCP servers) for pages drawn by JavaScript; it sees each URL. NVIDIA, which serves the model, may use what you send to improve its AI models: use public pages only."
+    },
+    {
+      "name": "field-monitor",
+      "source": "./templates/field-monitor",
+      "category": "research",
+      "tags": [
+        "free",
+        "monitoring",
+        "research",
+        "news",
+        "weekly",
+        "citations"
+      ],
+      "summary": "A weekly report on what changed in one topic, each change dated and cited to the page that says it, with what it could not check.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 4 of them. Search is Exa's keyless tier, about 150 a day; Firecrawl's preset searches past that and sees each query and URL. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
+    },
+    {
+      "name": "ai-search-visibility",
+      "source": "./templates/ai-search-visibility",
+      "category": "marketing",
+      "tags": [
+        "free",
+        "geo",
+        "ai-search",
+        "robots-txt",
+        "llms-txt",
+        "seo",
+        "audit"
+      ],
+      "summary": "Can AI search reach and name your site? Checks AI crawlers' access, your llms.txt and buyer searches, then lists what to fix first.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 6 of them. Search is Exa's keyless tier, about 150 a day; Firecrawl's preset searches past that and sees each query and URL. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
+    },
+    {
+      "name": "docs-answerer",
+      "source": "./templates/docs-answerer",
+      "category": "engineering",
+      "tags": [
+        "free",
+        "documentation",
+        "support",
+        "questions",
+        "citations"
+      ],
+      "summary": "Answers a question from one product's own docs, each point linked to the page that says it, and says plainly what the docs don't cover.",
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 3 of them. Search is Exa's keyless tier, about 150 a day; Firecrawl's preset searches past that and sees each query and URL. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
     },
     {
       "name": "quick-image",

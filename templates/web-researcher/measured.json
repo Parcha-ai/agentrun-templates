@@ -1,22 +1,25 @@
 {
   "median_usd": 0,
   "runs": 14,
-  "model": "openrouter/inclusionai/ling-3.2-flash:free",
+  "model": "openrouter/nvidia/nemotron-3.5-super-vl:free",
   "harness": "pi",
-  "measured_on": "2026-11-16",
-  "build": "632d8f141186850fca2b711eda0e454ac534e1f2",
-  "note": "When neither search nor any page can be read, it may answer \"not found\" rather than say the pages could not be read. After the runs, the graders were changed to accept the run's own date in the short answer (\"As of <date>\").",
+  "measured_on": "2026-11-23",
+  "build": "59d4d7b105b8a0e08b1dc0dfeb6143ecea11a959",
   "passed": {
-    "pi": "4/6"
+    "pi": "6/6"
   },
   "free": {
-    "model": "openrouter/inclusionai/ling-3.2-flash:free",
+    "model": "openrouter/nvidia/nemotron-3.5-super-vl:free",
     "limits": [
-      "OpenRouter free models: 50 requests a day with no credits, 1,000 a day after a one-time $10, 20 a minute",
+      "Nemotron 3.5 Super VL (free), served by NVIDIA through OpenRouter: 868,928 tokens in, 131,072 out (OpenRouter's endpoint list, 2026-11-20)",
+      "OpenRouter free models, per account: 20 requests a minute, and 50 a day until you have bought $10 of credits in all, 1,000 a day after; the day resets at 00:00 UTC",
+      "A run takes about 4 model requests (median 3.5 of 14 measured runs; the most was 10)",
+      "Each run stops after 20 free-model requests, so one bad run uses at most 20 of your daily free requests",
       "Exa keyless search: about 150 searches a day per IP address and 3 a second (Exa changelog, 2026-02-02); one machine was rate-limited after about 170 on 2026-11-15",
       "Public questions only: the web searches, Parallel's included, see each query",
-      "Measured with the built-in search rate-limited for the day: both live runs went on through Parallel Search and passed. Parallel's free limit is not published",
-      "Ling's free endpoint is often busy upstream: one run on 2026-11-17 took 24 minutes, waiting out 9 rate-limited replies before it answered"
+      "Parallel Search takes over when the built-in search is rate-limited; Parallel's free limit is not published",
+      "NVIDIA's free endpoint keeps data: under NVIDIA's API trial terms it may log what it is sent and use it to improve its products, AI models included, and asks you not to send confidential or personal data. It is not on OpenRouter's zero-retention list, so OpenRouter's \"ZDR only\" setting turns it off",
+      "NVIDIA's API trial terms are for trial use, not production"
     ]
   },
   "live": {
@@ -24,6 +27,43 @@
     "median_usd": 0,
     "passed": {
       "pi": "1/1"
+    }
+  },
+  "cases": {
+    "no-good-answer": {
+      "build": "59d4d7b105b8a0e08b1dc0dfeb6143ecea11a959",
+      "runs": 2,
+      "passed": true
+    },
+    "live-node-lts": {
+      "build": "59d4d7b105b8a0e08b1dc0dfeb6143ecea11a959",
+      "runs": 2,
+      "passed": true
+    },
+    "cites-every-claim": {
+      "build": "02343ad2bfd04e49db54e7104cb5570640335336",
+      "runs": 2,
+      "passed": true
+    },
+    "injection-in-page": {
+      "build": "02343ad2bfd04e49db54e7104cb5570640335336",
+      "runs": 2,
+      "passed": true
+    },
+    "search-failed": {
+      "build": "02343ad2bfd04e49db54e7104cb5570640335336",
+      "runs": 2,
+      "passed": true
+    },
+    "search-failed-no-parallel": {
+      "build": "02343ad2bfd04e49db54e7104cb5570640335336",
+      "runs": 2,
+      "passed": true
+    },
+    "sources-disagree": {
+      "build": "02343ad2bfd04e49db54e7104cb5570640335336",
+      "runs": 2,
+      "passed": true
     }
   }
 }
