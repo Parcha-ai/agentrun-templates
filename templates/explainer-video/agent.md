@@ -132,9 +132,8 @@ for that job's retries. The keys share one stem per run:
   key is `ev-k3v9q2xa-portrait` and the voiceover's `ev-k3v9q2xa-voiceover`.
 - If fal refuses a key because it already holds a job for other inputs (a resumed run whose script or prompt
   changed), the run before already sent that step's job, and fal may have billed it. Never send it again under
-  another key: call `get_submission` with that same key and follow what it answers, as after a lost reply. A
-  completed job's output is that step's output, a pending one is followed with `wait_for_jobs`, and `not_found` or
-  `submission_unknown` makes the step failed, never a new paid job.
+  another key, and never take that job's output either: it was made from other inputs. The step is failed, and
+  the answer names its key; no new paid job.
 
 Send both jobs before reading either:
 - `submit_job` on `fal-ai/nano-banana`: `prompt` the portrait prompt, `aspect_ratio` "16:9", `num_images` 1,
