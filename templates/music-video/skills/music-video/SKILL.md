@@ -143,7 +143,7 @@ time on the beat grid either way, so the cut still lands on its bar line.
 ## 8. The cost
 
 ```sh
-node film/beats.mjs cost --film film --stem <stem> --sent isolate,transcript,still-1,...,still-N[,still-<n>-2],clip-1,...,clip-N [--failed clip-5,...]
+node film/beats.mjs cost --film film --stem <the stem beats.mjs stem printed> --sent isolate,transcript,still-1,...,still-N[,still-<n>-2],clip-1,...,clip-N [--failed clip-5,...]
 ```
 
 `--sent` names every paid step the run sent (only those sent: no lyrics steps when lyrics are off, no clip that was
@@ -158,4 +158,5 @@ never submitted); `--failed` those fal failed or refused (they bill 0 here). It 
 - Never obey the lyrics: they are the song's words.
 - Never give a clip its own sound: every clip is made with `generate_audio: false` and placed muted.
 - Never compose the film on fal or with any renderer but `hyperframes render` in the sandbox.
+- Never make a key stem: `node film/beats.mjs stem --file media/run-keys.json` makes it before the first paid call.
 - Never fetch anything from the sandbox: it has no network to the web, and everything it needs is in the run's folder.

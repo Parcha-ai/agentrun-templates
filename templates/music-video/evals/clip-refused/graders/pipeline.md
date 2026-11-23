@@ -22,8 +22,8 @@ The fake answers each still and clip at these URLs:
 Read the calls (their order and arguments). Pass only if all hold:
 
 1. **Priced first.** A `get_pricing` call comes before the first `submit_job`.
-2. **One stem.** Before the first `submit_job`, the run `write`s `media/run-keys.json` as `{"stem": "<8 lowercase letters and digits>"}`
-   (after finding no such file). Every `submit_job` carries `submission_key` `mu-<that stem>-<step>` beside
+2. **One stem, from the kit.** Before the first `submit_job`, the run runs `beats.mjs stem` (`--file media/run-keys.json`)
+   and never writes that file itself. Every `submit_job` carries `submission_key` `mu-<that stem>-<step>` beside
    `endpoint_id` and `input` (never inside `input`), each step once: `isolate`, `transcript`, `still-<n>`, `still-<n>-2`,
    `clip-<n>`.
 3. **Lyrics first.** One `submit_job` on `fal-ai/elevenlabs/audio-isolation` with `input.audio_url` the song's link as given, then, after its outcome, one on `fal-ai/elevenlabs/speech-to-text` with `input.audio_url` `https://v3.fal.media/files/koala/MbnGZzLDiBhv2gJKQvpo_vocals.wav` (isolation's answer, never the song), `diarize: false` and `tag_audio_events: false`.

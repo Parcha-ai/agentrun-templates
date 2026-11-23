@@ -109,13 +109,11 @@ the lyrics, a shot or a second of the cut on your own to fit.
 Every paid call gets its own `submission_key`, sent beside `endpoint_id` and `input`, never inside `input`, and kept
 for that job's retries. The keys share one stem per run:
 
-- Before the first paid call, `read` `media/run-keys.json`. If it holds `{"stem": "<8 lowercase letters and digits>"}`
-  (a resumed run), use that stem. Otherwise make one stem of 8 random lowercase letters and digits and `write` it there
-  as `{"stem": "<stem>"}` before any paid call. Never make a second stem in a run: a retry and a resume reuse it.
+- Before the first paid call, run `node film/beats.mjs stem --file media/run-keys.json` and use the `stem` it prints.
+  The script makes it from the sandbox's random bytes and writes it to that file first; a resumed run gets the same one
+  back. Never make, change or type a stem yourself, and never write that file.
 - Keys are `mu-<stem>-<step>`, `<step>` one of `isolate`, `transcript`, `still-1` ... `still-N`, `still-<n>-2` (a
-  remade still, step 7), `clip-1` ... `clip-N`. No date and no host in a key. With the stem `r4t8k2wq` (an example:
-  make your own), the first still's key is `mu-r4t8k2wq-still-1` and the last clip's of a 12 shot plan
-  `mu-r4t8k2wq-clip-12`.
+  remade still, step 7), `clip-1` ... `clip-N`. No date and no host in a key.
 - If fal refuses a key because it already holds a job for other inputs (a resumed run whose plan or storyboard
   changed), the run before already sent that step's job, and fal may have billed it. Never send it again under
   another key, and never take that job's output either: it was made from other inputs. The step is failed, and the

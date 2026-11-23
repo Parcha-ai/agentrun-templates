@@ -9,7 +9,8 @@
 //   node beats.mjs price  --film film --rates isolation=0.1,transcript=0.03,still=0.15,clip=0.14 --max 12
 //   node beats.mjs lyrics --film film --words media/transcript.json --vtt media/lyrics.vtt
 //   node beats.mjs place  --film film
-//   node beats.mjs cost   --film film --stem r4t8k2wq --sent isolate,transcript,still-1,...,clip-12 [--failed clip-5,...]
+//   node beats.mjs stem   --file media/run-keys.json
+//   node beats.mjs cost   --film film --stem <stem> --sent isolate,transcript,still-1,...,clip-12 [--failed clip-5,...]
 //
 // plan    decodes the song (mono, 11025 Hz), builds an onset curve from three frequency bands, finds the tempo by
 //         autocorrelation (60 to 200 BPM, weighted toward 120), fits a beat grid to the whole song, snaps it to the
@@ -27,12 +28,15 @@
 // place   writes each shot into film/index.html on the cut's clock (its clip, or its still with a slow push-in when
 //         there is no usable clip), the song's segment cut by FFmpeg into film/assets/song.m4a as the only audio, the
 //         captions host when lyrics are on and there are words; then reads everything back.
+// stem    prints the run's key stem: the one in the file when it holds one (a resumed run), else a new one from the
+//         sandbox's random bytes, written there first. A model never makes one.
 // cost    the answer's fal_cost_usd from the steps sent (a failed or refused one at 0), at the rates price used, each
 //         with its key mu-<stem>-<step>.
 //
 // Exit 2: wrong arguments, or a film whose files don't match the plan (place reads every shot back after writing it;
 // the message names the shot); 3: the song can't be decoded, is too short, or has no beat to cut on; 0: done.
 import { spawnSync } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -767,6 +771,29 @@ function place() {
   console.log(JSON.stringify({ film_seconds: C, width: W, height: H, lyrics: withLyrics, clips: shots.filter((s) => s.use === "clip").length, stills, slowed: shots.filter((s) => s.rate).map((s) => ({ n: s.n, playback_rate: s.rate })) }));
 }
 
+// ---------- the key stem ----------
+// One stem per run, made here from the sandbox's random bytes, never by a model. A resumed run is the same run in the
+// same folder, so the file it left gives the stem back.
+function stem() {
+  const file = need("file");
+  let kept = null;
+  if (existsSync(file)) {
+    try {
+      kept = JSON.parse(readFileSync(file, "utf8"));
+    } catch {
+      kept = null;
+    }
+  }
+  if (kept && typeof kept.stem === "string" && /^[a-z0-9]{8}$/.test(kept.stem)) {
+    console.log(JSON.stringify({ stem: kept.stem, made: false }));
+    return;
+  }
+  const letters = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const made = [...randomBytes(8)].map((b) => letters[b % letters.length]).join("");
+  writeFileSync(file, JSON.stringify({ stem: made }) + "\n");
+  console.log(JSON.stringify({ stem: made, made: true }));
+}
+
 // ---------- the cost ----------
 function cost() {
   const film = need("film");
@@ -794,5 +821,6 @@ if (command === "plan") plan();
 else if (command === "price") price();
 else if (command === "lyrics") lyrics();
 else if (command === "place") place();
+else if (command === "stem") stem();
 else if (command === "cost") cost();
-else fail(2, "usage: node beats.mjs plan|price|lyrics|place|cost ... (the header of this file says each)");
+else fail(2, "usage: node beats.mjs plan|price|lyrics|place|stem|cost ... (the header of this file says each)");
