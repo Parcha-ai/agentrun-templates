@@ -1,0 +1,34 @@
+<!-- End card: after the closing, about 3 s with no voice. The show's name lands big, then the date and the AI line:
+     who presented it and that it is AI-generated, and where the sources are. build-show.mjs fills every {{...}} token.
+     Restyle freely; keep the AI line on screen to the end. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--accent); container-type: size; overflow: hidden; }
+    #{{P}}-all { position: absolute; left: 7cqw; right: 7cqw; top: 22cqh; display: flex; flex-direction: column; gap: 3cqh; transform-origin: 0% 50%; }
+    #{{P}}-show { font-family: var(--font-display); text-transform: uppercase; font-size: 22cqh; line-height: 0.9; color: var(--accent-ink); white-space: nowrap; }
+    .{{P}}-ch { display: inline-block; }
+    #{{P}}-date { font-family: var(--font-text); font-weight: 900; font-size: 5cqh; letter-spacing: -0.02em; color: var(--accent-ink); }
+    #{{P}}-ai { font-family: var(--font-text); font-weight: 700; font-size: 3.4cqh; line-height: 1.25; color: var(--accent-ink); max-width: 70cqw; }
+  </style>
+  <div id="root" data-composition-id="{{ID}}" data-width="1920" data-height="1080">
+    <div id="{{P}}-all">
+      <div id="{{P}}-show" class="clip" data-start="0" data-duration="{{D}}">{{SHOW_CHARS}}</div>
+      <div id="{{P}}-date">{{DATE}}</div>
+      <div id="{{P}}-ai">{{AI_LINE}}</div>
+    </div>
+  </div>
+  <script>
+    const D = {{D}};
+    rfReady(["{{P}}-show"]).then(() => {
+    const show = document.getElementById("{{P}}-show");
+    rfFit(show, { w: 0.86 * innerWidth / 1.03, max: 0.24 * innerHeight, units: [show.textContent], sep: "" });
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#{{P}}-all", { scale: 1 }, { scale: 1.03, duration: D, ease: "none" }, 0);
+    // The name letter by letter, a frame apart; then the date and the AI line, and the frame holds.
+    tl.fromTo(".{{P}}-ch", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.033, ease: "expo.out" }, 0.02);
+    tl.fromTo("#{{P}}-date", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power4.out" }, 0.35);
+    tl.fromTo("#{{P}}-ai", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power2.out" }, 0.6);
+    window.__timelines["{{ID}}"] = tl;
+    });
+  </script>
+</template>

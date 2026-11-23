@@ -1,0 +1,20 @@
+# Applied with these parameters (the generated anchor, the schedule off: started by hand). The runner serves
+# fixtures/fal-mcp.json as the saved URL server fal: nine ElevenLabs v3 voices and one Nano Banana Pro still, each
+# keyed ns-20261123-<step> with its own request id and URLs, complete on one grouped read; the five Fabric clips
+# complete on the next. web.json fakes TransitWire's feed and story pages (a fictional site) and fal's CDN files (tiny
+# real mp3, png and mp4 bytes). The show is built and rendered for real in the run's sandbox.
+parameters:
+  topic: city transit
+  urls: ["https://transitwire.example/feed.xml"]
+  daily: false
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T07:00:00Z
