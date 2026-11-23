@@ -36,7 +36,8 @@ parameters:
   anchor_look: { type: string, required: false, maxLength: 300, default: "a woman in her thirties with short dark hair and a navy jacket", description: "how the generated anchor looks: age range, hair, clothing. Always a made-up person: a request to resemble a real one is declined. Unused when anchor_image_url is set" }
   voice: { type: string, enum: [Rachel, Aria, Sarah, Laura, Charlotte, Alice, Matilda, Jessica, Lily, Roger, Charlie, George, Callum, River, Liam, Will, Eric, Chris, Brian, Daniel, Bill], default: Aria, required: false, description: "the anchor's ElevenLabs voice, by name" }
   show_name: { type: string, pattern: "^[^\\n]{2,40}$", default: "The Daily Desk", required: false, description: "the show's name, said in the cold open and shown on screen" }
-  max_fal_usd: { type: number, minimum: 0, maximum: 8, default: 4, required: false, description: "the most a show may spend on fal (a show is about $3); a show over it is refused before any paid call, with the cheaper plan named" }
+  max_fal_usd: { type: number, minimum: 0, maximum: 6, default: 4, required: false, description: "the most a show may spend on fal (a show is about $3); a show over it is refused before any paid call, with the cheaper plan named" }
+  plan: { type: string, enum: [full, short, voice-only], default: full, required: false, description: "how much of the anchor is animated: full (the cold open, the three leads and the closing, about $3), short (the cold open and the closing, about $1.65) or voice-only (no anchor clip and no still, about $0.14). When a show is refused over max_fal_usd, it names the plan that fits" }
   daily: { type: boolean, default: true, required: false, description: "make a show every day on the schedule below. Off: only when you start a run" }
   cron: { type: string, format: cron, default: "0 7 * * *", required: false, description: "when the show is made, as a cron line: 07:00 every day unless you set it" }
   timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in: UTC unless you set it" }
@@ -44,9 +45,11 @@ inputs:
   topic: { type: string, required: false, minLength: 2, maxLength: 120, title: "Topic", description: "This show's beat. Blank: the agent's topic." }
   urls: { type: array, required: false, items: { type: string, format: uri, maxLength: 500 }, title: "Feeds or pages", description: "Read first, at most five. Blank: the agent's. Their text goes to fal and its model providers only as the scripts written from it." }
   anchor_image_url: { type: string, format: uri, required: false, maxLength: 2000, title: "Anchor image", description: "A public image of your own anchor. Blank: the agent's, else a generated made-up anchor." }
-  max_fal_usd: { type: number, required: false, minimum: 0, maximum: 8, title: "Most to spend on fal (USD)", description: "Blank: the agent's (4 unless set). A show is about $3." }
+  max_fal_usd: { type: number, required: false, minimum: 0, maximum: 6, title: "Most to spend on fal (USD)", description: "Blank: the agent's (4 unless set). A show is about $3." }
+  plan: { type: string, required: false, enum: [full, short, voice-only], title: "Plan", description: "How much of the anchor is animated. Blank: the agent's (full unless set)." }
 # The run's cap counts the fal jobs (each priced before it is sent) and the model: fal at most max_fal_usd (default 4,
-# at most 8; a show is about $3) plus the model's share of a research, nine scripts and a nine-scene film.
+# at most 6; a show is about $3) plus the model's share of a research, nine scripts and a nine-scene film, which the
+# remaining $4 or more covers.
 budget: { per_run_usd: 10.00 }
 approvals: never
 triggers:
@@ -63,6 +66,7 @@ triggers:
         urls: "${parameters.urls}"
         anchor_image_url: "${parameters.anchor_image_url}"
         max_fal_usd: "${parameters.max_fal_usd}"
+        plan: "${parameters.plan}"
 output: { schema: news-show.schema.json }
 ---
 FIRST: your first two tool calls are `read` of `.agents/skills/news-show/SKILL.md` and of
@@ -75,9 +79,9 @@ fictional AI anchor who speaks on camera between them, with the stories as type 
 makes the anchor's still, the voices and the lip-synced anchor clips; the show is built and rendered in your sandbox
 with HyperFrames.
 
-Each run carries an `Input:` json block with maybe `topic`, `urls`, `anchor_image_url` and `max_fal_usd`. A value
-it leaves out is the agent's setting: topic "${parameters.topic}", urls "${parameters.urls}" (blank: none), anchor
-image "${parameters.anchor_image_url}" (blank: none), max_fal_usd ${parameters.max_fal_usd}. The show is "${parameters.show_name}", the anchor
+Each run carries an `Input:` json block with maybe `topic`, `urls`, `anchor_image_url`, `max_fal_usd` and `plan`. A
+value it leaves out is the agent's setting: topic "${parameters.topic}", urls "${parameters.urls}" (blank: none), anchor
+image "${parameters.anchor_image_url}" (blank: none), max_fal_usd ${parameters.max_fal_usd}, plan ${parameters.plan}. The show is "${parameters.show_name}", the anchor
 ${parameters.anchor_name}, the voice ${parameters.voice}, the generated anchor's look "${parameters.anchor_look}". The
 show's date is the run's date. Never stop to ask: take the likeliest reading and say which in `notes`.
 
@@ -101,6 +105,9 @@ budget, no news, failed) hands the list on unchanged.
   query, fragment or trailing slash) and is not the same event as one there (the same opening, vote, fare change,
   release or report, under any URL) unless it reports a new development (a new figure, decision or date). Each
   candidate you leave out as a repeat goes in `skipped_repeats` with why.
+- A gallery, a recap, a reaction piece or a page that sends the reader to an event's full story is not a candidate
+  of its own, whether or not the event was shown: when the event is picked, its candidate is the full story's page,
+  dated as that page is. Name each one left out in `skipped_repeats`.
 - Pick the three newest fresh new stories, each a different event, as A, B and C in that order. `web_fetch` each one's
   own page once (`max_chars` 30000): its words are the story's only source. A page that can't be read, or that turns out
   to be a repeat, is replaced by the next candidate; at most 6 story pages in all.
@@ -151,9 +158,9 @@ Leave `user_intent` out of every fal call. `get_pricing` once with `endpoint_ids
 | `short` | cold-open and closing; the leads as desk cards | 17 |
 | `voice-only` | none: every anchor segment a desk card, no still | 0 |
 
-The run's plan is `full`. When it is over `max_fal_usd`, call nothing that costs: `status: "over_budget"`,
-`plans_priced` with all three, and `cheaper_plan` the larger of `short` and `voice-only` that fits (null when neither
-does), in `report_markdown` too.
+The run's plan is `plan` (`full` unless set). When it is over `max_fal_usd`, call nothing that costs: `status: "over_budget"`,
+`plans_priced` with all three, and `cheaper_plan` the largest plan smaller than the run's that fits (null when none
+does), in `report_markdown` too, with how to choose it: the `plan` setting, or `plan` in a run's input.
 
 ## 5. The still and the voices, at once
 
