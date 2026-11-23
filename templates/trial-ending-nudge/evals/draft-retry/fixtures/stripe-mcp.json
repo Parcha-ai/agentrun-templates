@@ -1,0 +1,148 @@
+{
+  "server": "stripe",
+  "description": "A fake Composio Stripe on 2026-11-24: three trialing subscriptions. Northwind Labs ends 2026-11-24 14:00 UTC (posted Monday, draft failed), Brightpane 2026-11-26 06:00 UTC (posted and drafted Monday), Quillfeather 2026-12-03.",
+  "tools": {
+    "STRIPE_LIST_SUBSCRIPTIONS": {
+      "description": "Retrieves a list of Stripe subscriptions, filtered by status, customer, price and dates (limit, starting_after).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "starting_after": {
+            "type": "string"
+          },
+          "customer": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "created": {
+            "type": "object"
+          },
+          "current_period_end": {
+            "type": "object"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "status": "trialing"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"sub_1TrialNWL01\",\"object\":\"subscription\",\"status\":\"trialing\",\"customer\":\"cus_Northwind01\",\"livemode\":true,\"currency\":\"usd\",\"collection_method\":\"charge_automatically\",\"created\":1794319200,\"start_date\":1794319200,\"trial_start\":1794319200,\"trial_end\":1795528800,\"current_period_start\":1794319200,\"current_period_end\":1795528800,\"cancel_at_period_end\":false,\"canceled_at\":null,\"default_payment_method\":null,\"default_source\":null,\"metadata\":{},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1TrialNWL01\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_TeamMonthly\",\"object\":\"price\",\"product\":\"prod_TeamPlan01\",\"currency\":\"usd\",\"unit_amount\":4900,\"recurring\":{\"interval\":\"month\",\"interval_count\":1},\"type\":\"recurring\",\"nickname\":null,\"livemode\":true},\"quantity\":1,\"current_period_start\":1794319200,\"current_period_end\":1795528800}],\"has_more\":false},\"trial_settings\":{\"end_behavior\":{\"missing_payment_method\":\"create_invoice\"}}},{\"id\":\"sub_1TrialBRP02\",\"object\":\"subscription\",\"status\":\"trialing\",\"customer\":\"cus_Brightpane02\",\"livemode\":true,\"currency\":\"usd\",\"collection_method\":\"charge_automatically\",\"created\":1793080800,\"start_date\":1793080800,\"trial_start\":1793080800,\"trial_end\":1795672800,\"current_period_start\":1793080800,\"current_period_end\":1795672800,\"cancel_at_period_end\":false,\"canceled_at\":null,\"default_payment_method\":\"pm_1BrightVisa\",\"default_source\":null,\"metadata\":{},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1TrialBRP02\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_ProYearly\",\"object\":\"price\",\"product\":\"prod_ProPlan02\",\"currency\":\"usd\",\"unit_amount\":118800,\"recurring\":{\"interval\":\"year\",\"interval_count\":1},\"type\":\"recurring\",\"nickname\":null,\"livemode\":true},\"quantity\":1,\"current_period_start\":1793080800,\"current_period_end\":1795672800}],\"has_more\":false},\"trial_settings\":{\"end_behavior\":{\"missing_payment_method\":\"create_invoice\"}}},{\"id\":\"sub_1TrialQFT03\",\"object\":\"subscription\",\"status\":\"trialing\",\"customer\":\"cus_Quill03\",\"livemode\":true,\"currency\":\"usd\",\"collection_method\":\"charge_automatically\",\"created\":1795078800,\"start_date\":1795078800,\"trial_start\":1795078800,\"trial_end\":1796288400,\"current_period_start\":1795078800,\"current_period_end\":1796288400,\"cancel_at_period_end\":false,\"canceled_at\":null,\"default_payment_method\":null,\"default_source\":null,\"metadata\":{},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1TrialQFT03\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_TeamMonthly\",\"object\":\"price\",\"product\":\"prod_TeamPlan01\",\"currency\":\"usd\",\"unit_amount\":4900,\"recurring\":{\"interval\":\"month\",\"interval_count\":1},\"type\":\"recurring\",\"nickname\":null,\"livemode\":true},\"quantity\":3,\"current_period_start\":1795078800,\"current_period_end\":1796288400}],\"has_more\":false},\"trial_settings\":{\"end_behavior\":{\"missing_payment_method\":\"create_invoice\"}}}],\"has_more\":false,\"url\":\"/v1/subscriptions\"},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"sub_1TrialNWL01\",\"object\":\"subscription\",\"status\":\"trialing\",\"customer\":\"cus_Northwind01\",\"livemode\":true,\"currency\":\"usd\",\"collection_method\":\"charge_automatically\",\"created\":1794319200,\"start_date\":1794319200,\"trial_start\":1794319200,\"trial_end\":1795528800,\"current_period_start\":1794319200,\"current_period_end\":1795528800,\"cancel_at_period_end\":false,\"canceled_at\":null,\"default_payment_method\":null,\"default_source\":null,\"metadata\":{},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1TrialNWL01\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_TeamMonthly\",\"object\":\"price\",\"product\":\"prod_TeamPlan01\",\"currency\":\"usd\",\"unit_amount\":4900,\"recurring\":{\"interval\":\"month\",\"interval_count\":1},\"type\":\"recurring\",\"nickname\":null,\"livemode\":true},\"quantity\":1,\"current_period_start\":1794319200,\"current_period_end\":1795528800}],\"has_more\":false},\"trial_settings\":{\"end_behavior\":{\"missing_payment_method\":\"create_invoice\"}}},{\"id\":\"sub_1TrialBRP02\",\"object\":\"subscription\",\"status\":\"trialing\",\"customer\":\"cus_Brightpane02\",\"livemode\":true,\"currency\":\"usd\",\"collection_method\":\"charge_automatically\",\"created\":1793080800,\"start_date\":1793080800,\"trial_start\":1793080800,\"trial_end\":1795672800,\"current_period_start\":1793080800,\"current_period_end\":1795672800,\"cancel_at_period_end\":false,\"canceled_at\":null,\"default_payment_method\":\"pm_1BrightVisa\",\"default_source\":null,\"metadata\":{},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1TrialBRP02\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_ProYearly\",\"object\":\"price\",\"product\":\"prod_ProPlan02\",\"currency\":\"usd\",\"unit_amount\":118800,\"recurring\":{\"interval\":\"year\",\"interval_count\":1},\"type\":\"recurring\",\"nickname\":null,\"livemode\":true},\"quantity\":1,\"current_period_start\":1793080800,\"current_period_end\":1795672800}],\"has_more\":false},\"trial_settings\":{\"end_behavior\":{\"missing_payment_method\":\"create_invoice\"}}},{\"id\":\"sub_1TrialQFT03\",\"object\":\"subscription\",\"status\":\"trialing\",\"customer\":\"cus_Quill03\",\"livemode\":true,\"currency\":\"usd\",\"collection_method\":\"charge_automatically\",\"created\":1795078800,\"start_date\":1795078800,\"trial_start\":1795078800,\"trial_end\":1796288400,\"current_period_start\":1795078800,\"current_period_end\":1796288400,\"cancel_at_period_end\":false,\"canceled_at\":null,\"default_payment_method\":null,\"default_source\":null,\"metadata\":{},\"items\":{\"object\":\"list\",\"data\":[{\"id\":\"si_1TrialQFT03\",\"object\":\"subscription_item\",\"price\":{\"id\":\"price_TeamMonthly\",\"object\":\"price\",\"product\":\"prod_TeamPlan01\",\"currency\":\"usd\",\"unit_amount\":4900,\"recurring\":{\"interval\":\"month\",\"interval_count\":1},\"type\":\"recurring\",\"nickname\":null,\"livemode\":true},\"quantity\":3,\"current_period_start\":1795078800,\"current_period_end\":1796288400}],\"has_more\":false},\"trial_settings\":{\"end_behavior\":{\"missing_payment_method\":\"create_invoice\"}}}],\"has_more\":false,\"url\":\"/v1/subscriptions\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    },
+    "STRIPE_RETRIEVE_CUSTOMER": {
+      "description": "Retrieve a customer by customer_id.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [
+        {
+          "when": {
+            "customer_id": "cus_Northwind01"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Northwind01\",\"object\":\"customer\",\"name\":\"Northwind Labs\",\"email\":\"billing@northwind.example\",\"description\":null,\"created\":1794312000,\"delinquent\":false,\"livemode\":true,\"metadata\":{},\"invoice_settings\":{\"default_payment_method\":null,\"custom_fields\":null,\"footer\":null},\"default_source\":null},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer_id": "cus_Brightpane02"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Brightpane02\",\"object\":\"customer\",\"name\":\"Brightpane\",\"email\":\"ops@brightpane.example\",\"description\":null,\"created\":1793080800,\"delinquent\":false,\"livemode\":true,\"metadata\":{},\"invoice_settings\":{\"default_payment_method\":\"pm_1BrightVisa\",\"custom_fields\":null,\"footer\":null},\"default_source\":null},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "customer_id": "cus_Quill03"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\":{\"id\":\"cus_Quill03\",\"object\":\"customer\",\"name\":\"Quillfeather\",\"email\":\"ap@quillfeather.example\",\"description\":null,\"created\":1795078800,\"delinquent\":false,\"livemode\":true,\"metadata\":{},\"invoice_settings\":{\"default_payment_method\":\"pm_1QuillMc\",\"custom_fields\":null,\"footer\":null},\"default_source\":null},\"successful\":true,\"error\":null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "isError": true,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{},\"successful\":false,\"error\":\"No such customer\"}"
+          }
+        ]
+      }
+    },
+    "STRIPE_LIST_PRODUCTS": {
+      "description": "List products; `ids` returns only those products (limit, active, starting_after).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "starting_after": {
+            "type": "string"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"prod_TeamPlan01\",\"object\":\"product\",\"name\":\"Team\",\"active\":true,\"livemode\":true,\"description\":\"Up to 10 seats\"},{\"id\":\"prod_ProPlan02\",\"object\":\"product\",\"name\":\"Pro\",\"active\":true,\"livemode\":true,\"description\":\"Unlimited seats, SSO\"}],\"has_more\":false,\"url\":\"/v1/products\"},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

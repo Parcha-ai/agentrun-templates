@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "trials.schema.json",
+  "title": "Trials ending soon",
+  "description": "The Stripe trials that end in the next few days and were not nudged before: who, plan and price, trial end, card on file, the one Slack post and one Gmail draft per customer, plus the carried list of trials already nudged.",
+  "x-carried": ["nudged"],
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "trials", "already_nudged", "nudged", "posted", "skipped", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "days"],
+      "properties": {
+        "from": { "type": "string", "format": "date-time" },
+        "to": { "type": "string", "format": "date-time" },
+        "days": { "type": "integer", "minimum": 1, "maximum": 14 }
+      }
+    },
+    "trials": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["subscription_id", "customer_id", "customer_name", "plan", "price", "trial_end", "days_left", "card_on_file", "draft"],
+        "properties": {
+          "subscription_id": { "type": "string", "pattern": "^sub_", "maxLength": 80 },
+          "customer_id": { "type": "string", "pattern": "^cus_", "maxLength": 80 },
+          "customer_name": { "type": ["string", "null"], "maxLength": 60, "description": "null when there is none or it was set aside as untrusted text" },
+          "plan": { "type": "string", "maxLength": 120 },
+          "price": { "type": "string", "maxLength": 60, "description": "formatted with its period, like $49.00/month, or $300.00 every 3 months when the interval count is more than 1" },
+          "trial_end": { "type": "string", "format": "date-time" },
+          "days_left": { "type": "integer", "minimum": 0, "maximum": 15 },
+          "card_on_file": { "type": "boolean" },
+          "link": { "type": "string", "maxLength": 200 },
+          "draft": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["status"],
+            "properties": {
+              "status": { "type": "string", "enum": ["drafted", "not_drafted", "failed"] },
+              "to": { "type": ["string", "null"], "maxLength": 254 },
+              "subject": { "type": ["string", "null"], "maxLength": 200 },
+              "why_not": { "type": "string", "maxLength": 300 }
+            }
+          }
+        }
+      }
+    },
+    "already_nudged": { "type": "array", "maxItems": 100, "items": { "type": "string", "pattern": "^sub_", "maxLength": 80 } },
+    "nudged": {
+      "type": "array",
+      "maxItems": 300,
+      "description": "Every trial nudged and not ended more than 14 days ago, oldest first, with whether its post and its draft were done: carried to the next run so nothing is posted twice and a failed draft is made again.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["subscription_id", "trial_end", "nudged_on"],
+        "properties": {
+          "subscription_id": { "type": "string", "pattern": "^sub_[A-Za-z0-9_]{1,76}$", "maxLength": 80 },
+          "customer_id": { "type": "string", "pattern": "^cus_[A-Za-z0-9_]{1,76}$", "maxLength": 80 },
+          "trial_end": { "type": "string", "format": "date-time", "pattern": "^[0-9T:.+Z-]{10,35}$", "maxLength": 35 },
+          "nudged_on": { "type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+          "posted": { "type": "boolean", "description": "its post line went out; false means the next run posts it" },
+          "draft": { "enum": ["drafted", "failed", "not_drafted"], "description": "failed means the next run makes this draft again" }
+        }
+      }
+    },
+    "posted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel", "ok"],
+      "properties": {
+        "channel": { "type": "string", "maxLength": 20 },
+        "ok": { "type": "boolean" },
+        "why_not": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "skipped": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 300 } },
+    "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 } },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 4000 }
+  }
+}

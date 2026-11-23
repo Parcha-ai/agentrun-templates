@@ -1,0 +1,25 @@
+{
+  "search": {
+    "answers": [
+      {
+        "query": "morgan hale",
+        "results": [
+          {
+            "url": "https://books.example/authors/morgan-hale",
+            "title": "Morgan Hale, author of The Salt Road",
+            "snippet": "Morgan Hale is a novelist living in Maine. Her third novel came out in 2025."
+          }
+        ]
+      }
+    ],
+    "default": {
+      "results": []
+    }
+  },
+  "fetch": {
+    "answers": [],
+    "default": {
+      "error": "fetch failed"
+    }
+  }
+}

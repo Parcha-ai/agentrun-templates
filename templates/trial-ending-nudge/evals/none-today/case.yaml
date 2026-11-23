@@ -1,0 +1,15 @@
+# Applied with these parameters; post_when_empty is left at its default (false). The run fires at 09:00 on
+# 2026-11-23; both trials end after the 3-day window.
+parameters:
+  channel: C0GROWTH01
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  gmail: fixtures/gmail-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:stripe/STRIPE_LIST_SUBSCRIPTIONS
+  - mcp:stripe/STRIPE_RETRIEVE_CUSTOMER
+  - mcp:stripe/STRIPE_LIST_PRODUCTS
+  - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
+  - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-23T09:00:00Z

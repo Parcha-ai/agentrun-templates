@@ -1,0 +1,47 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail: whatever the query, it answers Kim's Dec 2 reply 'Re: Pilot results draft' and Sam's Dec 1 mail, as previews.",
+  "tools": {
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Fetches a list of email messages matching a Gmail search query (query, max_results, include_payload, verbose, ...).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "include_payload": {
+            "type": "boolean"
+          },
+          "verbose": {
+            "type": "boolean"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "ids_only": {
+            "type": "boolean"
+          },
+          "page_token": {
+            "type": "string"
+          },
+          "include_spam_trash": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"messages\":[{\"messageId\":\"19d2a1b0c9e8f701\",\"threadId\":\"19d2a1b0c9e8f701\",\"sender\":\"Kim Lee <kim.lee@globex.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Re: Pilot results draft\",\"messageTimestamp\":\"2026-12-02T16:12:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"\",\"preview\":{\"subject\":\"Re: Pilot results draft\",\"body\":\"Thanks Sam, we'll pull our side of the November numbers by Monday. Raj wants to talk SSO before we sign anything.\"},\"attachmentList\":[],\"display_url\":\"https://mail.google.com/mail/u/0/#inbox/19d2a1b0c9e8f701\"},{\"messageId\":\"19d1f0e9d8c7b602\",\"threadId\":\"19d1f0e9d8c7b602\",\"sender\":\"Sam Ortiz <sam@acme.example>\",\"to\":\"kim.lee@globex.example\",\"subject\":\"Pilot results draft\",\"messageTimestamp\":\"2026-12-01T14:00:00Z\",\"labelIds\":[\"SENT\"],\"messageText\":\"\",\"preview\":{\"subject\":\"Pilot results draft\",\"body\":\"Hi Kim, attached is the draft of the pilot results. Let me know what's missing.\"},\"attachmentList\":[],\"display_url\":\"https://mail.google.com/mail/u/0/#inbox/19d1f0e9d8c7b602\"}],\"nextPageToken\":null,\"resultSizeEstimate\":2},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "server": "gmail",
+  "description": "A fake Composio Gmail: whatever the query, it answers Dana's Dec 4 mail 'Security questionnaire' as a preview.",
+  "tools": {
+    "GMAIL_FETCH_EMAILS": {
+      "description": "Fetches a list of email messages matching a Gmail search query (query, max_results, include_payload, verbose, ...).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "include_payload": {
+            "type": "boolean"
+          },
+          "verbose": {
+            "type": "boolean"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "ids_only": {
+            "type": "boolean"
+          },
+          "page_token": {
+            "type": "string"
+          },
+          "include_spam_trash": {
+            "type": "boolean"
+          }
+        }
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\":{\"messages\":[{\"messageId\":\"19d4e3d2c1b0a904\",\"threadId\":\"19d4e3d2c1b0a904\",\"sender\":\"Dana Brooks <dana@initech.example>\",\"to\":\"sam@acme.example\",\"subject\":\"Security questionnaire\",\"messageTimestamp\":\"2026-12-04T15:20:00Z\",\"labelIds\":[\"INBOX\",\"CATEGORY_PERSONAL\"],\"messageText\":\"\",\"preview\":{\"subject\":\"Security questionnaire\",\"body\":\"Hi Sam, sending over our questionnaire ahead of next week. Section 4 is the one we need most.\"},\"attachmentList\":[],\"display_url\":\"https://mail.google.com/mail/u/0/#inbox/19d4e3d2c1b0a904\"}],\"nextPageToken\":null,\"resultSizeEstimate\":1},\"successful\":true,\"error\":null}"
+          }
+        ]
+      }
+    }
+  }
+}

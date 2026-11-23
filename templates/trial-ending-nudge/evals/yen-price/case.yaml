@@ -1,0 +1,17 @@
+# Applied with these parameters. The run fires at 09:00 on Monday 2026-11-23; the one ending trial is priced in yen
+# (jpy has no minor unit: unit_amount 9800 is ¥9,800).
+parameters:
+  channel: C0GROWTH01
+  days_ahead: 3
+  sign_off: "Sam, Acme"
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  gmail: fixtures/gmail-mcp.json
+  slack: fixtures/slack-mcp.json
+grants:
+  - mcp:stripe/STRIPE_LIST_SUBSCRIPTIONS
+  - mcp:stripe/STRIPE_RETRIEVE_CUSTOMER
+  - mcp:stripe/STRIPE_LIST_PRODUCTS
+  - mcp:gmail/GMAIL_CREATE_EMAIL_DRAFT
+  - mcp:slack/SLACK_SEND_MESSAGE
+now: 2026-11-23T09:00:00Z
