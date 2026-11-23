@@ -1172,6 +1172,22 @@
         "elevenlabs"
       ],
       "summary": "Turns a GitHub release into a 30 second film with voiceover, music, captions and a share card. Billed to your fal account."
+    },
+    {
+      "name": "news-show",
+      "source": "./templates/news-show",
+      "category": "marketing",
+      "tags": [
+        "video",
+        "news",
+        "daily",
+        "avatar",
+        "lip-sync",
+        "hyperframes",
+        "fal",
+        "elevenlabs"
+      ],
+      "summary": "A 90 second daily news show on your beat: three new stories, a fictional AI anchor, captions. Billed to your fal account."
     }
   ]
 }
