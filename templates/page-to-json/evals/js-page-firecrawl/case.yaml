@@ -1,0 +1,8 @@
+# The built-in fetch reads only the page's JavaScript shell (fixtures/web.json). Firecrawl's keyless scraper is saved as
+# the firecrawl server and granted; fixtures/firecrawl-mcp.json stands in for it and answers the drawn page.
+web: fixtures/web.json
+mcp:
+  firecrawl: fixtures/firecrawl-mcp.json
+grants:
+  - mcp:firecrawl/firecrawl_scrape
+now: 2026-11-16T09:00:00Z

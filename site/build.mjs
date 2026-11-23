@@ -5,7 +5,7 @@
 
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -13,13 +13,15 @@ import { GitHub } from "./lib/github.mjs";
 import { loadPackage, readIndex, SiteError } from "./lib/packages.mjs";
 import { CATEGORY_TEXT, isFree, isTriggered, requirements } from "./lib/describe.mjs";
 import { categoryPage, freePage, homePage, layout, listPage, notFoundPage, SITE_NAME, ollamaPage, templatePage, triggersPage } from "./lib/pages.mjs";
+import { checkWebsite } from "./sync-website.mjs";
 import { mdText } from "./lib/util.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
-/** The console's two families (@fontsource, pinned in package.json); their latin 400 and 600 files are served. */
-const FONTS = ["jetbrains-mono", "schibsted-grotesk"];
+/** Self-host the website's typefaces and the weights this site uses. */
+const FONTS = { "jetbrains-mono": [400, 500, 600], inter: [400, 500, 600] };
 
 export async function build(options = {}) {
+  checkWebsite();
   const root = resolve(options.root ?? join(here, ".."));
   const out = resolve(options.out ?? join(here, "dist"));
   const baseUrl = String(options.baseUrl ?? process.env.SITE_BASE_URL ?? "https://marketplace.agentrun.ai").replace(/\/+$/, "");
@@ -56,7 +58,10 @@ export async function build(options = {}) {
 
   const assetsDir = join(here, "assets");
   const assetFiles = readdirSync(assetsDir).sort();
-  const assetVersion = createHash("sha256").update(assetFiles.map((f) => readFileSync(join(assetsDir, f))).join("\0")).digest("hex").slice(0, 10);
+  const assetVersion = createHash("sha256")
+    .update(assetFiles.map((f) => readFileSync(join(assetsDir, f))).join("\0"))
+    .update(readFileSync(join(here, "vendor/agentrun-website/source.json")))
+    .digest("hex").slice(0, 10);
   const site = {
     baseUrl,
     url: (path) => `${baseUrl}${path}`,
@@ -89,11 +94,17 @@ export async function build(options = {}) {
     write(page.path.endsWith("/") ? `${page.path}index.html` : page.path, layout(site, page));
     if (page.mdPath) write(page.mdPath, page.md);
   }
+  // Sample media sits beside its template's page, at the URL packages.mjs gave it (/templates/<t>/samples/<case>/<file>).
+  for (const m of packages.flatMap((p) => p.examples.flatMap((ex) => ex.media))) {
+    mkdirSync(join(out, dirname(m.url)), { recursive: true });
+    copyFileSync(m.path, join(out, m.url));
+  }
   mkdirSync(join(out, "assets", "fonts"), { recursive: true });
+  cpSync(join(here, "vendor/agentrun-website/public"), out, { recursive: true });
   for (const f of assetFiles) copyFileSync(join(assetsDir, f), join(out, "assets", f));
-  for (const font of FONTS) {
+  for (const [font, weights] of Object.entries(FONTS)) {
     const pkg = join(here, "node_modules", "@fontsource", font);
-    for (const weight of [400, 600]) copyFileSync(join(pkg, "files", `${font}-latin-${weight}-normal.woff2`), join(out, "assets", "fonts", `${font}-latin-${weight}-normal.woff2`));
+    for (const weight of weights) copyFileSync(join(pkg, "files", `${font}-latin-${weight}-normal.woff2`), join(out, "assets", "fonts", `${font}-latin-${weight}-normal.woff2`));
     copyFileSync(join(pkg, "LICENSE"), join(out, "assets", "fonts", `${font}-LICENSE.txt`));
   }
   write(".nojekyll", "");

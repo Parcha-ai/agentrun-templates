@@ -1,0 +1,9 @@
+# Applied with these parameters (POST /v2/templates/field-monitor/apply).
+parameters:
+  topic: "The Kestrel stream processor and its ecosystem"
+  sources: ["https://kestrel-stream.example/blog", "https://kestrel-stream.example/releases"]
+  lookback_days: 7
+# A made-up project and made-up sites, answered from fixtures/web.json; nothing reaches the network.
+web: fixtures/web.json
+# The run's clock is the prompt's firing time, so its window is the grader's.
+now: 2026-11-16T08:00:00Z

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "field-report.schema.json",
+  "title": "Field monitor report",
+  "description": "What changed on one topic in the window, each change dated and cited to pages read in the run, with what could not be checked.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "topic", "quiet", "changes", "could_not_check", "dropped_repeats", "sources", "searches", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": { "from": { "type": "string", "format": "date" }, "to": { "type": "string", "format": "date" } }
+    },
+    "topic": { "type": "string", "maxLength": 300 },
+    "quiet": { "type": "boolean", "description": "true only when every source and search was read and nothing new happened in the window" },
+    "changes": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["headline", "what_changed", "date", "kind", "sources", "quote"],
+        "properties": {
+          "headline": { "type": "string", "maxLength": 160 },
+          "what_changed": { "type": "string", "maxLength": 500, "description": "one to three sentences: what happened and what it changes, as the sources say" },
+          "date": { "type": "string", "format": "date", "description": "the date the sources give for it, inside the window" },
+          "kind": { "enum": ["release", "announcement", "policy", "research", "incident", "other"] },
+          "sources": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^S[0-9]+$" } },
+          "quote": { "type": "string", "minLength": 1, "maxLength": 300, "description": "the source's own words the change rests on, copied" }
+        }
+      }
+    },
+    "could_not_check": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["what", "why"],
+        "properties": { "what": { "type": "string", "maxLength": 300 }, "why": { "type": "string", "maxLength": 300 } }
+      }
+    },
+    "dropped_repeats": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["headline", "why"],
+        "properties": { "headline": { "type": "string", "maxLength": 160 }, "why": { "type": "string", "maxLength": 200 } }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "url", "title"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^S[0-9]+$" },
+          "url": { "type": "string", "format": "uri", "description": "a page read in this run" },
+          "title": { "type": "string", "maxLength": 300 },
+          "published": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "searches": { "type": "array", "maxItems": 4, "items": { "type": "string", "maxLength": 300 } },
+    "ignored_instructions": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["where", "asked"],
+        "properties": { "where": { "type": "string", "maxLength": 300 }, "asked": { "type": "string", "maxLength": 300 } }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 6000, "description": "the report for a person: each change with its date and [S1] citations, then what could not be checked, then the sources with URLs" }
+  }
+}

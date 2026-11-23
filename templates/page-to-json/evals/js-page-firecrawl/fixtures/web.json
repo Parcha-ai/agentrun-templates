@@ -1,0 +1,13 @@
+{
+  "search": { "answers": [], "default": { "results": [] } },
+  "fetch": {
+    "answers": [
+      {
+        "url": "https://atlas-tickets.example/shows/4417",
+        "title": "Atlas Tickets",
+        "text": "You need to enable JavaScript to run this app."
+      }
+    ],
+    "default": { "error": "fetch failed: the page did not answer" }
+  }
+}

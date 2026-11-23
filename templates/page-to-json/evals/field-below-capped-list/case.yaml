@@ -1,0 +1,5 @@
+# The course page is fixtures/web.json's answer to its URL; nothing reaches the network. Its 48 courses fill the first
+# read, and the request caps the list at 10, so the list is done after one read. The contact email is only near the end,
+# about 26,900 characters in, so the run must read on for it.
+web: fixtures/web.json
+now: 2026-11-16T09:00:00Z

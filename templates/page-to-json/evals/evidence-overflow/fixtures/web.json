@@ -1,0 +1,20 @@
+{
+  "search": {
+    "answers": [],
+    "default": {
+      "results": []
+    }
+  },
+  "fetch": {
+    "answers": [
+      {
+        "url": "https://tramways.example/line-4",
+        "title": "Line 4 stops | Tramways",
+        "text": "# Line 4: every stop\n\nTrams on Line 4 run every 8 minutes from 05:30 to 00:30. Stops, west to east:\n\n| # | Stop |\n| --- | --- |\n| 1 | Ashgrove |\n| 2 | Birchgrove |\n| 3 | Cedargrove |\n| 4 | Elmgrove |\n| 5 | Firgrove |\n| 6 | Hazelgrove |\n| 7 | Larchgrove |\n| 8 | Oakgrove |\n| 9 | Ashfield |\n| 10 | Birchfield |\n| 11 | Cedarfield |\n| 12 | Elmfield |\n| 13 | Firfield |\n| 14 | Hazelfield |\n| 15 | Larchfield |\n| 16 | Oakfield |\n| 17 | Ashgate |\n| 18 | Birchgate |\n| 19 | Cedargate |\n| 20 | Elmgate |\n| 21 | Firgate |\n| 22 | Hazelgate |\n| 23 | Larchgate |\n| 24 | Oakgate |\n| 25 | Ashhill |\n| 26 | Birchhill |\n| 27 | Cedarhill |\n| 28 | Elmhill |\n| 29 | Firhill |\n| 30 | Hazelhill |\n| 31 | Larchhill |\n| 32 | Oakhill |\n| 33 | Ashgrove East |\n| 34 | Birchgrove East |\n| 35 | Cedargrove East |\n| 36 | Elmgrove East |\n| 37 | Firgrove East |\n| 38 | Hazelgrove East |\n| 39 | Larchgrove East |\n| 40 | Oakgrove East |\n| 41 | Ashfield East |\n| 42 | Birchfield East |\n| 43 | Cedarfield East |\n| 44 | Elmfield East |\n| 45 | Firfield East |\n| 46 | Hazelfield East |\n| 47 | Larchfield East |\n| 48 | Oakfield East |\n| 49 | Ashgate East |\n| 50 | Birchgate East |\n| 51 | Cedargate East |\n| 52 | Elmgate East |\n| 53 | Firgate East |\n| 54 | Hazelgate East |\n| 55 | Larchgate East |\n| 56 | Oakgate East |\n| 57 | Ashhill East |\n| 58 | Birchhill East |\n| 59 | Cedarhill East |\n| 60 | Elmhill East |\n| 61 | Firhill East |\n| 62 | Hazelhill East |\n| 63 | Larchhill East |\n| 64 | Oakhill East |\n\n64 stops in all. Step-free access at every stop.\n"
+      }
+    ],
+    "default": {
+      "error": "fetch failed: the page did not answer"
+    }
+  }
+}

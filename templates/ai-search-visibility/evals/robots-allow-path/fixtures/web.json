@@ -1,0 +1,93 @@
+{
+  "search": {
+    "answers": [
+      {
+        "query": "onboarding",
+        "results": [
+          {
+            "url": "https://brightpath-hr.example/onboarding",
+            "title": "Employee onboarding software | BrightPath HR",
+            "snippet": "Automate offer letters, paperwork and first-day checklists..."
+          },
+          {
+            "url": "https://www.peoplepilot.example/blog/best-hr-software-small-business",
+            "title": "The 9 best HR software for small businesses in 2026",
+            "snippet": "We compared PeoplePilot, Gusto, Rippling and BambooHR on price and payroll..."
+          },
+          {
+            "url": "https://www.techreviewhub.example/hr-software",
+            "title": "Best HR Software of 2026 | TechReviewHub",
+            "snippet": "Our picks: Rippling, Gusto, PeoplePilot, Deel..."
+          }
+        ]
+      },
+      {
+        "query": "payroll",
+        "results": [
+          {
+            "url": "https://www.techreviewhub.example/hr-software",
+            "title": "Best HR Software of 2026 | TechReviewHub",
+            "snippet": "Our picks: Rippling, Gusto, PeoplePilot, Deel..."
+          },
+          {
+            "url": "https://www.smallbizdaily.example/2026/10/payroll-tools",
+            "title": "5 payroll tools for teams under 50",
+            "snippet": "BrightPath HR and Gusto both run payroll for small teams; BrightPath starts at $6 per employee..."
+          },
+          {
+            "url": "https://www.peoplepilot.example/blog/best-hr-software-small-business",
+            "title": "The 9 best HR software for small businesses in 2026",
+            "snippet": "We compared PeoplePilot, Gusto, Rippling and BambooHR on price and payroll..."
+          }
+        ]
+      }
+    ],
+    "default": {
+      "results": [
+        {
+          "url": "https://www.peoplepilot.example/blog/best-hr-software-small-business",
+          "title": "The 9 best HR software for small businesses in 2026",
+          "snippet": "We compared PeoplePilot, Gusto, Rippling and BambooHR on price and payroll..."
+        },
+        {
+          "url": "https://www.techreviewhub.example/hr-software",
+          "title": "Best HR Software of 2026 | TechReviewHub",
+          "snippet": "Our picks: Rippling, Gusto, PeoplePilot, Deel..."
+        },
+        {
+          "url": "https://www.reddit.com/r/smallbusiness/comments/x1/hr_software",
+          "title": "What HR software do you use? : r/smallbusiness",
+          "snippet": "We moved to Gusto last year and..."
+        }
+      ]
+    }
+  },
+  "fetch": {
+    "answers": [
+      {
+        "url": "https://brightpath-hr.example/robots.txt",
+        "title": "",
+        "text": "User-agent: *\nDisallow: /\nAllow: /public/\n\nSitemap: https://brightpath-hr.example/sitemap.xml"
+      },
+      {
+        "title": "",
+        "url": "https://brightpath-hr.example/llms.txt",
+        "status": 404,
+        "text": "Not Found"
+      },
+      {
+        "url": "https://brightpath-hr.example/",
+        "title": "BrightPath HR: HR and payroll for small teams",
+        "text": "# HR and payroll for teams of 5 to 200\n\nBrightPath HR runs onboarding, time off, payroll and benefits in one place. Trusted by 4,000 small businesses.\n\n- [Payroll](https://brightpath-hr.example/payroll)\n- [Onboarding](https://brightpath-hr.example/onboarding)\n- [Pricing](https://brightpath-hr.example/pricing)\n- [Blog](https://brightpath-hr.example/blog)\n\n\nPlans from $6 per employee per month."
+      },
+      {
+        "url": "https://brightpath-hr.example",
+        "title": "BrightPath HR: HR and payroll for small teams",
+        "text": "# HR and payroll for teams of 5 to 200\n\nBrightPath HR runs onboarding, time off, payroll and benefits in one place. Trusted by 4,000 small businesses.\n\n- [Payroll](https://brightpath-hr.example/payroll)\n- [Onboarding](https://brightpath-hr.example/onboarding)\n- [Pricing](https://brightpath-hr.example/pricing)\n- [Blog](https://brightpath-hr.example/blog)\n\n\nPlans from $6 per employee per month."
+      }
+    ],
+    "default": {
+      "error": "fetch failed: the page did not answer"
+    }
+  }
+}

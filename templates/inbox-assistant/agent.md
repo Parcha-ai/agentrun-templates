@@ -33,7 +33,10 @@ inputs:
   message_id: { type: string, required: false, maxLength: 300, title: "Message-ID", description: "Sort and draft for this one message, for a run by hand (its Message-ID header). Leave it out on the trigger's runs: the email comes with the run.", examples: ["<CAF3x9Q@mail.example.com>"] }
   digest: { type: boolean, required: false, title: "Digest now", description: "Write the digest now, for a run by hand." }
   weekly: { type: boolean, required: false, title: "Monday brief", description: "Write the Monday brief now (the week ahead) instead of the day's digest, for a run by hand." }
-budget: { per_run_usd: 0.10 }
+# Each run is cut off once what it has spent plus one more step and an answer would pass this cap. On codex with a
+# priced gpt-6.1-sol that step and answer alone come to about $0.32 (pi: $0.24), so $0.10 paused every run at once;
+# $0.60 leaves room for the run itself (a typical one spends a few cents). .github/lint-caps.mjs checks it.
+budget: { per_run_usd: 0.60 }
 learning: true
 approvals: ask
 triggers:

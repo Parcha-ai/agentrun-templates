@@ -1,0 +1,5 @@
+{
+  "text": "## What's new in Fernlight 4.2\n- Exports are faster: a 50,000-row report now takes 9 seconds instead of 58.\n- Scheduled exports (beta): pick a day and time in Settings > Reports and the CSV is emailed to you.\n- Fixed: the date filter no longer resets when you switch tabs.\n",
+  "tone": "upbeat",
+  "voice": "Aria"
+}

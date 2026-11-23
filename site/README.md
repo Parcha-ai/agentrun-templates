@@ -11,8 +11,8 @@ node site/serve.mjs          # http://127.0.0.1:7420/, with the production serve
 npm test --prefix site
 ```
 
-Node 24, git, and three pinned dependencies: `marked` for Markdown, and the console's fonts,
-`@fontsource/jetbrains-mono` and `@fontsource/schibsted-grotesk` (latin 400 and 600, copied into
+Node 24, git, and three pinned dependencies: `marked` for Markdown, and the website's fonts,
+`@fontsource/jetbrains-mono` and `@fontsource/inter` (latin 400, 500 and 600, copied into
 `dist/assets/fonts` with their OFL licence). A page loads nothing from another origin; `check.mjs` fails the build if
 one does.
 
@@ -37,6 +37,16 @@ one does.
   through Composio and that isn't listed says "Integration not yet proven live" on its page. A name not in the index fails the build.
 - The sample output is `samples/<template>/<name>/output.md` when there is one, else the `contentMediaType: text/markdown`
   field (`report_markdown`) of `samples/<template>/<name>/output.json`.
+- `samples/<template>/<name>/media/` holds the files a sample run made, with no subfolders: images (.jpg .jpeg .png
+  .webp .gif), video (.mp4, H.264), audio (.mp3 .m4a .wav .ogg), captions (.vtt, for the .mp4 with the same
+  name), and documents (.md .txt). Any other file there fails the build. A document is a link only: a link to it
+  opens the copy, an image token naming it stays text, and one the report never names follows it as its name. The
+  server sends it as `text/plain` with `nosniff`, so a browser shows the text and never renders it. The build copies them to `/templates/<template>/samples/<name>/`.
+  An image or link in the report whose target is `media/<file>` plays that file on the page: an image, a video
+  player with its captions, or an audio player. Files the report never names follow it, each under its name. The
+  Markdown twin lists every file by its full URL, and its links, images and reference definitions to `media/<file>`
+  point there too. A link may name the captions file; an image token naming it stays text. `check.mjs` holds a template's media to 8 MiB in all and its
+  videos to 720p (the shorter side 720 px or less, read from the mp4's `tkhd` box).
 
 `--offline` builds from the cache only. A broken manifest or index entry fails the build with the file and the line.
 
@@ -53,8 +63,8 @@ one does.
 | `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/search.json`, `/404.html` | |
 
 Package text (instructions, skills, sample reports) is third-party: raw HTML in it renders as text, links keep only
-http(s), mailto and in-page targets, and images become links. The server sends a Content-Security-Policy that allows
-only this site's own script, styles, fonts and images, nothing inline, and no framing.
+http(s), mailto and in-page targets, and images become links, except a sample's own media files. The server sends a Content-Security-Policy that allows
+only this site's own scripts, styles, fonts, images and media, nothing inline, and no framing.
 
 Structured data is `SoftwareApplication` per template: a template is one installable, versioned, licensed package
 from a publisher, which is what that type describes. `HowTo` was the other option; Google stopped showing HowTo
@@ -63,19 +73,46 @@ and every page below the home has a `BreadcrumbList`.
 
 ## Look
 
-The site looks like agentrun.ai and the AgentRun console: the `agent.run()` wordmark, agentrun.ai's dark surfaces and
-orange, mono headings and nav in sentence case, dark words on orange buttons, square corners, and its footer columns.
-Light follows the system with the console's light tokens. Search matches a template's name, description, tags and what
-it requires ("slack", "free"); `/` focuses it and Escape clears it.
+The site uses agentrun.ai's dark graphite surfaces, orange accents, Inter headings and prose, JetBrains Mono
+controls, square marketplace cards and controls, and footer wordmark. Shared onboarding controls keep the website’s styling. It stays dark regardless of the system preference, like the website.
+Search matches a template's name, description, tags and what it requires ("slack", "free"); `/` focuses it and
+Escape clears it.
+
+Every page renders the same marketing header as the website, including its Platform dropdown, GitHub, Docs,
+Blog, Changelog and Cloud links, plus the Get started agent picker. The website owns its markup and CSS; a pinned copy lives in
+`vendor/agentrun-website/header.json` and `assets/header.css`. The marketplace renderer only makes website-relative
+links absolute so they work from template/category pages. The navigation uses static HTML; the Get started picker and setup dialog use the website’s shared native module.
+The logo, agent icons, setup instructions, onboarding styles and module are also pinned and served locally.
+The website's optional GitHub stars badge retains its generated hidden state; no third-party runtime request is added.
+Gallery pages put “List your template” beside the page title, with category tabs below. Template and listing pages use breadcrumbs, so no second navigation row repeats the marketplace title.
+
+To refresh the shared header from a reviewed website commit:
+
+```sh
+node site/sync-website.mjs --source /path/to/agentrun-website --ref <commit>
+node site/sync-website.mjs --check
+```
+
+The source commit and file hashes are saved in `vendor/agentrun-website/source.json`. Builds verify these hashes,
+so edit the website source and sync it instead of independently changing the marketplace header. Regular builds
+need no sibling checkout or network access for the header. The sync command reads committed files and leaves
+uncommitted website work alone.
 
 No small caps label sits above a page title, and section headings are sentence case at a readable size. A template
 page keeps its breadcrumb; no other page has one.
 
 ## Install button
 
-It asks once for the reader's AgentRun address, with or without `https://` (kept in this browser's localStorage under
-`agentrun.marketplace.address`, sent nowhere) and opens `<address>/#/templates/install?src=<source>@<sha>`. Without
-JavaScript the page still shows `npx @parcha/agentrun template install <source>@<sha> --trust`.
+It asks once for the reader's AgentRun address (kept in this browser's localStorage under
+`agentrun.marketplace.address`, sent nowhere) and opens `<address>/#/templates/install?src=<source>@<sha>`.
+Addresses without a scheme use HTTPS, except loopback addresses such as `localhost:7340` and `127.0.0.1:7340`,
+which use HTTP. Explicit HTTP or HTTPS is preserved. Use **Change address** to repair an older saved address.
+
+Each template also has an **Install with your agent** dropdown, with its own pinned install prompt. It opens
+supported coding apps or copies the prompt for terminal agents, and offers instructions you can read and copy
+manually. This uses the shared website's menu styles and icons with a separate marketplace runtime, so the
+header's Get started prompt still sets up AgentRun. Without JavaScript the prompt and
+`npx @parcha/agentrun template install <source>@<sha> --trust` remain readable.
 
 ## Deploy
 
@@ -87,13 +124,14 @@ The server (`lib/server.mjs`) sends these on every answer, 404s and redirects in
 
 | Header | Value |
 | --- | --- |
-| `Content-Security-Policy` | `default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'` |
+| `Content-Security-Policy` | `default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'` |
 | `Strict-Transport-Security` | `max-age=63072000; includeSubDomains` |
 | `X-Content-Type-Options` | `nosniff` |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` |
-| `Permissions-Policy` | camera, microphone, geolocation, payment, usb and interest-cohort off |
+| `Permissions-Policy` | camera, microphone, geolocation, payment and usb off |
 | `Cross-Origin-Opener-Policy`, `Cross-Origin-Resource-Policy` | `same-origin` |
 | `X-Frame-Options` | `DENY` |
 
-Pages are cached 5 minutes and `/assets/` a day (CSS and JS carry a `?v=` of their content). It answers GET and HEAD
-only. `.github/workflows/site.yml` runs the same tests, build and check on every pull request and deploys nothing.
+Pages are cached 5 minutes, and `/assets/` and sample media a day (CSS and JS carry a `?v=` of their content). It
+answers GET and HEAD only, streams files, and answers a single `Range: bytes=` with 206 or 416, which Safari needs
+to play video and audio. `.github/workflows/site.yml` runs the same tests, build and check on every pull request and deploys nothing.

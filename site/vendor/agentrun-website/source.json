@@ -1,0 +1,76 @@
+{
+  "repository": "https://github.com/Parcha-ai/agentrun-website",
+  "commit": "3581ca0e7cb4fa7c53b4a5e3429d0e429e35021a",
+  "files": [
+    {
+      "source": "content/header.generated.json",
+      "target": "vendor/agentrun-website/header.json",
+      "sha256": "defd4d0077346d73331d57c0fa4b124aa42dc6859d61acddd8bc6f49f4cece46"
+    },
+    {
+      "source": "public/homepage/header.css",
+      "target": "assets/header.css",
+      "sha256": "29137ddac6ee6dae938c6a89383f61c36efcfee11b8d225e18f59bd292e1728b"
+    },
+    {
+      "source": "content/onboarding.generated.json",
+      "target": "vendor/agentrun-website/onboarding.json",
+      "sha256": "afc36229bd12197fd6064a2bb46b203838322de8d7381ba2fd1fa59dc6e78945"
+    },
+    {
+      "source": "public/homepage/onboarding.css",
+      "target": "vendor/agentrun-website/public/homepage/onboarding.css",
+      "sha256": "3a9d2c454968dffa449bd1c7fc0c6b59fabd1b8914879d7354e7d1a4bc533cb4"
+    },
+    {
+      "source": "public/homepage/onboarding.js",
+      "target": "vendor/agentrun-website/public/homepage/onboarding.js",
+      "sha256": "38555b203cfcf212d3922907f049502e91f2f7c1e38ac6759a3fcd64e93d013f"
+    },
+    {
+      "source": "public/homepage/agent-setup.md",
+      "target": "vendor/agentrun-website/public/homepage/agent-setup.md",
+      "sha256": "50ea564fecf3ff972fc4845da3271a752e653aa334d2fa14d5feb10d88ff0455"
+    },
+    {
+      "source": "public/homepage/assets/brand/agentrun-logo-chevron.png",
+      "target": "vendor/agentrun-website/public/homepage/assets/brand/agentrun-logo-chevron.png",
+      "sha256": "0cd507c3398b04c94d5f8363ad2e5ce1ceca2998af9efb5260a6dbad615dd2ce"
+    },
+    {
+      "source": "public/homepage/assets/agents/codex-app.png",
+      "target": "vendor/agentrun-website/public/homepage/assets/agents/codex-app.png",
+      "sha256": "8e82b26c98a10e45798ce48124515720657f7735fb8d0853b3f087eaa8a6b74e"
+    },
+    {
+      "source": "public/homepage/assets/agents/codex-cli.svg",
+      "target": "vendor/agentrun-website/public/homepage/assets/agents/codex-cli.svg",
+      "sha256": "5729697a930fb0948ff05a33f5833d52c0d0abb8760d56e419d26b68f44669be"
+    },
+    {
+      "source": "public/homepage/assets/agents/claude-app.png",
+      "target": "vendor/agentrun-website/public/homepage/assets/agents/claude-app.png",
+      "sha256": "7241633e5a39b44a947c7b9a821637f30d6e86716e7a8c847136d91f9c3f6ba1"
+    },
+    {
+      "source": "public/homepage/assets/agents/claude-code-cli.svg",
+      "target": "vendor/agentrun-website/public/homepage/assets/agents/claude-code-cli.svg",
+      "sha256": "a5841fbb05db1537cd4ea8c88c39d23355a4b2f14174e0599c4c8b15c4f610a7"
+    },
+    {
+      "source": "public/homepage/assets/agents/pi.svg",
+      "target": "vendor/agentrun-website/public/homepage/assets/agents/pi.svg",
+      "sha256": "d266b2c1d2c7bf169ca30d438963b176fba16fea6263b9ac30c8302f34ad7ce7"
+    },
+    {
+      "source": "public/homepage/assets/agents/SOURCES.md",
+      "target": "vendor/agentrun-website/public/homepage/assets/agents/SOURCES.md",
+      "sha256": "941a45f62f9b04ca37b7b11bdfcf453352c483c5e6ab1fe695f4750b17fdff5c"
+    },
+    {
+      "source": "public/homepage/assets/agents/lucide-LICENSE.txt",
+      "target": "vendor/agentrun-website/public/homepage/assets/agents/lucide-LICENSE.txt",
+      "sha256": "1e7290b35280a048667bbf0ebabac1c7fd52a75300e8b2946ac165715997f2bc"
+    }
+  ]
+}

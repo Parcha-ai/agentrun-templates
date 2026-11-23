@@ -29,6 +29,8 @@ jobs:
       # No `# Learned` string and no "What you remember" heading in any template: the runtime names the owner's
       # corrections itself, and a run's state travels only as its run history.
       - run: node .github/lint-templates.mjs
+      # A rubric that quotes a fixture word for word (a release's notes) holds the fixture's exact text.
+      - run: node .github/lint-rubric-quotes.mjs
       # A scheduled run's last answer is handed whole under 32 KiB, else its `x-carried` fields alone, the oldest entries
       # of its carried arrays dropped to fit: every carried field must be bounded, and the ones never cut fit 12,000 bytes.
       - run: node --test .github/lint-handoff-size.test.mjs
@@ -36,3 +38,6 @@ jobs:
       # `latest` is the dist-tag every AgentRun release is published under.
       - run: npm install --prefix "$RUNNER_TEMP/serve" --no-save --no-audit --no-fund --ignore-scripts @parcha/agentrun-serve@latest
       - run: node .github/parse-evals.mjs "$RUNNER_TEMP/serve"
+      # Each template's own cap covers one step and an answer on every harness it lists, on the model it was measured on,
+      # as the server warns at save; below that, every run stops at its first tool call (inbox-assistant paused at once).
+      - run: node .github/lint-caps.mjs "$RUNNER_TEMP/serve"

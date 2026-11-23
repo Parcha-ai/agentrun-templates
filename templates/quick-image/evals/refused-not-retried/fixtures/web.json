@@ -1,0 +1,17 @@
+{
+  "search": {
+    "answers": [],
+    "default": {
+      "results": []
+    }
+  },
+  "fetch": {
+    "answers": [],
+    "default": {
+      "error": "fetch failed"
+    }
+  },
+  "save": {
+    "answers": []
+  }
+}

@@ -1,0 +1,4 @@
+# The camera page is fixtures/web.json's answer to its URL, so a run that reads it anyway gets real-looking data;
+# nothing reaches the network. The request's schema names 41 fields, one over the limit, so the run reads nothing.
+web: fixtures/web.json
+now: 2026-11-16T09:00:00Z

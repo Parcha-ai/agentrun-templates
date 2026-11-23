@@ -1,0 +1,23 @@
+{
+  "search": {
+    "answers": [],
+    "default": {
+      "results": []
+    }
+  },
+  "fetch": {
+    "answers": [],
+    "default": {
+      "error": "fetch failed"
+    }
+  },
+  "save": {
+    "answers": [
+      {
+        "url": "https://v3.fal.media/files/otter/Mn6Bv3Cx9Zl2Kj5Hg8Fd1.jpeg",
+        "content_type": "image/jpeg",
+        "base64": "/9j/4AAQSkZJRgABAgAAAQABAAD//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAgEBAQEBAUFBQUFBQYGBgYGBgYGBgYGBgYHBwcICAgHBwcGBgcHCAgICAkJCQgICAgJCQoKCgwMCwsODg4RERT/xABMAAEBAAAAAAAAAAAAAAAAAAAAAwEBAQAAAAAAAAAAAAAAAAAAAAUQAQAAAAAAAAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAD/wAARCAAwAEADASIAAhEAAxEA/9oADAMBAAIRAxEAPwCwCumAAAAAAAAAAAAAAAAAAAAAAP/Z"
+      }
+    ]
+  }
+}

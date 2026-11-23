@@ -1,0 +1,163 @@
+{
+  "status": "completed",
+  "release": {
+    "owner": "Parcha-ai",
+    "repo": "agentrun",
+    "tag": "v0.1.0-beta.52",
+    "name": "AgentRun v0.1.0-beta.52",
+    "url": "https://github.com/Parcha-ai/agentrun/releases/tag/v0.1.0-beta.52",
+    "published_at": "2026-11-22T03:35:32Z",
+    "prerelease": true
+  },
+  "product_name": "AgentRun",
+  "tone": "confident",
+  "aspect": "16:9",
+  "voice": "Aria",
+  "story": {
+    "headline": "A run counts fal's jobs under its spend cap, priced before they are sent",
+    "hook": "A run counts fal's jobs",
+    "beats": [
+      {
+        "name": "hook",
+        "start_s": 0,
+        "end_s": 7.4,
+        "on_screen": "AgentRun spend cap / A run counts fal's jobs",
+        "image": null
+      },
+      {
+        "name": "reveal",
+        "start_s": 7.4,
+        "end_s": 10,
+        "on_screen": "v0.1.0-beta.52 / AgentRun",
+        "image": null
+      },
+      {
+        "name": "proof-a",
+        "start_s": 10,
+        "end_s": 14.9,
+        "on_screen": "Booked as tool cost / get_pricing / unit price / × units the input states",
+        "image": null
+      },
+      {
+        "name": "proof-b",
+        "start_s": 14.9,
+        "end_s": 19.2,
+        "on_screen": "On a fal MCP server / run_model / submit_job / submit_jobs / refused unsent",
+        "image": null
+      },
+      {
+        "name": "payoff",
+        "start_s": 19.2,
+        "end_s": 24,
+        "on_screen": "Priced before it's sent / held under the run's spend cap",
+        "image": null
+      },
+      {
+        "name": "endcard",
+        "start_s": 24,
+        "end_s": 30,
+        "on_screen": "AgentRun / v0.1.0-beta.52 / npx @parcha/agentrun-serve@0.1.0-beta.52",
+        "image": "media/mark.jpg carried in with a scale-and-rotate settle"
+      }
+    ],
+    "cta": "npx @parcha/agentrun-serve@0.1.0-beta.52"
+  },
+  "script": "[warm] A run counts fal's jobs. Each is priced before it's sent, then held under the run's spend cap. Agent Run, beta fifty two. The price is fal's list price times the units the job states. A job the cap can't take is refused unsent. [excited] Priced before it's sent. Upgrade with the install line.",
+  "word_count": 53,
+  "voiceover_seconds": 22.52,
+  "captions_timing": "aligned",
+  "film": {
+    "path": "media/film.mp4",
+    "seconds": 30,
+    "width": 1920,
+    "height": 1080
+  },
+  "checks": {
+    "check_errors": 0,
+    "warnings_kept": [
+      "timeline_track_too_dense on captions, endcard and proof-b-type: expected, each file holds only a few timed elements"
+    ],
+    "review_fixes": [
+      "payoff: 'IT'SSENT' ran together -> added word spacing",
+      "proof-a and proof-b type too small -> enlarged",
+      "proof-b: refused row touched a caption -> wall moved up and rows reduced"
+    ],
+    "renders": 1
+  },
+  "plan_usd": 0.37,
+  "fal_cost_usd": {
+    "steps": [
+      {
+        "step": "voiceover",
+        "endpoint_id": "fal-ai/elevenlabs/tts/eleven-v3",
+        "units": 350,
+        "unit": "characters",
+        "rate_usd": 0.0001,
+        "usd": 0.035
+      },
+      {
+        "step": "voiceover-2",
+        "endpoint_id": "fal-ai/elevenlabs/tts/eleven-v3",
+        "units": 300,
+        "unit": "characters",
+        "rate_usd": 0.0001,
+        "usd": 0.03
+      },
+      {
+        "step": "music",
+        "endpoint_id": "fal-ai/elevenlabs/music",
+        "units": 0.5,
+        "unit": "minutes",
+        "rate_usd": 0.6,
+        "usd": 0.3
+      }
+    ],
+    "total": 0.365
+  },
+  "files": [
+    {
+      "what": "film",
+      "saved_path": "media/film.mp4",
+      "source_url": null
+    },
+    {
+      "what": "voiceover",
+      "saved_path": "media/voiceover.mp3",
+      "source_url": "https://v3b.fal.media/files/b/0ab38237/tQFmMD8fTUbb7g_4Uphlf_output.mp3"
+    },
+    {
+      "what": "voiceover-2",
+      "saved_path": "media/voiceover-2.mp3",
+      "source_url": "https://v3b.fal.media/files/b/0ab3823a/Rb2hdJornndjtp6-jHELT_output.mp3"
+    },
+    {
+      "what": "music",
+      "saved_path": "media/music.mp3",
+      "source_url": "https://v3b.fal.media/files/b/0ab38237/OCWBGwiQYuwtOkPnd0_8C_music_generated.mp3"
+    },
+    {
+      "what": "captions",
+      "saved_path": "media/film.vtt",
+      "source_url": null
+    },
+    {
+      "what": "share-card",
+      "saved_path": "media/share-card.png",
+      "source_url": null
+    },
+    {
+      "what": "mark",
+      "saved_path": "media/mark.jpg",
+      "source_url": "https://github.com/Parcha-ai.png"
+    },
+    {
+      "what": "composition",
+      "saved_path": "film/",
+      "source_url": null
+    }
+  ],
+  "failed_step": null,
+  "error": null,
+  "ignored_instructions": [],
+  "report_markdown": "![Release film](media/film.mp4)\n\n![Share card](media/share-card.png)\n\n**Headline:** a run counts fal's jobs under its spend cap, priced before they are sent (AgentRun v0.1.0-beta.52).\n\n**Script:** [warm] A run counts fal's jobs. Each is priced before it's sent, then held under the run's spend cap. Agent Run, beta fifty two. The price is fal's list price times the units the job states. A job the cap can't take is refused unsent. [excited] Priced before it's sent. Upgrade with the install line.\n\nThe first voiceover ran 28.53 s, over the 27.0 s limit, so one shorter re-voice (22.52 s) is used.\n\n| Beat | s | On screen |\n|---|---|---|\n| hook | 0-7.4 | A run counts fal's jobs |\n| reveal | 7.4-10 | v0.1.0-beta.52 / AgentRun |\n| proof-a | 10-14.9 | get_pricing, unit price, units |\n| proof-b | 14.9-19.2 | run_model, submit_job, submit_jobs, refused unsent |\n| payoff | 19.2-24 | Priced before it's sent |\n| endcard | 24-30 | mark, version, npx command |\n\n| Step | Cost |\n|---|---|\n| voiceover | $0.035 |\n| voiceover-2 | $0.030 |\n| music | $0.300 |\n| total | $0.365 |\n\nChecks: 0 errors; 3 expected density warnings kept; 1 render. Left out of the film: max_requests, learning reset, API-only DELETE, usage attempts, the trigger_ids breaking change and the store migrations."
+}
