@@ -148,7 +148,8 @@ crawlers `unknown`; a failed search is `search_failed`, never `not_found`. Each 
 reason the call gave. After a fetch or search that failed, the report says what failed and why, in the call's words,
 and draws no conclusion about the site from it, good or bad. No search is ever sent twice with the same words in a
 run, failed or not. A failed search is tried again only with new words or another source (Firecrawl); otherwise stop
-searching: its question is `search_failed`. When every read failed, `fixes` is empty.
+searching: its question is `search_failed`. When every read failed, `fixes` is empty, and **What to fix first** says
+nothing could be checked, never that nothing needs fixing.
 `llms_txt.note` for an `unreachable` fetch gives the error, and the report says each check could not run.
 
 ## 5. The answer
