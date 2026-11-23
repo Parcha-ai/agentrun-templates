@@ -1172,6 +1172,22 @@
         "elevenlabs"
       ],
       "summary": "Turns a GitHub release into a 30 second film with voiceover, music, captions and a share card. Billed to your fal account."
+    },
+    {
+      "name": "explainer-video",
+      "source": "./templates/explainer-video",
+      "category": "marketing",
+      "tags": [
+        "video",
+        "avatar",
+        "explainer",
+        "voiceover",
+        "captions",
+        "fal",
+        "elevenlabs",
+        "media"
+      ],
+      "summary": "Turns a doc into a 30 to 60 second talking-head explainer by a made-up presenter, with captions. Billed to your fal account."
     }
   ]
 }
