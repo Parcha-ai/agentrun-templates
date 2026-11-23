@@ -101,9 +101,11 @@ for that job's retries. The keys share one stem per run:
 - Keys are `lv-<stem>-<step>`, `<step>` one of `clip-1` ... `clip-N`, `voiceover`, `voiceover-2` (only for step 6's
   re-voice), `music`, `cut`. No date and no host in a key: the page's URL stays in the answer. With the stem
   `m8t3x6qe` (an example: make your own), the first clip's key is `lv-m8t3x6qe-clip-1` and the cut's `lv-m8t3x6qe-cut`.
-- If fal refuses a key because it already holds it for other inputs (within this run: a resumed run whose script or
-  shots changed), nothing was billed: send that one job again with `-b` after its key, once; that is a new job on
-  purpose, not a retry.
+- If fal refuses a key because it already holds a job for other inputs (a resumed run whose script or shots
+  changed), the run before already sent that step's job, and fal may have billed it. Never send it again under
+  another key: call `get_submission` with that same key and follow what it answers, as after a lost reply. A
+  completed job's output is that step's output, a pending one is followed with `wait_for_jobs`, and `not_found` or
+  `submission_unknown` makes the step failed, never a new paid job.
 
 Then, with no other call in between, `submit_job` each job once (each `{...}` below is its `input`):
 
