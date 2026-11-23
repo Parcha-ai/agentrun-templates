@@ -1,6 +1,0 @@
-# Live: real feeds, read on the open web. Nothing is handed to the run.
-parameters:
-  feeds: ["https://blog.rust-lang.org/feed.xml", "https://go.dev/blog/feed.atom", "https://hnrss.org/best"]
-  interests: "Rust and Go releases, compiler and runtime performance, programming language design"
-  top_n: 5
-  lookback_days: 14
