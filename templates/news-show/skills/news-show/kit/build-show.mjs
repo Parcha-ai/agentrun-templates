@@ -172,14 +172,18 @@ function timeWords(g) {
       w.end = span[0] + ((span[1] - span[0]) * acc) / total;
     }
   }
+  // A word with no letters (a spaced dash) takes the end of the word before it, on the voice's clock, before any word
+  // is moved to the film's: filled in the same pass, it would take an end already moved and be moved again.
   words.forEach((w, i) => {
     if (w.start === undefined) {
       w.start = words[i - 1]?.end ?? 0;
       w.end = w.start;
     }
+  });
+  for (const w of words) {
     w.start = r3(w.start + g.audioAt);
     w.end = r3(Math.max(w.end + g.audioAt, w.start + 0.04));
-  });
+  }
   return { words, method };
 }
 const timed = laid.map((g) => ({ g, ...timeWords(g) }));
