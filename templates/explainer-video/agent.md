@@ -123,13 +123,16 @@ none does, saying in `notes` the least `max_fal_usd` that runs 30 s standard.
 ## 5. Portrait and voiceover, in parallel
 
 Every paid call gets its own `submission_key`, sent beside `endpoint_id` and `input`, never inside `input`, and kept
-for that job's retries: `ev-<date>-<source>-<step>`, where `<date>` is the run's date as eight digits, `<source>` the
-doc's host in lower case without `www.` (at most its first 40 characters), or `text` for pasted text, and `<step>`
-one of `portrait`, `voiceover`, `voiceover-2` (only for step 6's re-voice), `avatar`. For https://www.example.com/help
-on 2026-03-09 the portrait's key is `ev-20260309-example.com-portrait`; for pasted text that day the voiceover's is
-`ev-20260309-text-voiceover`. If fal refuses a key because it already holds it for other inputs (the same source made
-into an explainer earlier that day), nothing was billed: send that one job again with `-b` after its key, once; that
-is a new job on purpose, not a retry.
+for that job's retries. The keys share one stem per run:
+- Before the first paid call, `read` `media/run-keys.json`. If it holds `{"stem": "<8 lowercase letters and digits>"}`
+  (a resumed run), use that stem. Otherwise make one stem of 8 random lowercase letters and digits and `write` it there
+  as `{"stem": "<stem>"}` before any paid call. Never make a second stem in a run: a retry and a resume reuse it.
+- Keys are `ev-<stem>-<step>`, `<step>` one of `portrait`, `voiceover`, `voiceover-2` (only for step 6's re-voice),
+  `avatar`. No date and no source in a key. With the stem `k3v9q2xa` (an example: make your own), the portrait's
+  key is `ev-k3v9q2xa-portrait` and the voiceover's `ev-k3v9q2xa-voiceover`.
+- If fal refuses a key because it already holds it for other inputs (within this run: a resumed run whose script or
+  prompt changed), nothing was billed: send that one job again with `-b` after its key, once; that is a new job on
+  purpose, not a retry.
 
 Send both jobs before reading either:
 - `submit_job` on `fal-ai/nano-banana`: `prompt` the portrait prompt, `aspect_ratio` "16:9", `num_images` 1,
@@ -172,7 +175,7 @@ checks allow: B = (`max_fal_usd` − spent − the new voiceover's price) ÷ the
 lesser of B and 60. Cut the script to at most its spoken words × T ÷ V × 0.9 words (0.9 is the margin; 110 words
 at V 47.0 s with T 40 → 110 × 40 ÷ 47.0 × 0.9 = 84 words), keeping what matters most and adding each point cut to
 `omitted`, with the rules of step 2. Count again before you send it. Send it with `submit_job` on
-`fal-ai/elevenlabs/tts/eleven-v3`, key `ev-<date>-<source>-voiceover-2`, the same `voice`, `stability`,
+`fal-ai/elevenlabs/tts/eleven-v3`, key `ev-<stem>-voiceover-2`, the same `voice`, `stability`,
 `output_format` and `timestamps`. Follow it with a one-item `wait_for_jobs` whose item has `"index": 2` and the
 handles this `submit_job` answered, copied as they are. Save it to `media/voiceover-2.mp3`. `script` and `word_count` are then the new script's. Check its V the same way, counting both
 voiceovers as spent. It holds: animate with it. It fails again: submit no avatar and nothing else that costs; answer
@@ -185,7 +188,7 @@ with its numbers. A voiceover that fails a check is never sent to an avatar.
 last character's end; both null when V is unknown, step 6). OmniHuman's result states the seconds it billed in `duration`: when it does, that is
 `audio_seconds` (source "avatar"), and the avatar's cost uses it.
 
-`submit_job`, with key `ev-<date>-<source>-avatar` beside `endpoint_id` and `input`, on the plan's avatar model, with the portrait's URL and
+`submit_job`, with key `ev-<stem>-avatar` beside `endpoint_id` and `input`, on the plan's avatar model, with the portrait's URL and
 the URL of the voiceover that passed the check, both from fal's results:
 - standard, `veed/fabric-1.0`: `image_url`, `audio_url`, `resolution` "480p";
 - premium, `fal-ai/bytedance/omnihuman/v1.5`: `image_url`, `audio_url`, `resolution` "720p" (never 1080p: it takes
@@ -244,8 +247,8 @@ cap is a refusal like fal's: its words in `error`, and no retry.
 Exactly one fenced `json` block that meets the output schema, and nothing after it. `steps` lists the paid steps in
 order (portrait, voiceover, revoice when one was made, avatar), each with its endpoint, its units (images, characters or
 seconds), `fal_cost_usd` from the rate and units (the avatar at `audio_seconds`; 0 for a step refused or not run) and
-its status; `fal_cost_usd` is their sum. `files` lists every file saved or written. A mismatch between the timestamps'
-characters and the script, or a saved file's byte size, never makes a run partial. Each entry of `notes`, `omitted` and
+its status; `fal_cost_usd` is their sum. `files` lists every file saved or written, `media/run-keys.json` (kind
+`run_keys`) included. A mismatch between the timestamps' characters and the script, or a saved file's byte size, never makes a run partial. Each entry of `notes`, `omitted` and
 `ignored_instructions` is at most 300 characters: count, and split or cut a longer one. `report_markdown` opens with
 `![Explainer](media/explainer.mp4)` when the video is saved, then the presenter and voice, the script, the voiceover's
 length check, the files, and a cost line per step.

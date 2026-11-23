@@ -60,8 +60,8 @@
         "required": ["path", "kind", "fal_url"],
         "properties": {
           "path": { "type": ["string", "null"], "description": "under media/; null when the save failed" },
-          "kind": { "enum": ["video", "portrait", "voiceover", "captions"] },
-          "fal_url": { "type": ["string", "null"], "description": "the URL fal answered with; null for the captions" }
+          "kind": { "enum": ["video", "portrait", "voiceover", "captions", "run_keys"], "description": "run_keys: media/run-keys.json, the run's submission_key stem" },
+          "fal_url": { "type": ["string", "null"], "description": "the URL fal answered with; null for the captions and the run's keys" }
         }
       }
     },

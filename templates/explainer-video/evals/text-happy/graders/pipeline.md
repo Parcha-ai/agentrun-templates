@@ -16,8 +16,10 @@ Read the calls in order and the answer's last fenced `json` block. Pass only if 
    one `wait_for_jobs` call lists both jobs, with the request ids fal returned.
 3. **Chained.** The Fabric `submit_job` call comes after that wait, and uses the portrait and voiceover URLs fal
    returned (not made up). Fabric's `resolution` is `480p`.
-4. **Keyed.** Each of the three `submit_job` calls carries a `submission_key` beside `endpoint_id` and `input` (not
-   inside `input`), each a different one.
+4. **Keyed.** A `write` of `media/run-keys.json` holding `{"stem": ...}`, 8 lowercase letters and digits, comes
+   before the first `submit_job`. Each of the three `submit_job` calls carries a `submission_key` beside `endpoint_id`
+   and `input` (not inside `input`): `ev-<stem>-portrait`, `ev-<stem>-voiceover` and `ev-<stem>-avatar`, with that
+   stem.
 5. **Saved.** `web_save` saves the PNG to `media/portrait.png`, the MP3 to `media/voiceover.mp3` and the MP4 to
    `media/explainer.mp4`, each from the URL fal returned. `files` lists those three and `media/explainer.vtt`.
 6. **Costed.** `steps` holds portrait, voiceover and avatar with their endpoints; portrait about 0.04; voiceover
