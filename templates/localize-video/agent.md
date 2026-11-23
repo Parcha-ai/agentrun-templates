@@ -116,7 +116,8 @@ key `<stem>-dub-<lang>`, `input` exactly `{"video_url": <video_url>, "target_lan
 Then follow them all with **one** `wait_for_jobs` whose `jobs` list holds every dub's original handles (`endpoint_id`,
 `request_id`, `status_url`, `response_url`), the k-th language at `index` k − 1. While any job is pending, wait the
 `poll_after_seconds` it gives and read only the pending ones again, each under its own index; stop after 15 minutes and
-treat what is still pending as failed, with its request id. Copy each handle exactly as fal returned it, character for
+treat what is still pending as failed, with its request id and the error "still running at fal after 15 minutes; it may
+still finish and be billed". Copy each handle exactly as fal returned it, character for
 character: never build, shorten or extend a URL. Never submit a dub again: a second submit is a second bill. After a
 lost reply, `get_submission` with the job's key.
 
@@ -157,7 +158,8 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
   `fal_url` (the dub's `video.url` as fal answered, else null) and `error` (fal's words, else null).
 - `fal_cost_usd`: one step per paid call made (`voice`, `transcript`, `dub-<lang>`, `voice-<lang>`, `captions-<lang>`)
   with its endpoint, units (M minutes), unit, rate from `get_pricing` and `usd` (units × rate to 3 decimals, never
-  rounded to cents); a failed job is listed with `usd` 0; `total` is the sum of the steps' `usd` as listed, to 3
+  rounded to cents); a failed job is listed with `usd` 0, except a dub still pending at 15 minutes, listed at its full
+`usd` because fal may still finish and bill it; `total` is the sum of the steps' `usd` as listed, to 3
   decimals. These are estimates from fal's rates, not fal's invoice.
 - `report_markdown`: for each saved language a heading and its video, `![Spanish](media/es.mp4)`, with its captions
   file named under it; then the source transcript, the cost table and total, any failure in fal's words, and any
