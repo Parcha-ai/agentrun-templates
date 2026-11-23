@@ -1,6 +1,6 @@
 {
   "server": "fal",
-  "description": "A fake fal MCP server for localize-video (length-unknown): run_model runs fal-ai/elevenlabs/audio-isolation on the source (https://media.tidepool.example/videos/tidepool-explainer.mp4) or a dub URL, answering its voice track (an mp3), and fal-ai/elevenlabs/speech-to-text on a voice track, answering its own 30 s transcript; speech-to-text on a video URL (the source or a dub) answers fal's 422 separate_keyed_conversion_required refusal, as real fal does; submit_job queues fal-ai/elevenlabs/dubbing, one request id per target language (es); the grouped wait_for_jobs read (its default) completes the Spanish dub (web_save gives the source no duration_s, so a run that follows agent.md makes no paid call). get_submission answers not_found. Bills nothing.",
+  "description": "A fake fal MCP server for localize-video (length-unknown): run_model runs fal-ai/elevenlabs/audio-isolation on the source (https://media.tidepool.example/videos/tidepool-explainer.mp4) or a dub URL, answering its voice track (an mp3), and fal-ai/elevenlabs/speech-to-text on a voice track, answering its own 30 s transcript; speech-to-text on a video URL (the source or a dub) answers fal's 422 separate_keyed_conversion_required refusal, as real fal does; submit_job queues fal-ai/elevenlabs/dubbing, one request id per target language (es); each paid call matched by its submission_key, lz-<stem>-<step> (a $pattern: any stem of 8 lowercase letters and digits); the grouped wait_for_jobs read of the dubs (its default) completes the Spanish dub (web_save gives the source no duration_s, so a run that follows agent.md makes no paid call). get_submission answers not_found. Bills nothing.",
   "tools": {
     "get_pricing": {
       "description": "Get pricing information for fal.ai models. Returns cost per run or per second.\nUse this when the user asks what a model costs, sets a budget, or wants models compared by price; recommend_model's next_call.price usually has the selected model's rate already. It isn't a required step before running a model. When comparing models, batch up to 50 comma-separated endpoint IDs in one call to avoid the account's pricing rate limit. Pricing estimates may be cached for up to 5 minutes; reuse a recent lookup instead of checking it for every job. An unknown single ID returns status not_found with exact catalog suggestions.",
@@ -86,13 +86,33 @@
               }
             ]
           }
+        },
+        {
+          "when": [
+            {
+              "endpoint_id": "fal-ai/sync-lipsync/v2"
+            },
+            {
+              "endpoint_ids": [
+                "fal-ai/sync-lipsync/v2"
+              ]
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"prices\":[{\"endpoint_id\":\"fal-ai/sync-lipsync/v2\",\"unit_price\":3,\"unit\":\"minutes\",\"currency\":\"USD\"}]}"
+              }
+            ]
+          }
         }
       ],
       "default": {
         "content": [
           {
             "type": "text",
-            "text": "{\"prices\":[{\"endpoint_id\":\"fal-ai/elevenlabs/audio-isolation\",\"unit_price\":0.1,\"unit\":\"minutes\",\"currency\":\"USD\"},{\"endpoint_id\":\"fal-ai/elevenlabs/speech-to-text\",\"unit_price\":0.03,\"unit\":\"minutes\",\"currency\":\"USD\"},{\"endpoint_id\":\"fal-ai/elevenlabs/dubbing\",\"unit_price\":0.6,\"unit\":\"minutes\",\"currency\":\"USD\"}]}"
+            "text": "{\"prices\":[{\"endpoint_id\":\"fal-ai/elevenlabs/audio-isolation\",\"unit_price\":0.1,\"unit\":\"minutes\",\"currency\":\"USD\"},{\"endpoint_id\":\"fal-ai/elevenlabs/speech-to-text\",\"unit_price\":0.03,\"unit\":\"minutes\",\"currency\":\"USD\"},{\"endpoint_id\":\"fal-ai/elevenlabs/dubbing\",\"unit_price\":0.6,\"unit\":\"minutes\",\"currency\":\"USD\"},{\"endpoint_id\":\"fal-ai/sync-lipsync/v2\",\"unit_price\":3,\"unit\":\"minutes\",\"currency\":\"USD\"}]}"
           }
         ]
       }
@@ -168,6 +188,19 @@
               {
                 "type": "text",
                 "text": "{\"endpoint_id\":\"fal-ai/elevenlabs/audio-isolation\",\"input_schema\":{\"title\":\"AudioIsolationRequest\",\"type\":\"object\",\"properties\":{\"audio_url\":{\"title\":\"Audio Url\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"description\":\"URL of the audio file to isolate voice from\"},\"video_url\":{\"title\":\"Video Url\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"description\":\"Video file to use for audio isolation. Either `audio_url` or `video_url` must be provided.\"}}},\"output_schema\":{\"title\":\"TTSOutput\",\"required\":[\"audio\"],\"type\":\"object\",\"properties\":{\"audio\":{\"title\":\"File\",\"required\":[\"url\"],\"type\":\"object\",\"properties\":{\"content_type\":{\"title\":\"Content Type\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"description\":\"The mime type of the file.\"},\"file_name\":{\"title\":\"File Name\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"description\":\"The name of the file. It will be auto-generated if not provided.\"},\"file_size\":{\"title\":\"File Size\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"description\":\"The size of the file in bytes.\"},\"url\":{\"title\":\"Url\",\"type\":\"string\",\"description\":\"The URL where the file can be downloaded from.\"}}},\"timestamps\":{\"title\":\"Timestamps\",\"anyOf\":[{\"items\":{},\"type\":\"array\"},{\"type\":\"null\"}],\"description\":\"Timestamps for each word in the generated speech. Only returned if `timestamps` is set to True in the request.\"}}}}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "endpoint_id": "fal-ai/sync-lipsync/v2"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"endpoint_id\":\"fal-ai/sync-lipsync/v2\",\"input_schema\":{\"required\":[\"video_url\",\"audio_url\"],\"properties\":{\"sync_mode\":{\"description\":\"Lipsync mode when audio and video durations are out of sync.\",\"enum\":[\"cut_off\",\"loop\",\"bounce\",\"silence\",\"remap\"],\"default\":\"cut_off\",\"title\":\"Sync Mode\",\"type\":\"string\"},\"audio_url\":{\"description\":\"URL of the input audio\",\"title\":\"Audio Url\",\"type\":\"string\"},\"model\":{\"description\":\"The model to use for lipsyncing. `lipsync-2-pro` will cost roughly 1.67 times as much as `lipsync-2` for the same duration.\",\"enum\":[\"lipsync-2\",\"lipsync-2-pro\"],\"default\":\"lipsync-2\",\"title\":\"Model\",\"type\":\"string\"},\"enable_safety_checker\":{\"default\":true,\"title\":\"Enable Safety Checker\",\"type\":\"boolean\"},\"video_url\":{\"description\":\"URL of the input video\",\"title\":\"Video Url\",\"type\":\"string\"}},\"title\":\"LipSyncV2Input\",\"type\":\"object\"},\"output_schema\":{\"required\":[\"video\"],\"properties\":{\"video\":{\"required\":[\"url\"],\"properties\":{\"content_type\":{\"description\":\"The mime type of the file.\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"title\":\"Content Type\"},\"file_size\":{\"description\":\"The size of the file in bytes.\",\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"title\":\"File Size\"},\"file_name\":{\"description\":\"The name of the file. It will be auto-generated if not provided.\",\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"title\":\"File Name\"},\"url\":{\"description\":\"The URL where the file can be downloaded from.\",\"title\":\"Url\",\"type\":\"string\"}},\"title\":\"File\",\"type\":\"object\"}},\"title\":\"LipSyncV2Output\",\"type\":\"object\"}}"
               }
             ]
           }
@@ -248,6 +281,9 @@
               "input": {
                 "video_url": "https://media.tidepool.example/videos/tidepool-explainer.mp4",
                 "target_lang": "es"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -256,6 +292,9 @@
                 "video_url": "https://media.tidepool.example/videos/tidepool-explainer.mp4",
                 "target_lang": "es",
                 "enable_safety_checker": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -264,6 +303,9 @@
                 "video_url": "https://media.tidepool.example/videos/tidepool-explainer.mp4",
                 "target_lang": "es",
                 "num_speakers": 1
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -273,6 +315,9 @@
                 "target_lang": "es",
                 "num_speakers": 1,
                 "enable_safety_checker": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -281,6 +326,9 @@
                 "video_url": "https://media.tidepool.example/videos/tidepool-explainer.mp4",
                 "target_lang": "es",
                 "highest_resolution": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -290,6 +338,9 @@
                 "target_lang": "es",
                 "highest_resolution": true,
                 "enable_safety_checker": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -299,6 +350,9 @@
                 "target_lang": "es",
                 "highest_resolution": true,
                 "num_speakers": 1
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -309,6 +363,9 @@
                 "highest_resolution": true,
                 "num_speakers": 1,
                 "enable_safety_checker": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -317,6 +374,9 @@
                 "video_url": "https://media.tidepool.example/videos/tidepool-explainer.mp4",
                 "target_lang": "es",
                 "source_lang": "en"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -326,6 +386,9 @@
                 "target_lang": "es",
                 "source_lang": "en",
                 "enable_safety_checker": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -335,6 +398,9 @@
                 "target_lang": "es",
                 "source_lang": "en",
                 "num_speakers": 1
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -345,6 +411,9 @@
                 "source_lang": "en",
                 "num_speakers": 1,
                 "enable_safety_checker": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -354,6 +423,9 @@
                 "target_lang": "es",
                 "source_lang": "en",
                 "highest_resolution": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -364,6 +436,9 @@
                 "source_lang": "en",
                 "highest_resolution": true,
                 "enable_safety_checker": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -374,6 +449,9 @@
                 "source_lang": "en",
                 "highest_resolution": true,
                 "num_speakers": 1
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             },
             {
@@ -385,6 +463,9 @@
                 "highest_resolution": true,
                 "num_speakers": 1,
                 "enable_safety_checker": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-dub-es"
               }
             }
           ],
@@ -944,12 +1025,18 @@
               "endpoint_id": "fal-ai/elevenlabs/audio-isolation",
               "input": {
                 "video_url": "https://media.tidepool.example/videos/tidepool-explainer.mp4"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-voice"
               }
             },
             {
               "endpoint_id": "fal-ai/elevenlabs/audio-isolation",
               "input": {
                 "audio_url": "https://media.tidepool.example/videos/tidepool-explainer.mp4"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-voice"
               }
             }
           ],
@@ -968,6 +1055,9 @@
               "endpoint_id": "fal-ai/elevenlabs/speech-to-text",
               "input": {
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -975,6 +1065,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "language_code": "en"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -982,6 +1075,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "language_code": "eng"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -989,6 +1085,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "diarize": false
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -997,6 +1096,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "diarize": false,
                 "language_code": "en"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1005,6 +1107,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "diarize": false,
                 "language_code": "eng"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1012,6 +1117,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "diarize": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1020,6 +1128,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "diarize": true,
                 "language_code": "en"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1028,6 +1139,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "diarize": true,
                 "language_code": "eng"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1035,6 +1149,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "tag_audio_events": false
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1043,6 +1160,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "tag_audio_events": false,
                 "language_code": "en"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1051,6 +1171,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "tag_audio_events": false,
                 "language_code": "eng"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1059,6 +1182,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "tag_audio_events": false,
                 "diarize": false
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1068,6 +1194,9 @@
                 "tag_audio_events": false,
                 "diarize": false,
                 "language_code": "en"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1077,6 +1206,9 @@
                 "tag_audio_events": false,
                 "diarize": false,
                 "language_code": "eng"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1085,6 +1217,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "tag_audio_events": false,
                 "diarize": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1094,6 +1229,9 @@
                 "tag_audio_events": false,
                 "diarize": true,
                 "language_code": "en"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1103,6 +1241,9 @@
                 "tag_audio_events": false,
                 "diarize": true,
                 "language_code": "eng"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1110,6 +1251,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "tag_audio_events": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1118,6 +1262,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "tag_audio_events": true,
                 "language_code": "en"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1126,6 +1273,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "tag_audio_events": true,
                 "language_code": "eng"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1134,6 +1284,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "tag_audio_events": true,
                 "diarize": false
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1143,6 +1296,9 @@
                 "tag_audio_events": true,
                 "diarize": false,
                 "language_code": "en"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1152,6 +1308,9 @@
                 "tag_audio_events": true,
                 "diarize": false,
                 "language_code": "eng"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1160,6 +1319,9 @@
                 "audio_url": "https://v3.fal.media/files/seal/Vs4Ku9Hb2Nq7Lx3Pe8Wd_isolated.mp3",
                 "tag_audio_events": true,
                 "diarize": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1169,6 +1331,9 @@
                 "tag_audio_events": true,
                 "diarize": true,
                 "language_code": "en"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             },
             {
@@ -1178,6 +1343,9 @@
                 "tag_audio_events": true,
                 "diarize": true,
                 "language_code": "eng"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-transcript"
               }
             }
           ],
@@ -1196,12 +1364,18 @@
               "endpoint_id": "fal-ai/elevenlabs/audio-isolation",
               "input": {
                 "video_url": "https://v3.fal.media/files/penguin/Hq7Tz2Lm9Wx4Rb8Kc1Ns_dubbed.mp4"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-voice-es"
               }
             },
             {
               "endpoint_id": "fal-ai/elevenlabs/audio-isolation",
               "input": {
                 "audio_url": "https://v3.fal.media/files/penguin/Hq7Tz2Lm9Wx4Rb8Kc1Ns_dubbed.mp4"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-voice-es"
               }
             }
           ],
@@ -1220,6 +1394,9 @@
               "endpoint_id": "fal-ai/elevenlabs/speech-to-text",
               "input": {
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1227,6 +1404,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "language_code": "es"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1234,6 +1414,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "language_code": "spa"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1241,6 +1424,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "diarize": false
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1249,6 +1435,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "diarize": false,
                 "language_code": "es"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1257,6 +1446,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "diarize": false,
                 "language_code": "spa"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1264,6 +1456,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "diarize": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1272,6 +1467,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "diarize": true,
                 "language_code": "es"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1280,6 +1478,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "diarize": true,
                 "language_code": "spa"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1287,6 +1488,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "tag_audio_events": false
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1295,6 +1499,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "tag_audio_events": false,
                 "language_code": "es"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1303,6 +1510,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "tag_audio_events": false,
                 "language_code": "spa"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1311,6 +1521,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "tag_audio_events": false,
                 "diarize": false
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1320,6 +1533,9 @@
                 "tag_audio_events": false,
                 "diarize": false,
                 "language_code": "es"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1329,6 +1545,9 @@
                 "tag_audio_events": false,
                 "diarize": false,
                 "language_code": "spa"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1337,6 +1556,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "tag_audio_events": false,
                 "diarize": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1346,6 +1568,9 @@
                 "tag_audio_events": false,
                 "diarize": true,
                 "language_code": "es"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1355,6 +1580,9 @@
                 "tag_audio_events": false,
                 "diarize": true,
                 "language_code": "spa"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1362,6 +1590,9 @@
               "input": {
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "tag_audio_events": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1370,6 +1601,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "tag_audio_events": true,
                 "language_code": "es"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1378,6 +1612,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "tag_audio_events": true,
                 "language_code": "spa"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1386,6 +1623,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "tag_audio_events": true,
                 "diarize": false
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1395,6 +1635,9 @@
                 "tag_audio_events": true,
                 "diarize": false,
                 "language_code": "es"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1404,6 +1647,9 @@
                 "tag_audio_events": true,
                 "diarize": false,
                 "language_code": "spa"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1412,6 +1658,9 @@
                 "audio_url": "https://v3.fal.media/files/puffin/Ew6Rt1Yu5Io9Pa3Sd7Fg_isolated.mp3",
                 "tag_audio_events": true,
                 "diarize": true
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1421,6 +1670,9 @@
                 "tag_audio_events": true,
                 "diarize": true,
                 "language_code": "es"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             },
             {
@@ -1430,6 +1682,9 @@
                 "tag_audio_events": true,
                 "diarize": true,
                 "language_code": "spa"
+              },
+              "submission_key": {
+                "$pattern": "lz-[a-z0-9]{8}-captions-es"
               }
             }
           ],
@@ -1448,7 +1703,7 @@
         "content": [
           {
             "type": "text",
-            "text": "422: audio_url could not be read: the file was not found at this URL"
+            "text": "422 Unprocessable Entity: this fake runs only this case's jobs, each by its endpoint_id, input and submission_key (lz-<stem>-<step>); no job was created and nothing was billed."
           }
         ]
       }
@@ -1946,6 +2201,286 @@
               {
                 "type": "text",
                 "text": "{\"all_terminal\":true,\"jobs\":[{\"index\":2,\"endpoint_id\":\"fal-ai/elevenlabs/dubbing\",\"request_id\":\"6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601\",\"status_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status\",\"response_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601\",\"outcome\":\"completed\",\"queue_status\":\"COMPLETED\",\"result\":{\"video\":{\"url\":\"https://v3.fal.media/files/penguin/Hq7Tz2Lm9Wx4Rb8Kc1Ns_dubbed.mp4\",\"content_type\":\"video/mp4\",\"file_name\":\"dubbed_es.mp4\",\"file_size\":36887},\"audio\":null,\"target_lang\":\"es\"},\"media\":[{\"url\":\"https://v3.fal.media/files/penguin/Hq7Tz2Lm9Wx4Rb8Kc1Ns_dubbed.mp4\",\"content_type\":\"video/mp4\"}]}]}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 3,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "result"
+                }
+              ]
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"all_terminal\":true,\"jobs\":[{\"index\":3,\"endpoint_id\":\"fal-ai/elevenlabs/dubbing\",\"request_id\":\"6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601\",\"status_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status\",\"response_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601\",\"outcome\":\"completed\",\"queue_status\":\"COMPLETED\",\"result\":{\"video\":{\"url\":\"https://v3.fal.media/files/penguin/Hq7Tz2Lm9Wx4Rb8Kc1Ns_dubbed.mp4\",\"content_type\":\"video/mp4\",\"file_name\":\"dubbed_es.mp4\",\"file_size\":36887},\"audio\":null,\"target_lang\":\"es\"},\"media\":[{\"url\":\"https://v3.fal.media/files/penguin/Hq7Tz2Lm9Wx4Rb8Kc1Ns_dubbed.mp4\",\"content_type\":\"video/mp4\"}]}]}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "response_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "result"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "wait"
+                }
+              ]
+            },
+            {
+              "jobs": [
+                {
+                  "index": 4,
+                  "endpoint_id": "fal-ai/elevenlabs/dubbing",
+                  "request_id": "6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601",
+                  "read_mode": "result"
+                }
+              ]
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"all_terminal\":true,\"jobs\":[{\"index\":4,\"endpoint_id\":\"fal-ai/elevenlabs/dubbing\",\"request_id\":\"6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601\",\"status_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601/status\",\"response_url\":\"https://queue.fal.run/fal-ai/elevenlabs/requests/6f1a2b3c-4d5e-4f60-8a71-b2c3d4e5f601\",\"outcome\":\"completed\",\"queue_status\":\"COMPLETED\",\"result\":{\"video\":{\"url\":\"https://v3.fal.media/files/penguin/Hq7Tz2Lm9Wx4Rb8Kc1Ns_dubbed.mp4\",\"content_type\":\"video/mp4\",\"file_name\":\"dubbed_es.mp4\",\"file_size\":36887},\"audio\":null,\"target_lang\":\"es\"},\"media\":[{\"url\":\"https://v3.fal.media/files/penguin/Hq7Tz2Lm9Wx4Rb8Kc1Ns_dubbed.mp4\",\"content_type\":\"video/mp4\"}]}]}"
               }
             ]
           }
