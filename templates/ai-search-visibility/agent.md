@@ -65,11 +65,13 @@ You run on a free model whose account allows few requests a day. At most four tu
 2. **Search, once, in parallel.** The questions are the input's `questions` (at most three), else three you write from
    the home page: what a buyer who has never heard of the brand would ask an AI assistant when looking for what the site
    sells ("best payroll software for a 20-person company"), never naming the brand. In ONE turn, call `web_search` once
-   per question, `n` 10, the question as the query. When robots.txt came back `truncated`, that same turn also reads
-   the rest of it: `web_fetch` of the same URL with `offset` its `next_offset` and `max_chars` 50000. Never in a turn
-   of its own.
-3. **Write the answer.** No other fetch: not a sitemap, not a result's page, not another file. robots.txt's second part
-   in step 2 is the only fetch after the first turn.
+   per question, `n` 10, the question as the query.
+3. **Write the answer.** No other fetch: not a sitemap, not a result's page, not another file.
+
+robots.txt is read in up to three parts of 50000 characters: part 1 in turn 1, part 2 in turn 2 (beside the searches),
+part 3 in turn 3. Parts 2 and 3 are each `web_fetch` of the same URL with `offset` the last part's `next_offset` and
+`max_chars` 50000, read only while the last part came back `truncated`, and never after turn 3. They are the only
+fetches after turn 1. The last turn writes the answer, with no fetch.
 
 If `web_search` answers that free search is rate-limited, never call it again in this run. When
 `mcp:firecrawl/firecrawl_search` is one of your tools, run the same searches there in one turn (`query` the question,
@@ -88,10 +90,11 @@ that decide it. A 404 is `not_found`: every bot is `allowed` with `rule` null. A
 verdict is `unknown`.
 
 Read every group in the whole file before any verdict, its parts in order as one text: a bot's group can be the last
-one in a long file. When the last part read still says `truncated` or `beyond_read`, the file was not read whole:
+one in a long file. When the last part read still says `truncated` or `beyond_read`, robots.txt was not read to its end:
 - Its last group in what was read is unfinished, its rules may go on past the cut: every bot that group's `User-agent`
   lines name is `unknown` with `rule` null, and `could_not_check` names that group. A full group before it stands.
-- A bot with no group of its own in what was read is `unknown` with `rule` null, never `allowed`.
+- A bot with no group of its own in what was read is `unknown` with `rule` null, never `allowed` from the `*` group:
+  its own group may be in the part not read.
 - `could_not_check` says which characters were not read, and the report says robots.txt was read only in part.
 
 | bot | operator | purpose |
