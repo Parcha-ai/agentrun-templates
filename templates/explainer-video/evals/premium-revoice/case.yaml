@@ -1,4 +1,4 @@
-# The runner serves fixtures/fal-mcp.json as the saved URL server fal (portrait, two voiceovers: the first 63.4 s by its file_size, too long for OmniHuman, the re-voice 52.8 s; OmniHuman completes; Fabric refused for this case) and fixtures/web.json as the web: the files fal answers. Pass: 2 of 2 runs.
+# The runner serves fixtures/fal-mcp.json as the saved URL server fal (portrait, two voiceovers: the first 63.4 s by its file_size, too long for OmniHuman, the re-voice 52.8 s; OmniHuman completes; Fabric refused for this case) and fixtures/web.json as the web: the files fal answers, each voice playing the length its result states (63.4 s and 52.8 s), so the OmniHuman hold, 53 s from the bytes, equals its settlement at the 52.8 s it states: 53 x 0.16 = 8.48. max_cost_usd 9.50 covers that, the portrait, both voices and the model. Pass: 2 of 2 runs.
 mcp:
   fal: fixtures/fal-mcp.json
 web: fixtures/web.json
