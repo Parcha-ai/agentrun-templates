@@ -1,0 +1,49 @@
+<!-- End card (the last 5-8 s): the business's name, the week in full, the source line as the film's last word on where
+     its figures come from, and any currency the film did not show, named with its figure. Holds still at the end. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--ink); container-type: size; overflow: hidden; }
+    #ec-fill { position: absolute; inset: 0; background: var(--accent); transform-origin: 50% 100%; }
+    #ec-stack { position: absolute; left: 8cqw; right: 8cqw; top: 22cqh; display: flex; flex-direction: column; gap: 2.4cqh; }
+    #ec-name { font-family: var(--font-display); font-size: 16cqh; line-height: 0.95; color: var(--accent-ink); text-transform: uppercase; white-space: nowrap; }
+    #ec-week { font-family: var(--font-text); font-weight: 700; font-size: 4.6cqh; color: var(--accent-ink); }
+    #ec-src { font-family: var(--font-mono); font-size: 2.6cqh; line-height: 1.4; color: var(--accent-ink); }
+    #ec-more { font-family: var(--font-text); font-size: 3.2cqh; color: var(--accent-ink); }
+  </style>
+  <div id="root" data-composition-id="endcard" data-width="1920" data-height="1080">
+    <div id="ec-span" class="clip" data-start="0" data-duration="8" data-mv-span>
+      <div id="ec-fill"></div>
+      <div id="ec-stack">
+        <div id="ec-name"></div>
+        <div id="ec-week"></div>
+        <div id="ec-src"></div>
+        <div id="ec-more"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const mv = window.MV;
+    document.getElementById("ec-name").textContent = mv.business || "Weekly revenue";
+    document.getElementById("ec-week").textContent = `Week of ${mv.week.label}`;
+    document.getElementById("ec-src").textContent = mv.source_line;
+    const more = [
+      ...mv.not_filmed.map((c) => `${c.code.toUpperCase()} ${c.revenue.display}`),
+      ...(mv.empty ? [] : mv.gone.map((g) => `${g.code.toUpperCase()}: none this week (the week before ${g.before.display})`)),
+    ];
+    const moreEl = document.getElementById("ec-more");
+    if (more.length) moreEl.textContent = `Also in the report: ${more.join(" · ")}`;
+    else moreEl.remove();
+    rfReady(["ec-name", "ec-week"]).then(() => {
+      rfFit(document.getElementById("ec-name"), { w: 0.84 * innerWidth, max: 0.18 * innerHeight });
+      const tl = gsap.timeline({ paused: true });
+      // A colour flood rises through the frame, then the name, the week and the source line land on it in turn.
+      tl.fromTo("#ec-fill", { scaleY: 0 }, { scaleY: 1, duration: 0.45, ease: "power2.inOut" }, 0);
+      tl.fromTo("#ec-stack", { scale: 1 }, { scale: 1.025, duration: mv.timing.endcard.seconds, ease: "none", transformOrigin: "0% 50%" }, 0);
+      tl.fromTo("#ec-name", { opacity: 0, y: 40, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "expo.out" }, 0.35);
+      tl.fromTo("#ec-week", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.75);
+      tl.fromTo("#ec-src", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.1);
+      if (more.length) tl.fromTo("#ec-more", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.5);
+      window.__timelines["endcard"] = tl;
+    });
+  </script>
+</template>

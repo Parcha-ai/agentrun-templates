@@ -1172,6 +1172,22 @@
         "elevenlabs"
       ],
       "summary": "Turns a GitHub release into a 30 second film with voiceover, music, captions and a share card. Billed to your fal account."
+    },
+    {
+      "name": "metrics-video",
+      "source": "./templates/metrics-video",
+      "category": "finance",
+      "tags": [
+        "video",
+        "stripe",
+        "revenue",
+        "weekly",
+        "hyperframes",
+        "voiceover",
+        "fal",
+        "elevenlabs"
+      ],
+      "summary": "A weekly 45 second film of last week's Stripe revenue, net of refunds and fees, per currency, against the week before. Billed to your fal account."
     }
   ]
 }

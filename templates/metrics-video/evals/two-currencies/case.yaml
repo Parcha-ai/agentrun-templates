@@ -1,0 +1,21 @@
+# Applied with these parameters, weeks in UTC. previous.json seeds the last film, of the week of 9 November, carrying
+# USD and EUR figures that match Stripe's. The schedule's run films the week of 16 November in both currencies: a USD
+# refund and a EUR dispute. fal-mcp.json completes the voice and the music. The film renders for real. Pass: 2 of 2.
+parameters:
+  business_name: Larkspur Ceramics
+  timezone: UTC
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+previous: fixtures/previous.json
+# Stripe's two read tools and every fal tool granted, so each call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:stripe/STRIPE_LIST_BALANCE_TRANSACTIONS
+  - mcp:stripe/STRIPE_SEARCH_CHARGES
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T07:00:00Z

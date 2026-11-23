@@ -1,0 +1,22 @@
+# Applied with these parameters, max_fal_usd 0.30. fixtures/stripe-mcp.json lists the week of 16 November in USD. At
+# get_pricing's rates the plan is the voiceover (about 0.05 to 0.07), as much again in reserve, and 45 s of music
+# (0.45): about 0.55 to 0.60, over the cap, so nothing is paid. Without the music it would be about 0.10 to 0.14.
+# Pass: 2 of 2.
+parameters:
+  business_name: Larkspur Ceramics
+  timezone: UTC
+  max_fal_usd: 0.30
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Stripe's two read tools and every fal tool granted, so each call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:stripe/STRIPE_LIST_BALANCE_TRANSACTIONS
+  - mcp:stripe/STRIPE_SEARCH_CHARGES
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T07:00:00Z

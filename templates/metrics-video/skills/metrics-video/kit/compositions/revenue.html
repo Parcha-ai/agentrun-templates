@@ -1,0 +1,62 @@
+<!-- Revenue: one currency at a time, its week's revenue counting up from zero for 1.4 s, then held: the biggest thing on
+     screen, in tabular figures, with the source line over it. An empty week says so in words, never as a zero dressed
+     up as a figure. Every word and number comes from window.MV. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--ground); container-type: size; overflow: hidden; }
+    #rv-src { position: absolute; left: 8cqw; right: 8cqw; top: 6cqh; font-family: var(--font-mono); font-size: 2.3cqh; color: var(--muted); }
+    .rv-seg { position: absolute; left: 8cqw; right: 8cqw; top: 18cqh; bottom: 24cqh; display: flex; flex-direction: column; justify-content: center; gap: 2cqh; transform-origin: 0% 50%; }
+    .rv-label { font-family: var(--font-text); font-weight: 700; font-size: 4.4cqh; color: var(--ink); }
+    .rv-num { font-family: var(--font-display); font-size: 34cqh; line-height: 0.9; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .rv-key { display: inline-block; height: 1.1cqh; width: 14cqw; background: var(--accent); transform-origin: left center; }
+    .rv-none { font-family: var(--font-display); font-size: 20cqh; line-height: 0.95; color: var(--ink); text-transform: uppercase; }
+    .rv-line { font-family: var(--font-text); font-weight: 400; font-size: 4.2cqh; color: var(--ink); }
+  </style>
+  <div id="root" data-composition-id="revenue" data-width="1920" data-height="1080">
+    <div id="rv-span" class="clip" data-start="0" data-duration="8" data-mv-span>
+      <div id="rv-src"></div>
+      <div id="rv-stage"></div>
+    </div>
+  </div>
+  <script>
+    const mv = window.MV;
+    const stage = document.getElementById("rv-stage");
+    document.getElementById("rv-src").textContent = mv.source_line;
+    const list = mvFilmed();
+    const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    if (mv.empty) {
+      const before = mv.gone.map((g) => `${g.code.toUpperCase()} ${g.before.display}`).join(" · ");
+      stage.innerHTML = `<div class="rv-seg" id="rv-seg-0"><div class="rv-none" id="rv-none">No payments this week</div>`
+        + `<div class="rv-line" id="rv-line-0">No charge, refund, dispute or fee in Stripe, ${esc(mv.week.label)}</div>`
+        + (before ? `<div class="rv-line" id="rv-line-1">The week before: ${esc(before)}</div>` : "") + `</div>`;
+    } else {
+      stage.innerHTML = list.map((c, i) => `<div class="rv-seg" id="rv-seg-${i}"><div class="rv-label">Revenue · ${c.code.toUpperCase()}</div>`
+        + `<div class="rv-num" id="rv-num-${i}"></div><div><span class="rv-key" id="rv-key-${i}"></span></div></div>`).join("");
+    }
+    rfReady(["rv-src"]).then(() => {
+      const D = mv.timing.revenue.seconds;
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#rv-src", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.1);
+      if (mv.empty) {
+        tl.fromTo("#rv-seg-0", { scale: 1 }, { scale: 1.03, duration: D, ease: "none" }, 0);
+        tl.fromTo("#rv-none", { opacity: 0, y: 40, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, 0.15);
+        tl.fromTo("#rv-seg-0 .rv-line", { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.9, ease: "power2.out" }, 1.0);
+      } else {
+        const seg = mvSeg("revenue");
+        list.forEach((c, i) => {
+          const el = document.getElementById(`rv-num-${i}`);
+          // The figure takes the widest size its final string fits, so the count-up never outgrows the frame.
+          el.textContent = c.revenue.display;
+          rfFit(el, { w: 0.84 * innerWidth, max: 0.36 * innerHeight });
+          const t0 = i * seg;
+          tl.fromTo(`#rv-seg-${i}`, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "expo.out" }, t0 + (i ? 0 : 0.05));
+          tl.fromTo(`#rv-seg-${i}`, { scale: 1 }, { scale: 1.03, duration: seg, ease: "none" }, t0);
+          mvCount(tl, el, c.revenue, c.symbol, t0 + 0.35);
+          tl.fromTo(`#rv-key-${i}`, { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "expo.out" }, t0 + 1.75);
+          if (i < list.length - 1) tl.to(`#rv-seg-${i}`, { opacity: 0, duration: 0.18, ease: "power3.in" }, t0 + seg - 0.2);
+        });
+      }
+      window.__timelines["revenue"] = tl;
+    });
+  </script>
+</template>

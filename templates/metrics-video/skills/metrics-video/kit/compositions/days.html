@@ -1,0 +1,56 @@
+<!-- Days: the week day by day, one currency at a time, built in reading order: the zero line, the seven bars rising left
+     to right in grey, the best day in the accent, then one annotation on that bar (its day and its figure). No legend,
+     no grid; a day of refunds hangs below the line. Every value comes from window.MV. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--ground); container-type: size; overflow: hidden; }
+    #dy-src { position: absolute; left: 8cqw; right: 8cqw; top: 6cqh; font-family: var(--font-mono); font-size: 2.3cqh; color: var(--muted); }
+    .dy-seg { position: absolute; inset: 0; transform-origin: 50% 60%; }
+    .dy-title { position: absolute; left: 8cqw; top: 11cqh; font-family: var(--font-text); font-weight: 700; font-size: 4.4cqh; color: var(--ink); }
+    .dy-plot { position: absolute; left: 10cqw; right: 10cqw; top: 30cqh; height: 40cqh; }
+    .dy-zero { position: absolute; left: -1cqw; right: -1cqw; height: 0.4cqh; background: var(--ink); transform-origin: left center; }
+    .dy-bar { position: absolute; width: 8cqw; background: var(--bar); }
+    .dy-bar.best { background: var(--accent); }
+    .dy-day { position: absolute; width: 8cqw; top: 42cqh; text-align: center; font-family: var(--font-text); font-weight: 700; font-size: 3.2cqh; color: var(--ink); }
+    .dy-note { position: absolute; width: 30cqw; text-align: center; font-family: var(--font-display); font-size: 9cqh; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  </style>
+  <div id="root" data-composition-id="days" data-width="1920" data-height="1080">
+    <div id="dy-span" class="clip" data-start="0" data-duration="8" data-mv-span>
+      <div id="dy-src"></div>
+      <div id="dy-stage"></div>
+    </div>
+  </div>
+  <script>
+    const mv = window.MV;
+    const list = mvFilmed();
+    document.getElementById("dy-src").textContent = mv.source_line;
+    // Seven slots across the plot: bar i is centred in slot i.
+    const slot = (i) => (i + 0.5) * (80 / 7) - 4; // left edge of an 8cqw bar, in cqw from the plot's left
+    document.getElementById("dy-stage").innerHTML = list.map((c, s) => {
+      const { zero, bars } = mvBars(c.days.map((d) => d.whole));
+      const best = c.best_day ? c.best_day.index : -1;
+      const barsHtml = bars.map((b, i) => `<div class="dy-bar${i === best ? " best" : ""}" id="dy-bar-${s}-${i}" style="left:${slot(i)}cqw;top:${(b.top * 0.4).toFixed(3)}cqh;height:${Math.max(0.3, b.height * 0.4).toFixed(3)}cqh;transform-origin:${b.neg ? "top" : "bottom"} center"></div>`).join("");
+      const days = c.days.map((d, i) => `<div class="dy-day" style="left:${slot(i)}cqw">${d.label}</div>`).join("");
+      const note = best >= 0
+        ? `<div class="dy-note" id="dy-note-${s}" style="left:${slot(best) + 4 - 15}cqw;top:${(bars[best].top * 0.4 - 10).toFixed(3)}cqh">${c.best_day.label} ${c.best_day.display}</div>`
+        : "";
+      return `<div class="dy-seg" id="dy-seg-${s}"><div class="dy-title">By day · ${c.code.toUpperCase()}</div><div class="dy-plot">`
+        + `<div class="dy-zero" id="dy-zero-${s}" style="top:${(zero * 0.4).toFixed(3)}cqh"></div>${barsHtml}${days}${note}</div></div>`;
+    }).join("");
+    rfReady(["dy-src"]).then(() => {
+      const tl = gsap.timeline({ paused: true });
+      const seg = mvSeg("days");
+      tl.fromTo("#dy-src", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.1);
+      list.forEach((c, s) => {
+        const t0 = s * seg;
+        tl.fromTo(`#dy-seg-${s}`, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, t0);
+        tl.fromTo(`#dy-seg-${s}`, { scale: 1 }, { scale: 1.04, duration: seg, ease: "power2.inOut" }, t0);
+        tl.fromTo(`#dy-zero-${s}`, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "expo.out" }, t0 + 0.1);
+        tl.fromTo(`#dy-seg-${s} .dy-bar`, { scaleY: 0 }, { scaleY: 1, duration: 0.5, stagger: 0.11, ease: "expo.out" }, t0 + 0.45);
+        if (c.best_day) tl.fromTo(`#dy-note-${s}`, { opacity: 0, y: 20, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.35, ease: "power4.out" }, t0 + 1.55);
+        if (s < list.length - 1) tl.to(`#dy-seg-${s}`, { opacity: 0, duration: 0.18, ease: "power3.in" }, t0 + seg - 0.2);
+      });
+      window.__timelines["days"] = tl;
+    });
+  </script>
+</template>

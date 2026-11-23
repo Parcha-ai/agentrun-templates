@@ -1,0 +1,87 @@
+<!-- Change: this week against the week before, one currency at a time, built in reading order: the zero line, a
+     reference line at the week before's level, the week before's bar in grey, this week's in the accent, then the
+     change itself as the biggest thing (the percentage, or the amount when the week before had none). When the
+     carried figure for the week before was restated, one small line says so with both figures. With no earlier week,
+     the scene says that in words and draws nothing. Every value comes from window.MV. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--ground); container-type: size; overflow: hidden; }
+    #ch-src { position: absolute; left: 8cqw; right: 8cqw; top: 6cqh; font-family: var(--font-mono); font-size: 2.3cqh; color: var(--muted); }
+    .ch-seg { position: absolute; inset: 0; transform-origin: 30% 55%; }
+    .ch-title { position: absolute; left: 8cqw; top: 11cqh; font-family: var(--font-text); font-weight: 700; font-size: 4.4cqh; color: var(--ink); }
+    .ch-plot { position: absolute; left: 10cqw; width: 34cqw; top: 26cqh; height: 40cqh; }
+    .ch-zero { position: absolute; left: -1cqw; right: -1cqw; height: 0.4cqh; background: var(--ink); transform-origin: left center; }
+    .ch-ref { position: absolute; left: -1cqw; right: -6cqw; height: 0; border-top: 0.35cqh dashed var(--muted); transform-origin: left center; }
+    .ch-bar { position: absolute; width: 12cqw; background: var(--bar); }
+    .ch-bar.now { background: var(--accent); }
+    .ch-cap { position: absolute; width: 16cqw; top: 42cqh; text-align: center; font-family: var(--font-text); font-size: 2.8cqh; line-height: 1.25; color: var(--ink); }
+    .ch-cap b { font-weight: 700; display: block; }
+    .ch-big { position: absolute; left: 50cqw; right: 6cqw; top: 26cqh; font-family: var(--font-display); font-size: 30cqh; line-height: 0.9; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .ch-sub { position: absolute; left: 50cqw; right: 6cqw; top: 56cqh; font-family: var(--font-text); font-size: 3.6cqh; line-height: 1.3; color: var(--ink); }
+    .ch-note { position: absolute; left: 50cqw; right: 6cqw; top: 64cqh; font-family: var(--font-text); font-size: 2.8cqh; line-height: 1.3; color: var(--ink); border-left: 0.5cqw solid var(--accent); padding-left: 1.2cqw; }
+    .ch-none { position: absolute; left: 8cqw; right: 8cqw; top: 26cqh; font-family: var(--font-display); font-size: 17cqh; line-height: 0.95; color: var(--ink); text-transform: uppercase; }
+    .ch-why { position: absolute; left: 8cqw; right: 8cqw; top: 60cqh; font-family: var(--font-text); font-size: 4cqh; color: var(--ink); }
+  </style>
+  <div id="root" data-composition-id="change" data-width="1920" data-height="1080">
+    <div id="ch-span" class="clip" data-start="0" data-duration="8" data-mv-span>
+      <div id="ch-src"></div>
+      <div id="ch-stage"></div>
+    </div>
+  </div>
+  <script>
+    const mv = window.MV;
+    const list = mvFilmed();
+    const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    document.getElementById("ch-src").textContent = mv.source_line;
+    document.getElementById("ch-stage").innerHTML = list.map((c, s) => {
+      const code = c.code.toUpperCase();
+      if (!c.change) {
+        return `<div class="ch-seg" id="ch-seg-${s}"><div class="ch-title">Week over week · ${code}</div>`
+          + `<div class="ch-none" id="ch-none-${s}">No earlier week to compare</div>`
+          + `<div class="ch-why" id="ch-why-${s}">This is the first weekly film, or the last one covered another week</div></div>`;
+      }
+      const { zero, bars } = mvBars([c.change.before.whole, c.revenue.whole]);
+      const ref = bars[0].neg ? bars[0].top + bars[0].height : bars[0].top;
+      const bar = (b, i) => `<div class="ch-bar${i ? " now" : ""}" id="ch-bar-${s}-${i}" style="left:${i ? 20 : 2}cqw;top:${(b.top * 0.4).toFixed(3)}cqh;height:${Math.max(0.3, b.height * 0.4).toFixed(3)}cqh;transform-origin:${b.neg ? "top" : "bottom"} center"></div>`;
+      const caps = `<div class="ch-cap" style="left:0cqw"><b>Week before</b>${esc(c.change.before.display)}</div>`
+        + `<div class="ch-cap" style="left:18cqw"><b>This week</b>${esc(c.revenue.display)}</div>`;
+      const big = c.change.percent ? c.change.percent.display : c.change.display;
+      const sub = c.change.percent ? `${c.change.display} on the week before` : "The week before had none";
+      const note = c.restated
+        ? `<div class="ch-note" id="ch-note-${s}">The week before is now ${esc(c.restated.reread.display)} in Stripe; the last film said ${esc(c.restated.carried.display)}</div>`
+        : "";
+      return `<div class="ch-seg" id="ch-seg-${s}"><div class="ch-title">Week over week · ${code}</div><div class="ch-plot">`
+        + `<div class="ch-zero" id="ch-zero-${s}" style="top:${(zero * 0.4).toFixed(3)}cqh"></div>`
+        + `<div class="ch-ref" id="ch-ref-${s}" style="top:${(ref * 0.4).toFixed(3)}cqh"></div>`
+        + bars.map(bar).join("") + caps + `</div>`
+        + `<div class="ch-big" id="ch-big-${s}">${esc(big)}</div><div class="ch-sub" id="ch-sub-${s}">${esc(sub)}</div>${note}</div>`;
+    }).join("");
+    rfReady(["ch-src"]).then(() => {
+      const tl = gsap.timeline({ paused: true });
+      const seg = mvSeg("change");
+      tl.fromTo("#ch-src", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.1);
+      list.forEach((c, s) => {
+        const t0 = s * seg;
+        tl.fromTo(`#ch-seg-${s}`, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, t0);
+        tl.fromTo(`#ch-seg-${s}`, { scale: 1 }, { scale: 1.03, duration: seg, ease: "power2.inOut" }, t0);
+        if (!c.change) {
+          tl.fromTo(`#ch-none-${s}`, { opacity: 0, y: 40, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, t0 + 0.15);
+          tl.fromTo(`#ch-why-${s}`, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, t0 + 1.0);
+        } else {
+          const big = document.getElementById(`ch-big-${s}`);
+          rfFit(big, { w: 0.44 * innerWidth, max: 0.3 * innerHeight });
+          tl.fromTo(`#ch-zero-${s}`, { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "expo.out" }, t0 + 0.1);
+          tl.fromTo(`#ch-ref-${s}`, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, t0 + 0.35);
+          tl.fromTo(`#ch-bar-${s}-0`, { scaleY: 0 }, { scaleY: 1, duration: 0.5, ease: "expo.out" }, t0 + 0.6);
+          tl.fromTo(`#ch-bar-${s}-1`, { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: "expo.out" }, t0 + 1.0);
+          tl.fromTo(`#ch-seg-${s} .ch-cap`, { opacity: 0 }, { opacity: 1, duration: 0.25, stagger: 0.4, ease: "power2.out" }, t0 + 0.7);
+          tl.fromTo(`#ch-big-${s}`, { opacity: 0, x: 30, filter: "blur(8px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, t0 + 1.6);
+          tl.fromTo(`#ch-sub-${s}`, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, t0 + 2.0);
+          if (c.restated) tl.fromTo(`#ch-note-${s}`, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, t0 + 2.4);
+        }
+        if (s < list.length - 1) tl.to(`#ch-seg-${s}`, { opacity: 0, duration: 0.18, ease: "power3.in" }, t0 + seg - 0.2);
+      });
+      window.__timelines["change"] = tl;
+    });
+  </script>
+</template>

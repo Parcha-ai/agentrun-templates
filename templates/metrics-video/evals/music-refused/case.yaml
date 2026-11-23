@@ -1,0 +1,20 @@
+# Applied with these parameters, weeks in UTC. fixtures/stripe-mcp.json lists the week of 16 November in USD. The
+# grouped fal read completes the voiceover and FAILS the music with a 422 content-checker refusal. The film is
+# rendered for real with the voice alone. Pass: 2 of 2.
+parameters:
+  business_name: Larkspur Ceramics
+  timezone: UTC
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Stripe's two read tools and every fal tool granted, so each call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:stripe/STRIPE_LIST_BALANCE_TRANSACTIONS
+  - mcp:stripe/STRIPE_SEARCH_CHARGES
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T07:00:00Z

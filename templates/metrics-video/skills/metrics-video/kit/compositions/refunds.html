@@ -1,0 +1,68 @@
+<!-- Refunds and disputes: one currency at a time, and inside it one figure at a time: the refunds (their amount counting
+     up, their count under it), then the disputes the same way. A currency with neither says so in words. Every value
+     comes from window.MV. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--ground); container-type: size; overflow: hidden; }
+    #rf-src { position: absolute; left: 8cqw; right: 8cqw; top: 6cqh; font-family: var(--font-mono); font-size: 2.3cqh; color: var(--muted); }
+    .rf-item { position: absolute; left: 8cqw; right: 8cqw; top: 16cqh; bottom: 26cqh; display: flex; flex-direction: column; justify-content: center; gap: 1.6cqh; transform-origin: 0% 50%; }
+    .rf-label { font-family: var(--font-text); font-weight: 700; font-size: 4.4cqh; color: var(--ink); }
+    .rf-num { font-family: var(--font-display); font-size: 28cqh; line-height: 0.9; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .rf-count { font-family: var(--font-text); font-size: 4.2cqh; color: var(--ink); }
+    .rf-count i { font-style: normal; display: inline-block; width: 1.6cqw; height: 1.6cqw; margin-right: 1cqw; background: var(--accent); vertical-align: middle; }
+    .rf-none { font-family: var(--font-display); font-size: 17cqh; line-height: 0.95; color: var(--ink); text-transform: uppercase; }
+  </style>
+  <div id="root" data-composition-id="refunds" data-width="1920" data-height="1080">
+    <div id="rf-span" class="clip" data-start="0" data-duration="8" data-mv-span>
+      <div id="rf-src"></div>
+      <div id="rf-stage"></div>
+    </div>
+  </div>
+  <script>
+    const mv = window.MV;
+    const list = mvFilmed();
+    const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+    document.getElementById("rf-src").textContent = mv.source_line;
+    // Each currency's items, in order: refunds, then disputes, each only when there were some.
+    const items = list.map((c) => {
+      const out = [];
+      if (c.refunds.count) out.push({ label: `Refunds · ${c.code.toUpperCase()}`, money: c.refunds, count: plural(c.refunds.count, "refund", "refunds") });
+      if (c.disputes.count) {
+        const won = c.dispute_reversals.count ? `; ${plural(c.dispute_reversals.count, "dispute", "disputes")} won back, ${c.dispute_reversals.display}` : "";
+        out.push({ label: `Disputes · ${c.code.toUpperCase()}`, money: c.disputes, count: plural(c.disputes.count, "dispute", "disputes") + won });
+      }
+      return out;
+    });
+    document.getElementById("rf-stage").innerHTML = list.map((c, s) => {
+      if (!items[s].length) return `<div class="rf-item" id="rf-${s}-0"><div class="rf-label">${c.code.toUpperCase()}</div><div class="rf-none">No refunds or disputes</div></div>`;
+      return items[s].map((it, k) => `<div class="rf-item" id="rf-${s}-${k}"><div class="rf-label">${esc(it.label)}</div>`
+        + `<div class="rf-num" id="rf-num-${s}-${k}"></div><div class="rf-count"><i></i>${esc(it.count)}</div></div>`).join("");
+    }).join("");
+    rfReady(["rf-src"]).then(() => {
+      const tl = gsap.timeline({ paused: true });
+      const seg = mvSeg("refunds");
+      tl.fromTo("#rf-src", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.1);
+      list.forEach((c, s) => {
+        const parts = Math.max(1, items[s].length);
+        const part = seg / parts;
+        for (let k = 0; k < parts; k++) {
+          const t0 = s * seg + k * part;
+          const id = `#rf-${s}-${k}`;
+          tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, t0);
+          tl.fromTo(id, { scale: 1 }, { scale: 1.03, duration: part, ease: "none" }, t0);
+          if (items[s].length) {
+            const el = document.getElementById(`rf-num-${s}-${k}`);
+            el.textContent = items[s][k].money.display;
+            rfFit(el, { w: 0.84 * innerWidth, max: 0.3 * innerHeight });
+            mvCount(tl, el, items[s][k].money, c.symbol, t0 + 0.25);
+            tl.fromTo(`${id} .rf-count`, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, t0 + 1.5);
+          }
+          const last = s === list.length - 1 && k === parts - 1;
+          if (!last) tl.to(id, { opacity: 0, duration: 0.18, ease: "power3.in" }, t0 + part - 0.2);
+        }
+      });
+      window.__timelines["refunds"] = tl;
+    });
+  </script>
+</template>

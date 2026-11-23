@@ -1,0 +1,77 @@
+{
+ "server": "stripe",
+ "description": "A fake Composio Stripe toolkit for Larkspur Ceramics, UTC: the week of 16 November holds only a payout; one charge the week before and one after. Its list answers every transaction on one page. It reads nothing real.",
+ "tools": {
+  "STRIPE_LIST_BALANCE_TRANSACTIONS": {
+   "description": "List balance transactions (the money moving in and out of your Stripe balance), newest first. Filter by created (gt, gte, lt, lte, Unix seconds), currency, payout, source, type; page with limit (1-100) and starting_after or ending_before.",
+   "input": {
+    "type": "object",
+    "properties": {
+     "created": {
+      "type": "object",
+      "description": "Only transactions created in this range, Unix seconds: gt, gte, lt, lte."
+     },
+     "currency": {
+      "type": "string"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+     },
+     "starting_after": {
+      "type": "string",
+      "description": "A transaction id: the page after it."
+     },
+     "ending_before": {
+      "type": "string"
+     },
+     "type": {
+      "type": "string"
+     },
+     "payout": {
+      "type": "string"
+     },
+     "source": {
+      "type": "string"
+     }
+    }
+   },
+   "answers": [],
+   "default": {
+    "content": [
+     {
+      "type": "text",
+      "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"txn_3Qct2E9WQQARZsfXNZP9Fyag\",\"object\":\"balance_transaction\",\"amount\":30000,\"available_on\":1795572000,\"created\":1795399200,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":900,\"fee_details\":[{\"amount\":900,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":29100,\"reporting_category\":\"charge\",\"source\":\"ch_3QVtQBippWibUg7RjR6ZV6Td\",\"status\":\"available\",\"type\":\"charge\"},{\"id\":\"txn_3QS7rFSzDbhEWYuWRErpnwCW\",\"object\":\"balance_transaction\",\"amount\":-200000,\"available_on\":1795165200,\"created\":1794992400,\"currency\":\"usd\",\"description\":\"STRIPE PAYOUT\",\"exchange_rate\":null,\"fee\":0,\"fee_details\":[],\"net\":-200000,\"reporting_category\":\"payout\",\"source\":\"po_3QAittitJZpjJ3cVTJcL7erW\",\"status\":\"pending\",\"type\":\"payout\"},{\"id\":\"txn_3QExWvcFsTDd9xgAfHwGPpre\",\"object\":\"balance_transaction\",\"amount\":90000,\"available_on\":1794736800,\"created\":1794564000,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":2640,\"fee_details\":[{\"amount\":2640,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":87360,\"reporting_category\":\"charge\",\"source\":\"ch_3Q2xaJrpzvFU6Ghw7ka8ykWX\",\"status\":\"available\",\"type\":\"charge\"}],\"has_more\":false,\"url\":\"/v1/balance_transactions\"},\"successful\":true,\"error\":null}"
+     }
+    ]
+   }
+  },
+  "STRIPE_SEARCH_CHARGES": {
+   "description": "Search charges with Stripe's search query language (query, limit, page).",
+   "input": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     },
+     "limit": {
+      "type": "integer"
+     },
+     "page": {
+      "type": "string"
+     }
+    }
+   },
+   "answers": [],
+   "default": {
+    "content": [
+     {
+      "type": "text",
+      "text": "{\"data\":{\"object\":\"search_result\",\"data\":[{\"id\":\"ch_3QVtQBippWibUg7RjR6ZV6Td\",\"object\":\"charge\",\"amount\":30000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1795399200,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}},{\"id\":\"ch_3Q2xaJrpzvFU6Ghw7ka8ykWX\",\"object\":\"charge\",\"amount\":90000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1794564000,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}}],\"has_more\":false,\"next_page\":null},\"successful\":true,\"error\":null}"
+     }
+    ]
+   }
+  }
+ }
+}
