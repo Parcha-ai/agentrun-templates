@@ -202,9 +202,10 @@ numbers in `error`.
 
 `submit_job` `veed/fabric-1.0` for each anchor segment of the plan, in order (cold-open, lead-a, lead-b, lead-c,
 closing), key `ns-<date>-anchor-<segment>`: `{image_url: the still's images[0].url or the anchor image URL,
-audio_url: that segment's voice audio.url, the https URL fal answered (never a sandbox path or a copy), resolution:
-"480p"}` and nothing else. Always send "480p": the run's spend cap prices Fabric only at that rate, held at the voice's
-whole seconds read from that URL, and refuses a job at 720p or with no resolution unsent. Then **one** `wait_for_jobs` with them all, `index` 0 up in that
+audio_url: that segment's voice audio.url, the https URL fal answered (never a sandbox path, a copy or another host),
+resolution: "480p"}` and nothing else. Always send "480p": the run's spend cap prices Fabric only at that rate, held at
+the voice's whole seconds read from that URL, and only for a voice on fal's own media (fal.media); it refuses a job at
+720p, with no resolution or with a voice anywhere else unsent. Then **one** `wait_for_jobs` with them all, `index` 0 up in that
 order, read as in step 5 (a talking head often takes several minutes; after 12 minutes treat one still pending as
 failed). `web_save` each video to `media/anchor-<segment>.mp4`.
 

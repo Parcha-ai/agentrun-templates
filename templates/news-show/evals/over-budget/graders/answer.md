@@ -15,6 +15,7 @@ Read the answer's last fenced `json` block. Pass only if all hold:
 3. **Still picked.** `stories` holds the three it would show: A is N1 (https://transitwire.example/2026/11/23/airport-link-one-million), B and C R1 (https://transitwire.example/2026/11/21/line-4-extension-opens) and N2
    (https://transitwire.example/2026/11/22/n9-night-bus-every-15-minutes) in either order.
 4. **Nothing remembered.** `stories_shown` is empty (nothing was handed and nothing was shown).
-5. **Report.** `report_markdown` names the full plan's cost, max_fal_usd 2.00, and the short plan as the one that fits.
+5. **Report.** `report_markdown` names the full plan's cost, max_fal_usd 2.00, and the short plan as the one that fits,
+   with how to choose it: the `plan` setting, or `plan` in a run's input.
 
 Answer pass or fail, and quote what decided it.

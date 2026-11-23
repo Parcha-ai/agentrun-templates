@@ -134,7 +134,7 @@
       "type": ["object", "null"],
       "additionalProperties": false,
       "required": ["name", "usd"],
-      "description": "on over_budget, the largest plan that fits max_fal_usd (null when none does); else null",
+      "description": "on over_budget, the largest plan smaller than the run's that fits max_fal_usd (null when none does); else null",
       "properties": { "name": { "enum": ["short", "voice-only"] }, "usd": { "type": "number", "minimum": 0 } }
     },
     "captions_timing": { "enum": ["aligned", "anchored", "measured", null], "description": "as the kit's build script printed it: aligned to fal's characters in every segment, anchored when a segment's characters don't spell its script, measured when a segment had no timestamps" },

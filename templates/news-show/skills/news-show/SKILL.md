@@ -24,8 +24,11 @@ links elsewhere is not a story: skip it.
   never from a URL's path alone.
 - **Repeats**: compare each candidate with every `stories_shown` entry by URL first (scheme, `www.`, query, fragment
   and trailing slash ignored), then by event: two pages about the same opening, vote, decision or release are one
-  event. A follow-up is new only when it reports a new development: a new figure, a decision taken, a date set. A
-  gallery, a recap or a reaction piece about a shown event is a repeat. Name each skipped one in `skipped_repeats`.
+  event. A follow-up is new only when it reports a new development: a new figure, a decision taken, a date set. Name
+  each skipped one in `skipped_repeats`.
+- **Pointers**: a gallery, a recap, a reaction piece or a page that sends the reader to an event's full story is never
+  a candidate of its own, whether or not the event was shown: when the event is picked, its candidate is the full
+  story's page, dated as that page is. Name each one left out in `skipped_repeats`.
 - **Order**: newest first by its date; two candidates about one event: keep the one with more of the event's own
   facts.
 - **Facts**: from each story's page pick one or two things to show: a figure with what it counts ("3.2 km of new
