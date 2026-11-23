@@ -622,11 +622,18 @@ const STRIPES_OWN = new Set(["object", "type", "reporting_category", "currency",
 const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
 // A name's shape: two words side by side, each a capital and then letters, as a first and a last name.
 const NAMEWORD = /^\p{Lu}[\p{L}'’-]+$/u;
-// A name as people write one: a capital, then lower case somewhere (an apostrophe or a second capital allowed). Such a
-// pair, and an email, is looked for in any case, in capitals or in lower case. Stripe writes its own lines in capitals
-// ("REFUND FOR CHARGE", "STRIPE PAYOUT"): those pairs, and every whole value, are looked for as written, so a film that
-// says "a refund for" or "a Stripe payout" in its own words is not taken for customer data.
+// A pair is looked for in any case (in capitals, in lower case), as an email is, when it can be a name: both words in
+// title case (a capital, then lower case somewhere), or any pair with a word that isn't one of Stripe's own. Stripe
+// writes its own lines in capitals ("REFUND FOR CHARGE", "STRIPE PAYOUT"): a pair of only its words, and every whole
+// value, is looked for as written, so a film that says "a refund for" in its own words is not taken for customer data.
+// A name Stripe holds in capitals is still a name in any case.
 const TITLED = (w) => NAMEWORD.test(w) && /\p{Ll}/u.test(w);
+const STRIPES_WORDS = new Set(
+  ("refund refunds for charge charges stripe payout payouts dispute disputes disputed fee fees chargeback withdrawal " +
+    "reversal billing usage processing radar connect tax invoicing transfer adjustment application payment failure " +
+    "failed partial capture account active of to from and the in on at by").split(" "),
+);
+const nameLike = (a, b) => (TITLED(a) && TITLED(b)) || !STRIPES_WORDS.has(a.toLowerCase()) || !STRIPES_WORDS.has(b.toLowerCase());
 function customerValues(dir) {
   const found = new Map(); // value -> { where it came from, any case or not }, never printed with the value
   const add = (value, where, anyCase = false) => {
@@ -645,7 +652,7 @@ function customerValues(dir) {
       const words = v.split(/\s+/).map((w) => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ""));
       for (let i = 0; i + 1 < words.length; i++) {
         if (NAMEWORD.test(words[i]) && NAMEWORD.test(words[i + 1])) {
-          add(`${words[i]} ${words[i + 1]}`, `${where}: a name in its ${key}`, TITLED(words[i]) && TITLED(words[i + 1]));
+          add(`${words[i]} ${words[i + 1]}`, `${where}: a name in its ${key}`, nameLike(words[i], words[i + 1]));
         }
       }
     } else if (Array.isArray(value)) value.forEach((v) => walk(v, key, where));
