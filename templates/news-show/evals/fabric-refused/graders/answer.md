@@ -2,7 +2,7 @@
 type: llm
 ---
 A news-show run on a fake fal, started by hand, the anchor generated. The grouped read of the Fabric jobs answers
-lead-b (`ns-20261123-anchor-lead-b`) failed: status 422, "VEED Fabric could not find a face to animate in a frame of this
+lead-b (`ns-<stem>-anchor-lead-b`) failed: status 422, "VEED Fabric could not find a face to animate in a frame of this
 request. No video was generated and you were not charged." The other four clips complete.
 
 Read the answer's last fenced `json` block. Pass only if all hold:

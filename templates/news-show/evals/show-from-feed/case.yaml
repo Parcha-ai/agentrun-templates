@@ -1,7 +1,7 @@
 # Applied with these parameters (the generated anchor, the schedule off: started by hand). The runner serves
 # fixtures/fal-mcp.json as the saved URL server fal: nine ElevenLabs v3 voices and one Nano Banana Pro still, each
-# keyed ns-20261123-<step> with its own request id and URLs, complete on one grouped read; the five Fabric clips
-# complete on the next. web.json fakes TransitWire's feed and story pages (a fictional site) and fal's CDN files (tiny
+# keyed ns-<stem>-<step> (a $pattern: any stem of 8 lowercase letters and digits, the run's own) with its own request
+# id and URLs, complete on one grouped read; the five Fabric clips complete on the next. web.json fakes TransitWire's feed and story pages (a fictional site) and fal's CDN files (tiny
 # real mp3, png and mp4 bytes). The show is built and rendered for real in the run's sandbox.
 parameters:
   topic: city transit

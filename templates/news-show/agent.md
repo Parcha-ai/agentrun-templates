@@ -165,9 +165,15 @@ does), in `report_markdown` too, with how to choose it: the `plan` setting, or `
 ## 5. The still and the voices, at once
 
 Every paid call has its own `submission_key`, beside `endpoint_id` and `input`, never inside `input`:
-`ns-<YYYYMMDD>-<step>`, the show's date, `<step>` one of `anchor-image`, `voice-<segment>`, `anchor-<segment>`. On
-2026-11-23 the cold open's voice is `ns-20261123-voice-cold-open`. When fal refuses a key because it already holds it
-for other inputs, nothing was billed: send that one job again with `-b` after its key, once.
+`ns-<stem>-<step>`, `<step>` one of `anchor-image`, `voice-<segment>`, `anchor-<segment>`. **The stem**: before the
+first paid call, `read` `media/run-keys.json`. When it holds `{"stem": "<8 lowercase letters and digits>"}` (a resumed
+run), use that stem. Otherwise make one stem of 8 random lowercase letters and digits (with `bash`:
+`tr -dc a-z0-9 < /dev/urandom | head -c 8`, never one you make up) and `write` it there as `{"stem": "<stem>"}` before
+any paid call.
+Never make a second stem in a run: a retry and a resume reuse it. With the stem `k7m2p9qa` the cold open's voice is
+`ns-k7m2p9qa-voice-cold-open` and lead A's clip `ns-k7m2p9qa-anchor-lead-a`. No date goes in a key; the show's date
+stays in the files and the answer. When fal refuses a key because it already holds it for other inputs in this run,
+nothing was billed: send that one job again with `-b` after its key, once.
 
 `submit_job` the nine voices, in the segments' order, then the still (only when the plan animates the anchor and
 there is no anchor image), with no other call between them:
@@ -201,7 +207,7 @@ lead-a, until it fits; each dropped segment is a desk card, `status: "partial"`,
 numbers in `error`.
 
 `submit_job` `veed/fabric-1.0` for each anchor segment of the plan, in order (cold-open, lead-a, lead-b, lead-c,
-closing), key `ns-<date>-anchor-<segment>`: `{image_url: the still's images[0].url or the anchor image URL,
+closing), key `ns-<stem>-anchor-<segment>`: `{image_url: the still's images[0].url or the anchor image URL,
 audio_url: that segment's voice audio.url, the https URL fal answered (never a sandbox path, a copy or another host),
 resolution: "480p"}` and nothing else. Always send "480p": the run's spend cap prices Fabric only at that rate, held at
 the voice's whole seconds read from that URL, and only for a voice on fal's own media (fal.media); it refuses a job at
