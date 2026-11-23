@@ -12,7 +12,7 @@ Read the answer's last fenced `json` block. Pass only if all hold:
    `estimated_usd` between 1.885 and 1.895: the plan's price is stated.
 3. `languages` has five entries, `es`, `fr`, `de`, `it`, `pt` in that order, each `saved`, with `video_path`
    `media/<lang>.mp4`, `captions_path` `media/<lang>.vtt` and `lipsync_path` null.
-4. `fal_cost_usd.steps` lists twelve paid steps (voice, transcript, then dub-, voice- and captions- for each language),
+4. `fal_cost_usd.steps` lists seventeen paid steps (voice, transcript, then dub-, voice- and captions- for each language),
    each 0.5 minutes at its rate; `total` is between 1.885 and 1.895 and is the sum of the steps' usd.
 5. `report_markdown` embeds each of `media/es.mp4`, `media/fr.mp4`, `media/de.mp4`, `media/it.mp4` and `media/pt.mp4`.
 
