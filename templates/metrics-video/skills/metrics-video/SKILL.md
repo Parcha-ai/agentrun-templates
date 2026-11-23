@@ -123,6 +123,10 @@ node film/metrics.mjs place --film film [--seconds <F2>]
 re-voice, copy `media/voiceover-2.mp3` to `film/assets/voiceover.mp3` instead. `--seconds` only when the voice runs
 long (the agent's step 5).
 
+`place` reads back what it wrote: each scene's host in `film/index.html` and that scene's span must last the same. When
+they don't, it exits 2 and names the scene. Copy the kit's `index.html` and `compositions/` into `film/` again, then run
+`compute` and `place` again; never edit a length by hand.
+
 ## 6. Captions, and scenes on the voice
 
 ```sh

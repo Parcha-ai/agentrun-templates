@@ -23,8 +23,9 @@
 //
 // A page file is {"has_more": <bool as Stripe answered>, "transactions": [{"id", "created", "type",
 // "reporting_category", "currency", "amount", "fee", "net"}, ...]}, the fields copied exactly from Stripe's answer and
-// nothing else (no description, no customer, no source). Exit 2: wrong arguments; 3: the pages are wrong or
-// incomplete (the message says what to fix); 0: done.
+// nothing else (no description, no customer, no source). Exit 2: wrong arguments, or a film whose files don't match
+// the kit (place reads every host and scene back after writing them; the message names the scene); 3: the pages are
+// wrong or incomplete (the message says what to fix); 0: done.
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -554,8 +555,21 @@ function place(film, data, at, seconds) {
   for (const s of plan) {
     const file = join(film, "compositions", `${s.name}.html`);
     if (!existsSync(file)) fail(2, `${file} is missing: copy the kit's compositions again`);
-    const scene = readFileSync(file, "utf8").replace(/(<div[^>]*data-mv-span[^>]*data-duration=")[0-9.]+(")/, `$1${timing[s.name].seconds}$2`);
-    writeFileSync(file, scene);
+    // The span's opening tag, whatever order its attributes are in.
+    const text = readFileSync(file, "utf8");
+    const span = text.match(/<div\b[^>]*\bdata-mv-span\b[^>]*>/);
+    const dur = /\bdata-duration="[0-9.]+"/;
+    if (!span || !dur.test(span[0])) fail(2, `${file} has no <div data-mv-span> with a data-duration: copy the kit's compositions again`);
+    writeFileSync(file, text.replace(span[0], () => span[0].replace(dur, `data-duration="${timing[s.name].seconds}"`)));
+  }
+  // Read back what was written: each host in index.html and its scene's span must last the same.
+  const written = readFileSync(path, "utf8");
+  const lasts = (tag) => (tag ? tag[0].match(/\bdata-duration="([0-9.]+)"/)?.[1] : undefined);
+  for (const s of plan) {
+    const host = lasts(written.match(new RegExp(`<div\\b[^>]*\\bid="${s.name}"[^>]*>`)));
+    const span = lasts(readFileSync(join(film, "compositions", `${s.name}.html`), "utf8").match(/<div\b[^>]*\bdata-mv-span\b[^>]*>/));
+    if (host === undefined || span === undefined || Number(host) !== Number(span) || Number(host) !== timing[s.name].seconds)
+      fail(2, `${s.name}: its host in index.html lasts ${host ?? "(no host)"} s but its span lasts ${span ?? "(no span)"} s, and place set ${timing[s.name].seconds} s: copy the kit's index.html and compositions again, then run compute and place again`);
   }
   data.timing = timing;
   data.film_seconds = total;
