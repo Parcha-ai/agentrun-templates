@@ -1,0 +1,15 @@
+# Live: no fakes. NEEDS A PAID SLOT: about $4 to $5 of fal on the owner's account (lyrics about $0.07, 8 to 10 stills
+# about $1.50, 30 to 36 s of Kling clips at $0.112 a second about $3.40-$4.00), so it runs only with --on-data on a
+# data folder that has the fal server saved (toolkit fal, the owner's own key), in a slot the lead books for paid
+# runs. The song is one we make ourselves, so the rights are ours: before the run, the operator makes a 30 s song with
+# words on fal's ElevenLabs Music (fal-ai/elevenlabs/music, music_length_ms 30000), saves it at a public https link,
+# and puts that link in prompt.md's song_url in place of the placeholder. The placeholder's .example host can't be
+# fetched: run unchanged, the case is refused at the song step. The film is rendered for real. Pass: 1 of 1.
+# The five fal tools the package lists, granted, so each paid call is the agent's choice.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T15:00:00Z

@@ -1,0 +1,798 @@
+#!/usr/bin/env node
+// beats.mjs: every number of the music video, worked out by code from the song itself. The agent never judges timing:
+// this script decodes the song with FFmpeg, finds its beats, tempo and bar lines, measures each bar's energy, picks
+// the cut, splits it into shots on bar lines, prices the plan from fal's rates, maps the lyrics' word times into the
+// cut, writes the film's scene list and reads it back. Nothing here guesses a figure it cannot work out: that is an
+// error, never an estimate. It uses only node's fs, path and child_process, and runs only ffmpeg and ffprobe.
+//
+//   node beats.mjs plan   --song media/song.mp3 --film film [--cut 60] [--start 42.5] [--aspect 16:9] [--lyrics true]
+//   node beats.mjs price  --film film --rates isolation=0.1,transcript=0.03,still=0.15,clip=0.14 --max 12
+//   node beats.mjs lyrics --film film --words media/transcript.json --vtt media/lyrics.vtt
+//   node beats.mjs place  --film film
+//   node beats.mjs cost   --film film --stem r4t8k2wq --sent isolate,transcript,still-1,...,clip-12 [--failed clip-5,...]
+//
+// plan    decodes the song (mono, 11025 Hz), builds an onset curve from three frequency bands, finds the tempo by
+//         autocorrelation (60 to 200 BPM, weighted toward 120), fits a beat grid to the whole song, snaps it to the
+//         onsets, keeps the steady grid when the song holds its tempo, picks the bar's first beat (4/4) by where the low
+//         band's onsets are strongest, measures each bar's energy, and picks the cut: the song whole when it is shorter
+//         than --cut; else the whole bars nearest --cut from the bar line nearest --start; else the loudest run of those
+//         bars that starts on a bar line. Then the shots: whole bars (the first and last shot of a whole song also hold
+//         its lead-in and its tail), each 3 to 10 s, as even as the bars allow, the longer ones where the song is
+//         quieter, together exactly the cut. It writes film/plan.json, which every later command reads.
+// price   the plan priced from get_pricing's rates (isolation and transcript per minute of the song, a still per image,
+//         a clip per second), with two stills held in reserve for remakes; over --max, the largest cheaper plan that
+//         fits: the same cut with fewer shots, else a shorter cut. It writes film/price.json.
+// lyrics  speech-to-text's words (fal's answer, written to a file as fal gave it) mapped into the cut: lines, the lyric
+//         under each shot, film/lyrics.json, the WebVTT file and film/compositions/lyrics.html (the captions scene).
+// place   writes each shot into film/index.html on the cut's clock (its clip, or its still with a slow push-in when
+//         there is no usable clip), the song's segment cut by FFmpeg into film/assets/song.m4a as the only audio, the
+//         captions host when lyrics are on and there are words; then reads everything back.
+// cost    the answer's fal_cost_usd from the steps sent (a failed or refused one at 0), at the rates price used, each
+//         with its key mu-<stem>-<step>.
+//
+// Exit 2: wrong arguments, or a film whose files don't match the plan (place reads every shot back after writing it;
+// the message names the shot); 3: the song can't be decoded, is too short, or has no beat to cut on; 0: done.
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+
+const SR = 11025; // decode rate: enough for kick, snare and hats
+const HOP = 64; // onset frames every 5.8 ms
+const WIN = 512; // each frame's energy over 46 ms, ending at the frame's time
+const MIN_BPM = 60;
+const MAX_BPM = 200;
+const SHOT_MIN = 3; // seconds: Kling's shortest clip
+const SHOT_MAX = 10;
+const SHOT_TARGET = 5;
+const CUT_MIN = 10;
+const CUT_MAX = 90;
+const SONG_MIN = 6;
+const SONG_MAX = 10 * 60;
+const RESERVE = 2; // stills priced in reserve for remakes
+const SIZES = { "16:9": [1920, 1080], "9:16": [1080, 1920] };
+const LINE_GAP = 0.6; // a pause this long starts a new lyric line
+const LINE_WORDS = 7;
+
+function fail(code, message) {
+  console.error(message);
+  process.exit(code);
+}
+
+// ---------- arguments ----------
+const [command, ...rest] = process.argv.slice(2);
+const args = {};
+for (let i = 0; i < rest.length; i++) {
+  const a = rest[i];
+  if (!a.startsWith("--")) fail(2, `unexpected argument ${a}: every option is --name value (the header of this file lists them)`);
+  const next = rest[i + 1];
+  if (next === undefined || next.startsWith("--")) args[a.slice(2)] = "true";
+  else {
+    args[a.slice(2)] = next;
+    i++;
+  }
+}
+const need = (k) => (args[k] === undefined || args[k] === "true" ? fail(2, `--${k} is required`) : args[k]);
+const num = (k, fallback) => {
+  if (args[k] === undefined) return fallback;
+  const v = Number(args[k]);
+  if (!Number.isFinite(v)) fail(2, `--${k} is a number: ${args[k]}`);
+  return v;
+};
+const bool = (k, fallback) => (args[k] === undefined ? fallback : args[k] === "true" ? true : args[k] === "false" ? false : fail(2, `--${k} is true or false`));
+const ms = (s) => Math.round(s * 1000);
+const r3 = (s) => Math.round(s * 1000) / 1000;
+const r2 = (s) => Math.round(s * 100) / 100;
+const usd = (v) => Math.round(v * 1000 + 1e-9) / 1000;
+
+// ---------- the song ----------
+function probeSeconds(path) {
+  const r = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path], { encoding: "utf8" });
+  const v = Number((r.stdout || "").trim());
+  return r.status === 0 && Number.isFinite(v) && v > 0 ? v : undefined;
+}
+function decode(path) {
+  const r = spawnSync("ffmpeg", ["-v", "error", "-nostdin", "-i", path, "-vn", "-ac", "1", "-ar", String(SR), "-f", "f32le", "-"], { maxBuffer: 1 << 30 });
+  if (r.error || r.status !== 0) fail(3, `ffmpeg could not decode ${path}: ${String(r.stderr || r.error || "").trim().split("\n").slice(-3).join(" ")}`);
+  const n = Math.floor(r.stdout.length / 4);
+  return new Float32Array(r.stdout.buffer.slice(r.stdout.byteOffset, r.stdout.byteOffset + n * 4));
+}
+function onePole(x, fc) {
+  const a = 1 - Math.exp((-2 * Math.PI * fc) / SR);
+  const y = new Float32Array(x.length);
+  let v = 0;
+  for (let i = 0; i < x.length; i++) {
+    v += a * (x[i] - v);
+    y[i] = v;
+  }
+  return y;
+}
+// Each band's energy over WIN samples ending at each frame, as log energy with a floor 40 dB under the band's loudest.
+function bandLogs(band, frames) {
+  const cs = new Float64Array(band.length + 1);
+  for (let i = 0; i < band.length; i++) cs[i + 1] = cs[i] + band[i] * band[i];
+  const e = new Float64Array(frames);
+  let hi = 0;
+  for (let i = 0; i < frames; i++) {
+    const end = i * HOP + WIN;
+    e[i] = (cs[end] - cs[end - WIN]) / WIN;
+    if (e[i] > hi) hi = e[i];
+  }
+  const floor = Math.max(hi * 1e-4, 1e-12);
+  return e.map((v) => Math.log(v + floor));
+}
+function rise(logs) {
+  const o = new Float64Array(logs.length);
+  for (let i = 1; i < logs.length; i++) o[i] = Math.max(0, logs[i] - logs[i - 1]);
+  return o;
+}
+// The curve less its moving average over +-0.2 s, below zero clipped: the onsets that stand out from what's around them.
+function standOut(o) {
+  const half = Math.round((0.2 * SR) / HOP);
+  const cs = new Float64Array(o.length + 1);
+  for (let i = 0; i < o.length; i++) cs[i + 1] = cs[i] + o[i];
+  return o.map((v, i) => {
+    const a = Math.max(0, i - half), b = Math.min(o.length, i + half + 1);
+    return Math.max(0, v - (cs[b] - cs[a]) / (b - a));
+  });
+}
+const frameOf = (t) => (t * SR - WIN) / HOP; // a frame's time is its window's end
+const timeOf = (f) => (f * HOP + WIN) / SR;
+function at(curve, t) {
+  const f = frameOf(t);
+  const i = Math.floor(f);
+  if (i < 0 || i + 1 >= curve.length) return 0;
+  return curve[i] + (curve[i + 1] - curve[i]) * (f - i);
+}
+function peakNear(curve, t, half) {
+  let best = -1, when = t;
+  const a = Math.max(0, Math.ceil(frameOf(t - half))), b = Math.min(curve.length - 1, Math.floor(frameOf(t + half)));
+  for (let i = a; i <= b; i++) if (curve[i] > best) { best = curve[i]; when = timeOf(i); }
+  return { value: Math.max(0, best), t: when };
+}
+function median(values) {
+  const s = [...values].sort((x, y) => x - y);
+  return s.length ? s[Math.floor(s.length / 2)] : 0;
+}
+
+function analyse(path) {
+  const x = decode(path);
+  const analysed = x.length / SR;
+  if (analysed < SONG_MIN) fail(3, `the song decodes to ${r2(analysed)} s: at least ${SONG_MIN} s is needed for a cut`);
+  if (analysed > SONG_MAX) fail(3, `the song decodes to ${r2(analysed)} s: at most ${SONG_MAX / 60} minutes`);
+  const lo = onePole(x, 150);
+  const lp2k = onePole(x, 2000);
+  const mid = lp2k.map((v, i) => v - lo[i]);
+  const hi = x.map((v, i) => v - lp2k[i]);
+  const frames = Math.max(0, Math.floor((x.length - WIN) / HOP) + 1);
+  if (frames < 64) fail(3, "the song is too short to find a beat in");
+  const lowRise = rise(bandLogs(lo, frames));
+  const midRise = rise(bandLogs(mid, frames));
+  const hiRise = rise(bandLogs(hi, frames));
+  const allRise = lowRise.map((v, i) => v + midRise[i] + hiRise[i]);
+  const onset = standOut(allRise);
+  const low = standOut(lowRise);
+
+  // Tempo: autocorrelation of the onset curve over 60 to 200 BPM, weighted by a log-normal around 120 BPM (one octave
+  // wide), the peak refined by a parabola.
+  const fps = SR / HOP;
+  const lagLo = Math.floor((fps * 60) / MAX_BPM), lagHi = Math.ceil((fps * 60) / MIN_BPM);
+  const ac = new Float64Array(lagHi + 2);
+  for (let l = lagLo - 1; l <= lagHi + 1; l++) {
+    let s = 0;
+    for (let i = 0; i + l < onset.length; i++) s += onset[i] * onset[i + l];
+    ac[l] = s / (onset.length - l);
+  }
+  let bestLag = 0, bestScore = -1;
+  for (let l = lagLo; l <= lagHi; l++) {
+    const bpm = (fps * 60) / l;
+    const w = Math.exp(-0.5 * Math.log2(bpm / 120) ** 2);
+    if (ac[l] * w > bestScore) { bestScore = ac[l] * w; bestLag = l; }
+  }
+  if (!(bestScore > 0)) fail(3, "the song has no beat to cut on: its onsets show no tempo between 60 and 200 BPM");
+  const [a0, a1, a2] = [ac[bestLag - 1], ac[bestLag], ac[bestLag + 1]];
+  const shift = a0 - 2 * a1 + a2 !== 0 ? (0.5 * (a0 - a2)) / (a0 - 2 * a1 + a2) : 0;
+  const bpm0 = (fps * 60) / (bestLag + Math.max(-0.5, Math.min(0.5, shift)));
+
+  // The grid: the tempo within 3% and the phase (5 ms steps) whose beats sit on the most onset over the whole song.
+  let grid = { score: -1, bpm: bpm0, phase: 0 };
+  for (let bpm = bpm0 * 0.97; bpm <= bpm0 * 1.03; bpm += 0.02) {
+    const p = 60 / bpm;
+    for (let phase = 0; phase < p; phase += 0.005) {
+      let s = 0;
+      for (let t = phase; t < analysed; t += p) s += at(onset, t);
+      if (s > grid.score) grid = { score: s, bpm, phase };
+    }
+  }
+  let period = 60 / grid.bpm;
+  const gridTimes = [];
+  for (let t = grid.phase; t < analysed - 0.02; t += period) gridTimes.push(t);
+  // Snap each grid beat to the strongest onset within 12% of a beat (at most 60 ms); a beat with an onset at least 35%
+  // of the median beat's is strong. A steady song (the strong beats fit a line within 20 ms) keeps the fitted grid.
+  const half = Math.min(0.06, 0.12 * period);
+  const near = gridTimes.map((t) => peakNear(onset, t, half));
+  const typical = median(near.map((n) => n.value));
+  const strong = near.map((n) => typical > 0 && n.value >= 0.35 * typical);
+  const pts = near.map((n, k) => [k, n.t]).filter((_, k) => strong[k]);
+  let beats = gridTimes.slice(), tempo = "steady", residual = 0;
+  if (pts.length >= 8) {
+    const n = pts.length, sk = pts.reduce((s, p) => s + p[0], 0), st = pts.reduce((s, p) => s + p[1], 0);
+    const skk = pts.reduce((s, p) => s + p[0] * p[0], 0), skt = pts.reduce((s, p) => s + p[0] * p[1], 0);
+    const slope = (n * skt - sk * st) / (n * skk - sk * sk), icpt = (st - slope * sk) / n;
+    residual = Math.sqrt(pts.reduce((s, p) => s + (p[1] - (icpt + slope * p[0])) ** 2, 0) / n);
+    if (residual <= 0.02 && slope > 0) {
+      period = slope;
+      let k0 = Math.ceil(-icpt / slope - 1e-9);
+      beats = [];
+      for (let k = k0; icpt + k * slope < analysed - 0.02; k++) beats.push(icpt + k * slope);
+    } else {
+      tempo = "drifting";
+      beats = near.map((nb, k) => (strong[k] ? nb.t : gridTimes[k]));
+    }
+  }
+  beats = beats.filter((t) => t >= 0);
+  if (beats.length < 8) fail(3, "the song has fewer than 8 beats: no bar to cut on");
+  // Confidence: how much more onset sits on the beats than halfway between them, (on - off) / (on + off), 0 at worst.
+  // A click track is near 1, steady pop with busy hats nearer 0.3, noise or a beatless pad near 0.
+  let on = 0, off = 0;
+  for (const t of beats) {
+    on += peakNear(onset, t, half).value;
+    if (t + period / 2 < analysed) off += peakNear(onset, t + period / 2, half).value;
+  }
+  const confidence = on + off > 0 ? Math.max(0, Math.round(((on - off) / (on + off)) * 100) / 100) : 0;
+
+  // The bar's first beat (4/4): of the four phases, the one whose beats carry the strongest low-band onsets (the kick,
+  // the bass note), with the whole curve as a lighter second.
+  let downPhase = 0, downScore = -1;
+  for (let p = 0; p < 4; p++) {
+    let s = 0, c = 0;
+    for (let k = p; k < beats.length; k += 4) {
+      s += peakNear(low, beats[k], 0.03).value + 0.5 * peakNear(onset, beats[k], 0.03).value;
+      c++;
+    }
+    if (c && s / c > downScore) { downScore = s / c; downPhase = p; }
+  }
+  // Bar lines: every fourth beat from the first downbeat, carried on at the bar's length to the song's end.
+  const bar = 4 * period;
+  const lines = [];
+  for (let k = downPhase; k < beats.length; k += 4) lines.push(beats[k]);
+  while (lines[lines.length - 1] + bar <= analysed + 1e-6) lines.push(lines[lines.length - 1] + bar);
+  const meanSquare = (a, b) => {
+    const i = Math.max(0, Math.floor(a * SR)), j = Math.min(x.length, Math.floor(b * SR));
+    let s = 0;
+    for (let k = i; k < j; k++) s += x[k] * x[k];
+    return j > i ? s / (j - i) : 0;
+  };
+  const bars = [];
+  for (let j = 0; j + 1 < lines.length; j++) {
+    const m = meanSquare(lines[j], lines[j + 1]);
+    bars.push({ n: j + 1, start_s: r3(lines[j]), end_s: r3(lines[j + 1]), energy: m, db: m > 0 ? Math.round(10 * Math.log10(m) * 10) / 10 : -120 });
+  }
+  return { analysed, beats, period, bpm: 60 / period, tempo, residual, confidence, downPhase, lines, bars, meanSquare };
+}
+
+// ---------- the cut and the shots ----------
+// The shots of the cut [a, b] over its bar lines: segments between consecutive lines (a and b included), grouped into N
+// contiguous shots of 3 to 10 s, the lengths as even as the bars allow (least squares around (b - a) / N) and, among
+// equally even groupings, the longer shots where the bars are quieter (a small term: length squared times the group's
+// loudness, 0 for the quietest bar of the cut to 1 for the loudest).
+function shotsOf(a, b, inner, loudness) {
+  const points = [a, ...inner.filter((t) => t > a + 0.25 && t < b - 0.25), b].map(ms);
+  const segs = [];
+  for (let i = 0; i + 1 < points.length; i++) segs.push({ a: points[i], b: points[i + 1], len: (points[i + 1] - points[i]) / 1000, loud: loudness(points[i] / 1000, points[i + 1] / 1000) });
+  const m = segs.length, total = (points[m] - points[0]) / 1000;
+  const solve = (N) => {
+    const mean = total / N, LAMBDA = 0.002;
+    const best = Array.from({ length: N + 1 }, () => new Float64Array(m + 1).fill(Infinity));
+    const from = Array.from({ length: N + 1 }, () => new Int32Array(m + 1).fill(-1));
+    best[0][0] = 0;
+    for (let k = 1; k <= N; k++) {
+      for (let j = 1; j <= m; j++) {
+        let len = 0, loud = 0;
+        for (let i = j - 1; i >= 0; i--) {
+          len += segs[i].len;
+          loud += segs[i].len * segs[i].loud;
+          if (len > SHOT_MAX + 1e-6) break;
+          if (len < SHOT_MIN - 1e-6 || best[k - 1][i] === Infinity) continue;
+          const c = best[k - 1][i] + (len - mean) ** 2 + LAMBDA * len * len * (loud / len);
+          if (c < best[k][j] - 1e-9) { best[k][j] = c; from[k][j] = i; }
+        }
+      }
+    }
+    if (best[N][m] === Infinity) return null;
+    const cuts = [m];
+    for (let k = N, j = m; k > 0; k--) { j = from[k][j]; cuts.unshift(j); }
+    return cuts;
+  };
+  const n0 = Math.max(1, Math.round(total / SHOT_TARGET));
+  for (let d = 0; d <= m; d++) {
+    for (const N of d ? [n0 - d, n0 + d] : [n0]) {
+      if (N < 1 || N > m) continue;
+      const cuts = solve(N);
+      if (!cuts) continue;
+      return { n: N, groups: cuts.slice(0, -1).map((i, k) => segs.slice(i, cuts[k + 1])) };
+    }
+  }
+  return null;
+}
+function shotList(groups, bars) {
+  return groups.map((g, k) => {
+    const a = g[0].a, b = g[g.length - 1].b;
+    const seconds = (b - a) / 1000;
+    const whole = g.filter((s) => bars.some((x) => ms(x.start_s) === s.a && ms(x.end_s) === s.b)).length;
+    return { n: k + 1, start_s: a / 1000, end_s: b / 1000, seconds, bars: whole, partial: whole !== g.length, clip_seconds: Math.max(SHOT_MIN, Math.ceil(seconds - 1e-9)) };
+  });
+}
+function cutOf(song, cutAsked, startAsked, barsWanted) {
+  const { bars } = song;
+  const seconds = song.seconds;
+  const loudnessIn = (lo, hi) => (a, b) => {
+    const m = song.meanSquare(a, b);
+    const d = m > 0 ? 10 * Math.log10(m) : -120;
+    return hi > lo ? Math.max(0, Math.min(1, (d - lo) / (hi - lo))) : 0;
+  };
+  const range = (from, to) => {
+    const ds = bars.filter((x) => x.start_s >= from - 1e-6 && x.end_s <= to + 1e-6).map((x) => x.db);
+    return ds.length ? [Math.min(...ds), Math.max(...ds)] : [0, 0];
+  };
+  const finish = (a, b, chosen) => {
+    const [lo, hi] = range(a, b);
+    const inner = song.lines.filter((t) => t > a - 1e-6 && t < b + 1e-6);
+    const s = shotsOf(a, b, inner, loudnessIn(lo, hi));
+    if (!s) return null;
+    return { start_s: r3(a), end_s: r3(b), seconds: (ms(b) - ms(a)) / 1000, bars: bars.filter((x) => x.start_s >= a - 1e-6 && x.end_s <= b + 1e-6).length, chosen_by: chosen, shots: shotList(s.groups, bars) };
+  };
+  if (barsWanted === undefined && seconds < cutAsked) {
+    const c = finish(0, Math.min(seconds, song.analysed), "whole_song");
+    if (!c) fail(3, `the song (${r2(seconds)} s) can't be split into shots of ${SHOT_MIN} to ${SHOT_MAX} s on its bar lines`);
+    return c;
+  }
+  const barLen = song.period * 4;
+  let B = barsWanted ?? Math.round(cutAsked / barLen);
+  while (B * barLen > CUT_MAX + 1e-6) B--;
+  B = Math.min(B, bars.length);
+  if (startAsked !== undefined) {
+    // From the bar line nearest start_s, never moved: a cut that would run past the song's end is shortened to the
+    // whole bars left (said in the plan).
+    const i0 = bars.reduce((best, x, i) => (Math.abs(x.start_s - startAsked) < Math.abs(bars[best].start_s - startAsked) ? i : best), 0);
+    const left = bars.length - i0;
+    if (left * barLen < CUT_MIN - 1e-6) fail(3, `from the bar line nearest ${startAsked} s (${bars[i0].start_s} s) only ${left} whole bar${left === 1 ? "" : "s"} (${r2(left * barLen)} s) remain: at least ${CUT_MIN} s is needed; ask for an earlier start_s`);
+    for (let b = Math.min(B, left); b >= 1 && b * barLen >= CUT_MIN - 1e-6; b--) {
+      const c = finish(bars[i0].start_s, bars[i0 + b - 1].end_s, "start_s");
+      if (c) return { ...c, shortened: b < B };
+    }
+  } else {
+    for (; B >= 1 && B * barLen >= CUT_MIN - 1e-6; B--) {
+      let best = -1, bi = -1;
+      for (let i = 0; i + B <= bars.length; i++) {
+        let s = 0;
+        for (let j = i; j < i + B; j++) s += bars[j].energy * (bars[j].end_s - bars[j].start_s);
+        if (s > best * (1 + 1e-9)) { best = s; bi = i; }
+      }
+      if (bi < 0) continue;
+      const c = finish(bars[bi].start_s, bars[bi + B - 1].end_s, "loudest");
+      if (c) return c;
+    }
+  }
+  fail(3, `no run of whole bars of the song fits a cut near ${cutAsked} s with shots of ${SHOT_MIN} to ${SHOT_MAX} s`);
+}
+
+function plan() {
+  const songPath = need("song"), film = need("film");
+  const cutAsked = num("cut", 60);
+  if (!(cutAsked >= CUT_MIN && cutAsked <= CUT_MAX)) fail(2, `--cut is ${CUT_MIN} to ${CUT_MAX} seconds`);
+  const startAsked = args.start === undefined ? undefined : num("start");
+  if (startAsked !== undefined && !(startAsked >= 0)) fail(2, "--start is 0 or more seconds into the song");
+  const aspect = args.aspect ?? "16:9";
+  if (!SIZES[aspect]) fail(2, `--aspect is ${Object.keys(SIZES).join(" or ")}`);
+  const lyricsOn = bool("lyrics", true);
+  if (!existsSync(songPath)) fail(2, `${songPath} does not exist: web_save the song first`);
+  const probed = probeSeconds(songPath);
+  const song = analyse(songPath);
+  // The song's length is what FFmpeg decodes, not what the container says: an MP3's header can be off by a frame or
+  // more, and the cut, the segment and the fade all work on the decoded audio.
+  song.seconds = song.analysed;
+  if (startAsked !== undefined && startAsked >= song.seconds) fail(2, `--start ${startAsked} is past the song's end (${r2(song.seconds)} s)`);
+  const cut = cutOf(song, cutAsked, song.seconds < cutAsked ? undefined : startAsked);
+  const [width, height] = SIZES[aspect];
+  const data = {
+    song: { path: songPath, seconds: r3(song.seconds), container_s: probed === undefined ? null : r3(probed), minutes: song.seconds / 60 },
+    beats: {
+      bpm: Math.round(song.bpm * 10) / 10, period_s: Math.round(song.period * 10000) / 10000, meter: "4/4", count: song.beats.length,
+      first_beat_s: r3(song.beats[0]), first_downbeat_s: r3(song.lines[0]), bar_s: r3(song.period * 4), tempo: song.tempo,
+      fit_ms: Math.round(song.residual * 1000), confidence: song.confidence, times: song.beats.map(r3),
+    },
+    bars: song.bars.map(({ n, start_s, end_s, db }) => ({ n, start_s, end_s, db })),
+    cut: { asked_s: cutAsked, start_asked_s: startAsked ?? null, ...cut, beats: song.beats.filter((t) => t >= cut.start_s - 1e-3 && t < cut.end_s - 1e-3).map((t) => r3(t - cut.start_s)) },
+    aspect, width, height, lyrics_on: lyricsOn,
+  };
+  mkdirSync(film, { recursive: true });
+  writeFileSync(join(film, "plan.json"), JSON.stringify(data, null, 1) + "\n");
+  const out = [];
+  out.push(`song: ${data.song.seconds} s (${songPath})`);
+  out.push(`beats: ${data.beats.bpm} BPM, ${data.beats.count} beats, the first at ${data.beats.first_beat_s} s, bar lines (4/4) from ${data.beats.first_downbeat_s} s every ${data.beats.bar_s} s; tempo ${data.beats.tempo} (grid fit ${data.beats.fit_ms} ms, beat confidence ${data.beats.confidence})`);
+  if (data.beats.confidence < 0.2 || data.beats.tempo === "drifting") out.push("NOTE: the beat is weak or drifts here: the cuts land on the computed grid, which may sit off the music in places; say so in the report");
+  out.push(`bars (dB): ${data.bars.map((b) => `${b.n}@${b.start_s}:${b.db}`).join(" ")}`);
+  const how = { whole_song: `the song whole (it is shorter than the ${cutAsked} s asked)`, start_s: `from the bar line nearest ${startAsked} s${cut.shortened ? `, SHORTENED to the ${cut.bars} whole bars left before the song ends (say so in the answer)` : ""}`, loudest: `the loudest ${cut.bars} bars that start on a bar line` }[cut.chosen_by];
+  out.push(`cut: ${cut.start_s} s to ${cut.end_s} s of the song, ${cut.seconds} s, ${how}`);
+  for (const s of cut.shots) out.push(`shot ${s.n}: ${r3(s.start_s - cut.start_s)} to ${r3(s.end_s - cut.start_s)} s of the film (${s.start_s} to ${s.end_s} s of the song), ${s.seconds} s, ${s.bars} bar${s.bars === 1 ? "" : "s"}${s.partial ? " with the song's lead-in or tail" : ""}, clip ${s.clip_seconds} s`);
+  out.push(`plan: ${cut.shots.length} shots, ${cut.shots.length + RESERVE} stills priced (${RESERVE} in reserve), ${cut.shots.reduce((t, s) => t + s.clip_seconds, 0)} s of clips, film ${cut.seconds} s at ${width}x${height}, lyrics ${lyricsOn ? "on" : "off"}`);
+  out.push(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify(answerFields(data))}`);
+  console.log(out.join("\n"));
+}
+function answerFields(data) {
+  return {
+    song_seconds: data.song.seconds,
+    beats: { bpm: data.beats.bpm, meter: data.beats.meter, count: data.beats.count, first_downbeat_s: data.beats.first_downbeat_s, bar_s: data.beats.bar_s, tempo: data.beats.tempo, confidence: data.beats.confidence },
+    cut: { start_s: data.cut.start_s, end_s: data.cut.end_s, seconds: data.cut.seconds, bars: data.cut.bars, chosen_by: data.cut.chosen_by, shortened: data.cut.shortened === true },
+    shots: data.cut.shots.map((s) => ({ n: s.n, film_start_s: r3(s.start_s - data.cut.start_s), film_end_s: r3(s.end_s - data.cut.start_s), seconds: s.seconds, bars: s.bars, clip_seconds: s.clip_seconds })),
+  };
+}
+const readPlan = (film) => {
+  const path = join(film, "plan.json");
+  if (!existsSync(path)) fail(2, `${path} is missing: run plan first`);
+  return JSON.parse(readFileSync(path, "utf8"));
+};
+
+// ---------- the price ----------
+const STEP_RATES = ["isolation", "transcript", "still", "clip"];
+function priceOf(shots, minutes, lyricsOn, r) {
+  const lines = [];
+  if (lyricsOn) {
+    lines.push({ step: "isolate", endpoint_id: "fal-ai/elevenlabs/audio-isolation", units: minutes, unit: "minutes", rate_usd: r.isolation });
+    lines.push({ step: "transcript", endpoint_id: "fal-ai/elevenlabs/speech-to-text", units: minutes, unit: "minutes", rate_usd: r.transcript });
+  }
+  for (const s of shots) lines.push({ step: `still-${s.n}`, endpoint_id: "fal-ai/nano-banana-pro", units: 1, unit: "images", rate_usd: r.still });
+  for (let k = 1; k <= RESERVE; k++) lines.push({ step: `reserve-${k}`, endpoint_id: "fal-ai/nano-banana-pro", units: 1, unit: "images", rate_usd: r.still, reserve: true });
+  for (const s of shots) lines.push({ step: `clip-${s.n}`, endpoint_id: "fal-ai/kling-video/v3/pro/image-to-video", units: s.clip_seconds, unit: "seconds", rate_usd: r.clip });
+  for (const l of lines) {
+    l.usd = usd(l.units * l.rate_usd);
+    if (l.unit === "minutes") l.units = Math.round(l.units * 10000) / 10000;
+  }
+  return { lines, total: usd(lines.reduce((t, l) => t + l.units * l.rate_usd, 0)) };
+}
+function price() {
+  const film = need("film");
+  const data = readPlan(film);
+  const r = {};
+  for (const pair of need("rates").split(",")) {
+    const [k, v] = pair.split("=");
+    if (!STEP_RATES.includes(k) || !Number.isFinite(Number(v)) || Number(v) < 0) fail(2, `--rates takes ${STEP_RATES.map((s) => `${s}=<USD>`).join(",")}: ${pair}`);
+    r[k] = Number(v);
+  }
+  for (const k of STEP_RATES) if (r[k] === undefined) fail(2, `--rates is missing ${k}`);
+  const max = num("max");
+  if (!(max >= 0)) fail(2, "--max is max_fal_usd, 0 or more");
+  const minutes = data.song.minutes;
+  const p = priceOf(data.cut.shots, minutes, data.lyrics_on, r);
+  let cheaper = null;
+  if (p.total > max + 1e-9) {
+    // The same cut with fewer shots: the most shots that fit.
+    const song = { ...analyseFromPlan(data) };
+    const total = data.cut.seconds;
+    for (let n = data.cut.shots.length - 1; n >= 1 && !cheaper; n--) {
+      const s = forcedShots(data, n);
+      if (!s) continue;
+      const q = priceOf(s, minutes, data.lyrics_on, r);
+      if (q.total <= max + 1e-9) cheaper = { kind: "fewer_shots", cut_seconds: total, cut_start_s: data.cut.start_s, cut_end_s: data.cut.end_s, shots: s.length, usd: q.total };
+    }
+    // Else a shorter cut: the most whole bars that fit, the loudest such run (or from the same start).
+    for (let B = data.cut.bars - 1; B >= 1 && !cheaper; B--) {
+      const c = shorterCut(data, song, B);
+      if (!c) continue;
+      const q = priceOf(c.shots, minutes, data.lyrics_on, r);
+      if (q.total <= max + 1e-9) cheaper = { kind: "shorter_cut", cut_seconds: c.seconds, cut_start_s: c.start_s, cut_end_s: c.end_s, shots: c.shots.length, usd: q.total };
+    }
+  }
+  const out = { rates: r, max_fal_usd: max, lines: p.lines, plan_usd: p.total, fits: p.total <= max + 1e-9, cheaper_plan: cheaper };
+  writeFileSync(join(film, "price.json"), JSON.stringify(out, null, 1) + "\n");
+  const lines = [];
+  for (const l of p.lines) lines.push(`${l.step}${l.reserve ? " (reserve)" : ""}: ${l.units} ${l.unit} x $${l.rate_usd} = $${l.usd}`);
+  lines.push(`plan_usd: ${p.total} (max_fal_usd ${max}): ${out.fits ? "FITS" : "OVER BUDGET"}`);
+  if (!out.fits) lines.push(cheaper ? `cheaper_plan: ${cheaper.kind === "fewer_shots" ? `the same ${cheaper.cut_seconds} s cut in ${cheaper.shots} shots` : `a ${cheaper.cut_seconds} s cut (${cheaper.cut_start_s} to ${cheaper.cut_end_s} s of the song) in ${cheaper.shots} shots`}, $${cheaper.usd}` : "cheaper_plan: none fits");
+  lines.push(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify({ plan_usd: p.total, cheaper_plan: cheaper })}`);
+  console.log(lines.join("\n"));
+}
+// The plan's song again, from its bars, for the cheaper plans (no second decode: loudness per bar from plan.json).
+function analyseFromPlan(data) {
+  const bars = data.bars.map((b) => ({ ...b, energy: 10 ** (b.db / 10) }));
+  const meanSquare = (a, b) => {
+    let s = 0, t = 0;
+    for (const x of bars) {
+      const o = Math.min(b, x.end_s) - Math.max(a, x.start_s);
+      if (o > 0) { s += x.energy * o; t += o; }
+    }
+    return t > 0 ? s / t : 0;
+  };
+  const lines = [...bars.map((b) => b.start_s), ...(bars.length ? [bars[bars.length - 1].end_s] : [])];
+  return { bars, meanSquare, lines, period: data.beats.period_s, seconds: data.song.seconds, analysed: data.song.seconds };
+}
+function forcedShots(data, n) {
+  const song = analyseFromPlan(data);
+  const a = data.cut.start_s, b = data.cut.end_s;
+  const inner = song.lines.filter((t) => t > a + 0.25 && t < b - 0.25);
+  const points = [a, ...inner, b].map(ms);
+  const segs = [];
+  for (let i = 0; i + 1 < points.length; i++) segs.push({ a: points[i], b: points[i + 1], len: (points[i + 1] - points[i]) / 1000 });
+  // Even shots of whole segments, n of them, 3 to 10 s: least squares by the same search as the plan's.
+  const total = (points[points.length - 1] - points[0]) / 1000, mean = total / n, m = segs.length;
+  const best = Array.from({ length: n + 1 }, () => new Float64Array(m + 1).fill(Infinity));
+  const from = Array.from({ length: n + 1 }, () => new Int32Array(m + 1).fill(-1));
+  best[0][0] = 0;
+  for (let k = 1; k <= n; k++)
+    for (let j = 1; j <= m; j++) {
+      let len = 0;
+      for (let i = j - 1; i >= 0; i--) {
+        len += segs[i].len;
+        if (len > SHOT_MAX + 1e-6) break;
+        if (len < SHOT_MIN - 1e-6 || best[k - 1][i] === Infinity) continue;
+        const c = best[k - 1][i] + (len - mean) ** 2;
+        if (c < best[k][j] - 1e-9) { best[k][j] = c; from[k][j] = i; }
+      }
+    }
+  if (best[n][m] === Infinity) return null;
+  const cuts = [m];
+  for (let k = n, j = m; k > 0; k--) { j = from[k][j]; cuts.unshift(j); }
+  return cuts.slice(0, -1).map((i, k) => {
+    const sec = (segs[cuts[k + 1] - 1].b - segs[i].a) / 1000;
+    return { n: k + 1, seconds: sec, clip_seconds: Math.max(SHOT_MIN, Math.ceil(sec - 1e-9)) };
+  });
+}
+function shorterCut(data, song, B) {
+  const start = data.cut.chosen_by === "start_s" ? data.cut.start_asked_s : undefined;
+  if (B * data.beats.bar_s < CUT_MIN - 1e-6) return null;
+  try {
+    return cutOfQuiet(song, B, start);
+  } catch {
+    return null;
+  }
+}
+function cutOfQuiet(song, B, start) {
+  const bars = song.bars;
+  const starts = [];
+  for (let i = 0; i + B <= bars.length; i++) starts.push(i);
+  if (!starts.length) return null;
+  let i0 = starts[0];
+  if (start !== undefined) {
+    i0 = bars.reduce((best, x, i) => (Math.abs(x.start_s - start) < Math.abs(bars[best].start_s - start) ? i : best), 0);
+    if (i0 + B > bars.length) return null;
+  } else {
+    let best = -1;
+    for (const i of starts) {
+      let s = 0;
+      for (let j = i; j < i + B; j++) s += bars[j].energy * (bars[j].end_s - bars[j].start_s);
+      if (s > best * (1 + 1e-9)) { best = s; i0 = i; }
+    }
+  }
+  const a = bars[i0].start_s, b = bars[i0 + B - 1].end_s;
+  const ds = bars.slice(i0, i0 + B).map((x) => x.db);
+  const lo = Math.min(...ds), hi = Math.max(...ds);
+  const loud = (x, y) => {
+    const m = song.meanSquare(x, y);
+    const d = m > 0 ? 10 * Math.log10(m) : -120;
+    return hi > lo ? Math.max(0, Math.min(1, (d - lo) / (hi - lo))) : 0;
+  };
+  const s = shotsOf(a, b, song.lines.filter((t) => t > a - 1e-6 && t < b + 1e-6), loud);
+  if (!s) return null;
+  return { start_s: r3(a), end_s: r3(b), seconds: (ms(b) - ms(a)) / 1000, shots: shotList(s.groups, bars) };
+}
+
+// ---------- the lyrics ----------
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const stamp = (s) => {
+  const t = Math.max(0, Math.round(s * 1000));
+  const h = Math.floor(t / 3600000), m = Math.floor((t % 3600000) / 60000), sec = Math.floor((t % 60000) / 1000), milli = t % 1000;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}.${String(milli).padStart(3, "0")}`;
+};
+function lyrics() {
+  const film = need("film"), wordsPath = need("words"), vtt = args.vtt ?? "media/lyrics.vtt";
+  const data = readPlan(film);
+  if (!existsSync(wordsPath)) fail(2, `${wordsPath} is missing: write speech-to-text's answer there first`);
+  let got;
+  try {
+    got = JSON.parse(readFileSync(wordsPath, "utf8"));
+  } catch (e) {
+    fail(2, `${wordsPath} is not JSON: ${e.message}`);
+  }
+  const list = Array.isArray(got) ? got : Array.isArray(got?.words) ? got.words : null;
+  if (!list) fail(2, `${wordsPath} holds neither a words list nor fal's answer with one`);
+  const all = list.filter((w) => w && (w.type === undefined || w.type === "word") && typeof w.text === "string" && w.text.trim() && Number.isFinite(w.start) && Number.isFinite(w.end));
+  const a = data.cut.start_s, b = data.cut.end_s, C = data.cut.seconds;
+  const inCut = all.filter((w) => w.start >= a && w.start < b).map((w) => ({ text: w.text.trim(), start: r3(w.start - a), end: r3(Math.min(Math.max(w.end, w.start), b) - a) }));
+  const lyricsHtml = join(film, "compositions", "lyrics.html");
+  const result = { words_in_song: all.length, words_in_cut: inCut.length, lines: [], under_shots: [] };
+  if (!inCut.length) {
+    rmSync(lyricsHtml, { force: true });
+    result.under_shots = data.cut.shots.map((s) => ({ n: s.n, lyric: "" }));
+    writeFileSync(join(film, "lyrics.json"), JSON.stringify(result, null, 1) + "\n");
+    console.log(all.length ? `NO WORDS IN THE CUT: speech-to-text found ${all.length} words in the song, none between ${a} and ${b} s: no lyric captions, no ${vtt}` : `NO WORDS: speech-to-text found no words in the song: no lyric captions, no ${vtt}`);
+    console.log(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify({ words_in_song: all.length, words_in_cut: 0, lines: 0, vtt_path: null })}`);
+    return;
+  }
+  // Lines: a pause of LINE_GAP s, a sentence's end or LINE_WORDS words ends one. Each line shows from its first word to
+  // its last word's end, held at least one beat, never into the next line or past the film.
+  const lines = [];
+  let cur = [];
+  for (const w of inCut) {
+    const prev = cur[cur.length - 1];
+    if (prev && (w.start - prev.end >= LINE_GAP || cur.length >= LINE_WORDS || /[.!?]["')\]]*$/.test(prev.text))) {
+      lines.push(cur);
+      cur = [];
+    }
+    cur.push(w);
+  }
+  if (cur.length) lines.push(cur);
+  const beat = data.beats.period_s;
+  result.lines = lines.map((ws, i) => {
+    const start = ws[0].start, nextStart = i + 1 < lines.length ? lines[i + 1][0].start : C;
+    const end = Math.min(Math.max(ws[ws.length - 1].end, start + beat), nextStart - 0.04, C);
+    return { n: i + 1, start_s: r3(start), end_s: r3(Math.max(end, start + 0.2)), text: ws.map((w) => w.text).join(" ") };
+  });
+  result.under_shots = data.cut.shots.map((s) => {
+    const fa = s.start_s - a, fb = s.end_s - a;
+    return { n: s.n, lyric: inCut.filter((w) => w.start >= fa - 1e-6 && w.start < fb - 1e-6).map((w) => w.text).join(" ") };
+  });
+  writeFileSync(join(film, "lyrics.json"), JSON.stringify(result, null, 1) + "\n");
+  // WebVTT cue text escapes &, < and > (a lyric is text, never markup).
+  const vttText = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  writeFileSync(vtt, "WEBVTT\n\n" + result.lines.map((l) => `${l.n}\n${stamp(l.start_s)} --> ${stamp(l.end_s)}\n${vttText(l.text)}\n`).join("\n"));
+  // The captions scene: one timed line at a time, set as type over the picture, inside the title-safe area.
+  const [W, H] = [data.width, data.height];
+  const lineDivs = result.lines.map((l) => `    <div id="ly-${l.n}" class="clip ly-line" data-start="${l.start_s}" data-duration="${r3(l.end_s - l.start_s)}"><span id="ly-${l.n}-t" class="ly-text">${esc(l.text)}</span></div>`);
+  const tweens = result.lines.map((l) => `    tl.fromTo("#ly-${l.n}-t", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.14, ease: "power4.out" }, ${l.start_s});`);
+  mkdirSync(join(film, "compositions"), { recursive: true });
+  writeFileSync(lyricsHtml, `<!-- Lyric captions, written by beats.mjs lyrics from speech-to-text's words: one line at a time, each from its first
+     word to its last word's end (held at least a beat). The words are the song's, shown as data: never edit them here,
+     restyle them in the style block. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; container-type: size; pointer-events: none; z-index: 10; }
+    .ly-line { position: absolute; left: 0; right: 0; bottom: 9cqh; display: flex; justify-content: center; overflow: visible; }
+    .ly-text { font-family: var(--lyric-font); font-weight: 800; font-size: 5cqh; line-height: 1.15; color: var(--lyric-ink); background: var(--lyric-scrim); padding: 0.18em 0.5em; max-width: 80cqw; text-align: center; }
+    @container (max-aspect-ratio: 3/4) {
+      .ly-line { bottom: 36cqh; }
+      .ly-text { font-size: 3.1cqh; max-width: 72cqw; }
+    }
+  </style>
+  <div id="root" data-composition-id="lyrics" data-width="${W}" data-height="${H}">
+${lineDivs.join("\n")}
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+${tweens.join("\n")}
+    window.__timelines["lyrics"] = tl;
+  </script>
+</template>
+`);
+  const out = [`lyrics: ${inCut.length} of the song's ${all.length} words fall in the cut, in ${result.lines.length} lines; ${vtt} and ${lyricsHtml} written`];
+  for (const l of result.lines) out.push(`line ${l.n}: ${l.start_s} to ${l.end_s} s: ${l.text}`);
+  for (const s of result.under_shots) out.push(`under shot ${s.n}: ${s.lyric || "(no words)"}`);
+  out.push(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify({ words_in_song: all.length, words_in_cut: inCut.length, lines: result.lines.length, vtt_path: vtt })}`);
+  console.log(out.join("\n"));
+}
+
+// ---------- the film ----------
+function place() {
+  const film = need("film");
+  const data = readPlan(film);
+  const C = data.cut.seconds, W = data.width, H = data.height;
+  const path = join(film, "index.html");
+  if (!existsSync(path)) fail(2, `${path} is missing: copy the kit into ${film} first`);
+  let html = readFileSync(path, "utf8");
+  const markers = [["<!-- MU-SHOTS -->", "<!-- /MU-SHOTS -->"], ["<!-- MU-MEDIA -->", "<!-- /MU-MEDIA -->"], ["// MU-TIMELINE", "// /MU-TIMELINE"]];
+  for (const [open, close] of markers) if (html.split(open).length !== 2 || html.split(close).length !== 2) fail(2, `${path} lacks its ${open} ... ${close} markers, or holds them twice: copy the kit's index.html again`);
+  // Each shot's picture: its clip when one is saved and readable, else its still (the fallback, with a slow push-in).
+  const shots = data.cut.shots.map((s) => {
+    const start = r3(s.start_s - data.cut.start_s), dur = s.seconds;
+    const clip = join(film, "assets", `clip-${s.n}.mp4`), still = join(film, "assets", `still-${s.n}.png`);
+    let use = null, why = null, rate = null;
+    if (existsSync(clip)) {
+      const len = probeSeconds(clip);
+      if (len === undefined) why = `assets/clip-${s.n}.mp4 can't be read`;
+      else if (len < dur * 0.8) why = `assets/clip-${s.n}.mp4 runs ${r2(len)} s, too short for a ${dur} s shot`;
+      else {
+        use = "clip";
+        if (len < dur - 0.001) rate = Math.floor((len / dur) * 1000) / 1000;
+      }
+    } else why = `no assets/clip-${s.n}.mp4`;
+    if (!use) {
+      if (!existsSync(still)) fail(2, `shot ${s.n}: ${why}, and no assets/still-${s.n}.png to fall back on: copy the shot's saved files into ${join(film, "assets")}`);
+      use = "still";
+    }
+    return { n: s.n, start, dur, use, why: use === "still" ? why : null, rate };
+  });
+  const els = shots.map((s) =>
+    s.use === "clip"
+      ? `      <video id="shot-${s.n}" class="clip mu-shot" src="assets/clip-${s.n}.mp4" data-start="${s.start}" data-duration="${s.dur}" data-track-index="1"${s.rate ? ` data-playback-rate="${s.rate}"` : ""} muted playsinline></video>`
+      : `      <div id="shot-${s.n}" class="clip mu-hold" data-start="${s.start}" data-duration="${s.dur}" data-track-index="1"><img id="shot-${s.n}-img" src="assets/still-${s.n}.png" alt="" /></div>`,
+  );
+  const lyricsFile = join(film, "compositions", "lyrics.html");
+  const withLyrics = data.lyrics_on && existsSync(lyricsFile);
+  // The song's segment, cut by FFmpeg from the saved song: the film's only audio. A cut that ends before the song does
+  // fades out over its last 1.5 s; every cut opens with a 20 ms fade so the first frame doesn't click.
+  mkdirSync(join(film, "assets"), { recursive: true });
+  const seg = join(film, "assets", "song.m4a");
+  const endsWithSong = Math.abs(data.cut.end_s - data.song.seconds) < 0.05;
+  const fades = [`afade=t=in:st=0:d=0.02`, ...(endsWithSong ? [] : [`afade=t=out:st=${r3(Math.max(0, C - 1.5))}:d=1.5`])].join(",");
+  const cut = spawnSync("ffmpeg", ["-v", "error", "-nostdin", "-y", "-i", data.song.path, "-ss", String(data.cut.start_s), "-t", String(C), "-vn", "-ac", "2", "-ar", "44100", "-af", fades, "-c:a", "aac", "-b:a", "192k", seg], { encoding: "utf8" });
+  if (cut.status !== 0) fail(3, `ffmpeg could not cut the song's segment: ${(cut.stderr || "").trim().split("\n").slice(-3).join(" ")}`);
+  const segLen = probeSeconds(seg);
+  const media = [
+    ...(withLyrics ? [`      <div id="lyrics" data-composition-id="lyrics" data-composition-src="compositions/lyrics.html" data-start="0" data-duration="${C}" data-track-index="2" data-track-kind="captions" data-width="${W}" data-height="${H}"></div>`] : []),
+    `      <audio id="song" class="clip" src="assets/song.m4a" data-start="0" data-duration="${C}" data-track-index="3" data-volume="1"></audio>`,
+  ];
+  const pushes = shots.filter((s) => s.use === "still").map((s) => `      tl.fromTo("#shot-${s.n}-img", { scale: 1 }, { scale: 1.08, duration: ${s.dur}, ease: "none" }, ${s.start});`);
+  html = html.replace(/(<!-- MU-SHOTS -->)[\s\S]*?(\s*<!-- \/MU-SHOTS -->)/, `$1\n${els.join("\n")}$2`);
+  html = html.replace(/(<!-- MU-MEDIA -->)[\s\S]*?(\s*<!-- \/MU-MEDIA -->)/, `$1\n${media.join("\n")}$2`);
+  html = html.replace(/(\/\/ MU-TIMELINE)[\s\S]*?(\s*\/\/ \/MU-TIMELINE)/, `$1\n      const tl = gsap.timeline({ paused: true });\n${pushes.join("\n")}${pushes.length ? "\n" : ""}      window.__timelines["main"] = tl;$2`);
+  html = html.replace(/(<div id="root" data-composition-id="main"[^>]*?data-duration=")[0-9.]+(")/, `$1${C}$2`);
+  html = html.replace(/(<div id="root" data-composition-id="main"[^>]*?data-width=")[0-9]+(")/, `$1${W}$2`);
+  html = html.replace(/(<div id="root" data-composition-id="main"[^>]*?data-height=")[0-9]+(")/, `$1${H}$2`);
+  writeFileSync(path, html);
+
+  // Read back what was written: every shot once, on the plan's clock, tiling the cut with no gap and no overlap; the
+  // root, the song and the captions host as long as the cut; every file a shot or the song names present.
+  const back = readFileSync(path, "utf8");
+  const attr = (tag, name) => tag.match(new RegExp(`\\b${name}="([^"]*)"`))?.[1];
+  const tagOf = (id) => {
+    const all = [...back.matchAll(new RegExp(`<(?:video|div|img|audio)\\b[^>]*\\bid="${id}"[^>]*>`, "g"))];
+    return all.length === 1 ? all[0][0] : all.length ? "TWICE" : undefined;
+  };
+  let clock = 0;
+  for (const s of shots) {
+    const tag = tagOf(`shot-${s.n}`);
+    const said = tag && tag !== "TWICE" ? { start: Number(attr(tag, "data-start")), dur: Number(attr(tag, "data-duration")) } : null;
+    if (!said) fail(2, `shot ${s.n}: ${tag === "TWICE" ? "index.html holds it twice" : "index.html has no element for it"}: copy the kit's index.html again and run place again`);
+    if (ms(said.start) !== ms(s.start) || ms(said.dur) !== ms(s.dur)) fail(2, `shot ${s.n}: index.html places it at ${said.start} s for ${said.dur} s but the plan has ${s.start} s for ${s.dur} s: copy the kit's index.html again and run place again; never edit a time by hand`);
+    if (ms(said.start) !== ms(clock)) fail(2, `shot ${s.n}: it starts at ${said.start} s but the shot before ends at ${r3(clock)} s: copy the kit's index.html again and run place again`);
+    clock = said.start + said.dur;
+    const src = s.use === "clip" ? attr(tag, "src") : back.match(new RegExp(`<img\\b[^>]*\\bid="shot-${s.n}-img"[^>]*>`))?.[0]?.match(/\bsrc="([^"]*)"/)?.[1];
+    if (!src || !existsSync(join(film, src))) fail(2, `shot ${s.n}: its picture ${src ?? "(none)"} is not in ${film}`);
+  }
+  if (ms(clock) !== ms(C)) fail(2, `the shots end at ${r3(clock)} s but the cut is ${C} s: run plan and place again`);
+  const extra = [...back.matchAll(/\bid="shot-(\d+)"/g)].map((m) => Number(m[1])).filter((n) => !shots.some((s) => s.n === n));
+  if (extra.length) fail(2, `shot ${extra[0]}: index.html holds a shot the plan doesn't: copy the kit's index.html again and run place again`);
+  const root = back.match(/<div id="root" data-composition-id="main"[^>]*>/)?.[0];
+  if (!root || ms(Number(attr(root, "data-duration"))) !== ms(C)) fail(2, `the root lasts ${root ? attr(root, "data-duration") : "(no root)"} s but the cut is ${C} s: copy the kit's index.html again and run place again`);
+  const song = tagOf("song");
+  if (!song || song === "TWICE" || ms(Number(attr(song, "data-duration"))) !== ms(C) || !existsSync(seg)) fail(2, `the song's <audio> is missing or not ${C} s long: copy the kit's index.html again and run place again`);
+  if (segLen === undefined || Math.abs(segLen - C) > 0.15) fail(2, `the song's segment runs ${segLen ?? "(unreadable)"} s, not the cut's ${C} s: check ${data.song.path} and run place again`);
+  if (withLyrics) {
+    const host = tagOf("lyrics");
+    if (!host || host === "TWICE" || ms(Number(attr(host, "data-duration"))) !== ms(C)) fail(2, `the lyrics host is missing or not ${C} s long: copy the kit's index.html again and run place again`);
+  } else if (tagOf("lyrics")) fail(2, "index.html holds a lyrics host but the film has no lyric captions: copy the kit's index.html again and run place again");
+
+  const stills = shots.filter((s) => s.use === "still").map((s) => ({ n: s.n, why: s.why }));
+  writeFileSync(join(film, "placed.json"), JSON.stringify({ film_seconds: C, width: W, height: H, lyrics: withLyrics, shots }, null, 1) + "\n");
+  for (const s of stills) console.log(`STILL: shot ${s.n} shows its still with a slow push-in (${s.why})`);
+  console.log(JSON.stringify({ film_seconds: C, width: W, height: H, lyrics: withLyrics, clips: shots.filter((s) => s.use === "clip").length, stills, slowed: shots.filter((s) => s.rate).map((s) => ({ n: s.n, playback_rate: s.rate })) }));
+}
+
+// ---------- the cost ----------
+function cost() {
+  const film = need("film");
+  const pricePath = join(film, "price.json");
+  if (!existsSync(pricePath)) fail(2, `${pricePath} is missing: run price first`);
+  const p = JSON.parse(readFileSync(pricePath, "utf8"));
+  const list = (k) => (args[k] && args[k] !== "true" ? args[k].split(",").map((s) => s.trim()).filter(Boolean) : []);
+  const sent = list("sent"), failed = new Set(list("failed"));
+  const stem = args.stem === undefined ? null : args.stem;
+  if (stem !== null && !/^[a-z0-9]{8}$/.test(stem)) fail(2, "--stem is the run's key stem from media/run-keys.json: 8 lowercase letters and digits");
+  for (const f of failed) if (!sent.includes(f)) fail(2, `--failed names ${f}, which --sent doesn't`);
+  const steps = sent.map((step) => {
+    const remake = step.match(/^still-(\d+)-2$/);
+    const line = p.lines.find((l) => l.step === step && !l.reserve) ?? (remake ? p.lines.find((l) => l.step === `still-${remake[1]}`) : undefined);
+    if (!line) fail(2, `--sent names ${step}, which the plan has no line for (its steps: isolate, transcript, still-<n>, still-<n>-2, clip-<n>)`);
+    return { step, key: stem ? `mu-${stem}-${step}` : null, endpoint_id: line.endpoint_id, units: line.units, unit: line.unit, rate_usd: line.rate_usd, usd: failed.has(step) ? 0 : line.usd };
+  });
+  const remakes = sent.filter((s) => /^still-\d+-2$/.test(s)).length;
+  if (remakes > RESERVE) fail(2, `--sent holds ${remakes} remade stills: at most ${RESERVE}`);
+  const total = usd(steps.reduce((t, s) => t + s.usd, 0));
+  console.log(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify({ fal_cost_usd: { steps, total } })}`);
+}
+
+if (command === "plan") plan();
+else if (command === "price") price();
+else if (command === "lyrics") lyrics();
+else if (command === "place") place();
+else if (command === "cost") cost();
+else fail(2, "usage: node beats.mjs plan|price|lyrics|place|cost ... (the header of this file says each)");

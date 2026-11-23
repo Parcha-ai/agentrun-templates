@@ -1,0 +1,44 @@
+<!doctype html>
+<!--
+  Music video kit: a HyperFrames project whose every time comes from the song. `node beats.mjs place` writes the shots
+  between the MU-SHOTS markers (each shot's clip, or its still with a slow push-in when its clip failed), the captions
+  host and the song between the MU-MEDIA markers, the root timeline between the MU-TIMELINE markers, and the root's
+  length and canvas; then it reads them back. Change them with it, never by hand. Shots sit back to back on lane 1,
+  the lyric captions on lane 2, the song (its segment, cut by FFmpeg) on lane 3 as the film's only audio.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        /* The captions' look: set these from the storyboard's style line, nothing else here needs a change. */
+        --ground: #000000;
+        --lyric-font: "Montserrat";
+        --lyric-ink: #ffffff;
+        --lyric-scrim: rgba(0, 0, 0, 0.42);
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; overflow: hidden; background: var(--ground); }
+      #root { position: relative; width: 100%; height: 100%; background: var(--ground); }
+      /* Every shot fills the frame. A clip is shown as Kling made it (the still's framing); a still's image is the
+         child the push-in scales, never the timed element itself. */
+      .mu-shot { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+      .mu-hold { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; }
+      .mu-hold img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 50%; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="60" data-width="1920" data-height="1080">
+      <!-- MU-SHOTS -->
+      <!-- /MU-SHOTS -->
+      <!-- MU-MEDIA -->
+      <!-- /MU-MEDIA -->
+    </div>
+    <script>
+      // MU-TIMELINE
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+      // /MU-TIMELINE
+    </script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+{
+ "search": {
+  "answers": [],
+  "default": {
+   "results": []
+  }
+ },
+ "fetch": {
+  "answers": [],
+  "default": {
+   "error": "fetch failed: 404 Not Found"
+  }
+ },
+ "save": {
+  "answers": [
+   {
+    "url": "https://files.tidewater-static.example/private/night-ferry.wav",
+    "status": 403,
+    "content_type": "text/html",
+    "text": "<html><body>403 Forbidden</body></html>"
+   }
+  ]
+ }
+}
