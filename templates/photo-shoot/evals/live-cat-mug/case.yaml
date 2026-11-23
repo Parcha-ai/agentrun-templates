@@ -1,0 +1,9 @@
+# Live: no fakes. The run uses the fal MCP server saved in the owner's data (toolkit fal, their own key) and web_save downloads the real files, so this case runs only with --on-data on a data folder that has fal saved. Pass: 1 of 1.
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T15:00:00Z
