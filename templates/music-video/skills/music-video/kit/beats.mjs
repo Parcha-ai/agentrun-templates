@@ -31,7 +31,7 @@
 // stem    prints the run's key stem: the one in the file when it holds one (a resumed run), else a new one from the
 //         sandbox's random bytes, written there first. A model never makes one.
 // cost    the answer's fal_cost_usd from the steps sent (a failed or refused one at 0; one still pending when the run
-//         stopped waiting at its full price, marked pending, since fal may yet finish and bill it), at the rates price
+//         stopped waiting at its full price, pending true, since fal may yet finish and bill it), at the rates price
 //         used, each with its key mu-<stem>-<step>.
 //
 // Exit 2: wrong arguments, or a film whose files don't match the plan (place reads every shot back after writing it;
@@ -617,7 +617,8 @@ function lyrics() {
   }
   // Lines: a pause of LINE_GAP s, a sentence's end or LINE_WORDS words ends one, once it has run 0.2 s (a word sooner
   // than that joins it, so two lines never start closer than 0.2 s). Each line shows from its first word to its last
-  // word's end, held at least one beat, then cut short of the next line and the film's end: those limits come last.
+  // word's end, held at least one beat, then cut short of the next line (by 40 ms) and the film's end: those limits
+  // come last. A last line with no time left before the film's end (a word in its final millisecond) is dropped.
   const lines = [];
   let cur = [];
   for (const w of inCut) {
@@ -632,9 +633,9 @@ function lyrics() {
   const beat = data.beats.period_s;
   result.lines = lines.map((ws, i) => {
     const start = ws[0].start, nextStart = i + 1 < lines.length ? lines[i + 1][0].start : C;
-    const end = Math.min(Math.max(ws[ws.length - 1].end, start + beat), nextStart - 0.04, C);
-    return { n: i + 1, start_s: r3(start), end_s: r3(end), text: ws.map((w) => w.text).join(" ") };
-  });
+    const end = Math.min(Math.max(ws[ws.length - 1].end, start + beat), i + 1 < lines.length ? nextStart - 0.04 : C, C);
+    return { start_s: r3(start), end_s: r3(end), text: ws.map((w) => w.text).join(" ") };
+  }).filter((l) => l.end_s > l.start_s).map((l, i) => ({ n: i + 1, ...l }));
   result.under_shots = data.cut.shots.map((s) => {
     const fa = s.start_s - a, fb = s.end_s - a;
     return { n: s.n, lyric: inCut.filter((w) => w.start >= fa - 1e-6 && w.start < fb - 1e-6).map((w) => w.text).join(" ") };
@@ -817,7 +818,7 @@ function cost() {
     const remake = step.match(/^still-(\d+)-2$/);
     const line = p.lines.find((l) => l.step === step && !l.reserve) ?? (remake ? p.lines.find((l) => l.step === `still-${remake[1]}`) : undefined);
     if (!line) fail(2, `--sent names ${step}, which the plan has no line for (its steps: isolate, transcript, still-<n>, still-<n>-2, clip-<n>)`);
-    return { step, key: stem ? `mu-${stem}-${step}` : null, endpoint_id: line.endpoint_id, units: line.units, unit: line.unit, rate_usd: line.rate_usd, usd: failed.has(step) ? 0 : line.usd, ...(pending.has(step) ? { pending: true } : {}) };
+    return { step, key: stem ? `mu-${stem}-${step}` : null, endpoint_id: line.endpoint_id, units: line.units, unit: line.unit, rate_usd: line.rate_usd, usd: failed.has(step) ? 0 : line.usd, pending: pending.has(step) };
   });
   const remakes = sent.filter((s) => /^still-\d+-2$/.test(s)).length;
   if (remakes > RESERVE) fail(2, `--sent holds ${remakes} remade stills: at most ${RESERVE}`);

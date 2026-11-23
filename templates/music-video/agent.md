@@ -249,9 +249,9 @@ When the film is rendered, `node film/beats.mjs cost` (the skill's step 8) gives
   in plain words (lyrics off, no words in the song, none in the cut, or the step that failed); else null.
 - `plan_usd` and `cheaper_plan` as priced in step 3 (null when nothing was priced).
 - `fal_cost_usd`: as `beats.mjs cost` printed it, one step per paid call sent with its key, units, rate and `usd` (a
-  failed or refused job 0; one still pending when the run stopped waiting at its price, marked `pending`), and `total`;
-  no steps and 0 when nothing was paid. Estimates from fal's rates, not fal's invoice. A run that stops after paying but
-  before the film still runs `cost` for what it sent.
+  failed or refused job 0; one still pending when the run stopped waiting at its price, with `pending` true), and
+  `total`; no steps and 0 when nothing was paid. Estimates from fal's rates, not fal's invoice. A run that stops after
+  paying but before the film still runs `cost` for what it sent.
 - `key_stem`: the run's stem (null when nothing was keyed); `held_keys`: every key fal refused as held for other
   inputs (step 4), else empty.
 - `film`: `path`, `seconds`, `width`, `height` as ffprobe read them, null fields when none was rendered. `checks`:

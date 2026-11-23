@@ -379,7 +379,8 @@
               "units",
               "unit",
               "rate_usd",
-              "usd"
+              "usd",
+              "pending"
             ],
             "properties": {
               "step": {
@@ -413,6 +414,10 @@
               "usd": {
                 "type": "number",
                 "minimum": 0
+              },
+              "pending": {
+                "type": "boolean",
+                "description": "true for a job still pending when the run stopped waiting: counted at its price, since fal may still finish and bill it"
               }
             }
           }

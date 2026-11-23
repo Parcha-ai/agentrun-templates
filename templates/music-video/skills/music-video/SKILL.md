@@ -148,7 +148,7 @@ node film/beats.mjs cost --film film --stem <the stem beats.mjs stem printed> --
 
 `--sent` names every paid step the run sent (only those sent: no lyrics steps when lyrics are off, no clip that was
 never submitted); `--failed` those fal failed or refused (they bill 0 here); `--pending` those still pending when the
-run stopped waiting (they count at their full price, marked `pending`: fal may yet finish and bill them). It prints
+run stopped waiting (they count at their full price, with `pending` true: fal may yet finish and bill them). It prints
 `fal_cost_usd` at the rates `price` used: copy it into the answer exactly as printed.
 
 ## Never
