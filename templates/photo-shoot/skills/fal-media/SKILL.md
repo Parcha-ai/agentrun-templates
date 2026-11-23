@@ -78,8 +78,9 @@ before reading any, then read them together. This is faster than one after anoth
    extension, for example `ps-q4w8e2rt-shot-3`. No date and no host in a key, so a second run the same day never
    collides with the first, and a retry or a resume finds its jobs under the same keys. Send it as its own argument,
    beside `endpoint_id` and `input`, never inside `input`. One key per job, unique in the run, the same on any retry of
-   that job. If fal rejects a key as already used for a different request (a resumed run whose inputs changed),
-   nothing was billed: send that job once more with `-b` after its key; that is a new job on purpose.
+   that job. If fal rejects a key as already used for a different request (a resumed run whose inputs changed), the
+   run before sent that job and fal may have billed it: never send it again under another key. Call `get_submission`
+   with that key and follow what it answers, as after a lost reply; `not_found` makes the job failed.
 4. **Read them in one `wait_for_jobs` call**: `{"jobs": [...]}` with one item per job, `index` the job's place in
    your plan (0, 1, 2 ...), and each job's `endpoint_id`, `request_id`, `status_url` and `response_url` exactly as its
    `submit_job` answered. Match each answer to its job by `request_id`.

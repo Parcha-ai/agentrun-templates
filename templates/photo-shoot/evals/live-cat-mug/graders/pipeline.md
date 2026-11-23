@@ -13,10 +13,11 @@ if all hold:
    (a call this server's pin refused unsent never reached fal and doesn't count). Every shot job (`aspect_ratio`
    `3:2`) carries `input.image_urls` holding exactly one URL, the `file_url` that call answered (on fal's CDN, such as
    `fal.media`), never the Commons link, and the answer's `reference.fal_url` is that `file_url`.
-3. **One stem, written first.** A `write` of `media/run-keys.json` with `{"stem": S}`, S 8 lowercase letters and
+3. **One stem, written first.** A `write` of `media/run-keys.json` with `{"stem": S, "fal_url": U}`, U the upload's
+   `file_url` and S 8 lowercase letters and
    digits, comes before the first `submit_job`, and every key is `ps-S-<step>` (`shot-1` ... `shot-10`,
-   `ad-<r>-<size>`, `clip`), each sent once. On the live journal a key may be refused as used: then the same key with
-   `-b` after it, sent once, is right too.
+   `ad-<r>-<size>`, `clip`), each sent once. On the live journal a key may be refused as used: then a `get_submission`
+   with that same key, followed as after a lost reply, is right too, and a new key for that step is not.
 4. **Queued, then read together.** The 10 shots are sent before the first `wait_for_jobs`, which lists them. The ad
    sizes and the clip are sent after the picks, all before the next `wait_for_jobs` that reads them.
 5. **Chained.** Every ad-size job for pick r carries `input.image_urls` holding exactly one URL, the fal URL of the

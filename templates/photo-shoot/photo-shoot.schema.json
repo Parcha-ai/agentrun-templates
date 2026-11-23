@@ -77,11 +77,12 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["pick", "shot", "aspect_ratio", "submission_key", "status", "fal_url", "path", "saved"],
+        "required": ["pick", "shot", "aspect_ratio", "prompt", "submission_key", "status", "fal_url", "path", "saved"],
         "properties": {
           "pick": { "type": "integer", "minimum": 1, "maximum": 3 },
           "shot": { "type": "integer", "minimum": 1, "maximum": 10 },
           "aspect_ratio": { "enum": ["1:1", "4:5", "9:16", "16:9"] },
+          "prompt": { "type": "string", "maxLength": 1500, "description": "the exact prompt sent, the fidelity clause first" },
           "submission_key": { "type": ["string", "null"], "maxLength": 128 },
           "status": { "enum": ["completed", "failed", "pending", "not_run"] },
           "fal_url": { "type": ["string", "null"] },
