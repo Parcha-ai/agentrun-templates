@@ -1,0 +1,17 @@
+# Applied with these parameters. The runner serves fixtures/fal-mcp.json as the saved URL server fal (the voiceover
+# and the music complete on the first grouped read). web.json fakes GitHub's API with Parcha-ai/agentrun's
+# v0.1.0-beta.51 release as it was published (19,442 characters of notes, no image, marked pre-release), the owner's
+# avatar and fal's CDN files. The film is rendered for real at 9:16. Pass: 2 of 2.
+parameters:
+  owner: Parcha-ai
+  repo: agentrun
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-22T12:00:00Z

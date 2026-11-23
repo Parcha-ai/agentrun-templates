@@ -1034,6 +1034,22 @@
         "kling"
       ],
       "summary": "A starter kit for your own brand: palette, fonts, voice, logo concepts, hero images and a promo clip. Billed to your fal account."
+    },
+    {
+      "name": "release-film",
+      "source": "./templates/release-film",
+      "category": "marketing",
+      "tags": [
+        "video",
+        "launch",
+        "release",
+        "github",
+        "hyperframes",
+        "voiceover",
+        "fal",
+        "elevenlabs"
+      ],
+      "summary": "Turns a GitHub release into a 30 second film with voiceover, music, captions and a share card. Billed to your fal account."
     }
   ]
 }
