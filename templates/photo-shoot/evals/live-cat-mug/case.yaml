@@ -3,6 +3,7 @@
 grants:
   - mcp:fal/get_pricing
   - mcp:fal/get_model_schema
+  - mcp:fal/upload_file
   - mcp:fal/submit_job
   - mcp:fal/wait_for_jobs
   - mcp:fal/get_submission

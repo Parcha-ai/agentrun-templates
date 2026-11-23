@@ -1,5 +1,5 @@
 ---
-description: 'Live fal: a shoot of an unbranded cat-shaped ceramic mug from a public-domain Wikimedia Commons photo (CC0). The default plan with the hero clip: priced first (3.65), 10 Nano Banana Pro edit shots from the photo, each prompt opening with the fidelity clause; the shots read and the best 3 picked; each pick remade at 1:1, 4:5, 9:16 and 16:9 from its own fal URL (one job per pick and size) and a 5 s Kling clip of pick 1, sent together; everything saved under media/. Pass 1 of 1.'
+description: 'Live fal: a shoot of an unbranded cat-shaped ceramic mug from a public-domain Wikimedia Commons photo (CC0). The default plan with the hero clip: priced first (3.65), the photo put on fal once with upload_file (free) and 10 Nano Banana Pro edit shots made from the fal.media URL it answers, not the Commons link, each prompt opening with the fidelity clause; the shots read and the best 3 picked; each pick remade at 1:1, 4:5, 9:16 and 16:9 from its own fal URL (one job per pick and size) and a 5 s Kling clip of pick 1, sent together; everything saved under media/. Pass 1 of 1.'
 runs: 1
 max_cost_usd: 5.0
 input:

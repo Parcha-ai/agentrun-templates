@@ -7,16 +7,17 @@
   "additionalProperties": false,
   "required": ["status", "product_image_url", "reference", "plan", "plan_fal_usd", "key_stem", "shots", "picks", "pick_basis", "ads", "clip", "files", "steps", "fal_cost_usd", "max_fal_usd", "cheaper_plan", "failed", "error", "ignored_instructions", "report_markdown"],
   "properties": {
-    "status": { "enum": ["complete", "partial", "over_budget", "failed"], "description": "complete: every planned job made and saved; partial: a job was refused, failed or never finished, or a save failed, and the rest is saved; over_budget: the plan was over max_fal_usd and no paid call was made; failed: nothing could be made (no https photo, or no shot completed)" },
+    "status": { "enum": ["complete", "partial", "over_budget", "failed"], "description": "complete: every planned job made and saved; partial: a job was refused, failed or never finished, or a save failed, and the rest is saved; over_budget: the plan was over max_fal_usd and no paid call was made; failed: nothing could be made (no https photo, fal could not read the photo at its link, or no shot completed)" },
     "product_image_url": { "type": "string", "description": "the product photo the shoot is made from" },
     "reference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["path", "saved", "seen"],
+      "required": ["path", "saved", "seen", "fal_url"],
       "properties": {
         "path": { "type": ["string", "null"], "description": "where the product photo was saved, under media/; null when it wasn't" },
         "saved": { "type": "boolean" },
-        "seen": { "type": "string", "maxLength": 400, "description": "what the product is and how it looks (shape, colors, material, the words on its label), from the saved photo, or from product_notes when it could not be seen" }
+        "seen": { "type": "string", "maxLength": 400, "description": "what the product is and how it looks (shape, colors, material, the words on its label), from the saved photo, or from product_notes when it could not be seen" },
+        "fal_url": { "type": ["string", "null"], "description": "the file_url upload_file answered for the product photo (fal's CDN), the one product URL every shot is made from; null when it was not uploaded (over budget, or the upload failed)" }
       }
     },
     "plan": {
@@ -108,19 +109,19 @@
     "files": { "type": "array", "maxItems": 30, "items": { "type": "string" }, "description": "every file the run wrote, under media/: run-keys.json, the product photo, the shots, the ad sizes, the clip" },
     "steps": {
       "type": "array",
-      "maxItems": 3,
+      "maxItems": 4,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": ["step", "endpoint", "units_planned", "units_made", "unit", "unit_price_usd", "status", "fal_cost_usd"],
         "properties": {
-          "step": { "enum": ["shots", "ad_sizes", "hero_clip"] },
+          "step": { "enum": ["upload", "shots", "ad_sizes", "hero_clip"], "description": "upload: the product photo put on fal once with upload_file, free (1 file at 0); then the paid steps" },
           "endpoint": { "type": "string" },
-          "units_planned": { "type": "number", "minimum": 0, "description": "images, or seconds of clip" },
+          "units_planned": { "type": "number", "minimum": 0, "description": "images, seconds of clip, or the 1 file uploaded" },
           "units_made": { "type": "number", "minimum": 0 },
           "unit": { "type": "string", "description": "the unit get_pricing gave" },
           "unit_price_usd": { "type": "number", "minimum": 0 },
-          "status": { "enum": ["done", "partial", "failed", "skipped", "not_run"], "description": "partial: some of its jobs completed; skipped: not asked for; not_run: over budget or nothing to make it from" },
+          "status": { "enum": ["done", "partial", "failed", "skipped", "not_run"], "description": "partial: some of its jobs completed; failed: none did, or the upload failed; skipped: not asked for; not_run: over budget or nothing to make it from" },
           "fal_cost_usd": { "type": "number", "minimum": 0, "description": "units made × unit price" }
         }
       }
@@ -142,13 +143,13 @@
     },
     "failed": {
       "type": "array",
-      "maxItems": 23,
+      "maxItems": 24,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": ["job", "error"],
         "properties": {
-          "job": { "type": "string", "maxLength": 20, "description": "shot-4, ad-2-9x16, clip, or a file that failed to save" },
+          "job": { "type": "string", "maxLength": 20, "description": "upload, shot-4, ad-2-9x16, clip, or a file that failed to save" },
           "error": { "type": "string", "maxLength": 500, "description": "fal's own words, or why the save failed" }
         }
       },

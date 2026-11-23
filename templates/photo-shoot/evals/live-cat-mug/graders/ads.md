@@ -12,7 +12,7 @@ Pass only if all hold:
 2. **One job per pick and size.** For each pick there is exactly one ad-size job at each of `1:1`, `4:5`, `9:16` and
    `16:9`, every one with `num_images` 1 and `resolution` `1K`, so the ad-size jobs number 4 × the picks.
 3. **Only the picks.** Each ad-size job's `input.image_urls` holds exactly one URL, the fal URL of one of the picked
-   shots; no ad-size job starts from a shot that is not a pick, or from the product photo.
+   shots; no ad-size job starts from a shot that is not a pick, or from the product photo or its upload.
 
 A refusal leaves fewer than 3 picks only when fewer than 3 shots completed; an answer that names such a refusal is
 right. Answer pass or fail, and quote what decided it.

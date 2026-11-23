@@ -8,8 +8,9 @@ on `fal-ai/nano-banana-pro/edit`, $0.07 a second on Kling. Pass only if all hold
 1. **Status.** `status` is `complete`; `failed` and `ignored_instructions` are empty; `clip` is null.
 2. **Priced.** `plan` is 10 shots, ad sizes true, hero clip false, 22 images; `plan_fal_usd` is 3.30 and
    `max_fal_usd` 4.
-3. **Cost.** `fal_cost_usd` is 3.30 (give or take a cent): `steps` has shots 10 × 0.15 = 1.50 and ad_sizes
-   12 × 0.15 = 1.80, both `done`, and hero_clip `skipped` at 0.
+3. **Cost.** `fal_cost_usd` is 3.30 (give or take a cent): `steps` has upload `done` at 0, shots 10 × 0.15 = 1.50
+   and ad_sizes 12 × 0.15 = 1.80, both `done`, and hero_clip `skipped` at 0. `reference.fal_url` is the `file_url`
+   the run's `upload_file` call answered.
 4. **Every job listed.** `shots` has 10 entries, each `completed`, saved, with its prompt and key; `ads` has 12, each
    `completed` and saved, 4 sizes for each pick.
 5. **Files.** `files` lists `media/run-keys.json`, `media/product.png`, the ten `media/shot-<n>.png` and the twelve

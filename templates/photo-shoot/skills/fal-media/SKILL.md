@@ -91,16 +91,24 @@ before reading any, then read them together. This is faster than one after anoth
 7. **A step that needs another's output waits for it**: submit it only once the job it uses has completed, with that
    job's output URL as its input.
 
-## The two models of a photo shoot
+## The upload and the two models of a photo shoot
 
-Each one's input is fal's own schema (fal's OpenAPI, read 2026-11-23). Send exactly these fields; read
+Each model's input is fal's own schema (fal's OpenAPI, read 2026-11-23). Send exactly these fields; read
 `get_model_schema` only if a call answers 422. Leave `sync_mode` out.
 
+### `upload_file`: the owner's photo on fal, once, free
+- `url` alone: the owner's public link, as given. fal fetches it once and answers a `file_url` on its CDN
+  (`https://v3.fal.media/files/...`). Send that `file_url` as the reference of every job, so fal reads the owner's
+  host once and the URL stays put for the whole run. It bills nothing.
+- An error (fal could not download the link: a 403, a 404, a web page instead of an image) is the end of the run:
+  nothing paid, no second upload, and the owner gets a plain word to give a direct link to the image file.
+
 ### `fal-ai/nano-banana-pro/edit`: a new picture made around a reference image, $0.15 an image at 1K
-- `prompt` (required, 3 to 50000 characters), `image_urls` (a list of image URLs fal reads: the reference, as given;
-  up to 14), `num_images` (1), `aspect_ratio` (`auto`, the default, follows the reference; or one of `21:9`, `16:9`,
-  `3:2`, `4:3`, `5:4`, `1:1`, `4:5`, `3:4`, `2:3`, `9:16`, `4:1`, `1:4`, `8:1`, `1:8`: no 1.91:1), `resolution`
-  (`1K`, the default; `2K` costs the same, `4K` double), `output_format` (`png`, `jpeg`, `webp`).
+- `prompt` (required, 3 to 50000 characters), `image_urls` (a list of image URLs fal reads: the reference, the
+  photo's `file_url` from `upload_file` or a shot's own fal URL; up to 14), `num_images` (1), `aspect_ratio` (`auto`,
+  the default, follows the reference; or one of `21:9`, `16:9`, `3:2`, `4:3`, `5:4`, `1:1`, `4:5`, `3:4`, `2:3`,
+  `9:16`, `4:1`, `1:4`, `8:1`, `1:8`: no 1.91:1), `resolution` (`1K`, the default; `2K` costs the same, `4K` double),
+  `output_format` (`png`, `jpeg`, `webp`).
 - Leave out `enable_web_search` (false by default; true adds $0.015 an image and lets the model pull in pictures from
   the web) and `limit_generations` (true by default: one image per job, whatever the prompt says, which is what the
   price counts; false lets a prompt ask for more images, each billed, and a capped run refuses it).
