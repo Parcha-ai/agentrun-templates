@@ -153,7 +153,12 @@ The voiceover's real length V, in seconds, comes from fal's result: V = `audio.f
 decimal. Example: `file_size` 457600 → 457600 × 8 ÷ 128000 = 28.6 s. The file's ID3 header adds under 0.05 s, so V
 can read that much long, never short. V comes from fal's `file_size` alone: the avatar reads the voiceover from
 fal's URL, and the saved copy's size is not part of the check. When `file_size` is null or missing, V is the end time of the last character in
-`timestamps` (step 8), and with no timestamps either, the script's spoken words ÷ 2.4.
+`timestamps` (step 8), fal's own timing. With neither `file_size` nor `timestamps` (null, missing or empty), V is
+unknown, and so is the avatar's price: V is never worked out from the script's words. Submit no avatar and no re-voice
+(nothing else that costs), save what exists (the portrait and the voiceover), and answer `status: "partial"` with
+`failed_step` "avatar", the avatar step `not_run` at 0, `audio_seconds` and `audio_seconds_source` null, and in `error`
+that fal stated neither the voiceover's `file_size` nor its `timestamps`, so its length and the avatar's price can't be
+known.
 
 Before any avatar job, check with V, never with `length`. Both must hold:
 - **Budget:** what is already spent (the portrait and every voiceover sent, at their rates) + V × the plan's avatar
@@ -177,7 +182,7 @@ with its numbers. A voiceover that fails a check is never sent to an avatar.
 ## 7. Animate
 
 `audio_seconds` is V of the voiceover animated (`audio_seconds_source` "file_size"; "timestamps" when V is the
-last character's end; "estimate" when it came from the words). OmniHuman's result states the seconds it billed in `duration`: when it does, that is
+last character's end; both null when V is unknown, step 6). OmniHuman's result states the seconds it billed in `duration`: when it does, that is
 `audio_seconds` (source "avatar"), and the avatar's cost uses it.
 
 `submit_job`, with key `ev-<date>-<source>-avatar` beside `endpoint_id` and `input`, on the plan's avatar model, with the portrait's URL and
@@ -193,7 +198,8 @@ pending after 10 minutes: stop, give its request id, and answer `partial`. Save 
 
 ## 8. Captions
 
-Write `media/explainer.vtt` with `write` once the video job has ended (or failed, or was not sent): `WEBVTT`, a blank
+Write `media/explainer.vtt` with `write` once the video job has ended (or failed, or was not sent), unless the
+voiceover's length is unknown (below): `WEBVTT`, a blank
 line, then cues. The cue text is the script of the voiceover last made, as spoken, audio tags removed, at phrase or
 sentence breaks, one or two lines of at most 42 characters each: count each line's characters, spaces included,
 before you write it, and break a longer one at a space.
@@ -219,12 +225,14 @@ at O + 30.720. In between:
 - when it doesn't, it is still fal's timing of this voiceover: don't report it as a fault; place the cues back to back
   between the two anchors, each lasting its share of the words you sent. Every sentence gets its cues.
 Only when fal answered no timestamps at all (null, missing or empty), place the cues back to back from O to O + V the
-same way, by share of words, V being the voice's length.
+same way, by share of words, V being the voice's length from its `file_size`. With no timestamps and no `file_size`
+either, V is unknown (step 6): write no captions file, and say in `notes` that fal stated neither, so nothing tells
+when the voice ends.
 
 ## 9. Failures
 
 A paid call that fal refuses, or a job that fails, is never sent again (no new key, no other model): finish the steps
-that don't need it, save what exists, write the captions when there is a voiceover, and answer `status: "partial"`
+that don't need it, save what exists, write the captions when there is a voiceover whose length is known (step 8), and answer `status: "partial"`
 with `failed_step` (portrait, voiceover or avatar) and fal's words in `error`. The one re-voice of step 6 is the only
 second paid call of a step, and only for a voiceover that was made and failed a check. A lost reply: `get_submission`
 with the same key, then follow its handles; `not_found` never authorizes a new paid call. Nothing made at all:
