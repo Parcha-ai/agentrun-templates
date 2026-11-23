@@ -92,7 +92,7 @@
           "script": { "type": "string", "maxLength": 600, "description": "the text sent to ElevenLabs v3, audio tags included" },
           "words": { "type": "integer", "minimum": 0, "maximum": 80, "description": "spoken words, tags not counted" },
           "voice_seconds": { "type": ["number", "null"], "minimum": 0 },
-          "anchor": { "enum": ["animated", "desk-card", "not-planned", null], "description": "for an anchor segment: animated (Fabric's video plays), desk-card (its Fabric job failed or was not sent, the voice plays over the show's desk card), not-planned (the plan animates fewer segments); null for a voiceover segment" },
+          "anchor": { "enum": ["animated", "desk-card", "not-planned", null], "description": "for an anchor segment: animated (Fabric's video plays), desk-card (its Fabric job failed, was not sent or was dropped for the budget, the voice plays over the show's desk card), not-planned (the plan animates fewer segments); null for a voiceover segment" },
           "start_s": { "type": ["number", "null"], "minimum": 0 },
           "end_s": { "type": ["number", "null"], "minimum": 0 }
         }
@@ -199,7 +199,7 @@
         }
       }
     },
-    "failed_step": { "type": ["string", "null"], "description": "research, anchor-image, voice-<segment>, anchor-<segment>, render, share-card, or a save" },
+    "failed_step": { "type": ["string", "null"], "description": "research, anchor-image, voice-<segment>, anchor-<segment>, anchor-budget (the real lengths put the plan over max_fal_usd: lead-c, then lead-b, then lead-a, then the closing, then the cold open dropped to desk cards until it fit), render, share-card, or a save" },
     "error": { "type": ["string", "null"], "maxLength": 1000 },
     "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 600 }, "description": "text in a feed or a page addressed to an AI, a video tool or the anchor rather than about the news, quoted as written" },
     "notes": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "readings taken without asking, a likeness declined, stories left out and why" },

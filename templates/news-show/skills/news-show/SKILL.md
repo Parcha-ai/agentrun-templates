@@ -80,9 +80,9 @@ mkdir -p film && cp -r .agents/skills/news-show/kit/. film/ && ls film film/scen
 Then `write` `film/show.json` in the shape of `film/show.example.json`: the show's name, the date as said on screen
 (`date_label`, like "Monday, November 23"), the anchor's name and image (`media/anchor.png` or the owner's
 `media/anchor.<ext>`; null when there is none), and the nine segments with the exact scripts you sent to fal, their
-voice files and timestamps, each anchor segment's clip (`media/anchor-<segment>.mp4`, or null when its job failed or
-the plan leaves it out: that segment becomes the desk card) and the words on screen. Every placeholder starts with
-`KIT`, and the build refuses any left. Then build:
+voice files and timestamps, each anchor segment's clip (`media/anchor-<segment>.mp4`, or null when its job failed,
+the plan leaves it out or the budget drops it: that segment becomes the desk card) and the words on screen. Every
+placeholder starts with `KIT`, and the build refuses any left. Then build:
 
 ```sh
 node film/build-show.mjs --show film/show.json --film film --vtt media/show.vtt
@@ -114,8 +114,11 @@ than the times.
 
 Fabric answers a clip as long as its voice, at the still's aspect. The build plays each clip muted with its voice
 beside it, from the same second, so lips and voice stay together; it never trims either. An owner's image that is not
-16:9 plays as a panel at the right with the desk beside it. A clip that failed is a desk card: the show's name and the
-chyron in type while the voice plays; never the still alone with a voice (a face that doesn't move reads as broken).
+16:9 plays as a panel at the right with the desk beside it. A clip that failed or was dropped for the budget is a desk
+card: the show's name and the chyron in type while the voice plays; never the still alone with a voice (a face that
+doesn't move reads as broken). When the budget drops every anchor segment (lead-c, then lead-b, then lead-a, then the
+closing, then the cold open), the show is desk-only: every anchor segment's clip is null and the build lays them all
+as desk cards.
 
 ## 7. Check, look, fix
 

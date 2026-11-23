@@ -203,8 +203,9 @@ and is never changed. A voice's length V is `web_save`'s `duration_s` (none: `ff
 Before any Fabric job, check the plan with the real lengths: what is spent (the still and the voices, at their rates)
 plus the plan's anchor segments' V, each rounded up to a whole second (fal bills Fabric by whole seconds), × the
 Fabric rate must be ≤ `max_fal_usd`, and each V at most 30 s. Over: animate fewer, dropping lead-c, then lead-b, then
-lead-a, until it fits; each dropped segment is a desk card, `status: "partial"`, `failed_step: "anchor-budget"`, the
-numbers in `error`.
+lead-a, then the closing, then the cold open, until it fits; with none left the show is desk-only, every anchor
+segment a desk card and no Fabric job sent. Each dropped segment is a desk card, `status: "partial"`, `failed_step:
+"anchor-budget"`, the numbers in `error`.
 
 `submit_job` `veed/fabric-1.0` for each anchor segment of the plan, in order (cold-open, lead-a, lead-b, lead-c,
 closing), key `ns-<stem>-anchor-<segment>`: `{image_url: the still's images[0].url or the anchor image URL,
