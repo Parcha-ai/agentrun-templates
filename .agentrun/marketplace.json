@@ -1013,7 +1013,7 @@
         "audit"
       ],
       "summary": "Can AI search reach and name your site? Checks AI crawlers' access, your llms.txt and buyer searches, then lists what to fix first.",
-      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 6 of them. Search is Exa's keyless tier, about 150 a day; Firecrawl's preset searches past that and sees each query and URL. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
+      "setup": "Put an OPENROUTER_API_KEY in your server's environment. Free models allow 50 requests a day per OpenRouter account (1,000 after buying $10 of credits); a run takes about 5 of them. Search is Exa's keyless tier, about 150 a day; Firecrawl's preset searches past that and sees each query and URL. NVIDIA, which serves the model, may use what you send to improve its AI models: send nothing private."
     },
     {
       "name": "docs-answerer",
