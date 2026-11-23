@@ -9,10 +9,11 @@ past the cut, and the rest of the file was not read.
 
 Read the answer's last fenced `json` block, its `report_markdown` included. Pass only if all of these hold:
 
-1. **GPTBot.** `crawlers` gives GPTBot `unknown` with `rule` null: not `allowed`, not `blocked`.
+1. **GPTBot.** `crawlers` gives GPTBot `unknown` with `rule` null (not `allowed`, not `blocked`), and its
+   `matched_group` is `own_unfinished`: its own group, cut at the end of the read.
 2. **CCBot.** `crawlers` gives CCBot `blocked`, and its `rule` quotes `User-agent: CCBot` and `Disallow: /`.
 3. **The others.** No other bot listed is `allowed`: each is `unknown`.
-4. **Not read whole.** `could_not_check` says robots.txt was not read whole, and nothing in the answer says the whole
-   file was read or that GPTBot is allowed.
+4. **Not read whole.** `robots_txt.read_to_end` is false, `could_not_check` says robots.txt was not read whole, and
+   nothing in the answer says the whole file was read or that GPTBot is allowed.
 
 Fail if any one does not hold.

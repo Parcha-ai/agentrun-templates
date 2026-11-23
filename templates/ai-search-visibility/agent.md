@@ -90,12 +90,14 @@ that decide it. A 404 is `not_found`: every bot is `allowed` with `rule` null. A
 verdict is `unknown`.
 
 Read every group in the whole file before any verdict, its parts in order as one text: a bot's group can be the last
-one in a long file. When the last part read still says `truncated` or `beyond_read`, robots.txt was not read to its end:
-- Its last group in what was read is unfinished, its rules may go on past the cut: every bot that group's `User-agent`
-  lines name is `unknown` with `rule` null, and `could_not_check` names that group. A full group before it stands.
-- A bot with no group of its own in what was read is `unknown` with `rule` null, never `allowed` from the `*` group:
-  its own group may be in the part not read.
-- `could_not_check` says which characters were not read, and the report says robots.txt was read only in part.
+one in a long file. Report two facts of the read, and the output schema says which verdicts each allows:
+- `robots_txt.read_to_end`: true when the last part fetched came back with neither `truncated` nor `beyond_read`;
+  false when the read stopped before the file's end.
+- Each crawler's `matched_group`, the group of what was read its verdict comes from: `own` (a group whose `User-agent`
+  names it), `own_unfinished` (that group is the last one read and the read stopped before the file's end, so its
+  rules may go on past the cut), `star` (the `User-agent: *` group) or `none` (neither, or no robots.txt read).
+When `read_to_end` is false, `could_not_check` says which characters were not read and names an unfinished group, and
+the report says robots.txt was read only in part.
 
 | bot | operator | purpose |
 |---|---|---|
