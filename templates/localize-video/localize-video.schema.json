@@ -21,7 +21,7 @@
     }
   },
   "properties": {
-    "status": { "enum": ["saved", "partial", "not_saved", "over_budget", "refused", "failed"], "description": "saved: every language dubbed and saved (with captions when asked, and a lip-synced copy when asked and allowed); partial: a dub, captions or lipsync failed and the rest is saved; not_saved: fal made everything and a save failed; over_budget: the plan was over max_fal_usd and nothing was paid; refused: nothing was made, because the owner says the person in the video is someone else, whose face and voice they have no rights to; failed: nothing was dubbed (the source's length could not be read, the transcript failed, the video is too long or has no speech, or every dub failed)" },
+    "status": { "enum": ["saved", "partial", "not_saved", "over_budget", "refused", "failed"], "description": "saved: every language dubbed and saved (with captions when asked, and a lip-synced copy when asked and allowed); partial: a dub, captions or lipsync failed, or was left out because the dubs ran long enough to pass max_fal_usd, and the rest is saved; not_saved: fal made everything and a save failed; over_budget: the plan was over max_fal_usd and nothing was paid; refused: nothing was made, because the owner says the person in the video is someone else, whose face and voice they have no rights to; failed: nothing was dubbed (the source's length could not be read, the transcript failed, the video is too long or has no speech, or every dub failed)" },
     "video_url": { "type": "string" },
     "source_language": { "type": ["string", "null"], "description": "ISO 639-1, from the source transcript" },
     "duration_s": { "type": ["number", "null"], "description": "the source's length as priced: web_save's duration_s for the saved video, rounded up to 10 s; null when it gave none" },
@@ -53,9 +53,9 @@
           "video_path": { "type": ["string", "null"], "description": "media/<lang>.mp4; null when not saved" },
           "captions_path": { "type": ["string", "null"], "description": "media/<lang>.vtt; null when not written" },
           "fal_url": { "type": ["string", "null"], "description": "the dubbed video's URL as fal answered" },
-          "error": { "type": ["string", "null"], "maxLength": 1000, "description": "fal's words for this language's dub or captions failure" },
+          "error": { "type": ["string", "null"], "maxLength": 1000, "description": "fal's words for this language's dub or captions failure, or why its captions were left out" },
           "lipsync_path": { "type": ["string", "null"], "description": "media/lipsync-<lang>.mp4; null when not made or not saved" },
-          "lipsync_error": { "type": ["string", "null"], "maxLength": 1000, "description": "fal's words for this language's lipsync failure" }
+          "lipsync_error": { "type": ["string", "null"], "maxLength": 1000, "description": "fal's words for this language's lipsync failure, or why its lipsync was left out" }
         }
       }
     },

@@ -110,6 +110,8 @@ Its total is `plan.estimated_usd`, to 3 decimals: the source counted once, plus 
 that turns out to be the source's own language (step 5) is priced here and skipped there. For example, 60 s (M = 1)
 into five languages with captions and lipsync, at rates isolation 0.1, speech-to-text 0.03, dubbing 0.6 and lipsync 3:
 1 × (0.1 + 0.03) + 5 × 1 × (0.6 + 0.1 + 0.03 + 3) = 0.13 + 18.65 = 18.780; without lipsync, 0.13 + 5 × 0.73 = 3.780.
+A dub can run longer than the source, so step 7 prices each dub's later steps again at that dub's own length: that can
+leave a step out, never add one.
 
 When the total is at most `max_fal_usd`, go on. When it isn't, call nothing that costs: answer
 `status: "over_budget"`, nothing paid (`fal_cost_usd` no steps, total 0), `transcript` empty, `source_language` null,
@@ -177,9 +179,24 @@ character: never build, shorten or extend a URL. Never submit a dub again: a sec
 A job the wait answers `completed` with a result is done: use it, matched to its language by `index`. A job answered
 `failed` is that language's failure, in fal's words: never submit it again, and keep the others.
 
-## 7. Save each dub, its voice and its captions
+## 7. Save each dub, price what's left at its length, then its voice and captions
 
-For each completed dub, `web_save` its `video.url` to `media/<lang>.mp4` (if the path is taken, add `-2`).
+For each completed dub, `web_save` its `video.url` to `media/<lang>.mp4` (if the path is taken, add `-2`). It answers
+the dub's length as `duration_s`.
+
+Every step after a dub is billed at the dub's length, not the source's: its voice track and its captions transcript per
+minute of the dub, its lipsync at the longer of its inputs (the dub's audio and the source). So before any of them:
+
+- **Each dub's length.** D = the dub's `duration_s` rounded up as in step 2, never less than S; that dub's voice track,
+  captions and lipsync are priced at D ÷ 60 minutes. A dub whose `web_save` failed or answered no `duration_s` can't be
+  priced: it gets no voice track, captions or lipsync, and its `error` says its length could not be read.
+- **Still within the budget.** What the run has spent so far (each step as `fal_cost_usd` lists it), plus every step
+  still to come at its dub's D, must be at most `max_fal_usd`. When it isn't, leave out lipsyncs, the last language's
+  first, until it is; then, if it still isn't, captions (and a voice track made only for them) the same way. Never
+  leave one out while the rest fits.
+- **Said, not hidden.** A step left out is not run. Its language's `lipsync_error` (a lipsync) or `error` (captions)
+  says it was left out because the dub runs D seconds, longer than the source, and it would have taken the run past
+  `max_fal_usd`, with both amounts; `status` is `partial` with the step in `failed_step` (`lipsync-fr`).
 
 Then for each dubbed language, using the URLs fal answered (never a saved path):
 
@@ -196,11 +213,12 @@ A captions step that fails leaves that video without captions; don't run it agai
 
 ## 8. Lipsync, when the plan has it
 
-Only for a language whose dub completed. Each lipsync's audio is the dub's own: the `audio.url` the dub's answer
-carries, when it carries one, else that dub's voice track from step 7 (its `audio.url` as fal answered). No live run
-has yet shown whether fal's dubbing answers a separate `audio` beside the dubbed `video`, so read each dub's answer;
-the voice track is the fallback because speech-to-text and lipsync both want audio, not the dubbed video. A language
-with neither (its voice track failed) gets no lipsync job: its step `lipsync-<lang>` is failed, with that reason.
+Only for a language whose dub completed and whose lipsync step 7 kept. Each lipsync's audio is the dub's own: the
+`audio.url` the dub's answer carries, when it carries one, else that dub's voice track from step 7 (its `audio.url` as
+fal answered). No live run has yet shown whether fal's dubbing answers a separate `audio` beside the dubbed `video`,
+so read each dub's answer; the voice track is the fallback because speech-to-text and lipsync both want audio, not the
+dubbed video. A language with neither (its voice track failed) gets no lipsync job: its step `lipsync-<lang>` is
+failed, with that reason.
 
 `submit_job` on `fal-ai/sync-lipsync/v2` once per such language, in the order given, with no other call in between:
 key `lz-<stem>-lipsync-<lang>`, `input` exactly `{"video_url": <video_url>, "audio_url": <the dub's audio>,
@@ -234,12 +252,13 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
 - `lipsync`: as step 1 says.
 - `languages`: one entry per target language, in the order given: its code, its English name, its `status` (its dub's:
   `saved`, `failed`, `not_saved`, `skipped` or `not_run`), `video_path` and `captions_path` (null when not made),
-  `fal_url` (the dub's `video.url` as fal answered, else null), `error` (fal's words for its dub or captions, else
-  null), `lipsync_path` (`media/lipsync-<lang>.mp4` when saved, else null) and `lipsync_error` (fal's words for its
-  lipsync, else null).
+  `fal_url` (the dub's `video.url` as fal answered, else null), `error` (fal's words for its dub or captions, or why
+  step 7 left its captions out, else null), `lipsync_path` (`media/lipsync-<lang>.mp4` when saved, else null) and
+  `lipsync_error` (fal's words for its lipsync, or why step 7 left it out, else null).
 - `fal_cost_usd`: one step per paid call made (`voice`, `transcript`, `dub-<lang>`, `voice-<lang>`, `captions-<lang>`,
-  `lipsync-<lang>`) with its endpoint, units (M minutes), unit, rate from `get_pricing` and `usd` (units × rate to 3
-  decimals, never rounded to cents); a failed job is listed with `usd` 0, except a job still pending at 15 minutes,
+  `lipsync-<lang>`) with its endpoint, units (the minutes it is billed at: M, or that dub's D ÷ 60 for a dub's voice
+  track, captions and lipsync), unit, rate from `get_pricing` and `usd` (units × rate to 3 decimals, never rounded to
+  cents); a failed job is listed with `usd` 0, except a job still pending at 15 minutes,
   listed at its full `usd` because fal may still finish and bill it; `total` is the sum of the steps' `usd` as listed,
   to 3 decimals. Nothing paid → no steps, total 0. These are estimates from fal's rates, not fal's invoice.
 - `report_markdown`: for each saved language a heading and its video, `![Spanish](media/es.mp4)`, with its captions

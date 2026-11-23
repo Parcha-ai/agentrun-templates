@@ -1,0 +1,13 @@
+# The runner serves fixtures/fal-mcp.json as the saved URL server fal (both dubs complete on the first grouped read, each 40 s on the 30 s source, their answers with audio null; audio isolation answers each dub's 40 s voice track; sync-lipsync v2 queues a job for either dub, and a grouped read of the Spanish one alone, or of both, completes them). web.json serves the source and the lip-synced videos as tiny real 30 s mp4s, the dubs as tiny real 40 s mp4s, and the voice tracks as tiny real 40 s mp3s. Pass: 2 of 2 runs.
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/run_model
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-20T14:00:00Z
