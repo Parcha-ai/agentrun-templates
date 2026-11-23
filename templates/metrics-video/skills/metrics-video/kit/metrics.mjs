@@ -36,7 +36,7 @@
 // kit (place reads every host and scene back after writing them; the message names the scene), or customer data in a
 // file (scan names the file and the item, never the value); 3: the pages are wrong or incomplete (the message says
 // what to fix); 0: done.
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { existsSync, lstatSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 
@@ -691,25 +691,40 @@ function scan() {
   const found = existsSync(dir) && rawFiles(dir).length ? customerValues(dir) : new Map();
   const raw = new Set(existsSync(dir) ? rawFiles(dir).map((f) => join(dir, f)) : []);
   // The template's own words: the skill folder the kit is copied from (film/ holds that copy, its comments included).
-  // A value the skill already holds as written ("Stripe processing fees" in a comment) is the template's text, not a
-  // customer's, so it is not looked for. Held as written: a name made of two common words stays looked for when the
-  // skill only has those words in lower case. With no skill folder every value is looked for: a missing folder never
-  // hides one. So this kit's text holds no example name.
+  // The run can write in that folder too, so only a file whose sha256 is the one kit/manifest.json gives (made with the
+  // template, checked in its repository) is the template's; any other file there (one the run added or changed, the
+  // manifest itself) is searched like every file the run wrote. With no manifest, no file there is the template's.
   const skill = join(root, typeof args.skill === "string" ? args.skill : ".agents/skills/metrics-video");
-  const skillText = existsSync(skill) ? squash(runFiles(skill, new Set()).map((f) => f.text).join("\n")) : "";
+  let manifest = {};
+  try {
+    manifest = JSON.parse(readFileSync(join(skill, "kit", "manifest.json"), "utf8")).sha256 ?? {};
+  } catch {
+    manifest = {};
+  }
+  const skillFiles = existsSync(skill) ? runFiles(skill, new Set()) : [];
+  const shipped = new Map(); // path inside the skill folder -> bytes, for each file the manifest vouches for
+  for (const f of skillFiles) {
+    const rel = relative(skill, f.path).split("\\").join("/");
+    const bytes = readFileSync(f.path);
+    if (manifest[rel] && createHash("sha256").update(bytes).digest("hex") === manifest[rel]) shipped.set(rel, { bytes, text: f.text });
+  }
+  // A value a shipped file holds as written ("Stripe processing fees" in a comment) is the template's text, not a
+  // customer's, so it is not looked for. Held as written: a name made of two common words stays looked for when the
+  // skill only has those words in lower case. So this kit's text holds no example name.
+  const skillText = squash([...shipped.values()].map((f) => f.text).join("\n"));
   const values = new Map([...found].filter(([value]) => !skillText.includes(squash(value))));
-  // A file in film/ still byte for byte the kit's copy (metrics.mjs, review.mjs, a scene the run never changed) holds
-  // only the template's words: it is not searched, so a customer's name that is also a phrase in the kit's code can't
-  // fail every run. A copy the run changed is searched like any other file.
-  const kit = join(skill, "kit");
+  // A file in film/ still byte for byte a shipped kit file (metrics.mjs, review.mjs, a scene the run never changed)
+  // holds only the template's words: it is not searched, so a customer's name that is also a phrase in the kit's code
+  // can't fail every run. A copy the run changed is searched like any other file.
   const film = join(root, typeof args.film === "string" ? args.film : "film");
   const kitCopy = (path) => {
-    const rel = relative(film, path);
-    if (rel.startsWith("..") || !existsSync(join(kit, rel))) return false;
-    return readFileSync(join(kit, rel)).equals(readFileSync(path));
+    const rel = relative(film, path).split("\\").join("/");
+    const kitFile = shipped.get(`kit/${rel}`);
+    return !rel.startsWith("..") && kitFile !== undefined && kitFile.bytes.equals(readFileSync(path));
   };
   const all = runFiles(root, raw);
-  const files = all.filter((f) => !kitCopy(f.path));
+  const written = skillFiles.filter((f) => !shipped.has(relative(skill, f.path).split("\\").join("/")));
+  const files = [...all.filter((f) => !kitCopy(f.path)), ...written];
   const hits = [];
   for (const { path, text } of files) {
     const at = relative(root, path) || path;
@@ -732,7 +747,7 @@ function scan() {
     unlinkSync(path);
     removed.push(path);
   }
-  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - files.length, skill_folder: skillText !== "", raw_pages_removed: removed }));
+  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), skill_files_shipped: shipped.size, skill_files_searched: written.length, raw_pages_removed: removed }));
 }
 
 // ---------- the key stem ----------
