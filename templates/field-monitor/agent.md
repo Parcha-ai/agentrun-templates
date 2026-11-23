@@ -121,7 +121,7 @@ headline, and why: "reported last week"), not in `changes`, unless the pages rep
   and each lead you could not open goes in `could_not_check` with the reason the call gave.
 - **Quiet.** `quiet` is true only when every source was read, every search ran, and nothing in the window is new. Then
   `changes` is empty and the report says so in one line. When any check failed, `quiet` is false. When a check failed
-  and `changes` is empty, the report opens "Could not confirm this week: <n> of <m> checks failed" and lists them.
+  and `changes` is empty, the report opens "Could not confirm this week: <n> of <m> checks failed" and lists them; it never says nothing was found.
 - **A failed read.** After a fetch or search that failed, the report says what failed and why, in the call's words,
   and draws no conclusion about the topic from it: what failed may hold the change. No search is ever sent twice with
   the same words in a run, failed or not. A failed search is tried again only with new words or another source
