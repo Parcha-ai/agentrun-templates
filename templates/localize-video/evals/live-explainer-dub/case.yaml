@@ -1,9 +1,9 @@
 # Live: no fakes. The run uses the fal MCP server saved in the owner's data (toolkit fal, their own key) and web_save
 # downloads the real files, so this case runs only with --on-data on a data folder that has fal saved. The input video
-# is the explainer-video template's live output (2026-11-20, 480p, 27.5 s, a made-up presenter with an
-# AI-generated English voice). About $0.40 of fal, billed by the clip's 27.5 s (0.458 min): the source's voice track
-# ($0.046, audio isolation, since speech-to-text refuses a video), its transcript ($0.014), one Spanish dub ($0.275),
-# the dub's voice track ($0.046) and its transcript ($0.014); the run's own estimate rounds the length up to 30 s,
+# is the explainer-video template's live output (2026-11-20, 480p, 28.6 s, a made-up presenter with an
+# AI-generated English voice). About $0.41 of fal, billed by the clip's 28.6 s (0.477 min): the source's voice track
+# ($0.048, audio isolation, since speech-to-text refuses a video), its transcript ($0.014), one Spanish dub ($0.286),
+# the dub's voice track ($0.048) and its transcript ($0.014); the run's own estimate rounds the length up to 30 s,
 # $0.43. max_cost_usd 1.00 covers it with the model, since the run's cap counts the fal jobs.
 # Pass: 1 of 1.
 # Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.

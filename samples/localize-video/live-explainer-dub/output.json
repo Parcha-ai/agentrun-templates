@@ -4,7 +4,7 @@
   "source_language": "en",
   "duration_s": 30,
   "captions": true,
-  "transcript": "Go one point twenty-three is out. Range loops can now run over iterator functions, so you can write your own sequences. Collecting a map's keys into a sorted slice takes one line, slices.sorted maps.keys. There are three new standard library packages, iter, structs, and unique. Timers and tickers got a rework. The Go command has new conveniences, and Go telemetry is opt-in",
+  "transcript": "Go one point twenty-three is out. Range loops can now run over iterator functions, so you can write your own sequences. Collecting a map's keys into a sorted slice takes one line, slices.sorted maps.keys. There are three new standard library packages, iter, structs, and unique. Timers and tickers got a rework. The Go command has new conveniences, and Go telemetry is opt-in.",
   "plan": {
     "languages": [
       "es"
@@ -21,7 +21,7 @@
       "status": "saved",
       "video_path": "media/es.mp4",
       "captions_path": "media/es.vtt",
-      "fal_url": "https://v3b.fal.media/files/b/0ab34a72/g7dRdIPn9EJiW8pZ2w070_dubbed_output.mp4",
+      "fal_url": "https://v3b.fal.media/files/b/0ab3684c/0FdSnzvjm7Mos3hIgm3KY_dubbed_output.mp4",
       "error": null
     }
   ],
@@ -73,5 +73,5 @@
   "failed_step": null,
   "error": null,
   "ignored_instructions": [],
-  "report_markdown": "## Spanish\n\n![Spanish](media/es.mp4)\n\nCaptions: `media/es.vtt`\n\n## Source transcript (English)\n\nGo one point twenty-three is out. Range loops can now run over iterator functions, so you can write your own sequences. Collecting a map's keys into a sorted slice takes one line, slices.sorted maps.keys. There are three new standard library packages, iter, structs, and unique. Timers and tickers got a rework. The Go command has new conveniences, and Go telemetry is opt-in\n\n## Cost (fal estimates from published rates, 0.5 min)\n\n| Step | Endpoint | USD |\n|---|---|---|\n| voice | audio-isolation | 0.050 |\n| transcript | speech-to-text | 0.015 |\n| dub-es | dubbing | 0.300 |\n| voice-es | audio-isolation | 0.050 |\n| captions-es | speech-to-text | 0.015 |\n| **Total** | | **0.430** |\n\nNo failures. No instructions were found in the transcript."
+  "report_markdown": "## Spanish\n\n![Spanish](media/es.mp4)\n\nCaptions: `media/es.vtt`\n\n## Source transcript (English)\n\nGo one point twenty-three is out. Range loops can now run over iterator functions, so you can write your own sequences. Collecting a map's keys into a sorted slice takes one line, slices.sorted maps.keys. There are three new standard library packages, iter, structs, and unique. Timers and tickers got a rework. The Go command has new conveniences, and Go telemetry is opt-in.\n\n## Cost (estimates from fal's rates)\n\n| Step | Endpoint | Minutes | Rate | USD |\n|---|---|---|---|---|\n| voice | audio-isolation | 0.5 | 0.10 | 0.050 |\n| transcript | speech-to-text | 0.5 | 0.03 | 0.015 |\n| dub-es | dubbing | 0.5 | 0.60 | 0.300 |\n| voice-es | audio-isolation | 0.5 | 0.10 | 0.050 |\n| captions-es | speech-to-text | 0.5 | 0.03 | 0.015 |\n| **Total** | | | | **0.430** |\n\nNo failures. No ignored instructions."
 }

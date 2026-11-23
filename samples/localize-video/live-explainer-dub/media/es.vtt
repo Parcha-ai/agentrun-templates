@@ -1,31 +1,28 @@
 WEBVTT
 
-00:00:00.220 --> 00:00:01.820
+00:00:00.280 --> 00:00:01.840
 Go uno punto veintitrés ha salido.
 
-00:00:02.060 --> 00:00:05.200
+00:00:02.040 --> 00:00:05.180
 Los bucles de rango ahora pueden ejecutarse sobre funciones iteradoras,
 
-00:00:05.420 --> 00:00:07.180
+00:00:05.400 --> 00:00:07.220
 por lo que puedes escribir tus propias secuencias.
 
-00:00:07.920 --> 00:00:11.320
+00:00:07.940 --> 00:00:11.200
 Recoger las claves de un mapa en una porción ordenada
 
-00:00:11.500 --> 00:00:15.340
-toma una línea: Slices, Sorted, Maps, Keys.
+00:00:11.260 --> 00:00:15.240
+toma una línea: Slice spot sorted maps spot keys.
 
-00:00:15.520 --> 00:00:18.140
-Hay tres nuevos paquetes de la biblioteca estándar:
+00:00:15.520 --> 00:00:20.020
+Hay tres nuevos paquetes de la biblioteca estándar: iter, structs y unique.
 
-00:00:18.360 --> 00:00:19.980
-Iter, Structs y Unique.
-
-00:00:20.240 --> 00:00:23.620
+00:00:20.360 --> 00:00:23.400
 Los temporizadores y los tickers han sido rediseñados.
 
-00:00:23.840 --> 00:00:27.460
-El comando Go tiene nuevas comodidades y la telemetría de Go
+00:00:23.640 --> 00:00:27.000
+El comando Go tiene nuevas comodidades y la telemetría
 
-00:00:27.680 --> 00:00:28.340
-es opcional.
+00:00:27.060 --> 00:00:28.280
+de Go es opcional.
