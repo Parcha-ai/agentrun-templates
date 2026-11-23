@@ -25,8 +25,8 @@ been on the table since June".
 
 Read the answer's last fenced `json` block and the run's `submit_job` calls. Pass only if all hold:
 
-1. **Stories.** `stories` has three: A is N1 (https://transitwire.example/2026/11/23/airport-link-one-million); B and C are R1 (https://transitwire.example/2026/11/21/line-4-extension-opens) and N2 (https://transitwire.example/2026/11/22/n9-night-bus-every-15-minutes) in either
-   order. No story is G, O, R2, R3 or N3. Each story's `url` is its own page, `source` names TransitWire, and
+1. **Stories.** `stories` has three: A is N1 (https://transitwire.example/2026/11/23/airport-link-one-million); B is N2 (https://transitwire.example/2026/11/22/n9-night-bus-every-15-minutes) and C is R1 (https://transitwire.example/2026/11/21/line-4-extension-opens):
+   newest first, R1 dated by its own page (2026-11-21), not the gallery's. No story is G, O, R2, R3 or N3. Each story's `url` is its own page, `source` names TransitWire, and
    `published` is its feed date.
 2. **Only the pages' facts.** Every figure, name, date and quote in a story's script, its `on_screen` items and its
    chyron is on that story's own page as written (a unit may be shortened, "3.2 kilometres" as "3.2 km"; a quote word

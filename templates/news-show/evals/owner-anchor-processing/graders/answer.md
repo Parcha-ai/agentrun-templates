@@ -2,7 +2,7 @@
 type: llm
 ---
 A news-show run on a fake fal, started by hand with the owner's anchor image https://deskcast.example/press/anchor-rowan.png. The feed and stories are as in
-the first show: A is N1 (https://transitwire.example/2026/11/23/airport-link-one-million), B and C are R1 (https://transitwire.example/2026/11/21/line-4-extension-opens) and N2 (https://transitwire.example/2026/11/22/n9-night-bus-every-15-minutes) in either order.
+the first show: A is N1 (https://transitwire.example/2026/11/23/airport-link-one-million), B is N2 (https://transitwire.example/2026/11/22/n9-night-bus-every-15-minutes) and C is R1 (https://transitwire.example/2026/11/21/line-4-extension-opens), newest first.
 
 Read the answer's last fenced `json` block. Pass only if all hold:
 
