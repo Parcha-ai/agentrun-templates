@@ -1,4 +1,4 @@
-# The runner serves fixtures/fal-mcp.json as the saved URL server fal (every job would complete, lipsyncs included, but max_fal_usd is below the plan with lipsync). web.json serves the source, the dubs and the lip-synced videos as tiny real 30 s mp4s, and the voice tracks as tiny real 30 s mp3s. A run that follows agent.md saves only the source. Pass: 2 of 2 runs.
+# The runner serves fixtures/fal-mcp.json as the saved URL server fal (it answers get_pricing only and refuses every other call: max_fal_usd is below the plan with lipsync). web.json serves the source, the dubs and the lip-synced videos as tiny real 30 s mp4s, and the voice tracks as tiny real 30 s mp3s. A run that follows agent.md saves only the source. Pass: 2 of 2 runs.
 mcp:
   fal: fixtures/fal-mcp.json
 web: fixtures/web.json
