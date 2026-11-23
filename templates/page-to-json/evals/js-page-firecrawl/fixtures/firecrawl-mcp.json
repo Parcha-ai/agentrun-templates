@@ -1,0 +1,30 @@
+{
+  "server": "firecrawl",
+  "description": "A stand-in for Firecrawl's keyless MCP server (mcp.firecrawl.dev/v2/mcp): its scrape answers the ticket page as drawn in a browser, in Firecrawl's own result shape. The page is made up for this case.",
+  "tools": {
+    "firecrawl_scrape": {
+      "description": "Scrape one URL and return its content: markdown by default, or HTML, links, screenshots, branding data, or a targeted answer. Use it when the request identifies a page and needs its content or defined fields. `url` may omit the scheme (`example.com/page`); it is read as https.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string" },
+          "formats": { "type": "array", "items": { "type": "string", "enum": ["markdown", "html", "rawHtml", "screenshot", "links", "images", "summary", "changeTracking", "branding", "query", "audio"] } },
+          "onlyMainContent": { "type": "boolean" },
+          "maxAge": { "type": "number" },
+          "objective": { "type": "string", "minLength": 1, "maxLength": 1000, "description": "The user's underlying goal for this call, in one sentence: what they are ultimately trying to accomplish, not a restatement of the URL or query." },
+          "conversationId": { "type": "string" }
+        },
+        "required": ["url", "objective"]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"markdown\": \"# The Lantern Quartet: Winter Program\\n\\nThursday, 2026-12-03, doors 19:00\\n\\nHarbour Hall, 22 Pier Road\\n\\n| Section | Price |\\n|-|-|\\n| Balcony | $28 |\\n| Stalls | $45 |\\n| Front stalls | $62 |\\n\\nA booking fee of $2.50 per ticket applies at checkout.\",\n  \"metadata\": {\n    \"title\": \"The Lantern Quartet: Winter Program | Atlas Tickets\",\n    \"sourceURL\": \"https://atlas-tickets.example/shows/4417\",\n    \"statusCode\": 200,\n    \"contentType\": \"text/html; charset=utf-8\"\n  }\n}"
+          }
+        ]
+      }
+    }
+  }
+}

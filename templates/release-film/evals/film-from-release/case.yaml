@@ -1,0 +1,19 @@
+# Applied with these parameters (POST /v2/templates/release-film/apply). The runner serves fixtures/fal-mcp.json as the
+# saved URL server fal (the voiceover and the music, each keyed by its submission_key with its own request id and URLs,
+# complete on the first grouped read: the voiceover 23.77 s with character timestamps of a stand-in take, the music
+# 30 s). web.json fakes GitHub's API for acme/quarry's v3.2.0 release, its two screenshots, the owner's avatar and
+# fal's CDN files (real mp3 and png bytes). The film is built and rendered for real in the run's sandbox. Pass: 2 of 2.
+parameters:
+  owner: acme
+  repo: quarry
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-22T12:00:00Z

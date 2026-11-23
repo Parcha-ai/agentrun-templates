@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "visibility.schema.json",
+  "title": "AI search visibility check",
+  "description": "Which AI crawlers a site's robots.txt lets in, whether it has an llms.txt, whether buyer searches reach it, and what to fix first. Every verdict quotes what was read.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["site", "brand", "robots_txt", "crawlers", "llms_txt", "structured_data", "questions", "fixes", "could_not_check", "ignored_instructions", "report_markdown"],
+  "properties": {
+    "site": { "type": "string" },
+    "brand": { "type": "string", "maxLength": 120, "description": "the name searched for, from the input or the home page" },
+    "robots_txt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "url"],
+      "properties": {
+        "status": { "enum": ["read", "not_found", "unreachable"], "description": "not_found: the host answered 404 (no robots.txt, so every crawler is allowed); unreachable: the fetch failed" },
+        "url": { "type": "string" }
+      }
+    },
+    "crawlers": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["bot", "operator", "purpose", "verdict", "rule"],
+        "properties": {
+          "bot": { "type": "string", "maxLength": 40, "description": "the user-agent token: OAI-SearchBot, GPTBot, ..." },
+          "operator": { "type": "string", "maxLength": 40 },
+          "purpose": { "enum": ["search_index", "user_fetch", "training"] },
+          "verdict": { "enum": ["allowed", "blocked", "partly_blocked", "unknown"], "description": "blocked: Disallow: / applies to it; partly_blocked: some paths are disallowed; unknown: robots.txt could not be read" },
+          "rule": { "type": ["string", "null"], "maxLength": 300, "description": "the robots.txt lines that decide it, quoted (its User-agent group, or the * group it falls to); null when there is no robots.txt or it could not be read" }
+        }
+      }
+    },
+    "llms_txt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "note"],
+      "properties": {
+        "status": { "enum": ["present", "not_found", "unreachable"] },
+        "note": { "type": "string", "maxLength": 300, "description": "what the file holds (its first heading, how many links), or the status the fetch gave" }
+      }
+    },
+    "structured_data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checked", "note"],
+      "properties": {
+        "checked": { "const": false },
+        "note": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question", "query", "result", "position", "url", "top_domains"],
+        "properties": {
+          "question": { "type": "string", "maxLength": 200 },
+          "query": { "type": "string", "maxLength": 200, "description": "the search as run" },
+          "result": { "enum": ["site_listed", "named_by_others", "not_found", "search_failed"], "description": "site_listed: a result is on the site; named_by_others: only another site's result names the brand; not_found: neither; search_failed: the search answered an error" },
+          "position": { "type": ["integer", "null"], "minimum": 1, "description": "the site's first result's place in the list, 1 first; null when not listed" },
+          "url": { "type": ["string", "null"], "description": "that result's URL, or the other site's result that names the brand; null otherwise" },
+          "top_domains": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 100 }, "description": "the domains of the first results, in order" }
+        }
+      }
+    },
+    "fixes": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["priority", "fix", "why", "evidence"],
+        "properties": {
+          "priority": { "enum": ["high", "medium", "low"] },
+          "fix": { "type": "string", "maxLength": 300, "description": "what to change, concretely: the robots.txt lines to add or remove, the file to publish, the page to write" },
+          "why": { "type": "string", "maxLength": 300 },
+          "evidence": { "type": "string", "maxLength": 300, "description": "what was read that shows it: a quoted robots.txt line, a fetch status, a search's result list" }
+        }
+      }
+    },
+    "could_not_check": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["what", "why"],
+        "properties": { "what": { "type": "string", "maxLength": 200 }, "why": { "type": "string", "maxLength": 300 } }
+      }
+    },
+    "ignored_instructions": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["where", "asked"],
+        "properties": { "where": { "type": "string", "maxLength": 300 }, "asked": { "type": "string", "maxLength": 300 } }
+      }
+    },
+    "report_markdown": { "type": "string", "contentMediaType": "text/markdown", "minLength": 1, "maxLength": 7000, "description": "the audit for a person: the fix list first, then the crawler table, llms.txt, the searches, and what was not checked" }
+  }
+}

@@ -2,7 +2,7 @@
 
 import { marketingHeader, marketingOnboarding } from "./header.mjs";
 import { CATEGORY_TEXT, computerWords, factsShort, isFree, isTriggered, keyWords, mcpWords, modelChoices, modelWords, requirements, testedLine, triggerLines, typeWords, unprovenWords } from "./describe.mjs";
-import { markdownToHtml } from "./markdown.mjs";
+import { absoluteMediaLinks, markdownToHtml, mediaPlayer } from "./markdown.mjs";
 import { clip, html, mdCode, mdText, plural, raw, upperFirst } from "./util.mjs";
 
 export const SITE_NAME = "AgentRun Marketplace";
@@ -346,10 +346,15 @@ function sampleSection(pkg) {
   }
   return pkg.examples.map((ex) => {
     const shown = sampleMarkdown(pkg, ex);
+    // The report plays the media it names; the rest follow it, each under its file name. A document is its name as a link.
+    const used = new Set();
+    const report = shown ? markdownToHtml(shown, { shift: 2, media: ex.media, used }) : "";
+    const rest = ex.media.filter((m) => m.kind !== "captions" && !used.has(m.file));
     return html`<div class="sample">
   ${pkg.examples.length > 1 ? html`<h3 class="caps">${ex.name}</h3>` : ""}
   ${ex.input !== undefined ? html`<details><summary class="caps">Input</summary>${jsonBlock(ex.input)}</details>` : ""}
-  ${shown ? html`<article class="report card">${raw(markdownToHtml(shown, { shift: 2 }))}</article>` : ""}
+  ${shown ? html`<article class="report card">${raw(report)}</article>` : ""}
+  ${rest.length ? html`<div class="sample-media">${rest.map((m) => m.kind === "document" ? html`<figure><figcaption><a href="${m.url}"><code>${m.file}</code></a></figcaption></figure>` : html`<figure>${raw(mediaPlayer(m))}<figcaption><code>${m.file}</code></figcaption></figure>`)}</div>` : ""}
   ${ex.output !== undefined ? html`<details><summary class="caps">The full answer as JSON</summary>${jsonBlock(ex.output)}</details>` : ""}
 </div>`;
   });
@@ -613,7 +618,10 @@ function templateMd(site, pkg, { keys, triggers, cli, stats }) {
     const shown = sampleMarkdown(pkg, ex);
     if (pkg.examples.length > 1) out.push(`### ${ex.name}`, "");
     if (ex.input !== undefined) out.push("Input:", "", "```json", JSON.stringify(ex.input, null, 2), "```", "");
-    if (shown) out.push("Output:", "", shown.trim().replace(/^#{1,4} /gm, "#### "), "");
+    // media/<file> in the report is relative to the sample folder; on this page it is the file's full URL.
+    if (shown) out.push("Output:", "", absoluteMediaLinks(shown, ex.media, (m) => site.url(m.url)).trim().replace(/^#{1,4} /gm, "#### "), "");
+    const files = ex.media.filter((m) => m.kind !== "captions");
+    if (files.length) out.push("Media:", "", ...files.map((m) => `- [${m.file}](${site.url(m.url)})${m.captions ? `, captions: ${site.url(m.captions.url)}` : ""}`), "");
   }
   out.push(
     "## Tested",

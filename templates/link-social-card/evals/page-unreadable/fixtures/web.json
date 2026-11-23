@@ -1,0 +1,17 @@
+{
+  "search": {
+    "answers": [],
+    "default": {
+      "results": []
+    }
+  },
+  "fetch": {
+    "answers": [],
+    "default": {
+      "error": "fetch failed: 503 Service Unavailable"
+    }
+  },
+  "save": {
+    "answers": []
+  }
+}
