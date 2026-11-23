@@ -1,0 +1,306 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater: pull request #512 (webhook tokens in the query string) with three changed files and no comments. It serves the four tools the package names, with Composio's GitHub toolkit slugs and its {data, successful, error} results, for acme/tidewater only. Every write answers success. It never reaches GitHub.",
+  "tools": {
+    "GITHUB_GET_A_PULL_REQUEST": {
+      "description": "Retrieves a specific pull request from a GitHub repository using its owner, repository name, and pull request number.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the .git extension. This value is not case sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The username of the account that owns the repository. This value is not case sensitive."
+          },
+          "pull_number": {
+            "type": "integer",
+            "description": "The number that identifies the specific pull request."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 512
+            },
+            {
+              "pull_number": "512"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"number\": 512, \"title\": \"Accept webhook tokens in the query string\", \"body\": \"Some webhook senders (old CI systems) can't set an Authorization header. This lets them pass `?token=` in the URL instead. Also simplifies tokenMatches.\", \"state\": \"open\", \"draft\": false, \"merged\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/512\", \"head\": {\"ref\": \"webhook-query-token\", \"sha\": \"0512aa11bb22cc33dd44ee55ff6600778899aabb\"}, \"base\": {\"ref\": \"main\"}, \"created_at\": \"2026-11-18T14:02:00Z\", \"updated_at\": \"2026-11-18T14:02:00Z\", \"additions\": 11, \"deletions\": 6, \"changed_files\": 3, \"comments\": 0, \"review_comments\": 0, \"requested_reviewers\": [], \"labels\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such pull request in acme/tidewater\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_PULL_REQUESTS_FILES": {
+      "description": "Lists a page of files changed in a specified GitHub pull request, including additions, modifications, and removals.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results to retrieve for pagination."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension. This field is not case sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (e.g., a GitHub username or organization name). This field is not case sensitive."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of file results to return per page (max 100)."
+          },
+          "pull_number": {
+            "type": "integer",
+            "description": "The numeric identifier of the pull request whose files are to be listed."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "pull_number": 512,
+              "page": 1
+            },
+            {
+              "pull_number": "512",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"files\": [{\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"src/server/auth.ts\", \"status\": \"modified\", \"additions\": 6, \"deletions\": 5, \"changes\": 11, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/src/server/auth.ts\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/src/server/auth.ts\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/src/server/auth.ts?ref=feature\", \"patch\": \"@@ -12,12 +12,13 @@ import { timingSafeEqual } from \\\"node:crypto\\\";\\n\\n export function readToken(req: Request): string | undefined {\\n   const header = req.headers.get(\\\"authorization\\\");\\n-  if (!header?.startsWith(\\\"Bearer \\\")) return undefined;\\n-  return header.slice(\\\"Bearer \\\".length);\\n+  if (header?.startsWith(\\\"Bearer \\\")) return header.slice(\\\"Bearer \\\".length);\\n+  // Webhook senders that can't set headers pass the token in the URL.\\n+  const fromQuery = new URL(req.url).searchParams.get(\\\"token\\\");\\n+  if (fromQuery) console.info(`auth: token from query for ${req.url}`);\\n+  return fromQuery ?? undefined;\\n }\\n\\n export function tokenMatches(given: string, expected: string): boolean {\\n-  const a = Buffer.from(given);\\n-  const b = Buffer.from(expected);\\n-  return a.length === b.length && timingSafeEqual(a, b);\\n+  return given === expected;\\n }\"}, {\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"src/server/routes/webhooks.ts\", \"status\": \"modified\", \"additions\": 1, \"deletions\": 1, \"changes\": 2, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/src/server/routes/webhooks.ts\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/src/server/routes/webhooks.ts\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/src/server/routes/webhooks.ts?ref=feature\", \"patch\": \"@@ -30,4 +30,4 @@ export async function handleWebhook(req: Request): Promise<Response> {\\n   const token = readToken(req);\\n-  if (!token || !tokenMatches(token, config.webhookSecret)) {\\n+  if (!token || !tokenMatches(token, config.webhookSecret ?? \\\"\\\")) {\\n     return new Response(\\\"unauthorized\\\", { status: 401 });\\n   }\"}, {\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"docs/webhooks.md\", \"status\": \"modified\", \"additions\": 4, \"deletions\": 0, \"changes\": 4, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/docs/webhooks.md\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/docs/webhooks.md\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/docs/webhooks.md?ref=feature\", \"patch\": \"@@ -8,3 +8,7 @@ Every webhook request must carry your webhook secret as a bearer token:\\n ```\\n Authorization: Bearer <secret>\\n ```\\n+\\n+Senders that can't set headers can pass it in the URL instead:\\n+\\n+    https://tidewater.example/hooks/sync?token=<secret>\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 512,
+              "page": 2
+            },
+            {
+              "pull_number": "512",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"files\": []}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "pull_number": 512
+            },
+            {
+              "pull_number": "512"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": {\"files\": [{\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"src/server/auth.ts\", \"status\": \"modified\", \"additions\": 6, \"deletions\": 5, \"changes\": 11, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/src/server/auth.ts\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/src/server/auth.ts\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/src/server/auth.ts?ref=feature\", \"patch\": \"@@ -12,12 +12,13 @@ import { timingSafeEqual } from \\\"node:crypto\\\";\\n\\n export function readToken(req: Request): string | undefined {\\n   const header = req.headers.get(\\\"authorization\\\");\\n-  if (!header?.startsWith(\\\"Bearer \\\")) return undefined;\\n-  return header.slice(\\\"Bearer \\\".length);\\n+  if (header?.startsWith(\\\"Bearer \\\")) return header.slice(\\\"Bearer \\\".length);\\n+  // Webhook senders that can't set headers pass the token in the URL.\\n+  const fromQuery = new URL(req.url).searchParams.get(\\\"token\\\");\\n+  if (fromQuery) console.info(`auth: token from query for ${req.url}`);\\n+  return fromQuery ?? undefined;\\n }\\n\\n export function tokenMatches(given: string, expected: string): boolean {\\n-  const a = Buffer.from(given);\\n-  const b = Buffer.from(expected);\\n-  return a.length === b.length && timingSafeEqual(a, b);\\n+  return given === expected;\\n }\"}, {\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"src/server/routes/webhooks.ts\", \"status\": \"modified\", \"additions\": 1, \"deletions\": 1, \"changes\": 2, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/src/server/routes/webhooks.ts\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/src/server/routes/webhooks.ts\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/src/server/routes/webhooks.ts?ref=feature\", \"patch\": \"@@ -30,4 +30,4 @@ export async function handleWebhook(req: Request): Promise<Response> {\\n   const token = readToken(req);\\n-  if (!token || !tokenMatches(token, config.webhookSecret)) {\\n+  if (!token || !tokenMatches(token, config.webhookSecret ?? \\\"\\\")) {\\n     return new Response(\\\"unauthorized\\\", { status: 401 });\\n   }\"}, {\"sha\": \"0000000000000000000000000000000000000000\", \"filename\": \"docs/webhooks.md\", \"status\": \"modified\", \"additions\": 4, \"deletions\": 0, \"changes\": 4, \"blob_url\": \"https://github.com/acme/tidewater/blob/feature/docs/webhooks.md\", \"raw_url\": \"https://github.com/acme/tidewater/raw/feature/docs/webhooks.md\", \"contents_url\": \"https://api.github.com/repos/acme/tidewater/contents/docs/webhooks.md?ref=feature\", \"patch\": \"@@ -8,3 +8,7 @@ Every webhook request must carry your webhook secret as a bearer token:\\n ```\\n Authorization: Bearer <secret>\\n ```\\n+\\n+Senders that can't set headers can pass it in the URL instead:\\n+\\n+    https://tidewater.example/hooks/sync?token=<secret>\"}]}, \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"Not Found: no such pull request in acme/tidewater\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_ISSUE_COMMENTS": {
+      "description": "Lists comments for a specified issue in a GitHub repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number of the results to retrieve."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository, without the `.git` extension (not case-sensitive)."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Username of the account owning the repository (not case-sensitive)."
+          },
+          "since": {
+            "type": "string",
+            "description": "Filters comments to include only those updated at or after this ISO 8601 timestamp (e.g., `YYYY-MM-DDTHH:MM:SSZ`)."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of comments to return per page (max 100)."
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "Number that identifies the issue."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "issue_number": 512,
+              "page": 1
+            },
+            {
+              "issue_number": "512",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 512,
+              "page": 2
+            },
+            {
+              "issue_number": "512",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "issue_number": 512
+            },
+            {
+              "issue_number": "512"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_CREATE_AN_ISSUE_COMMENT": {
+      "description": "Creates a new comment on an existing GitHub issue or pull request within the specified repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "description": "Comment content in GitHub Flavored Markdown."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository (without `.git` extension); not case-sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Account owner of the repository (username or organization); not case-sensitive."
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "Number identifying the issue or pull request for the comment."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number",
+          "body"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"id\": 99001, \"html_url\": \"https://github.com/acme/tidewater/issues/0#issuecomment-99001\"}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,597 @@
+{
+  "server": "github",
+  "description": "A fake Composio GitHub for acme/tidewater on Thursday 2026-11-19 08:00 UTC: closed PRs #61 (merged before Wednesday's brief), #73 (merged Wednesday) and #74 (closed unmerged); no open PRs. The issue list, 100 a page, newest created first: page 1 holds new issue #220 and 99 Renovate pull requests opened since Wednesday 08:00; page 2, served only when `since` is Tuesday 08:00 (the start Wednesday's brief could not read), holds issues #118 and #117 opened Tuesday, #68 (older) and brief issue #40. Composio's slugs and {data, successful, error} results, acme/tidewater only. Every write answers success. It never reaches GitHub.",
+  "tools": {
+    "GITHUB_LIST_PULL_REQUESTS": {
+      "description": "Lists pull requests for a GitHub repository. REQUIRES 'owner' AND 'repo' parameters - both are MANDATORY and must be provided in every call. Does NOT support filtering by assignee or date range - use GITHUB_FIND_PULL_REQUESTS instead for searching PRs by assignee, author, or across multiple reposito",
+      "input": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string",
+            "description": "Filter by base branch name."
+          },
+          "head": {
+            "type": "string",
+            "description": "Filter by head user/org and branch name, e.g., `user:ref-name`."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number for results."
+          },
+          "repo": {
+            "type": "string",
+            "description": "[REQUIRED - MUST BE PROVIDED] The name of the repository (without the `.git` extension). This parameter is mandatory and cannot be omitted. Example: 'Spoon-Knif"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sorts results. Valid values: 'created', 'updated', 'popularity', 'long-running'. 'popularity' is by comment count; 'long-running' by age and recent activity."
+          },
+          "owner": {
+            "type": "string",
+            "description": "[REQUIRED - MUST BE PROVIDED] The GitHub username or organization name that owns the repository. This parameter is mandatory and cannot be omitted. Example: 'oc"
+          },
+          "state": {
+            "type": "string",
+            "description": "Filter by pull request state. Valid values: 'open', 'closed', 'all'."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page (maximum 100)."
+          },
+          "direction": {
+            "type": "string",
+            "description": "Sort direction. Valid values: 'asc', 'desc'. Defaults to 'desc' if sort is 'created' or unspecified, else 'asc'."
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "state": "closed",
+              "page": 1
+            },
+            {
+              "state": "closed",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 74, \"title\": \"Try a faster glob library\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/74\", \"body\": \"\", \"created_at\": \"2026-11-17T09:00:00Z\", \"updated_at\": \"2026-11-18T16:00:00Z\", \"closed_at\": \"2026-11-18T16:00:00Z\", \"merged_at\": null, \"head\": {\"ref\": \"branch-74\", \"sha\": \"0074ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 73, \"title\": \"Skip 0-byte files in the upload queue\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/73\", \"body\": \"\", \"created_at\": \"2026-11-18T09:00:00Z\", \"updated_at\": \"2026-11-18T15:00:00Z\", \"closed_at\": \"2026-11-18T15:00:00Z\", \"merged_at\": \"2026-11-18T15:00:00Z\", \"head\": {\"ref\": \"branch-73\", \"sha\": \"0073ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 61, \"title\": \"Cache the remote listing\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/61\", \"body\": \"\", \"created_at\": \"2026-11-16T10:00:00Z\", \"updated_at\": \"2026-11-18T07:10:00Z\", \"closed_at\": \"2026-11-18T07:10:00Z\", \"merged_at\": \"2026-11-18T07:10:00Z\", \"head\": {\"ref\": \"branch-61\", \"sha\": \"0061ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "closed",
+              "page": 2
+            },
+            {
+              "state": "closed",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "state": "closed"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 74, \"title\": \"Try a faster glob library\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/74\", \"body\": \"\", \"created_at\": \"2026-11-17T09:00:00Z\", \"updated_at\": \"2026-11-18T16:00:00Z\", \"closed_at\": \"2026-11-18T16:00:00Z\", \"merged_at\": null, \"head\": {\"ref\": \"branch-74\", \"sha\": \"0074ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 73, \"title\": \"Skip 0-byte files in the upload queue\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/73\", \"body\": \"\", \"created_at\": \"2026-11-18T09:00:00Z\", \"updated_at\": \"2026-11-18T15:00:00Z\", \"closed_at\": \"2026-11-18T15:00:00Z\", \"merged_at\": \"2026-11-18T15:00:00Z\", \"head\": {\"ref\": \"branch-73\", \"sha\": \"0073ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 61, \"title\": \"Cache the remote listing\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/61\", \"body\": \"\", \"created_at\": \"2026-11-16T10:00:00Z\", \"updated_at\": \"2026-11-18T07:10:00Z\", \"closed_at\": \"2026-11-18T07:10:00Z\", \"merged_at\": \"2026-11-18T07:10:00Z\", \"head\": {\"ref\": \"branch-61\", \"sha\": \"0061ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "open",
+              "page": 1
+            },
+            {
+              "state": "open",
+              "page": "1"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "state": "open",
+              "page": 2
+            },
+            {
+              "state": "open",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "state": "open"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": {
+            "state": "all"
+          },
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 74, \"title\": \"Try a faster glob library\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/74\", \"body\": \"\", \"created_at\": \"2026-11-17T09:00:00Z\", \"updated_at\": \"2026-11-18T16:00:00Z\", \"closed_at\": \"2026-11-18T16:00:00Z\", \"merged_at\": null, \"head\": {\"ref\": \"branch-74\", \"sha\": \"0074ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 73, \"title\": \"Skip 0-byte files in the upload queue\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"mei-lin\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/73\", \"body\": \"\", \"created_at\": \"2026-11-18T09:00:00Z\", \"updated_at\": \"2026-11-18T15:00:00Z\", \"closed_at\": \"2026-11-18T15:00:00Z\", \"merged_at\": \"2026-11-18T15:00:00Z\", \"head\": {\"ref\": \"branch-73\", \"sha\": \"0073ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}, {\"number\": 61, \"title\": \"Cache the remote listing\", \"state\": \"closed\", \"draft\": false, \"locked\": false, \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"html_url\": \"https://github.com/acme/tidewater/pull/61\", \"body\": \"\", \"created_at\": \"2026-11-16T10:00:00Z\", \"updated_at\": \"2026-11-18T07:10:00Z\", \"closed_at\": \"2026-11-18T07:10:00Z\", \"merged_at\": \"2026-11-18T07:10:00Z\", \"head\": {\"ref\": \"branch-61\", \"sha\": \"0061ab12cd34ef56ab12cd34ef56ab12cd34ef56\"}, \"base\": {\"ref\": \"main\"}, \"requested_reviewers\": [], \"requested_teams\": [], \"labels\": []}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_REVIEWS_FOR_A_PULL_REQUEST": {
+      "description": "Lists submitted reviews chronologically for a specific pull request within a GitHub repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "The page number for the set of results to retrieve."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository, without the `.git` extension. This name is not case sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (e.g., a GitHub username or organization name). This name is not case sensitive."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "The number of review results to display per page. Maximum 100."
+          },
+          "pull_number": {
+            "type": "integer",
+            "description": "The unique number identifying the pull request within the repository."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "pull_number"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_LIST_CHECK_RUNS_FOR_A_REF": {
+      "description": "List GitHub check runs for a commit SHA, branch, or tag to assess CI status and conclusions. Results default to the latest runs; the filter can be set to include all runs.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "ref": {
+            "type": "string",
+            "description": "The git reference - can be a commit SHA, branch name, or tag name."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number of results to fetch."
+          },
+          "repo": {
+            "type": "string",
+            "description": "The name of the repository without .git extension. Case-insensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "The account owner of the repository (username or organization name). Case-insensitive."
+          },
+          "app_id": {
+            "type": "integer",
+            "description": "Filter by GitHub App identifier."
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter by completion timestamp: 'latest' returns the most recent check runs, 'all' returns all check runs."
+          },
+          "status": {
+            "type": "string",
+            "description": "Filter by check run status: queued, in_progress, or completed."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page, maximum 100."
+          },
+          "check_name": {
+            "type": "string",
+            "description": "Filters results to check runs with the specified name."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "ref"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {}, \"successful\": false, \"error\": \"No commit found for the ref\"}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "GITHUB_LIST_REPOSITORY_ISSUES": {
+      "description": "Lists issues (including pull requests) from a GitHub repository. Requires BOTH 'owner' AND 'repo' parameters (e.g., owner='octocat', repo='Hello-World' for github.com/octocat/Hello-World).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number for the set of results. Refer to GitHub's REST API documentation for pagination details."
+          },
+          "repo": {
+            "type": "string",
+            "description": "REQUIRED. The name of the repository (without .git extension). For 'octocat/Hello-World', repo is 'Hello-World'. Not case-sensitive. Must be provided together w"
+          },
+          "sort": {
+            "type": "string",
+            "description": "The field to sort the results by."
+          },
+          "type": {
+            "type": "string",
+            "description": "Filter issues by type name. Use '*' for issues with any type, 'none' for issues without a type, or specify a type name."
+          },
+          "owner": {
+            "type": "string",
+            "description": "REQUIRED. The GitHub account owner (user or organization) of the repository. For 'octocat/Hello-World', owner is 'octocat'. Not case-sensitive. Must be provided"
+          },
+          "since": {
+            "type": "string",
+            "description": "Filters issues to include only those updated at or after the specified time. This should be a timestamp in ISO 8601 format (e.g., `YYYY-MM-DDTHH:MM:SSZ`)."
+          },
+          "state": {
+            "type": "string",
+            "description": "Filters issues based on their state."
+          },
+          "labels": {
+            "type": "string",
+            "description": "A comma-separated list of label names to filter issues by. Example: 'bug,ui,@high'."
+          },
+          "creator": {
+            "type": "string",
+            "description": "Filter issues by the username of the user who created the issue."
+          },
+          "assignee": {
+            "type": "string",
+            "description": "Filter issues by assignee's username. Use 'none' for issues with no assignee, or '*' for issues assigned to any user."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page (max 100). Default is 30, which matches GitHub's API default. Refer to GitHub's REST API documentation for pagination details."
+          },
+          "direction": {
+            "type": "string",
+            "description": "The direction of the sort."
+          },
+          "mentioned": {
+            "type": "string",
+            "description": "Filter issues by a user mentioned in the issue's description or comments. Provide the username."
+          },
+          "milestone": {
+            "type": "string",
+            "description": "Filter issues by milestone. Provide the milestone `number` as a string, '*' for issues with any milestone, or 'none' for issues without a milestone."
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ]
+      },
+      "answers": [
+        {
+          "when": [
+            {
+              "since": "2026-11-17T08:00:00Z",
+              "page": 2
+            },
+            {
+              "since": "2026-11-17T08:00:00Z",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 118, \"title\": \"Upload stalls on a 0-byte file\", \"user\": {\"login\": \"user-808\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/118\", \"created_at\": \"2026-11-17T15:00:00Z\", \"updated_at\": \"2026-11-18T09:30:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 117, \"title\": \"Docs: the --since flag is not in the CLI reference\", \"user\": {\"login\": \"winfan\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/117\", \"created_at\": \"2026-11-17T10:00:00Z\", \"updated_at\": \"2026-11-17T10:00:00Z\", \"labels\": [{\"name\": \"docs\"}], \"comments\": 0}, {\"number\": 68, \"title\": \"Crash on an empty config file\", \"user\": {\"login\": \"user-77\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/68\", \"created_at\": \"2026-11-16T09:00:00Z\", \"updated_at\": \"2026-11-17T14:00:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 40, \"title\": \"Daily brief\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/40\", \"created_at\": \"2026-10-01T09:00:00Z\", \"updated_at\": \"2026-11-18T08:01:00Z\", \"labels\": [], \"comments\": 0}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "since": "2026-11-17T08:00:00Z",
+              "page": 3
+            },
+            {
+              "since": "2026-11-17T08:00:00Z",
+              "page": "3"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "since": "2026-11-17T08:00:00.000Z",
+              "page": 2
+            },
+            {
+              "since": "2026-11-17T08:00:00.000Z",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 118, \"title\": \"Upload stalls on a 0-byte file\", \"user\": {\"login\": \"user-808\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/118\", \"created_at\": \"2026-11-17T15:00:00Z\", \"updated_at\": \"2026-11-18T09:30:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 117, \"title\": \"Docs: the --since flag is not in the CLI reference\", \"user\": {\"login\": \"winfan\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/117\", \"created_at\": \"2026-11-17T10:00:00Z\", \"updated_at\": \"2026-11-17T10:00:00Z\", \"labels\": [{\"name\": \"docs\"}], \"comments\": 0}, {\"number\": 68, \"title\": \"Crash on an empty config file\", \"user\": {\"login\": \"user-77\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/68\", \"created_at\": \"2026-11-16T09:00:00Z\", \"updated_at\": \"2026-11-17T14:00:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 40, \"title\": \"Daily brief\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/40\", \"created_at\": \"2026-10-01T09:00:00Z\", \"updated_at\": \"2026-11-18T08:01:00Z\", \"labels\": [], \"comments\": 0}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "since": "2026-11-17T08:00:00.000Z",
+              "page": 3
+            },
+            {
+              "since": "2026-11-17T08:00:00.000Z",
+              "page": "3"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "since": "2026-11-17T08:00:00+00:00",
+              "page": 2
+            },
+            {
+              "since": "2026-11-17T08:00:00+00:00",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 118, \"title\": \"Upload stalls on a 0-byte file\", \"user\": {\"login\": \"user-808\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/118\", \"created_at\": \"2026-11-17T15:00:00Z\", \"updated_at\": \"2026-11-18T09:30:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 117, \"title\": \"Docs: the --since flag is not in the CLI reference\", \"user\": {\"login\": \"winfan\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/117\", \"created_at\": \"2026-11-17T10:00:00Z\", \"updated_at\": \"2026-11-17T10:00:00Z\", \"labels\": [{\"name\": \"docs\"}], \"comments\": 0}, {\"number\": 68, \"title\": \"Crash on an empty config file\", \"user\": {\"login\": \"user-77\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/68\", \"created_at\": \"2026-11-16T09:00:00Z\", \"updated_at\": \"2026-11-17T14:00:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 40, \"title\": \"Daily brief\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/40\", \"created_at\": \"2026-10-01T09:00:00Z\", \"updated_at\": \"2026-11-18T08:01:00Z\", \"labels\": [], \"comments\": 0}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "since": "2026-11-17T08:00:00+00:00",
+              "page": 3
+            },
+            {
+              "since": "2026-11-17T08:00:00+00:00",
+              "page": "3"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "since": "2026-11-17T08:00Z",
+              "page": 2
+            },
+            {
+              "since": "2026-11-17T08:00Z",
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [{\"number\": 118, \"title\": \"Upload stalls on a 0-byte file\", \"user\": {\"login\": \"user-808\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/118\", \"created_at\": \"2026-11-17T15:00:00Z\", \"updated_at\": \"2026-11-18T09:30:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 117, \"title\": \"Docs: the --since flag is not in the CLI reference\", \"user\": {\"login\": \"winfan\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/117\", \"created_at\": \"2026-11-17T10:00:00Z\", \"updated_at\": \"2026-11-17T10:00:00Z\", \"labels\": [{\"name\": \"docs\"}], \"comments\": 0}, {\"number\": 68, \"title\": \"Crash on an empty config file\", \"user\": {\"login\": \"user-77\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/68\", \"created_at\": \"2026-11-16T09:00:00Z\", \"updated_at\": \"2026-11-17T14:00:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 40, \"title\": \"Daily brief\", \"user\": {\"login\": \"kofi\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/40\", \"created_at\": \"2026-10-01T09:00:00Z\", \"updated_at\": \"2026-11-18T08:01:00Z\", \"labels\": [], \"comments\": 0}], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "since": "2026-11-17T08:00Z",
+              "page": 3
+            },
+            {
+              "since": "2026-11-17T08:00Z",
+              "page": "3"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "page": 2
+            },
+            {
+              "page": "2"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        },
+        {
+          "when": [
+            {
+              "page": 3
+            },
+            {
+              "page": "3"
+            }
+          ],
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"data\": [], \"successful\": true, \"error\": null}"
+              }
+            ]
+          }
+        }
+      ],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": [{\"number\": 220, \"title\": \"Watch mode misses renames on macOS\", \"user\": {\"login\": \"user-1201\", \"type\": \"User\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/issues/220\", \"created_at\": \"2026-11-19T06:30:00Z\", \"updated_at\": \"2026-11-19T06:30:00Z\", \"labels\": [{\"name\": \"bug\"}], \"comments\": 0}, {\"number\": 219, \"title\": \"Update dependency @aws-sdk/client-s3 to v2.0.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/219\", \"created_at\": \"2026-11-19T05:30:00Z\", \"updated_at\": \"2026-11-19T05:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/219\", \"html_url\": \"https://github.com/acme/tidewater/pull/219\"}}, {\"number\": 218, \"title\": \"Update dependency chokidar to v2.1.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/218\", \"created_at\": \"2026-11-19T05:18:00Z\", \"updated_at\": \"2026-11-19T05:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/218\", \"html_url\": \"https://github.com/acme/tidewater/pull/218\"}}, {\"number\": 217, \"title\": \"Update dependency commander to v2.2.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/217\", \"created_at\": \"2026-11-19T05:06:00Z\", \"updated_at\": \"2026-11-19T05:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/217\", \"html_url\": \"https://github.com/acme/tidewater/pull/217\"}}, {\"number\": 216, \"title\": \"Update dependency debug to v2.3.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/216\", \"created_at\": \"2026-11-19T04:54:00Z\", \"updated_at\": \"2026-11-19T04:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/216\", \"html_url\": \"https://github.com/acme/tidewater/pull/216\"}}, {\"number\": 215, \"title\": \"Update dependency execa to v2.4.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/215\", \"created_at\": \"2026-11-19T04:42:00Z\", \"updated_at\": \"2026-11-19T04:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/215\", \"html_url\": \"https://github.com/acme/tidewater/pull/215\"}}, {\"number\": 214, \"title\": \"Update dependency fast-glob to v2.5.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/214\", \"created_at\": \"2026-11-19T04:30:00Z\", \"updated_at\": \"2026-11-19T04:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/214\", \"html_url\": \"https://github.com/acme/tidewater/pull/214\"}}, {\"number\": 213, \"title\": \"Update dependency got to v2.6.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/213\", \"created_at\": \"2026-11-19T04:18:00Z\", \"updated_at\": \"2026-11-19T04:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/213\", \"html_url\": \"https://github.com/acme/tidewater/pull/213\"}}, {\"number\": 212, \"title\": \"Update dependency ignore to v2.0.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/212\", \"created_at\": \"2026-11-19T04:06:00Z\", \"updated_at\": \"2026-11-19T04:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/212\", \"html_url\": \"https://github.com/acme/tidewater/pull/212\"}}, {\"number\": 211, \"title\": \"Update dependency minimatch to v2.1.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/211\", \"created_at\": \"2026-11-19T03:54:00Z\", \"updated_at\": \"2026-11-19T03:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/211\", \"html_url\": \"https://github.com/acme/tidewater/pull/211\"}}, {\"number\": 210, \"title\": \"Update dependency p-limit to v2.2.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/210\", \"created_at\": \"2026-11-19T03:42:00Z\", \"updated_at\": \"2026-11-19T03:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/210\", \"html_url\": \"https://github.com/acme/tidewater/pull/210\"}}, {\"number\": 209, \"title\": \"Update dependency pino to v2.3.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/209\", \"created_at\": \"2026-11-19T03:30:00Z\", \"updated_at\": \"2026-11-19T03:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/209\", \"html_url\": \"https://github.com/acme/tidewater/pull/209\"}}, {\"number\": 208, \"title\": \"Update dependency semver to v2.4.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/208\", \"created_at\": \"2026-11-19T03:18:00Z\", \"updated_at\": \"2026-11-19T03:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/208\", \"html_url\": \"https://github.com/acme/tidewater/pull/208\"}}, {\"number\": 207, \"title\": \"Update dependency tar to v2.5.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/207\", \"created_at\": \"2026-11-19T03:06:00Z\", \"updated_at\": \"2026-11-19T03:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/207\", \"html_url\": \"https://github.com/acme/tidewater/pull/207\"}}, {\"number\": 206, \"title\": \"Update dependency undici to v2.6.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/206\", \"created_at\": \"2026-11-19T02:54:00Z\", \"updated_at\": \"2026-11-19T02:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/206\", \"html_url\": \"https://github.com/acme/tidewater/pull/206\"}}, {\"number\": 205, \"title\": \"Update dependency yaml to v2.0.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/205\", \"created_at\": \"2026-11-19T02:42:00Z\", \"updated_at\": \"2026-11-19T02:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/205\", \"html_url\": \"https://github.com/acme/tidewater/pull/205\"}}, {\"number\": 204, \"title\": \"Update dependency zod to v2.1.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/204\", \"created_at\": \"2026-11-19T02:30:00Z\", \"updated_at\": \"2026-11-19T02:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/204\", \"html_url\": \"https://github.com/acme/tidewater/pull/204\"}}, {\"number\": 203, \"title\": \"Update dependency typescript to v2.2.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/203\", \"created_at\": \"2026-11-19T02:18:00Z\", \"updated_at\": \"2026-11-19T02:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/203\", \"html_url\": \"https://github.com/acme/tidewater/pull/203\"}}, {\"number\": 202, \"title\": \"Update dependency vitest to v2.3.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/202\", \"created_at\": \"2026-11-19T02:06:00Z\", \"updated_at\": \"2026-11-19T02:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/202\", \"html_url\": \"https://github.com/acme/tidewater/pull/202\"}}, {\"number\": 201, \"title\": \"Update dependency eslint to v2.4.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/201\", \"created_at\": \"2026-11-19T01:54:00Z\", \"updated_at\": \"2026-11-19T01:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/201\", \"html_url\": \"https://github.com/acme/tidewater/pull/201\"}}, {\"number\": 200, \"title\": \"Update dependency prettier to v2.5.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/200\", \"created_at\": \"2026-11-19T01:42:00Z\", \"updated_at\": \"2026-11-19T01:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/200\", \"html_url\": \"https://github.com/acme/tidewater/pull/200\"}}, {\"number\": 199, \"title\": \"Update dependency @aws-sdk/client-s3 to v3.6.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/199\", \"created_at\": \"2026-11-19T01:30:00Z\", \"updated_at\": \"2026-11-19T01:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/199\", \"html_url\": \"https://github.com/acme/tidewater/pull/199\"}}, {\"number\": 198, \"title\": \"Update dependency chokidar to v3.0.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/198\", \"created_at\": \"2026-11-19T01:18:00Z\", \"updated_at\": \"2026-11-19T01:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/198\", \"html_url\": \"https://github.com/acme/tidewater/pull/198\"}}, {\"number\": 197, \"title\": \"Update dependency commander to v3.1.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/197\", \"created_at\": \"2026-11-19T01:06:00Z\", \"updated_at\": \"2026-11-19T01:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/197\", \"html_url\": \"https://github.com/acme/tidewater/pull/197\"}}, {\"number\": 196, \"title\": \"Update dependency debug to v3.2.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/196\", \"created_at\": \"2026-11-19T00:54:00Z\", \"updated_at\": \"2026-11-19T00:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/196\", \"html_url\": \"https://github.com/acme/tidewater/pull/196\"}}, {\"number\": 195, \"title\": \"Update dependency execa to v3.3.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/195\", \"created_at\": \"2026-11-19T00:42:00Z\", \"updated_at\": \"2026-11-19T00:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/195\", \"html_url\": \"https://github.com/acme/tidewater/pull/195\"}}, {\"number\": 194, \"title\": \"Update dependency fast-glob to v3.4.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/194\", \"created_at\": \"2026-11-19T00:30:00Z\", \"updated_at\": \"2026-11-19T00:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/194\", \"html_url\": \"https://github.com/acme/tidewater/pull/194\"}}, {\"number\": 193, \"title\": \"Update dependency got to v3.5.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/193\", \"created_at\": \"2026-11-19T00:18:00Z\", \"updated_at\": \"2026-11-19T00:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/193\", \"html_url\": \"https://github.com/acme/tidewater/pull/193\"}}, {\"number\": 192, \"title\": \"Update dependency ignore to v3.6.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/192\", \"created_at\": \"2026-11-19T00:06:00Z\", \"updated_at\": \"2026-11-19T00:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/192\", \"html_url\": \"https://github.com/acme/tidewater/pull/192\"}}, {\"number\": 191, \"title\": \"Update dependency minimatch to v3.0.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/191\", \"created_at\": \"2026-11-18T23:54:00Z\", \"updated_at\": \"2026-11-18T23:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/191\", \"html_url\": \"https://github.com/acme/tidewater/pull/191\"}}, {\"number\": 190, \"title\": \"Update dependency p-limit to v3.1.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/190\", \"created_at\": \"2026-11-18T23:42:00Z\", \"updated_at\": \"2026-11-18T23:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/190\", \"html_url\": \"https://github.com/acme/tidewater/pull/190\"}}, {\"number\": 189, \"title\": \"Update dependency pino to v3.2.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/189\", \"created_at\": \"2026-11-18T23:30:00Z\", \"updated_at\": \"2026-11-18T23:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/189\", \"html_url\": \"https://github.com/acme/tidewater/pull/189\"}}, {\"number\": 188, \"title\": \"Update dependency semver to v3.3.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/188\", \"created_at\": \"2026-11-18T23:18:00Z\", \"updated_at\": \"2026-11-18T23:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/188\", \"html_url\": \"https://github.com/acme/tidewater/pull/188\"}}, {\"number\": 187, \"title\": \"Update dependency tar to v3.4.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/187\", \"created_at\": \"2026-11-18T23:06:00Z\", \"updated_at\": \"2026-11-18T23:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/187\", \"html_url\": \"https://github.com/acme/tidewater/pull/187\"}}, {\"number\": 186, \"title\": \"Update dependency undici to v3.5.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/186\", \"created_at\": \"2026-11-18T22:54:00Z\", \"updated_at\": \"2026-11-18T22:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/186\", \"html_url\": \"https://github.com/acme/tidewater/pull/186\"}}, {\"number\": 185, \"title\": \"Update dependency yaml to v3.6.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/185\", \"created_at\": \"2026-11-18T22:42:00Z\", \"updated_at\": \"2026-11-18T22:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/185\", \"html_url\": \"https://github.com/acme/tidewater/pull/185\"}}, {\"number\": 184, \"title\": \"Update dependency zod to v3.0.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/184\", \"created_at\": \"2026-11-18T22:30:00Z\", \"updated_at\": \"2026-11-18T22:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/184\", \"html_url\": \"https://github.com/acme/tidewater/pull/184\"}}, {\"number\": 183, \"title\": \"Update dependency typescript to v3.1.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/183\", \"created_at\": \"2026-11-18T22:18:00Z\", \"updated_at\": \"2026-11-18T22:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/183\", \"html_url\": \"https://github.com/acme/tidewater/pull/183\"}}, {\"number\": 182, \"title\": \"Update dependency vitest to v3.2.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/182\", \"created_at\": \"2026-11-18T22:06:00Z\", \"updated_at\": \"2026-11-18T22:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/182\", \"html_url\": \"https://github.com/acme/tidewater/pull/182\"}}, {\"number\": 181, \"title\": \"Update dependency eslint to v3.3.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/181\", \"created_at\": \"2026-11-18T21:54:00Z\", \"updated_at\": \"2026-11-18T21:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/181\", \"html_url\": \"https://github.com/acme/tidewater/pull/181\"}}, {\"number\": 180, \"title\": \"Update dependency prettier to v3.4.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/180\", \"created_at\": \"2026-11-18T21:42:00Z\", \"updated_at\": \"2026-11-18T21:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/180\", \"html_url\": \"https://github.com/acme/tidewater/pull/180\"}}, {\"number\": 179, \"title\": \"Update dependency @aws-sdk/client-s3 to v4.5.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/179\", \"created_at\": \"2026-11-18T21:30:00Z\", \"updated_at\": \"2026-11-18T21:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/179\", \"html_url\": \"https://github.com/acme/tidewater/pull/179\"}}, {\"number\": 178, \"title\": \"Update dependency chokidar to v4.6.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/178\", \"created_at\": \"2026-11-18T21:18:00Z\", \"updated_at\": \"2026-11-18T21:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/178\", \"html_url\": \"https://github.com/acme/tidewater/pull/178\"}}, {\"number\": 177, \"title\": \"Update dependency commander to v4.0.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/177\", \"created_at\": \"2026-11-18T21:06:00Z\", \"updated_at\": \"2026-11-18T21:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/177\", \"html_url\": \"https://github.com/acme/tidewater/pull/177\"}}, {\"number\": 176, \"title\": \"Update dependency debug to v4.1.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/176\", \"created_at\": \"2026-11-18T20:54:00Z\", \"updated_at\": \"2026-11-18T20:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/176\", \"html_url\": \"https://github.com/acme/tidewater/pull/176\"}}, {\"number\": 175, \"title\": \"Update dependency execa to v4.2.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/175\", \"created_at\": \"2026-11-18T20:42:00Z\", \"updated_at\": \"2026-11-18T20:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/175\", \"html_url\": \"https://github.com/acme/tidewater/pull/175\"}}, {\"number\": 174, \"title\": \"Update dependency fast-glob to v4.3.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/174\", \"created_at\": \"2026-11-18T20:30:00Z\", \"updated_at\": \"2026-11-18T20:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/174\", \"html_url\": \"https://github.com/acme/tidewater/pull/174\"}}, {\"number\": 173, \"title\": \"Update dependency got to v4.4.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/173\", \"created_at\": \"2026-11-18T20:18:00Z\", \"updated_at\": \"2026-11-18T20:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/173\", \"html_url\": \"https://github.com/acme/tidewater/pull/173\"}}, {\"number\": 172, \"title\": \"Update dependency ignore to v4.5.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/172\", \"created_at\": \"2026-11-18T20:06:00Z\", \"updated_at\": \"2026-11-18T20:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/172\", \"html_url\": \"https://github.com/acme/tidewater/pull/172\"}}, {\"number\": 171, \"title\": \"Update dependency minimatch to v4.6.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/171\", \"created_at\": \"2026-11-18T19:54:00Z\", \"updated_at\": \"2026-11-18T19:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/171\", \"html_url\": \"https://github.com/acme/tidewater/pull/171\"}}, {\"number\": 170, \"title\": \"Update dependency p-limit to v4.0.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/170\", \"created_at\": \"2026-11-18T19:42:00Z\", \"updated_at\": \"2026-11-18T19:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/170\", \"html_url\": \"https://github.com/acme/tidewater/pull/170\"}}, {\"number\": 169, \"title\": \"Update dependency pino to v4.1.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/169\", \"created_at\": \"2026-11-18T19:30:00Z\", \"updated_at\": \"2026-11-18T19:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/169\", \"html_url\": \"https://github.com/acme/tidewater/pull/169\"}}, {\"number\": 168, \"title\": \"Update dependency semver to v4.2.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/168\", \"created_at\": \"2026-11-18T19:18:00Z\", \"updated_at\": \"2026-11-18T19:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/168\", \"html_url\": \"https://github.com/acme/tidewater/pull/168\"}}, {\"number\": 167, \"title\": \"Update dependency tar to v4.3.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/167\", \"created_at\": \"2026-11-18T19:06:00Z\", \"updated_at\": \"2026-11-18T19:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/167\", \"html_url\": \"https://github.com/acme/tidewater/pull/167\"}}, {\"number\": 166, \"title\": \"Update dependency undici to v4.4.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/166\", \"created_at\": \"2026-11-18T18:54:00Z\", \"updated_at\": \"2026-11-18T18:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/166\", \"html_url\": \"https://github.com/acme/tidewater/pull/166\"}}, {\"number\": 165, \"title\": \"Update dependency yaml to v4.5.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/165\", \"created_at\": \"2026-11-18T18:42:00Z\", \"updated_at\": \"2026-11-18T18:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/165\", \"html_url\": \"https://github.com/acme/tidewater/pull/165\"}}, {\"number\": 164, \"title\": \"Update dependency zod to v4.6.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/164\", \"created_at\": \"2026-11-18T18:30:00Z\", \"updated_at\": \"2026-11-18T18:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/164\", \"html_url\": \"https://github.com/acme/tidewater/pull/164\"}}, {\"number\": 163, \"title\": \"Update dependency typescript to v4.0.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/163\", \"created_at\": \"2026-11-18T18:18:00Z\", \"updated_at\": \"2026-11-18T18:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/163\", \"html_url\": \"https://github.com/acme/tidewater/pull/163\"}}, {\"number\": 162, \"title\": \"Update dependency vitest to v4.1.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/162\", \"created_at\": \"2026-11-18T18:06:00Z\", \"updated_at\": \"2026-11-18T18:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/162\", \"html_url\": \"https://github.com/acme/tidewater/pull/162\"}}, {\"number\": 161, \"title\": \"Update dependency eslint to v4.2.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/161\", \"created_at\": \"2026-11-18T17:54:00Z\", \"updated_at\": \"2026-11-18T17:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/161\", \"html_url\": \"https://github.com/acme/tidewater/pull/161\"}}, {\"number\": 160, \"title\": \"Update dependency prettier to v4.3.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/160\", \"created_at\": \"2026-11-18T17:42:00Z\", \"updated_at\": \"2026-11-18T17:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/160\", \"html_url\": \"https://github.com/acme/tidewater/pull/160\"}}, {\"number\": 159, \"title\": \"Update dependency @aws-sdk/client-s3 to v5.4.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/159\", \"created_at\": \"2026-11-18T17:30:00Z\", \"updated_at\": \"2026-11-18T17:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/159\", \"html_url\": \"https://github.com/acme/tidewater/pull/159\"}}, {\"number\": 158, \"title\": \"Update dependency chokidar to v5.5.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/158\", \"created_at\": \"2026-11-18T17:18:00Z\", \"updated_at\": \"2026-11-18T17:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/158\", \"html_url\": \"https://github.com/acme/tidewater/pull/158\"}}, {\"number\": 157, \"title\": \"Update dependency commander to v5.6.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/157\", \"created_at\": \"2026-11-18T17:06:00Z\", \"updated_at\": \"2026-11-18T17:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/157\", \"html_url\": \"https://github.com/acme/tidewater/pull/157\"}}, {\"number\": 156, \"title\": \"Update dependency debug to v5.0.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/156\", \"created_at\": \"2026-11-18T16:54:00Z\", \"updated_at\": \"2026-11-18T16:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/156\", \"html_url\": \"https://github.com/acme/tidewater/pull/156\"}}, {\"number\": 155, \"title\": \"Update dependency execa to v5.1.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/155\", \"created_at\": \"2026-11-18T16:42:00Z\", \"updated_at\": \"2026-11-18T16:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/155\", \"html_url\": \"https://github.com/acme/tidewater/pull/155\"}}, {\"number\": 154, \"title\": \"Update dependency fast-glob to v5.2.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/154\", \"created_at\": \"2026-11-18T16:30:00Z\", \"updated_at\": \"2026-11-18T16:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/154\", \"html_url\": \"https://github.com/acme/tidewater/pull/154\"}}, {\"number\": 153, \"title\": \"Update dependency got to v5.3.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/153\", \"created_at\": \"2026-11-18T16:18:00Z\", \"updated_at\": \"2026-11-18T16:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/153\", \"html_url\": \"https://github.com/acme/tidewater/pull/153\"}}, {\"number\": 152, \"title\": \"Update dependency ignore to v5.4.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/152\", \"created_at\": \"2026-11-18T16:06:00Z\", \"updated_at\": \"2026-11-18T16:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/152\", \"html_url\": \"https://github.com/acme/tidewater/pull/152\"}}, {\"number\": 151, \"title\": \"Update dependency minimatch to v5.5.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/151\", \"created_at\": \"2026-11-18T15:54:00Z\", \"updated_at\": \"2026-11-18T15:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/151\", \"html_url\": \"https://github.com/acme/tidewater/pull/151\"}}, {\"number\": 150, \"title\": \"Update dependency p-limit to v5.6.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/150\", \"created_at\": \"2026-11-18T15:42:00Z\", \"updated_at\": \"2026-11-18T15:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/150\", \"html_url\": \"https://github.com/acme/tidewater/pull/150\"}}, {\"number\": 149, \"title\": \"Update dependency pino to v5.0.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/149\", \"created_at\": \"2026-11-18T15:30:00Z\", \"updated_at\": \"2026-11-18T15:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/149\", \"html_url\": \"https://github.com/acme/tidewater/pull/149\"}}, {\"number\": 148, \"title\": \"Update dependency semver to v5.1.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/148\", \"created_at\": \"2026-11-18T15:18:00Z\", \"updated_at\": \"2026-11-18T15:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/148\", \"html_url\": \"https://github.com/acme/tidewater/pull/148\"}}, {\"number\": 147, \"title\": \"Update dependency tar to v5.2.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/147\", \"created_at\": \"2026-11-18T15:06:00Z\", \"updated_at\": \"2026-11-18T15:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/147\", \"html_url\": \"https://github.com/acme/tidewater/pull/147\"}}, {\"number\": 146, \"title\": \"Update dependency undici to v5.3.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/146\", \"created_at\": \"2026-11-18T14:54:00Z\", \"updated_at\": \"2026-11-18T14:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/146\", \"html_url\": \"https://github.com/acme/tidewater/pull/146\"}}, {\"number\": 145, \"title\": \"Update dependency yaml to v5.4.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/145\", \"created_at\": \"2026-11-18T14:42:00Z\", \"updated_at\": \"2026-11-18T14:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/145\", \"html_url\": \"https://github.com/acme/tidewater/pull/145\"}}, {\"number\": 144, \"title\": \"Update dependency zod to v5.5.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/144\", \"created_at\": \"2026-11-18T14:30:00Z\", \"updated_at\": \"2026-11-18T14:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/144\", \"html_url\": \"https://github.com/acme/tidewater/pull/144\"}}, {\"number\": 143, \"title\": \"Update dependency typescript to v5.6.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/143\", \"created_at\": \"2026-11-18T14:18:00Z\", \"updated_at\": \"2026-11-18T14:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/143\", \"html_url\": \"https://github.com/acme/tidewater/pull/143\"}}, {\"number\": 142, \"title\": \"Update dependency vitest to v5.0.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/142\", \"created_at\": \"2026-11-18T14:06:00Z\", \"updated_at\": \"2026-11-18T14:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/142\", \"html_url\": \"https://github.com/acme/tidewater/pull/142\"}}, {\"number\": 141, \"title\": \"Update dependency eslint to v5.1.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/141\", \"created_at\": \"2026-11-18T13:54:00Z\", \"updated_at\": \"2026-11-18T13:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/141\", \"html_url\": \"https://github.com/acme/tidewater/pull/141\"}}, {\"number\": 140, \"title\": \"Update dependency prettier to v5.2.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/140\", \"created_at\": \"2026-11-18T13:42:00Z\", \"updated_at\": \"2026-11-18T13:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/140\", \"html_url\": \"https://github.com/acme/tidewater/pull/140\"}}, {\"number\": 139, \"title\": \"Update dependency @aws-sdk/client-s3 to v6.3.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/139\", \"created_at\": \"2026-11-18T13:30:00Z\", \"updated_at\": \"2026-11-18T13:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/139\", \"html_url\": \"https://github.com/acme/tidewater/pull/139\"}}, {\"number\": 138, \"title\": \"Update dependency chokidar to v6.4.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/138\", \"created_at\": \"2026-11-18T13:18:00Z\", \"updated_at\": \"2026-11-18T13:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/138\", \"html_url\": \"https://github.com/acme/tidewater/pull/138\"}}, {\"number\": 137, \"title\": \"Update dependency commander to v6.5.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/137\", \"created_at\": \"2026-11-18T13:06:00Z\", \"updated_at\": \"2026-11-18T13:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/137\", \"html_url\": \"https://github.com/acme/tidewater/pull/137\"}}, {\"number\": 136, \"title\": \"Update dependency debug to v6.6.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/136\", \"created_at\": \"2026-11-18T12:54:00Z\", \"updated_at\": \"2026-11-18T12:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/136\", \"html_url\": \"https://github.com/acme/tidewater/pull/136\"}}, {\"number\": 135, \"title\": \"Update dependency execa to v6.0.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/135\", \"created_at\": \"2026-11-18T12:42:00Z\", \"updated_at\": \"2026-11-18T12:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/135\", \"html_url\": \"https://github.com/acme/tidewater/pull/135\"}}, {\"number\": 134, \"title\": \"Update dependency fast-glob to v6.1.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/134\", \"created_at\": \"2026-11-18T12:30:00Z\", \"updated_at\": \"2026-11-18T12:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/134\", \"html_url\": \"https://github.com/acme/tidewater/pull/134\"}}, {\"number\": 133, \"title\": \"Update dependency got to v6.2.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/133\", \"created_at\": \"2026-11-18T12:18:00Z\", \"updated_at\": \"2026-11-18T12:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/133\", \"html_url\": \"https://github.com/acme/tidewater/pull/133\"}}, {\"number\": 132, \"title\": \"Update dependency ignore to v6.3.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/132\", \"created_at\": \"2026-11-18T12:06:00Z\", \"updated_at\": \"2026-11-18T12:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/132\", \"html_url\": \"https://github.com/acme/tidewater/pull/132\"}}, {\"number\": 131, \"title\": \"Update dependency minimatch to v6.4.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/131\", \"created_at\": \"2026-11-18T11:54:00Z\", \"updated_at\": \"2026-11-18T11:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/131\", \"html_url\": \"https://github.com/acme/tidewater/pull/131\"}}, {\"number\": 130, \"title\": \"Update dependency p-limit to v6.5.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/130\", \"created_at\": \"2026-11-18T11:42:00Z\", \"updated_at\": \"2026-11-18T11:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/130\", \"html_url\": \"https://github.com/acme/tidewater/pull/130\"}}, {\"number\": 129, \"title\": \"Update dependency pino to v6.6.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/129\", \"created_at\": \"2026-11-18T11:30:00Z\", \"updated_at\": \"2026-11-18T11:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/129\", \"html_url\": \"https://github.com/acme/tidewater/pull/129\"}}, {\"number\": 128, \"title\": \"Update dependency semver to v6.0.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/128\", \"created_at\": \"2026-11-18T11:18:00Z\", \"updated_at\": \"2026-11-18T11:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/128\", \"html_url\": \"https://github.com/acme/tidewater/pull/128\"}}, {\"number\": 127, \"title\": \"Update dependency tar to v6.1.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/127\", \"created_at\": \"2026-11-18T11:06:00Z\", \"updated_at\": \"2026-11-18T11:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/127\", \"html_url\": \"https://github.com/acme/tidewater/pull/127\"}}, {\"number\": 126, \"title\": \"Update dependency undici to v6.2.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/126\", \"created_at\": \"2026-11-18T10:54:00Z\", \"updated_at\": \"2026-11-18T10:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/126\", \"html_url\": \"https://github.com/acme/tidewater/pull/126\"}}, {\"number\": 125, \"title\": \"Update dependency yaml to v6.3.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/125\", \"created_at\": \"2026-11-18T10:42:00Z\", \"updated_at\": \"2026-11-18T10:42:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/125\", \"html_url\": \"https://github.com/acme/tidewater/pull/125\"}}, {\"number\": 124, \"title\": \"Update dependency zod to v6.4.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/124\", \"created_at\": \"2026-11-18T10:30:00Z\", \"updated_at\": \"2026-11-18T10:30:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/124\", \"html_url\": \"https://github.com/acme/tidewater/pull/124\"}}, {\"number\": 123, \"title\": \"Update dependency typescript to v6.5.0\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/123\", \"created_at\": \"2026-11-18T10:18:00Z\", \"updated_at\": \"2026-11-18T10:18:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/123\", \"html_url\": \"https://github.com/acme/tidewater/pull/123\"}}, {\"number\": 122, \"title\": \"Update dependency vitest to v6.6.1\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/122\", \"created_at\": \"2026-11-18T10:06:00Z\", \"updated_at\": \"2026-11-18T10:06:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/122\", \"html_url\": \"https://github.com/acme/tidewater/pull/122\"}}, {\"number\": 121, \"title\": \"Update dependency eslint to v6.0.2\", \"user\": {\"login\": \"renovate[bot]\", \"type\": \"Bot\"}, \"state\": \"open\", \"body\": \"\", \"html_url\": \"https://github.com/acme/tidewater/pull/121\", \"created_at\": \"2026-11-18T09:54:00Z\", \"updated_at\": \"2026-11-18T09:54:00Z\", \"labels\": [], \"comments\": 0, \"pull_request\": {\"url\": \"https://api.github.com/repos/acme/tidewater/pulls/121\", \"html_url\": \"https://github.com/acme/tidewater/pull/121\"}}], \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    },
+    "GITHUB_CREATE_AN_ISSUE_COMMENT": {
+      "description": "Creates a new comment on an existing GitHub issue or pull request within the specified repository.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "description": "Comment content in GitHub Flavored Markdown."
+          },
+          "repo": {
+            "type": "string",
+            "description": "Name of the repository (without `.git` extension); not case-sensitive."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Account owner of the repository (username or organization); not case-sensitive."
+          },
+          "issue_number": {
+            "type": "integer",
+            "description": "Number identifying the issue or pull request for the comment."
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "issue_number",
+          "body"
+        ]
+      },
+      "answers": [],
+      "default": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"data\": {\"id\": 99001, \"html_url\": \"https://github.com/acme/tidewater/issues/40#issuecomment-99001\"}, \"successful\": true, \"error\": null}"
+          }
+        ]
+      }
+    }
+  }
+}

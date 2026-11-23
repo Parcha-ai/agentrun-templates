@@ -1,0 +1,22 @@
+{
+  "median_usd": 0.0445,
+  "runs": 20,
+  "model": "openrouter/openai/gpt-6.1-sol",
+  "harness": "pi",
+  "measured_on": "2026-11-20",
+  "passed": {
+    "pi": "10/10",
+    "claude-agent": "10/10",
+    "codex": "10/10"
+  },
+  "stand_ins": true,
+  "build": "0.1.0-beta.47",
+  "note": "Live by hand on a real failed run (2026-11-20, pi): passed, read-only. The server denied the comment, so nothing was posted. Main's latest run had passed by then, so same_job_failing_on_base came out false against a passing base; a base failing only in other jobs is covered by the evals, not the live run.",
+  "live": {
+    "cases": 1,
+    "median_usd": 0.2859,
+    "passed": {
+      "pi": "1/1"
+    }
+  }
+}

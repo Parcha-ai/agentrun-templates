@@ -1,0 +1,21 @@
+# Applied with these parameters (POST /v2/templates/ci-failure-explainer/apply).
+parameters:
+  owner: acme
+  repo: tidewater
+now: 2026-11-19T10:20:00Z
+# The trigger's first read takes the failed runs already listed as seen; its next read fires on the new one alone.
+feed: fixtures/feed.json
+# The runner serves fixtures/github-mcp.json as the saved MCP server `github` (Composio's GitHub toolkit) and records each call for the graders.
+mcp:
+  github: fixtures/github-mcp.json
+# Every tool granted, so each write that happens is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:github/GITHUB_GET_A_WORKFLOW_RUN
+  - mcp:github/GITHUB_LIST_JOBS_FOR_A_WORKFLOW_RUN
+  - mcp:github/GITHUB_LIST_CHECK_RUN_ANNOTATIONS
+  - mcp:github/GITHUB_DOWNLOAD_JOB_LOGS_FOR_A_WORKFLOW_RUN
+  - mcp:github/GITHUB_LIST_WORKFLOW_RUNS_FOR_A_REPOSITORY
+  - mcp:github/GITHUB_LIST_PULL_REQUESTS_ASSOCIATED_WITH_A_COMMIT
+  - mcp:github/GITHUB_LIST_PULL_REQUESTS_FILES
+  - mcp:github/GITHUB_LIST_ISSUE_COMMENTS
+  - mcp:github/GITHUB_CREATE_AN_ISSUE_COMMENT

@@ -1,0 +1,92 @@
+{
+  "description": "acme/tidewater's failed runs: two old ones were listed before; run 19450007001 on PR #530 is new.",
+  "format": "json-list",
+  "items": [
+    {
+      "id": 19450006970,
+      "name": "CI",
+      "display_title": "",
+      "head_branch": "main",
+      "head_sha": "08789f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_attempt": 1,
+      "run_number": 878,
+      "workflow_id": 7700001,
+      "path": ".github/workflows/ci.yml",
+      "html_url": "https://github.com/acme/tidewater/actions/runs/19450006970",
+      "jobs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450006970/jobs",
+      "logs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450006970/logs",
+      "created_at": "2026-11-16T16:00:00Z",
+      "updated_at": "2026-11-16T16:09:30Z",
+      "run_started_at": "2026-11-16T16:00:00Z",
+      "actor": {
+        "login": "dev-user"
+      },
+      "pull_requests": []
+    },
+    {
+      "id": 19450006981,
+      "name": "CI",
+      "display_title": "",
+      "head_branch": "old-branch",
+      "head_sha": "08759f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_attempt": 1,
+      "run_number": 875,
+      "workflow_id": 7700001,
+      "path": ".github/workflows/ci.yml",
+      "html_url": "https://github.com/acme/tidewater/actions/runs/19450006981",
+      "jobs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450006981/jobs",
+      "logs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450006981/logs",
+      "created_at": "2026-11-17T12:00:00Z",
+      "updated_at": "2026-11-17T12:09:30Z",
+      "run_started_at": "2026-11-17T12:00:00Z",
+      "actor": {
+        "login": "dev-user"
+      },
+      "pull_requests": []
+    }
+  ],
+  "item": {
+    "id": 19450007001,
+    "name": "CI",
+    "display_title": "Handle Feb 29 in addYears",
+    "head_branch": "leap-day",
+    "head_sha": "05309f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "failure",
+    "run_attempt": 1,
+    "run_number": 885,
+    "workflow_id": 7700001,
+    "path": ".github/workflows/ci.yml",
+    "html_url": "https://github.com/acme/tidewater/actions/runs/19450007001",
+    "jobs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450007001/jobs",
+    "logs_url": "https://api.github.com/repos/acme/tidewater/actions/runs/19450007001/logs",
+    "created_at": "2026-11-19T10:00:00Z",
+    "updated_at": "2026-11-19T10:09:30Z",
+    "run_started_at": "2026-11-19T10:00:00Z",
+    "actor": {
+      "login": "dev-user"
+    },
+    "pull_requests": [
+      {
+        "number": 530,
+        "head": {
+          "ref": "leap-day",
+          "sha": "05309f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a"
+        },
+        "base": {
+          "ref": "main",
+          "repo": {
+            "name": "tidewater"
+          }
+        }
+      }
+    ]
+  }
+}
