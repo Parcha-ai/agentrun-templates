@@ -1,5 +1,5 @@
 ---
-description: "robots.txt is over 150,000 characters: an open `User-agent: *` group and `User-agent: CCBot` / `Disallow: /` at the top, then about 860 groups for made-up crawlers. The three parts a run may read (50,000 each) end right after `User-agent: GPTBot`, before its `Disallow: /`. GPTBot's group is unfinished at the cut, so GPTBot is unknown, not allowed; CCBot's full group stands; no other bot is allowed, as the file was not read whole."
+description: "robots.txt is 156,516 characters: an open `User-agent: *` group and `User-agent: CCBot` / `Disallow: /` at the top, then about 860 groups for made-up crawlers. The third 50,000-character part ends right after `User-agent: GPTBot`, before its `Disallow: /`. A run either stops there (read_to_end false; GPTBot unknown, rule null, own_unfinished; CCBot blocked; every other bot unknown) or reads part 4 to the end (read_to_end true; GPTBot and CCBot blocked under their own groups; every other bot allowed under `*`). Either read passes if it is consistent with itself."
 runs: 2
 max_cost_usd: 0.25
 input:
