@@ -14,6 +14,7 @@
       "Nemotron 3.5 Super VL (free), served by NVIDIA through OpenRouter: 868,928 tokens in, 131,072 out (OpenRouter's endpoint list, 2026-11-20)",
       "OpenRouter free models, per account: 20 requests a minute, and 50 a day until you have bought $10 of credits in all, 1,000 a day after; the day resets at 00:00 UTC",
       "A run takes about 6 model requests (median of 13 measured runs; the most was 17, a run that kept rebuilding its answer in code calls)",
+      "When every read fails (the free search rate-limited, the site unreachable), a run can still say something wasn't found, as one of 2 measured runs did; its Not checked section says what couldn't be read",
       "Each run stops after 20 free-model requests, so one bad run uses at most 20 of your daily free requests",
       "Exa keyless search: about 150 searches a day per IP address and 3 a second (Exa changelog, 2026-02-02)",
       "The search, and Firecrawl when you add it, see each query and URL",
