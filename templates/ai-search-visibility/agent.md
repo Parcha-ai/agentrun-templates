@@ -95,7 +95,8 @@ one in a long file. Report two facts of the read, and the output schema says whi
   false when the read stopped before the file's end.
 - Each crawler's `matched_group`, the group of what was read its verdict comes from: `own` (a group whose `User-agent`
   names it), `own_unfinished` (that group is the last one read and the read stopped before the file's end, so its
-  rules may go on past the cut), `star` (the `User-agent: *` group) or `none` (neither, or no robots.txt read).
+  rules may go on past the cut), `star` (the `User-agent: *` group), `none` (the file was read and neither matched),
+  or null when robots.txt wasn't read.
 When `read_to_end` is false, `could_not_check` says which characters were not read and names an unfinished group, and
 the report says robots.txt was read only in part.
 

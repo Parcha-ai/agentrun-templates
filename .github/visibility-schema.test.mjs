@@ -67,12 +67,24 @@ test("whole read, star group, allowed: ok", () => {
   assert.deepEqual(misses(whole, allowedByStar), []);
 });
 
-test("not_found with no read_to_end, no group, allowed: ok (a missing robots.txt allows every crawler)", () => {
-  assert.deepEqual(misses({ status: "not_found" }, { verdict: "allowed", matched_group: "none", rule: null }), []);
+test("not_found with no read_to_end, matched_group null, allowed: ok (a missing robots.txt allows every crawler)", () => {
+  assert.deepEqual(misses({ status: "not_found" }, { verdict: "allowed", matched_group: null, rule: null }), []);
 });
 
-test("unreachable with no read_to_end, unknown: ok", () => {
-  assert.deepEqual(misses({ status: "unreachable" }, unknownNull("none")), []);
+test("unreachable with no read_to_end, matched_group null, unknown: ok", () => {
+  assert.deepEqual(misses({ status: "unreachable" }, unknownNull(null)), []);
+});
+
+test("unreachable, matched_group none: a miss (no file was read, so no group was matched or missed)", () => {
+  assert.notDeepEqual(misses({ status: "unreachable" }, unknownNull("none")), []);
+});
+
+test("not_found, matched_group none: a miss", () => {
+  assert.notDeepEqual(misses({ status: "not_found" }, { verdict: "allowed", matched_group: "none", rule: null }), []);
+});
+
+test("read, matched_group null: a miss (a read file names the group each verdict comes from)", () => {
+  assert.notDeepEqual(misses(whole, { verdict: "allowed", matched_group: null, rule: null }), []);
 });
 
 test("read with read_to_end missing: a miss", () => {

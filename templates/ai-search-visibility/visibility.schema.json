@@ -33,7 +33,7 @@
           "operator": { "type": "string", "maxLength": 40 },
           "purpose": { "enum": ["search_index", "user_fetch", "training"] },
           "verdict": { "enum": ["allowed", "blocked", "partly_blocked", "unknown"], "description": "blocked: Disallow: / applies to it; partly_blocked: some paths are disallowed; unknown: robots.txt could not be read, or not the part that decides it" },
-          "matched_group": { "enum": ["own", "own_unfinished", "star", "none"], "description": "the group of what was read that the verdict comes from: own, a group whose User-agent names the bot; own_unfinished, that group, cut at the end of the read; star, the User-agent: * group; none, neither (so for a robots.txt not found or unreachable)" },
+          "matched_group": { "type": ["string", "null"], "enum": ["own", "own_unfinished", "star", "none", null], "description": "the group of what was read that the verdict comes from: own, a group whose User-agent names the bot; own_unfinished, that group, cut at the end of the read; star, the User-agent: * group; none, the file was read and neither matched; null when robots.txt was not read (not found or unreachable), as no file means no group" },
           "rule": { "type": ["string", "null"], "maxLength": 300, "description": "the robots.txt lines that decide it, quoted (its User-agent group, or the * group it falls to); null when there is no robots.txt or it could not be read" }
         }
       }
@@ -124,6 +124,11 @@
     {
       "if": { "description": "robots.txt read to its end has no unfinished group", "required": ["robots_txt"], "properties": { "robots_txt": { "required": ["read_to_end"], "properties": { "read_to_end": { "const": true } } } } },
       "then": { "properties": { "crawlers": { "items": { "properties": { "matched_group": { "not": { "const": "own_unfinished" } } } } } } }
+    },
+    {
+      "if": { "description": "robots.txt read: every crawler names the group its verdict comes from, so no matched_group is null; robots.txt not found or unreachable: no file was read, so every matched_group is null", "required": ["robots_txt"], "properties": { "robots_txt": { "required": ["status"], "properties": { "status": { "const": "read" } } } } },
+      "then": { "properties": { "crawlers": { "items": { "properties": { "matched_group": { "not": { "type": "null" } } } } } } },
+      "else": { "properties": { "crawlers": { "items": { "properties": { "matched_group": { "type": "null" } } } } } }
     }
   ]
 }
