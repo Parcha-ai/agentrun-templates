@@ -1,0 +1,39 @@
+{
+  "search": {
+    "answers": [
+      {
+        "query": "estrel",
+        "results": [
+          {
+            "url": "https://devreviews.example/2025/kestrel-review",
+            "title": "Kestrel review (2025)",
+            "snippet": "Our 2025 review of Kestrel 3.x: fast, but the docs lag behind.",
+            "published": "2025-06-02"
+          }
+        ]
+      }
+    ],
+    "default": {
+      "results": [
+        {
+          "url": "https://devreviews.example/2025/kestrel-review",
+          "title": "Kestrel review (2025)",
+          "snippet": "Our 2025 review of Kestrel 3.x: fast, but the docs lag behind.",
+          "published": "2025-06-02"
+        }
+      ]
+    }
+  },
+  "fetch": {
+    "answers": [
+      {
+        "url": "https://kestrel-stream.example/blog",
+        "status": 404,
+        "text": "Not Found"
+      }
+    ],
+    "default": {
+      "error": "fetch failed: the host did not answer"
+    }
+  }
+}

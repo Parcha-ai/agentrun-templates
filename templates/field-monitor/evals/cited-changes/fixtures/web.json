@@ -1,0 +1,76 @@
+{
+  "search": {
+    "answers": [
+      {
+        "query": "estrel",
+        "results": [
+          {
+            "url": "https://techwire.example/2026/11/13/kestrel-foundation",
+            "title": "Stream processor Kestrel moves to a foundation | Techwire",
+            "snippet": "Kestrel, the open-source stream processor, said on Friday it is joining the Open Data Foundation...",
+            "published": "2026-11-13"
+          },
+          {
+            "url": "https://devreviews.example/2025/kestrel-review",
+            "title": "Kestrel review (2025)",
+            "snippet": "Our 2025 review of Kestrel 3.x: fast, but the docs lag behind.",
+            "published": "2025-06-02"
+          }
+        ]
+      }
+    ],
+    "default": {
+      "results": [
+        {
+          "url": "https://techwire.example/2026/11/13/kestrel-foundation",
+          "title": "Stream processor Kestrel moves to a foundation | Techwire",
+          "snippet": "Kestrel, the open-source stream processor, said on Friday it is joining the Open Data Foundation...",
+          "published": "2026-11-13"
+        },
+        {
+          "url": "https://devreviews.example/2025/kestrel-review",
+          "title": "Kestrel review (2025)",
+          "snippet": "Our 2025 review of Kestrel 3.x: fast, but the docs lag behind.",
+          "published": "2025-06-02"
+        }
+      ]
+    }
+  },
+  "fetch": {
+    "answers": [
+      {
+        "url": "https://kestrel-stream.example/releases",
+        "title": "Releases | Kestrel",
+        "text": "# Kestrel releases\n\n## 4.2.0 (2026-11-12)\n\n- Exactly-once delivery for the S3 sink.\n- Runs on Java 25.\n- Java 17 is no longer supported; Java 21 is the minimum.\n\n## 4.1.3 (2026-10-21)\n\n- Fixes a checkpoint leak when a job is cancelled."
+      },
+      {
+        "url": "https://kestrel-stream.example/blog",
+        "title": "Blog | Kestrel",
+        "text": "# Kestrel blog\n\n- 2026-11-13 · [Kestrel joins the Open Data Foundation](https://kestrel-stream.example/blog/joins-odf)\n- 2026-11-10 · [Security advisory KSA-2026-07: authentication bypass in the admin API](https://kestrel-stream.example/blog/ksa-2026-07)\n- 2026-10-30 · [Meetup recap: Berlin](https://kestrel-stream.example/blog/berlin-meetup)"
+      },
+      {
+        "url": "https://kestrel-stream.example/blog/joins-odf",
+        "title": "Kestrel joins the Open Data Foundation | Kestrel",
+        "text": "# Kestrel joins the Open Data Foundation\n\nPublished 2026-11-13.\n\nToday the Kestrel project moves to the Open Data Foundation as an incubating project. The trademark and the build infrastructure move to the foundation; the maintainers and the Apache-2.0 license stay the same. A technical steering committee of seven replaces the founding company's sole say over releases."
+      },
+      {
+        "url": "https://kestrel-stream.example/blog/ksa-2026-07",
+        "title": "Security advisory KSA-2026-07 | Kestrel",
+        "text": "# Security advisory KSA-2026-07: authentication bypass in the admin API\n\nPublished 2026-11-10. Severity: high (CVSS 8.1).\n\nAn unauthenticated request with a crafted header could reach the admin API's job-cancel endpoint in Kestrel 4.0.0 to 4.1.3. Fixed in 4.1.4 and 4.2.0. Upgrade, or block the admin port from untrusted networks."
+      },
+      {
+        "url": "https://kestrel-stream.example/blog/berlin-meetup",
+        "title": "Meetup recap: Berlin | Kestrel",
+        "text": "# Meetup recap: Berlin\n\nPublished 2026-10-30. Photos and slides from our Berlin meetup."
+      },
+      {
+        "url": "https://techwire.example/2026/11/13/kestrel-foundation",
+        "title": "Stream processor Kestrel moves to a foundation | Techwire",
+        "text": "# Stream processor Kestrel moves to a foundation\n\nNovember 13, 2026.\n\nKestrel, the open-source stream processor, said on Friday it is joining the Open Data Foundation. The founding company keeps two of seven seats on the new steering committee, according to the project's announcement."
+      }
+    ],
+    "default": {
+      "error": "fetch failed: the host did not answer"
+    }
+  }
+}

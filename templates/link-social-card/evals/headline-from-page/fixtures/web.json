@@ -1,0 +1,29 @@
+{
+  "search": {
+    "answers": [],
+    "default": {
+      "results": []
+    }
+  },
+  "fetch": {
+    "answers": [
+      {
+        "url": "https://fernlight.example/blog/scheduled-exports",
+        "title": "Exports, now on a schedule \u00b7 Fernlight blog",
+        "text": "<h1>Exports, now on a schedule</h1>\n<p class=\"byline\">Fernlight blog \u00b7 2026-11-18</p>\n<p>Reports you export every Monday can now export themselves. Pick a day and a time in Settings > Reports, and the CSV lands in your inbox.</p>\n<p>We also made exports faster: a 50,000-row report that took 58 seconds now takes 9.</p>\n<p>Scheduled exports are in beta for every plan.</p>"
+      }
+    ],
+    "default": {
+      "error": "fetch failed"
+    }
+  },
+  "save": {
+    "answers": [
+      {
+        "url": "https://v3.fal.media/files/lion/Hc7Vb2Nm5Qw8Er1Ty4Ui6.png",
+        "content_type": "image/png",
+        "base64": "iVBORw0KGgoAAAANSUhEUgAAAEAAAAAkCAIAAAC2bqvFAAAACXBIWXMAAAABAAAAAQBPJcTWAAAAU0lEQVR4nO3PUQkAIBTAwJfHhoazmyH8OITBAtxmr/N1wwUNaEEDWtCAFjSgBQ1oQQNa0IAWNKAFDWhBA1rQgBY0oAUNaEEDWtCAFjSgBQ1owWMXTo5gtXQXwMYAAAAASUVORK5CYII="
+      }
+    ]
+  }
+}

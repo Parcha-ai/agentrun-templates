@@ -1,0 +1,4 @@
+# The stop list is fixtures/web.json's answer to its URL; nothing reaches the network. Its 64 rows fit in one read, and
+# 64 values are more than `evidence` holds (60).
+web: fixtures/web.json
+now: 2026-11-16T09:00:00Z

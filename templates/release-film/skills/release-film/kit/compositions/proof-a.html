@@ -1,0 +1,63 @@
+<!-- Proof, text kind (part of about 40%): one change shown as the release's own strings, a command, a field, an
+     error code, a config line, typed in line by line as the voice names them. Paper ground, a big ink panel. Use it
+     when the release has no screenshot for this change. Never a feature list: one change, its real words. Lines
+     wrap, so keep each under about 30 characters (26 at 1:1 and 9:16). Move each line's tween onto the word that
+     names it. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--paper); container-type: size; overflow: hidden; }
+    #pa-title { position: absolute; left: 8cqw; right: 8cqw; top: 12cqh; font-family: var(--font-text); font-weight: 900;
+      font-size: 8.4cqmin; line-height: 1.02; letter-spacing: -0.03em; color: var(--ink); }
+    /* The panel is as wide as its longest line and as tall as the lines typed so far: never a box bigger than its
+       content. */
+    #pa-panel { position: absolute; left: 6cqw; width: fit-content; max-width: 88cqw; top: 38cqh; padding: 3.6cqmin 4cqmin; background: var(--ink); }
+    .pa-line { font-family: var(--font-mono); font-weight: 400; font-size: 6cqmin; line-height: 1.6; color: var(--paper); white-space: pre-wrap; overflow: hidden; }
+    .pa-hi { color: var(--accent); font-weight: 700; }
+    .ptw { display: inline-block; }
+    #pa-all { position: absolute; inset: 0; transform-origin: 40% 40%; }
+    /* Portrait (9:16): the clear area of every 9:16 platform (TikTok, Reels, Shorts) is 15-65% of the height and
+       11-82% of the width (11-72% below 44%): captions and buttons own the rest. */
+    @container (max-aspect-ratio: 3/4) {
+      #pa-all { left: 11.5cqw; right: 30cqw; top: 16cqh; bottom: 36cqh; display: flex; flex-direction: column;
+        justify-content: center; align-items: flex-start; gap: 4cqh; transform-origin: 0% 50%; }
+      #pa-title, #pa-panel { position: relative; left: auto; right: auto; top: auto; }
+      #pa-title { align-self: stretch; }
+      #pa-panel { max-width: 100%; padding: 0.7em 0.8em; }
+      .pa-line { font-size: 1em; white-space: pre; }
+    }
+  </style>
+  <div id="root" data-composition-id="proof-a" data-width="1920" data-height="1080">
+   <div id="pa-all">
+    <div id="pa-title" class="clip" data-start="0.15" data-duration="5.45"><span class="ptw">KIT</span> <span class="ptw">the</span> <span class="ptw">change,</span> <span class="ptw">in</span> <span class="ptw">six</span> <span class="ptw">words</span></div>
+    <div id="pa-panel" class="clip" data-start="0.5" data-duration="5.1">
+      <div class="pa-line" id="pa-l1">$ KIT the release's own command</div>
+      <div class="pa-line" id="pa-l2">KIT a field it adds: <span class="pa-hi">KIT_value</span></div>
+      <div class="pa-line" id="pa-l3">KIT what it answers now</div>
+    </div>
+   </div>
+  </div>
+  <script>
+    // A 9:16 frame pushes less: its clear area is narrow, and the words stay inside it as they grow.
+    const tall = window.innerHeight > window.innerWidth;
+    rfReady(["pa-title", "pa-l1"]).then(() => {
+    // 9:16: the title and the panel's lines each take the biggest size the column holds across.
+    if (tall) {
+      const col = rfCol(), title = document.getElementById("pa-title"), lines = [...document.querySelectorAll("#pa-panel .pa-line")];
+      rfFit(title, { w: 0.97 * col.w, h: 0.38 * col.h, max: 0.13 * innerWidth, units: [...title.querySelectorAll(".ptw")].map((e) => e.textContent) });
+      rfFit(document.getElementById("pa-panel"), { w: col.w, h: 0.42 * col.h, max: 0.08 * innerWidth, units: lines.map((e) => e.textContent), each: true, pad: 1.6, face: lines[0] });
+    }
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#pa-title", { x: 260, filter: "blur(14px)", opacity: 0 }, { x: 0, filter: "blur(0px)", opacity: 1, duration: 0.3, ease: "expo.out" }, 0.15);
+    tl.fromTo("#pa-panel", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }, 0.5);
+    tl.fromTo("#pa-all", { scale: 1 }, { scale: tall ? 1.03 : 1.06, duration: 5.4, ease: "none" }, 0);
+    // Each line opens its row, then types in: a stepped wipe, about 0.02 s a character. The panel grows with it.
+    tl.fromTo("#pa-l1", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "steps(24)" }, 0.8);
+    tl.fromTo("#pa-l2", { height: 0 }, { height: "auto", duration: 0.12, ease: "power2.out" }, 1.58);
+    tl.fromTo("#pa-l2", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "steps(24)" }, 1.7);
+    tl.fromTo("#pa-l3", { height: 0 }, { height: "auto", duration: 0.12, ease: "power2.out" }, 2.48);
+    tl.fromTo("#pa-l3", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "steps(24)" }, 2.6);
+    tl.to("#pa-all", { x: -200, filter: "blur(12px)", opacity: 0, duration: 0.18, ease: "power3.in" }, 5.4);
+    window.__timelines["proof-a"] = tl;
+    });
+  </script>
+</template>

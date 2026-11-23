@@ -1,0 +1,20 @@
+# Applied with these parameters: the feed trigger on, pre-releases left out (the default). A fake of acme/quarry's
+# releases.atom on loopback: the trigger's first poll reads v3.2.1 and v3.2.0, then its next poll fires on v3.3.0, a
+# stable release. The runner serves fixtures/fal-mcp.json as the saved URL server fal (the voiceover and the music keyed
+# rf-acme-quarry-v3.3.0-<step>); web.json fakes GitHub's API for v3.3.0 (no image), the avatar and fal's CDN files. The
+# film is built and rendered for real in the run's sandbox. Pass: 2 of 2.
+parameters:
+  owner: acme
+  repo: quarry
+  feed_trigger: true
+feed: fixtures/feed.json
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-21T09:10:00Z

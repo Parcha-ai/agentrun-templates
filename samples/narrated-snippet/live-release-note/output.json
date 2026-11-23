@@ -1,0 +1,14 @@
+{
+  "status": "saved",
+  "script": "[upbeat] Here's what's new in Fernlight version four point two. [cheerfully] Exports are faster: a report with fifty thousand rows now takes nine seconds, instead of fifty-eight. [excited] There's also a new beta: scheduled exports. Pick a day and time under Settings, then Reports, and your CSV gets emailed to you. [pauses] Finally, the date filter no longer resets when you switch tabs.",
+  "word_count": 56,
+  "voice": "Aria",
+  "tone": "upbeat",
+  "model": "fal-ai/elevenlabs/tts/eleven-v3",
+  "saved_path": "media/voiceover.mp3",
+  "fal_url": "https://v3b.fal.media/files/b/0ab34701/uww4-llOTUyZxLS2jeVxI_output.mp3",
+  "omitted": [],
+  "error": null,
+  "ignored_instructions": [],
+  "report_markdown": "![Voiceover](media/voiceover.mp3)\n\nVoice: Aria. Tone: upbeat (stability 0.4).\n\nScript:\n[upbeat] Here's what's new in Fernlight version four point two. [cheerfully] Exports are faster: a report with fifty thousand rows now takes nine seconds, instead of fifty-eight. [excited] There's also a new beta: scheduled exports. Pick a day and time under Settings, then Reports, and your CSV gets emailed to you. [pauses] Finally, the date filter no longer resets when you switch tabs."
+}

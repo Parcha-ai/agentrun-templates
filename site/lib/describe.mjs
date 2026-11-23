@@ -238,7 +238,8 @@ function modelName(id) {
   // "gemma-4-31b-it:free" reads "Gemma 4 31B": the size as its maker writes it (an active size too, "a55b" is A55B),
   // the instruction-tuned suffix left off.
   const words = id.split("/").pop().replace(/:free$/, "").replace(/-(it|instruct)$/i, "").split("-");
-  return words.map((w) => (/^a?\d+(\.\d+)?b$/i.test(w) ? w.toUpperCase() : upperFirst(w))).join(" ");
+  // "super-vl" reads "Super VL": a vision-language tag is written in capitals, as its maker writes it.
+  return words.map((w) => (/^a?\d+(\.\d+)?b$/i.test(w) || /^vl$/i.test(w) ? w.toUpperCase() : upperFirst(w))).join(" ");
 }
 
 /** An MCP need's toolkit or server as a name: "Gmail", "GitHub", "slack MCP server". */
