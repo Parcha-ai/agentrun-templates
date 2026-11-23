@@ -87,6 +87,10 @@ function instance(shift) {
 }
 
 const reEscape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+/** A pattern for `file` as a target may write it: each character as itself or percent-encoded, either case of hex
+ *  (`dot.png`, `%64ot.png`, `dot%2epng`), the forms mediaTarget's decodeURI reads back as that file. */
+const byteAsWritten = (b) => "%" + b.toString(16).toUpperCase().padStart(2, "0").replace(/[A-F]/g, (h) => `[${h}${h.toLowerCase()}]`);
+const fileAsWritten = (file) => [...file].map((c) => `(?:${reEscape(c)}|${[...Buffer.from(c)].map(byteAsWritten).join("")})`).join("");
 const TITLE = `(?:"(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*'|\\((?:[^()\\\\]|\\\\.)*\\))`;
 
 /** `text` with every link, image and reference definition that names one of `media` pointing at `urlOf(item)`
@@ -115,7 +119,7 @@ export function absoluteMediaLinks(text, media, urlOf) {
     if (t.type !== "link" && t.type !== "image" && t.type !== "def") return;
     const item = mediaTarget(t.href, media);
     if (!item) return;
-    const dest = `(?:\\./)?media/${reEscape(item.file)}`;
+    const dest = `(?:\\./)?media/${fileAsWritten(item.file)}`;
     // A definition's destination follows its "label:"; an inline one sits in the "(...)" that ends the token.
     const m = t.type === "def"
       ? new RegExp(`^( {0,3}\\[(?:[^\\]\\\\]|\\\\.)+\\]:[ \\t]*\\n?[ \\t]*<?)(${dest})`).exec(t.raw)
