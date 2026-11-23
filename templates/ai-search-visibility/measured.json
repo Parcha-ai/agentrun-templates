@@ -4,7 +4,7 @@
   "model": "openrouter/nvidia/nemotron-3.5-super-vl:free",
   "harness": "pi",
   "measured_on": "2026-11-23",
-  "build": "beec8fb5a6f50751a0d1b5d44d7ea9d22906b186",
+  "build": "cc3ac6ada89f07c138a1e9305ff716f8107378c4",
   "passed": {
     "pi": "5/6"
   },
@@ -30,7 +30,7 @@
   },
   "cases": {
     "search-failed": {
-      "build": "59d4d7b105b8a0e08b1dc0dfeb6143ecea11a959",
+      "build": "cc3ac6ada89f07c138a1e9305ff716f8107378c4",
       "runs": 2,
       "passed": false
     },
