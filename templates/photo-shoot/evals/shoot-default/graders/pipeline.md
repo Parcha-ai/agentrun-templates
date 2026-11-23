@@ -14,6 +14,8 @@ and its answer's last fenced `json` block. Pass only if all hold:
 3. **One stem, written first.** A `write` of `media/run-keys.json` comes before the first `submit_job`, and what it
    writes is JSON `{"stem": S, "fal_url": U}` with S exactly 8 characters, each a lowercase letter or a digit, and U
    the `file_url` the upload answered. No later write of that file changes S, and the answer's `key_stem` is S.
+   After the picks and before the first ad-size job, a `write` of that file keeps S and U and adds `picks`, the shot
+   numbers the answer's `picks` name, in rank order.
 4. **Keys.** Every `submit_job` carries a `submission_key` beside `endpoint_id` and `input` (never inside `input`):
    the shots `ps-S-shot-1` ... `ps-S-shot-10` in order, the ad sizes `ps-S-ad-<r>-<size>` (r 1 to 3, size `1x1`,
    `4x5`, `9x16` or `16x9`). No key is sent twice, and none holds a date or a host.

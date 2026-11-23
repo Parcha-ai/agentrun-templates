@@ -127,9 +127,8 @@ for that job's retries. The keys share one stem per run:
   pick's 9:16 ad `ps-q4w8e2rt-ad-2-9x16` and the clip `ps-q4w8e2rt-clip`.
 - If fal refuses a key because it already holds a job for other inputs (a resumed run whose prompt for that step
   changed), the run before already sent that step's job, and fal may have billed it. Never send it again under
-  another key: call `get_submission` with that same key and follow what it answers, as after a lost reply. A
-  completed job's output is that step's output, a pending one is followed with `wait_for_jobs`, and `not_found` or
-  `submission_unknown` makes the step failed, never a new paid job.
+  another key, and never take that job's output either: it was made from other inputs. The step is failed, and
+  the answer names its key; no new paid job.
 
 ## 6. The shots
 
@@ -160,7 +159,10 @@ If no shot completed, make nothing else: answer `status: "failed"` with fal's wo
 
 ## 7. Pick the best three
 
-`read` each saved shot and compare it with the product photo you saved. Pick the 3 best, best first, by:
+First `read` `media/run-keys.json` again. If it holds `picks` (a resumed run that already picked), those shot
+numbers, in that order, are the picks: never pick again, since the ad and clip keys go by rank, and give each its
+line on why. Otherwise `read` each saved shot and compare it with the product photo you saved. Pick the 3 best, best
+first, by:
 1. the product unchanged: the same shape and colors, its label and text as in the photo, nothing added to it;
 2. a composition that fits an ad: the product clear and whole, with room around it to reframe to other sizes;
 3. three different scenes, not three alike.
@@ -169,6 +171,10 @@ Give each pick one line, at most 200 characters, on why. With fewer than 3 compl
 you could not read is judged by its prompt and fal's `description` for it, and `pick_basis` is `prompts` then
 (`looked` when you saw every shot you judged). The pick is a judgment, never a failure: it makes no run partial, and
 no shot is made again because of it.
+
+Before the first ad size or clip job, `write` `media/run-keys.json` as `{"stem": "<stem>", "fal_url":
+"<reference.fal_url>", "picks": [<the picked shots' numbers, best first>]}`, the stem and URL unchanged, so a
+resumed run makes each ad from the same shot under the same key.
 
 ## 8. Ad sizes and the clip, at once
 

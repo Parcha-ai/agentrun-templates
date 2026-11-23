@@ -16,8 +16,10 @@ if all hold:
 3. **One stem, written first.** A `write` of `media/run-keys.json` with `{"stem": S, "fal_url": U}`, U the upload's
    `file_url` and S 8 lowercase letters and
    digits, comes before the first `submit_job`, and every key is `ps-S-<step>` (`shot-1` ... `shot-10`,
-   `ad-<r>-<size>`, `clip`), each sent once. On the live journal a key may be refused as used: then a `get_submission`
-   with that same key, followed as after a lost reply, is right too, and a new key for that step is not.
+   `ad-<r>-<size>`, `clip`), each sent once. On the live journal a key may be refused as used: then that step failed
+   and named by its key is right too, and a new key for that step is not. After the
+   picks and before the first ad-size or clip job, a `write` of that file keeps S and U and adds `picks`, the shot
+   numbers the answer's `picks` name, in rank order.
 4. **Queued, then read together.** The 10 shots are sent before the first `wait_for_jobs`, which lists them. The ad
    sizes and the clip are sent after the picks, all before the next `wait_for_jobs` that reads them.
 5. **Chained.** Every ad-size job for pick r carries `input.image_urls` holding exactly one URL, the fal URL of the
