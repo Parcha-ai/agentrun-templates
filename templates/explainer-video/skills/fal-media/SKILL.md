@@ -107,6 +107,11 @@ public URL (fal's own result URLs are). Neither needs the audio's duration as an
 not the length asked for: read it from the voiceover's result (a constant-bitrate MP3's `file_size` × 8 ÷ its
 bitrate) before you submit, and hold it to the model's audio limit.
 
+Under a spend cap the run prices a talking head before it is sent, from the voice at its `audio_url`: only a voice on
+fal's own media (an https `fal.media` URL, as fal's results are) that is an MP3 or a PCM WAV, and Fabric only at
+`480p`. Any other job is refused unsent, so send the voiceover's URL exactly as fal answered it, never a copy on
+another host.
+
 A portrait that lip-syncs well: one person, head and shoulders, facing the camera, eyes to the lens, mouth closed and
 relaxed, the face large in the frame and evenly lit, a plain background, nothing in front of the face (no hand, mic or
 hair across the mouth). Photoreal works best.
