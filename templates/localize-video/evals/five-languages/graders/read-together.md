@@ -22,6 +22,6 @@ Read the calls (their order and arguments). Pass only if all hold:
    `request_id` its `submit_job` answered (Spanish at index 0 ... Portuguese at index 4).
 4. **Captions from each dub's voice.** For each language, audio isolation runs on that dub's URL as fal answered it,
    speech-to-text on the voice track it answered, and a `write` makes `media/<lang>.vtt` starting `WEBVTT`, in that
-   language.
+   language. No speech-to-text call gets a dub's video URL (any of the five above) as its `audio_url`.
 
 Answer pass or fail, and quote what decided it.

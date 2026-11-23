@@ -200,10 +200,11 @@ minute of the dub, its lipsync at the longer of its inputs (the dub's audio and 
 
 Then for each dubbed language, using the URLs fal answered (never a saved path):
 
-1. **Its voice track**, when `captions` is on, or when the plan has lipsync and the dub's answer has no `audio.url`:
-   `run_model` on `fal-ai/elevenlabs/audio-isolation`, key `lz-<stem>-voice-<lang>`, `input` exactly
-   `{"video_url": <the dub's video.url>}`; `web_save` its `audio.url` to `media/<lang>-voice.mp3`.
-2. **Its captions**, when `captions` is on: `run_model` on `fal-ai/elevenlabs/speech-to-text`, key
+1. **Its voice track**, when this language keeps its captions, or keeps its lipsync and the dub's answer has no
+   `audio.url` (what step 7 kept, not the plan as first priced): `run_model` on `fal-ai/elevenlabs/audio-isolation`,
+   key `lz-<stem>-voice-<lang>`, `input` exactly `{"video_url": <the dub's video.url>}`; `web_save` its `audio.url` to
+   `media/<lang>-voice.mp3`.
+2. **Its captions**, when this language keeps its captions: `run_model` on `fal-ai/elevenlabs/speech-to-text`, key
    `lz-<stem>-captions-<lang>`, `input` exactly `{"audio_url": <that voice track's audio.url>, "tag_audio_events":
    false}`; then `write` `media/<lang>.vtt` from its `words`, as the skill says: `WEBVTT`, a blank line, then one cue
    per sentence (at most 12 words), each from its first word's `start` to its last word's `end`, as
