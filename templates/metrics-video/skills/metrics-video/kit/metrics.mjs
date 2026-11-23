@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // metrics.mjs: every number of the weekly metrics film, worked out by code from Stripe's balance transactions.
-// The agent copies Stripe's answers into files; this script does the calendar, the sums, the differences, the
+// The agent saves Stripe's answers as files; this script does the calendar, the sums, the differences, the
 // percentages, the rounding and the words the voice says for each figure, and writes the one data module every scene
 // reads. Nothing here guesses: a figure it cannot work out is an error, never an estimate.
 //
@@ -8,35 +8,48 @@
 //   node metrics.mjs compute --today YYYY-MM-DD --timezone <IANA> [--week-of YYYY-MM-DD] [--carried stripe/carried.json]
 //                            --pages stripe --film film [--business "Name"]
 //   node metrics.mjs place   --film film [--at revenue=5.2,change=14.0,...] [--seconds 47]
+//   node metrics.mjs stem    --file media/run-keys.json --today YYYY-MM-DD --timezone <IANA> [--week-of YYYY-MM-DD]
+//   node metrics.mjs scan    --pages stripe [--root .] [--final]
 //
 // --today is the run's date in the time zone: the day the schedule fired (its line names it in the schedule's zone),
 // or for a run by hand the day the run's environment line gives. Never the sandbox's clock.
 // weeks    prints the week to film (Monday 00:00 to the next Monday 00:00 in the time zone), the week before it, and
 //          the window to read from Stripe: both weeks when the carried figures are for the week before (they are
 //          compared), else the week alone.
-// compute  reads every stripe/page-<n>.json the agent wrote, checks each transaction (net = amount - fee), keeps the
+// compute  reads every stripe/raw-<n>.json the agent saved, takes eight fields of each item (id, created, type,
+//          reporting_category, currency, amount, fee, net) and nothing else, checks each (net = amount - fee), keeps the
 //          revenue categories, adds each week up per currency (never across currencies), compares the week before
 //          with the carried figures, and writes film/data.json and the same object into film/index.html (window.MV).
 //          It prints the figures, the words to say for each, the film's plan and the carry for the answer.
 // place    sets each scene's start and length in film/index.html and each scene's span from --at (scene=start,...),
 //          the film's length, the captions host and the music (kept only when film/assets/music.mp3 exists).
+// stem     prints the run's key stem: the one in the file when it was made for this week, else a new one from the
+//          sandbox's random bytes, written there first. A model never makes one.
+// scan     looks for customer data in every file the run wrote: each string a raw page's items hold (a description, a
+//          name, an email, an id; not Stripe's enum fields, its fee lines or a single word alone), each pair of
+//          capitalised words in one (a name's shape), and any email address. With --final and nothing found, it
+//          removes the raw pages.
 //
-// A page file is {"has_more": <bool as Stripe answered>, "transactions": [{"id", "created", "type",
-// "reporting_category", "currency", "amount", "fee", "net"}, ...]}, the fields copied exactly from Stripe's answer and
-// nothing else (no description, no customer, no source). Exit 2: wrong arguments, or a film whose files don't match
-// the kit (place reads every host and scene back after writing them; the message names the scene); 3: the pages are
-// wrong or incomplete (the message says what to fix); 0: done.
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+// A raw page is Stripe's list exactly as Composio answered it ({"object": "list", "data": [...], "has_more": ...}),
+// or Composio's whole answer around it. It holds customers' details (a charge's description can name one), so only
+// compute and scan read it, and scan --final removes it. Exit 2: wrong arguments, a film whose files don't match the
+// kit (place reads every host and scene back after writing them; the message names the scene), or customer data in a
+// file (scan names the file and the item, never the value); 3: the pages are wrong or incomplete (the message says
+// what to fix); 0: done.
+import { randomBytes } from "node:crypto";
+import { existsSync, lstatSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { join, relative } from "node:path";
 
 const METRIC = {
   id: "net-of-refunds-and-fees",
   label: "Revenue: net of refunds and Stripe fees, from Stripe balance transactions",
 };
-// Stripe's reporting categories that make up the figure: money in (charge), money back (refund), money taken back
-// by a dispute and returned when it is won (dispute, dispute_reversal), and Stripe's own fees billed on their own
+// Stripe's reporting categories that make up the figure: money in (charge) and what takes it back off the charges (a
+// charge that failed after it was credited, charge_failure; the uncaptured rest of a partial capture,
+// partial_capture_reversal), money back (refund) and a refund that failed and returned (refund_failure), money taken
+// back by a dispute and returned when it is won (dispute, dispute_reversal), and Stripe's own fees billed on their own
 // (fee). Payouts, transfers, top-ups and every other category move money, not revenue, and are left out (and counted).
-const KEPT = new Set(["charge", "refund", "dispute", "dispute_reversal", "fee"]);
+const KEPT = new Set(["charge", "charge_failure", "partial_capture_reversal", "refund", "refund_failure", "dispute", "dispute_reversal", "fee"]);
 const MAX_PAGES = 10;
 const MAX_FILMED = 3; // currencies the film shows; more are named on the end card and in the report
 // Stripe's zero-decimal and three-decimal currencies (stripe.com/docs/currencies); every other one has two.
@@ -235,37 +248,53 @@ function percent(change, before) {
 }
 
 // ---------- Stripe's pages ----------
-function readPages(dir) {
-  if (!existsSync(dir)) fail(3, `${dir} does not exist: write each page Stripe answered to ${dir}/page-1.json, page-2.json ...`);
-  const files = readdirSync(dir).filter((f) => /^page-\d+\.json$/.test(f)).sort((a, b) => parseInt(a.slice(5)) - parseInt(b.slice(5)));
-  if (!files.length) fail(3, `no page-<n>.json in ${dir}: write each page Stripe answered there`);
+// The eight fields the figures use; the script takes them from each item itself, and nothing else of an item is kept.
+const FIELDS = ["id", "created", "type", "reporting_category", "currency", "amount", "fee", "net"];
+const rawFiles = (dir) => readdirSync(dir).filter((f) => /^raw-\d+\.json$/.test(f)).sort((a, b) => parseInt(a.slice(4)) - parseInt(b.slice(4)));
+// A raw page as the agent saved it: Stripe's list ({"object": "list", "data": [...], "has_more": ...}), or Composio's
+// whole answer around it ({"data": <that list>, "successful": true, ...}).
+function listOf(page) {
+  if (Array.isArray(page?.data) && typeof page.has_more === "boolean") return page;
+  if (page && typeof page === "object" && "successful" in page && Array.isArray(page.data?.data) && typeof page.data.has_more === "boolean") return page.data;
+  return null;
+}
+function readRaw(dir) {
+  if (!existsSync(dir)) fail(3, `${dir} does not exist: save each page Stripe answered to ${dir}/raw-1.json, raw-2.json ...`);
+  const files = rawFiles(dir);
+  if (!files.length) fail(3, `no raw-<n>.json in ${dir}: save each page Stripe answered there, exactly as it answered`);
   if (files.length > MAX_PAGES) fail(3, `${files.length} pages: this film reads at most ${MAX_PAGES} pages (${MAX_PAGES * 100} transactions)`);
   files.forEach((f, i) => {
-    if (f !== `page-${i + 1}.json`) fail(3, `the pages are numbered from 1 with no gap: found ${files.join(", ")}`);
+    if (f !== `raw-${i + 1}.json`) fail(3, `the pages are numbered from 1 with no gap: found ${files.join(", ")}`);
   });
-  const problems = [];
-  const byId = new Map();
-  let last = null;
-  for (const f of files) {
+  return files.map((f) => {
     let page;
     try {
       page = JSON.parse(readFileSync(join(dir, f), "utf8"));
     } catch (e) {
-      fail(3, `${dir}/${f} is not JSON (${e.message}): write it again from Stripe's answer`);
+      fail(3, `${dir}/${f} is not JSON (${e.message}): save it again exactly as Stripe answered`);
     }
-    if (typeof page?.has_more !== "boolean" || !Array.isArray(page.transactions)) {
-      fail(3, `${dir}/${f} must be {"has_more": true|false, "transactions": [...]}, as Stripe answered the page`);
-    }
-    for (const [i, t] of page.transactions.entries()) {
+    const list = listOf(page);
+    if (!list) fail(3, `${dir}/${f} must be Stripe's list as it answered ({"object": "list", "data": [...], "has_more": true|false})`);
+    return { file: f, list };
+  });
+}
+function readPages(dir) {
+  const problems = [];
+  const byId = new Map();
+  let last = null;
+  const raw = readRaw(dir);
+  for (const { file: f, list } of raw) {
+    for (const [i, item] of list.data.entries()) {
       const at = `${f} item ${i + 1}`;
-      const extra = Object.keys(t).filter((k) => !["id", "created", "type", "reporting_category", "currency", "amount", "fee", "net"].includes(k));
-      if (extra.length) problems.push(`${at}: copy only id, created, type, reporting_category, currency, amount, fee and net (found ${extra.join(", ")})`);
+      const t = Object.fromEntries(FIELDS.map((k) => [k, item?.[k]]));
+      // A whole item always says what it is. One cut down to a few fields would hide its description from the scan.
+      if (item?.object !== "balance_transaction") problems.push(`${at}: "object": "balance_transaction" is missing: save each item whole, as Stripe gave it, never a part of it`);
       if (typeof t.id !== "string" || !t.id) problems.push(`${at}: id is missing`);
       for (const k of ["created", "amount", "fee", "net"]) if (!Number.isInteger(t[k])) problems.push(`${at}: ${k} is not a whole number as Stripe gives it`);
       for (const k of ["type", "reporting_category", "currency"]) if (typeof t[k] !== "string") problems.push(`${at}: ${k} is missing`);
       if (typeof t.currency === "string" && !/^[a-z]{3}$/.test(t.currency)) problems.push(`${at}: currency ${t.currency} is not Stripe's three lower-case letters`);
       if (Number.isInteger(t.amount) && Number.isInteger(t.fee) && Number.isInteger(t.net) && t.net !== t.amount - t.fee) {
-        problems.push(`${at} (${t.id}): net ${t.net} is not amount ${t.amount} - fee ${t.fee}: a number was copied wrong`);
+        problems.push(`${at} (${t.id}): net ${t.net} is not amount ${t.amount} - fee ${t.fee}: a number was saved wrong`);
       }
       if (typeof t.id === "string" && byId.has(t.id)) {
         const a = JSON.stringify(byId.get(t.id));
@@ -274,10 +303,10 @@ function readPages(dir) {
       }
       if (typeof t.id === "string") byId.set(t.id, t);
     }
-    last = page;
+    last = list;
   }
-  if (problems.length) fail(3, `the pages need fixing (copy these from Stripe's answers again):\n- ${problems.slice(0, 20).join("\n- ")}`);
-  return { transactions: [...byId.values()], lastHasMore: last.has_more, pages: files.length };
+  if (problems.length) fail(3, `the pages need fixing (save these pages again exactly as Stripe answered):\n- ${problems.slice(0, 20).join("\n- ")}`);
+  return { transactions: [...byId.values()], lastHasMore: last.has_more, pages: raw.length };
 }
 
 // ---------- the figures ----------
@@ -305,9 +334,16 @@ function addUp(transactions, week) {
         f.gross += t.amount;
         if (t.amount > 0) f.charges++;
         break;
+      case "charge_failure":
+      case "partial_capture_reversal":
+        f.gross += t.amount; // negative: it takes money back off the charges, and is no charge of its own
+        break;
       case "refund":
         f.refunds[0]++;
         f.refunds[1] += -t.amount;
+        break;
+      case "refund_failure":
+        f.refunds[1] += -t.amount; // positive: a refund that failed returns its money, and is no refund of its own
         break;
       case "dispute":
         f.disputes[0]++;
@@ -341,7 +377,7 @@ function compute() {
   const { transactions, lastHasMore, pages } = readPages(need("pages"));
   const oldest = Math.min(...transactions.map((t) => t.created));
   if (lastHasMore && !(oldest < w.read.created_gte)) {
-    fail(3, `Stripe said has_more on the last page and the oldest transaction read (${new Date(oldest * 1000).toISOString()}) is not before the window's start (${new Date(w.read.created_gte * 1000).toISOString()}): read the next page (starting_after the last id) and write it as page-${pages + 1}.json`);
+    fail(3, `Stripe said has_more on the last page and the oldest transaction read (${new Date(oldest * 1000).toISOString()}) is not before the window's start (${new Date(w.read.created_gte * 1000).toISOString()}): read the next page (starting_after the last id) and save it as raw-${pages + 1}.json`);
   }
   const late = transactions.filter((t) => t.created >= w.end_of_today_unix);
   if (late.length) fail(3, `${late.length} transaction(s) are dated after ${w.today} in ${w.timezone}: a created value was copied wrong (${late.slice(0, 3).map((t) => t.id).join(", ")})`);
@@ -579,6 +615,105 @@ function place(film, data, at, seconds) {
   return timing;
 }
 
+// ---------- customer data ----------
+// Stripe's own words in an item: its enum fields, and its fee lines ("Stripe processing fees"). Every other string an
+// item holds (its description above all, and anything an expanded object or metadata brings) can be a customer's.
+const STRIPES_OWN = new Set(["object", "type", "reporting_category", "currency", "status", "balance_type"]);
+const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
+// A name's shape: two words side by side, each a capital and then letters, as a first and a last name.
+const NAMEWORD = /^\p{Lu}[\p{L}'’-]+$/u;
+function customerValues(dir) {
+  const found = new Map(); // value -> where it came from, never printed with the value
+  const add = (value, where) => {
+    if (value.length >= 4 && !found.has(value)) found.set(value, where);
+  };
+  const walk = (value, key, where) => {
+    if (key === "fee_details" || STRIPES_OWN.has(key)) return;
+    if (typeof value === "string") {
+      const v = value.trim();
+      // One word of letters alone ("Refund", "Payment") is a common word as often as a name, and the kit's own scenes
+      // hold such words: it is not looked for by itself. A name is looked for as a pair of words, below.
+      if (!/^\p{L}+$/u.test(v)) add(v, `${where}: its ${key}`);
+      for (const email of v.match(EMAIL) ?? []) add(email, `${where}: an email in its ${key}`);
+      const words = v.split(/\s+/).map((w) => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ""));
+      for (let i = 0; i + 1 < words.length; i++) if (NAMEWORD.test(words[i]) && NAMEWORD.test(words[i + 1])) add(`${words[i]} ${words[i + 1]}`, `${where}: a name in its ${key}`);
+    } else if (Array.isArray(value)) value.forEach((v) => walk(v, key, where));
+    else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) walk(v, k, where);
+  };
+  for (const { file, list } of readRaw(dir)) list.data.forEach((item, i) => walk(item, "item", `${file} item ${i + 1} (${item?.id ?? "no id"})`));
+  return found;
+}
+// Every file the run wrote under `root`: dot-folders (the skills, the harness's own state) and node_modules are not
+// the run's, the raw pages are where the values come from, a binary file (audio, video, images) holds no text, and a
+// link is not followed (it points at a file the walk reaches anyway, or outside the run).
+function runFiles(root, raw) {
+  const out = [];
+  const walk = (dir) => {
+    for (const name of readdirSync(dir)) {
+      const path = join(dir, name);
+      const st = lstatSync(path);
+      if (st.isDirectory()) {
+        if (!name.startsWith(".") && name !== "node_modules") walk(path);
+      } else if (st.isFile() && !raw.has(path) && st.size <= 50e6) {
+        const bytes = readFileSync(path);
+        if (!bytes.subarray(0, 8000).includes(0)) out.push({ path, text: bytes.toString("utf8") });
+      }
+    }
+  };
+  walk(root);
+  return out;
+}
+function scan() {
+  const dir = need("pages");
+  const root = args.root && args.root !== "true" ? args.root : ".";
+  const values = existsSync(dir) && rawFiles(dir).length ? customerValues(dir) : new Map();
+  const raw = new Set(existsSync(dir) ? rawFiles(dir).map((f) => join(dir, f)) : []);
+  const files = runFiles(root, raw);
+  const hits = [];
+  for (const { path, text } of files) {
+    const at = relative(root, path) || path;
+    for (const [value, where] of values) {
+      const escaped = JSON.stringify(value).slice(1, -1);
+      if (text.includes(value) || (escaped !== value && text.includes(escaped))) hits.push(`${at} holds a value from Stripe's ${where}`);
+    }
+    for (const email of text.match(EMAIL) ?? []) if (!values.has(email)) hits.push(`${at} holds an email address`);
+  }
+  if (hits.length) {
+    fail(2, `customer data in the run's files: remove each from the file (and from anything made from it: the voiceover, the film), then scan again:\n- ${[...new Set(hits)].slice(0, 20).join("\n- ")}`);
+  }
+  const removed = [];
+  if (args.final !== undefined) for (const path of raw) {
+    unlinkSync(path);
+    removed.push(path);
+  }
+  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, raw_pages_removed: removed }));
+}
+
+// ---------- the key stem ----------
+// One stem per run, made here from the sandbox's random bytes, never by a model. It is kept with the week it was made
+// for, so a stem file left from another week's film is never reused.
+function stem() {
+  const file = need("file");
+  const w = weeks();
+  const week = `${w.week.start} ${w.timezone}`;
+  let kept = null;
+  if (existsSync(file)) {
+    try {
+      kept = JSON.parse(readFileSync(file, "utf8"));
+    } catch {
+      kept = null;
+    }
+  }
+  if (kept && typeof kept.stem === "string" && /^[a-z0-9]{8}$/.test(kept.stem) && kept.week === week) {
+    console.log(JSON.stringify({ stem: kept.stem, week, made: false }));
+    return;
+  }
+  const letters = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const made = [...randomBytes(8)].map((b) => letters[b % letters.length]).join("");
+  writeFileSync(file, JSON.stringify({ stem: made, week }) + "\n");
+  console.log(JSON.stringify({ stem: made, week, made: true }));
+}
+
 if (command === "weeks") {
   const w = weeks();
   delete w.carried;
@@ -601,6 +736,10 @@ if (command === "weeks") {
   if (seconds !== null && !(seconds >= data.plan.film_seconds && seconds <= data.plan.film_seconds + 10)) fail(2, `--seconds is the film's length when the voice runs long: from ${data.plan.film_seconds} to ${data.plan.film_seconds + 10}`);
   const timing = place(film, data, at, seconds);
   console.log(JSON.stringify({ film_seconds: seconds ?? data.plan.film_seconds, music: existsSync(join(film, "assets", "music.mp3")), timing }));
+} else if (command === "scan") {
+  scan();
+} else if (command === "stem") {
+  stem();
 } else {
-  fail(2, "usage: node metrics.mjs weeks|compute|place ... (the header of this file says each)");
+  fail(2, "usage: node metrics.mjs weeks|compute|place|scan|stem ... (the header of this file says each)");
 }
