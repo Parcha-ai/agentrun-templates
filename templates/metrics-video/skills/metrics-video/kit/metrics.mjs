@@ -622,10 +622,17 @@ const STRIPES_OWN = new Set(["object", "type", "reporting_category", "currency",
 const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
 // A name's shape: two words side by side, each a capital and then letters, as a first and a last name.
 const NAMEWORD = /^\p{Lu}[\p{L}'’-]+$/u;
+// A name as people write one: a capital, then lower case somewhere (an apostrophe or a second capital allowed). Such a
+// pair, and an email, is looked for in any case, in capitals or in lower case. Stripe writes its own lines in capitals
+// ("REFUND FOR CHARGE", "STRIPE PAYOUT"): those pairs, and every whole value, are looked for as written, so a film that
+// says "a refund for" or "a Stripe payout" in its own words is not taken for customer data.
+const TITLED = (w) => NAMEWORD.test(w) && /\p{Ll}/u.test(w);
 function customerValues(dir) {
-  const found = new Map(); // value -> where it came from, never printed with the value
-  const add = (value, where) => {
-    if (value.length >= 4 && !found.has(value)) found.set(value, where);
+  const found = new Map(); // value -> { where it came from, any case or not }, never printed with the value
+  const add = (value, where, anyCase = false) => {
+    if (value.length < 4) return;
+    if (!found.has(value)) found.set(value, { where, anyCase });
+    else if (anyCase) found.get(value).anyCase = true; // a whole description that is only a name is still a name
   };
   const walk = (value, key, where) => {
     if (key === "fee_details" || STRIPES_OWN.has(key)) return;
@@ -634,9 +641,13 @@ function customerValues(dir) {
       // One word of letters alone ("Refund", "Payment") is a common word as often as a name, and the kit's own scenes
       // hold such words: it is not looked for by itself. A name is looked for as a pair of words, below.
       if (!/^\p{L}+$/u.test(v)) add(v, `${where}: its ${key}`);
-      for (const email of v.match(EMAIL) ?? []) add(email, `${where}: an email in its ${key}`);
+      for (const email of v.match(EMAIL) ?? []) add(email, `${where}: an email in its ${key}`, true);
       const words = v.split(/\s+/).map((w) => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ""));
-      for (let i = 0; i + 1 < words.length; i++) if (NAMEWORD.test(words[i]) && NAMEWORD.test(words[i + 1])) add(`${words[i]} ${words[i + 1]}`, `${where}: a name in its ${key}`);
+      for (let i = 0; i + 1 < words.length; i++) {
+        if (NAMEWORD.test(words[i]) && NAMEWORD.test(words[i + 1])) {
+          add(`${words[i]} ${words[i + 1]}`, `${where}: a name in its ${key}`, TITLED(words[i]) && TITLED(words[i + 1]));
+        }
+      }
     } else if (Array.isArray(value)) value.forEach((v) => walk(v, key, where));
     else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) walk(v, k, where);
   };
@@ -663,18 +674,46 @@ function runFiles(root, raw) {
   walk(root);
   return out;
 }
+// Spacing is set aside for every value (a name broken over a line is the same name); case only for a name or an email.
+// (No example value in this kit's text: a value the skill holds is not looked for, below.)
+const squash = (s) => s.replace(/\s+/g, " ");
+const fold = (s) => squash(s).toLowerCase();
 function scan() {
   const dir = need("pages");
   const root = args.root && args.root !== "true" ? args.root : ".";
-  const values = existsSync(dir) && rawFiles(dir).length ? customerValues(dir) : new Map();
+  const found = existsSync(dir) && rawFiles(dir).length ? customerValues(dir) : new Map();
   const raw = new Set(existsSync(dir) ? rawFiles(dir).map((f) => join(dir, f)) : []);
-  const files = runFiles(root, raw);
+  // The template's own words: the skill folder the kit is copied from (film/ holds that copy, its comments included).
+  // A value the skill already holds as written ("Stripe processing fees" in a comment) is the template's text, not a
+  // customer's, so it is not looked for. Held as written: a name made of two common words stays looked for when the
+  // skill only has those words in lower case. With no skill folder every value is looked for: a missing folder never
+  // hides one. So this kit's text holds no example name.
+  const skill = join(root, typeof args.skill === "string" ? args.skill : ".agents/skills/metrics-video");
+  const skillText = existsSync(skill) ? squash(runFiles(skill, new Set()).map((f) => f.text).join("\n")) : "";
+  const values = new Map([...found].filter(([value]) => !skillText.includes(squash(value))));
+  // A file in film/ still byte for byte the kit's copy (metrics.mjs, review.mjs, a scene the run never changed) holds
+  // only the template's words: it is not searched, so a customer's name that is also a phrase in the kit's code can't
+  // fail every run. A copy the run changed is searched like any other file.
+  const kit = join(skill, "kit");
+  const film = join(root, typeof args.film === "string" ? args.film : "film");
+  const kitCopy = (path) => {
+    const rel = relative(film, path);
+    if (rel.startsWith("..") || !existsSync(join(kit, rel))) return false;
+    return readFileSync(join(kit, rel)).equals(readFileSync(path));
+  };
+  const all = runFiles(root, raw);
+  const files = all.filter((f) => !kitCopy(f.path));
   const hits = [];
   for (const { path, text } of files) {
     const at = relative(root, path) || path;
-    for (const [value, where] of values) {
-      const escaped = JSON.stringify(value).slice(1, -1);
-      if (text.includes(value) || (escaped !== value && text.includes(escaped))) hits.push(`${at} holds a value from Stripe's ${where}`);
+    const asWritten = squash(text);
+    const anyCase = asWritten.toLowerCase();
+    for (const [value, { where, anyCase: folds }] of values) {
+      const norm = folds ? fold : squash;
+      const hay = folds ? anyCase : asWritten;
+      const plain = norm(value);
+      const escaped = norm(JSON.stringify(value).slice(1, -1));
+      if (hay.includes(plain) || (escaped !== plain && hay.includes(escaped))) hits.push(`${at} holds a value from Stripe's ${where}`);
     }
     for (const email of text.match(EMAIL) ?? []) if (!values.has(email)) hits.push(`${at} holds an email address`);
   }
@@ -686,7 +725,7 @@ function scan() {
     unlinkSync(path);
     removed.push(path);
   }
-  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, raw_pages_removed: removed }));
+  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - files.length, skill_folder: skillText !== "", raw_pages_removed: removed }));
 }
 
 // ---------- the key stem ----------

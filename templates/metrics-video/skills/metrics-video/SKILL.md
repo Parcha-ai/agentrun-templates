@@ -127,7 +127,8 @@ node film/metrics.mjs scan --pages stripe
 ```
 
 It prints `{"clean": true, ...}` or exits 2 naming each file that holds a value from Stripe's pages (a description, a
-name in one, an email, an id) or any email address. Rewrite what it names without it and scan again.
+name in one in any case, an email, an id) or any email address. The kit's own files, as copied, aren't searched. Rewrite
+what it names without it and scan again.
 
 ## 5. Voice and music into the film
 
