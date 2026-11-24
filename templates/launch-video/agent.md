@@ -28,7 +28,7 @@ inputs:
   product_name: { type: string, required: false, maxLength: 60, title: "Product name", description: "How the voiceover names the product, if the page's own name isn't what you want said." }
   tone: { type: string, required: false, enum: [confident, playful, calm, bold], default: confident, title: "Tone", description: "How the voice, the shots and the music feel" }
   length: { type: integer, required: false, enum: [30, 45], default: 30, title: "Length (seconds)", description: "30: six shots of 5 s; 45: nine." }
-  clip_model: { type: string, required: false, enum: [kling, hailuo], default: kling, title: "Clip model", description: "kling: Kling 2.5 Turbo Pro, 5 s clips at 16:9 with a negative prompt. hailuo: Hailuo 02 Standard, 6 s clips at 768p, about a third cheaper." }
+  video_model: { type: string, required: false, enum: [kling, hailuo], default: kling, title: "Video model", description: "The model that makes the b-roll. kling: Kling 2.5 Turbo Pro, 5 s clips at 16:9 (six for 30 s, nine for 45 s), kept clear of text, logos and people by a negative prompt; about $0.35 a clip on fal. hailuo: Hailuo 02 Standard, 6 s clips at 768p (five for 30 s, eight for 45 s), no negative prompt; about $0.27 a clip on fal." }
   voice: { type: string, required: false, enum: [Rachel, Aria, Sarah, Laura, Charlotte, Alice, Matilda, Jessica, Lily, Roger, Charlie, George, Callum, River, Liam, Will, Eric, Chris, Brian, Daniel, Bill], default: Aria, title: "Voice", description: "An ElevenLabs voice by name" }
   max_fal_usd: { type: number, required: false, minimum: 0, title: "Your ceiling on fal (USD)", description: "Optional. Leave it empty for no ceiling. Set one and the run prices its whole plan first, a second voiceover included, and refuses before any paid call when the plan costs more than you set. Kling is about $2.50 at 30 s and $3.75 at 45 s; Hailuo 02 about $1.75 and $2.75." }
 # The $1,000 accident guard, not a tuned number: it stops a runaway run. What a run costs is the plan's price on fal
@@ -44,7 +44,7 @@ You turn one product page into a short launch video on fal.ai: a voiceover over 
 beside it. Every piece and the final cut are saved into the run's files.
 
 Each message carries an `Input:` json block: `url`, and maybe `product_name`, `tone` (default confident), `length`
-(30 or 45, default 30), `clip_model` (`kling` or `hailuo`, default kling), `voice` (default Aria) and `max_fal_usd`
+(30 or 45, default 30), `video_model` (`kling` or `hailuo`, default kling), `voice` (default Aria) and `max_fal_usd`
 (the user's ceiling on fal; absent means none). Never stop to ask: take the likeliest
 reading and say which.
 
@@ -81,11 +81,12 @@ vocals, no big drops), with a genre and tempo.
 
 ## 3. Price the plan
 
-The plan is `clip_model` (default kling); never switch it. Call `get_pricing` once with `endpoint_ids` [the plan's
+The plan is the input `video_model` (default kling), the user's pick; never switch it. (The answer's `video_model` is
+that plan's endpoint.) Call `get_pricing` once with `endpoint_ids` [the plan's
 clip endpoint and the four other endpoints below] and use the rates it answers (per second of video, per 1000
 characters of speech, per minute of music, per second of cut). The plans:
 
-| `clip_model` | endpoint | clips | clip length | the clips' cost |
+| input `video_model` | endpoint | clips | clip length | the clips' cost |
 |---|---|---|---|---|
 | `kling` | `fal-ai/kling-video/v2.5-turbo/pro/text-to-video` | 6 (30 s), 9 (45 s) | 5 s | clips × 5 × its rate |
 | `hailuo` | `fal-ai/minimax/hailuo-02/standard/text-to-video` | 5 (30 s), 8 (45 s) | 6 s | clips × 6 × its rate |

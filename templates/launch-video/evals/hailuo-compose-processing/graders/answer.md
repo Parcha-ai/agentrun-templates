@@ -2,7 +2,7 @@
 type: llm
 ---
 A launch-video run on a fake fal. The page (Kestrel Field Notes 1.0) says: a notebook app for people who work outdoors (ecologists, surveyors, geologists, field crews); notes, sketches and photos work with no signal and sync on their own when back in range; photos are tagged with GPS location and time and pinned on a map of the site; a day's notes export to CSV or PDF in two taps; free for up to 3 projects, Kestrel Pro $6 a month for unlimited projects and team sharing; available today for iOS and Android.
-Input: tone calm, voice George, length 30, clip_model hailuo (no max_fal_usd).
+Input: tone calm, voice George, length 30, input video_model hailuo (no max_fal_usd).
 
 Read the `submit_job` call on `fal-ai/elevenlabs/tts/eleven-v3` (its `input.text` is the script) and the answer's last fenced `json` block.
 Pass only if all hold:
