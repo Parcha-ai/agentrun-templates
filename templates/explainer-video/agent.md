@@ -147,7 +147,9 @@ response_url>}, {"index": 1, <the voiceover's>}]}`, the handles copied exactly a
 some completed and some pending, read again only the pending ones, after `poll_after_seconds`. Save each as soon as it
 is done with `web_save`: `media/portrait.png` (the extension from its `content_type`) and `media/voiceover.mp3`. A
 file is saved when `web_save` answers ok; its byte count is not compared with fal's `file_size` and never changes
-`status`.
+`status`. Save each file once. `web_save` never overwrites: when it refuses a path because the path already holds a
+file, an earlier save in this run put it there, so it is saved; keep that path in `files`, and never save a copy
+under another name.
 
 The inputs above follow each model's schema; read one with `get_model_schema` only when fal rejects an input.
 
