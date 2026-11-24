@@ -90,11 +90,12 @@ go on (fal reads the URL itself in step 3): take what the product is from `produ
 First `read` `media/run-keys.json`. If it holds a `fal_url` that starts with `https://` (a resumed run), that is
 this run's copy of the photo: use it as `reference.fal_url` and make no upload. Otherwise make one `upload_file` call
 with `url` set to `product_image_url`, exactly as given, and no other field (no `data`, no
-`prepare_upload`, no `file_name`, no `user_intent`). It is free. fal fetches the photo once and answers a `file_url` on
-its CDN (`https://v3.fal.media/files/...`): from here on that `file_url` is the only product URL you send to fal, and
-it goes in `reference.fal_url`. Every shot is made from it, so fal reads the owner's link once, not once per job.
+`prepare_upload`, no `file_name`, and no `user_intent` either, though the tool offers it: this server refuses the call
+with any other field). It is free. fal fetches the photo once and answers its copy's URL on its CDN in `cdn_url`
+(`{"cdn_url": "https://v3b.fal.media/files/...", "hint": "..."}`; if an answer names it `file_url` instead, use that): from here on
+that URL is the only product URL you send to fal, and it goes in `reference.fal_url`. Every shot is made from it, so fal reads the owner's link once, not once per job.
 
-If `upload_file` answers an error, or no `file_url` that starts with `https://`: stop. Make no paid call, upload
+If `upload_file` answers an error, or no `cdn_url` (or `file_url`) that starts with `https://`: stop. Make no paid call, upload
 nothing else, and never send `product_image_url` itself in a job instead, or upload it again. Answer `status:
 "failed"` with fal's words in `error` and in `failed` (job `upload`), the `upload` step `failed` and every other step
 `not_run`, all at cost 0, `fal_cost_usd` 0, `key_stem` null and `reference.fal_url` null, `shots`, `picks` and `ads`
@@ -137,7 +138,7 @@ for that job's retries. The keys share one stem per run:
 `get_submission` after a lost reply aside). Each `input` is exactly:
 
 ```json
-{"prompt": "<the shot's prompt>", "image_urls": ["<reference.fal_url, the file_url upload_file answered>"], "num_images": 1, "aspect_ratio": "3:2", "resolution": "1K", "output_format": "png"}
+{"prompt": "<the shot's prompt>", "image_urls": ["<reference.fal_url, the cdn_url upload_file answered>"], "num_images": 1, "aspect_ratio": "3:2", "resolution": "1K", "output_format": "png"}
 ```
 
 and nothing else: never `product_image_url` itself in `image_urls`, no `enable_web_search` (it adds a charge and
@@ -151,7 +152,10 @@ answer is `pending` is read again after the `poll_after_seconds` it gives, alone
 its own index: never re-read a shot that already has an outcome, and never submit a pending shot again. A shot fal
 refuses or fails stays failed: note fal's words and don't send it again. A completed shot's fal URL is its
 `images[0].url` in that answer. Go on to the pick only when every shot has an outcome (or a shot has been pending
-past 10 minutes: then it is `pending` in the answer, and the run is `partial`).
+past 10 minutes: then it is `pending` in the answer, and the run is `partial`). You have no clock: each
+`wait_for_jobs` read waits up to 40 s, so 10 minutes is 15 reads that answered a job `pending`. Keep reading a pending
+job until it has an outcome or 15 reads have answered it `pending`, never fewer: a Kling clip often takes 3 to 6
+minutes.
 
 Save each completed shot with `web_save` from its fal URL to `media/shot-<n>.<ext>`, the extension from its
 `content_type` (`media/shot-1.png`). If a path is taken, add `-2` before the extension.

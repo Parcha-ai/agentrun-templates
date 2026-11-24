@@ -205,7 +205,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "{\"file_url\":\"https://v3.fal.media/files/zebra/EIWTQQ2OLFSG66UFSCN2N_cold-brew.png\",\"file_name\":\"cold-brew.png\",\"content_type\":\"image/png\",\"file_size\":294}"
+                "text": "{\"cdn_url\":\"https://v3.fal.media/files/zebra/EIWTQQ2OLFSG66UFSCN2N_cold-brew.png\",\"hint\":\"Use this URL as input to fal.ai models (e.g. in the 'image_url' parameter).\"}"
               }
             ]
           }

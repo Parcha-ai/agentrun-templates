@@ -206,7 +206,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "Could not download the file from the URL: HTTP 403 Forbidden"
+                "text": "{\"error\":\"The supplied source URL returned HTTP 403 before any upload to fal storage. Check that the URL points directly to a complete, accessible file, or use prepare_upload to upload local file bytes.\",\"diagnostics\":{\"stage\":\"download\",\"reason\":\"source_http\",\"http_status\":403}}"
               }
             ]
           }
@@ -217,7 +217,7 @@
         "content": [
           {
             "type": "text",
-            "text": "Could not download the file from the URL: HTTP 404 Not Found"
+            "text": "{\"error\":\"The supplied source URL returned HTTP 404 before any upload to fal storage. Check that the URL points directly to a complete, accessible file, or use prepare_upload to upload local file bytes.\",\"diagnostics\":{\"stage\":\"download\",\"reason\":\"source_http\",\"http_status\":404}}"
           }
         ]
       }

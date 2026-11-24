@@ -1,6 +1,7 @@
 ---
 type: tool_used
 tool: mcp:fal/upload_file
-count: 1
+at_least: 1
 ---
-One upload and no second try: not of the same link, not of another.
+The upload is tried. A call the pin refused unsent (it carried another argument) also counts here, so this checks at
+least one: failed.md checks exactly one that reached fal, and no second try of this link or another.

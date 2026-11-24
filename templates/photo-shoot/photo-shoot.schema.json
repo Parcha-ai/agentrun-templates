@@ -17,7 +17,7 @@
         "path": { "type": ["string", "null"], "description": "where the product photo was saved, under media/; null when it wasn't" },
         "saved": { "type": "boolean" },
         "seen": { "type": "string", "maxLength": 400, "description": "what the product is and how it looks (shape, colors, material, the words on its label), from the saved photo, or from product_notes when it could not be seen" },
-        "fal_url": { "type": ["string", "null"], "description": "the file_url upload_file answered for the product photo (fal's CDN), the one product URL every shot is made from; null when it was not uploaded (over budget, or the upload failed)" }
+        "fal_url": { "type": ["string", "null"], "description": "the cdn_url upload_file answered for the product photo (fal's CDN), the one product URL every shot is made from; null when it was not uploaded (over budget, or the upload failed)" }
       }
     },
     "plan": {

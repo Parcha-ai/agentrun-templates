@@ -11,10 +11,10 @@ if all hold:
 2. **Uploaded once, then only that.** Exactly one `upload_file` call, after `get_pricing` and before the first
    `submit_job`, its only argument `url` `https://images.unsplash.com/photo-1518548981607-b068130027d2?w=1280&fm=jpg&q=80`
    (a call this server's pin refused unsent never reached fal and doesn't count). Every shot job (`aspect_ratio`
-   `3:2`) carries `input.image_urls` holding exactly one URL, the `file_url` that call answered (on fal's CDN, such as
-   `fal.media`), never the Unsplash link, and the answer's `reference.fal_url` is that `file_url`.
+   `3:2`) carries `input.image_urls` holding exactly one URL, the `cdn_url` that call answered (on fal's CDN, such as
+   `fal.media`), never the Unsplash link, and the answer's `reference.fal_url` is that `cdn_url`.
 3. **One stem, written first.** A `write` of `media/run-keys.json` with `{"stem": S, "fal_url": U}`, U the upload's
-   `file_url` and S 8 lowercase letters and
+   `cdn_url` and S 8 lowercase letters and
    digits, comes before the first `submit_job`, and every key is `ps-S-<step>` (`shot-1` ... `shot-10`,
    `ad-<r>-<size>`, `clip`), each sent once. On the live journal a key may be refused as used: then that step failed
    and named by its key is right too, and a new key for that step is not. After the

@@ -102,15 +102,16 @@ Each model's input is fal's own schema (fal's OpenAPI, read 2026-11-23). Send ex
 `get_model_schema` only if a call answers 422. Leave `sync_mode` out.
 
 ### `upload_file`: the owner's photo on fal, once, free
-- `url` alone: the owner's public link, as given. fal fetches it once and answers a `file_url` on its CDN
-  (`https://v3.fal.media/files/...`). Send that `file_url` as the reference of every job, so fal reads the owner's
+- `url` alone: the owner's public link, as given. fal fetches it once and answers its copy's URL on its CDN in
+  `cdn_url`: `{"cdn_url": "https://v3b.fal.media/files/...", "hint": "..."}` (if an answer names it `file_url` instead, use that).
+  Send that URL as the reference of every job, so fal reads the owner's
   host once and the URL stays put for the whole run. It bills nothing.
 - An error (fal could not download the link: a 403, a 404, a web page instead of an image) is the end of the run:
   nothing paid, no second upload, and the owner gets a plain word to give a direct link to the image file.
 
 ### `fal-ai/nano-banana-pro/edit`: a new picture made around a reference image, $0.15 an image at 1K
 - `prompt` (required, 3 to 50000 characters), `image_urls` (a list of image URLs fal reads: the reference, the
-  photo's `file_url` from `upload_file` or a shot's own fal URL; up to 14), `num_images` (1), `aspect_ratio` (`auto`,
+  photo's `cdn_url` from `upload_file` or a shot's own fal URL; up to 14), `num_images` (1), `aspect_ratio` (`auto`,
   the default, follows the reference; or one of `21:9`, `16:9`, `3:2`, `4:3`, `5:4`, `1:1`, `4:5`, `3:4`, `2:3`,
   `9:16`, `4:1`, `1:4`, `8:1`, `1:8`: no 1.91:1), `resolution` (`1K`, the default; `2K` costs the same, `4K` double),
   `output_format` (`png`, `jpeg`, `webp`).
@@ -187,7 +188,8 @@ What follows applies only where the template allows another paid call.
 - **A refusal** (content policy, safety checker): a definite answer. Report it in fal's words; don't send it again.
 - **429** or a throttled answer with `retry_after_seconds`: wait that long, then try once more with the same key and
   the exact same request. Run videos one at a time.
-- **A job still pending past 10 minutes**: stop waiting, give its request id and say it may still finish. Cancel it
+- **A job still pending past 10 minutes**: you have no clock, and each `wait_for_jobs` read waits up to 40 s, so that
+  is 15 reads that answered it `pending`; never stop sooner. Then stop waiting, give its request id and say it may still finish. Cancel it
   only if the person asks.
 - **`FAILED`**: report the error text as fal gave it. Retry once only when the error says the input was at fault and
   you changed the input (with a new key).
