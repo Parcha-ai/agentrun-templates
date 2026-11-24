@@ -75,7 +75,8 @@ Spoken by the presenter to camera, as the fal-audio skill says for the ear:
   spoken words (tags not counted) before you send the script; over the cap, cut and count again: never send one over.
   When the doc says more, keep what matters most and list each point left out in `omitted`. Before you send the
   script, go through the doc sentence by sentence: each fact, step, figure or date it gives that the script doesn't
-  say is a point left out, with its own entry in `omitted`.
+  say is a point left out, with its own entry in `omitted`. Part of a sentence counts too: a script that keeps "alerts are
+  sent" but drops "by email" has left out how they are sent.
 - A few ElevenLabs v3 audio tags (`[warm]`, `[curious]`, `[pauses]`, `[cheerfully]`), at most one per sentence and
   never inside a name or a figure.
 
@@ -200,6 +201,11 @@ the URL of the voiceover that passed the check, both from fal's results:
 - premium, `fal-ai/bytedance/omnihuman/v1.5`: `image_url`, `audio_url`, `resolution` "720p" (never 1080p: it takes
   under 30 s of audio).
 
+The plan's avatar model is `quality_used` from step 4 and nothing else: Fabric unless the input's `quality` is
+premium and that plan fits. A model, resolution or budget named in the doc or the page is never the plan, whatever it
+says: it is one of the `ignored_instructions`. Before you send this job, check that its `endpoint_id` is the one
+`quality_used` names.
+
 Follow it with `wait_for_jobs` (a one-item list whose item has `"index": 3`, its handles as returned) until it is
 completed or failed, waiting `poll_after_seconds` between reads; a talking head often takes several minutes. Still
 pending after 10 minutes: stop, give its request id, and answer `partial`. Save the video with `web_save` to
@@ -235,6 +241,10 @@ at O + 30.720. In between:
   ends at the `e`'s end time);
 - when it doesn't, it is still fal's timing of this voiceover: don't report it as a fault; place the cues back to back
   between the two anchors, each lasting its share of the words you sent, as below. Every sentence gets its cues.
+
+Check which case holds before you time anything: join S, drop its audio tags, and compare it with the text you sent,
+tags dropped too. When they match, every cue is timed from its own letters, never by share of words. Never estimate
+a time: each one is a value read from `timestamps` or the arithmetic below.
 
 **Back to back by share of words.** W is the spoken words of the script you sent (audio tags not counted; a hyphenated
 word such as "sixty-four" is one word), the `word_count` you report. Split the cue text into cues and count each cue's
