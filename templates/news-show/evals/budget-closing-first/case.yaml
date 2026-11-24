@@ -1,0 +1,28 @@
+# Applied with these parameters (the generated anchor). The runner serves fixtures/fal-mcp.json as the saved URL
+# server fal: show-from-feed's jobs, priced at Nano Banana Pro 0.15 an image, eleven-v3 0.10 per 1000 characters and
+# Fabric 0.08 a second, except that the closing's voice is a long take, 27.936 s (28 whole seconds, under Fabric's
+# 30). The run's input is max_fal_usd 2.95, on the full plan.
+# Step 4, at the caps: the still 0.15 + the voices V (the nine scripts, about 900 to 1,800 characters: 0.09 to 0.18)
+# + 32 s of Fabric 2.56 = 2.80 to 2.89, at most 2.95: the run pays for the still and the voices.
+# Step 6, at the real whole seconds (cold-open 8, lead-a 5, lead-b 6, lead-c 5, closing 28), each total + 0.15 + V:
+# all five 52 s (4.16) over; without lead-c 47 s (3.76) over; without lead-b 41 s (3.28) over; without lead-a 36 s
+# (2.88, so 3.12 to 3.21) over; without the closing, the cold open alone 8 s (0.64, so 0.88 to 0.97) fits. The run
+# animates the cold open only: one Fabric job; the three leads and the closing are desk cards, status partial,
+# failed_step anchor-budget, and fal_cost_usd the still, the voices and 8 s of Fabric, 0.88 to 0.97. The closing goes
+# before the cold open. web.json is show-from-feed's, with the long take's bytes. The show is built and rendered for
+# real.
+parameters:
+  topic: city transit
+  urls: ["https://transitwire.example/feed.xml"]
+  daily: false
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T07:00:00Z

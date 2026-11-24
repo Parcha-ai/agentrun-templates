@@ -231,6 +231,36 @@ test("the index is checked", () => {
   }
 });
 
+test("the index lists each package once, whatever name, pin or spelling an entry gives it", () => {
+  const dir = mkdtempSync(join(tmpdir(), "site-index-"));
+  const summary = "A summary long enough to pass the index check.";
+  const index = (templates) => writeFileSync(join(dir, ".agentrun", "marketplace.json"), JSON.stringify({ templates: templates.map((t) => ({ summary, ...t })) }));
+  try {
+    mkdirSync(join(dir, ".agentrun"));
+    // One package under two names is two cards for one template: here, and in a console that lists this index.
+    index([
+      { name: "code-review", source: "github:Parcha-ai/agentrun/packages/serve/templates/code-review" },
+      { name: "pr-reviewer", source: "github:parcha-ai/AgentRun/packages/serve/templates/code-review/@abc123" },
+      { name: "watch", source: "./templates/watch" },
+      { name: "watch-again", source: "./templates/watch/" },
+    ]);
+    assert.throws(() => readIndex(dir), (err) => /templates\[1\]\.source .* is the package templates\[0\] \(code-review\) lists/.test(err.message)
+      && /templates\[3\]\.source .* is the package templates\[2\] \(watch\) lists/.test(err.message));
+    // Two packages side by side in one repository are two templates.
+    index([
+      { name: "code-review", source: "github:Parcha-ai/agentrun/packages/serve/templates/code-review" },
+      { name: "release-notes", source: "github:Parcha-ai/agentrun/packages/serve/templates/release-notes" },
+      { name: "watch", source: "./templates/watch" },
+      // A folder's path is case-sensitive on GitHub: these are two folders.
+      { name: "watch-gh", source: "github:Parcha-ai/agentrun-templates/templates/watch" },
+      { name: "watch-gh-upper", source: "github:Parcha-ai/agentrun-templates/templates/Watch" },
+    ]);
+    assert.equal(readIndex(dir).templates.length, 5);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("builds the fixture into pages that pass the checker", async () => {
   const out = mkdtempSync(join(tmpdir(), "site-dist-"));
   const cache = mkdtempSync(join(tmpdir(), "site-cache-"));
@@ -340,6 +370,9 @@ test("builds the fixture into pages that pass the checker", async () => {
     const search = JSON.parse(readFileSync(join(out, "search.json"), "utf8"));
     assert.equal(search[0].name, "sample-watch");
     assert.deepEqual(search[0].needs, ["Requires web search, through Exa", "Requires web fetch", "Runs on a schedule", "Can use GitHub, through the AgentRun GitHub App (optional)"], "search finds a template by what it requires");
+    assert.equal(search[0].source, `github:Parcha-ai/agentrun-templates/templates/sample-watch@${SHA}`, "a console installs from the list what the page's Install installs");
+    assert.deepEqual(search[0].harness, ["pi", "claude-agent", "codex"], "and its harnesses, as its agent.md lists them");
+    assert.equal(search[0].summary, JSON.parse(readFileSync(join(fixture, ".agentrun", "marketplace.json"), "utf8")).templates[0].summary, "and shows the card's one line");
   } finally {
     rmSync(out, { recursive: true, force: true });
     rmSync(cache, { recursive: true, force: true });

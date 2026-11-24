@@ -1,0 +1,19 @@
+# Applied with these parameters (the generated anchor). The runner serves fixtures/fal-mcp.json as the saved URL
+# server fal: it prices the three endpoints (Nano Banana Pro 0.15 an image, eleven-v3 0.10 per 1000 characters, Fabric
+# 0.08 a second) and would complete every job, but the run's max_fal_usd 2.00 is below the full plan (about $2.85) and
+# above the short one (about $1.65).
+parameters:
+  topic: city transit
+  urls: ["https://transitwire.example/feed.xml"]
+  daily: false
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T07:00:00Z

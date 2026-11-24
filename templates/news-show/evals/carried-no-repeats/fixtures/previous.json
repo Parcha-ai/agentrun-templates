@@ -1,0 +1,178 @@
+{
+ "description": "The daily show's last run, 2026-11-22: it showed TransitWire's Line 4 extension, the ferry fare freeze and Cityspoke's e-bikes, after two earlier shows.",
+ "results": [
+  {
+   "output": {
+    "status": "completed",
+    "show_date": "2026-11-22",
+    "show_name": "The Daily Desk",
+    "beat": {
+     "topic": "city transit",
+     "urls": [
+      "https://transitwire.example/feed.xml"
+     ]
+    },
+    "anchor": {
+     "name": "Rowan",
+     "image": "generated",
+     "image_url": "https://v3.fal.media/files/koala/BttkeGgY4TmCLtKBdhWU.png",
+     "voice": "Aria",
+     "resolution": "480p"
+    },
+    "stories": [
+     {
+      "slot": "A",
+      "title": "Line 4 extension opens two stations",
+      "url": "https://transitwire.example/2026/11/21/line-4-extension-opens",
+      "source": "TransitWire",
+      "published": "2026-11-21",
+      "summary": "The Line 4 extension opened on Saturday with 3.2 km of new track and two stations.",
+      "on_screen": [
+       "3.2 km of new track",
+       "18,500 riders a day"
+      ],
+      "chyron": "LINE 4 REACHES ELM YARD"
+     },
+     {
+      "slot": "B",
+      "title": "Harbor ferry fares frozen for 2027",
+      "url": "https://transitwire.example/2026/11/21/harbor-ferry-fares-frozen",
+      "source": "TransitWire",
+      "published": "2026-11-21",
+      "summary": "The council voted 9 to 2 to keep the single ferry fare at $3.40 through 2027.",
+      "on_screen": [
+       "$3.40 single fare",
+       "9 to 2 council vote"
+      ],
+      "chyron": "FERRY FARES FROZEN FOR 2027"
+     },
+     {
+      "slot": "C",
+      "title": "Cityspoke adds 600 e-bikes",
+      "url": "https://transitwire.example/2026/11/21/cityspoke-adds-600-e-bikes",
+      "source": "TransitWire",
+      "published": "2026-11-21",
+      "summary": "The bike share's fleet grows to 2,400 with 40 new docks.",
+      "on_screen": [
+       "600 e-bikes",
+       "2,400 in all"
+      ],
+      "chyron": "CITYSPOKE FLEET GROWS"
+     }
+    ],
+    "skipped_repeats": [],
+    "stories_shown": [
+     {
+      "date": "2026-11-20",
+      "url": "https://transitwire.example/2026/11/19/tram-depot-approved",
+      "title": "Tram depot plan approved"
+     },
+     {
+      "date": "2026-11-20",
+      "url": "https://transitwire.example/2026/11/19/fare-cap-weekly",
+      "title": "Weekly fare cap starts in February"
+     },
+     {
+      "date": "2026-11-20",
+      "url": "https://transitwire.example/2026/11/18/station-lifts-repaired",
+      "title": "Station lifts back in service"
+     },
+     {
+      "date": "2026-11-21",
+      "url": "https://transitwire.example/2026/11/20/bus-drivers-hired",
+      "title": "Authority hires 120 bus drivers"
+     },
+     {
+      "date": "2026-11-21",
+      "url": "https://transitwire.example/2026/11/20/harbor-bridge-closure",
+      "title": "Harbor Bridge lane closures next week"
+     },
+     {
+      "date": "2026-11-21",
+      "url": "https://transitwire.example/2026/11/19/school-bus-routes",
+      "title": "New school bus routes for spring"
+     },
+     {
+      "date": "2026-11-22",
+      "url": "https://transitwire.example/2026/11/21/line-4-extension-opens",
+      "title": "Line 4 extension opens two stations"
+     },
+     {
+      "date": "2026-11-22",
+      "url": "https://transitwire.example/2026/11/21/harbor-ferry-fares-frozen",
+      "title": "Harbor ferry fares frozen for 2027"
+     },
+     {
+      "date": "2026-11-22",
+      "url": "https://transitwire.example/2026/11/21/cityspoke-adds-600-e-bikes",
+      "title": "Cityspoke adds 600 e-bikes"
+     }
+    ],
+    "segments": [],
+    "disclosure": {
+     "on_screen_text": "AI-GENERATED",
+     "on_screen_from_s": 0,
+     "spoken_line": "Good morning. I'm Rowan, an AI-generated anchor, and this is The Daily Desk for Sunday, November twenty-second.",
+     "spoken_by_s": 7.4
+    },
+    "plan": {
+     "name": "full",
+     "anchor_segments": [
+      "cold-open",
+      "lead-a",
+      "lead-b",
+      "lead-c",
+      "closing"
+     ],
+     "usd": 2.91
+    },
+    "plans_priced": [
+     {
+      "name": "full",
+      "usd": 2.91
+     },
+     {
+      "name": "short",
+      "usd": 1.71
+     },
+     {
+      "name": "voice-only",
+      "usd": 0.14
+     }
+    ],
+    "cheaper_plan": null,
+    "captions_timing": "aligned",
+    "film": {
+     "path": "media/show.mp4",
+     "seconds": 96.4,
+     "width": 1920,
+     "height": 1080
+    },
+    "checks": {
+     "check_errors": 0,
+     "warnings_kept": [
+      "timeline_track_too_dense on the captions track"
+     ],
+     "review_fixes": [],
+     "renders": 1
+    },
+    "fal_cost_usd": {
+     "steps": [],
+     "total": 2.78
+    },
+    "files": [
+     {
+      "what": "show",
+      "saved_path": "media/show.mp4",
+      "source_url": null
+     }
+    ],
+    "failed_step": null,
+    "error": null,
+    "ignored_instructions": [],
+    "notes": [],
+    "report_markdown": "![The Daily Desk, 2026-11-22](media/show.mp4)\n\nThree stories from TransitWire: Line 4's extension, the ferry fare freeze and Cityspoke's new e-bikes."
+   }
+  }
+ ]
+}
