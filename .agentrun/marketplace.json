@@ -1155,7 +1155,7 @@
         "elevenlabs",
         "media"
       ],
-      "summary": "Dubs a narrated video into up to three languages in the same voice, with captions. Only for a voice you own. Billed to your fal account."
+      "summary": "Dubs a narrated video into up to five languages in its own voice, with captions. Only for a voice you own. Billed to your fal account."
     },
     {
       "name": "release-film",
