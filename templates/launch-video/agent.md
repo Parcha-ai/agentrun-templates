@@ -258,7 +258,9 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
   each voiceover sent, in order, with its `step` (`voiceover`, `voiceover-2`), `word_count`, `file_size` and `seconds`
   (null when it failed).
 - `fal_cost_usd`: one step per paid call made (each clip, `voiceover`, `voiceover-2` when sent, music, cut) with its
-  units and rate from `get_pricing` and its `usd` (units × rate to 3 decimals, never rounded to cents); a failed or
+  `rate_usd` and `unit` from `get_pricing`, its `units` counted in that unit (a 640-character script at a rate per
+  1000 characters is 0.64 units; a 5 s clip at a per-second rate is 5; 30 s of music at a per-minute rate is 0.5), and
+  its `usd` (units × rate to 3 decimals, never rounded to cents); a failed or
   refused job is listed with `usd` 0; `total` is the sum of the steps' `usd` as listed, to 3 decimals. Nothing paid →
   no steps, total 0. These are estimates from fal's rates, not fal's invoice.
 - `files`: every file of the run: each saved path with the URL it came from, `media/launch.vtt`, and
