@@ -45,7 +45,8 @@ that recovers the first job instead of billing again.
 ## Several jobs at once
 
 1. **Price the whole plan first**, with one `get_pricing` call on every endpoint of the plan. The kit's script adds it
-   up; over the cap, no paid call at all.
+   up, and the answer says it before anything is paid. Over a ceiling the user set (`max_fal_usd`), no paid call at
+   all; with none set, nothing is refused for price.
 2. **Queue each job with its own `submit_job` call**, all of a stage (every still, then every clip) before any
    `wait_for_jobs`, with nothing else in between. Keep each job's handles.
 3. **Read them in one `wait_for_jobs` call**: one item per job, `index` the job's place in the stage (shot n at n − 1),

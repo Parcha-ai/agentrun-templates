@@ -6,7 +6,7 @@
 // error, never an estimate. It uses only node's fs, path and child_process, and runs only ffmpeg and ffprobe.
 //
 //   node beats.mjs plan   --song media/song.mp3 --film film [--cut 60] [--start 42.5] [--aspect 16:9] [--lyrics true]
-//   node beats.mjs price  --film film --rates isolation=0.1,transcript=0.03,still=0.15,clip=0.14 --max 12
+//   node beats.mjs price  --film film --rates isolation=0.1,transcript=0.03,still=0.15,clip=0.14 [--max 20]
 //   node beats.mjs lyrics --film film --words media/transcript.json --vtt media/lyrics.vtt
 //   node beats.mjs place  --film film
 //   node beats.mjs stem   --file media/run-keys.json
@@ -21,8 +21,9 @@
 //         its lead-in and its tail), each 3 to 10 s, as even as the bars allow, the longer ones where the song is
 //         quieter, together exactly the cut. It writes film/plan.json, which every later command reads.
 // price   the plan priced from get_pricing's rates (isolation and transcript per minute of the song, a still per image,
-//         a clip per second), with two stills held in reserve for remakes; over --max, the largest cheaper plan that
-//         fits: the same cut with fewer shots, else a shorter cut. It writes film/price.json.
+//         a clip per second), with two stills held in reserve for remakes. --max is the user's own ceiling
+//         (max_fal_usd), given only when they set one: a plan over it prints OVER YOUR CEILING. Without --max nothing is
+//         over. It writes film/price.json.
 // lyrics  speech-to-text's words (fal's answer, written to a file as fal gave it) mapped into the cut: lines, the lyric
 //         under each shot, film/lyrics.json, the WebVTT file and film/compositions/lyrics.html (the captions scene).
 // place   writes each shot into film/index.html on the cut's clock (its clip, or its still with a slow push-in when
@@ -479,120 +480,20 @@ function price() {
     r[k] = Number(v);
   }
   for (const k of STEP_RATES) if (r[k] === undefined) fail(2, `--rates is missing ${k}`);
-  const max = num("max");
-  if (!(max >= 0)) fail(2, "--max is max_fal_usd, 0 or more");
+  // --max is max_fal_usd, given only when the user set one: their own ceiling. Without it nothing is refused for
+  // price, and the price is information for the answer.
+  const max = num("max", null);
+  if (max !== null && !(max >= 0)) fail(2, "--max is max_fal_usd, 0 or more; leave it out when the user set none");
   const minutes = data.song.minutes;
   const p = priceOf(data.cut.shots, minutes, data.lyrics_on, r);
-  let cheaper = null;
-  if (p.total > max + 1e-9) {
-    // The same cut with fewer shots: the most shots that fit.
-    const song = { ...analyseFromPlan(data) };
-    const total = data.cut.seconds;
-    for (let n = data.cut.shots.length - 1; n >= 1 && !cheaper; n--) {
-      const s = forcedShots(data, n);
-      if (!s) continue;
-      const q = priceOf(s, minutes, data.lyrics_on, r);
-      if (q.total <= max + 1e-9) cheaper = { kind: "fewer_shots", cut_seconds: total, cut_start_s: data.cut.start_s, cut_end_s: data.cut.end_s, shots: s.length, usd: q.total };
-    }
-    // Else a shorter cut: the most whole bars that fit, the loudest such run (or from the same start).
-    for (let B = data.cut.bars - 1; B >= 1 && !cheaper; B--) {
-      const c = shorterCut(data, song, B);
-      if (!c) continue;
-      const q = priceOf(c.shots, minutes, data.lyrics_on, r);
-      if (q.total <= max + 1e-9) cheaper = { kind: "shorter_cut", cut_seconds: c.seconds, cut_start_s: c.start_s, cut_end_s: c.end_s, shots: c.shots.length, usd: q.total };
-    }
-  }
-  const out = { rates: r, max_fal_usd: max, lines: p.lines, plan_usd: p.total, fits: p.total <= max + 1e-9, cheaper_plan: cheaper };
+  const fits = max === null || p.total <= max + 1e-9;
+  const out = { rates: r, max_fal_usd: max, lines: p.lines, plan_usd: p.total, fits };
   writeFileSync(join(film, "price.json"), JSON.stringify(out, null, 1) + "\n");
   const lines = [];
   for (const l of p.lines) lines.push(`${l.step}${l.reserve ? " (reserve)" : ""}: ${l.units} ${l.unit} x $${l.rate_usd} = $${l.usd}`);
-  lines.push(`plan_usd: ${p.total} (max_fal_usd ${max}): ${out.fits ? "FITS" : "OVER BUDGET"}`);
-  if (!out.fits) lines.push(cheaper ? `cheaper_plan: ${cheaper.kind === "fewer_shots" ? `the same ${cheaper.cut_seconds} s cut in ${cheaper.shots} shots` : `a ${cheaper.cut_seconds} s cut (${cheaper.cut_start_s} to ${cheaper.cut_end_s} s of the song) in ${cheaper.shots} shots`}, $${cheaper.usd}` : "cheaper_plan: none fits");
-  lines.push(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify({ plan_usd: p.total, cheaper_plan: cheaper })}`);
+  lines.push(max === null ? `plan_usd: ${p.total} (no ceiling set)` : `plan_usd: ${p.total} (your ceiling, max_fal_usd ${max}): ${fits ? "FITS" : "OVER YOUR CEILING"}`);
+  lines.push(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify({ plan_usd: p.total })}`);
   console.log(lines.join("\n"));
-}
-// The plan's song again, from its bars, for the cheaper plans (no second decode: loudness per bar from plan.json).
-function analyseFromPlan(data) {
-  const bars = data.bars.map((b) => ({ ...b, energy: 10 ** (b.db / 10) }));
-  const meanSquare = (a, b) => {
-    let s = 0, t = 0;
-    for (const x of bars) {
-      const o = Math.min(b, x.end_s) - Math.max(a, x.start_s);
-      if (o > 0) { s += x.energy * o; t += o; }
-    }
-    return t > 0 ? s / t : 0;
-  };
-  const lines = [...bars.map((b) => b.start_s), ...(bars.length ? [bars[bars.length - 1].end_s] : [])];
-  return { bars, meanSquare, lines, period: data.beats.period_s, seconds: data.song.seconds, analysed: data.song.seconds };
-}
-function forcedShots(data, n) {
-  const song = analyseFromPlan(data);
-  const a = data.cut.start_s, b = data.cut.end_s;
-  const inner = song.lines.filter((t) => t > a + 0.25 && t < b - 0.25);
-  const points = [a, ...inner, b].map(ms);
-  const segs = [];
-  for (let i = 0; i + 1 < points.length; i++) segs.push({ a: points[i], b: points[i + 1], len: (points[i + 1] - points[i]) / 1000 });
-  // Even shots of whole segments, n of them, 3 to 10 s: least squares by the same search as the plan's.
-  const total = (points[points.length - 1] - points[0]) / 1000, mean = total / n, m = segs.length;
-  const best = Array.from({ length: n + 1 }, () => new Float64Array(m + 1).fill(Infinity));
-  const from = Array.from({ length: n + 1 }, () => new Int32Array(m + 1).fill(-1));
-  best[0][0] = 0;
-  for (let k = 1; k <= n; k++)
-    for (let j = 1; j <= m; j++) {
-      let len = 0;
-      for (let i = j - 1; i >= 0; i--) {
-        len += segs[i].len;
-        if (len > SHOT_MAX + 1e-6) break;
-        if (len < SHOT_MIN - 1e-6 || best[k - 1][i] === Infinity) continue;
-        const c = best[k - 1][i] + (len - mean) ** 2;
-        if (c < best[k][j] - 1e-9) { best[k][j] = c; from[k][j] = i; }
-      }
-    }
-  if (best[n][m] === Infinity) return null;
-  const cuts = [m];
-  for (let k = n, j = m; k > 0; k--) { j = from[k][j]; cuts.unshift(j); }
-  return cuts.slice(0, -1).map((i, k) => {
-    const sec = (segs[cuts[k + 1] - 1].b - segs[i].a) / 1000;
-    return { n: k + 1, seconds: sec, clip_seconds: Math.max(SHOT_MIN, Math.ceil(sec - 1e-9)) };
-  });
-}
-function shorterCut(data, song, B) {
-  const start = data.cut.chosen_by === "start_s" ? data.cut.start_asked_s : undefined;
-  if (B * data.beats.bar_s < CUT_MIN - 1e-6) return null;
-  try {
-    return cutOfQuiet(song, B, start);
-  } catch {
-    return null;
-  }
-}
-function cutOfQuiet(song, B, start) {
-  const bars = song.bars;
-  const starts = [];
-  for (let i = 0; i + B <= bars.length; i++) starts.push(i);
-  if (!starts.length) return null;
-  let i0 = starts[0];
-  if (start !== undefined) {
-    i0 = bars.reduce((best, x, i) => (Math.abs(x.start_s - start) < Math.abs(bars[best].start_s - start) ? i : best), 0);
-    if (i0 + B > bars.length) return null;
-  } else {
-    let best = -1;
-    for (const i of starts) {
-      let s = 0;
-      for (let j = i; j < i + B; j++) s += bars[j].energy * (bars[j].end_s - bars[j].start_s);
-      if (s > best * (1 + 1e-9)) { best = s; i0 = i; }
-    }
-  }
-  const a = bars[i0].start_s, b = bars[i0 + B - 1].end_s;
-  const ds = bars.slice(i0, i0 + B).map((x) => x.db);
-  const lo = Math.min(...ds), hi = Math.max(...ds);
-  const loud = (x, y) => {
-    const m = song.meanSquare(x, y);
-    const d = m > 0 ? 10 * Math.log10(m) : -120;
-    return hi > lo ? Math.max(0, Math.min(1, (d - lo) / (hi - lo))) : 0;
-  };
-  const s = shotsOf(a, b, song.lines.filter((t) => t > a - 1e-6 && t < b + 1e-6), loud);
-  if (!s) return null;
-  return { start_s: r3(a), end_s: r3(b), seconds: (ms(b) - ms(a)) / 1000, shots: shotList(s.groups, bars) };
 }
 
 // ---------- the lyrics ----------

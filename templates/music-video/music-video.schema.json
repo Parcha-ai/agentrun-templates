@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "music-video.schema.json",
   "title": "A music video cut to a song's beat",
-  "description": "The song and the rights stated, the beats, bars and cut the kit's script found in it, every shot with its lyric, picture, still and clip (or its still with a push-in when the clip failed), the lyric captions, the plan's price and what fal cost, the film rendered in the sandbox with its checks, every file saved, and any step that failed.",
+  "description": "The song and the rights stated, the beats, bars and cut the kit's script found in it, every shot with its lyric, picture, still and clip (or its still with a push-in when the clip failed), the lyric captions, the plan's fal price said before anything was paid and what fal cost, the film rendered in the sandbox with its checks, every file saved, and any step that failed.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -13,7 +13,6 @@
     "shots",
     "lyrics",
     "plan_usd",
-    "cheaper_plan",
     "fal_cost_usd",
     "key_stem",
     "held_keys",
@@ -33,7 +32,8 @@
         "over_budget",
         "refused",
         "failed"
-      ]
+      ],
+      "description": "over_budget only when the user set max_fal_usd and the plan's price is over it; with no ceiling set nothing is refused for price"
     },
     "song": {
       "type": "object",
@@ -312,51 +312,8 @@
         "number",
         "null"
       ],
-      "minimum": 0
-    },
-    "cheaper_plan": {
-      "type": [
-        "object",
-        "null"
-      ],
-      "additionalProperties": false,
-      "required": [
-        "kind",
-        "cut_seconds",
-        "cut_start_s",
-        "cut_end_s",
-        "shots",
-        "usd"
-      ],
-      "properties": {
-        "kind": {
-          "enum": [
-            "fewer_shots",
-            "shorter_cut"
-          ]
-        },
-        "cut_seconds": {
-          "type": "number",
-          "minimum": 0
-        },
-        "cut_start_s": {
-          "type": "number",
-          "minimum": 0
-        },
-        "cut_end_s": {
-          "type": "number",
-          "minimum": 0
-        },
-        "shots": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "usd": {
-          "type": "number",
-          "minimum": 0
-        }
-      },
-      "description": "as beats.mjs price printed it when the plan was over max_fal_usd; else null"
+      "minimum": 0,
+      "description": "the plan's fal price from beats.mjs price, before anything was paid; null when nothing was priced"
     },
     "fal_cost_usd": {
       "type": "object",
