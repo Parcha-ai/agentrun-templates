@@ -2,7 +2,7 @@
 type: llm
 ---
 Read the run's answer, its last fenced `json` block, and the run's calls. The plan: 10 shots, ad sizes on, the hero
-clip on, cap 4. Pass only if all hold:
+clip on, no ceiling on fal. Pass only if all hold:
 
 1. **Status.** `status` is `complete` when every job completed and was saved, else `partial` with each failed job in
    `failed` in fal's own words.

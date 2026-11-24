@@ -69,7 +69,8 @@ before reading any, then read them together. This is faster than one after anoth
 
 1. **Price the whole plan first.** One `get_pricing` call with every endpoint of the plan (`endpoint_ids: [...]`).
    For each step, units × `unit_price` (images × the per-image price, seconds × the per-second price). Add the steps.
-   If the total is over the run's budget, make no paid call at all.
+   Say the total before anything is paid. Over a ceiling the user set (`max_fal_usd`), no paid call at all; with none
+   set, nothing is refused for price.
 2. **Queue each job with its own `submit_job` call**, all of them before any `wait_for_jobs`. Each `submit_job`
    answers at once with `request_id`, `status_url` and `response_url`: keep them per job. Only one call per job: a
    job that answered is queued, even if it isn't finished.

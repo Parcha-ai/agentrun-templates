@@ -3,7 +3,7 @@ type: llm
 ---
 On the fake fal server, `upload_file` answered the case's photo link `https://driftwood.example/img/cold-brew.png`
 with an error: "The supplied source URL returned HTTP 403 before any upload to fal storage." The plan (10 shots and
-12 ad sizes, 3.30) is under the cap of 4. Read the run's calls in order and its answer's last fenced `json` block. Pass only if all
+12 ad sizes, 3.30) has no ceiling on fal. Read the run's calls in order and its answer's last fenced `json` block. Pass only if all
 hold:
 
 1. **Stopped at the upload.** The run's one `upload_file` call has `url` `https://driftwood.example/img/cold-brew.png`
