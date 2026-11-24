@@ -83,9 +83,11 @@ before reading any, then read them together. This is faster than one after anoth
    output, made from other inputs. That job is failed, named by its key. When later
    jobs depend on a choice the run made (which shots to remake), write that choice into the same file before those
    jobs, and a resumed run keeps it instead of choosing again.
-4. **Read them in one `wait_for_jobs` call**: `{"jobs": [...]}` with one item per job, `index` the job's place in
-   your plan (0, 1, 2 ...), and each job's `endpoint_id`, `request_id`, `status_url` and `response_url` exactly as its
-   `submit_job` answered. Match each answer to its job by `request_id`.
+4. **Read them in one `wait_for_jobs` call**: `{"jobs": [...]}` with one item for every job you queued, `index` the
+   job's place in your plan (0, 1, 2 ...), and each job's `endpoint_id`, `request_id`, `status_url` and
+   `response_url` copied exactly from its own `submit_job` answer. Never type a handle from memory or work one out
+   from the pattern of the others: fal answers a list with one wrong handle with `lookup_error` and reads none of it.
+   Match each answer to its job by `request_id`.
 5. **Only the jobs still pending get read again**: after the `poll_after_seconds` the answer gives, call
    `wait_for_jobs` with a list of just those jobs, each with its original `index` and handles. Never re-read a job that
    already has an outcome, and never submit a pending job again.

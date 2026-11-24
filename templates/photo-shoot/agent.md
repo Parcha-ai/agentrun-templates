@@ -97,7 +97,8 @@ it goes in `reference.fal_url`. Every shot is made from it, so fal reads the own
 If `upload_file` answers an error, or no `file_url` that starts with `https://`: stop. Make no paid call, upload
 nothing else, and never send `product_image_url` itself in a job instead, or upload it again. Answer `status:
 "failed"` with fal's words in `error` and in `failed` (job `upload`), the `upload` step `failed` and every other step
-`not_run`, all at cost 0, `fal_cost_usd` 0, `key_stem` null and `reference.fal_url` null, and say plainly in
+`not_run`, all at cost 0, `fal_cost_usd` 0, `key_stem` null and `reference.fal_url` null, `shots`, `picks` and `ads`
+empty and `clip` null (no shot was written or sent, so none is listed, not even as `not_run`), and say plainly in
 `report_markdown` that fal could not read the photo at that link, so the owner should give a direct public link to the
 image file itself (one that opens the image alone, not a web page or a share page) and run it again.
 
@@ -194,7 +195,10 @@ and `input` `{"prompt": "A slow push-in on the product, soft light drifting acro
 and its colors stay exactly as they are.", "image_url": "<pick 1's fal URL>", "duration": "5", "negative_prompt":
 "blur, distort, low quality, warped label, morphing"}`. The clip takes the shot's 3:2 shape.
 
-Send all of these (the ad sizes, then the clip) before reading any, then read them in one `wait_for_jobs`: the ad
+Send all of these (the ad sizes, then the clip) before reading any, then read them in one `wait_for_jobs` that lists
+every one of them: one item per job, its `endpoint_id`, `request_id`, `status_url` and `response_url` copied
+character for character from that job's own `submit_job` answer, never typed from memory or worked out from another
+job's handles (fal refuses a list with one wrong handle and answers none of it). The ad
 sizes at indexes 0 to 11 in the order sent (pick 1's four sizes at 0 to 3, pick 2's at 4 to 7, pick 3's at 8 to 11;
 with fewer picks, the same order without gaps), the clip at the next index (0 when there are no ad sizes). Re-read
 only the pending ones, as in step 6. A job fal refuses or fails is not sent again.
@@ -208,7 +212,7 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
 - `status`: `complete` when every planned job completed and every save worked; `partial` when a job was refused or
   failed, a shot never finished, or a save failed, and the rest is saved; `over_budget` and `failed` as above.
 - `shots`, `ads` and `clip`: each job with its prompt, key, status, fal URL and saved path; a job never sent is
-  `not_run`. `failed` names each failed job (`shot-4`, `ad-2-9x16`, `clip`) with fal's words.
+  `not_run`. A run that stopped before writing the shot list (`over_budget`, or the upload failed) lists none. `failed` names each failed job (`shot-4`, `ad-2-9x16`, `clip`) with fal's words.
 - `steps`: `upload` (endpoint `upload_file`, 1 file planned, unit `file`, rate 0, `done` or `failed`, always cost 0),
   then `shots`, `ad_sizes`, `hero_clip`, each with its endpoint, units planned and made, unit, rate and
   `fal_cost_usd` (units made × rate; a refused or failed job counts 0; a step not asked for is `skipped` at 0).
