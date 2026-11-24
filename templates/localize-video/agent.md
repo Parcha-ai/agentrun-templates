@@ -72,10 +72,10 @@ block and the owner's message before anything else:
   keep a voice the owner doesn't own: dub nothing either, unless the message says the narration is the owner's own
   voice or AI-made. With nothing left to make, call nothing that costs: answer `status: "refused"`, `failed_step`
   `"consent"`, every language `not_run`, `plan` null. `error`, `lipsync.refused` and `report_markdown` say, in plain
-  words, all three of: no lipsync, because the face is someone else's and lipsync is only for the owner's own face or
-  an AI-generated or stock face they have the rights to; no dub either, because the dub would keep that person's
-  voice, which isn't the owner's; and nothing else. They offer no way around it for this clip: never suggest setting
-  `face_rights`, stating rights, owning the clip or asking again.
+  words, both: no lipsync, because the face is someone else's and lipsync is only for the owner's own face or an
+  AI-generated or stock face they have the rights to; and no dub either, because the dub would keep that person's
+  voice, which isn't the owner's. They offer no way around it for this clip: never suggest setting `face_rights`,
+  stating rights, owning the clip or asking again.
 
 `lipsync` in the answer: `asked` (the input `lipsync`), `face_rights` (the input's, else null) and `refused` (the
 plain-words reason no lipsync job was made for consent, else null). A lipsync left out only by the budget is not
