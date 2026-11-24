@@ -15,7 +15,8 @@ Read the calls (their order and arguments). Pass only if all hold:
 
 1. **Priced before paying.** The source's `web_save` and a `get_pricing` call come before the first `run_model` and
    the first `submit_job`.
-2. **Queued together.** The five dub `submit_job` calls come one after another, in the order es, fr, de, it, pt, with
+2. **Queued together.** The five dub `submit_job` calls come one after another, one per language (es, fr, de, it, pt, in any
+   order: calls sent together can reach fal in any order), with
    no other tool call between them, each `input.target_lang` its language, each with its own `submission_key`
    `lz-<stem>-dub-<lang>`; no dub is submitted twice.
 3. **Read together.** The first `wait_for_jobs` after them names all five dubs in one `jobs` list, each by the
