@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "required": ["status", "release", "product_name", "tone", "aspect", "voice", "story", "script", "word_count", "voiceover_seconds", "captions_timing", "film", "checks", "plan_usd", "fal_cost_usd", "files", "failed_step", "error", "ignored_instructions", "report_markdown"],
   "properties": {
-    "status": { "enum": ["completed", "partial", "not_saved", "over_budget", "already_made", "skipped", "failed"], "description": "completed: the film, the share card and every piece are saved; partial: a step failed and what exists is saved; not_saved: the film was made and a save failed; over_budget: the plan was over max_fal_usd and nothing was paid; already_made: fal already held this release's keys on a trigger's run; skipped: an edited release, a draft, or a pre-release the triggers leave out; failed: the release could not be read, or nothing could be made" },
+    "status": { "enum": ["completed", "partial", "not_saved", "over_budget", "already_made", "skipped", "failed"], "description": "completed: the film, the share card and every piece are saved; partial: a step failed and what exists is saved; not_saved: the film was made and a save failed; over_budget: the plan was over the ceiling the user set in max_fal_usd and nothing was paid; already_made: fal already held this release's keys on a trigger's run; skipped: an edited release, a draft, or a pre-release the triggers leave out; failed: the release could not be read, or nothing could be made" },
     "release": {
       "type": "object",
       "additionalProperties": false,
@@ -78,7 +78,7 @@
         "renders": { "type": "integer", "minimum": 0, "maximum": 3 }
       }
     },
-    "plan_usd": { "type": ["number", "null"], "minimum": 0, "description": "the plan priced before any paid call: voiceover, the re-voice reserve and the music" },
+    "plan_usd": { "type": ["number", "null"], "minimum": 0, "description": "the plan priced before any paid call (voiceover, the re-voice reserve and the music): what the run costs on fal, an estimate, never a gate unless the user set max_fal_usd" },
     "fal_cost_usd": {
       "type": "object",
       "additionalProperties": false,

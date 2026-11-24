@@ -37,7 +37,7 @@ other changes you left out.
 | reveal | 4.5 – 7.5 | the product's name and the version land, big |
 | proof-a | 7.5 – 13 | the change in its own text: the command, the config line, the field, the before → after |
 | proof-b | 13 – 18.5 | the change seen: the release's whole screenshot, from its first line, then the line the voice names boxed and punched in on, or with no screenshot the type wall: the release's own strings as big as the frame takes them |
-| payoff | 18.5 – 24.5 | the one line to remember, in the biggest type of the film, one accent word |
+| payoff | 18.5 – 24.5 | the one line to remember, in the biggest type of the film, one accent word: what the headline gives the user, in the notes' terms (below) |
 | endcard | 24.5 – 30 | the mark carried in, the name, the call to action (the upgrade or install line from the notes), the version; holds 2 s, at most 6 s in all |
 
 The beats follow the voice: once the timestamps exist, move each scene's start to the word that names it
@@ -61,6 +61,12 @@ a field name, a number, and a number with the case it was measured on (the notes
 or shown with it; never widened to every case). No "Introducing", "Meet", "unlock", "seamless", "supercharge", "game-changer", "effortless",
 "in seconds". Spell out in the voice what is read aloud ("beta fifty one"), but write it as printed on screen
 (`v0.1.0-beta.51`).
+
+**The payoff claims nothing new.** It is the line a tagline would go in, and a tagline is where a film invents: say
+the headline's result as the notes put it (their number with its case, or what the user can do with the change), or
+a plain line that claims nothing ("Same database, far less waiting"). Never a rate, an extent or a quality the notes
+don't state: "at full speed", "every core pulls its weight", "any size", "instantly" and the like are new claims, in
+the voice or on screen.
 
 **Long notes**: read the whole body once to choose; the film's text is at most about 45 words on screen in all.
 
