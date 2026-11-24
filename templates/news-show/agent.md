@@ -278,8 +278,9 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
 - `film`: `path`, `seconds`, `width`, `height` as ffprobe read them (null when nothing was rendered); `checks`.
 - `fal_cost_usd`: one step per paid call made (`anchor-image`, `voice-<segment>`, `anchor-<segment>`) with its units
   (images, thousands of characters, or seconds = that segment's V rounded up to a whole second) and the rate from
-  `get_pricing`, `usd` to 3 decimals, a failed or refused job at 0; `total` their sum. Estimates from fal's rates, not fal's
-  invoice.
+  `get_pricing`, `usd` to 3 decimals, a failed or refused job at 0; `total` the sum of the `usd` values as listed
+  (round each step, then add them: never round the sum of unrounded amounts), so the listed steps add up to it to the
+  last decimal. Estimates from fal's rates, not fal's invoice.
 - `files`: every file of the run: `media/show.mp4`, `media/show.vtt`, `media/share-card.png`, the still or anchor
   image, each voice and its timestamps, each anchor clip, `film/STORYBOARD.md` and `film/` (the composition folder).
 - `report_markdown`: the show first as `![<show name>, <date>](media/show.mp4)` (when rendered), the share card under
