@@ -125,6 +125,9 @@ none does, saying in `notes` the least `max_fal_usd` that runs 30 s standard.
 
 ## 5. Portrait and voiceover, in parallel
 
+Make each paid call and each save as its own direct tool call, never from inside a code script: a script that fails
+partway leaves calls behind that you can't see, and repeating them saves or pays twice.
+
 Every paid call gets its own `submission_key`, sent beside `endpoint_id` and `input`, never inside `input`, and kept
 for that job's retries. The keys share one stem per run:
 - Before the first paid call, `read` `media/run-keys.json`. If it holds `{"stem": "<8 lowercase letters and digits>"}`
@@ -217,7 +220,9 @@ Write `media/explainer.vtt` with `write` once the video job has ended (or failed
 voiceover's length is unknown (below): `WEBVTT`, a blank
 line, then cues. The cue text is the script of the voiceover last made, as spoken, audio tags removed, at phrase or
 sentence breaks, one or two lines of at most 42 characters each: count each line's characters, spaces included,
-before you write it, and break a longer one at a space.
+before you write it, and break a longer one at a space. Make each cue as full as its two lines allow: a whole
+sentence when it fits, else split at a comma or a phrase break, so a 30-second script makes about six cues, not a
+dozen. Every cue is two times to read, so fewer cues are fewer chances of a wrong one.
 
 Time the cues from that voiceover's `timestamps` as below. The voice starts at the video's start, so O = 0; times
 as HH:MM:SS.mmm, never past `audio_seconds`.
