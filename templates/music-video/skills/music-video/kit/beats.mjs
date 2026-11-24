@@ -27,7 +27,9 @@
 //         under each shot, film/lyrics.json, the WebVTT file and film/compositions/lyrics.html (the captions scene).
 // place   writes each shot into film/index.html on the cut's clock (its clip, or its still with a slow push-in when
 //         there is no usable clip), the song's segment cut by FFmpeg into film/assets/song.m4a as the only audio, the
-//         captions host when lyrics are on and there are words; then reads everything back.
+//         captions host when lyrics are on and there are words; then reads everything back. The clips are joined first
+//         into one video, film/assets/shots.mp4, each cut to its shot's frames, one FFmpeg at a time: HyperFrames
+//         extracts every video of a film at once, and six clips' extractions together run a 4 GiB sandbox out of memory.
 // stem    prints the run's key stem: the one in the file when it holds one (a resumed run), else a new one from the
 //         sandbox's random bytes, written there first. A model never makes one.
 // cost    the answer's fal_cost_usd from the steps sent (a failed or refused one at 0; one still pending when the run
@@ -57,6 +59,8 @@ const RESERVE = 2; // stills priced in reserve for remakes
 const SIZES = { "16:9": [1920, 1080], "9:16": [1080, 1920] };
 const LINE_GAP = 0.6; // a pause this long starts a new lyric line
 const LINE_WORDS = 7;
+const FPS = 30; // the film's frame rate: HyperFrames renders at 30 by default
+const JOIN_THREADS = "2"; // the sandbox's CPUs; FFmpeg's own choice follows the host's CPU count, and its memory with it
 
 function fail(code, message) {
   console.error(message);
@@ -94,6 +98,14 @@ function probeSeconds(path) {
   const r = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path], { encoding: "utf8" });
   const v = Number((r.stdout || "").trim());
   return r.status === 0 && Number.isFinite(v) && v > 0 ? v : undefined;
+}
+// A video's first stream: its frame count (from the container) and size; undefined when ffprobe can't read it.
+function videoOf(path) {
+  const r = spawnSync("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=nb_frames,width,height", "-of", "json", path], { encoding: "utf8" });
+  if (r.status !== 0) return undefined;
+  const s = JSON.parse(r.stdout || "{}").streams?.[0];
+  const frames = Number(s?.nb_frames);
+  return s && Number.isInteger(frames) ? { frames, width: s.width, height: s.height } : undefined;
 }
 function decode(path) {
   const r = spawnSync("ffmpeg", ["-v", "error", "-nostdin", "-i", path, "-vn", "-ac", "1", "-ar", String(SR), "-f", "f32le", "-"], { maxBuffer: 1 << 30 });
@@ -709,11 +721,48 @@ function place() {
     }
     return { n: s.n, start, dur, use, why: use === "still" ? why : null, rate };
   });
-  const els = shots.map((s) =>
-    s.use === "clip"
-      ? `      <video id="shot-${s.n}" class="clip mu-shot" src="assets/clip-${s.n}.mp4" data-start="${s.start}" data-duration="${s.dur}" data-track-index="1"${s.rate ? ` data-playback-rate="${s.rate}"` : ""} muted playsinline></video>`
-      : `      <div id="shot-${s.n}" class="clip mu-hold" data-start="${s.start}" data-duration="${s.dur}" data-track-index="1"><img id="shot-${s.n}-img" src="assets/still-${s.n}.png" alt="" /></div>`,
-  );
+  // The clips joined into one video on the film's frame grid, so HyperFrames extracts one file, not one per shot (it
+  // runs every video's extraction at once). Each shot is its own frames [round(start x FPS), round(end x FPS)), so the
+  // parts tile the cut exactly and no cut drifts off its bar line. A clip part is the clip from its start (slowed when
+  // the clip runs short), scaled to cover the canvas; a still's part is black, under the still's own element. One
+  // FFmpeg at a time (spawnSync), each held to JOIN_THREADS threads, so the step's peak memory is one process's.
+  const frameAt = (t) => Math.round(t * FPS);
+  const total = frameAt(C);
+  const parts = join(film, "join");
+  rmSync(parts, { recursive: true, force: true });
+  mkdirSync(parts, { recursive: true });
+  const enc = ["-c:v", "libx264", "-preset", "ultrafast", "-crf", "16", "-pix_fmt", "yuv420p", "-r", String(FPS), "-g", String(FPS), "-threads", JOIN_THREADS];
+  const ffError = (r) => String(r.stderr || r.error || "").trim().split("\n").slice(-3).join(" ");
+  for (const s of shots) {
+    s.frames = [frameAt(s.start), frameAt(s.start + s.dur)];
+    const n = s.frames[1] - s.frames[0];
+    const input = s.use === "clip"
+      ? ["-threads", JOIN_THREADS, "-i", join(film, "assets", `clip-${s.n}.mp4`)]
+      : ["-f", "lavfi", "-i", `color=c=black:s=${W}x${H}:r=${FPS}`];
+    const vf = s.use === "clip"
+      ? [...(s.rate ? [`setpts=PTS/${s.rate}`] : []), `fps=${FPS}`, `scale=${W}:${H}:force_original_aspect_ratio=increase`, `crop=${W}:${H}`, "setsar=1", "tpad=stop_mode=clone:stop_duration=1"].join(",")
+      : "setsar=1";
+    const out = join(parts, `shot-${s.n}.mp4`);
+    const r = spawnSync("ffmpeg", ["-v", "error", "-nostdin", "-y", ...input, "-an", "-vf", vf, "-frames:v", String(n), ...enc, out], { encoding: "utf8" });
+    if (r.status !== 0) fail(3, `shot ${s.n}: ffmpeg could not cut its part of the joined video: ${ffError(r)}`);
+    const got = videoOf(out);
+    if (!got || got.frames !== n) fail(2, `shot ${s.n}: its part of the joined video holds ${got ? got.frames : "no"} frames, not ${n}: check assets/clip-${s.n}.mp4 and run place again`);
+  }
+  writeFileSync(join(parts, "list.txt"), shots.map((s) => `file 'shot-${s.n}.mp4'`).join("\n") + "\n");
+  const joined = join(film, "assets", "shots.mp4");
+  const cat = spawnSync("ffmpeg", ["-v", "error", "-nostdin", "-y", "-f", "concat", "-safe", "0", "-i", join(parts, "list.txt"), "-c", "copy", "-movflags", "+faststart", joined], { encoding: "utf8" });
+  if (cat.status !== 0) fail(3, `ffmpeg could not join the shots: ${ffError(cat)}`);
+  rmSync(parts, { recursive: true, force: true });
+  // On screen: the joined video under everything, then one element per shot on the plan's clock: a clip's shot is a
+  // clear mark naming its clip (the review's shots and cuts), a still's shot its image with the push-in.
+  const els = [
+    `      <video id="shots" class="clip mu-shot" src="assets/shots.mp4" data-start="0" data-duration="${C}" data-track-index="0" muted playsinline></video>`,
+    ...shots.map((s) =>
+      s.use === "clip"
+        ? `      <div id="shot-${s.n}" class="clip mu-cut" data-start="${s.start}" data-duration="${s.dur}" data-track-index="1" data-clip="assets/clip-${s.n}.mp4"></div>`
+        : `      <div id="shot-${s.n}" class="clip mu-hold" data-start="${s.start}" data-duration="${s.dur}" data-track-index="1"><img id="shot-${s.n}-img" src="assets/still-${s.n}.png" alt="" /></div>`,
+    ),
+  ];
   const lyricsFile = join(film, "compositions", "lyrics.html");
   const withLyrics = data.lyrics_on && existsSync(lyricsFile);
   // The song's segment, cut by FFmpeg from the saved song: the film's only audio. A cut that ends before the song does
@@ -756,12 +805,18 @@ function place() {
     if (ms(said.start) !== ms(s.start) || ms(said.dur) !== ms(s.dur)) fail(2, `shot ${s.n}: index.html places it at ${said.start} s for ${said.dur} s but the plan has ${s.start} s for ${s.dur} s: copy the kit's index.html again and run place again; never edit a time by hand`);
     if (ms(said.start) !== ms(clock)) fail(2, `shot ${s.n}: it starts at ${said.start} s but the shot before ends at ${r3(clock)} s: copy the kit's index.html again and run place again`);
     clock = said.start + said.dur;
-    const src = s.use === "clip" ? attr(tag, "src") : back.match(new RegExp(`<img\\b[^>]*\\bid="shot-${s.n}-img"[^>]*>`))?.[0]?.match(/\bsrc="([^"]*)"/)?.[1];
+    const src = s.use === "clip" ? attr(tag, "data-clip") : back.match(new RegExp(`<img\\b[^>]*\\bid="shot-${s.n}-img"[^>]*>`))?.[0]?.match(/\bsrc="([^"]*)"/)?.[1];
     if (!src || !existsSync(join(film, src))) fail(2, `shot ${s.n}: its picture ${src ?? "(none)"} is not in ${film}`);
   }
   if (ms(clock) !== ms(C)) fail(2, `the shots end at ${r3(clock)} s but the cut is ${C} s: run plan and place again`);
   const extra = [...back.matchAll(/\bid="shot-(\d+)"/g)].map((m) => Number(m[1])).filter((n) => !shots.some((s) => s.n === n));
   if (extra.length) fail(2, `shot ${extra[0]}: index.html holds a shot the plan doesn't: copy the kit's index.html again and run place again`);
+  // The joined video: once, the whole cut, every frame of it on the canvas, and the film's only <video>.
+  const shotsTag = tagOf("shots");
+  if (!shotsTag || shotsTag === "TWICE" || attr(shotsTag, "src") !== "assets/shots.mp4" || ms(Number(attr(shotsTag, "data-start"))) !== 0 || ms(Number(attr(shotsTag, "data-duration"))) !== ms(C)) fail(2, `the joined video's <video> is missing or not 0 to ${C} s: copy the kit's index.html again and run place again`);
+  if ((back.match(/<video\b/g) || []).length !== 1) fail(2, "index.html holds a <video> besides the joined shots: copy the kit's index.html again and run place again");
+  const jv = videoOf(joined);
+  if (!jv || jv.frames !== total || jv.width !== W || jv.height !== H) fail(2, `assets/shots.mp4 holds ${jv ? `${jv.frames} frames at ${jv.width}x${jv.height}` : "nothing readable"}, not the cut's ${total} frames at ${W}x${H}: run place again`);
   const root = back.match(/<div id="root" data-composition-id="main"[^>]*>/)?.[0];
   if (!root || ms(Number(attr(root, "data-duration"))) !== ms(C)) fail(2, `the root lasts ${root ? attr(root, "data-duration") : "(no root)"} s but the cut is ${C} s: copy the kit's index.html again and run place again`);
   const song = tagOf("song");
@@ -775,7 +830,7 @@ function place() {
   const stills = shots.filter((s) => s.use === "still").map((s) => ({ n: s.n, why: s.why }));
   writeFileSync(join(film, "placed.json"), JSON.stringify({ film_seconds: C, width: W, height: H, lyrics: withLyrics, shots }, null, 1) + "\n");
   for (const s of stills) console.log(`STILL: shot ${s.n} shows its still with a slow push-in (${s.why})`);
-  console.log(JSON.stringify({ film_seconds: C, width: W, height: H, lyrics: withLyrics, clips: shots.filter((s) => s.use === "clip").length, stills, slowed: shots.filter((s) => s.rate).map((s) => ({ n: s.n, playback_rate: s.rate })) }));
+  console.log(JSON.stringify({ film_seconds: C, width: W, height: H, lyrics: withLyrics, joined_frames: total, clips: shots.filter((s) => s.use === "clip").length, stills, slowed: shots.filter((s) => s.rate).map((s) => ({ n: s.n, playback_rate: s.rate })) }));
 }
 
 // ---------- the key stem ----------

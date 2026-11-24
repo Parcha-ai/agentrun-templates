@@ -76,10 +76,14 @@ cp media/clip-<n>.mp4 film/assets/clip-<n>.mp4        # only the clips that comp
 node film/beats.mjs place --film film
 ```
 
-`place` writes, between the markers in `film/index.html`:
+Give `place` its own `bash` call with a `timeout` of 600: it encodes every clip once (about 5 s a clip on 2 CPUs).
+It writes, between the markers in `film/index.html`:
 
-- each shot on lane 1 at its plan time: its clip (`<video muted playsinline>`, slowed with `data-playback-rate` only
-  when the clip runs short of the shot, never below 0.8 of its speed) or, when there is no usable clip (none saved,
+- **the clips joined into one video**, `film/assets/shots.mp4`, on lane 0 under everything: each shot's clip cut to the
+  shot's own frames on the film's 30 fps grid, scaled to cover the canvas, slowed only when the clip runs short of the
+  shot (never below 0.8 of its speed), one FFmpeg at a time. HyperFrames extracts every video in a film at once, and
+  six clips' extractions together run the sandbox out of memory; one joined video is one extraction;
+- each shot on lane 1 at its plan time: a clear mark naming its clip or, when there is no usable clip (none saved,
   unreadable, or too short), **its still with a slow push-in**: the image scaled from 1.0 to 1.08 across the whole shot
   on the root timeline, the timed element itself never transformed. It prints a `STILL` line for each such shot;
 - the lyric captions host on lane 2 (only when there are captions);
@@ -90,8 +94,9 @@ node film/beats.mjs place --film film
 
 Then it **reads back** what it wrote: each shot is in `index.html` once, at the plan's start and length, the shots
 tile the cut from 0 to its end with no gap or overlap, each shot's picture file is there, no shot the plan doesn't
-have, the root, the song and the captions host each last the cut, and the song's segment runs the cut's length. Any
-miss exits 2 naming the shot (or the root, the song, the captions). Then copy the kit's `index.html` into `film/`
+have, the root, the song and the captions host each last the cut, the song's segment runs the cut's length, and the
+joined video is the film's only `<video>`, holding every frame of the cut at the canvas's size. Any miss exits 2 naming
+the shot (or the root, the song, the captions, the joined video). Then copy the kit's `index.html` into `film/`
 again (`cp .agents/skills/music-video/kit/index.html film/`), and run `place` again; with captions, run `lyrics` again
 first. Never edit a time, a length or a shot in `index.html` by hand. Still exit 2 after that: the agent's "place still
 exits 2".
@@ -131,11 +136,11 @@ ffprobe -v error -show_entries format=duration:stream=width,height -of json medi
 
 Run it as written, in one `bash` call in the foreground with a `timeout` of 1200, and wait for it. The sandbox ends
 every process a call started when the call returns, so a render started in the background (`nohup`, `&`, `setsid`) is
-killed part way. `--video-frame-format jpg` keeps the clips' frame extraction fast enough on 2 CPUs; the default PNG
-frames are slow enough there to fail extraction. A 30 s film of 6 clips takes about 6 minutes (capture runs near 3
-frames a second, software GL; the log's "BeginFrame did not run" line is expected), a 60 s film of 12 clips about 12.
-The ffprobe must show the canvas and the cut's length, within a frame. A failed render: read the log's error, fix,
-render again (at most 3 renders, counted in `checks.renders`).
+killed part way. `--video-frame-format jpg` extracts the joined video's frames as JPEG, HyperFrames' choice for camera
+footage (PNG is for screen captures), at a fraction of PNG's size on the sandbox's disk. A 30 s film of 6 clips takes
+about 6 minutes (capture runs near 3 frames a second, software GL; the log's "BeginFrame did not run" line is expected),
+a 60 s film of 12 clips about 12. The ffprobe must show the canvas and the cut's length, within a frame. A failed
+render: read the log's error, fix, render again (at most 3 renders, counted in `checks.renders`).
 
 ## 7. The fallback, once more
 

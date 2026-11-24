@@ -3,8 +3,10 @@
   Music video kit: a HyperFrames project whose every time comes from the song. `node beats.mjs place` writes the shots
   between the MU-SHOTS markers (each shot's clip, or its still with a slow push-in when its clip failed), the captions
   host and the song between the MU-MEDIA markers, the root timeline between the MU-TIMELINE markers, and the root's
-  length and canvas; then it reads them back. Change them with it, never by hand. Shots sit back to back on lane 1,
-  the lyric captions on lane 2, the song (its segment, cut by FFmpeg) on lane 3 as the film's only audio.
+  length and canvas; then it reads them back. Change them with it, never by hand. The clips play from one video,
+  assets/shots.mp4 (place joins them on the film's frames), on lane 0; the shots sit back to back on lane 1 over it
+  (a clip's shot a clear mark, a still's shot its image), the lyric captions on lane 2, the song (its segment, cut by
+  FFmpeg) on lane 3 as the film's only audio.
 -->
 <html lang="en">
   <head>
@@ -21,9 +23,11 @@
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 100%; height: 100%; overflow: hidden; background: var(--ground); }
       #root { position: relative; width: 100%; height: 100%; background: var(--ground); }
-      /* Every shot fills the frame. A clip is shown as Kling made it (the still's framing); a still's image is the
-         child the push-in scales, never the timed element itself. */
+      /* Every shot fills the frame. The joined clips are shown as Kling made them (the still's framing), scaled to
+         cover; a clip's shot is a clear mark over them; a still's image is the child the push-in scales, never the
+         timed element itself. */
       .mu-shot { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+      .mu-cut { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
       .mu-hold { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; }
       .mu-hold img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 50%; }
     </style>

@@ -11,8 +11,9 @@
 # HyperFrames for a music video
 
 HyperFrames renders HTML to video by seeking a paused GSAP timeline frame by frame, so every render is identical.
-`film/index.html` is the root composition: `beats.mjs place` writes its shots (lane 1), the lyric captions scene from
-`compositions/lyrics.html` (lane 2) and the song (lane 3). Media and images live in `assets/`.
+`film/index.html` is the root composition: `beats.mjs place` writes the clips joined into one video (lane 0), its
+shots (lane 1), the lyric captions scene from `compositions/lyrics.html` (lane 2) and the song (lane 3). Media and
+images live in `assets/`. Keep the film to that one `<video>`: HyperFrames extracts every video's frames at once.
 
 ## The contract
 

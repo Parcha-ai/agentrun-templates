@@ -219,8 +219,9 @@ there is no clip), and the run is `partial`, with `failed_step` `"clip-<n>"` (th
 Follow the skill's steps 4 to 7: the stills and the saved clips into `film/assets/`, `beats.mjs place`, `hyperframes
 lint`, `check --json`, the kit's review, fixes, and the render to `media/film.mp4` (the skill's command, with
 `--video-frame-format jpg`, in one foreground `bash` call with a `timeout` of 1200: never in the background, since the
-sandbox ends a call's processes when it returns). `place` cuts the song's segment with FFmpeg as the film's only audio,
-puts each shot on the cut's clock, and reads back what it wrote. Its `STILL` lines name every shot shown as its still:
+sandbox ends a call's processes when it returns). `place` (its own call, `timeout` 600) joins the clips into one
+video, so HyperFrames extracts one file, cuts the song's segment with FFmpeg as the film's only audio, puts each shot
+on the cut's clock, and reads back what it wrote. Its `STILL` lines name every shot shown as its still:
 each one is in the answer (`used: "still"`) and the report.
 
 ## When a step fails
