@@ -1,0 +1,18 @@
+# Applied with these parameters (the generated anchor). The runner serves fixtures/fal-mcp.json as the saved URL
+# server fal: the voices and the still complete; the grouped read of the five Fabric jobs FAILS lead-b (index 2) with
+# a 422 (no face found, not charged) and completes the rest. The show is rendered for real with lead-b as a desk card.
+parameters:
+  topic: city transit
+  urls: ["https://transitwire.example/feed.xml"]
+  daily: false
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T07:00:00Z

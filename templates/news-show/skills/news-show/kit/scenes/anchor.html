@@ -1,0 +1,58 @@
+<!-- Anchor segment: the anchor speaks to camera. build-show.mjs writes one scene from this file for each anchor segment
+     (cold-open, lead-a, lead-b, lead-c, closing), filling every {{...}} token.
+     With Fabric's clip: the clip full frame, or, when the anchor image is not 16:9, a panel at the right beside the
+     desk; a slow push for the whole hold; the strap (tag and chyron) in the lower third, under the chin, never over the
+     mouth. Without one (its job failed, or the plan leaves it out): the desk card, the show's name and the chyron in
+     type, while the voice plays. The cold open's strap is on screen from frame 0, unanimated: its tag is the AI label.
+     Restyle freely; keep the {{P}}- prefix on ids, the tokens, and the strap under the face. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--night); container-type: size; overflow: hidden; }
+    #{{P}}-cam { position: absolute; inset: 0; transform-origin: 50% 34%; }
+    #{{P}}-video { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; }
+    #root.panel #{{P}}-video { left: auto; right: 0; width: {{PANEL_W}}%; }
+    #{{P}}-desk { position: absolute; left: 7cqw; top: 13cqh; width: 82cqw; display: none; }
+    #root.desk #{{P}}-desk, #root.panel #{{P}}-desk { display: block; }
+    #root.panel #{{P}}-desk { width: calc(100cqw - {{PANEL_W}}cqw - 12cqw); }
+    #{{P}}-show { font-family: var(--font-display); font-size: 17cqh; line-height: 0.92; color: var(--paper); text-transform: uppercase; }
+    #{{P}}-rule { height: 1.1cqh; width: 18cqw; background: var(--accent); margin: 3.4cqh 0 3cqh; transform-origin: left center; }
+    #{{P}}-desk-line { font-family: var(--font-text); font-weight: 900; font-size: 5cqh; line-height: 1.1; letter-spacing: -0.02em; color: var(--paper); }
+    #{{P}}-strap { position: absolute; left: 6cqw; bottom: 19cqh; }
+    #{{P}}-strap-in { display: inline-flex; flex-direction: column; align-items: flex-start; }
+    #{{P}}-tag { background: var(--signal); color: var(--signal-ink); font-family: var(--font-text); font-weight: 900; font-size: 2.7cqh;
+      letter-spacing: 0.08em; padding: 0.34em 0.7em; text-transform: uppercase; }
+    #{{P}}-chyron { background: var(--paper); color: var(--ink); font-family: var(--font-text); font-weight: 900; font-size: 4.6cqh;
+      letter-spacing: -0.01em; padding: 0.26em 0.6em; white-space: nowrap; }
+  </style>
+  <div id="root" class="{{MODE}}" data-composition-id="{{ID}}" data-width="1920" data-height="1080">
+    <div id="{{P}}-cam">
+      {{VIDEO}}
+      <div id="{{P}}-desk">
+        <div id="{{P}}-show">{{SHOW}}</div>
+        <div id="{{P}}-rule"></div>
+        <div id="{{P}}-desk-line">{{DESK_LINE}}</div>
+      </div>
+    </div>
+    <div id="{{P}}-strap" class="clip" data-start="{{STRAP_IN}}" data-duration="{{STRAP_DUR}}">
+      <div id="{{P}}-strap-in"><div id="{{P}}-tag">{{TAG}}</div><div id="{{P}}-chyron">{{CHYRON}}</div></div>
+    </div>
+  </div>
+  <script>
+    const D = {{D}}, STRAP_IN = {{STRAP_IN}}, STRAP_DUR = {{STRAP_DUR}};
+    const mode = document.getElementById("root").className;
+    const tl = gsap.timeline({ paused: true });
+    // The camera: one slow push for the whole hold, so the frame is never still.
+    tl.fromTo("#{{P}}-cam", { scale: 1 }, { scale: 1.035, duration: D, ease: "none" }, 0);
+    // The strap wipes in from the left (the cold open's is already there at frame 0) and wipes out before its end,
+    // unless it holds to the scene's end.
+    if (STRAP_IN > 0) tl.fromTo("#{{P}}-strap-in", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, STRAP_IN);
+    if (STRAP_IN + STRAP_DUR < D - 0.05) tl.fromTo("#{{P}}-strap-in", { clipPath: "inset(0 0% 0 0)" }, { clipPath: "inset(0 0% 0 100%)", duration: 0.2, ease: "power3.in" }, STRAP_IN + STRAP_DUR - 0.24);
+    // The desk card builds once: the name blurs in, the rule draws, the line lands.
+    if (mode !== "video") {
+      tl.fromTo("#{{P}}-show", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out" }, 0.05);
+      tl.fromTo("#{{P}}-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.35, ease: "expo.out" }, 0.25);
+      tl.fromTo("#{{P}}-desk-line", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.25, ease: "power4.out" }, 0.45);
+    }
+    window.__timelines["{{ID}}"] = tl;
+  </script>
+</template>
