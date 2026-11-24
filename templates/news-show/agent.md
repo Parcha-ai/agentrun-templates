@@ -205,6 +205,11 @@ item with its own handles copied character for character as fal answered them. W
 still pending as failed with its request id. Never submit a job again: a second submit is a second bill. After a lost
 reply, `get_submission` with its key; `not_found` never authorizes a new paid call.
 
+**Every fal call and every save is its own direct tool call**, never one made from inside a code script (codemode or
+any other): a script's calls are calls too, and a script that reads the jobs again to save them reads them twice. A
+job read `completed` is never read again: save each voice, its timestamps and the still from that one answer, one
+call each.
+
 **A job `wait_for_jobs` answers `completed` with a result is done: use it.** A voice is its segment's voice and a
 still is the anchor's still. Never read a voice's timestamps to check its words against the script (another take
 is still that voice: the build anchors its captions), never judge the still or a clip by its file size, bytes,
