@@ -259,7 +259,7 @@ for (const x of timed) {
   }
   writeFileSync(join(filmDir, "compositions", `${g.name}.html`), html);
 }
-const presenter = `Presented by ${s.anchor_name}, an AI-generated anchor. Every story is from its own source, linked in the description.`;
+const presenter = `${s.anchor_name} is AI-generated. Sources are in the description.`;
 writeFileSync(
   join(filmDir, "compositions", "endcard.html"),
   fill("endcard.html", {
