@@ -270,4 +270,6 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
 - `report_markdown`: the video first as `![Launch video](media/launch.mp4)` (when the cut was saved), then what the
   plan was priced at on fal before any paid call (its `estimated_usd`, the re-voice reserve included), then the
   script, the voiceover's length and where it came from (and the re-voice, if any, with both lengths), the shot list
-  with each shot's prompt, the cost table, and a line on the mix (music not ducked) and on any failed step.
+  (one numbered line per shot with its full prompt as sent, written out in the report itself: the person reads the
+  report, never the `shots` field, so never "see shots"), the cost table, and a line on the mix (music not ducked) and
+  on any failed step.
