@@ -2,16 +2,19 @@
 name: explainer-video
 display_name: Explainer video
 version: 0.1.0
-description: Give it a doc (a public link, or pasted text) and get a 30 to 60 second talking-head explainer in the run's files, presented by a made-up presenter who never looks or sounds like a real person. It writes a spoken script from the doc alone, makes the presenter's portrait (Nano Banana) and the voiceover (ElevenLabs v3) in parallel on fal.ai, checks the voiceover's real length (one too long for the video model, or for your ceiling when you set one, is voiced again, shorter, once), animates the portrait to speak it (VEED Fabric, or OmniHuman 1.5 for premium) and writes captions from the voiceover's character timestamps, all saved under media/. A 30-second standard explainer costs about $2.50 of fal usage, a premium one about $4.90; it prices the whole plan first, a re-voice included, and says what the run will cost on fal. Set max_fal_usd for a ceiling, and a plan over it is refused before any paid call. Needs your fal key, added as the fal server in Settings → MCP servers.
+description: Give it a doc (a public link, or pasted text) and get a 30 to 60 second talking-head explainer in the run's files, presented by a made-up presenter who never looks or sounds like a real person. It writes a spoken script from the doc alone, makes the presenter's portrait (Nano Banana) and the voiceover (ElevenLabs v3) in parallel on fal.ai, checks the voiceover's real length (one too long for the video model, or for your ceiling when you set one, is voiced again, shorter, once), animates the portrait to speak it (VEED Fabric, or OmniHuman 1.5 for premium) and writes captions from the voiceover's character timestamps, all saved under media/. A 30-second standard explainer costs about $2.50 of fal, a premium one about $4.90; it prices the whole plan first, a re-voice included, and says what the run will cost on fal. Set max_fal_usd for a ceiling, and a plan over it is refused before any paid call. Needs a sandbox with Node for the captions, and your fal key, added as the fal server in Settings → MCP servers.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
 category: marketing
 tags: [video, avatar, explainer, voiceover, captions, fal, elevenlabs, media]
-harness: [pi, claude-agent, codex]
+harness: [pi, claude-agent]
 model: { tier: fast }
 effort: medium
-tools: [read, write, web_fetch, web_save]
+computer: [shell]
+# The caption kit runs in the sandbox: node only.
+needs: [node]
+tools: [read, write, bash, web_fetch, web_save]
 mcp:
   - source: url
     toolkit: fal
@@ -165,7 +168,7 @@ The voiceover's real length V, in seconds, comes from fal's result: V = `audio.f
 decimal. Example: `file_size` 457600 → 457600 × 8 ÷ 128000 = 28.6 s. The file's ID3 header adds under 0.05 s, so V
 can read that much long, never short. V comes from fal's `file_size` alone: the avatar reads the voiceover from
 fal's URL, and the saved copy's size is not part of the check. When `file_size` is null or missing, V is the end time of the last character in
-`timestamps` (step 8), fal's own timing. With neither `file_size` nor `timestamps` (null, missing or empty), V is
+`timestamps` (the last entry of its last chunk's `character_end_times_seconds`), fal's own timing. With neither `file_size` nor `timestamps` (null, missing or empty), V is
 unknown, and so is the avatar's price: V is never worked out from the script's words. Submit no avatar and no re-voice
 (nothing else that costs), save what exists (the portrait and the voiceover), and answer `status: "partial"` with
 `failed_step` "avatar", the avatar step `not_run` at 0, `audio_seconds` and `audio_seconds_source` null, and in `error`
@@ -216,53 +219,28 @@ pending after 10 minutes: stop, give its request id, and answer `partial`. Save 
 
 ## 8. Captions
 
-Write `media/explainer.vtt` with `write` once the video job has ended (or failed, or was not sent), unless the
-voiceover's length is unknown (below): `WEBVTT`, a blank
-line, then cues. The cue text is the script of the voiceover last made, as spoken, audio tags removed, at phrase or
-sentence breaks, one or two lines of at most 42 characters each: count each line's characters, spaces included,
-before you write it, and break a longer one at a space. Make each cue as full as its two lines allow: a whole
-sentence when it fits, else split at a comma or a phrase break, so a 30-second script makes about six cues, not a
-dozen. Every cue is two times to read, so fewer cues are fewer chances of a wrong one.
+Once the video job has ended (or failed, or was not sent), make `media/explainer.vtt` with the caption kit, unless the
+voiceover's length is unknown (step 6). Code cuts and times every cue from fal's character timestamps: never time,
+cut or edit a cue yourself, and never `write` the captions file.
 
-Time the cues from that voiceover's `timestamps` as below. The voice starts at the video's start, so O = 0; times
-as HH:MM:SS.mmm, never past `audio_seconds`.
+1. `write` `work/script.txt`: the exact text of the voiceover last made (the re-voice's when there was one), as sent
+   to ElevenLabs, audio tags included.
+2. When fal answered that voiceover's `timestamps` (a list of chunks), `write` that value exactly as fal answered it,
+   the whole list, to `work/voiceover-timestamps.json` (`work/voiceover-2-timestamps.json` for the re-voice). Copy
+   it; never retype, shorten or round it.
+3. Run it with `bash`:
 
-**Timing captions from eleven-v3 timestamps.** With `timestamps: true`, fal answers `timestamps` as a list of chunks,
-each `{characters, character_start_times_seconds, character_end_times_seconds}`: three lists of one length, one entry
-per character, times in seconds from the audio's start. A chunk is not a word: it can end mid-word, and spaces,
-punctuation and audio tags such as `[playfully]` are characters too. Join the chunks' `characters` in order into one
-string S, each character with its start and end. The cue text always comes from the text you sent, audio tags
-removed, never from S. O is the second at which the voice starts in the final media. Two anchors come from S: the
-first cue starts at O + the start time of S's first letter or digit outside an audio tag, that character's own entry
-in `character_start_times_seconds`, never the space or tag before it; the last cue ends at O + the end time of S's
-last letter or digit, its entry in `character_end_times_seconds`, never its start time and never a period, space or
-tag after it. For example, if S begins `[warmly] Go` and the `G` starts at 0.160 while the space before it starts at
-0.080, the first cue starts at O + 0.160; if S ends `team.` and the `m` runs from 30.640 to 30.720, the last cue ends
-at O + 30.720. In between:
-- when S spells the text you sent (fal's does, tags included), find each cue's words in S in order, each search
-  starting where the previous cue ended; a cue starts at O + the start of its first letter or digit and ends at O +
-  the end of its last letter or digit (not the punctuation after it): that letter's own entry in
-  `character_end_times_seconds`, never its start and never the end of the letter before it (a cue ending `the`
-  ends at the `e`'s end time);
-- when it doesn't, it is still fal's timing of this voiceover: don't report it as a fault; place the cues back to back
-  between the two anchors, each lasting its share of the words you sent, as below. Every sentence gets its cues.
+```sh
+node .agents/skills/explainer-video/kit/build-captions.mjs --script work/script.txt \
+  --timestamps work/voiceover-timestamps.json --audio-seconds <V> --vtt media/explainer.vtt
+```
 
-Check which case holds before you time anything: join S, drop its audio tags, and compare it with the text you sent,
-tags dropped too. When they match, every cue is timed from its own letters, never by share of words. Never estimate
-a time: each one is a value read from `timestamps` or the arithmetic below.
-
-**Back to back by share of words.** W is the spoken words of the script you sent (audio tags not counted; a hyphenated
-word such as "sixty-four" is one word), the `word_count` you report. Split the cue text into cues and count each cue's
-words n; the cues' counts must add up to W exactly, so when they don't, count both again before you go on. Each word
-then lasts P = (end anchor − start anchor) ÷ W. A cue that follows k words of earlier cues starts at start anchor +
-k × P and ends at start anchor + (k + n) × P, so each cue ends where the next starts and the last ends on the end
-anchor. Example: anchors 0.150 and 28.785, W 70, so P = 28.635 ÷ 70 = 0.40907 (keep five decimals); a first cue of 9
-words runs 0.150 to 0.150 + 9 × 0.40907 = 3.832, the next, of 7 words, from 3.832 to 0.150 + 16 × 0.40907 = 6.695.
-
-Only when fal answered no timestamps at all (null, missing or empty), place the cues back to back from O to O + V the
-same way, by share of words (start anchor O, end anchor O + V), V being the voice's length from its `file_size`. With no timestamps and no `file_size`
-either, V is unknown (step 6): write no captions file, and say in `notes` that fal stated neither, so nothing tells
-when the voice ends.
+`<V>` is that voiceover's V from step 6, and the `--timestamps` file is the one you wrote (leave the option out when
+fal answered no timestamps). The kit writes `media/explainer.vtt` and prints one JSON line, then the file. Its
+`captions_timing` is `aligned` (fal's letters spell the script), `anchored` (they don't: the cues share the span by
+words) or `measured` (no timestamps: from 0 to V): each is a correct timing, never a fault, and goes in `notes`. When
+it exits 2 it wrote nothing: say why in `notes`, from its message. `.agents/skills/explainer-video/SKILL.md` says
+more; you don't need to read it to run the kit.
 
 ## 9. Failures
 
@@ -279,8 +257,8 @@ cap is a refusal like fal's: its words in `error`, and no retry.
 Exactly one fenced `json` block that meets the output schema, and nothing after it. `steps` lists the paid steps in
 order (portrait, voiceover, revoice when one was made, avatar), each with its endpoint, its units (images, characters or
 seconds), `fal_cost_usd` from the rate and units (the avatar at `audio_seconds`; 0 for a step refused or not run) and
-its status; `fal_cost_usd` is their sum. `files` lists every file saved or written, `media/run-keys.json` (kind
-`run_keys`) included. A mismatch between the timestamps' characters and the script, or a saved file's byte size, never makes a run partial. Each entry of `notes`, `omitted` and
+its status; `fal_cost_usd` is their sum. `files` lists every file saved or written under `media/`, `media/run-keys.json`
+(kind `run_keys`) included; the caption kit's inputs under `work/` are not listed. A mismatch between the timestamps' characters and the script, or a saved file's byte size, never makes a run partial. Each entry of `notes`, `omitted` and
 `ignored_instructions` is at most 300 characters: count, and split or cut a longer one. `report_markdown` opens with
 `![Explainer](media/explainer.mp4)` when the video is saved, then the presenter and voice, the script, the voiceover's
 length check, the files, and a cost line per step.

@@ -3,8 +3,9 @@ type: llm
 ---
 A live run: the script is judged against the page as the run's `web_fetch` result shows it (the Go 1.23 release post).
 
-Read the eleven-v3 `submit_job` call's `input.text` (the script), the nano-banana `input.prompt`, the `write` call for
-`media/explainer.vtt` and the answer's last fenced `json` block. Pass only if all hold:
+Read the eleven-v3 `submit_job` call's `input.text` (the script), the nano-banana `input.prompt`, the captions
+file `media/explainer.vtt` as the caption kit's `bash` call printed it, and the answer's last fenced `json` block. Pass
+only if all hold:
 
 1. **From the page only.** Every claim, feature, version and figure in the script is on the fetched page; no praise or
    claim of the agent's own; the presenter claims no name or role.
