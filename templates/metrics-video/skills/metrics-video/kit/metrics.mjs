@@ -557,7 +557,7 @@ function writeData(film, data) {
   const re = /(<script id="mv-data">)[\s\S]*?(<\/script>)/;
   if (!re.test(html)) fail(2, `${path} has no <script id="mv-data"> block: copy the kit's index.html again`);
   const json = JSON.stringify(data).replace(/</g, "\\u003c");
-  writeFileSync(path, html.replace(re, `$1\n      window.MV = ${json};\n    $2`));
+  writeFileSync(path, html.replace(re, (_, a, b) => `${a}\n      window.MV = ${json};\n    ${b}`));
 }
 function place(film, data, at, seconds) {
   const path = join(film, "index.html");
@@ -583,8 +583,8 @@ function place(film, data, at, seconds) {
     `      <audio id="voiceover" class="clip" src="assets/voiceover.mp3" data-start="0.5" data-track-index="3" data-volume="1"></audio>`,
     ...(music ? [`      <audio id="music" class="clip" src="assets/music.mp3" data-start="0" data-duration="${musicSeconds}" data-track-index="4" data-volume="0.16" data-fade-in="0.4" data-fade-out="1.5"></audio>`] : []),
   ];
-  html = html.replace(/(<!-- MV-HOSTS -->)[\s\S]*?(\s*<!-- \/MV-HOSTS -->)/, `$1\n${hosts.join("\n")}$2`);
-  html = html.replace(/(<!-- MV-MEDIA -->)[\s\S]*?(\s*<!-- \/MV-MEDIA -->)/, `$1\n${media.join("\n")}$2`);
+  html = html.replace(/(<!-- MV-HOSTS -->)[\s\S]*?(\s*<!-- \/MV-HOSTS -->)/, (_, a, b) => `${a}\n${hosts.join("\n")}${b}`);
+  html = html.replace(/(<!-- MV-MEDIA -->)[\s\S]*?(\s*<!-- \/MV-MEDIA -->)/, (_, a, b) => `${a}\n${media.join("\n")}${b}`);
   html = html.replace(/(<div id="root" data-composition-id="main"[^>]*data-duration=")[0-9.]+(")/, `$1${total}$2`);
   writeFileSync(path, html);
   // Each scene's span (the clip every element of it sits in) lasts as long as its host.
