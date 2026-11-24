@@ -195,6 +195,12 @@ from then on. At most two remakes in a run (the reserve the price held), and nev
 whose still and remake both failed borrows the nearest shot's still for its clip and its fallback, said in the
 report; the run is `partial` naming the shot.
 
+**Then go on to the clips.** A still fal answered as completed is that shot's still, after at most its one remake,
+however it looks: one that still misses its picture is used as it is, and the report says which shots and how. Never
+stop the run, or hold the clips back, over how the stills look or to save what the clips cost: the plan was priced
+before anything was paid, and a run stops only where this page says (`max_fal_usd`, the rights, the song, the beats,
+every still failed).
+
 ## 8. Clips
 
 With no other call in between, `submit_job` each shot's clip once, in shot order, on
