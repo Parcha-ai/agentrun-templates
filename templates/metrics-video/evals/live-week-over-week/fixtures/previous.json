@@ -1,0 +1,125 @@
+{
+ "description": "The last film covered the week of 9 November 2026 in Europe/Madrid; its carried figures match Stripe's.",
+ "results": [
+  {
+   "output": {
+    "status": "completed",
+    "week": {
+     "start": "2026-11-09",
+     "end": "2026-11-15",
+     "label": "9–15 November 2026",
+     "timezone": "Europe/Madrid"
+    },
+    "metric": {
+     "id": "net-of-refunds-and-fees",
+     "label": "Revenue: net of refunds and Stripe fees, from Stripe balance transactions"
+    },
+    "source_line": "Revenue: net of refunds and Stripe fees, from Stripe balance transactions · weeks in Europe/Madrid",
+    "compare": {
+     "state": "none",
+     "reason": "no earlier result was handed to this run: the first film of this schedule, or a run by hand",
+     "restated": []
+    },
+    "empty_week": false,
+    "figures": [
+     {
+      "currency": "usd",
+      "filmed": true,
+      "revenue_minor": 260644,
+      "revenue": "$2,606.44",
+      "revenue_shown": "$2,606",
+      "gross_minor": 284000,
+      "charges": 4,
+      "refunds_count": 1,
+      "refunds_minor": 15000,
+      "disputes_count": 0,
+      "disputes_minor": 0,
+      "fees_minor": 8356,
+      "best_day": null,
+      "week_before_minor": null,
+      "change_minor": null,
+      "change_shown": null,
+      "change_percent": null
+     }
+    ],
+    "gone": [],
+    "left_out": [],
+    "carried": {
+     "metric": "net-of-refunds-and-fees",
+     "timezone": "Europe/Madrid",
+     "week": {
+      "start": "2026-11-09",
+      "end": "2026-11-15"
+     },
+     "figures": [
+      {
+       "currency": "usd",
+       "revenue_minor": 260644,
+       "gross_minor": 284000,
+       "charges": 4,
+       "refunds_count": 1,
+       "refunds_minor": 15000,
+       "disputes_count": 0,
+       "disputes_minor": 0,
+       "fees_minor": 8356
+      }
+     ]
+    },
+    "script": "[warm] The week of November ninth at Larkspur Ceramics. Revenue, net of refunds and Stripe fees.",
+    "word_count": 16,
+    "voiceover_seconds": 38.4,
+    "captions_timing": "aligned",
+    "film": {
+     "path": "media/film.mp4",
+     "seconds": 45,
+     "width": 1920,
+     "height": 1080
+    },
+    "checks": {
+     "check_errors": 0,
+     "warnings_kept": [
+      "timeline_track_too_dense on the captions track"
+     ],
+     "review_fixes": [],
+     "renders": 1
+    },
+    "plan_usd": 0.57,
+    "cheaper_plan_usd": null,
+    "fal_cost_usd": {
+     "steps": [
+      {
+       "step": "voiceover",
+       "key": "mv-r7k2m9xp-voiceover",
+       "endpoint_id": "fal-ai/elevenlabs/tts/eleven-v3",
+       "units": 0.58,
+       "unit": "1000 characters",
+       "rate_usd": 0.1,
+       "usd": 0.058
+      },
+      {
+       "step": "music",
+       "key": "mv-r7k2m9xp-music",
+       "endpoint_id": "fal-ai/elevenlabs/music",
+       "units": 0.75,
+       "unit": "minutes",
+       "rate_usd": 0.6,
+       "usd": 0.45
+      }
+     ],
+     "total": 0.508
+    },
+    "files": [
+     {
+      "what": "film",
+      "saved_path": "media/film.mp4",
+      "source_url": null
+     }
+    ],
+    "failed_step": null,
+    "error": null,
+    "ignored_instructions": [],
+    "report_markdown": "![Weekly revenue film](media/film.mp4)\n\nThe week of 9–15 November 2026: Revenue: net of refunds and Stripe fees, from Stripe balance transactions."
+   }
+  }
+ ]
+}
