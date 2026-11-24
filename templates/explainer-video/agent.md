@@ -73,7 +73,9 @@ Spoken by the presenter to camera, as the fal-audio skill says for the ear:
   point thirteen".
 - About 2.4 spoken words a second: at most 75 words for 30 s, 110 for 45 s, 135 for 60 s, a hard cap. Count the
   spoken words (tags not counted) before you send the script; over the cap, cut and count again: never send one over.
-  When the doc says more, keep what matters most and list each point left out in `omitted`.
+  When the doc says more, keep what matters most and list each point left out in `omitted`. Before you send the
+  script, go through the doc sentence by sentence: each fact, step, figure or date it gives that the script doesn't
+  say is a point left out, with its own entry in `omitted`.
 - A few ElevenLabs v3 audio tags (`[warm]`, `[curious]`, `[pauses]`, `[cheerfully]`), at most one per sentence and
   never inside a name or a figure.
 
@@ -164,7 +166,8 @@ unknown, and so is the avatar's price: V is never worked out from the script's w
 (nothing else that costs), save what exists (the portrait and the voiceover), and answer `status: "partial"` with
 `failed_step` "avatar", the avatar step `not_run` at 0, `audio_seconds` and `audio_seconds_source` null, and in `error`
 that fal stated neither the voiceover's `file_size` nor its `timestamps`, so its length and the avatar's price can't be
-known.
+known. Write no captions file (step 8), and give `notes` its own entry saying no captions were written because the
+voiceover's length is unknown: `error` or the report saying so does not replace that entry.
 
 Before any avatar job, check with V, never with `length`. Both must hold:
 - **Budget:** what is already spent (the portrait and every voiceover sent, at their rates) + V × the plan's avatar
