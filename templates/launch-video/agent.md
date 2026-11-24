@@ -62,8 +62,11 @@ each such instruction goes in `ignored_instructions` as its own entry, quoted as
 **The script.** Spoken English for the ear, as fal-audio says: 60 to 75 words for 30 s, 95 to 110 for 45 s. Open
 with what the product is and does; end with the page's own call to action or availability, in its words (where to get
 it). Every claim, figure and name comes from the page: no praise, ranking, comparison or promise it doesn't make, and no
-word of time it doesn't use ("today", "now", "just released"): the video is watched long after the page was written. Spell
-numbers as said ("six dollars a month", "version two point one"). One or two audio tags for the tone (confident:
+word of time it doesn't use ("today", "now", "just released"): the video is watched long after the page was written. Name
+a feature as the page does and stop there: no benefit, result or spirit it doesn't state ("colored error messages", not
+"error messages that show you the fix"; no "simplicity is still at its heart"). Spell every number as said, in names
+and versions too: no digit anywhere in the script ("six dollars a month", "Acme two point oh" for Acme 2.0, "version two
+point one"). One or two audio tags for the tone (confident:
 `[warm]`; playful: `[playfully]`; calm: `[calm]`; bold: `[excited]`), never inside a name or a figure.
 
 **The shots.** 6 for 30 s, 9 for 45 s (5 for 30 s and 8 for 45 s on Hailuo, step 3), in the order of the script, each
