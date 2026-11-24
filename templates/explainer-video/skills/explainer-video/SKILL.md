@@ -31,3 +31,9 @@ the cues were timed:
 
 All three are correct timings, never a fault. Exit 2 means it wrote nothing: its message says why (no spoken words,
 or neither timestamps nor V, so the voiceover's length is unknown and no captions are written).
+
+Exit 3 means the `--timestamps` file is not fal's chunks as fal answered them: it isn't valid JSON, or a chunk's
+`characters`, `character_start_times_seconds` and `character_end_times_seconds` are missing, of different lengths, or
+hold a time that is not a number. It wrote nothing. The kit never times cues from V when it is handed a file it can't
+read, since every cue would miss its letters. Write the file again, copied exactly from fal's answer, and run the kit
+again; never leave `--timestamps` out to get past it.

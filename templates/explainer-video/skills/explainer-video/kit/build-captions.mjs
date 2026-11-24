@@ -23,8 +23,9 @@
 // 2. anchored: the chunks are there but don't spell the script (another take, a stand-in). The start anchor is the
 //    first letter's start, the end anchor the last letter's end; each word lasts P = span / W (W the spoken words,
 //    a hyphenated word is one), and the cues run back to back by their word counts.
-// 3. measured: no usable timestamps; the same, between 0 and V.
+// 3. measured: no timestamps (no --timestamps file, or an empty list); the same, between 0 and V.
 // It prints one line of JSON (the method and the cue count), then the WebVTT file it wrote. None of them is an error.
+// Exit 2: nothing to caption or no length. Exit 3: a --timestamps file that isn't fal's chunks (it is never ignored).
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 
@@ -43,15 +44,38 @@ const script = readFileSync(need("script"), "utf8");
 const vttPath = need("vtt");
 const V = args["audio-seconds"] === undefined ? NaN : Number(args["audio-seconds"]);
 
+// A timestamps file that can't be read as fal's chunks is a copy gone wrong, never "no timestamps": timing from the
+// length instead would put every cue off its letters. Exit 3, write nothing, and say what to fix.
+const badTimestamps = (why) => {
+  console.error(
+    `${args.timestamps} is not fal's timestamps as fal answered them (${why}). No captions written: write the file ` +
+      "again, copied exactly from fal's answer, and run the kit again.",
+  );
+  process.exit(3);
+};
 let chunks = [];
 if (args.timestamps) {
+  let raw;
   try {
-    const raw = JSON.parse(readFileSync(args.timestamps, "utf8"));
-    const list = Array.isArray(raw) ? raw : Array.isArray(raw?.timestamps) ? raw.timestamps : raw ? [raw] : [];
-    chunks = list.filter((c) => c && Array.isArray(c.characters));
+    raw = JSON.parse(readFileSync(args.timestamps, "utf8"));
   } catch (e) {
-    console.error(`timestamps unreadable (${e.message}): timing from the voiceover's length`);
+    badTimestamps(e.message);
   }
+  const list = Array.isArray(raw) ? raw : Array.isArray(raw?.timestamps) ? raw.timestamps : raw ? [raw] : [];
+  list.forEach((c, i) => {
+    const st = c?.character_start_times_seconds;
+    const en = c?.character_end_times_seconds;
+    if (!Array.isArray(c?.characters) || !Array.isArray(st) || !Array.isArray(en)) {
+      badTimestamps(`chunk ${i + 1} lacks characters, character_start_times_seconds or character_end_times_seconds`);
+    }
+    if (st.length !== c.characters.length || en.length !== c.characters.length) {
+      badTimestamps(`chunk ${i + 1} has ${c.characters.length} characters, ${st.length} starts and ${en.length} ends`);
+    }
+    if (![...st, ...en].every((t) => typeof t === "number" && Number.isFinite(t))) {
+      badTimestamps(`chunk ${i + 1} has a time that is not a number`);
+    }
+  });
+  chunks = list;
 }
 
 function norm(s) {

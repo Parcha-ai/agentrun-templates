@@ -2,12 +2,16 @@
 // every cue in code, because a model timing cues by hand from fal's character timestamps put them off by hundredths of
 // a second, or a whole second, and wrote lines over 42 characters. These tests hold what the template's rubrics depend
 // on:
-// - aligned: on two real ElevenLabs v3 takes, every cue runs from its first letter's start to its last letter's end.
-//   This covers the two cues a grader failed by hand (one starting at 9.653 s, one ending at 28.240 s).
+// - aligned: on three real ElevenLabs v3 takes, every cue runs from its first letter's start to its last letter's end.
+//   This covers the two cues a grader failed by hand (one starting at 9.653 s, one ending at 28.240 s), and the take
+//   whose first letter follows a [warm] tag at 0.32 s and whose last letter ends at 24.56 s.
+// - a timestamps file that isn't fal's chunks (a retyped copy with a typo, uneven arrays, a time that's text): exit 3
+//   and no file, never cues timed from the length. A live run's model retyped its timestamps with a typo, and the
+//   kit then timed every cue from 0 to V.
 // - anchored and measured: the cues run back to back, each lasting its share of the words.
 // - every cue is one or two lines of at most 42 characters, in the script's order, with audio tags dropped.
 // - no length at all: exit 2, no file.
-// They need only node. explainer-captions.fixtures.json holds the two takes, each the script sent and fal's
+// They need only node. explainer-captions.fixtures.json holds the three takes, each the script sent and fal's
 // `timestamps` as it answered them.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -76,7 +80,7 @@ function letters(timestamps) {
   return out;
 }
 
-for (const name of ["take1", "take2"]) {
+for (const name of ["take1", "take2", "take3"]) {
   test(`aligned (${name}): every cue runs from its first letter's start to its last letter's end`, () => {
     const { script, timestamps } = TAKES[name];
     const r = kit(script, timestamps, 40);
@@ -107,6 +111,50 @@ test("aligned: the two cues a hand-timed run got wrong land on their letters", (
   const timers = two.cues.find((c) => c.lines.join(" ").startsWith("Timers and tickers"));
   assert.ok(timers, "a cue starting with 'Timers and tickers'");
   assert.equal(timers.end, 28.24);
+});
+
+test("aligned: the take after a [warm] tag starts at its first letter, 0.32 s, and ends at its last, 24.56 s", () => {
+  const r = kit(TAKES.take3.script, TAKES.take3.timestamps, 24.7);
+  assert.equal(r.status, 0, r.stderr);
+  const line = JSON.parse(r.line);
+  assert.equal(line.captions_timing, "aligned");
+  assert.equal(line.first_cue_start_s, 0.32);
+  assert.equal(line.last_cue_end_s, 24.56);
+  assert.equal(r.cues[0].start, 0.32);
+  assert.equal(r.cues.at(-1).end, 24.56);
+});
+
+/** Runs the kit on take3's script with `text` as the timestamps file, and checks it refused: exit 3, no file. */
+function refused(text) {
+  const dir = join(root, String(n++));
+  spawnSync("mkdir", ["-p", dir]);
+  writeFileSync(join(dir, "script.txt"), TAKES.take3.script);
+  writeFileSync(join(dir, "ts.json"), text);
+  const r = spawnSync(process.execPath, [KIT, "--script", join(dir, "script.txt"), "--timestamps", join(dir, "ts.json"), "--audio-seconds", "24.7", "--vtt", join(dir, "explainer.vtt")], { encoding: "utf8" });
+  assert.equal(r.status, 3, `exit ${r.status}: ${r.stdout.split("\n")[0]} ${r.stderr}`);
+  assert.ok(!existsSync(join(dir, "explainer.vtt")), "no captions file");
+  assert.match(r.stderr, /not fal's timestamps/);
+  return r;
+}
+
+test("a retyped timestamps file with a typo: exit 3 and no file, not cues timed from 0 to V", () => {
+  // The live run's copy: the same take with the model's typo in its third chunk (`"."); " "` for `".", " "`).
+  const good = JSON.stringify(TAKES.take3.timestamps);
+  const typo = '"t",".");" ","T"';
+  assert.equal(good.split('"t","."," ","T"').length, 2, "the typo's place is in the take once");
+  refused(good.replace('"t","."," ","T"', typo));
+});
+
+test("uneven arrays or a time that is not a number: exit 3 and no file", () => {
+  const cut = structuredClone(TAKES.take3.timestamps);
+  cut[2].character_end_times_seconds.pop();
+  assert.match(refused(JSON.stringify(cut)).stderr, /chunk 3 has/);
+  const text = structuredClone(TAKES.take3.timestamps);
+  text[0].character_start_times_seconds[7] = "0.32";
+  assert.match(refused(JSON.stringify(text)).stderr, /not a number/);
+  const missing = structuredClone(TAKES.take3.timestamps);
+  delete missing[1].character_start_times_seconds;
+  refused(JSON.stringify(missing));
 });
 
 test("anchored: fal's letters don't spell the script, so the cues run back to back by share of words", () => {

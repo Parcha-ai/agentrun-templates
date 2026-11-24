@@ -239,8 +239,10 @@ node .agents/skills/explainer-video/kit/build-captions.mjs --script work/script.
 fal answered no timestamps). The kit writes `media/explainer.vtt` and prints one JSON line, then the file. Its
 `captions_timing` is `aligned` (fal's letters spell the script), `anchored` (they don't: the cues share the span by
 words) or `measured` (no timestamps: from 0 to V): each is a correct timing, never a fault, and goes in `notes`. When
-it exits 2 it wrote nothing: say why in `notes`, from its message. `.agents/skills/explainer-video/SKILL.md` says
-more; you don't need to read it to run the kit.
+it exits 2 it wrote nothing: say why in `notes`, from its message. When it exits 3, the timestamps file you wrote is
+not fal's answer (its message says where): `write` it again, copied exactly from fal's answer, and run the kit again.
+Never leave `--timestamps` out to get past exit 3. If it still exits 3 after two rewrites, write no captions and say
+so in `notes`. `.agents/skills/explainer-video/SKILL.md` says more; you don't need to read it to run the kit.
 
 ## 9. Failures
 
