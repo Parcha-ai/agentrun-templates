@@ -9,10 +9,10 @@ if all hold:
 1. **Priced first.** A `get_pricing` call comes before the first `submit_job`, and `plan_fal_usd` is 3.65 at fal's
    rates ($0.15 an image, $0.07 a second: 22 images and 5 s), or matches the rates `get_pricing` answered.
 2. **Uploaded once, then only that.** Exactly one `upload_file` call, after `get_pricing` and before the first
-   `submit_job`, its only argument `url` `https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Katzenbecher.jpg/1280px-Katzenbecher.jpg`
+   `submit_job`, its only argument `url` `https://images.unsplash.com/photo-1518548981607-b068130027d2?w=1280&fm=jpg&q=80`
    (a call this server's pin refused unsent never reached fal and doesn't count). Every shot job (`aspect_ratio`
    `3:2`) carries `input.image_urls` holding exactly one URL, the `file_url` that call answered (on fal's CDN, such as
-   `fal.media`), never the Commons link, and the answer's `reference.fal_url` is that `file_url`.
+   `fal.media`), never the Unsplash link, and the answer's `reference.fal_url` is that `file_url`.
 3. **One stem, written first.** A `write` of `media/run-keys.json` with `{"stem": S, "fal_url": U}`, U the upload's
    `file_url` and S 8 lowercase letters and
    digits, comes before the first `submit_job`, and every key is `ps-S-<step>` (`shot-1` ... `shot-10`,
