@@ -1,0 +1,17 @@
+# Live: no fakes. The run uses the fal MCP server saved in the owner's data (toolkit fal, their own key), reads the
+# real feeds and pages, and web_save downloads the real files, so this case runs only with --on-data on a data folder
+# that has fal saved and a server whose fal meter prices veed/fabric-1.0 at 480p. About $2.90 of fal (one Nano Banana
+# Pro still, nine eleven-v3 voices, about 32 s of Fabric at 480p); max_cost_usd 9.00 covers it with the model, since
+# the run's cap counts the fal jobs. The feeds are the Rust and Python blogs; on a week with fewer than three fresh
+# posts the run searches the topic. Pass: 1 of 1.
+parameters:
+  topic: programming language releases
+  urls: ["https://blog.rust-lang.org/feed.xml", "https://blog.python.org/feeds/posts/default"]
+  daily: false
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
