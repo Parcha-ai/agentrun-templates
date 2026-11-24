@@ -17,7 +17,8 @@ and its answer's last fenced `json` block. Pass only if all hold:
    After the picks and before the first ad-size job, a `write` of that file keeps S and U and adds `picks`, the shot
    numbers the answer's `picks` name, in rank order.
 4. **Keys.** Every `submit_job` carries a `submission_key` beside `endpoint_id` and `input` (never inside `input`):
-   the shots `ps-S-shot-1` ... `ps-S-shot-10` in order, the ad sizes `ps-S-ad-<r>-<size>` (r 1 to 3, size `1x1`,
+   the shots `ps-S-shot-1` ... `ps-S-shot-10` in order as the run made the calls (calls made together in one turn
+   may reach the server in another order, which doesn't count), the ad sizes `ps-S-ad-<r>-<size>` (r 1 to 3, size `1x1`,
    `4x5`, `9x16` or `16x9`). No key is sent twice, and none holds a date or a host.
 5. **Queued, then read together.** The 10 shot jobs are each sent once, all before the first `wait_for_jobs`, and
    that call lists the 10 jobs with the `request_id`s their `submit_job` calls answered. The 12 ad-size jobs are sent

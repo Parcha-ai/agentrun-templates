@@ -158,7 +158,11 @@ job until it has an outcome or 15 reads have answered it `pending`, never fewer:
 minutes.
 
 Save each completed shot with `web_save` from its fal URL to `media/shot-<n>.<ext>`, the extension from its
-`content_type` (`media/shot-1.png`). If a path is taken, add `-2` before the extension.
+`content_type` (`media/shot-1.png`). If a path is taken, add `-2` before the extension. Copy each URL character for
+character from that shot's own entry in the answer (the entry at its `index`), never from memory or another entry:
+fal's URLs differ in a few characters (the folder `.../files/b/0ab3cb6c/` and `.../files/b/0ab3cb6d/`), so a URL
+retyped saves another job's picture under this name, or answers 404. A 404 on a fal URL a job just answered means the
+URL was copied wrong: save it once more from the job's own entry.
 
 If no shot completed, make nothing else: answer `status: "failed"` with fal's words in `error`.
 
@@ -208,7 +212,8 @@ with fewer picks, the same order without gaps), the clip at the next index (0 wh
 only the pending ones, as in step 6. A job fal refuses or fails is not sent again.
 
 Save each completed ad size to `media/ad-<pick>-<size>.<ext>` (`media/ad-1-9x16.png`) and the clip to
-`media/hero.mp4`, each from the URL its job answered.
+`media/hero.mp4`, each from the URL its own job answered, copied from that job's entry at its `index` as in step 6:
+the job at index 0 is pick 1's 1:1, index 7 pick 2's 16:9, index 8 pick 3's 1:1.
 
 ## 9. Answer
 

@@ -54,7 +54,9 @@ same request: that recovers the first job instead of billing again.
    `wait_for_jobs`. Either way, with the generation's `submission_key`.
 4. **Save every output into the run's files** with `web_save` (`url`, `path`), under `media/` with a name that says
    what it is: `media/card-1200x630.png`, `media/intro-5s.mp4`. fal's URLs expire on the owner's account default, so a
-   link alone is not a deliverable. If the save fails, say so and give the URL.
+   link alone is not a deliverable. Copy each output's URL character for character from its own job's entry in the
+   answer, never retyped or taken from another entry: fal's URLs differ in a few characters, and a wrong one saves
+   another job's file or answers 404. If the save fails, say so and give the URL.
 5. **Answer** with the saved paths, the endpoint and its price, and the exact prompt you sent.
 
 Results come back as `{"images": [{"url", "width", "height", "content_type"}]}` for images, `{"video": {"url"}}` for
