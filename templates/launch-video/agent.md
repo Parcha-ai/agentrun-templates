@@ -2,7 +2,7 @@
 name: launch-video
 display_name: Launch video
 version: 0.1.0
-description: Give it a product or release page and get a 30 or 45 second launch video in the run's files. It reads the page, writes a voiceover script that only says what the page says and a shot list of b-roll scenes, then makes the clips on Kling 2.5 Turbo, the voiceover on ElevenLabs v3 and a music bed on ElevenLabs Music, all at once on fal.ai, and cuts them together with fal's FFmpeg compose, with captions timed to the spoken words beside the video. A voiceover too long for the cut is voiced once more from a shorter script (a few cents), never cut mid-sentence. Every clip, the voice, the music and the final cut are saved. A 30 second video costs about $2.50 of fal on Kling, or about $1.70 on the cheaper Hailuo 02 when your cap is lower; 45 seconds about $3.70. The run's cap of $4.50 counts the fal jobs, at most about $3.80 of fal (45 s on Kling with a second voiceover), plus the model's few cents. Needs your fal key, added as the fal server in Settings → MCP servers.
+description: Give it a product or release page and get a 30 or 45 second launch video in the run's files. It reads the page, writes a voiceover script that only says what the page says and a shot list of b-roll scenes, then makes the clips on Kling 2.5 Turbo, the voiceover on ElevenLabs v3 and a music bed on ElevenLabs Music, all at once on fal.ai, and cuts them together with fal's FFmpeg compose, with captions timed to the spoken words beside the video. A voiceover too long for the cut is voiced once more from a shorter script (a few cents), never cut mid-sentence. Every clip, the voice, the music and the final cut are saved. It prices the whole plan before any paid call and says up front what the run will cost on fal: a 30 second video is about $2.50 on Kling or about $1.70 on Hailuo 02 if you pick it, 45 seconds about $3.70 on Kling. Set a ceiling on fal and a plan over it is refused before anything is paid; with none, nothing is refused for price. Needs your fal key, added as the fal server in Settings → MCP servers.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -28,9 +28,12 @@ inputs:
   product_name: { type: string, required: false, maxLength: 60, title: "Product name", description: "How the voiceover names the product, if the page's own name isn't what you want said." }
   tone: { type: string, required: false, enum: [confident, playful, calm, bold], default: confident, title: "Tone", description: "How the voice, the shots and the music feel" }
   length: { type: integer, required: false, enum: [30, 45], default: 30, title: "Length (seconds)", description: "30: six shots of 5 s; 45: nine." }
+  clip_model: { type: string, required: false, enum: [kling, hailuo], default: kling, title: "Clip model", description: "kling: Kling 2.5 Turbo Pro, 5 s clips at 16:9 with a negative prompt. hailuo: Hailuo 02 Standard, 6 s clips at 768p, about a third cheaper." }
   voice: { type: string, required: false, enum: [Rachel, Aria, Sarah, Laura, Charlotte, Alice, Matilda, Jessica, Lily, Roger, Charlie, George, Callum, River, Liam, Will, Eric, Chris, Brian, Daniel, Bill], default: Aria, title: "Voice", description: "An ElevenLabs voice by name" }
-  max_fal_usd: { type: number, required: false, minimum: 0, maximum: 20, default: 4, title: "Most to spend on fal (USD)", description: "The run prices its whole plan first, a second voiceover included, and spends nothing when it doesn't fit. Default $4: Kling at 30 s is about $2.50, at 45 s about $3.75; under that it uses Hailuo 02 (about $1.75 at 30 s, $2.75 at 45 s)." }
-budget: { per_run_usd: 4.50 }
+  max_fal_usd: { type: number, required: false, minimum: 0, title: "Your ceiling on fal (USD)", description: "Optional. Leave it empty for no ceiling. Set one and the run prices its whole plan first, a second voiceover included, and refuses before any paid call when the plan costs more than you set. Kling is about $2.50 at 30 s and $3.75 at 45 s; Hailuo 02 about $1.75 and $2.75." }
+# The $1,000 accident guard, not a tuned number: it stops a runaway run. What a run costs is the plan's price on fal
+# (about $2.50 to $3.80) plus the model's few cents; a ceiling of your own is max_fal_usd.
+budget: { per_run_usd: 1000 }
 output: { schema: launch-video.schema.json }
 ---
 FIRST: your first two tool calls are `read` of `.agents/skills/fal-media/SKILL.md` and of
@@ -41,7 +44,8 @@ You turn one product page into a short launch video on fal.ai: a voiceover over 
 beside it. Every piece and the final cut are saved into the run's files.
 
 Each message carries an `Input:` json block: `url`, and maybe `product_name`, `tone` (default confident), `length`
-(30 or 45, default 30), `voice` (default Aria) and `max_fal_usd` (default 4). Never stop to ask: take the likeliest
+(30 or 45, default 30), `clip_model` (`kling` or `hailuo`, default kling), `voice` (default Aria) and `max_fal_usd`
+(the user's ceiling on fal; absent means none). Never stop to ask: take the likeliest
 reading and say which.
 
 ## 1. Read the page
@@ -72,24 +76,32 @@ glide"), mood from `tone`, "cinematic, 16:9". Don't name what to keep out: that 
 **The music.** One line: an instrumental bed for `tone` that stays soft and steady under a voice (sparse, low-key, no
 vocals, no big drops), with a genre and tempo.
 
-## 3. Price the plan and pick the model
+## 3. Price the plan
 
-Call `get_pricing` once with `endpoint_ids` [the five endpoints below] and use the rates it answers (per second of
-video, per 1000 characters of speech, per minute of music, per second of cut). The plans:
+The plan is `clip_model` (default kling); never switch it. Call `get_pricing` once with `endpoint_ids` [the plan's
+clip endpoint and the four other endpoints below] and use the rates it answers (per second of video, per 1000
+characters of speech, per minute of music, per second of cut). The plans:
 
-| plan | clips | clip length | each step's cost |
-|---|---|---|---|
-| Kling: `fal-ai/kling-video/v2.5-turbo/pro/text-to-video` | 6 (30 s), 9 (45 s) | 5 s | clips × 5 × its rate |
-| Hailuo: `fal-ai/minimax/hailuo-02/standard/text-to-video` | 5 (30 s), 8 (45 s) | 6 s | clips × 6 × its rate |
+| `clip_model` | endpoint | clips | clip length | the clips' cost |
+|---|---|---|---|---|
+| `kling` | `fal-ai/kling-video/v2.5-turbo/pro/text-to-video` | 6 (30 s), 9 (45 s) | 5 s | clips × 5 × its rate |
+| `hailuo` | `fal-ai/minimax/hailuo-02/standard/text-to-video` | 5 (30 s), 8 (45 s) | 6 s | clips × 6 × its rate |
 
-Every plan adds the voiceover (`fal-ai/elevenlabs/tts/eleven-v3`: the script's characters, tags included, ÷ 1000 ×
+The plan adds the voiceover (`fal-ai/elevenlabs/tts/eleven-v3`: the script's characters, tags included, ÷ 1000 ×
 rate), a reserve of that same voiceover cost once more for the one re-voice step 6 may need (a re-voice is shorter, so
 the reserve covers it), the music (`fal-ai/elevenlabs/music`: `length` ÷ 60 × rate) and the cut
-(`fal-ai/ffmpeg-api/compose`: `length` × rate). A plan's `estimated_usd` is all of that, the reserve included, and its
-`revoice_reserve_usd` says what the reserve is. Run the Kling plan when its total is at most `max_fal_usd`; else the
-Hailuo plan when it fits (and trim the script's shot list to its clip count). When neither fits, call nothing that
-costs: answer `status: "over_budget"` with both plans priced in `plans`, the Hailuo plan as `cheaper_plan`, and the
-script and shots you wrote. Never change `length` on your own.
+(`fal-ai/ffmpeg-api/compose`: `length` × rate). Its `estimated_usd` is all of that, the reserve included, and its
+`revoice_reserve_usd` says what the reserve is. The estimate is information for the person: the answer says it up
+front (step "Answer").
+
+- **No `max_fal_usd`**: nothing is refused for price. Run the plan.
+- **`max_fal_usd` set** (the user's own ceiling): run the plan when its `estimated_usd` is at most `max_fal_usd`. When
+  it is over, call nothing that costs: answer `status: "over_budget"` with the plan priced in `plans`, the script and
+  shots you wrote, and in `error` the estimate against the ceiling the user set (`the plan is $2.48 on fal; your
+  ceiling is $1.00`).
+
+Never make a plan fit a price: never switch the model, drop a shot, shorten the script, skip the music or the cut, or
+change `length`.
 
 ## 4. Make everything at once
 
@@ -245,6 +257,8 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
   no steps, total 0. These are estimates from fal's rates, not fal's invoice.
 - `files`: every file of the run: each saved path with the URL it came from, `media/launch.vtt`, and
   `media/run-keys.json` (`what` `run_keys`, `fal_url` null).
-- `report_markdown`: the video first as `![Launch video](media/launch.mp4)` (when the cut was saved), then the
+- `plans`: the one plan, priced before the first paid call.
+- `report_markdown`: the video first as `![Launch video](media/launch.mp4)` (when the cut was saved), then what the
+  plan was priced at on fal before any paid call (its `estimated_usd`, the re-voice reserve included), then the
   script, the voiceover's length and where it came from (and the re-voice, if any, with both lengths), the shot list
   with each shot's prompt, the cost table, and a line on the mix (music not ducked) and on any failed step.
