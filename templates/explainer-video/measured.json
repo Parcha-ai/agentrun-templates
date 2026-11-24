@@ -1,18 +1,27 @@
 {
-  "median_usd": 0.0154,
-  "runs": 14,
+  "median_usd": 0.0212,
+  "runs": 18,
   "model": "openrouter/anthropic/claude-haiku-5.5",
   "harness": "pi",
-  "measured_on": "2026-11-21",
-  "build": "23d8c62",
+  "measured_on": "2026-11-24",
+  "build": "fc2bfd6",
   "passed": {
-    "pi": "11/14"
+    "pi": "6/9"
   },
   "live": {
     "cases": 1,
-    "median_usd": 2.4682,
+    "median_usd": 2.5574,
     "passed": {
       "pi": "0/1"
-    }
-  }
+    },
+    "build": "fc2bfd6"
+  },
+  "notes": [
+    "Counted by case: a case passes only when both its runs pass. By run, the fixture cases passed 15 of 18 and the live case 0 of 2. median_usd is the model's cost per fixture run with the fake fal taken out; the live median is real fal plus the model.",
+    "Graded fails at fc2bfd6, as graded, none hidden: (1) text-happy run 2, caption timing: the first cue lasts 5.417 s where its 13 of 74 words give 5.031 s; the run's per-word time came from a wrong word count. (2) url-voice-pending run 1 sent a 76-word script, one over the 75-word cap, and said so in its answer. (3) likeness-premium run 2: likeness_declined said the actor's name and traits \"were left out\" without saying the likeness or voice was declined; the grader asks for that sentence. (4) live-go-release run 1: one cue starts at 9.600 s where its first letter starts at 9.653 s (tolerance 0.01 s). (5) live-go-release run 2: one caption line is 48 characters (limit 42), and one cue ends at 27.200 s where its last letter ends at 28.240 s.",
+    "Infrastructure, re-run once: over-budget's first attempt was not graded (the eval server answered 409, its agent store busy); likeness-premium's first attempt had run 1 fail on a second save of the video after the server lost its claim on the run under heavy host load and interrupted the save. The re-runs are the ones counted above (over-budget 2/2, likeness-premium 1/2).",
+    "Open gap: hand-timed captions. Across four rounds most graded misses were one caption time off, by a letter's or a word's worth, against a 0.01 s per-cue rubric (0.1 s where the cues share the span by words). The fast-tier model reads each time from fal's character timestamps by hand; this round made the cues fill their two lines and spelled out the arithmetic, which did not remove the misses. Moving the timing into code or loosening the rubric is the next decision.",
+    "Live: the real Go 1.23 release post, real fal, two runs per round. Every live run this round made the video, portrait, voiceover and captions; each fail was a caption time or line length. At the main head (0129c33) live was 1/2, its fail a cue ending 0.02 s early. The earlier recorded live fail (a script calling loops \"the biggest change\") did not recur: the ranking rule already on main holds.",
+    "Earlier heads this round, superseded: 0129c33 (main) 6/10 cases, 15/20 runs; 98fedde 7/10, 16/20; f4da8cd 6/10, 16/20. Each was followed by the template fixes listed in the pull request."
+  ]
 }
