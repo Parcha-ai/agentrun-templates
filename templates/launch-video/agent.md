@@ -114,6 +114,9 @@ for that job's retries. The keys share one stem per run:
 - Before the first paid call, `read` `media/run-keys.json`. If it holds `{"stem": "<8 lowercase letters and digits>"}`
   (a resumed run), use that stem. Otherwise make one stem of 8 random lowercase letters and digits and `write` it there
   as `{"stem": "<stem>"}` before any paid call. Never make a second stem in a run: a retry and a resume reuse it.
+- Also before the first paid call, `write` `media/plan.json`: `{"script": <the script as you will send it>, "shots":
+  [{"n": 1, "prompt": <the exact prompt>}, ...], "music_prompt": <the music line>}`. A long run can lose its early
+  turns to a context summary; this file keeps what the answer reports.
 - Keys are `lv-<stem>-<step>`, `<step>` one of `clip-1` ... `clip-N`, `voiceover`, `voiceover-2` (only for step 6's
   re-voice), `music`, `cut`. No date and no host in a key: the page's URL stays in the answer. With the stem
   `m8t3x6qe` (an example: make your own), the first clip's key is `lv-m8t3x6qe-clip-1` and the cut's `lv-m8t3x6qe-cut`.
@@ -173,7 +176,8 @@ say so in the report, with `voiceover_seconds_source` `"timestamps"`.
 - **It overruns**: voice it once more from a shorter script. Rewrite the script to at most W2 = floor(W × (`length` −
   1) ÷ V × 0.9) words, W the first script's words (tags not counted); the 0.9 is the margin. Cut whole phrases and
   sentences, keep the opening and the call to action, and follow step 2's rules (no new claim, no new word of time).
-  Example: W 72, V 32.0, length 30 → 72 × 29 ÷ 32.0 × 0.9 = 58.7, so at most 58 words. `submit_job` it once on
+  Example: W 72, V 32.0, length 30 → 72 × 29 ÷ 32.0 × 0.9 = 58.7, so at most 58 words. Write it into
+  `media/plan.json` as `script_2` (the rest of the file as it was), then `submit_job` it once on
   `fal-ai/elevenlabs/tts/eleven-v3` with key `lv-<stem>-voiceover-2` and the same `voice`, `stability`,
   `output_format` and `timestamps`; read it with `wait_for_jobs` (one item, index 0, its own handles); save it to
   `media/voiceover-2.mp3`; work out its V the same way.
@@ -247,7 +251,9 @@ same way, by share of words, V being the voice's length.
 
 ## Answer
 
-Exactly one fenced `json` block that meets the output schema, and nothing after it:
+Exactly one fenced `json` block that meets the output schema, and nothing after it. First `read` `media/plan.json`:
+`script` (`script_2` after a re-voice), `shots`, `music_prompt` and the report's shot list come from that file, never
+from memory.
 
 - A mismatch between the timestamps' characters and the script, or a saved file's byte size, never makes a run
   partial.
@@ -265,7 +271,7 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
   refused job is listed with `usd` 0; `total` is the sum of the steps' `usd` as listed, to 3 decimals. Nothing paid →
   no steps, total 0. These are estimates from fal's rates, not fal's invoice.
 - `files`: every file of the run: each saved path with the URL it came from, `media/launch.vtt`, and
-  `media/run-keys.json` (`what` `run_keys`, `fal_url` null).
+  `media/run-keys.json` (`what` `run_keys`, `fal_url` null) and `media/plan.json` (`what` `plan`, `fal_url` null).
 - `plans`: the one plan, priced before the first paid call.
 - `report_markdown`: the video first as `![Launch video](media/launch.mp4)` (when the cut was saved), then what the
   plan was priced at on fal before any paid call (its `estimated_usd`, the re-voice reserve included), then the
