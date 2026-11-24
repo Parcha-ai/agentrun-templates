@@ -1,0 +1,118 @@
+{
+ "show": {
+  "name": "KIT show name",
+  "date_label": "KIT Monday, November 23",
+  "anchor_name": "KIT Rowan",
+  "anchor_image": "media/anchor.png"
+ },
+ "segments": [
+  {
+   "name": "cold-open",
+   "script": "KIT the exact text sent to fal for this segment, tags included",
+   "voice": "media/voice-cold-open.mp3",
+   "timestamps": "media/voice-cold-open-timestamps.json",
+   "anchor": "media/anchor-cold-open.mp4",
+   "chyron": "KIT at most 40 characters"
+  },
+  {
+   "name": "headlines",
+   "script": "KIT the exact text sent to fal for this segment, tags included",
+   "voice": "media/voice-headlines.mp3",
+   "timestamps": "media/voice-headlines-timestamps.json",
+   "lines": [
+    "KIT story A in at most 9 words",
+    "KIT story B",
+    "KIT story C"
+   ]
+  },
+  {
+   "name": "lead-a",
+   "script": "KIT the exact text sent to fal for this segment, tags included",
+   "voice": "media/voice-lead-a.mp3",
+   "timestamps": "media/voice-lead-a-timestamps.json",
+   "anchor": "media/anchor-lead-a.mp4",
+   "chyron": "KIT at most 40 characters"
+  },
+  {
+   "name": "story-a",
+   "script": "KIT the exact text sent to fal for this segment, tags included",
+   "voice": "media/voice-story-a.mp3",
+   "timestamps": "media/voice-story-a-timestamps.json",
+   "headline": "KIT at most 8 words from the page",
+   "source": "KIT Outlet, November 22",
+   "facts": [
+    {
+     "text": "KIT 3.2 km",
+     "label": "KIT what the figure counts"
+    },
+    {
+     "text": "KIT “a short quote, exactly as the page gives it”",
+     "label": "KIT who said it, as the page names them"
+    }
+   ],
+   "chyron": "KIT at most 40 characters"
+  },
+  {
+   "name": "lead-b",
+   "script": "KIT the exact text sent to fal for this segment, tags included",
+   "voice": "media/voice-lead-b.mp3",
+   "timestamps": "media/voice-lead-b-timestamps.json",
+   "anchor": "media/anchor-lead-b.mp4",
+   "chyron": "KIT at most 40 characters"
+  },
+  {
+   "name": "story-b",
+   "script": "KIT the exact text sent to fal for this segment, tags included",
+   "voice": "media/voice-story-b.mp3",
+   "timestamps": "media/voice-story-b-timestamps.json",
+   "headline": "KIT at most 8 words from the page",
+   "source": "KIT Outlet, November 22",
+   "facts": [
+    {
+     "text": "KIT 3.2 km",
+     "label": "KIT what the figure counts"
+    },
+    {
+     "text": "KIT “a short quote, exactly as the page gives it”",
+     "label": "KIT who said it, as the page names them"
+    }
+   ],
+   "chyron": "KIT at most 40 characters"
+  },
+  {
+   "name": "lead-c",
+   "script": "KIT the exact text sent to fal for this segment, tags included",
+   "voice": "media/voice-lead-c.mp3",
+   "timestamps": "media/voice-lead-c-timestamps.json",
+   "anchor": "media/anchor-lead-c.mp4",
+   "chyron": "KIT at most 40 characters"
+  },
+  {
+   "name": "story-c",
+   "script": "KIT the exact text sent to fal for this segment, tags included",
+   "voice": "media/voice-story-c.mp3",
+   "timestamps": "media/voice-story-c-timestamps.json",
+   "headline": "KIT at most 8 words from the page",
+   "source": "KIT Outlet, November 22",
+   "facts": [
+    {
+     "text": "KIT 3.2 km",
+     "label": "KIT what the figure counts"
+    },
+    {
+     "text": "KIT “a short quote, exactly as the page gives it”",
+     "label": "KIT who said it, as the page names them"
+    }
+   ],
+   "chyron": "KIT at most 40 characters"
+  },
+  {
+   "name": "closing",
+   "script": "KIT the exact text sent to fal for this segment, tags included",
+   "voice": "media/voice-closing.mp3",
+   "timestamps": "media/voice-closing-timestamps.json",
+   "anchor": "media/anchor-closing.mp4",
+   "chyron": "KIT at most 40 characters"
+  }
+ ]
+}

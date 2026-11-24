@@ -1174,6 +1174,54 @@
       "summary": "Turns a GitHub release into a 30 second film with voiceover, music, captions and a share card. Billed to your fal account."
     },
     {
+      "name": "explainer-video",
+      "source": "./templates/explainer-video",
+      "category": "marketing",
+      "tags": [
+        "video",
+        "avatar",
+        "explainer",
+        "voiceover",
+        "captions",
+        "fal",
+        "elevenlabs",
+        "media"
+      ],
+      "summary": "Turns a doc into a 30 to 60 second talking-head explainer by a made-up presenter, with captions. Billed to your fal account."
+    },
+    {
+      "name": "news-show",
+      "source": "./templates/news-show",
+      "category": "marketing",
+      "tags": [
+        "video",
+        "news",
+        "daily",
+        "avatar",
+        "lip-sync",
+        "hyperframes",
+        "fal",
+        "elevenlabs"
+      ],
+      "summary": "A 90 second daily news show on your beat: three new stories, a fictional AI anchor, captions. Billed to your fal account."
+    },
+    {
+      "name": "music-video",
+      "source": "./templates/music-video",
+      "category": "marketing",
+      "tags": [
+        "video",
+        "music",
+        "music-video",
+        "lyrics",
+        "hyperframes",
+        "fal",
+        "kling",
+        "elevenlabs"
+      ],
+      "summary": "Cuts a music video to your song's beat, with lyric captions, stills and clips. For songs you own or license. Billed to your fal account."
+    },
+    {
       "name": "metrics-video",
       "source": "./templates/metrics-video",
       "category": "finance",

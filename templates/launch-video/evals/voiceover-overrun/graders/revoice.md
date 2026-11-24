@@ -4,13 +4,13 @@ type: llm
 A 30 s launch-video run on a fake fal. The page (Kestrel Field Notes 1.0) says: a notebook app for people who work outdoors (ecologists, surveyors, geologists, field crews); notes, sketches and photos work with no signal and sync on their own when back in range; photos are tagged with GPS location and time and pinned on a map of the site; a day's notes export to CSV or PDF in two taps; free for up to 3 projects, Kestrel Pro $6 a month for unlimited projects and team sharing; available today for iOS and Android.
 
 The fake fal answers: each `submit_job` queues its job with its own handles (each job has its own request id and URLs,
-keyed by `submission_key` `lv-20261120-kestrel-notes.example-<step>`). The grouped `wait_for_jobs` read completes the 6
+keyed by `submission_key` `lv-<stem>-<step>`, the stem the run wrote to `media/run-keys.json`). The grouped `wait_for_jobs` read completes the 6
 clips at indexes 0 to 5 with these video URLs in order: https://v3.fal.media/files/koala/clip1Rk2mVn4pLr7TzH_output.mp4
 through https://v3.fal.media/files/koala/clip6Rk2mVn4pLr7TzH_output.mp4 (the digit after `clip` is the clip's number);
 the FIRST voiceover at index 6 with `https://v3.fal.media/files/zebra/Vo9Lp3Ok9Ij7Uh5Yg1Tf_output.mp3` and `file_size`
 505600 (31.6 s at 128 kbit/s: over the 29 s a 30 s cut holds); the music at index 7 with
 `https://v3.fal.media/files/panda/Mb4Qw8Er1Ty4Ui6Hc7Vb_music.mp3`. The re-voice (key
-`lv-20261120-kestrel-notes.example-voiceover-2`, request id `6b8d0f2a-4c5e-4a7b-9d1f-3e5a7c9b1d2f`) completes with
+`lv-<stem>-voiceover-2`, request id `6b8d0f2a-4c5e-4a7b-9d1f-3e5a7c9b1d2f`) completes with
 `https://v3.fal.media/files/zebra/Vt2Xc6Bn8Mq4Wr1Ez5Ka_output.mp3`, `file_size` 409600 (25.6 s) and character
 timestamps whose first character starts at 0.06 s and last ends at 25.45 s. Compose's cut is
 `https://v3.fal.media/files/lion/Ct5Nm2Bv8Cx1Za4Sd7Fg_composed.mp4`.

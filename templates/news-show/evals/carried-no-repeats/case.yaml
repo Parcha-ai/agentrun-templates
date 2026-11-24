@@ -1,0 +1,20 @@
+# Applied with these parameters, the daily schedule turned on (it is off by default). previous.json seeds the trigger's last completed
+# run (the 2026-11-22 show: R1, R2 and R3, after six stories of two earlier shows), and the schedule trigger starts
+# the run, which is handed that answer whole. The runner serves fixtures/fal-mcp.json as the saved URL server fal;
+# every job completes. web.json fakes the same feed and pages. The show renders for real.
+parameters:
+  topic: city transit
+  urls: ["https://transitwire.example/feed.xml"]
+  daily: true
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+previous: fixtures/previous.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T07:00:00Z

@@ -93,13 +93,18 @@ script and shots you wrote. Never change `length` on your own.
 
 ## 4. Make everything at once
 
-Every paid call gets its own `submission_key`, sent beside `endpoint_id` and `input`, never inside `input`:
-`lv-<date>-<host>-<step>`, where `<date>` is the run's date as eight digits, `<host>` the page's host in lower case
-without `www.` (at most its first 40 characters) and `<step>` one of `clip-1` ... `clip-N`, `voiceover`,
-`voiceover-2` (only for step 6's re-voice), `music`, `cut`. For https://www.example.com/launch on 2026-03-09 the first
-clip's key is `lv-20260309-example.com-clip-1` and the cut's `lv-20260309-example.com-cut`. If fal refuses a key
-because it already holds it for other inputs (the same page made into a video earlier that day), nothing was billed:
-send that one job again with `-b` after its key, once; that is a new job on purpose, not a retry.
+Every paid call gets its own `submission_key`, sent beside `endpoint_id` and `input`, never inside `input`, and kept
+for that job's retries. The keys share one stem per run:
+- Before the first paid call, `read` `media/run-keys.json`. If it holds `{"stem": "<8 lowercase letters and digits>"}`
+  (a resumed run), use that stem. Otherwise make one stem of 8 random lowercase letters and digits and `write` it there
+  as `{"stem": "<stem>"}` before any paid call. Never make a second stem in a run: a retry and a resume reuse it.
+- Keys are `lv-<stem>-<step>`, `<step>` one of `clip-1` ... `clip-N`, `voiceover`, `voiceover-2` (only for step 6's
+  re-voice), `music`, `cut`. No date and no host in a key: the page's URL stays in the answer. With the stem
+  `m8t3x6qe` (an example: make your own), the first clip's key is `lv-m8t3x6qe-clip-1` and the cut's `lv-m8t3x6qe-cut`.
+- If fal refuses a key because it already holds a job for other inputs (a resumed run whose script or shots
+  changed), the run before already sent that step's job, and fal may have billed it. Never send it again under
+  another key, and never take that job's output either: it was made from other inputs. The step is failed, and
+  the answer names its key; no new paid job.
 
 Then, with no other call in between, `submit_job` each job once (each `{...}` below is its `input`):
 
@@ -151,7 +156,7 @@ say so in the report, with `voiceover_seconds_source` `"timestamps"`.
   1) ÷ V × 0.9) words, W the first script's words (tags not counted); the 0.9 is the margin. Cut whole phrases and
   sentences, keep the opening and the call to action, and follow step 2's rules (no new claim, no new word of time).
   Example: W 72, V 32.0, length 30 → 72 × 29 ÷ 32.0 × 0.9 = 58.7, so at most 58 words. `submit_job` it once on
-  `fal-ai/elevenlabs/tts/eleven-v3` with key `lv-<date>-<host>-voiceover-2` and the same `voice`, `stability`,
+  `fal-ai/elevenlabs/tts/eleven-v3` with key `lv-<stem>-voiceover-2` and the same `voice`, `stability`,
   `output_format` and `timestamps`; read it with `wait_for_jobs` (one item, index 0, its own handles); save it to
   `media/voiceover-2.mp3`; work out its V the same way.
   - It fits: cut with this second voiceover and time the captions from its timestamps.
@@ -164,7 +169,7 @@ end of the narration is not made.
 
 ## 7. Cut it
 
-One `run_model` on `fal-ai/ffmpeg-api/compose` with key `lv-<date>-<host>-cut` beside `endpoint_id` and `input`
+One `run_model` on `fal-ai/ffmpeg-api/compose` with key `lv-<stem>-cut` beside `endpoint_id` and `input`
 (never inside `input`). Its `input`, times in milliseconds, the cut `length` seconds long (L = length × 1000):
 
 ```json
@@ -238,7 +243,8 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
   units and rate from `get_pricing` and its `usd` (units × rate to 3 decimals, never rounded to cents); a failed or
   refused job is listed with `usd` 0; `total` is the sum of the steps' `usd` as listed, to 3 decimals. Nothing paid →
   no steps, total 0. These are estimates from fal's rates, not fal's invoice.
-- `files`: every file of the run: each saved path with the URL it came from, and `media/launch.vtt`.
+- `files`: every file of the run: each saved path with the URL it came from, `media/launch.vtt`, and
+  `media/run-keys.json` (`what` `run_keys`, `fal_url` null).
 - `report_markdown`: the video first as `![Launch video](media/launch.mp4)` (when the cut was saved), then the
   script, the voiceover's length and where it came from (and the re-voice, if any, with both lengths), the shot list
   with each shot's prompt, the cost table, and a line on the mix (music not ducked) and on any failed step.

@@ -1,0 +1,60 @@
+<!-- Story segment: the anchor's voice over the story's own words. build-show.mjs writes one scene from this file for
+     each of story-a, story-b and story-c, filling every {{...}} token: the story's letter and source line, its headline (at
+     most 8 words, set as large as the column takes it), one or two facts from its page exactly as the page gives them
+     (a figure with what it counts, or a short quote with who said it), and the chyron in the lower third.
+     Each fact lands on the start of the sentence the voice says it in ({{FACT_AT}}, from the words' times); the whole
+     page pushes in slowly for the scene's length. No outlet's images or logos: type only.
+     Restyle freely; keep the {{P}}- prefix on ids, the tokens, and the facts above the strap and the captions. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--paper); container-type: size; overflow: hidden; }
+    #{{P}}-all { position: absolute; inset: 0; transform-origin: 22% 30%; }
+    #{{P}}-col { position: absolute; left: 7cqw; width: 84cqw; top: 8cqh; bottom: 34cqh; display: flex; flex-direction: column; gap: 3.2cqh; }
+    #{{P}}-kick { display: flex; align-items: center; gap: 1.2cqw; }
+    #{{P}}-slot { width: 7.4cqh; height: 7.4cqh; background: var(--accent); color: var(--accent-ink); font-family: var(--font-display);
+      font-size: 6.4cqh; line-height: 7.4cqh; text-align: center; }
+    #{{P}}-src { font-family: var(--font-text); font-weight: 700; font-size: 3.2cqh; color: var(--ink); }
+    #{{P}}-head { font-family: var(--font-display); text-transform: uppercase; line-height: 0.95; color: var(--ink); font-size: 12cqh; }
+    .{{P}}-hw { display: inline-block; }
+    #{{P}}-facts { display: flex; gap: 5cqw; align-items: flex-start; }
+    .{{P}}-fx { position: relative; max-width: 40cqw; padding-left: 1.6cqw; border-left: 0.9cqh solid var(--accent); }
+    .{{P}}-fx.fig .fv { font-family: var(--font-display); font-size: 13cqh; line-height: 0.95; color: var(--ink); white-space: nowrap; }
+    .{{P}}-fx.quote { max-width: 56cqw; }
+    .{{P}}-fx.quote .fv { font-family: var(--font-text); font-weight: 900; font-size: 4.4cqh; line-height: 1.16; letter-spacing: -0.02em; color: var(--ink); }
+    .{{P}}-fx .fl { margin-top: 1.2cqh; font-family: var(--font-text); font-weight: 700; font-size: 3cqh; line-height: 1.2; color: var(--ink); }
+    #{{P}}-strap { position: absolute; left: 6cqw; bottom: 19cqh; }
+    #{{P}}-chyron { background: var(--night); color: var(--paper); font-family: var(--font-text); font-weight: 900; font-size: 4.6cqh;
+      letter-spacing: -0.01em; padding: 0.26em 0.6em; white-space: nowrap; }
+  </style>
+  <div id="root" data-composition-id="{{ID}}" data-width="1920" data-height="1080">
+    <div id="{{P}}-all">
+      <div id="{{P}}-col">
+        <div id="{{P}}-kick" class="clip" data-start="0" data-duration="{{D}}"><div id="{{P}}-slot">{{SLOT}}</div><div id="{{P}}-src">{{SOURCE}}</div></div>
+        <div id="{{P}}-head" class="clip" data-start="0" data-duration="{{D}}">{{HEADLINE}}</div>
+        <div id="{{P}}-facts">{{FACTS}}</div>
+      </div>
+    </div>
+    <div id="{{P}}-strap" class="clip" data-start="{{STRAP_IN}}" data-duration="{{STRAP_DUR}}"><div id="{{P}}-chyron">{{CHYRON}}</div></div>
+  </div>
+  <script>
+    const D = {{D}}, FACT_AT = {{FACT_AT}}, STRAP_IN = {{STRAP_IN}}, STRAP_DUR = {{STRAP_DUR}};
+    rfReady(["{{P}}-head", "{{P}}-src"]).then(() => {
+    // The headline as large as the column takes it: its width, and at most 26% of the frame's height (two lines).
+    const head = document.getElementById("{{P}}-head");
+    rfFit(head, { w: 0.84 * innerWidth / 1.04, h: 0.26 * innerHeight, max: 0.14 * innerHeight, units: [...head.querySelectorAll(".{{P}}-hw")].map((e) => e.textContent) });
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#{{P}}-all", { scale: 1 }, { scale: 1.04, duration: D, ease: "none" }, 0);
+    tl.fromTo("#{{P}}-slot", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.3, ease: "expo.out" }, 0.05);
+    tl.fromTo("#{{P}}-src", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 0.2);
+    tl.fromTo(".{{P}}-hw", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16, stagger: 0.07, ease: "power4.out" }, 0.25);
+    // Each fact lands on the sentence that says it: a short punch from a little larger.
+    document.querySelectorAll(".{{P}}-fx").forEach((fx, i) => {
+      const at = FACT_AT[i] ?? 1.5 + i * 3;
+      tl.fromTo(fx, { opacity: 0, scale: 1.08, filter: "blur(6px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.28, ease: "expo.out" }, at);
+    });
+    tl.fromTo("#{{P}}-chyron", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, STRAP_IN);
+    tl.fromTo("#{{P}}-chyron", { clipPath: "inset(0 0% 0 0)" }, { clipPath: "inset(0 0% 0 100%)", duration: 0.2, ease: "power3.in" }, STRAP_IN + STRAP_DUR - 0.24);
+    window.__timelines["{{ID}}"] = tl;
+    });
+  </script>
+</template>

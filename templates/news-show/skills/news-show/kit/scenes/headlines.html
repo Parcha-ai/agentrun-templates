@@ -1,0 +1,41 @@
+<!-- Headlines: the voice says the three stories, one sentence each, and each lands as a line on the sentence that says
+     it ({{LINE_AT}}, from the words' times); the line before steps back as the next lands. build-show.mjs fills every
+     {{...}} token: the show's line at the top and the three lines (each at most 9 words, the story's own news, no claim
+     its page doesn't make). Restyle freely; keep the {{P}}- prefix on ids, the tokens, and the lines above the captions. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--night); container-type: size; overflow: hidden; }
+    #{{P}}-all { position: absolute; inset: 0; transform-origin: 20% 40%; }
+    #{{P}}-top { position: absolute; left: 7cqw; top: 9cqh; display: flex; align-items: center; gap: 1.4cqw; }
+    #{{P}}-label { background: var(--signal); color: var(--signal-ink); font-family: var(--font-text); font-weight: 900; font-size: 2.7cqh;
+      letter-spacing: 0.08em; padding: 0.34em 0.7em; text-transform: uppercase; }
+    #{{P}}-show { font-family: var(--font-text); font-weight: 700; font-size: 3.2cqh; color: var(--paper); }
+    #{{P}}-rows { position: absolute; left: 7cqw; right: 7cqw; top: 22cqh; bottom: 30cqh; display: flex; flex-direction: column; justify-content: space-between; }
+    .{{P}}-row { display: flex; align-items: center; gap: 2.2cqw; }
+    .{{P}}-slot { flex: none; width: 9cqh; height: 9cqh; background: var(--accent); color: var(--accent-ink); font-family: var(--font-display);
+      font-size: 7.6cqh; line-height: 9cqh; text-align: center; }
+    .{{P}}-line { font-family: var(--font-text); font-weight: 900; font-size: 5.6cqh; line-height: 1.1; letter-spacing: -0.02em; color: var(--paper); }
+  </style>
+  <div id="root" data-composition-id="{{ID}}" data-width="1920" data-height="1080">
+    <div id="{{P}}-all">
+      <div id="{{P}}-top" class="clip" data-start="0" data-duration="{{D}}"><div id="{{P}}-label">{{LABEL}}</div><div id="{{P}}-show">{{SHOW}}</div></div>
+      <div id="{{P}}-rows">{{ROWS}}</div>
+    </div>
+  </div>
+  <script>
+    const D = {{D}}, LINE_AT = {{LINE_AT}};
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#{{P}}-all", { scale: 1 }, { scale: 1.03, duration: D, ease: "none" }, 0);
+    tl.fromTo("#{{P}}-label", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.3, ease: "expo.out" }, 0);
+    tl.fromTo("#{{P}}-show", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 0.15);
+    const rows = [...document.querySelectorAll(".{{P}}-row")];
+    rows.forEach((row, i) => {
+      const at = LINE_AT[i] ?? 0.4 + i * (D / 3);
+      tl.fromTo(row.querySelector(".{{P}}-slot"), { scale: 0 }, { scale: 1, duration: 0.25, ease: "expo.out" }, at);
+      tl.fromTo(row.querySelector(".{{P}}-line"), { opacity: 0, x: 60, filter: "blur(8px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.3, ease: "expo.out" }, at + 0.08);
+      // The line before steps back when this one lands.
+      if (i > 0) tl.fromTo(rows[i - 1], { opacity: 1 }, { opacity: 0.42, duration: 0.25, ease: "power2.out", immediateRender: false }, at);
+    });
+    window.__timelines["{{ID}}"] = tl;
+  </script>
+</template>

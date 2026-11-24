@@ -1,0 +1,21 @@
+# Applied with these parameters: the owner's own anchor image (https://deskcast.example/press/anchor-rowan.png, a
+# 160x90 PNG served by web.json), so no still is made. The runner serves fixtures/fal-mcp.json as the saved URL server
+# fal: the nine voices complete on one grouped read; the grouped read of the five Fabric jobs answers lead-c (index 3)
+# still IN_PROGRESS and the rest completed, and a one-item read of lead-c's handles completes it. The show is built
+# and rendered for real.
+parameters:
+  topic: city transit
+  urls: ["https://transitwire.example/feed.xml"]
+  daily: false
+  anchor_image_url: https://deskcast.example/press/anchor-rowan.png
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T07:00:00Z
