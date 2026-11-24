@@ -20,4 +20,4 @@ grants:
   - mcp:fal/submit_job
   - mcp:fal/wait_for_jobs
   - mcp:fal/get_submission
-now: 2026-11-23T07:00:00Z
+now: 2026-11-23T06:00:00Z

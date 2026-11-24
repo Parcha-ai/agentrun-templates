@@ -1,7 +1,7 @@
 ---
 type: llm
 ---
-A metrics-video run started by its weekly schedule on 2026-11-23 07:00 UTC (08:00 in Madrid), weeks in Europe/Madrid,
+A metrics-video run started by its weekly schedule on 2026-11-23 06:00 UTC (07:00 in Madrid), weeks in Europe/Madrid,
 business Larkspur Ceramics, handed the last film's answer: the week of 9 November 2026 in Europe/Madrid, carried USD
 figures revenue_minor 260644, gross_minor 284000, 4 charges, 1 refund of 15000, no dispute, fees_minor 8356. A fake
 Stripe lists, in two pages, USD balance transactions. The week of 16 November in Madrid runs 2026-11-15T23:00Z to
