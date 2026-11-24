@@ -7,7 +7,7 @@ captions-fr 0.015 each; total 1.395.
 
 Read the answer's last fenced `json` block. Pass only if all hold:
 
-1. `status` is `saved`; `source_language` is `en`; `duration_s` is 30; `failed_step` and `error` are null; `cheaper_plan` is null; `ignored_instructions` is empty;
+1. `status` is `saved`; `source_language` is `en`; `duration_s` is 30; `failed_step` and `error` are null; `ignored_instructions` is empty;
    `lipsync.asked` is false and `lipsync.refused` null.
 2. `languages` has `es` then `fr`, each `saved`, with `video_path` `media/<lang>.mp4`, `captions_path` `media/<lang>.vtt`
    and `fal_url` the dub URL (`https://v3.fal.media/files/penguin/Hq7Tz2Lm9Wx4Rb8Kc1Ns_dubbed.mp4`, `https://v3.fal.media/files/otter/Fp3Vn8Qy5Jd2Ga6Ue0Mr_dubbed.mp4`).

@@ -65,7 +65,7 @@ Keep music at 60 s or less: longer requests often time out in the queue.
 | endpoint | use it for |
 |---|---|
 | `fal-ai/elevenlabs/speech-to-text` | word timestamps, the language it heard, several speakers; billed per minute of the input media |
-| `fal-ai/whisper` | one speaker, segment timestamps; billed per compute second, which a run with a spend cap can't price before it runs, so the cap refuses it |
+| `fal-ai/whisper` | one speaker, segment timestamps; billed per compute second, which can't be priced before it runs, so the plan's price would be a guess |
 
 A transcript needs audio at a public URL: mp3, wav, m4a or ogg. fal refuses a video file (an mp4 or mov in
 `audio_url`) before anything runs or bills, with the code `separate_keyed_conversion_required`: take the voice out of
@@ -79,7 +79,7 @@ the video first (below) and transcribe that. An input the person gave as a file 
 It takes `video_url` (or `audio_url`) and answers `{"audio": {"url", "content_type", "file_size"}, "timestamps"}`.
 Give its `audio.url`, exactly as answered, to speech-to-text. It runs about as fast as the media plays: `run_model` it,
 and follow a `processing` answer with `wait_for_jobs`. Prefer it to an ffmpeg or compressor endpoint: those bill per
-compute second, which a run with a spend cap can't price before it runs, so the cap refuses them.
+compute second, which can't be priced before they run.
 
 `fal-ai/elevenlabs/speech-to-text` takes `audio_url`, and optionally `language_code`, `tag_audio_events` (default true:
 set false for captions, so "(laughter)" isn't a word) and `diarize`. It answers `{"text", "language_code",
@@ -109,8 +109,7 @@ It takes `video_url` (the face), `audio_url` (the speech: audio, not a video), `
 `lipsync-2-pro`, about 1.67 times the price), `sync_mode` for when the audio and the video differ in length (`cut_off`,
 the default, ends at the shorter one; `loop`, `bounce`, `silence`, `remap`) and `enable_safety_checker`, and answers
 `{"video": {"url", "content_type", "file_name", "file_size"}}`. It takes minutes: queue it with `submit_job` and follow
-it. `fal-ai/sync-lipsync/v3` costs far more and a run with a spend cap can't price it before it runs, so the cap
-refuses it. Lipsync moves a real face: only the person's own face, or an AI-generated or stock face they have the
+it. `fal-ai/sync-lipsync/v3` costs far more and can't be priced before it runs. Lipsync moves a real face: only the person's own face, or an AI-generated or stock face they have the
 rights to.
 
 ## Several jobs at once

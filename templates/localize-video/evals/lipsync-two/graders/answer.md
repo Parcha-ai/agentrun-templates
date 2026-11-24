@@ -8,7 +8,7 @@ at M = 0.5, each dub a whole minute: 0.065 + 2 × (0.6 + 0.05 + 0.015 + 1.5) = 4
 Read the answer's last fenced `json` block. Pass only if all hold:
 
 1. **Consent recorded.** `lipsync.asked` is true, `lipsync.face_rights` is `own_face` and `lipsync.refused` is null.
-2. `status` is `saved`; `failed_step` and `error` are null; `cheaper_plan` is null; `plan` has languages `es`, `fr`,
+2. `status` is `saved`; `failed_step` and `error` are null; `plan` has languages `es`, `fr`,
    `captions` true, `lipsync` true and `estimated_usd` between 4.39 and 4.40.
 3. `languages` has `es` then `fr`, each `saved`, with `video_path` `media/<lang>.mp4`, `captions_path`
    `media/<lang>.vtt`, `lipsync_path` `media/lipsync-<lang>.mp4` and `lipsync_error` null.
