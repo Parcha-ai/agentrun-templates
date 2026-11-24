@@ -6,8 +6,8 @@ https://v3.fal.media/files/koala/Pr7tQ2xWm4Kd9Ls1Vb3Nz.png), fal-ai/elevenlabs/t
 MP3 at https://v3.fal.media/files/zebra/Vo5Hn8Jc2Rt6Yp0Ws4Lq_output.mp3 with `file_size` 466560, so 466560 × 8 ÷ 128000 =
 29.16 s, and character timestamps ending at 28.86 s) and veed/fabric-1.0 (request c3d4e5f6-…, an MP4
 at https://v3.fal.media/files/lion/Fb2Mk7Tq9Xc4Ze1Ra6Ud_output.mp4). Rates: nano-banana $0.0398 an image, eleven-v3
-$0.10 per 1000 characters, Fabric $0.08 a second at 480p. 29.16 × 0.08 = 2.33 plus the spend so far is well
-within the default max_fal_usd of 6, so no re-voice is due.
+$0.10 per 1000 characters, Fabric $0.08 a second at 480p. The input sets no fal ceiling and Fabric states no
+audio limit, so no re-voice is due.
 
 Read the calls in order and the answer's last fenced `json` block. Pass only if all hold:
 

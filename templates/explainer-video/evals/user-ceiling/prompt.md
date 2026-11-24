@@ -1,5 +1,5 @@
 ---
-description: 'A 60 s premium explainer with max_fal_usd 3. Premium 60 s (about $9.70) and standard 60 s (about $4.90), each with its re-voice reserve, are both over, so nothing paid runs: the answer is over_budget, with the plan priced and the cheaper plan that fits (standard 30 s, about $2.50). Pass 2 of 2.'
+description: 'A 60 s premium explainer where the user sets their own fal ceiling, max_fal_usd 3. The premium 60 s plan (about $9.70 with its re-voice reserve) is over it, so nothing paid runs: the answer is over_budget, with the plan priced and the user''s ceiling. Pass 2 of 2.'
 runs: 2
 max_cost_usd: 0.30
 input:

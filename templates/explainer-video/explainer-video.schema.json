@@ -5,9 +5,9 @@
   "description": "The script written from the doc, the made-up presenter and voice, the files saved in the run's files, and what each fal step cost.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["status", "source", "doc_read", "script", "word_count", "length_s", "audio_seconds", "audio_seconds_source", "presenter", "portrait_prompt", "voice", "quality_requested", "quality_used", "avatar_model", "resolution", "max_fal_usd", "plan_usd", "cheaper_plan", "steps", "fal_cost_usd", "files", "failed_step", "error", "likeness_declined", "omitted", "ignored_instructions", "notes", "report_markdown"],
+  "required": ["status", "source", "doc_read", "script", "word_count", "length_s", "audio_seconds", "audio_seconds_source", "presenter", "portrait_prompt", "voice", "quality_requested", "quality_used", "avatar_model", "resolution", "max_fal_usd", "plan_usd", "steps", "fal_cost_usd", "files", "failed_step", "error", "likeness_declined", "omitted", "ignored_instructions", "notes", "report_markdown"],
   "properties": {
-    "status": { "enum": ["saved", "partial", "over_budget", "failed", "not_saved"], "description": "saved: the video and every file are in the run's files; partial: a step failed or was stopped and what exists is saved; over_budget: the plan is over max_fal_usd and nothing was made; failed: nothing was made; not_saved: the video was made and its save failed" },
+    "status": { "enum": ["saved", "partial", "over_budget", "failed", "not_saved"], "description": "saved: the video and every file are in the run's files; partial: a step failed or was stopped and what exists is saved; over_budget: the plan is over the fal ceiling the user set (max_fal_usd) and nothing was made; failed: nothing was made; not_saved: the video was made and its save failed" },
     "source": { "type": "string", "maxLength": 2000, "description": "the doc's url, or \"text\" for pasted text" },
     "doc_read": { "type": "boolean", "description": "whether the doc was read (the text given, or the page fetched)" },
     "script": { "type": "string", "maxLength": 2000, "description": "the exact text of the last voiceover sent to ElevenLabs (the re-voice's when there was one), audio tags included; empty when none was written" },
@@ -22,15 +22,8 @@
     "quality_used": { "enum": ["standard", "premium", null], "description": "the plan run or priced; null when nothing was priced" },
     "avatar_model": { "type": ["string", "null"], "description": "the talking-head endpoint of the plan" },
     "resolution": { "enum": ["480p", "720p", null], "description": "the talking head's resolution" },
-    "max_fal_usd": { "type": "number" },
-    "plan_usd": { "type": ["number", "null"], "minimum": 0, "description": "the whole plan priced before the first paid call" },
-    "cheaper_plan": {
-      "type": ["object", "null"],
-      "additionalProperties": false,
-      "required": ["length_s", "quality", "fal_cost_usd"],
-      "properties": { "length_s": { "enum": [30, 45] }, "quality": { "const": "standard" }, "fal_cost_usd": { "type": "number", "minimum": 0 } },
-      "description": "over_budget only: the plan that would fit max_fal_usd; null otherwise"
-    },
+    "max_fal_usd": { "type": ["number", "null"], "minimum": 0, "description": "the fal ceiling the user set; null when they set none" },
+    "plan_usd": { "type": ["number", "null"], "minimum": 0, "description": "the run's estimated fal cost: the whole plan priced before the first paid call, a re-voice reserve included" },
     "steps": {
       "type": "array",
       "maxItems": 4,
