@@ -144,7 +144,10 @@ never inside `input`, and kept for that job's retries. The keys share one stem p
   follow what it answers; `not_found` or `submission_unknown` makes the step failed, never a new paid job.
 
 A `run_model` that answers `processing` is followed with `wait_for_jobs` (one item, index 0, its four handles copied
-exactly as answered: `response_url` ends where fal ended it, nothing such as `/response` added) and never run again.
+exactly as answered) and never run again. fal's `status_url` ends in `/status` but its `response_url` ends at the
+request id, with nothing after it: `{"jobs": [{"index": 0, "endpoint_id": "fal-ai/elevenlabs/audio-isolation",
+"request_id": "<id>", "status_url": "https://queue.fal.run/fal-ai/elevenlabs/requests/<id>/status", "response_url":
+"https://queue.fal.run/fal-ai/elevenlabs/requests/<id>"}]}`. Never add `/response` or anything else to it.
 
 ## 5. Read the source
 
