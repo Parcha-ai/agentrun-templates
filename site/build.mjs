@@ -116,6 +116,8 @@ export async function build(options = {}) {
     // What installs it, pinned as its page's Install button pins it: an AgentRun console lists these templates and
     // installs one from here, without opening its page.
     source: p.installSource,
+    // Its harness preference list (agent.md `harness`; empty for any), so a console draws its icon as it does its own.
+    harness: p.harness,
   }))) + "\n");
 
   const priority = (path) => (path === "/" ? "1.0" : path.startsWith("/templates/") ? "0.8" : "0.6");
