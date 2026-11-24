@@ -251,8 +251,11 @@ test("the index lists each package once, whatever name, pin or spelling an entry
       { name: "code-review", source: "github:Parcha-ai/agentrun/packages/serve/templates/code-review" },
       { name: "release-notes", source: "github:Parcha-ai/agentrun/packages/serve/templates/release-notes" },
       { name: "watch", source: "./templates/watch" },
+      // A folder's path is case-sensitive on GitHub: these are two folders.
+      { name: "watch-gh", source: "github:Parcha-ai/agentrun-templates/templates/watch" },
+      { name: "watch-gh-upper", source: "github:Parcha-ai/agentrun-templates/templates/Watch" },
     ]);
-    assert.equal(readIndex(dir).templates.length, 3);
+    assert.equal(readIndex(dir).templates.length, 5);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
