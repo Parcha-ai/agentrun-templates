@@ -42,7 +42,7 @@ inputs:
   voice: { type: string, required: false, enum: [Rachel, Aria, Sarah, Laura, Charlotte, Alice, Matilda, Jessica, Lily, Roger, Charlie, George, Callum, River, Liam, Will, Eric, Chris, Brian, Daniel, Bill], default: Aria, title: "Voice", description: "An ElevenLabs voice by name" }
   max_fal_usd: { type: number, required: false, minimum: 0, title: "Your fal ceiling (USD)", description: "Optional, and no ceiling when left empty. The run always prices its plan first (the voiceover, a second shorter voiceover held in reserve, and the music) and says what it will cost on fal. Set a ceiling and a plan over it is refused before any paid call. A film is about $0.40." }
 # The $1,000 accident guard, not a tuned number: it stops a runaway run, never an ordinary one. A film is about $0.40 of
-# fal plus the model's share (measured.json).
+# fal plus the model's share.
 budget: { per_run_usd: 1000 }
 approvals: never
 triggers:
