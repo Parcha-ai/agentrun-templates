@@ -253,7 +253,10 @@ When the film is rendered, `node film/beats.mjs cost` (the skill's step 8) gives
 `json` block that meets the output schema, and nothing after it:
 
 - `status`: `completed`, `partial`, `over_budget` (only over a `max_fal_usd` the user set), `refused` or `failed`;
-  `failed_step` and `error`, null when none.
+  `failed_step` and `error`, null when none. `partial` and `failed` come only from the failed steps this page names
+  (a job fal failed, refused or held, a save, `place`, the render); how a still or a clip looks never does: a film made
+  from every step with every job completed is `completed`, and a picture that misses its storyboard is said in the
+  report, not in `error` or a shot's `error`.
 - `song`: `url` (as given), `rights` (`song_rights`, else null), `duration_s` (`web_save`'s, null when not saved).
 - `beats`, `cut` and `shots`: from the plan's `answer fields` line, exactly as printed (null and empty when there is no
   plan). Each shot also carries its `lyric` (from `beats.mjs lyrics`, empty when none), `picture` (its storyboard
