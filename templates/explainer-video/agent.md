@@ -230,11 +230,22 @@ tag after it. For example, if S begins `[warmly] Go` and the `G` starts at 0.160
 at O + 30.720. In between:
 - when S spells the text you sent (fal's does, tags included), find each cue's words in S in order, each search
   starting where the previous cue ended; a cue starts at O + the start of its first letter or digit and ends at O +
-  the end of its last letter or digit (not the punctuation after it);
+  the end of its last letter or digit (not the punctuation after it): that letter's own entry in
+  `character_end_times_seconds`, never its start and never the end of the letter before it (a cue ending `the`
+  ends at the `e`'s end time);
 - when it doesn't, it is still fal's timing of this voiceover: don't report it as a fault; place the cues back to back
-  between the two anchors, each lasting its share of the words you sent. Every sentence gets its cues.
+  between the two anchors, each lasting its share of the words you sent, as below. Every sentence gets its cues.
+
+**Back to back by share of words.** W is the spoken words of the script you sent (audio tags not counted; a hyphenated
+word such as "sixty-four" is one word), the `word_count` you report. Split the cue text into cues and count each cue's
+words n; the cues' counts must add up to W exactly, so when they don't, count both again before you go on. Each word
+then lasts P = (end anchor − start anchor) ÷ W. A cue that follows k words of earlier cues starts at start anchor +
+k × P and ends at start anchor + (k + n) × P, so each cue ends where the next starts and the last ends on the end
+anchor. Example: anchors 0.150 and 28.785, W 70, so P = 28.635 ÷ 70 = 0.40907 (keep five decimals); a first cue of 9
+words runs 0.150 to 0.150 + 9 × 0.40907 = 3.832, the next, of 7 words, from 3.832 to 0.150 + 16 × 0.40907 = 6.695.
+
 Only when fal answered no timestamps at all (null, missing or empty), place the cues back to back from O to O + V the
-same way, by share of words, V being the voice's length from its `file_size`. With no timestamps and no `file_size`
+same way, by share of words (start anchor O, end anchor O + V), V being the voice's length from its `file_size`. With no timestamps and no `file_size`
 either, V is unknown (step 6): write no captions file, and say in `notes` that fal stated neither, so nothing tells
 when the voice ends.
 
