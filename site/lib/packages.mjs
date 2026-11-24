@@ -40,6 +40,9 @@ export function readIndex(root) {
   const problems = [];
   if (!index || typeof index !== "object" || !Array.isArray(index.templates)) throw new SiteError(`${file}: expected {name, owner, templates: [...]}`);
   const seen = new Set();
+  // Each package once: one package under two names is two cards for one template, on this site and in an AgentRun
+  // console that lists this index. A package is its repository and folder; its pin and spelling don't make it another.
+  const packages = new Map();
   for (const [k, t] of index.templates.entries()) {
     const at = `templates[${k}]`;
     if (!t || typeof t.name !== "string" || !NAME.test(t.name)) problems.push(`${at}.name must match ${NAME}`);
@@ -47,6 +50,13 @@ export function readIndex(root) {
     else seen.add(t.name);
     if (typeof t.source !== "string") problems.push(`${at}.source is required`);
     else if (!t.source.startsWith("./") && !parseGithubSource(t.source)) problems.push(`${at}.source "${t.source}" is neither ./<path> nor github:<owner>/<repo>[/<path>][@<ref>]`);
+    else {
+      const g = t.source.startsWith("./") ? null : parseGithubSource(t.source);
+      const pkg = g ? `github:${g.owner}/${g.repo}/${g.path}`.toLowerCase() : `./${t.source.slice(2).replace(/\/+$/, "")}`;
+      const first = packages.get(pkg);
+      if (first) problems.push(`${at}.source "${t.source}" is the package ${first.at} (${first.name}) lists: list each package once`);
+      else packages.set(pkg, { at, name: t?.name });
+    }
     if (t.category !== undefined && !CATEGORIES.includes(t.category)) problems.push(`${at}.category "${t.category}" is not one of ${CATEGORIES.join(", ")}`);
     // summary: the one line on the card and under the page title, what it does. setup: what to do before installing,
     // said once in the Install section.

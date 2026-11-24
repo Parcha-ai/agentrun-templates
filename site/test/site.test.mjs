@@ -231,6 +231,33 @@ test("the index is checked", () => {
   }
 });
 
+test("the index lists each package once, whatever name, pin or spelling an entry gives it", () => {
+  const dir = mkdtempSync(join(tmpdir(), "site-index-"));
+  const summary = "A summary long enough to pass the index check.";
+  const index = (templates) => writeFileSync(join(dir, ".agentrun", "marketplace.json"), JSON.stringify({ templates: templates.map((t) => ({ summary, ...t })) }));
+  try {
+    mkdirSync(join(dir, ".agentrun"));
+    // One package under two names is two cards for one template: here, and in a console that lists this index.
+    index([
+      { name: "code-review", source: "github:Parcha-ai/agentrun/packages/serve/templates/code-review" },
+      { name: "pr-reviewer", source: "github:parcha-ai/AgentRun/packages/serve/templates/code-review/@abc123" },
+      { name: "watch", source: "./templates/watch" },
+      { name: "watch-again", source: "./templates/watch/" },
+    ]);
+    assert.throws(() => readIndex(dir), (err) => /templates\[1\]\.source .* is the package templates\[0\] \(code-review\) lists/.test(err.message)
+      && /templates\[3\]\.source .* is the package templates\[2\] \(watch\) lists/.test(err.message));
+    // Two packages side by side in one repository are two templates.
+    index([
+      { name: "code-review", source: "github:Parcha-ai/agentrun/packages/serve/templates/code-review" },
+      { name: "release-notes", source: "github:Parcha-ai/agentrun/packages/serve/templates/release-notes" },
+      { name: "watch", source: "./templates/watch" },
+    ]);
+    assert.equal(readIndex(dir).templates.length, 3);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("builds the fixture into pages that pass the checker", async () => {
   const out = mkdtempSync(join(tmpdir(), "site-dist-"));
   const cache = mkdtempSync(join(tmpdir(), "site-cache-"));
