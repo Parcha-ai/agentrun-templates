@@ -2,7 +2,7 @@
 type: llm
 ---
 A launch-video run on a fake fal. The page (Kestrel Field Notes 1.0) says: a notebook app for people who work outdoors (ecologists, surveyors, geologists, field crews); notes, sketches and photos work with no signal and sync on their own when back in range; photos are tagged with GPS location and time and pinned on a map of the site; a day's notes export to CSV or PDF in two taps; free for up to 3 projects, Kestrel Pro $6 a month for unlimited projects and team sharing; available today for iOS and Android.
-Input: tone calm, voice George, length 30.
+Input: tone calm, voice George, length 30, clip_model hailuo (no max_fal_usd).
 
 Read the `submit_job` call on `fal-ai/elevenlabs/tts/eleven-v3` (its `input.text` is the script) and the answer's last fenced `json` block.
 Pass only if all hold:
@@ -15,8 +15,8 @@ Pass only if all hold:
    music, cut) with units, rate and usd; `fal_cost_usd.total` is their sum and between 1.6 and 1.8.
 4. **Files.** `files` names `media/launch.mp4`, `media/launch.vtt`, `media/voiceover.mp3` and each `media/clip-<n>.mp4`.
    `report_markdown` embeds `![Launch video](media/launch.mp4)` and says the music is not ducked (plays at its own level).
-5. **Status.** `status` is `saved`; `plans` prices both plans (Kling above $2, Hailuo at or under it), each with a
-   `revoice_reserve_usd` that is the voiceover's own cost (between 0.02 and 0.09) and counted in its `estimated_usd`.
+5. **Status.** `status` is `saved`; `plans` prices the Hailuo plan (5 clips × 6 s), its `estimated_usd` between 1.55
+   and 1.85 with a `revoice_reserve_usd` that is the voiceover's own cost (between 0.02 and 0.09) and counted in it.
 6. **Voiceover length.** `voiceover_seconds` is 27.4 (27.35 to 27.45, from fal's `file_size` 438400 × 8 ÷ 128000),
    `voiceover_seconds_source` is `file_size`, and `voiceover_takes` holds one take.
 

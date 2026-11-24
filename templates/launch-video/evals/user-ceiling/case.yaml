@@ -1,4 +1,4 @@
-# The runner serves fixtures/fal-mcp.json as the saved URL server fal (every job would complete, but the cap is below every plan). web.json fakes the product page and fal's CDN files (tiny real media). Pass: 2 of 2 runs.
+# The runner serves fixtures/fal-mcp.json as the saved URL server fal (every job would complete, but the plan costs more than the ceiling the user set, max_fal_usd 1). web.json fakes the product page and fal's CDN files (tiny real media). Pass: 2 of 2 runs.
 mcp:
   fal: fixtures/fal-mcp.json
 web: fixtures/web.json
