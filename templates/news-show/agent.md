@@ -2,7 +2,7 @@
 name: news-show
 display_name: "News show: ${parameters.show_name}"
 version: 0.1.0
-description: "A 90 second daily news show on your beat, presented by a fictional AI anchor. Each show reads your feeds (or searches your topic), picks three stories it has not shown before and writes a fixed-format script: cold open, headlines, three stories, closing. ElevenLabs v3 voices it and VEED Fabric makes the anchor speak, on fal.ai; the show is built and rendered with HyperFrames in its sandbox, with each source's own figures and quotes, chyrons and captions. It says it is AI-generated on screen from the first frame and aloud in its first sentences. The anchor is your own image or a generated made-up person, never a real one. About $3 of fal a show, priced before any paid call. The daily schedule is off until you turn on daily. Needs a sandbox with Chrome, FFmpeg and the HyperFrames CLI, and your fal key as the fal server in Settings → MCP servers."
+description: "A 90 second daily news show on your beat, presented by a fictional AI anchor. Each show reads your feeds (or searches your topic), picks three stories it has not shown before and writes a fixed-format script: cold open, headlines, three stories, closing. ElevenLabs v3 voices it and VEED Fabric makes the anchor speak, on fal.ai; the show is built and rendered with HyperFrames in its sandbox, with each source's own figures and quotes, chyrons and captions. It says it is AI-generated on screen from the first frame and aloud in its first sentences. The anchor is your own image or a generated made-up person, never a real one. It prices the show before any paid call and says up front what it will cost on fal: about $3 on the full plan. Set a ceiling and a show over it is refused before anything is paid; with none, nothing is refused for price. The daily schedule is off until you turn on daily. Needs a sandbox with Chrome, FFmpeg and the HyperFrames CLI, and your fal key as the fal server in Settings → MCP servers."
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -36,8 +36,8 @@ parameters:
   anchor_look: { type: string, required: false, maxLength: 300, default: "a woman in her thirties with short dark hair and a navy jacket", description: "how the generated anchor looks: age range, hair, clothing. Always a made-up person: a request to resemble a real one is declined. Unused when anchor_image_url is set" }
   voice: { type: string, enum: [Rachel, Aria, Sarah, Laura, Charlotte, Alice, Matilda, Jessica, Lily, Roger, Charlie, George, Callum, River, Liam, Will, Eric, Chris, Brian, Daniel, Bill], default: Aria, required: false, description: "the anchor's ElevenLabs voice, by name" }
   show_name: { type: string, pattern: "^[^\\n]{2,40}$", default: "The Daily Desk", required: false, description: "the show's name, said in the cold open and shown on screen" }
-  max_fal_usd: { type: number, minimum: 0, maximum: 6, default: 4, required: false, description: "the most a show may spend on fal (a show is about $3); a show over it is refused before any paid call, with the cheaper plan named" }
-  plan: { type: string, enum: [full, short, voice-only], default: full, required: false, description: "how much of the anchor is animated: full (the cold open, the three leads and the closing, about $3), short (the cold open and the closing, about $1.65) or voice-only (no anchor clip and no still, about $0.14). When a show is refused over max_fal_usd, it names the plan that fits" }
+  max_fal_usd: { type: number, minimum: 0, required: false, description: "optional: your own ceiling on fal per show. Empty: no ceiling, nothing is refused for price. Set one and a show whose plan costs more is refused before any paid call. The full plan is about $3, short about $1.65, voice-only about $0.14" }
+  plan: { type: string, enum: [full, short, voice-only], default: full, required: false, description: "how much of the anchor is animated: full (the cold open, the three leads and the closing, about $3), short (the cold open and the closing, about $1.65) or voice-only (no anchor clip and no still, about $0.14)" }
   daily: { type: boolean, default: false, required: false, description: "make a show every day on the schedule below, about $3 of fal a day. Off (the default): a show only when you start a run" }
   cron: { type: string, format: cron, default: "0 7 * * *", required: false, description: "when the show is made, as a cron line: 07:00 every day unless you set it" }
   timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in: UTC unless you set it" }
@@ -45,12 +45,12 @@ inputs:
   topic: { type: string, required: false, minLength: 2, maxLength: 120, title: "Topic", description: "This show's beat. Blank: the agent's topic." }
   urls: { type: array, required: false, items: { type: string, format: uri, maxLength: 500 }, title: "Feeds or pages", description: "Read first, at most five. Blank: the agent's. Their text goes to fal and its model providers only as the scripts written from it." }
   anchor_image_url: { type: string, format: uri, required: false, maxLength: 2000, title: "Anchor image", description: "A public image of your own anchor. Blank: the agent's, else a generated made-up anchor." }
-  max_fal_usd: { type: number, required: false, minimum: 0, maximum: 6, title: "Most to spend on fal (USD)", description: "Blank: the agent's (4 unless set). A show is about $3." }
+  max_fal_usd: { type: number, required: false, minimum: 0, title: "Your ceiling on fal (USD)", description: "Optional. Blank: the agent's (none unless set). Set one and a show whose plan costs more is refused before any paid call. A full show is about $3." }
   plan: { type: string, required: false, enum: [full, short, voice-only], title: "Plan", description: "How much of the anchor is animated. Blank: the agent's (full unless set)." }
-# The run's cap counts the fal jobs (each priced before it is sent) and the model: fal at most max_fal_usd (default 4,
-# at most 6; a show is about $3) plus the model's share of a research, nine scripts and a nine-scene film, which the
-# remaining $4 or more covers.
-budget: { per_run_usd: 10.00 }
+# The $1,000 accident guard, not a tuned number: it stops a runaway run. What a show costs is its plan's price on fal
+# (about $3 on the full plan) plus the model's share of a research, nine scripts and a nine-scene film; a ceiling of
+# your own is max_fal_usd.
+budget: { per_run_usd: 1000 }
 approvals: never
 triggers:
   - name: daily-show
@@ -81,7 +81,7 @@ with HyperFrames.
 
 Each run carries an `Input:` json block with maybe `topic`, `urls`, `anchor_image_url`, `max_fal_usd` and `plan`. A
 value it leaves out is the agent's setting: topic "${parameters.topic}", urls "${parameters.urls}" (blank: none), anchor
-image "${parameters.anchor_image_url}" (blank: none), max_fal_usd ${parameters.max_fal_usd}, plan ${parameters.plan}. The show is "${parameters.show_name}", the anchor
+image "${parameters.anchor_image_url}" (blank: none), max_fal_usd "${parameters.max_fal_usd}" (the user's ceiling on fal; blank: none), plan ${parameters.plan}. The show is "${parameters.show_name}", the anchor
 ${parameters.anchor_name}, the voice ${parameters.voice}, the generated anchor's look "${parameters.anchor_look}". The
 show's date is the run's date. Never stop to ask: take the likeliest reading and say which in `notes`.
 
@@ -143,7 +143,7 @@ agency says"); no figure the page doesn't give, no derived ratio, no opinion, no
 spelled as said. Each story's scene shows its own words: a short headline, one or two figures or quotes exactly as the
 page gives them, the source and its date, and a chyron of at most 40 characters. Write the storyboard now, with
 `write`, to `film/STORYBOARD.md` before you price anything (step 4): each segment's script, its words on screen and
-its chyron. Every run that gets this far leaves that file, the over-budget one too.
+its chyron. Every run that gets this far leaves that file, one refused over the user's ceiling too.
 
 ## 4. Price the plan, before any paid call
 
@@ -161,11 +161,16 @@ Leave `user_intent` out of every fal call. `get_pricing` once with `endpoint_ids
 | `short` | cold-open and closing; the leads as desk cards | 17 |
 | `voice-only` | none: every anchor segment a desk card, no still | 0 |
 
-The run's plan is `plan` (`full` unless set). The answer's `plan` is always that plan as priced here (its name,
-anchor segments and usd), on `over_budget` too; it is null only on `no_news`. When it is over `max_fal_usd`, call
-nothing that costs: `status: "over_budget"`, `plans_priced` with all three, and `cheaper_plan` the largest plan
-smaller than the run's that fits (null when none does), in `report_markdown` too, with how to choose it: the `plan`
-setting, or `plan` in a run's input.
+The run's plan is `plan` (`full` unless set); never switch it. The answer's `plan` is always that plan as priced
+here (its name, anchor segments and usd), on `over_budget` too; it is null only on `no_news`. `plans_priced` gives
+all three. The price is information for the person: `report_markdown` says it up front.
+
+- **No `max_fal_usd`**: nothing is refused for price. Make the show.
+- **`max_fal_usd` set** (the user's own ceiling): make the show when the plan's usd is at most `max_fal_usd`. When it
+  is over, call nothing that costs: `status: "over_budget"`, and in `error` and `report_markdown` the plan's price
+  against the ceiling the user set (`the full plan is $2.85 on fal; your ceiling is $2.00`).
+
+Never make a plan fit a price: never switch the plan, drop a segment, animate fewer, or shorten the scripts.
 
 ## 5. The still and the voices, at once
 
@@ -213,14 +218,8 @@ and is never changed. A voice's length V is `web_save`'s `duration_s` (none: `ff
 
 ## 6. The anchor speaks
 
-Before any Fabric job, check the plan with the real lengths: what is spent (the still and the voices, at their rates)
-plus the plan's anchor segments' V, each rounded up to a whole second (fal bills Fabric by whole seconds), × the
-Fabric rate must be ≤ `max_fal_usd`, and each V at most 30 s. Over: animate fewer, dropping lead-c, then lead-b, then
-lead-a, then the closing, then the cold open, until it fits; with none left the show is desk-only, every anchor
-segment a desk card and no Fabric job sent. Each dropped segment is a desk card, `status: "partial"`, `failed_step:
-"anchor-budget"`. `error` and `report_markdown` both give the numbers for every drop, down to the last segment
-tried: `max_fal_usd`, what is spent, and each tried set's seconds and cost (so a desk-only show says that even the
-cold open alone is over). `plan` stays the run's plan as priced in step 4: a drop changes `segments`, never `plan`.
+Fabric takes a voice of at most 30 s: an anchor segment whose V is over 30 is not sent and plays as the desk card,
+`status: "partial"`, `failed_step: "anchor-<segment>"`, its length in `error`.
 
 `submit_job` `veed/fabric-1.0` for each anchor segment of the plan, in order (cold-open, lead-a, lead-b, lead-c,
 closing), key `ns-<stem>-anchor-<segment>`: `{image_url: the still's images[0].url or the anchor image URL,
@@ -267,7 +266,7 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
   and end on the film's clock from the build script's output.
 - `anchor`: the name, `image` (`owner`, `generated` or `none`), the image Fabric was given, the voice and
   `resolution` (`480p`, or null when nothing was animated).
-- `plan`, `plans_priced`, `cheaper_plan` (step 4); `captions_timing` as the build script printed it (`anchored` or
+- `plan`, `plans_priced` (step 4); `captions_timing` as the build script printed it (`anchored` or
   `measured` is still a correct timing, never a fault).
 - `film`: `path`, `seconds`, `width`, `height` as ffprobe read them (null when nothing was rendered); `checks`.
 - `fal_cost_usd`: one step per paid call made (`anchor-image`, `voice-<segment>`, `anchor-<segment>`) with its units

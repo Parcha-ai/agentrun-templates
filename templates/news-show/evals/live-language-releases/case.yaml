@@ -2,7 +2,7 @@
 # real feeds and pages, and web_save downloads the real files, so this case runs only with --on-data on a data folder
 # that has fal saved and a server whose fal meter prices veed/fabric-1.0 at 480p. About $2.90 of fal (one Nano Banana
 # Pro still, nine eleven-v3 voices, about 32 s of Fabric at 480p); max_cost_usd 9.00 covers it with the model, since
-# the run's cap counts the fal jobs. The feeds are the Rust, Python, PHP, Ruby and Bun release feeds: five projects
+# the run's cost counts the fal jobs. The feeds are the Rust, Python, PHP, Ruby and Bun release feeds: five projects
 # that publish on different weeks, so most days give three fresh posts without a search (the Rust and Python blogs
 # alone often have none in a week, and a keyless search can come back empty). On a week with fewer than three fresh
 # posts the run searches the topic. Pass: 1 of 1.

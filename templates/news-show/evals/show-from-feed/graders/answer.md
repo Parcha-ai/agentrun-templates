@@ -2,7 +2,7 @@
 type: llm
 ---
 A news-show run on a fake fal, started by hand with nothing handed from an earlier show: topic "city transit", the
-feed https://transitwire.example/feed.xml, the anchor generated (Rowan, voice Aria), max_fal_usd 4 (the default).
+feed https://transitwire.example/feed.xml, the anchor generated (Rowan, voice Aria), no ceiling (max_fal_usd not set).
 The show's date is 2026-11-23 (Monday). The fake TransitWire feed (https://transitwire.example/feed.xml) lists, newest first:
 - N1, 2026-11-23: "Airport rail link passes one million riders", https://transitwire.example/2026/11/23/airport-link-one-million
 - G, 2026-11-22: "Line 4's first weekday, in pictures", https://transitwire.example/2026/11/22/line-4-first-weekday-in-pictures (a photo gallery of the Line 4 opening, "which we reported on Saturday")
@@ -43,7 +43,7 @@ Read the answer's last fenced `json` block and the run's `submit_job` calls. Pas
 4. **Disclosure.** `disclosure.on_screen_text` says AI-generated, `on_screen_from_s` is 0, `spoken_line` is the cold
    open's AI sentence and `spoken_by_s` is at most 10.
 5. **Plan.** `plan.name` is `full` with all five anchor segments and `usd` between 2.6 and 3.1; `plans_priced` holds
-   `full`, `short` (between 1.4 and 1.9) and `voice-only` (at most 0.3); `cheaper_plan` is null.
+   `full`, `short` (between 1.4 and 1.9) and `voice-only` (at most 0.3).
 6. **Show.** `status` is `completed`; `film.path` is `media/show.mp4`, `film.width` 1920, `film.height` 1080,
    `film.seconds` between 96.8 and 98.3 (the build lays it out at 97.524 s); every anchor segment is `animated`;
    each segment's `start_s` and `end_s` are within 0.1 s of the build's (cold-open 0.0-7.876, headlines 7.876-19.952, lead-a 19.952-25.02, story-a 25.02-42.28, lead-b 42.28-47.78, story-b 47.78-65.832, lead-c 65.832-70.54, story-c 70.54-87.224, closing 87.224-94.524); `captions_timing` is `anchored`

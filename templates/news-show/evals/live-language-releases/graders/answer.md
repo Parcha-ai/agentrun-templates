@@ -4,7 +4,7 @@ type: llm
 A live news-show run on the real fal, started by hand, topic "programming language releases", feeds
 https://blog.rust-lang.org/feed.xml, https://blog.python.org/feeds/posts/default, https://www.php.net/feed.atom,
 https://www.ruby-lang.org/en/feeds/news.rss and https://bun.sh/rss.xml, the anchor generated (Rowan, voice Aria),
-max_fal_usd 4.
+no ceiling (max_fal_usd not set).
 
 Read the run's calls (the pages it fetched, its `submit_job` calls) and the answer's last fenced `json` block. Pass
 only if all hold:

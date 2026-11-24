@@ -81,7 +81,7 @@ Then `write` `film/show.json` in the shape of `film/show.example.json`: the show
 (`date_label`, like "Monday, November 23"), the anchor's name and image (`media/anchor.png` or the owner's
 `media/anchor.<ext>`; null when there is none), and the nine segments with the exact scripts you sent to fal, their
 voice files and timestamps, each anchor segment's clip (`media/anchor-<segment>.mp4`, or null when its job failed,
-the plan leaves it out or the budget drops it: that segment becomes the desk card) and the words on screen. Every
+or the plan leaves it out: that segment becomes the desk card) and the words on screen. Every
 placeholder starts with `KIT`, and the build refuses any left. Then build:
 
 ```sh
@@ -95,8 +95,8 @@ long as its clip or voice, a voiceover segment 0.35 s of air either side), adds 
 `media/show.vtt`. It prints one JSON line: `method` is `captions_timing` in the answer; `segments` gives each
 segment's `start` and `end` (the answer's `start_s` and `end_s`) and its mode (`video`, `panel` for an anchor image that
 is not 16:9, `desk`); `disclosure` gives the cold open's AI sentence and the second it ends. A warning that the
-sentence ends after 10 s means the cold open is too long before it: shorten it, voice it again only if the plan's
-budget allows, else say so in `notes`. Run the build again after any change to `show.json` or `film/scenes/`.
+sentence ends after 10 s means the cold open is too long before it: shorten it and voice it again (with a ceiling set,
+only when the show still fits it), else say so in `notes`. Run the build again after any change to `show.json` or `film/scenes/`.
 
 **Restyling**: change `film/scenes/*.html` (the palette is the `:root` block of `scenes/index.html` and
 `scenes/card.html`), never the generated files, then build again. Keep the contract in the reference, the `{{...}}` tokens,
@@ -114,11 +114,10 @@ than the times.
 
 Fabric answers a clip as long as its voice, at the still's aspect. The build plays each clip muted with its voice
 beside it, from the same second, so lips and voice stay together; it never trims either. An owner's image that is not
-16:9 plays as a panel at the right with the desk beside it. A clip that failed or was dropped for the budget is a desk
-card: the show's name and the chyron in type while the voice plays; never the still alone with a voice (a face that
-doesn't move reads as broken). When the budget drops every anchor segment (lead-c, then lead-b, then lead-a, then the
-closing, then the cold open), the show is desk-only: every anchor segment's clip is null and the build lays them all
-as desk cards.
+16:9 plays as a panel at the right with the desk beside it. A clip that failed, was refused or was not sent is a desk card:
+the show's name and the chyron in type while the voice plays; never the still alone with a voice (a face that doesn't
+move reads as broken). On the `voice-only` plan the show is desk-only: every anchor segment's clip is null and the
+build lays them all as desk cards.
 
 ## 7. Check, look, fix
 
