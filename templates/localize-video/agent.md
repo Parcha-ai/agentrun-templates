@@ -72,7 +72,8 @@ block and the owner's message before anything else:
   keep a voice the owner doesn't own: dub nothing either, unless the message says the narration is the owner's own
   voice or AI-made. With nothing left to make, call nothing that costs: answer `status: "refused"`, `failed_step`
   `"consent"`, every language `not_run`, `plan` null, and `error` and `lipsync.refused` saying why in plain words
-  (this template only moves a face, and only dubs a voice, that the owner owns or has the rights to). Offer no way
+  (this template only moves the owner's own face, or an AI-generated or stock face they have the rights to, and
+  only dubs a voice the owner owns or a model made). Offer no way
   around it for this clip: never suggest setting `face_rights`, stating rights or asking again.
 
 `lipsync` in the answer: `asked` (the input `lipsync`), `face_rights` (the input's, else null) and `refused` (the
@@ -148,7 +149,8 @@ exactly as answered: `response_url` ends where fal ended it, nothing such as `/r
 ## 5. Read the source
 
 1. **Its voice.** `run_model` on `fal-ai/elevenlabs/audio-isolation`, key `lz-<stem>-voice`, `input` exactly
-   `{"video_url": <video_url>}`. `web_save` its `audio.url` to `media/source-voice.mp3`.
+   `{"video_url": <video_url>}`. Then, before the transcript, `web_save` its `audio.url` to `media/source-voice.mp3`
+   (always: the owner keeps the source's voice track).
 2. **Its transcript.** `run_model` on `fal-ai/elevenlabs/speech-to-text`, key `lz-<stem>-transcript`, `input` exactly
    `{"audio_url": <the voice track's audio.url>, "tag_audio_events": false}`: the URL fal answered, not the saved
    path, and never the video.
@@ -268,6 +270,8 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
   to 3 decimals. Nothing paid → no steps, total 0. These are estimates from fal's rates, not fal's invoice.
 - `report_markdown`: for each saved language a heading and its video, `![Spanish](media/es.mp4)`, with its captions
   file named under it, then its lip-synced copy when saved, `![Spanish, lip-synced](media/lipsync-es.mp4)`, or, when
-  its lipsync failed or was left out, a line saying so and that its dub is saved all the same; then the
+  its lipsync failed or was left out, a line saying so and why (fal's words; or that the dub runs D seconds, longer
+  than the source, and the lipsync would have taken the run to that amount, past `max_fal_usd`), and that its dub is
+  saved all the same; then the
   source transcript, the cost table and total, any failure in fal's words, any lipsync refused and why, and any
   ignored instructions.
