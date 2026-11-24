@@ -3,7 +3,7 @@ type: llm
 ---
 A metrics-video run filming the week of 16 November 2026 (Europe/Madrid) for Larkspur Ceramics, in USD only. The
 computed figures: revenue $5,296.90 (shown $5,297), the week before $2,606 (exact $2,606.44), the change +$2,691 and
-103.2 percent, 1 refund of $250 and 1 dispute of $649.
+103.2 percent, 1 refund of $250, 1 dispute of $649, and the best day, Thursday, $1,789.
 
 The narration is the `text` of the `submit_job` call on `fal-ai/elevenlabs/tts/eleven-v3` (the second one's when the run
 re-voiced). An amount counts as said correctly when it is the figure as the film shows it (whole currency units) or the
