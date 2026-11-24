@@ -163,7 +163,8 @@ then one line per shot of the plan, in order, the times, seconds and lyric copie
 - **Pictures from words only.** Each picture shows what its lyric means (never the words themselves), or for a shot
   with no words, the song's world at that point: wider and calmer where the plan's shots are long (the quiet parts),
   closer and busier where they are short (the loud parts). One world, one subject or place that comes back, the
-  last shot answering the first.
+  last shot answering the first. A picture says only what its still shows, never a note about the film ("answering
+  the first shot", "calmer than the verse"), since its still's prompt copies it whole.
 - **No real person's likeness**: never a named person, a celebrity, the artist, a public figure or anyone the lyrics or
   the message name, and never "looking like" one. People only as figures seen from behind, far away, in silhouette or
   as hands, or as plainly invented characters with no name.
@@ -181,6 +182,8 @@ With no other call in between, `submit_job` each shot's still once, in shot orde
 ```json
 {"prompt": "<the style line>. <shot n's picture>. No text, no lettering, no logos.", "num_images": 1, "aspect_ratio": "<aspect>", "resolution": "1K", "output_format": "png", "enable_web_search": false}
 ```
+
+`<shot n's picture>` is the picture from its storyboard line, word for word, nothing dropped or added.
 
 Then **one** `wait_for_jobs` whose `jobs` list holds every still's own handles, at `index` n − 1 for still n. While any
 is pending, wait the `poll_after_seconds` it gives and read the pending ones again (each at its own index); after 10
