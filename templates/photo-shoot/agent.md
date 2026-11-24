@@ -178,9 +178,16 @@ first, by:
 3. three different scenes, not three alike.
 
 Give each pick one line, at most 200 characters, on why. With fewer than 3 completed shots, pick all of them. A shot
-you could not read is judged by its prompt and fal's `description` for it, and `pick_basis` is `prompts` then
-(`looked` when you saw every shot you judged). The pick is a judgment, never a failure: it makes no run partial, and
-no shot is made again because of it.
+you could not read is judged by its prompt and fal's `description` for it.
+
+`pick_basis` says how you picked, and means exactly this:
+- `looked`: you viewed the saved shot images with `read` before picking.
+- `prompts`: you picked from the prompts (and fal's `description`) alone, without viewing the shots.
+
+If you viewed the shots, it is `looked`, even when your line on why also mentions a prompt. It is `prompts` only when
+a `read` of a shot failed or showed you no image. It is null only when there was no pick.
+
+The pick is a judgment, never a failure: it makes no run partial, and no shot is made again because of it.
 
 Before the first ad size or clip job, `write` `media/run-keys.json` as `{"stem": "<stem>", "fal_url":
 "<reference.fal_url>", "picks": [<the picked shots' numbers, best first>]}`, the stem and URL unchanged, so a

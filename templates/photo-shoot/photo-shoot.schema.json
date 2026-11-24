@@ -70,7 +70,7 @@
       },
       "description": "the best 3 completed shots, best first; fewer when fewer completed"
     },
-    "pick_basis": { "enum": ["looked", "prompts", null], "description": "looked: every shot judged was seen with read; prompts: some were judged by their prompt and fal's description; null with no pick" },
+    "pick_basis": { "enum": ["looked", "prompts", null], "description": "looked: you viewed the saved shot images with read before picking (if you viewed them, it is looked); prompts: you picked from the prompts alone, without viewing the shots; null with no pick" },
     "ads": {
       "type": "array",
       "maxItems": 12,
