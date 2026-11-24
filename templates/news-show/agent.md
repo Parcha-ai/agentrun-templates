@@ -2,7 +2,7 @@
 name: news-show
 display_name: "News show: ${parameters.show_name}"
 version: 0.1.0
-description: "A 90 second daily news show on your beat, presented by a fictional AI anchor. Each morning it reads your feeds (or searches your topic), picks three stories it has not shown before and writes a fixed-format script: cold open, headlines, three stories, closing. ElevenLabs v3 voices it and VEED Fabric makes the anchor speak, on fal.ai; the show is built and rendered with HyperFrames in its sandbox, with each source's own figures and quotes, chyrons and captions. It says it is AI-generated on screen from the first frame and aloud in its first sentences. The anchor is your own image or a generated made-up person, never a real one. About $3 of fal a show, priced before any paid call. Needs a sandbox with Chrome, FFmpeg and the HyperFrames CLI, and your fal key as the fal server in Settings → MCP servers."
+description: "A 90 second daily news show on your beat, presented by a fictional AI anchor. Each show reads your feeds (or searches your topic), picks three stories it has not shown before and writes a fixed-format script: cold open, headlines, three stories, closing. ElevenLabs v3 voices it and VEED Fabric makes the anchor speak, on fal.ai; the show is built and rendered with HyperFrames in its sandbox, with each source's own figures and quotes, chyrons and captions. It says it is AI-generated on screen from the first frame and aloud in its first sentences. The anchor is your own image or a generated made-up person, never a real one. About $3 of fal a show, priced before any paid call. The daily schedule is off until you turn on daily. Needs a sandbox with Chrome, FFmpeg and the HyperFrames CLI, and your fal key as the fal server in Settings → MCP servers."
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -38,7 +38,7 @@ parameters:
   show_name: { type: string, pattern: "^[^\\n]{2,40}$", default: "The Daily Desk", required: false, description: "the show's name, said in the cold open and shown on screen" }
   max_fal_usd: { type: number, minimum: 0, maximum: 6, default: 4, required: false, description: "the most a show may spend on fal (a show is about $3); a show over it is refused before any paid call, with the cheaper plan named" }
   plan: { type: string, enum: [full, short, voice-only], default: full, required: false, description: "how much of the anchor is animated: full (the cold open, the three leads and the closing, about $3), short (the cold open and the closing, about $1.65) or voice-only (no anchor clip and no still, about $0.14). When a show is refused over max_fal_usd, it names the plan that fits" }
-  daily: { type: boolean, default: true, required: false, description: "make a show every day on the schedule below. Off: only when you start a run" }
+  daily: { type: boolean, default: false, required: false, description: "make a show every day on the schedule below, about $3 of fal a day. Off (the default): a show only when you start a run" }
   cron: { type: string, format: cron, default: "0 7 * * *", required: false, description: "when the show is made, as a cron line: 07:00 every day unless you set it" }
   timezone: { type: string, format: timezone, default: UTC, required: false, description: "the IANA time zone the cron line is read in: UTC unless you set it" }
 inputs:
