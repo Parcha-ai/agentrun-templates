@@ -340,6 +340,8 @@ test("builds the fixture into pages that pass the checker", async () => {
     const search = JSON.parse(readFileSync(join(out, "search.json"), "utf8"));
     assert.equal(search[0].name, "sample-watch");
     assert.deepEqual(search[0].needs, ["Requires web search, through Exa", "Requires web fetch", "Runs on a schedule", "Can use GitHub, through the AgentRun GitHub App (optional)"], "search finds a template by what it requires");
+    assert.equal(search[0].source, `github:Parcha-ai/agentrun-templates/templates/sample-watch@${SHA}`, "a console installs from the list what the page's Install installs");
+    assert.equal(search[0].summary, JSON.parse(readFileSync(join(fixture, ".agentrun", "marketplace.json"), "utf8")).templates[0].summary, "and shows the card's one line");
   } finally {
     rmSync(out, { recursive: true, force: true });
     rmSync(cache, { recursive: true, force: true });
