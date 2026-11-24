@@ -1,5 +1,5 @@
 ---
-description: 'Spanish and French with lipsync and consent, max_fal_usd 2: the whole plan is priced at about $3.795 before anything is paid, so nothing is paid: over_budget, offering both languages without lipsync at about $0.795. No fal spend. Pass 2 of 2.'
+description: 'Spanish and French with lipsync and consent, max_fal_usd 2: the whole plan is priced at about $4.395 before anything is paid, so nothing is paid: over_budget, offering both languages without lipsync at about $1.395. No fal spend. Pass 2 of 2.'
 runs: 2
 max_cost_usd: 0.40
 input:

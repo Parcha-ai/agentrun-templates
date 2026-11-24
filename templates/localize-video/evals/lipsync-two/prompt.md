@@ -1,7 +1,7 @@
 ---
-description: 'Spanish and French with lipsync, face_rights own_face, max_fal_usd 5: two dubs read together, each with its voice track and captions, then two lipsync jobs (the source video with each dub''s voice) queued together and read with one wait, keyed lz-<stem>-lipsync-<lang>, each saved as media/lipsync-<lang>.mp4. About $3.795 of fal. Pass 2 of 2.'
+description: 'Spanish and French with lipsync, face_rights own_face, max_fal_usd 5: two dubs read together, each with its voice track and captions, then two lipsync jobs (the source video with each dub''s voice) queued together and read with one wait, keyed lz-<stem>-lipsync-<lang>, each saved as media/lipsync-<lang>.mp4. About $4.395 of fal. Pass 2 of 2.'
 runs: 2
-max_cost_usd: 4.60
+max_cost_usd: 5.00
 input:
   video_url: https://media.tidepool.example/videos/tidepool-explainer.mp4
   target_languages: [es, fr]

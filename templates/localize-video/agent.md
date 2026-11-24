@@ -30,7 +30,7 @@ inputs:
   captions: { type: boolean, required: false, default: true, title: "Captions", description: "Write a .vtt caption file beside each dubbed video, from a transcript of the dub's voice (about $0.13 a minute per language)." }
   lipsync: { type: boolean, required: false, default: false, title: "Lipsync", description: "Also move the speaker's lips to fit each dub, on sync-lipsync v2 (about $3 a minute per language), saved as media/lipsync-<lang>.mp4 beside the dub. Only your own face, or an AI or stock face you have the rights to: set face_rights too, or no lipsync is made." }
   face_rights: { type: string, required: false, enum: [own_face, licensed_face], title: "Whose face (for lipsync)", description: "Lipsync moves the face in the video. own_face: it is your own face. licensed_face: an AI-generated or stock face you have the rights to. Left empty, no lipsync is made. Never a celebrity, a stranger or a clip you found." }
-  max_fal_usd: { type: number, required: false, minimum: 0, maximum: 40, default: 2, title: "Most to spend on fal (USD)", description: "The run prices the whole plan from the video's length before anything is paid, and makes nothing when it doesn't fit, offering the plan that does (lipsync dropped first, then the last languages). Default $2: five languages of a 30-second video, two of a 1-minute one, or one of 2 minutes, with captions. Lipsync needs more: about $3.86 for one language of a 1-minute video, $18.78 for five." }
+  max_fal_usd: { type: number, required: false, minimum: 0, maximum: 40, default: 2, title: "Most to spend on fal (USD)", description: "The run prices the whole plan from the video's length before anything is paid, and makes nothing when it doesn't fit, offering the plan that does (lipsync dropped first, then the last languages). Default $2: two languages of a 30-second or 1-minute video, or one of 2 minutes, with captions (fal bills each dub in whole minutes). Lipsync needs more: about $3.86 for one language of a 1-minute video, $18.78 for five." }
 budget: { per_run_usd: 42 }
 output: { schema: localize-video.schema.json }
 ---
@@ -72,7 +72,8 @@ block and the owner's message before anything else:
   keep a voice the owner doesn't own: dub nothing either, unless the message says the narration is the owner's own
   voice or AI-made. With nothing left to make, call nothing that costs: answer `status: "refused"`, `failed_step`
   `"consent"`, every language `not_run`, `plan` null, and `error` and `lipsync.refused` saying why in plain words
-  (this template only moves a face, and only dubs a voice, that the owner owns or has the rights to).
+  (this template only moves a face, and only dubs a voice, that the owner owns or has the rights to). Offer no way
+  around it for this clip: never suggest setting `face_rights`, stating rights or asking again.
 
 `lipsync` in the answer: `asked` (the input `lipsync`), `face_rights` (the input's, else null) and `refused` (the
 plain-words reason no lipsync job was made for consent, else null). A lipsync left out only by the budget is not
@@ -88,8 +89,8 @@ file's length as `duration_s` when the file's header gives it.
   video is longer than 2 minutes: call nothing that costs, answer `status: "failed"` and say so.
 - **No length, no run.** If `web_save` answers `ok: false`, or answers without `duration_s`, the plan can't be priced:
   call nothing that costs. Answer `status: "failed"`, `failed_step` `"source"`, `duration_s` null, every language
-  `not_run`, and `error` the reason: `web_save`'s own words when it didn't save, else that the video's length could
-  not be read from the file (it reads mp4 and mov). Never take the length from a transcript, the page, the file size
+  `not_run`, and `error` the reason: `web_save`'s own words when it didn't save, else, in plain words with no tool or
+  field name, that the video's length could not be read from the file (it reads mp4 and mov). Never take the length from a transcript, the page, the file size
   or a guess.
 
 ## 3. Price the whole plan, before anything is paid
@@ -98,11 +99,12 @@ Call `get_pricing` once with `endpoint_ids` `["fal-ai/elevenlabs/audio-isolation
 "fal-ai/elevenlabs/dubbing", "fal-ai/sync-lipsync/v2"]` and use the rates it answers (each per minute of its input
 media).
 
-The plan is every paid step at M minutes, for N languages (each target language, the first five), with lipsync only
-when step 1 allowed it:
+The plan is every paid step at M minutes, except each dub, for N languages (each target language, the first five),
+with lipsync only when step 1 allowed it. fal bills dubbing in whole minutes, rounded up: each dub is priced at Md =
+M rounded up to a whole minute (30 s → 1, 60 s → 1, 70 s → 2).
 
 - reading the source once: its voice (isolation rate) and its transcript (speech-to-text rate);
-- for each language: its dub (dubbing rate); its voice track (isolation rate) when `captions` is on or the plan has
+- for each language: its dub (dubbing rate × Md); its voice track (isolation rate) when `captions` is on or the plan has
   lipsync; its captions transcript (speech-to-text rate) when `captions` is on; its lipsync (lipsync rate) when the
   plan has lipsync.
 
@@ -110,6 +112,8 @@ Its total is `plan.estimated_usd`, to 3 decimals: the source counted once, plus 
 that turns out to be the source's own language (step 5) is priced here and skipped there. For example, 60 s (M = 1)
 into five languages with captions and lipsync, at rates isolation 0.1, speech-to-text 0.03, dubbing 0.6 and lipsync 3:
 1 × (0.1 + 0.03) + 5 × 1 × (0.6 + 0.1 + 0.03 + 3) = 0.13 + 18.65 = 18.780; without lipsync, 0.13 + 5 × 0.73 = 3.780.
+30 s (M = 0.5, Md = 1) into two languages with captions and lipsync: 0.5 × (0.1 + 0.03) + 2 × (1 × 0.6 + 0.5 × (0.1 +
+0.03 + 3)) = 0.065 + 2 × 2.165 = 4.395; without lipsync, 0.065 + 2 × 0.665 = 1.395.
 A dub can run longer than the source, so step 7 prices each dub's later steps again at that dub's own length: that can
 leave a step out, never add one.
 
@@ -138,8 +142,8 @@ never inside `input`, and kept for that job's retries. The keys share one stem p
 - After a lost reply (a timeout, a dropped connection), `get_submission` with that same key before anything else, and
   follow what it answers; `not_found` or `submission_unknown` makes the step failed, never a new paid job.
 
-A `run_model` that answers `processing` is followed with `wait_for_jobs` (one item, index 0, its handles exactly as
-answered) and never run again.
+A `run_model` that answers `processing` is followed with `wait_for_jobs` (one item, index 0, its four handles copied
+exactly as answered: `response_url` ends where fal ended it, nothing such as `/response` added) and never run again.
 
 ## 5. Read the source
 
@@ -257,12 +261,13 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
   step 7 left its captions out, else null), `lipsync_path` (`media/lipsync-<lang>.mp4` when saved, else null) and
   `lipsync_error` (fal's words for its lipsync, or why step 7 left it out, else null).
 - `fal_cost_usd`: one step per paid call made (`voice`, `transcript`, `dub-<lang>`, `voice-<lang>`, `captions-<lang>`,
-  `lipsync-<lang>`) with its endpoint, units (the minutes it is billed at: M, or that dub's D ÷ 60 for a dub's voice
+  `lipsync-<lang>`) with its endpoint, units (the minutes it is billed at: Md for a dub, M, or that dub's D ÷ 60 for a dub's voice
   track, captions and lipsync), unit, rate from `get_pricing` and `usd` (units × rate to 3 decimals, never rounded to
   cents); a failed job is listed with `usd` 0, except a job still pending at 15 minutes,
   listed at its full `usd` because fal may still finish and bill it; `total` is the sum of the steps' `usd` as listed,
   to 3 decimals. Nothing paid → no steps, total 0. These are estimates from fal's rates, not fal's invoice.
 - `report_markdown`: for each saved language a heading and its video, `![Spanish](media/es.mp4)`, with its captions
-  file named under it, then its lip-synced copy when saved, `![Spanish, lip-synced](media/lipsync-es.mp4)`; then the
+  file named under it, then its lip-synced copy when saved, `![Spanish, lip-synced](media/lipsync-es.mp4)`, or, when
+  its lipsync failed or was left out, a line saying so and that its dub is saved all the same; then the
   source transcript, the cost table and total, any failure in fal's words, any lipsync refused and why, and any
   ignored instructions.
