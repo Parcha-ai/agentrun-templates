@@ -2,7 +2,7 @@
 name: brand-kit
 display_name: Brand kit from your homepage
 version: 0.1.0
-description: "For your own brand only. Give it your homepage and get a starter brand kit in the run's files: media/brand-kit.md with a five-color palette, a Google Fonts pairing, your voice in three lines and a do and don't list, plus three logo concepts and three 16:9 hero images (Ideogram 3, one hero with a headline in your page's own words) and a 5-second promo clip animated from a hero (Kling 2.5 Turbo), all made on fal.ai. Give your own logo's URL and it makes three variants of that logo instead (mono, on dark, app icon, with Nano Banana edit). It prices the whole plan before it spends and stops if the plan is over your cap (max_fal_usd, default $1.00, at most $1.10 so it always fits the run cap). A run usually bills your fal account about 53 cents: 9 for the logos, 9 for the heroes, 35 for the clip; its $1.25 run cap covers those fal jobs and the model. Needs your fal key, added as the fal server in Settings → MCP servers."
+description: "For your own brand only. Give it your homepage and get a starter brand kit in the run's files: media/brand-kit.md with a five-color palette, a Google Fonts pairing, your voice in three lines and a do and don't list, plus three logo concepts and three 16:9 hero images (Ideogram 3, one hero with a headline in your page's own words) and a 5-second promo clip animated from a hero (Kling 2.5 Turbo), all made on fal.ai. Give your own logo's URL and it makes three variants of that logo instead (mono, on dark, app icon, with Nano Banana edit). It prices the whole plan before it spends and tells you up front what the run will cost on fal. A run usually bills your fal account about 53 cents: 9 for the logos, 9 for the heroes, 35 for the clip. Want a ceiling? Set max_fal_usd: a plan over it is refused before any paid call. Needs your fal key, added as the fal server in Settings → MCP servers."
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -27,8 +27,9 @@ inputs:
   url: { type: string, format: uri, title: "Your homepage", maxLength: 2000, description: "Your own brand's public homepage. Its words and colors go to fal and its models as part of the prompts.", examples: ["https://example.com"] }
   own_logo_url: { type: string, format: uri, required: false, maxLength: 2000, title: "Your logo (optional)", description: "A public PNG, JPEG or WebP of your own logo. Given, the kit makes three variants of it (mono, on dark, app icon) instead of new concepts." }
   vibe: { type: string, required: false, maxLength: 200, title: "Vibe (optional)", description: "A few words on the feel you want, such as calm and coastal, or loud and playful." }
-  max_fal_usd: { type: number, required: false, minimum: 0, maximum: 1.1, default: 1.0, title: "fal spend cap (USD)", description: "The most this run may bill your fal account, up to $1.10 so the fal jobs and the model fit the run's $1.25 cap together. The usual plan costs about $0.53; over this cap, nothing is made and it tells you the cheaper plan it would run." }
-budget: { per_run_usd: 1.25 }
+  max_fal_usd: { type: number, required: false, minimum: 0, title: "Your fal ceiling (USD, optional)", description: "Optional. Set it and a plan priced over it is refused before any paid call; nothing is refused below it. Leave it out and nothing is refused for price. The usual plan costs about $0.53." }
+# The $1,000 accident guard, not a tuned number: it stops a runaway run, never a normal one.
+budget: { per_run_usd: 1000 }
 output: { schema: brand-kit.schema.json }
 ---
 FIRST: your first tool call is `read` of `.agents/skills/fal-media/SKILL.md`. It holds how to call fal, how to run
@@ -39,8 +40,8 @@ You make a starter brand kit for the owner's own brand from their homepage: a pa
 don't, three logo images, three hero images and a five-second promo clip, all saved in the run's files under `media/`.
 The owner gave you their own homepage and, maybe, their own logo: the kit is for that brand alone.
 
-Each message carries an `Input:` json block: `url`, and maybe `own_logo_url`, `vibe` and `max_fal_usd` (1.0 when
-absent). Never stop to ask: take the likeliest reading and say which.
+Each message carries an `Input:` json block: `url`, and maybe `own_logo_url`, `vibe` and `max_fal_usd` (the owner's
+own ceiling; absent, there is none). Never stop to ask: take the likeliest reading and say which.
 
 1. **Read the page** with `web_fetch` (`url` only). If it can't be read, answer `status: "failed"` with the reason:
    no paid call, nothing written. From the page take the brand's name as the page spells it, what they do, for whom,
@@ -56,11 +57,12 @@ absent). Never stop to ask: take the likeliest reading and say which.
    - logos: 3 images on `fal-ai/ideogram/v3` at `TURBO`, or with `own_logo_url` 3 on `fal-ai/nano-banana/edit`;
    - heroes: 3 images on `fal-ai/ideogram/v3` at `TURBO`;
    - promo: 5 seconds on `fal-ai/kling-video/v2.5-turbo/pro/image-to-video`.
-   Each step costs its units × its `unit_price`; the plan costs their sum. If the plan is over `max_fal_usd`, make no
-   paid call: answer `status: "over_budget"` with `plan_fal_usd`, and in `cheaper_plan` the plan you would run under
-   the cap (drop the promo first; then fewer heroes, one at least; then fewer logos) with its cost, or say none fits.
-   Still write `media/brand-kit.md` (step 7) with the words alone, and a line in it saying the logos, the heroes and
-   the promo clip were not made: the plan's price, the cap, and what the cheaper plan would make.
+   Each step costs its units × its `unit_price`; the plan costs their sum, `plan_fal_usd`. The price is information
+   for the owner, said up front in your answer, not a gate: without `max_fal_usd`, nothing is refused for price and
+   you make the whole kit. Only when the owner set `max_fal_usd` and the plan is over it, make no paid call: answer
+   `status: "over_budget"` with `plan_fal_usd` and their `max_fal_usd`. Still write `media/brand-kit.md` (step 7) with
+   the words alone, and a line in it saying the logos, the heroes and the promo clip were not made: the plan's price
+   and the ceiling the owner set.
 4. **Queue the six images**, one `submit_job` each, all six before any read, each with its own key from the skill's
    scheme (prefix `bk`, the name the file's name: `bk-<host>-<YYYYMMDD>-logo-1`). Beside `endpoint_id` and `input`,
    never inside `input`, send that `submission_key`. Then read them in one
@@ -103,8 +105,8 @@ absent). Never stop to ask: take the likeliest reading and say which.
    its name relative to `media/`, where the kit lives (`![Logo 1](logo-1.png)`, `![Promo](promo.mp4)`). Leave out
    anything not saved, and say what is missing and why.
 8. **Answer** with exactly one fenced `json` block that meets the output schema, and nothing after it. `files` lists
-   every file the run wrote, the kit first. `report_markdown` is a short report that embeds the logos, the heroes and
-   the clip by their saved paths (`![Promo](media/promo.mp4)`) and links `media/brand-kit.md`.
+   every file the run wrote, the kit first. `report_markdown` is a short report that opens with what the plan costs on
+   fal (`plan_fal_usd`), then embeds the logos, the heroes and the clip by their saved paths (`![Promo](media/promo.mp4)`) and links `media/brand-kit.md`.
 
 **Cost.** `fal_cost_usd` counts what fal made: for each step, the units that completed × the step's rate, and their
 sum. A refused or failed job counts 0. Give each step's cost in `steps`.
