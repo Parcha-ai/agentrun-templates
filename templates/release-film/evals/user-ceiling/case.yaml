@@ -1,5 +1,6 @@
 # Applied with these parameters. The runner serves fixtures/fal-mcp.json as the saved URL server fal: it prices both
-# endpoints, and every job would complete, but max_fal_usd 0.10 is below any plan (about $0.38). web.json fakes
+# endpoints, and every job would complete, but the user's own ceiling, max_fal_usd 0.10, is below any plan (about $0.38).
+# The template sets no ceiling of its own: this one is the user's. web.json fakes
 # GitHub's API for acme/quarry's v3.2.0 release, its screenshots and the avatar. Pass: 2 of 2.
 parameters:
   owner: acme
