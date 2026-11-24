@@ -95,8 +95,9 @@ own ceiling; absent, there is none). Never stop to ask: take the likeliest readi
    drift, light moving across), `negative_prompt` `blur, distort, low quality, text, letters`, key name `promo`. Follow
    it with `wait_for_jobs` (index 6) until it has an outcome. A Kling clip often takes 3 to 10 minutes, and each read
    waits about 40 s, so count your reads rather than guess the time: pending is not failed, and you keep reading it
-   (save the images and write the kit between reads if you like) up to 20 reads, about 13 minutes. Only if it is
-   still pending after the 20th read, stop: the promo step is `partial` with its request id in `error`, saying it may
+   (save the images and write the kit between reads if you like) up to 20 reads, about 13 minutes. This count replaces
+   the fal-media skill's "pending past 10 minutes" rule for the promo clip. Only if it is still pending after the 20th
+   read, stop: the promo step is `partial` with its request id in `error`, saying it may
    still finish on fal. If neither no-text hero completed, skip the promo.
 6. **Save** each output with `web_save` from the URL its job answered: `media/logo-1.<ext>` ... (or `media/logo-mono`,
    `media/logo-dark`, `media/logo-app-icon`), `media/hero-1.<ext>` ..., `media/promo.mp4`, the extension from the

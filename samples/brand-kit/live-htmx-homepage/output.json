@@ -4,61 +4,59 @@
   "page_read": true,
   "brand": {
     "name": "htmx",
-    "what_they_do": "htmx gives HTML direct access to AJAX, CSS transitions, WebSockets and server-sent events through attributes, so developers can build modern interfaces with hypertext.",
-    "audience": "Web developers who want interactive interfaces without a heavy JavaScript framework.",
-    "tone": "Plainspoken, playful and technical; short declarative sentences with a light joke."
+    "what_they_do": "Gives HTML direct access to AJAX, CSS transitions, WebSockets and server-sent events using attributes, so developers can build hypermedia-driven interfaces without a large JavaScript framework.",
+    "audience": "Web developers who want simple, dependency-free interactivity in HTML",
+    "tone": "Playful, irreverent and plainspoken, with developer-friendly short sentences"
   },
   "palette": [
     {
-      "hex": "#1F3A93",
+      "hex": "#3366CC",
       "role": "primary",
       "source": "chosen"
     },
     {
-      "hex": "#F2B705",
+      "hex": "#F4A261",
       "role": "secondary",
       "source": "chosen"
     },
     {
-      "hex": "#E4572E",
+      "hex": "#E76F51",
       "role": "accent",
       "source": "chosen"
     },
     {
-      "hex": "#FFF6E0",
+      "hex": "#FFF8E7",
       "role": "background",
       "source": "chosen"
     },
     {
-      "hex": "#1A1A1A",
+      "hex": "#1B1B1B",
       "role": "text",
       "source": "chosen"
     }
   ],
   "type_pairing": {
-    "heading": "Bungee",
-    "body": "Space Mono",
-    "why": "Bungee's chunky display letters carry the retro, playful register; Space Mono's monospace body suits a web-tool brand that talks about HTML."
+    "heading": "Fredoka",
+    "body": "Nunito",
+    "why": "Fredoka's rounded forms suit the playful retro tone, and Nunito's open shapes keep long documentation text easy to read."
   },
   "voice": [
-    "Plainspoken and confident: it states what the tool does without hype.",
-    "Playful with the reader: it jokes lightly and invites tinkering.",
-    "Technical but warm: it explains hypertext simply and treats the developer as a peer."
+    "Direct and confident: it states what htmx does without hedging.",
+    "Playful and a little irreverent, with humor like its shirt slogans and 'made in montana'.",
+    "Plainspoken for developers: short sentences, plain terms and real examples such as the hx-post button."
   ],
   "do": [
-    "Use the primary blue for headings and the cream background for large areas.",
-    "Use the orange-red accent sparingly, for links and highlights.",
-    "Keep the wordmark on a plain cream or white background with clear space around it.",
-    "Set headlines in Bungee and body text in Space Mono."
+    "Use the cream background with the blue primary for headlines.",
+    "Keep the logo on a plain background with room around it.",
+    "Use Fredoka for headings and Nunito for body text."
   ],
   "dont": [
-    "Don't stretch, rotate or recolor the logos outside this palette.",
-    "Don't put the wordmark over busy photos or other logos.",
-    "Don't use more than two accent colors on one screen.",
-    "Don't use Space Mono for long body copy."
+    "Don't recolor the logo outside the palette.",
+    "Don't stretch or crop the logo.",
+    "Don't use the orange and blue together at small sizes, where contrast drops."
   ],
   "logo_mode": "new_concepts",
-  "headline": "high power tools for HTML",
+  "headline": "High power tools for HTML",
   "files": [
     {
       "path": "media/brand-kit.md",
@@ -72,56 +70,56 @@
       "path": "media/logo-1.png",
       "kind": "logo",
       "endpoint": "fal-ai/ideogram/v3",
-      "prompt": "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. The wordmark \"htmx\" set in a chunky retro rounded display typeface, deep blue letters with a mustard drop shadow. The name in double quotes is the only text.",
-      "fal_url": "https://v3b.fal.media/files/b/0ab34b20/yHkV5C5BgExHgIuaJp19A_6w3x0CDS.png",
+      "prompt": "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. The wordmark \"htmx\" in a chunky, rounded, playful retro typeface, blue with an orange drop shadow. The name in double quotes is the only text.",
+      "fal_url": "https://v3b.fal.media/files/b/0ab3cb89/XviH9NKVM-peHpj2otgWY_UMxc8d2a.png",
       "saved": true
     },
     {
       "path": "media/logo-2.png",
       "kind": "logo",
       "endpoint": "fal-ai/ideogram/v3",
-      "prompt": "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. A lettermark: the letter \"h\" in a bold retro monoline style inside a simple deep blue rounded square, with an orange-red angle bracket accent. The letter in double quotes is the only text.",
-      "fal_url": "https://v3b.fal.media/files/b/0ab34b20/B7YbIeKM4ZyQV2JmqWmCB_I2NVOrY2.png",
+      "prompt": "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. A simple rounded blue square badge with the letter \"h\" in bold orange, retro flat style. The letter in double quotes is the only text.",
+      "fal_url": "https://v3b.fal.media/files/b/0ab3cb8a/7LBpEmEotV8Z8MjWLaEIr_YNXRifPM.png",
       "saved": true
     },
     {
       "path": "media/logo-3.png",
       "kind": "logo",
       "endpoint": "fal-ai/ideogram/v3",
-      "prompt": "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. A simple symbol of a lightning bolt crossed with an angle bracket in orange-red, placed beside the name \"htmx\" in deep blue chunky retro lettering. The name in double quotes is the only text.",
-      "fal_url": "https://v3b.fal.media/files/b/0ab34b21/qlgo6MAtvC-2g76alxu3R_cF4Omm5u.png",
+      "prompt": "A flat logo mark on a plain solid cream background, centered, no scene, no people, no extra objects. A simple symbol of two linked hypertext nodes joined by a curved arrow, in blue and orange, beside the name \"htmx\" in a rounded playful retro typeface. The name in double quotes is the only text.",
+      "fal_url": "https://v3b.fal.media/files/b/0ab3cb8a/Igob2q1LSCrTUInA1NdMA_NldtFN7u.png",
       "saved": true
     },
     {
       "path": "media/hero-1.png",
       "kind": "hero",
       "endpoint": "fal-ai/ideogram/v3",
-      "prompt": "A retro web-era poster scene: a glowing orange-red hypertext link arcs across a cream sky above a chunky mustard toolbox. The headline \"high power tools for HTML\" set in bold blue retro display letters across the top third, with empty space for it.",
-      "fal_url": "https://v3b.fal.media/files/b/0ab34b20/-BenHnWiSNWOsqm6FLCjp_IWHgb62D.png",
+      "prompt": "A wide retro web banner on a cream background with a blue and orange palette. The headline \"High power tools for HTML\" in a bold rounded playful typeface. A small flat illustration of linked hypertext cards connected by arrows at the right, clean and simple.",
+      "fal_url": "https://v3b.fal.media/files/b/0ab3cb8a/JV9PmxkLowB9CCWPu472w_MyUzuMwo.png",
       "saved": true
     },
     {
       "path": "media/hero-2.png",
       "kind": "hero",
       "endpoint": "fal-ai/ideogram/v3",
-      "prompt": "A retro 1990s computer desk seen from a distance, a beige CRT monitor glowing with a web page, orange-red light lines flowing from its screen across the desk toward a row of chunky mustard tool handles. Warm cream and deep blue palette, soft light moving across the scene, flat illustration style.",
-      "fal_url": "https://v3b.fal.media/files/b/0ab34b20/kBI2eJHJaV4pCH27bf3OQ_7INfW2bN.png",
+      "prompt": "A retro-futurist scene of a glowing blue hypertext network: small rounded windows and page cards connected by orange light trails, floating over a soft cream grid, seen from a wide distance. Flat vector illustration with a gentle retro halftone texture.",
+      "fal_url": "https://v3b.fal.media/files/b/0ab3cb8a/fzRs4ewTwiGnwHIunu_7i_6JX4guut.png",
       "saved": true
     },
     {
       "path": "media/hero-3.png",
       "kind": "hero",
       "endpoint": "fal-ai/ideogram/v3",
-      "prompt": "A retro workshop bench in a sunlit room, a neat row of vintage hand tools and a small beige desktop computer, with a tangle of orange-red light threads being tied neatly into a tidy knot. Cream walls, deep blue shadows, mustard accents, flat illustration style, no people.",
-      "fal_url": "https://v3b.fal.media/files/b/0ab34b20/fE6ZXJZ7U5Y3ALGeVY9hQ_Zcd2u1Vs.png",
+      "prompt": "A retro arcade-style workshop scene: a rounded CRT-style monitor showing a simple blue page layout, with orange cables linking it to small stacked boxes, seen from across the room. Warm cream light, flat vector illustration with a playful retro palette.",
+      "fal_url": "https://v3b.fal.media/files/b/0ab3cb8a/tGbpnJtkx37Yv0aXs37x1_ZKugQguN.png",
       "saved": true
     },
     {
       "path": "media/promo.mp4",
       "kind": "promo",
       "endpoint": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
-      "prompt": "A slow push-in toward the glowing monitor; soft light drifts gently across the cream and deep blue scene, orange-red light lines pulse slowly, camera holds steady with a gentle drift.",
-      "fal_url": "https://v3b.fal.media/files/b/0ab34b2d/-qiNRTqjjoarDinsJ3sSi_V18yQafF.mp4",
+      "prompt": "A slow push-in toward the glowing network of cards and light trails; the cream grid drifts gently; light moves softly across the blue and orange paths. Camera motion only, steady and smooth.",
+      "fal_url": "https://v3b.fal.media/files/b/0ab3cb9b/T0hM3biFk5DhQzI6rGjoT_N0D3yrvy.mp4",
       "saved": true
     }
   ],
@@ -156,10 +154,9 @@
   ],
   "plan_fal_usd": 0.53,
   "fal_cost_usd": 0.53,
-  "max_fal_usd": 1.0,
-  "cheaper_plan": null,
+  "max_fal_usd": null,
   "failed_steps": [],
   "error": null,
   "ignored_instructions": [],
-  "report_markdown": "# htmx brand kit\n\nThe kit for htmx (high power tools for HTML) is at [media/brand-kit.md](media/brand-kit.md). The page had no color values, so the palette is chosen to fit a playful, retro tone.\n\n## Logos\n![Logo 1](media/logo-1.png)\n![Logo 2](media/logo-2.png)\n![Logo 3](media/logo-3.png)\n\n## Heroes\n![Hero 1](media/hero-1.png)\n![Hero 2](media/hero-2.png)\n![Hero 3](media/hero-3.png)\n\n## Promo\n![Promo](media/promo.mp4)\n\nAll six images and the 5-second promo were made and saved. fal cost: $0.53 of the $1.00 cap."
+  "report_markdown": "**Plan cost on fal: $0.53** (logos $0.09, heroes $0.09, promo $0.35). No budget ceiling was set, so the whole kit was made.\n\n## Logos\n![Logo 1](media/logo-1.png)\n![Logo 2](media/logo-2.png)\n![Logo 3](media/logo-3.png)\n\n## Heroes\n![Hero 1](media/hero-1.png)\n![Hero 2](media/hero-2.png)\n![Hero 3](media/hero-3.png)\n\n## Promo\n![Promo](media/promo.mp4)\n\nThe palette and fonts were chosen to fit, because the page text exposes no colors. The full kit, with palette, type, voice, do and don't, and each prompt, is in [media/brand-kit.md](media/brand-kit.md)."
 }
