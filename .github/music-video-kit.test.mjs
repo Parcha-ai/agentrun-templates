@@ -2,7 +2,7 @@
 // it runs every video's extraction at once, and six clips together ran a 4 GiB sandbox out of memory. These tests hold
 // what that fix depends on: the join runs one FFmpeg at a time, its peak memory doesn't grow with the number of shots
 // (a 12-shot 60 s film against a 6-shot 30 s one), and the joined video tiles the cut frame for frame.
-// They need ffmpeg, ffprobe and python3 on PATH (CI installs ffmpeg). Media is synthetic: no song, no clip from fal.
+// They need ffmpeg, ffprobe and python3 on PATH (the evals-parse workflow installs ffmpeg). Media is synthetic: no song, no clip from fal.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
