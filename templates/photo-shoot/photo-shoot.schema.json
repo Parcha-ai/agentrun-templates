@@ -145,6 +145,6 @@
     },
     "error": { "type": ["string", "null"], "maxLength": 1000, "description": "why nothing was made, or a summary of what failed" },
     "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "sentences in product_notes addressed to you rather than about the product" },
-    "report_markdown": { "type": "string", "minLength": 1, "maxLength": 8000, "description": "the picks and their ad sizes (and the clip) embedded by their saved paths, the other shots listed, the cost per step and in total, and what failed" }
+    "report_markdown": { "type": "string", "minLength": 1, "maxLength": 8000, "description": "the plan's price first, the picks and their ad sizes embedded by their saved paths, the saved clip embedded on its own line exactly as ![Hero clip](media/hero.mp4) (naming its path in prose is not an embed), the other shots listed, the cost per step and in total, and what failed" }
   }
 }

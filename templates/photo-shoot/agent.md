@@ -238,10 +238,11 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
   `fal_cost_usd` is their sum. These are estimates from fal's rates, not fal's invoice.
 - `files`: every file the run wrote: `media/run-keys.json`, `media/product.<ext>`, the shots, the ad sizes, the clip.
 - `report_markdown`: first what the plan priced at on fal (`plan_fal_usd`, before anything was paid), then the 3 picks, each embedded by its saved path with its line on why (`![Pick 1: shot 4](media/shot-4.png)`),
-  then its ad sizes embedded (`![Pick 1, 9:16](media/ad-1-9x16.png)`), the clip if made (`![Hero clip](media/hero.mp4)`),
-  a list of the other shots by path with their scenes, one line on the upload (the photo put on fal once, free), a
-  cost line per step and the total, and what failed and why.
-  Leave out anything not saved.
+  then its ad sizes embedded (`![Pick 1, 9:16](media/ad-1-9x16.png)`), then the clip, then a list of the other shots
+  by path with their scenes, one line on the upload (the photo put on fal once, free), a cost line per step and the
+  total, and what failed and why. Leave out anything not saved.
+  When the clip is saved, embed it on its own line exactly as `![Hero clip](media/hero.mp4)`; naming its path in prose
+  is not an embed.
 
 **When something fails.** A job fal refuses or fails is never sent again, and nothing is paid for in its place:
 finish every job that doesn't need it, save what exists, and answer `partial`. A refused shot is not picked; with
