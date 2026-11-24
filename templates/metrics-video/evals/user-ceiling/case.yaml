@@ -1,6 +1,6 @@
-# Applied with these parameters, max_fal_usd 0.30. fixtures/stripe-mcp.json lists the week of 16 November in USD. At
-# get_pricing's rates the plan is the voiceover (about 0.05 to 0.07), as much again in reserve, and 45 s of music
-# (0.45): about 0.55 to 0.60, over the cap, so nothing is paid. Without the music it would be about 0.10 to 0.14.
+# Applied with these parameters: the owner sets their own ceiling, max_fal_usd 0.30. fixtures/stripe-mcp.json lists the
+# week of 16 November in USD. At get_pricing's rates the plan is the voiceover (about 0.05 to 0.07), as much again in
+# reserve, and 45 s of music (0.45): about 0.55 to 0.60, over the owner's ceiling, so nothing is paid.
 # Pass: 2 of 2.
 parameters:
   business_name: Larkspur Ceramics

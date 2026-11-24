@@ -113,8 +113,8 @@ no forecast, no praise. Never a customer's name, an email, a company that paid, 
 `write` the script, tags included, to `media/vo.txt`.
 
 Then `write` `film/STORYBOARD.md`: the palette, and for each scene of the plan its seconds, what it shows (from the
-data, as the scene draws it) and the narration under it. Every run that gets this far leaves both files, the
-over-budget one too.
+data, as the scene draws it) and the narration under it. Every run that gets this far leaves both files, one
+refused over the owner's ceiling too.
 
 **The music**: one line for an instrumental bed that sits under a voice (steady, sparse, no vocals, no big drop), a
 genre and a tempo in BPM, nothing about the business. `write` it to `media/music.txt`: the music job's prompt is that

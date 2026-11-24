@@ -6,9 +6,9 @@
   "type": "object",
   "additionalProperties": false,
   "x-carried": ["carried"],
-  "required": ["status", "week", "metric", "source_line", "compare", "empty_week", "figures", "gone", "left_out", "carried", "script", "word_count", "voiceover_seconds", "captions_timing", "film", "checks", "plan_usd", "cheaper_plan_usd", "fal_cost_usd", "files", "failed_step", "error", "ignored_instructions", "report_markdown"],
+  "required": ["status", "week", "metric", "source_line", "compare", "empty_week", "figures", "gone", "left_out", "carried", "script", "word_count", "voiceover_seconds", "captions_timing", "film", "checks", "plan_usd", "fal_cost_usd", "files", "failed_step", "error", "ignored_instructions", "report_markdown"],
   "properties": {
-    "status": { "enum": ["completed", "partial", "not_saved", "over_budget", "failed"], "description": "completed: the film and every piece are saved; partial: a step failed and what exists is saved; not_saved: the film was made and a save failed; over_budget: the plan was over max_fal_usd and nothing was paid; failed: Stripe could not be read, the figures could not be worked out, or nothing could be made" },
+    "status": { "enum": ["completed", "partial", "not_saved", "over_budget", "failed"], "description": "completed: the film and every piece are saved; partial: a step failed and what exists is saved; not_saved: the film was made and a save failed; over_budget: the owner set a ceiling (max_fal_usd), the plan was over it, and nothing was paid; failed: Stripe could not be read, the figures could not be worked out, or nothing could be made" },
     "week": {
       "type": "object",
       "additionalProperties": false,
@@ -176,8 +176,7 @@
         "renders": { "type": "integer", "minimum": 0, "maximum": 3 }
       }
     },
-    "plan_usd": { "type": ["number", "null"], "minimum": 0, "description": "the plan priced before any paid call: the voiceover, the re-voice reserve and the music when it is on" },
-    "cheaper_plan_usd": { "type": ["number", "null"], "minimum": 0, "description": "on over_budget with music on, the same plan without the music; else null" },
+    "plan_usd": { "type": ["number", "null"], "minimum": 0, "description": "the plan priced before any paid call, what the run will cost on fal (an estimate, not a gate): the voiceover, the re-voice reserve and the music when it is on" },
     "fal_cost_usd": {
       "type": "object",
       "additionalProperties": false,

@@ -1,5 +1,5 @@
 ---
-description: 'max_fal_usd 0.30: the plan (voice, a re-voice reserve and 45 s of music) is about $0.57, so nothing is paid: over_budget with the plan and the cheaper plan without music priced, the figures worked out, the narration and the storyboard written, nothing rendered.'
+description: 'The owner sets their own ceiling, max_fal_usd 0.30: the plan (voice, a re-voice reserve and 45 s of music) is about $0.57, so nothing is paid: over_budget with the plan priced, the figures worked out, the narration and the storyboard written, nothing rendered.'
 runs: 2
 max_cost_usd: 1.00
 ---

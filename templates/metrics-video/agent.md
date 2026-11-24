@@ -44,13 +44,15 @@ parameters:
   cron: { type: string, format: cron, default: "0 7 * * 1", required: false, description: "when the weekly film is made, as a cron line in the time zone (minute hour day-of-month month day-of-week): Mondays at 07:00 unless you set it. Each run films the last whole week" }
   voice: { type: string, required: false, enum: [Rachel, Aria, Sarah, Laura, Charlotte, Alice, Matilda, Jessica, Lily, Roger, Charlie, George, Callum, River, Liam, Will, Eric, Chris, Brian, Daniel, Bill], default: Aria, description: "the ElevenLabs voice that narrates the film" }
   music: { type: boolean, required: false, default: true, description: "score the film with an instrumental bed from ElevenLabs Music (about $0.45 of the $0.57); off: the voice alone" }
-  max_fal_usd: { type: number, required: false, minimum: 0, maximum: 5, default: 1, description: "the most a film may spend on fal. Each run prices its plan first (the voiceover, a second shorter voiceover held in reserve, and the music) and spends nothing when it doesn't fit. A film is about $0.57" }
+  max_fal_usd: { type: number, required: false, minimum: 0, description: "your own ceiling on fal, optional: left empty, nothing is refused for price. Each run prices its plan first (the voiceover, a second shorter voiceover held in reserve, and the music) and says what it will cost on fal. Set a ceiling and a plan over it is refused before any paid call. A film is about $0.57" }
 inputs:
   week_of: { type: string, format: date, required: false, title: "Week", description: "By hand: film the week (Monday to Sunday in your time zone) that holds this date, once it is over. Blank: the last whole week. A film by hand has no week over week.", examples: ["2026-11-16"] }
-# fal at most max_fal_usd's default ($1; a film is about $0.57) plus the model's share of a run that reads Stripe,
-# writes the narration, and builds, checks, reviews and renders a film in the sandbox, as release-film's runs do.
-budget: { per_run_usd: 2.50 }
-# The run only reads Stripe and writes files; its one paid service is fal, held to two endpoints and max_fal_usd.
+# The $1,000 accident guard, not a tuned number: it stops a runaway run, never an ordinary one. A film is about $0.57
+# of fal plus the model's share of a run that reads Stripe, writes the narration, and builds, checks, reviews and
+# renders the film in the sandbox.
+budget: { per_run_usd: 1000 }
+# The run only reads Stripe and writes files; its one paid service is fal, held to two endpoints, and to max_fal_usd
+# when the owner sets one.
 approvals: never
 triggers:
   - name: weekly-film
@@ -135,17 +137,19 @@ Follow the skill's step 4: the narration from the script's `say` words, at most 
 second film), one audio tag at the start, the week, what the figure is, each filmed currency's revenue, its change or
 that there is no earlier week, its refunds and disputes with their counts or that there were none, a restated week
 before when there is one. Write it to `media/vo.txt`, then `film/STORYBOARD.md`, before you price anything: every run
-that gets this far leaves both files, the over-budget one too. When `${parameters.music}` is true, write the music line
-to `media/music.txt`. Then run the scan (step 1) and fix what it names before going on.
+that gets this far leaves both files, one refused over the owner's ceiling too. When `${parameters.music}` is true,
+write the music line to `media/music.txt`. Then run the scan (step 1) and fix what it names before going on.
 
 ## 3. Price it
 
 `get_pricing` once with `endpoint_ids` [`fal-ai/elevenlabs/tts/eleven-v3`, `fal-ai/elevenlabs/music`]. The plan, F the
 plan's film seconds from the script: the voiceover (the narration's characters, tags included, ÷ 1000 × its rate), a
 reserve of that same cost for one shorter re-voice (step 6), and, when `${parameters.music}` is true, the music (F ÷ 60
-× its rate). Over `${parameters.max_fal_usd}`: call nothing that costs, and answer `status: "over_budget"` with
-`plan_usd`, `cheaper_plan_usd` (the plan without the music, when the music was in it; else null), the narration in
-`script`, the figures, and nothing paid. Never drop the music on your own to fit.
+× its rate). The plan's total is what the run will cost on fal: say it in the answer (`plan_usd`) and the report, as
+an estimate, not a gate. The owner's ceiling on fal is "${parameters.max_fal_usd}" (empty: they set none). Only when
+they set one and the plan's total is over it, call nothing that costs: answer `status: "over_budget"` with `plan_usd`,
+the narration in `script`, the figures, and nothing paid, and say the plan and their ceiling in the report. With no
+ceiling, nothing is refused for price. Never drop the music, or any part of the film, for price.
 
 ## 4. Keys
 
@@ -206,7 +210,7 @@ The skill's step 9: `write` the answer's json (the block below, without the fenc
 `node film/metrics.mjs scan --pages stripe --final`. It looks at everything again, the answer and the captions
 included, and when it finds nothing it removes the raw pages: the run leaves no copy of Stripe's answers. Exit 2:
 fix what it names (step 1) and run it again. Then answer with `media/answer.json`'s content. Every run that saved a
-raw page ends here, the over-budget, partial and failed ones too.
+raw page ends here, the partial and failed ones and one refused over the owner's ceiling too.
 
 ## When a step fails
 
@@ -229,7 +233,7 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
 - `script` and `word_count` (tags not counted) of the narration in the film; `voiceover_seconds` (V of that voiceover,
   2 decimals) and `captions_timing` as the caption script printed it.
 - `film`: `path`, `seconds`, `width`, `height` as ffprobe read them, null fields when none was rendered; `checks`.
-- `plan_usd` and `cheaper_plan_usd` as priced in step 3 (null when nothing was priced).
+- `plan_usd` as priced in step 3 (null when nothing was priced).
 - `fal_cost_usd`: one step per paid call made (`voiceover`, `voiceover-2` when sent, `music`) with its `key`, its units
   and rate from `get_pricing` and `usd` (to 3 decimals); a failed or refused job with `usd` 0; `total` their sum.
   Estimates from fal's rates, not fal's invoice.
