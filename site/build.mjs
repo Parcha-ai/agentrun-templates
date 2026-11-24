@@ -110,9 +110,12 @@ export async function build(options = {}) {
   write(".nojekyll", "");
 
   write("search.json", JSON.stringify(packages.map((p) => ({
-    name: p.name, title: p.displayName, description: p.description, category: p.category, tags: p.tags, url: `/templates/${p.name}/`,
+    name: p.name, title: p.displayName, summary: p.summary, description: p.description, category: p.category, tags: p.tags, url: `/templates/${p.name}/`,
     // What it requires, in words, so a search for "slack" or "free" finds the templates that use it.
     needs: requirements(p).map((r) => r.text),
+    // What installs it, pinned as its page's Install button pins it: an AgentRun console lists these templates and
+    // installs one from here, without opening its page.
+    source: p.installSource,
   }))) + "\n");
 
   const priority = (path) => (path === "/" ? "1.0" : path.startsWith("/templates/") ? "0.8" : "0.6");
