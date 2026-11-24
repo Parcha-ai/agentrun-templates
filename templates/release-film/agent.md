@@ -130,7 +130,8 @@ the old way failing before that same change, quoted from a before-state the note
 the notes give none, the headline itself in the plain form: the skill's story section; never a before-state the notes
 don't state), the reveal (the product and the
 version), two proof beats built from real text in the notes (a command, an error message, a config line, a number,
-a screenshot), a payoff and the end card with the call to action (the notes' own upgrade or install line, else the
+a screenshot), a payoff (what the headline gives the user, in the notes' terms: the skill's payoff rule) and the end
+card with the call to action (the notes' own upgrade or install line, else the
 release's URL). Every claim, number and name on screen or in the voice comes from the release; nothing it doesn't say.
 A number keeps the case it was measured on: "38 minutes to 6 on their 40 GB benchmark", never "big restores in six
 minutes". None of the words "today", "now", "just shipped", "not anymore", "no longer", "finally" or "at last", even
