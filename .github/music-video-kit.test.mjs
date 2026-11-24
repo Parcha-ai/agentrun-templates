@@ -52,19 +52,20 @@ ff("-f", "lavfi", "-i", "testsrc2=s=1024x576:r=1", "-frames:v", "1", join(media,
 ff("-f", "lavfi", "-i", "sine=f=220:d=61", "-c:a", "libmp3lame", join(media, "song.mp3"));
 
 // A film of n 5 s shots: shot 2 has no clip (its still with the push-in), shot 3's clip is short (slowed).
-function film(n) {
-  const dir = join(root, `film-${n}`);
+function film(n, last = 5) {
+  const dir = join(root, `film-${n}-${last}`);
   mkdirSync(join(dir, "assets"), { recursive: true });
   cpSync(join(KIT, "beats.mjs"), join(dir, "beats.mjs"));
   cpSync(join(KIT, "index.html"), join(dir, "index.html"));
-  const shots = Array.from({ length: n }, (_, i) => ({ n: i + 1, start_s: 1 + i * 5, seconds: 5 }));
-  const plan = { song: { path: join(media, "song.mp3"), seconds: 61 }, cut: { seconds: n * 5, start_s: 1, end_s: 1 + n * 5, shots }, aspect: "16:9", width: 1920, height: 1080, lyrics_on: false };
+  const shots = Array.from({ length: n }, (_, i) => ({ n: i + 1, start_s: 1 + i * 5, seconds: i === n - 1 ? last : 5 }));
+  const cut = (n - 1) * 5 + last;
+  const plan = { song: { path: join(media, "song.mp3"), seconds: 61 }, cut: { seconds: cut, start_s: 1, end_s: 1 + cut, shots }, aspect: "16:9", width: 1920, height: 1080, lyrics_on: false };
   writeFileSync(join(dir, "plan.json"), JSON.stringify(plan));
   for (const s of shots) {
     cpSync(join(media, "still.png"), join(dir, "assets", `still-${s.n}.png`));
     if (s.n !== 2) cpSync(join(media, s.n === 3 ? "short.mp4" : "clip.mp4"), join(dir, "assets", `clip-${s.n}.mp4`));
   }
-  const log = join(root, `spawns-${n}.jsonl`);
+  const log = join(root, `spawns-${n}-${last}.jsonl`);
   const r = spawnSync(process.execPath, [join(dir, "beats.mjs"), "place", "--film", dir], {
     encoding: "utf8",
     env: { ...process.env, PATH: `${shimDir}:${process.env.PATH}`, MU_SPAWN_LOG: log, MU_REAL_FFMPEG: REAL_FFMPEG },
@@ -77,6 +78,7 @@ function film(n) {
 const probe = (path) => JSON.parse(spawnSync("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=nb_frames,width,height,r_frame_rate", "-of", "json", path], { encoding: "utf8" }).stdout).streams[0];
 const six = film(6);
 const twelve = film(12);
+const odd = film(3, 5.041);
 
 test("the join runs one ffmpeg at a time", () => {
   for (const { spawns } of [six, twelve]) {
@@ -114,4 +116,12 @@ test("the joined video tiles the cut frame for frame, and is the film's only vid
     assert.deepEqual(f.out.slowed.map((s) => s.n), [3]);
     assert.ok(!existsSync(join(f.dir, "join")), "the parts folder is removed after the join");
   }
+});
+
+test("a cut that ends between frames is joined to the frames HyperFrames renders: ceil(cut x 30)", () => {
+  // 15.041 s at 30 fps is 451.23 frames; HyperFrames renders 452 (a 30.041 s cut rendered as 902), so the joined video
+  // must hold 452 or the film's last frame falls past its end.
+  assert.equal(Number(probe(join(odd.dir, "assets", "shots.mp4")).nb_frames), 452);
+  assert.equal(odd.out.joined_frames, 452);
+  assert.match(odd.html, /<div id="shot-3" class="clip mu-cut" data-start="10" data-duration="5.041"/);
 });

@@ -722,19 +722,20 @@ function place() {
     return { n: s.n, start, dur, use, why: use === "still" ? why : null, rate };
   });
   // The clips joined into one video on the film's frame grid, so HyperFrames extracts one file, not one per shot (it
-  // runs every video's extraction at once). Each shot is its own frames [round(start x FPS), round(end x FPS)), so the
-  // parts tile the cut exactly and no cut drifts off its bar line. A clip part is the clip from its start (slowed when
+  // runs every video's extraction at once). Each shot is its own frames [round(start x FPS), round(end x FPS)), the
+  // last one to ceil(cut x FPS), the frames HyperFrames renders (a 30.041 s cut is 902), so the parts tile the film
+  // exactly and no cut drifts off its bar line. A clip part is the clip from its start (slowed when
   // the clip runs short), scaled to cover the canvas; a still's part is black, under the still's own element. One
   // FFmpeg at a time (spawnSync), each held to JOIN_THREADS threads, so the step's peak memory is one process's.
   const frameAt = (t) => Math.round(t * FPS);
-  const total = frameAt(C);
+  const total = Math.ceil(C * FPS - 1e-6);
   const parts = join(film, "join");
   rmSync(parts, { recursive: true, force: true });
   mkdirSync(parts, { recursive: true });
   const enc = ["-c:v", "libx264", "-preset", "ultrafast", "-crf", "16", "-pix_fmt", "yuv420p", "-r", String(FPS), "-g", String(FPS), "-threads", JOIN_THREADS];
   const ffError = (r) => String(r.stderr || r.error || "").trim().split("\n").slice(-3).join(" ");
   for (const s of shots) {
-    s.frames = [frameAt(s.start), frameAt(s.start + s.dur)];
+    s.frames = [frameAt(s.start), s === shots[shots.length - 1] ? total : frameAt(s.start + s.dur)];
     const n = s.frames[1] - s.frames[0];
     const input = s.use === "clip"
       ? ["-threads", JOIN_THREADS, "-i", join(film, "assets", `clip-${s.n}.mp4`)]
