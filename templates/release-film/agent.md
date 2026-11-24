@@ -159,9 +159,10 @@ Every paid call has its own `submission_key`, beside `endpoint_id` and `input`, 
 `rf-<owner>-<repo>-<tag>-<step>`, lower case, each character outside letters, digits and `._:-` made `-`, the whole at
 most 128 characters; `<step>` is `voiceover`, `voiceover-2` (step 5 only) or `music`. For v0.1.0-beta.51 of
 Parcha-ai/agentrun the voiceover's key is `rf-parcha-ai-agentrun-v0.1.0-beta.51-voiceover`. When fal refuses a key
-because it already holds it for other inputs, nothing was billed and this release was filmed before: on a trigger's
-run make nothing more and answer `status: "already_made"`; on a run by hand send that job once more with `-b` after its
-key (a remake asked for by hand), never more.
+because it already holds it for other inputs, the refused call costs nothing, but the job already under that key may
+have been billed: on a trigger's run make nothing more and answer `status: "already_made"`; on a run by hand never
+send that job again under another key, and never take its output either (it was made from other inputs): that step
+is failed, and the answer names its key.
 
 Then, with no call in between, `submit_job` both once:
 

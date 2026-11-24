@@ -1,0 +1,22 @@
+# Applied with these parameters (the generated anchor, the schedule off: started by hand). The runner serves
+# fixtures/fal-mcp.json as the saved URL server fal, as in show-from-feed (every job keyed ns-<stem>-<step>, a $pattern
+# on any stem of 8 lowercase letters and digits), except that voice-lead-b's submit_job answers a timeout with no
+# handles: the reply was lost, and the job may exist. get_submission with that same key answers it found, with the
+# handles the other cases' submit_job gives it, so the run follows them in its grouped read and pays for lead-b once;
+# a second submit_job (same key, or -b) is a second bill. web.json is show-from-feed's. The show is built and rendered
+# for real in the run's sandbox.
+parameters:
+  topic: city transit
+  urls: ["https://transitwire.example/feed.xml"]
+  daily: false
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T07:00:00Z

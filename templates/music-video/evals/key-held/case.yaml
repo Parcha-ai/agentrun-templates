@@ -1,0 +1,16 @@
+# The runner serves fixtures/fal-mcp.json as the saved URL server fal (each job keyed by its submission_key
+# mu-<any 8 letter and digit stem>-<step>; every still and clip completes, but submit_job for clip 3
+# (mu-<stem>-clip-3) answers a 409 submission_key_conflict: the key is held for a job of other inputs). A case
+# can't seed media/run-keys.json, so the stem is the run's own; the rule tested is the answer to the 409.
+# web.json serves the song and fal's CDN files. The film is built and rendered for real. Pass: 2 of 2.
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# The five fal tools the package lists, granted, so each paid call is the agent's choice.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T15:00:00Z

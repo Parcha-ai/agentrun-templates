@@ -1,0 +1,43 @@
+<!doctype html>
+<!-- Share card: one still, 1200x630, that holds up in a feed: the show's name and date, the AI label, the three
+     headlines, and the anchor's face when there is one. build-show.mjs writes film/card/index.html from this file.
+     Render it with `hyperframes snapshot card --at 0.5 --no-end -o <dir>`; the still is the PNG it writes. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root { --night: #121820; --paper: #f3f1ea; --ink: #12161b; --accent: #ffc83a; --accent-ink: #12161b; --signal: #e2382b;
+        --signal-ink: #ffffff; --font-display: "League Gothic"; --font-text: "Inter"; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; overflow: hidden; background: var(--night); }
+      #root { position: relative; width: 100%; height: 100%; container-type: size; }
+      #card-ground { position: absolute; inset: 0; background: var(--night); }
+      #card-face { position: absolute; right: 0; top: 0; bottom: 0; width: 38cqw; object-fit: cover; object-position: 50% 25%; }
+      #card-text { position: absolute; left: 6cqw; top: 8cqh; bottom: 8cqh; right: {{TEXT_RIGHT}}cqw; display: flex; flex-direction: column; gap: 3.2cqh; }
+      #card-top { display: flex; align-items: center; gap: 2cqw; }
+      #card-tag { background: var(--signal); color: var(--signal-ink); font-family: var(--font-text); font-weight: 900; font-size: 3.6cqh;
+        letter-spacing: 0.08em; padding: 0.3em 0.6em; text-transform: uppercase; }
+      #card-date { font-family: var(--font-text); font-weight: 700; font-size: 4.2cqh; color: var(--paper); }
+      #card-show { font-family: var(--font-display); text-transform: uppercase; font-size: 17cqh; line-height: 0.9; color: var(--paper); white-space: nowrap; }
+      .card-row { display: flex; align-items: flex-start; gap: 1.6cqw; }
+      .card-slot { flex: none; width: 7cqh; height: 7cqh; background: var(--accent); color: var(--accent-ink); font-family: var(--font-display);
+        font-size: 6cqh; line-height: 7cqh; text-align: center; }
+      .card-line { font-family: var(--font-text); font-weight: 900; font-size: 4.6cqh; line-height: 1.12; letter-spacing: -0.02em; color: var(--paper); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="1" data-width="1200" data-height="630">
+      <div id="card-ground" class="clip" data-start="0" data-duration="1"></div>
+      {{FACE}}
+      <div id="card-text" class="clip" data-start="0" data-duration="1">
+        <div id="card-top"><div id="card-tag">AI-generated</div><div id="card-date">{{DATE}}</div></div>
+        <div id="card-show">{{SHOW}}</div>
+        {{ROWS}}
+      </div>
+    </div>
+    <script>
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>
