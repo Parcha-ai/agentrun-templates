@@ -66,7 +66,7 @@
     "stories_shown": {
       "type": "array",
       "maxItems": 21,
-      "description": "every story shown by this show, oldest first: the last run's list, then today's three. Over 21, the oldest are dropped. Read back by the next run so no story is shown twice",
+      "description": "every story shown by this show, oldest first: the last run's list, then today's three only when the show was rendered (a run that shows nothing hands the list on unchanged, empty when none was handed). Over 21, the oldest are dropped. Read back by the next run so no story is shown twice",
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -113,7 +113,7 @@
       "type": ["object", "null"],
       "additionalProperties": false,
       "required": ["name", "anchor_segments", "usd"],
-      "description": "the plan priced and run (or refused, on over_budget)",
+      "description": "the run's plan as priced before any paid call: run, or refused on over_budget (never null then); dropped anchor segments do not change it; null only on no_news",
       "properties": {
         "name": { "enum": ["full", "short", "voice-only"] },
         "anchor_segments": { "type": "array", "maxItems": 5, "items": { "enum": ["cold-open", "lead-a", "lead-b", "lead-c", "closing"] } },

@@ -145,28 +145,21 @@ face and over no caption, no fact or headline runs off the frame, and the end ca
 
 ## 8. Render
 
-A 90 second show renders for several minutes, longer than one `bash` call may wait, so start it in the background
-and read its log:
-
 ```sh
-cd film && (hyperframes render --quality looks -o ../media/show.mp4 > ../media/render.log 2>&1; echo "render exit $?" >> ../media/render.log) > /dev/null 2>&1 &
-```
-
-Then, every minute or so, with a `bash` `timeout` of 120:
-
-```sh
-sleep 60; grep "render exit" media/render.log || tail -2 media/render.log
-```
-
-Wait until it prints `render exit 0` (at most 25 minutes in all), then:
-
-```sh
+(cd film && hyperframes render --quality looks --video-frame-format jpg -o ../media/show.mp4 > ../media/render.log 2>&1; echo "render exit $?"); tail -c 400 media/render.log
 ffprobe -v error -show_entries format=duration:stream=width,height -of json media/show.mp4
 ```
 
-It must show 1920x1080 and the root's duration (`film_s` from the build). A failed render (`render exit` not 0):
-read the log's error, fix, render again (at most 3 renders in all, counted in `checks.renders`). Start one render at
-a time, never a second while one runs.
+Run it as written, in one `bash` call in the foreground with a `timeout` of 1200, and wait for it. The sandbox ends
+every process a call started when the call returns, so a render started in the background (`&`, `nohup`, `setsid`)
+is killed part way and its log stops mid-capture. `--video-frame-format jpg` extracts the anchor clips' frames as
+JPEG, HyperFrames' choice for camera footage, at a fraction of PNG's size on the sandbox's disk. A 90 second show
+takes several minutes (capture runs a few frames a second on software GL; the log's "BeginFrame did not run" line is
+expected).
+
+The ffprobe must show 1920x1080 and the root's duration (`film_s` from the build), within a frame. A failed render
+(`render exit` not 0): read the log's error, fix, render again (at most 3 renders in all, counted in
+`checks.renders`).
 
 ## 9. The share card
 

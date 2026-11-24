@@ -90,16 +90,19 @@ show's date is the run's date. Never stop to ask: take the likeliest reading and
 A run the schedule starts is handed its last completed run's answer after its message (it starts "The result of this
 trigger's last completed run (" or "The carried fields ("). Its `stories_shown` lists every story the show has carried,
 oldest first: none of them is shown again. A run with nothing handed (the first show, or a run you start by hand)
-excludes nothing. Copy that list into this run's `stories_shown` and add today's three stories at its end (date = the
-show's date, the story's URL, its title cut to 160 characters), keeping the last 21. A run that shows nothing (over
-budget, no news, failed) hands the list on unchanged.
+excludes nothing. Copy that list into this run's `stories_shown`. Add today's three stories at its end (date = the
+show's date, the story's URL, its title cut to 160 characters), keeping the last 21, only when `media/show.mp4` is
+rendered. A run that shows nothing (`over_budget`, `no_news`, `failed`, or a `partial` with no film) hands the list
+on exactly as it came, empty when nothing was handed: the stories it picked are not shown, so a later show may
+still carry them.
 
 ## 2. Find three new stories
 
 - `web_fetch` each of `urls` once, `max_chars` 40000: a feed's items, or a page's links to stories, are the
   candidates, each with its title, link and date.
-- When `urls` is blank, or gives fewer than three usable new stories, `web_search` the topic (at most 3 searches, each
-  naming the topic and the week) for more.
+- Only when `urls` is blank, or its feeds give fewer than three fresh new candidates, `web_search` the topic, each
+  search naming the topic and the week. At most 3 `web_search` calls in the run, an empty or failed one counted:
+  never wait and search again, never a fourth. Three or more fresh new candidates from `urls`: no search at all.
 - A candidate is **fresh** when its date is within 7 days before the show's date; one with no date is fresh only when
   its own page dates it. A candidate is **new** when it is in no `stories_shown` entry by URL (compared without its
   query, fragment or trailing slash) and is not the same event as one there (the same opening, vote, fare change,
@@ -158,9 +161,11 @@ Leave `user_intent` out of every fal call. `get_pricing` once with `endpoint_ids
 | `short` | cold-open and closing; the leads as desk cards | 17 |
 | `voice-only` | none: every anchor segment a desk card, no still | 0 |
 
-The run's plan is `plan` (`full` unless set). When it is over `max_fal_usd`, call nothing that costs: `status: "over_budget"`,
-`plans_priced` with all three, and `cheaper_plan` the largest plan smaller than the run's that fits (null when none
-does), in `report_markdown` too, with how to choose it: the `plan` setting, or `plan` in a run's input.
+The run's plan is `plan` (`full` unless set). The answer's `plan` is always that plan as priced here (its name,
+anchor segments and usd), on `over_budget` too; it is null only on `no_news`. When it is over `max_fal_usd`, call
+nothing that costs: `status: "over_budget"`, `plans_priced` with all three, and `cheaper_plan` the largest plan
+smaller than the run's that fits (null when none does), in `report_markdown` too, with how to choose it: the `plan`
+setting, or `plan` in a run's input.
 
 ## 5. The still and the voices, at once
 
@@ -168,8 +173,8 @@ Every paid call has its own `submission_key`, beside `endpoint_id` and `input`, 
 `ns-<stem>-<step>`, `<step>` one of `anchor-image`, `voice-<segment>`, `anchor-<segment>`. **The stem**: before the
 first paid call, `read` `media/run-keys.json`. When it holds `{"stem": "<8 lowercase letters and digits>"}` (a resumed
 run), use that stem. Otherwise make one stem of 8 random lowercase letters and digits (with `bash`:
-`tr -dc a-z0-9 < /dev/urandom | head -c 8`, never one you make up) and `write` it there as `{"stem": "<stem>"}` before
-any paid call.
+`tr -dc a-z0-9 < /dev/urandom | head -c 8`, which only prints it; never one you make up), then save it with the
+`write` tool, not `bash`, to `media/run-keys.json` as `{"stem": "<stem>"}` before any paid call.
 Never make a second stem in a run: a retry and a resume reuse it. With the stem `k7m2p9qa` the cold open's voice is
 `ns-k7m2p9qa-voice-cold-open` and lead A's clip `ns-k7m2p9qa-anchor-lead-a`. No date goes in a key; the show's date
 stays in the files and the answer. When fal refuses a key because it already holds a job for other inputs (a resumed
@@ -195,6 +200,12 @@ item with its own handles copied character for character as fal answered them. W
 still pending as failed with its request id. Never submit a job again: a second submit is a second bill. After a lost
 reply, `get_submission` with its key; `not_found` never authorizes a new paid call.
 
+**A job `wait_for_jobs` answers `completed` with a result is done: use it.** A voice is its segment's voice and a
+still is the anchor's still. Never read a voice's timestamps to check its words against the script (another take
+is still that voice: the build anchors its captions), never judge the still or a clip by its file size, bytes,
+pixels or handles, and never hold the show back over them. Whether a still has a face is Fabric's to answer: it
+refuses a still with none, and "When a step fails" below says what the show does then.
+
 Save as each is done, with `web_save`: each voice's `audio.url` to `media/voice-<segment>.mp3`, and in the same step
 `write` its `timestamps` value, exactly as fal answered it, to `media/voice-<segment>-timestamps.json`; the still to
 `media/anchor.png`. With an anchor image, `web_save` it to `media/anchor.<its extension>` once: it is the owner's own
@@ -207,7 +218,9 @@ plus the plan's anchor segments' V, each rounded up to a whole second (fal bills
 Fabric rate must be ≤ `max_fal_usd`, and each V at most 30 s. Over: animate fewer, dropping lead-c, then lead-b, then
 lead-a, then the closing, then the cold open, until it fits; with none left the show is desk-only, every anchor
 segment a desk card and no Fabric job sent. Each dropped segment is a desk card, `status: "partial"`, `failed_step:
-"anchor-budget"`, the numbers in `error`.
+"anchor-budget"`. `error` and `report_markdown` both give the numbers for every drop, down to the last segment
+tried: `max_fal_usd`, what is spent, and each tried set's seconds and cost (so a desk-only show says that even the
+cold open alone is over). `plan` stays the run's plan as priced in step 4: a drop changes `segments`, never `plan`.
 
 `submit_job` `veed/fabric-1.0` for each anchor segment of the plan, in order (cold-open, lead-a, lead-b, lead-c,
 closing), key `ns-<stem>-anchor-<segment>`: `{image_url: the still's images[0].url or the anchor image URL,
