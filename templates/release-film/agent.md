@@ -40,10 +40,10 @@ inputs:
   tone: { type: string, required: false, enum: [confident, playful, calm, bold], default: confident, title: "Tone", description: "How the voice, the cuts and the music feel" }
   aspect: { type: string, required: false, enum: ["16:9", "1:1", "9:16"], default: "16:9", title: "Aspect", description: "16:9 (1920x1080) for a page or a talk, 1:1 (1080x1080) for a feed, 9:16 (1080x1920) for stories and shorts" }
   voice: { type: string, required: false, enum: [Rachel, Aria, Sarah, Laura, Charlotte, Alice, Matilda, Jessica, Lily, Roger, Charlie, George, Callum, River, Liam, Will, Eric, Chris, Brian, Daniel, Bill], default: Aria, title: "Voice", description: "An ElevenLabs voice by name" }
-  max_fal_usd: { type: number, required: false, minimum: 0, maximum: 5, default: 1, title: "Most to spend on fal (USD)", description: "The run prices its plan first (the voiceover, a second shorter voiceover held in reserve, and the music) and spends nothing when it doesn't fit. A film is about $0.40." }
-# fal at most max_fal_usd's default ($1; a film is about $0.40) plus the model's share, measured at a median of $0.80 and
-# at most $0.90 a run (measured.json).
-budget: { per_run_usd: 2.00 }
+  max_fal_usd: { type: number, required: false, minimum: 0, title: "Your fal ceiling (USD)", description: "Optional, and no ceiling when left empty. The run always prices its plan first (the voiceover, a second shorter voiceover held in reserve, and the music) and says what it will cost on fal. Set a ceiling and a plan over it is refused before any paid call. A film is about $0.40." }
+# The $1,000 accident guard, not a tuned number: it stops a runaway run, never an ordinary one. A film is about $0.40 of
+# fal plus the model's share (measured.json).
+budget: { per_run_usd: 1000 }
 approvals: never
 triggers:
   - name: release-published-app
@@ -77,8 +77,9 @@ a voiceover over kinetic type and the release's own screenshots, a music bed und
 The film is built and rendered in your sandbox with HyperFrames. fal makes only the voice and the music.
 
 A run you start by hand carries an `Input:` json block: maybe `url`, `product_name`, `tone` (default confident),
-`aspect` (default 16:9), `voice` (default Aria) and `max_fal_usd` (default 1). A trigger's run carries a GitHub event
-or a feed item instead, and the defaults. Never stop to ask: take the likeliest reading and say which.
+`aspect` (default 16:9), `voice` (default Aria) and `max_fal_usd` (the user's own ceiling on fal; none unless they set
+one). A trigger's run carries a GitHub event or a feed item instead, and the defaults, so no ceiling. Never stop to ask:
+take the likeliest reading and say which.
 
 ## 1. Find the release
 
@@ -142,7 +143,7 @@ one", "version two point one"), and no package scope, path, flag, URL or identif
 ("the install line", "the jobs flag") and the screen shows the exact text. No count of commands or steps ("one
 command", "two steps") unless the notes give that count. Write the storyboard now, with `write`, to `film/STORYBOARD.md`, before you price
 anything (step 3): each beat's seconds, the words it puts on screen, the words of the script it sits under. Every run
-that gets this far leaves that file, the over-budget one too; step 4 builds the film from it.
+that gets this far leaves that file, one over the user's ceiling too; step 4 builds the film from it.
 
 **The music**: one line for an instrumental bed for `tone` that sits under a voice (steady, sparse, no vocals, no big
 drop), with a genre and a tempo in BPM.
@@ -151,9 +152,11 @@ drop), with a genre and a tempo in BPM.
 
 `get_pricing` once with `endpoint_ids` [`fal-ai/elevenlabs/tts/eleven-v3`, `fal-ai/elevenlabs/music`]. The plan: the
 voiceover (the script's characters, tags included, ÷ 1000 × its rate), a reserve of that same cost for one shorter
-re-voice (step 5), and the music (`film_seconds` ÷ 60 × its rate, `film_seconds` 30). When the plan's total is over
-`max_fal_usd`, call nothing that costs: answer `status: "over_budget"` with the plan priced and the script (the storyboard is already in
-`film/STORYBOARD.md`).
+re-voice (step 5), and the music (`film_seconds` ÷ 60 × its rate, `film_seconds` 30). The plan's total is what the
+run will cost on fal: say it in the answer (`plan_usd`) and the report, as an estimate, not a gate. Only when the user
+set `max_fal_usd` and the plan's total is over it, call nothing that costs: answer `status: "over_budget"` with the plan
+priced and the script (the storyboard is already in `film/STORYBOARD.md`). With no `max_fal_usd`, nothing is refused
+for price.
 
 Every paid call has its own `submission_key`, beside `endpoint_id` and `input`, never inside `input`:
 `rf-<owner>-<repo>-<tag>-<step>`, lower case, each character outside letters, digits and `._:-` made `-`, the whole at
@@ -226,11 +229,12 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
 - `film`: its `path`, `seconds`, `width` and `height` as ffprobe read them, null fields when none was rendered;
   `checks`: `check` errors left (0 on a rendered film), the warnings kept on purpose with why, and the review's notes
   fixed.
-- `plan_usd`: the plan priced in step 3 (null when nothing was priced).
+- `plan_usd`: the plan priced in step 3, what the run costs on fal (null when nothing was priced).
 - `fal_cost_usd`: one step per paid call made (`voiceover`, `voiceover-2` when sent, `music`) with its units and rate
   from `get_pricing` and `usd` (to 3 decimals); a failed or refused job with `usd` 0; `total` their sum. Estimates from
   fal's rates, not fal's invoice.
 - `files`: every file of the run: `media/film.mp4`, `media/voiceover.mp3`, `media/music.mp3`, `media/film.vtt`,
   `media/share-card.png`, the saved images, and `film/` (the composition folder).
 - `report_markdown`: the film first as `![Release film](media/film.mp4)` (when rendered), the share card under it,
-  then the headline and the script, the storyboard in a short table, the cost table, the checks, and any failed step.
+  then the headline and the script, the storyboard in a short table, the plan's price and the cost table, the checks,
+  and any failed step.
