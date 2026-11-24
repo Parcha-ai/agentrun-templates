@@ -16,7 +16,8 @@ if all hold:
 3. **One stem, written first.** A `write` of `media/run-keys.json` with `{"stem": S, "fal_url": U}`, U the upload's
    `cdn_url` and S 8 lowercase letters and
    digits, comes before the first `submit_job`, and every key is `ps-S-<step>` (`shot-1` ... `shot-10`,
-   `ad-<r>-<size>`, `clip`), each sent once. On the live journal a key may be refused as used: then that step failed
+   `ad-<r>-<size>`, `clip`), each sent once. A call the server refused unsent (its pin, or its spend guard: "was not
+   sent") never reached fal: it is not a send, and sending that step again under the same key is right. On the live journal a key may be refused as used: then that step failed
    and named by its key is right too, and a new key for that step is not. After the
    picks and before the first ad-size or clip job, a `write` of that file keeps S and U and adds `picks`, the shot
    numbers the answer's `picks` name, in rank order.
