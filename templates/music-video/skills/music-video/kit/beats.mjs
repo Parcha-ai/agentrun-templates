@@ -725,7 +725,8 @@ function place() {
   // runs every video's extraction at once). Each shot is its own frames [round(start x FPS), round(end x FPS)), the
   // last one to ceil(cut x FPS), the frames HyperFrames renders (a 30.041 s cut is 902), so the parts tile the film
   // exactly and no cut drifts off its bar line. A clip part is the clip from its start (slowed when
-  // the clip runs short), scaled to cover the canvas; a still's part is black, under the still's own element. One
+  // the clip runs short), scaled to cover the canvas; a still's part is the still, framed as its element frames it at
+  // the push-in's start, so where the rounded frame edge and the element's exact start differ the still shows. One
   // FFmpeg at a time (spawnSync), each held to JOIN_THREADS threads, so the step's peak memory is one process's.
   const frameAt = (t) => Math.round(t * FPS);
   const total = Math.ceil(C * FPS - 1e-6);
@@ -739,10 +740,11 @@ function place() {
     const n = s.frames[1] - s.frames[0];
     const input = s.use === "clip"
       ? ["-threads", JOIN_THREADS, "-i", join(film, "assets", `clip-${s.n}.mp4`)]
-      : ["-f", "lavfi", "-i", `color=c=black:s=${W}x${H}:r=${FPS}`];
+      : ["-loop", "1", "-framerate", String(FPS), "-i", join(film, "assets", `still-${s.n}.png`)];
+    const cover = [`scale=${W}:${H}:force_original_aspect_ratio=increase`, `crop=${W}:${H}`, "setsar=1"];
     const vf = s.use === "clip"
-      ? [...(s.rate ? [`setpts=PTS/${s.rate}`] : []), `fps=${FPS}`, `scale=${W}:${H}:force_original_aspect_ratio=increase`, `crop=${W}:${H}`, "setsar=1", "tpad=stop_mode=clone:stop_duration=1"].join(",")
-      : "setsar=1";
+      ? [...(s.rate ? [`setpts=PTS/${s.rate}`] : []), `fps=${FPS}`, ...cover, "tpad=stop_mode=clone:stop_duration=1"].join(",")
+      : cover.join(",");
     const out = join(parts, `shot-${s.n}.mp4`);
     const r = spawnSync("ffmpeg", ["-v", "error", "-nostdin", "-y", ...input, "-an", "-vf", vf, "-frames:v", String(n), ...enc, out], { encoding: "utf8" });
     if (r.status !== 0) fail(3, `shot ${s.n}: ffmpeg could not cut its part of the joined video: ${ffError(r)}`);
