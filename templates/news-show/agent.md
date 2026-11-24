@@ -214,7 +214,9 @@ call each.
 still is the anchor's still. Never read a voice's timestamps to check its words against the script (another take
 is still that voice: the build anchors its captions), never judge the still or a clip by its file size, bytes,
 pixels or handles, and never hold the show back over them. Whether a still has a face is Fabric's to answer: it
-refuses a still with none, and "When a step fails" below says what the show does then.
+refuses a still with none, and "When a step fails" below says what the show does then. The show step 3 wrote stays
+as written: never reorder the stories, swap their slots, or rewrite a script, a line or a chyron in `film/show.json`
+to follow what a voice says. The answer's `stories` and each segment's `script` are what step 3 wrote and sent.
 
 Save as each is done, with `web_save`: each voice's `audio.url` to `media/voice-<segment>.mp3`, and in the same step
 `write` its `timestamps` value, exactly as fal answered it, to `media/voice-<segment>-timestamps.json`; the still to

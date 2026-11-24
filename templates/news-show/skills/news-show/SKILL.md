@@ -105,7 +105,8 @@ square corners everywhere (no `border-radius`), and the cold open's strap with i
 ## 5. Captions and timing
 
 Each segment's captions come from its own timestamps: `aligned` when fal's characters spell its script, `anchored`
-when they don't (another take), `measured` when a segment has none. All three are correct timings, never a fault. The
+when they don't (another take), `measured` when a segment has none. All three are correct timings, never a fault:
+an `anchored` segment is never "fixed" by rewriting its script to the take's words or by reordering the stories. The
 headlines' lines land on the sentences that say them and each story's facts on the sentence that says each one, from
 the same words; read `film/words.json` when a line lands early or late, and fix the script's sentence breaks rather
 than the times.
