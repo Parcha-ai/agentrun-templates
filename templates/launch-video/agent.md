@@ -137,8 +137,10 @@ Then, with no other call in between, `submit_job` each job once (each `{...}` be
 Each submit answers that job's own handles (`endpoint_id`, `request_id`, `status_url`, `response_url`): every job has
 its own, and one job's handles never stand for another's. Then follow them all with **one** `wait_for_jobs` whose
 `jobs` list holds each job's own handles, at `index` clip k → k − 1, the voiceover → N, the music → N + 1 (N clips).
-While any job is pending, wait the `poll_after_seconds` it gives and read the pending ones again; stop after 10
-minutes and treat what is still pending as failed with its request id. Copy each handle exactly as fal returned it,
+While any job is pending, wait the `poll_after_seconds` it gives and read the pending ones again. Keep a running sum
+of the `waited_ms` each `wait_for_jobs` answers: stop only once it passes 600000 (10 minutes), never sooner because many
+reads came back pending (a busy queue on fal takes minutes), and treat what is still pending then as failed with its
+request id. Copy each handle exactly as fal returned it,
 character for character: never build, shorten or extend a URL. Never submit a job again: a second submit is a second
 bill. After a lost reply, `get_submission` with the job's key.
 
@@ -196,7 +198,8 @@ One `run_model` on `fal-ai/ffmpeg-api/compose` with key `lv-<stem>-cut` beside `
   {"id": "music", "type": "audio", "keyframes": [{"url": "<music url>", "timestamp": 0, "duration": L}]}]}
 ```
 
-One video keyframe per clip, in shot order, back to back, each clip's own `video.url`: 5000 ms each on Kling; 6000 ms
+One video keyframe per clip, in shot order, back to back, each clip's own `video.url` (keyframe k is the result at
+`index` k − 1, whatever order the jobs were sent or finished in): 5000 ms each on Kling; 6000 ms
 each on Hailuo, the last one cut so the track ends at L (45 s: the eighth is 3000). The voiceover is the one that fits
 (step 6), so L − 1000 holds all of it. The URLs are the ones fal answered (not the saved paths). Compose takes no
 volume or ducking setting: both audio tracks play at their own level, which is why the music is asked for soft and
