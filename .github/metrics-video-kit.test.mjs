@@ -393,7 +393,7 @@ test("with the skill installed, a customer's name is found even where the skill'
   const manifest = JSON.parse(readFileSync(join(skill, "kit", "manifest.json"), "utf8"));
   manifest.sha256["SKILL.md"] = createHash("sha256").update(md).digest("hex");
   writeFileSync(join(skill, "kit", "manifest.json"), JSON.stringify(manifest));
-  for (const [name, description, said] of [["held-first", "Commission for Marisol Quintero", "Thank you, Marisol."], ["held-pair", "Commission for Marisol Quintero", "Thank you, Marisol Quintero."], ["held-initial", "Commission for Marisol Q. Quintero", "Thank you, Marisol Q. Quintero."]]) {
+  for (const [name, description, said] of [["held-first", "Commission for Marisol Quintero", "Thank you, Marisol."], ["held-pair", "Commission for Marisol Quintero", "Thank you, Marisol Quintero."], ["held-initial", "Commission for Marisol Q. Quintero", "Thank you, Marisol Q. Quintero."], ["held-lower", "Commission for Marisol Quintero", "thanks to marisol quintero."]]) {
     const r = scanRun(`skill-${name}`, [described(description)], { "media/vo.txt": `${CLEAN} ${said}` }, [], skill);
     assert.equal(r.status, 2, `${description}, the skill's text holding the name, said as "${said}": ${r.out}`);
     assert.match(r.out, /media\/vo\.txt/);
