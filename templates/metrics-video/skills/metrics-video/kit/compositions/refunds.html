@@ -1,6 +1,7 @@
 <!-- Refunds and disputes: one currency at a time, and inside it one figure at a time: the refunds (their amount counting
-     up, their count under it), then the disputes the same way. A currency with neither says so in words. Every value
-     comes from window.MV. -->
+     up, their count under it), then the disputes the same way, then the money won back from disputes (a dispute opened
+     in an earlier week can be won this one, with no new dispute). A currency with none of them says so in words. Every
+     value comes from window.MV. -->
 <template>
   <style>
     #root { position: absolute; inset: 0; background: var(--ground); container-type: size; overflow: hidden; }
@@ -24,14 +25,12 @@
     const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
     const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
     document.getElementById("rf-src").textContent = mv.source_line;
-    // Each currency's items, in order: refunds, then disputes, each only when there were some.
+    // Each currency's items, in order: refunds, disputes, then money won back from disputes, each only when there was some.
     const items = list.map((c) => {
       const out = [];
       if (c.refunds.count) out.push({ label: `Refunds · ${c.code.toUpperCase()}`, money: c.refunds, count: plural(c.refunds.count, "refund", "refunds") });
-      if (c.disputes.count) {
-        const won = c.dispute_reversals.count ? `; ${plural(c.dispute_reversals.count, "dispute", "disputes")} won back, ${c.dispute_reversals.display}` : "";
-        out.push({ label: `Disputes · ${c.code.toUpperCase()}`, money: c.disputes, count: plural(c.disputes.count, "dispute", "disputes") + won });
-      }
+      if (c.disputes.count) out.push({ label: `Disputes · ${c.code.toUpperCase()}`, money: c.disputes, count: plural(c.disputes.count, "dispute", "disputes") });
+      if (c.dispute_reversals.count) out.push({ label: `Won back from disputes · ${c.code.toUpperCase()}`, money: c.dispute_reversals, count: `${plural(c.dispute_reversals.count, "dispute", "disputes")} won` });
       return out;
     });
     document.getElementById("rf-stage").innerHTML = list.map((c, s) => {

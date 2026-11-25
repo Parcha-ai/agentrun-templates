@@ -525,7 +525,7 @@ function compute() {
     out.push(`revenue: ${c.revenue.exact} exact; film ${c.revenue.display}; say "${c.revenue.spoken}"`);
     out.push(`charges: ${c.charges} for ${c.gross.exact} gross; fees ${c.fees.exact}`);
     out.push(`refunds: ${c.refunds.count}, ${c.refunds.exact}; film ${c.refunds.display}; say "${c.refunds.spoken}"`);
-    out.push(`disputes: ${c.disputes.count}, ${c.disputes.exact}; film ${c.disputes.display}; say "${c.disputes.spoken}"${c.dispute_reversals.count ? `; won back: ${c.dispute_reversals.count}, ${c.dispute_reversals.exact}` : ""}`);
+    out.push(`disputes: ${c.disputes.count}, ${c.disputes.exact}; film ${c.disputes.display}; say "${c.disputes.spoken}"${c.dispute_reversals.count ? `; won back: ${c.dispute_reversals.count}, ${c.dispute_reversals.exact}; film ${c.dispute_reversals.display}; say "${c.dispute_reversals.spoken}"` : ""}`);
     if (c.best_day) out.push(`best day: ${c.best_day.label} ${c.best_day.date}, ${c.best_day.display}; say "${c.best_day.spoken}"`);
     if (c.change) {
       out.push(`week before: ${c.change.before.exact} exact; film ${c.change.before.display}; say "${c.change.before.spoken}"`);

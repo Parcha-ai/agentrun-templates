@@ -102,7 +102,8 @@ of them, one audio tag at the start (`[warm]`), short sentences, in the order of
 - once, what the figure is: revenue net of refunds and Stripe fees;
 - for each filmed currency, its revenue in the script's words, then its change in the script's words ("up three
   hundred thirty dollars, eight point five percent, on the week before"), or that there is no earlier week to compare;
-  then its refunds and disputes with their counts, or that there were none;
+  then its refunds and disputes with their counts and any money won back from a dispute (`won back`), or that there
+  were none;
 - with `restated`: that the week before's figure changed in Stripe since the last film, from what to what, and that
   the comparison uses Stripe's figure now. Never guess why it changed;
 - with `EMPTY WEEK`: that no payments came in that week, and nothing else about trends.

@@ -135,8 +135,8 @@ in `error`, and nothing more paid.
 
 Follow the skill's step 4: the narration from the script's `say` words, at most the plan's words (about 100 for a 45
 second film), one audio tag at the start, the week, what the figure is, each filmed currency's revenue, its change or
-that there is no earlier week, its refunds and disputes with their counts or that there were none, a restated week
-before when there is one. Write it to `media/vo.txt`, then `film/STORYBOARD.md`, before you price anything: every run
+that there is no earlier week, its refunds and disputes with their counts and any money won back from a dispute, or
+that there were none, a restated week before when there is one. Write it to `media/vo.txt`, then `film/STORYBOARD.md`, before you price anything: every run
 that gets this far leaves both files, one refused over the owner's ceiling too. When `${parameters.music}` is true,
 write the music line to `media/music.txt`. Then run the scan (step 1) and fix what it names before going on.
 
