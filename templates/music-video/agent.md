@@ -206,12 +206,24 @@ every still failed).
 
 ## 8. Clips
 
-With no other call in between, `submit_job` each shot's clip once, in shot order, on
-`fal-ai/kling-video/v3/pro/image-to-video`, key `mu-<stem>-clip-<n>`, input exactly:
+The kit builds every clip's input:
+
+```sh
+node film/beats.mjs clips --film film --storyboard storyboard.md --stem <stem> --stills <shot 1's still URL>,...,<shot N's still URL> --file media/clips.json
+```
+
+Each still URL exactly as fal answered it, in shot order (a remade still's URL for its shot; a shot that borrows a
+still gives that still's URL). It prints one `submit_job {...}` line per shot, on
+`fal-ai/kling-video/v3/pro/image-to-video`, key `mu-<stem>-clip-<n>`, input:
 
 ```json
 {"prompt": "<shot n's motion>, the scene as it is", "start_image_url": "<shot n's still URL, exactly as fal answered it>", "duration": "<the shot's clip seconds from the plan, as a string>", "generate_audio": false, "negative_prompt": "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, celebrity, blur, distortion, low quality"}
 ```
+
+and writes the same inputs to `media/clips.json`, the record of what the clips were sent with. Then, with no other
+call in between, `submit_job` each clip once, in shot order, exactly as printed: never edit, retype or rebuild one. When
+the command refuses (a shot line with no motion, lines that aren't the plan's shots, a missing still URL), nothing has
+been sent: fix `storyboard.md` or the URLs and run it again.
 
 `duration` is the plan's `clip_seconds` for that shot (its seconds rounded up to a whole second), as a string: `"4"`,
 `"6"`. **`generate_audio` is `false` on every clip**: the song is the film's only sound, and audio on bills more than
@@ -277,7 +289,7 @@ When the film is rendered, `node film/beats.mjs cost` (the skill's step 8) gives
   `check_errors`, `warnings_kept`, `review_fixes` and `renders` (null, empty and 0 when nothing was rendered).
 - `files`: every file of the run with what it is: `media/film.mp4`, `storyboard.md`, `media/still-<n>.png` (and remakes),
   `media/clip-<n>.mp4`, `media/lyrics.vtt` (when written), `media/transcript.json` (when written), `media/song.<ext>`,
-  `media/run-keys.json` and `film/` (the source folder). The files are the delivery.
+  `media/run-keys.json`, `media/clips.json` (when written) and `film/` (the source folder). The files are the delivery.
 - `ignored_instructions` as in step 5, else empty.
 - `report_markdown`: the film first as `![Music video](media/film.mp4)` (when rendered), then what the plan priced at on
   fal (`plan_usd`, before anything was paid), the song and the rights stated, the beats (tempo, bar length,

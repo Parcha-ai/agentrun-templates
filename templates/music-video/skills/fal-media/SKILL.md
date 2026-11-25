@@ -94,7 +94,8 @@ read `get_model_schema` only if a call answers 422. Never send `sync_mode`.
 - `start_image_url` (required: the still's `images[0].url` exactly as fal answered it), `prompt` (up to 2500
   characters: the motion), `duration` (a string, `"3"` to `"15"`: the shot's `clip_seconds`), `generate_audio`
   (**always `false`**: its default is true, which bills $0.168 a second and puts sound the film doesn't use into the
-  clip), `negative_prompt` (as agent.md gives it). No aspect field: the clip takes the still's shape. Leave
+  clip), `negative_prompt` (as agent.md gives it). The kit's `clips` command builds each clip's input (agent.md step 8):
+  send it as printed. No aspect field: the clip takes the still's shape. Leave
   `multi_prompt`, `elements`, `end_image_url` and `cfg_scale` out.
 - Answers `{"video": {"url", "content_type", "file_name", "file_size"}}`. It takes one to four minutes: expect `pending`
   reads. A clip can come back refused by its content checker: a definite answer, never sent again.

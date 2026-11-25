@@ -10,6 +10,7 @@
 //   node beats.mjs lyrics --film film --words media/transcript.json --vtt media/lyrics.vtt
 //   node beats.mjs place  --film film
 //   node beats.mjs stem   --file media/run-keys.json
+//   node beats.mjs clips  --film film --storyboard storyboard.md --stem <stem> --stills <url-1>,...,<url-N> --file media/clips.json
 //   node beats.mjs cost   --film film --stem <stem> --sent isolate,transcript,still-1,...,clip-12 [--failed clip-5,...] [--pending clip-7,...]
 //
 // plan    decodes the song (mono, 11025 Hz), builds an onset curve from three frequency bands, finds the tempo by
@@ -33,6 +34,13 @@
 //         extracts every video of a film at once, and six clips' extractions together run a 4 GiB sandbox out of memory.
 // stem    prints the run's key stem: the one in the file when it holds one (a resumed run), else a new one from the
 //         sandbox's random bytes, written there first. A model never makes one.
+// clips   every clip's submit_job, built from the storyboard and the plan: shot n's prompt is its storyboard motion
+//         and ", the scene as it is", its still the n-th of --stills (fal's URL, as fal answered it), its duration the
+//         plan's clip seconds, then the fixed fields (no audio, the one negative prompt). It prints one
+//         `submit_job {...}` line per clip, to send as printed, and writes them to --file: the fixed fields once, then
+//         one short line per clip, so the record reaches a grader whole where a run's calls are cut to fit. A
+//         storyboard that doesn't hold the plan's shots in order, a shot with no motion, or a still list that doesn't
+//         match the shots is an error, and nothing is printed or written.
 // cost    the answer's fal_cost_usd from the steps sent (a failed or refused one at 0; one still pending when the run
 //         stopped waiting at its full price, pending true, since fal may yet finish and bill it), at the rates price
 //         used, each with its key mu-<stem>-<step>.
@@ -760,6 +768,33 @@ function stem() {
   console.log(JSON.stringify({ stem: made, made: true }));
 }
 
+// ---------- the clips ----------
+const KLING = "fal-ai/kling-video/v3/pro/image-to-video";
+const NEGATIVE = "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, celebrity, blur, distortion, low quality";
+function clips() {
+  const film = need("film"), board = need("storyboard"), file = need("file"), stem = need("stem");
+  if (!/^[a-z0-9]{8}$/.test(stem)) fail(2, "--stem is the run's key stem from media/run-keys.json: 8 lowercase letters and digits");
+  const shots = readPlan(film).cut.shots;
+  if (!existsSync(board)) fail(2, `${board} is missing: write the storyboard first`);
+  // A shot line is `<n> | ... | motion: <move>`; its motion is what follows the line's last "| motion:".
+  const lines = readFileSync(board, "utf8").split("\n").filter((l) => /^\s*\d+\s*\|/.test(l));
+  if (lines.length !== shots.length) fail(2, `${board} holds ${lines.length} shot lines, the plan ${shots.length}: one line per shot of the plan, in order`);
+  const urls = need("stills").split(",").map((u) => u.trim());
+  if (urls.length !== shots.length) fail(2, `--stills holds ${urls.length} URLs, the plan ${shots.length} shots: each shot's still URL, in shot order`);
+  const built = shots.map((s, i) => {
+    const n = Number(lines[i].match(/^\s*(\d+)/)[1]);
+    if (n !== s.n) fail(2, `shot line ${i + 1} is shot ${n}: the storyboard's lines are the plan's shots in order`);
+    const at = lines[i].lastIndexOf("| motion:");
+    const motion = at < 0 ? "" : lines[i].slice(at + "| motion:".length).trim().replace(/[\s.,;:]+$/, "");
+    if (!motion) fail(2, `shot ${s.n}: its storyboard line has no motion (\`| motion: <the camera or subject move>\` at its end)`);
+    if (!/^https:\/\/\S+$/.test(urls[i])) fail(2, `shot ${s.n}: its still URL ${urls[i] || "(empty)"} is not an https URL: give fal's URL for its still, as fal answered it`);
+    return { n: s.n, key: `mu-${stem}-clip-${s.n}`, duration: String(s.clip_seconds), prompt: `${motion}, the scene as it is`, start_image_url: urls[i] };
+  });
+  const every = { generate_audio: false, negative_prompt: NEGATIVE };
+  writeFileSync(file, `{"endpoint_id": ${JSON.stringify(KLING)},\n "every_clip": ${JSON.stringify(every)},\n "clips": [\n${built.map((c) => `  ${JSON.stringify(c)}`).join(",\n")}\n]}\n`);
+  for (const c of built) console.log(`submit_job ${JSON.stringify({ endpoint_id: KLING, submission_key: c.key, input: { prompt: c.prompt, start_image_url: c.start_image_url, duration: c.duration, ...every } })}`);
+}
+
 // ---------- the cost ----------
 function cost() {
   const film = need("film");
@@ -790,5 +825,6 @@ else if (command === "price") price();
 else if (command === "lyrics") lyrics();
 else if (command === "place") place();
 else if (command === "stem") stem();
+else if (command === "clips") clips();
 else if (command === "cost") cost();
-else fail(2, "usage: node beats.mjs plan|price|lyrics|place|stem|cost ... (the header of this file says each)");
+else fail(2, "usage: node beats.mjs plan|price|lyrics|place|stem|clips|cost ... (the header of this file says each)");
