@@ -16,7 +16,7 @@ The pages' own facts: N1: the one millionth rider on Sunday, 11 weeks after the 
 every 10 minutes from 5 a.m. to midnight; 19 minutes from Central Station to the terminal; Tomas Ferreira, the
 authority's head of service planning: "We planned for one million riders in the first six months, not the first
 three"; weekday ridership averages 13,400; two trains added in March. R1: 3.2 km of new track; two stations, Elm Yard
-and Quarry Lane; 18,500 riders a day expected; Priya Halden, the authority's chief engineer: "This is the first new
+and Quarry Lane; 18,500 riders a day expected on the new section once a full timetable runs in December; Priya Halden, the authority's chief engineer: "This is the first new
 track Line 4 has had in 22 years". N2: from January 12, every 15 minutes instead of every 30; 4,000 riders a night in
 October, more than any other night route; Lena Okafor, who chairs the authority's rider panel: "Night workers asked
 for this more than anything else". N3: about 3,100 regional rail workers vote on December 4 on whether to strike over
