@@ -1155,7 +1155,7 @@
         "elevenlabs",
         "media"
       ],
-      "summary": "Dubs a narrated video into up to three languages in the same voice, with captions. Only for a voice you own. Billed to your fal account."
+      "summary": "Dubs a narrated video into up to five languages in its own voice, with captions. Only for a voice you own. Billed to your fal account."
     },
     {
       "name": "release-film",
@@ -1236,6 +1236,21 @@
         "elevenlabs"
       ],
       "summary": "A 45-second film each week of last week's Stripe revenue, net of refunds and fees, per currency, against the week before."
+    },
+    {
+      "name": "photo-shoot",
+      "source": "./templates/photo-shoot",
+      "category": "marketing",
+      "tags": [
+        "product",
+        "photo",
+        "ads",
+        "image",
+        "fal",
+        "nano-banana",
+        "kling"
+      ],
+      "summary": "Turns one photo of your product into lifestyle shots, the best three remade in four ad sizes. Billed to your fal account."
     }
   ]
 }

@@ -137,7 +137,7 @@ const onPlan = (pkg) => pkg.harness?.[0] === "codex" && !pkg.model?.prefer;
 
 const TOOLKIT_NAMES = { github: "GitHub", gmail: "Gmail", googlecalendar: "Google Calendar", slack: "Slack", linear: "Linear", hubspot: "HubSpot", stripe: "Stripe" };
 /** A url need's toolkit when it is a server with its own name: the console's presets (packages.mjs MCP_PRESETS). */
-const URL_NAMES = { github: "GitHub", parallel: "Parallel Search", firecrawl: "Firecrawl", linear: "Linear", notion: "Notion" };
+const URL_NAMES = { github: "GitHub", parallel: "Parallel Search", firecrawl: "Firecrawl", linear: "Linear", notion: "Notion", fal: "fal.ai" };
 
 /** Where an MCP need's tools come from, as a short name: "GitHub", "Composio Gmail", "slack MCP server". */
 export function mcpWords(need) {
@@ -205,6 +205,8 @@ export function requirements(pkg) {
     const name = mcpName(n);
     if (n.source === "github") return { id: "github-app", logo: "logo-github.svg", what: "GitHub", how: "the AgentRun GitHub App" };
     if (n.source === "composio") return { id: `composio-${n.toolkit}`, logo: toolkitLogo(n.toolkit), what: name, how: "Composio" };
+    // fal is paid per job on the owner's own account: the page says so where it says what the template needs.
+    if (n.source === "url" && n.toolkit === "fal") return { id: "mcp-fal", logo: "logo-plug.svg", what: "your fal.ai key", how: "the fal MCP server; fal bills your account for each image, voice and clip" };
     if (n.source === "url" && URL_NAMES[n.toolkit]) return { id: `mcp-${n.toolkit}`, logo: toolkitLogo(n.toolkit), what: name, how: "its own MCP server" };
     return { id: `mcp-${n.server ?? n.toolkit ?? "server"}`, logo: "logo-plug.svg", what: `the ${name}`, how: null };
   };

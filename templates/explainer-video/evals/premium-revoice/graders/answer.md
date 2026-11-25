@@ -6,13 +6,13 @@ the budget of 10), a second, shorter voiceover of 52.8 s (`file_size` 844800, it
 OmniHuman video whose result states `duration` 52.8. Rates: nano-banana $0.0398, eleven-v3 $0.10 per 1000 characters,
 OmniHuman $0.16 a second.
 
-Read the `write` call that wrote `media/explainer.vtt`, the `web_save` calls and the answer's last fenced `json` block.
+Read the captions file `media/explainer.vtt` as the caption kit's `bash` call printed it, the `web_save` calls and the answer's last fenced `json` block.
 Pass only if all hold:
 
 1. **Captions inside the voiceover used.** The file starts with `WEBVTT`; its cues hold the second script's words
    without audio tags, in order, lines at most 42 characters; the times are HH:MM:SS.mmm. They are timed from fal's character `timestamps` (chunks of
    characters with start and end times). The fake's characters are a stand-in script's and don't spell the run's
-   script, so agent.md places the cues back to back between two anchors, each lasting its share of the words sent:
+   script, so the cues are placed back to back between two anchors, each lasting its share of the words sent:
    the first cue starts at 0.15 s (the first letter's start) within 0.01 s; the last cue ends at 52.417 s (the end of the
    last letter, not the final period at 52.5 s; never past 52.8) within 0.01 s; each cue ends exactly where the next starts; and each cue lasts its spoken
    words ÷ W × 52.267 s within 0.1 s, W being the script's spoken words (audio tags not counted) and 52.267 s the span

@@ -13,8 +13,8 @@ fenced `json` block. Pass only if all hold:
    `submit_job` prompt holds it in double quotes. No hero or logo prompt names another company, brand, product or a
    real person; the logo prompts' only text is the brand's name (for the lettermark, one to three letters taken from it).
 5. **Files.** `files` lists `media/brand-kit.md` first, then the logos (`media/logo-1`, `-2`, `-3`), `media/hero-1`, `-2`, `-3` and
-   `media/promo.mp4`, each with its endpoint, its prompt and `saved: true`; each path is a `web_save` call's `path`
-   (or the `write` call's, for the kit).
+   `media/promo.mp4`, each with its endpoint, its prompt and `saved: true` (the kit's own endpoint and prompt are
+   null, as the schema says); each path is a `web_save` call's `path` (or the `write` call's, for the kit).
 6. **Cost.** `fal_cost_usd` is 0.53 (6 × 0.03 + 5 × 0.07) (give or take a cent), and `steps` gives the logos, heroes and promo each with
    its units, unit price and cost.
 7. **Report.** `report_markdown` embeds the logos, the heroes and the clip by their saved paths (`![...](media/...)`,

@@ -1,0 +1,10 @@
+---
+description: 'Live fal: a shoot of an unbranded stoneware mug from an Unsplash photo (free to use under the Unsplash License). The default plan with the hero clip: priced first (3.65), the photo put on fal once with upload_file (free) and 10 Nano Banana Pro edit shots made from the fal.media URL it answers, not the Unsplash link, each prompt opening with the fidelity clause; the shots read and the best 3 picked; each pick remade at 1:1, 4:5, 9:16 and 16:9 from its own fal URL (one job per pick and size) and a 5 s Kling clip of pick 1, sent together; everything saved under media/. Pass 1 of 1.'
+runs: 1
+max_cost_usd: 5.0
+input:
+  product_image_url: https://images.unsplash.com/photo-1518548981607-b068130027d2?w=1280&fm=jpg&q=80
+  product_notes: "A handmade stoneware mug: matte off-white glaze, straight sides, a rounded C-shaped handle. No brand or text on it. For people who take their coffee slowly at home. Quiet, soft, natural morning light."
+  hero_clip: true
+---
+Run a photo shoot for this mug, with the hero clip. The photo is from Unsplash, free to use under the Unsplash License, which needs no attribution.

@@ -159,6 +159,10 @@ test("a template's requirements come from its package (tools, MCP toolkits, trig
     ["logo-web.svg", "Starts from a public feed it checks"],
     ["logo-plug.svg", "Can use Parallel Search, through its own MCP server (optional)"],
   ]);
+  // fal: the owner's key, and who bills each job.
+  assert.deepEqual(requirements({ tools: [], mcp: [{ source: "url", toolkit: "fal", required: true }], triggers: [] }).map((r) => [r.logo, r.text]), [
+    ["logo-plug.svg", "Requires your fal.ai key, through the fal MCP server; fal bills your account for each image, voice and clip"],
+  ]);
 });
 
 test("each trigger kind is said in words", () => {
