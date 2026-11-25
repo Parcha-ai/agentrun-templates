@@ -21,12 +21,16 @@
 // - every call in the record was sent;
 // - the stills' fixed fields are one 1K png with no web search, and every clip carries no audio and the one exact
 //   negative prompt;
-// - each record has the kit's shape: its shared fields (every_still, every_clip) hold only the kit's fields there, so
-//   none stands in for a field built per item, and its items hold exactly the kit's fields (else a FAIL naming it).
+// - each record has the kit's shape: only the kit's top-level fields, each_prompt the kit's exact template, its shared
+//   fields (every_still, every_clip) only the kit's fields there, so none stands in for a field built per item, and its
+//   items exactly the kit's fields (else a FAIL naming it);
+// - each record is what the kit builds: rebuilt with the repo's own kit (never the run's copy, which the run can write)
+//   from the run's film/plan.json, storyboard.md and media/run-keys.json, the remakes by the kit's rules and the clips
+//   with the record's still URLs; the first field that differs fails, naming the shot.
 // Prints one line: `SENT PASS n=<calls checked> (repo check; serve's grade is separate; stopgap for agentrun #3824)`
 // (exit 0), `SENT FAIL <the first reason> [(and N more)] (...the same)` (exit 1), or `SENT VOID <why>` when it can't
 // find its inputs or has nothing to check (exit 2: no verdict; a live run on real fal has no fake log).
-// Node built-ins only.
+// Node built-ins only, and the repo's own music-video kit (templates/music-video/skills/music-video/kit/beats.mjs).
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { isDeepStrictEqual } from "node:util";
@@ -36,10 +40,19 @@ const KLING = "fal-ai/kling-video/v3/pro/image-to-video";
 const NEGATIVE = "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, celebrity, blur, distortion, low quality";
 const ENDING = "No text, no lettering, no logos.";
 const EVALS = new URL("../../templates/music-video/evals/", import.meta.url).pathname;
+// The kit itself, from this repo, never the copy in the run's folder (the run can write that one): the records are
+// rebuilt with its own functions from the run's plan, storyboard and key stem.
+const KIT = new URL("../../templates/music-video/skills/music-video/kit/beats.mjs", import.meta.url);
 
 function voided(why) {
   console.log(`SENT VOID ${why}`);
   process.exit(2);
+}
+let kit;
+try {
+  kit = await import(KIT.href);
+} catch (error) {
+  voided(`the repo's music-video kit can't be loaded (${error.message.split("\n")[0]})`);
 }
 const USAGE = "usage: node .github/eval-checks/music-video-sent.mjs <report.json> [<the run's work folder or the serve's data folder>]";
 const LABEL = "(repo check; serve's grade is separate; stopgap for agentrun #3824)";
@@ -145,8 +158,10 @@ function compare(kind, file, endpoint, calls) {
 // A record's shape, before anything in it is read: an object; its shared fields (`every`) an object holding only the
 // fields the kit writes there, so none can stand in for a field built per item; its list (`list`) a list of items, each
 // exactly the fields the kit writes. Returns why not, or undefined.
-function misshapen(file, data, every, fields, list, item, itemShape) {
+function misshapen(file, data, top, every, fields, list, item, itemShape) {
   if (!isObj(data)) return `media/${file} is not a JSON object`;
+  const stray = Object.keys(data).find((k) => !top.includes(k));
+  if (stray !== undefined) return `media/${file} has a field ${stray}; its fields are ${top.join(", ")}`;
   if (!isObj(data[every])) return `media/${file}'s ${every} is not an object`;
   const extra = Object.keys(data[every]).find((k) => !fields.includes(k));
   if (extra !== undefined) return `media/${file}'s ${every} has a field ${extra}; its fields are ${fields.join(", ")}`;
@@ -156,6 +171,45 @@ function misshapen(file, data, every, fields, list, item, itemShape) {
   return undefined;
 }
 const text = (v) => typeof v === "string" && v.length > 0;
+// The kit's record rebuilt from the run's own plan, storyboard and key stem, against the record the run left: the first
+// field that differs, naming the shot. `build` rebuilds it (the kit's errors are its words).
+const FROM = "film/plan.json, storyboard.md and media/run-keys.json";
+let stem;
+function runStem() {
+  if (stem !== undefined) return stem;
+  const path = join(work, "media", "run-keys.json");
+  if (!existsSync(path)) return (stem = { missing: "the run left no media/run-keys.json: its records can't be tied to the run's key stem" });
+  try {
+    const keys = JSON.parse(readFileSync(path, "utf8"));
+    return (stem = typeof keys?.stem === "string" ? { stem: keys.stem } : { missing: "media/run-keys.json holds no stem" });
+  } catch (error) {
+    return (stem = { missing: `media/run-keys.json is not JSON: ${error.message}` });
+  }
+}
+// Run only when the record passed its own checks: a record already failed needs no second reason.
+function rebuilt(file, data, list, build, bad, before) {
+  if (lines.length > before) return;
+  const keys = runStem();
+  if (keys.missing) return bad(keys.missing);
+  let expected;
+  try {
+    expected = build(keys.stem);
+  } catch (error) {
+    return bad(error.what ?? `the kit can't rebuild media/${file} from the run's ${FROM}: ${error.message.split("\n")[0]}`);
+  }
+  for (const k of Object.keys(expected)) {
+    if (k === list || isDeepStrictEqual(data[k], expected[k])) continue;
+    return bad(`media/${file}'s ${k} is ${show(data[k])}; the kit builds ${show(expected[k])} from the run's ${FROM}`);
+  }
+  const want = expected[list], got = data[list];
+  for (let i = 0; i < Math.max(want.length, got.length); i++) {
+    const e = want[i], a = got[i];
+    if (e === undefined) return bad(`media/${file} holds ${show(a)}, which the kit doesn't build from the run's ${FROM}`);
+    if (a === undefined) return bad(`media/${file} has no ${e.remake ? "remake of " : ""}shot ${e.n}, which the kit builds from the run's ${FROM}`);
+    const d = differs(a, e);
+    if (d) return bad(`media/${file}'s ${e.remake ? "remake of " : ""}shot ${e.n} is not what the kit builds from ${FROM}: ${d.at} ${show(d.sent)}, the kit's ${show(d.recorded)}`);
+  }
+}
 const only = (x, required, optional = []) => required.every((k) => k in x) && Object.keys(x).every((k) => required.includes(k) || optional.includes(k));
 
 // ---------- stills ----------
@@ -166,12 +220,15 @@ const only = (x, required, optional = []) => required.every((k) => k in x) && Ob
     const bad = (why) => say(false, `stills: ${why}`);
     const STILL_FIELDS = ["num_images", "aspect_ratio", "resolution", "output_format", "enable_web_search"];
     const still = (s) => only(s, ["n", "key", "picture"], ["remake"]) && Number.isSafeInteger(s.n) && text(s.key) && text(s.picture) && (s.remake === undefined || s.remake === true);
-    const shape = misshapen("stills.json", data, "every_still", STILL_FIELDS, "stills", still, "{n, key, picture[, remake]}");
+    const shape = misshapen("stills.json", data, ["endpoint_id", "style", "each_prompt", "every_still", "stills"], "every_still", STILL_FIELDS, "stills", still, "{n, key, picture[, remake]}");
+    const EACH = `<style>. <picture>. ${ENDING}`;
     if (shape) bad(shape);
+    else if (data.each_prompt !== EACH) bad(`media/stills.json's each_prompt is ${show(data.each_prompt)}, not ${show(EACH)}`);
     else checkStills(data, bad);
   }
 }
 function checkStills(data, bad) {
+  const before = lines.length;
   const fixed = data.every_still;
   if (data.endpoint_id !== NANO) bad(`media/stills.json's endpoint_id is ${show(data.endpoint_id)}, not ${NANO}`);
   if (typeof data.style !== "string" || !data.style.trim()) bad("media/stills.json has no style");
@@ -185,6 +242,18 @@ function checkStills(data, bad) {
   const calls = new Map(list.map((s) => [s.key, { endpoint_id: data.endpoint_id, submission_key: s.key, input: { ...fixed, prompt: `${data.style}. ${s.picture}. ${ENDING}` } }]));
   if (calls.size !== list.length) bad("media/stills.json holds one key twice");
   compare("stills", "stills.json", NANO, calls);
+  // The kit's first takes from the run's plan and storyboard, then each remake the record holds, by the kit's rules.
+  rebuilt("stills.json", data, "stills", (stem) => {
+    const expected = kit.buildStills(join(work, "film"), join(work, "storyboard.md"), stem);
+    for (const s of data.stills.filter((t) => t.remake)) {
+      try {
+        kit.addRemake(expected, s.n, kit.tidy(s.picture), "media/stills.json");
+      } catch (error) {
+        throw Object.assign(error, { what: `media/stills.json's remake of shot ${s.n} is not one the kit makes: ${error.message}` });
+      }
+    }
+    return expected;
+  }, bad, before);
 }
 
 // ---------- clips ----------
@@ -195,12 +264,13 @@ function checkStills(data, bad) {
     const bad = (why) => say(false, `clips: ${why}`);
     const CLIP_FIELDS = ["generate_audio", "negative_prompt"];
     const clip = (c) => only(c, ["n", "key", "duration", "prompt", "start_image_url"]) && Number.isSafeInteger(c.n) && text(c.key) && text(c.duration) && text(c.prompt) && text(c.start_image_url);
-    const shape = misshapen("clips.json", data, "every_clip", CLIP_FIELDS, "clips", clip, "{n, key, duration, prompt, start_image_url}");
+    const shape = misshapen("clips.json", data, ["endpoint_id", "every_clip", "clips"], "every_clip", CLIP_FIELDS, "clips", clip, "{n, key, duration, prompt, start_image_url}");
     if (shape) bad(shape);
     else checkClips(data, bad);
   }
 }
 function checkClips(data, bad) {
+  const before = lines.length;
   const every = data.every_clip;
   if (data.endpoint_id !== KLING) bad(`media/clips.json's endpoint_id is ${show(data.endpoint_id)}, not ${KLING}`);
   if (every.negative_prompt !== NEGATIVE) bad(`media/clips.json's negative_prompt is ${show(every.negative_prompt)}, not the one exact string`);
@@ -210,6 +280,8 @@ function checkClips(data, bad) {
   const calls = new Map(list.map((c) => [c.key, { endpoint_id: data.endpoint_id, submission_key: c.key, input: { ...every, prompt: c.prompt, start_image_url: c.start_image_url, duration: c.duration } }]));
   if (calls.size !== list.length) bad("media/clips.json holds one key twice");
   compare("clips", "clips.json", KLING, calls);
+  // The kit's clips from the run's plan and storyboard, with the still URLs the record holds (fal's, in shot order).
+  rebuilt("clips.json", data, "clips", (stem) => kit.buildClips(join(work, "film"), join(work, "storyboard.md"), stem, data.clips.map((c) => c.start_image_url)), bad, before);
 }
 
 if (lines.length) {

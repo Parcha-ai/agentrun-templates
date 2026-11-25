@@ -21,7 +21,14 @@ fal's whole log of `submit_job` calls with the files, call by call:
   the files' word for it (stills: first takes, plus at most two remakes);
 - the stills' fixed fields are one 1K png with no web search;
 - every clip has no audio and the one exact negative prompt;
-- each file has the shape the kit writes: an object whose shared fields (`every_still`, `every_clip`) hold only the
+- each file is what the kit builds: the check rebuilds both records with the kit's own functions (imported from this
+  repo, never the copy in the run's folder) from the run's `film/plan.json`, `storyboard.md` and the key stem in
+  `media/run-keys.json`, the remakes by the kit's rules, the clips with the still URLs the record holds, and the first
+  field that differs is a `SENT FAIL` naming the shot. A record in the kit's shape that the kit would not have built
+  (a picture not in the storyboard, a duplicate shot, another key stem, a remake of no first take, a clip length not
+  the plan's) fails even when its calls were sent to match;
+- each file has the shape the kit writes: only the kit's top-level fields, `each_prompt` the kit's exact
+  `<style>. <picture>. No text, no lettering, no logos.`, the shared fields (`every_still`, `every_clip`) holding only the
   fields the kit puts there, so none can stand in for a field built per still or clip, and whose list items hold
   exactly the kit's fields. A file of another shape is a `SENT FAIL` naming what is wrong, and its calls aren't
   compared.
@@ -51,4 +58,4 @@ It prints one line and exits:
 | 1 | `SENT FAIL <the first reason> [(and N more)] (repo check; ...)` | a call differs from its file, is missing, was sent twice, or a file is missing, of the wrong shape or wrong |
 | 2 | `SENT VOID <why>` | no verdict, never a failure: bad arguments, or the report, the run's folder, the fake log or the case's shot count can't be found or read (a report that isn't a serve eval report, a log item that isn't a call) |
 
-Node built-ins only. The repo's music-video kit tests (`.github/music-video-kit.test.mjs`) cover it.
+Node built-ins only, and the repo's own kit (`templates/music-video/skills/music-video/kit/beats.mjs`). The repo's music-video kit tests (`.github/music-video-kit.test.mjs`) cover it.

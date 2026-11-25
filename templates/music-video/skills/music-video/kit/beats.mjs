@@ -815,7 +815,7 @@ const NANO = "fal-ai/nano-banana-pro";
 const ENDING = "No text, no lettering, no logos.";
 const REMAKES = 2;
 const STEM = /^[a-z0-9]{8}$/;
-const tidy = (text) => text.trim().replace(/[\s.,;:]+$/, "");
+export const tidy = (text) => text.trim().replace(/[\s.,;:]+$/, "");
 // The shot lines of a storyboard (`<n> | ... | picture: <what the still shows> | motion: <move>`), checked against the
 // plan's shots: one line per shot, in order.
 function shotLines(board, shots) {
