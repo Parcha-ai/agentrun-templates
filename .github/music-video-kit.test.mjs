@@ -7,6 +7,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -159,7 +160,8 @@ const KLING = "fal-ai/kling-video/v3/pro/image-to-video";
 let runs = 0;
 // A run prices its plan before any still or clip (film/price.json, fits) and saves its key stem (media/run-keys.json).
 function priced(dir, stem = "abcd1234") {
-  writeFileSync(join(dir, "film", "price.json"), JSON.stringify({ max_fal_usd: null, plan_usd: 3, fits: true }) + "\n");
+  const plan_sha256 = createHash("sha256").update(readFileSync(join(dir, "film", "plan.json"))).digest("hex");
+  writeFileSync(join(dir, "film", "price.json"), JSON.stringify({ max_fal_usd: null, plan_usd: 3, fits: true, plan_sha256 }) + "\n");
   writeFileSync(join(dir, "media", "run-keys.json"), JSON.stringify({ stem }) + "\n");
 }
 function clipsRun({ shots = [6, 4, 6], lines, stills, stem = "abcd1234" } = {}) {
@@ -797,5 +799,113 @@ test("the sent check fails a top-level record field it doesn't know, and an each
     const r = check(reportOf(dir, calls), dir);
     assert.equal(r.status, 1, r.stdout);
     assert.equal(r.stdout, line);
+  }
+});
+
+// ---------- a price holds only for the plan it priced ----------
+// A synthetic song for the kit's own plan: 100 s at 120 BPM (a click every 0.5 s, a bass note every bar), louder after
+// 40 s, so a 30 s cut and a 90 s cut are different plans.
+function songDir() {
+  const dir = join(root, `song-${++runs}`);
+  mkdirSync(join(dir, "film"), { recursive: true });
+  mkdirSync(join(dir, "media"));
+  cpSync(join(KIT, "beats.mjs"), join(dir, "film", "beats.mjs"));
+  const r = spawnSync("ffmpeg", ["-v", "error", "-f", "lavfi", "-i", "aevalsrc='(lt(mod(t-0.25,0.5),0.03)*sin(2*PI*180*t)+lt(mod(t-0.25,2),0.08)*sin(2*PI*55*t))*(0.3+0.7*gt(t,40))':s=8000:d=100", "-ac", "1", join(dir, "media", "song.wav")], { encoding: "utf8" });
+  assert.equal(r.status, 0, r.stderr);
+  writeFileSync(join(dir, "media", "run-keys.json"), JSON.stringify({ stem: "abcd1234" }) + "\n");
+  return dir;
+}
+const planAt = (dir, cut) => kit(dir, "plan", "--song", "media/song.wav", "--film", "film", "--cut", String(cut));
+// A storyboard of the plan's shots as they are now.
+function boardFor(dir) {
+  const shots = JSON.parse(readFileSync(join(dir, "film", "plan.json"), "utf8")).cut.shots;
+  writeFileSync(join(dir, "storyboard.md"), [`Style: ${STYLE}`, ...shots.map((s) => `${s.n} | ${s.seconds} s | lyric: "none" | picture: a paper ferry ${s.n} | motion: slow push in ${s.n}`)].join("\n") + "\n");
+  return shots;
+}
+const CHANGED = "the plan changed since it was priced: run price again (nothing is built)";
+test("a plan made again after price builds nothing until it is priced again", () => {
+  const dir = songDir();
+  assert.equal(planAt(dir, 30).status, 0);
+  boardFor(dir);
+  const priced30 = kit(dir, "price", "--film", "film", "--rates", RATES, "--max", "100");
+  assert.match(priced30.stdout, /: FITS\n/);
+  assert.equal(stillsOf(dir).status, 0, "the 30 s plan, priced, builds its stills");
+  const replanned = planAt(dir, 90);
+  assert.equal(replanned.status, 0, replanned.stderr);
+  const shots = boardFor(dir);
+  assert.ok(shots.length > 6, `the 90 s plan has more shots: ${shots.length}`);
+  const urls = shots.map((s) => `https://v3.fal.media/files/rabbit/still${s.n}.png`).join(",");
+  const runs90 = {
+    stills: () => kit(dir, "stills", "--film", "film", "--storyboard", "storyboard.md", "--stem", "abcd1234", "--file", "media/stills-90.json"),
+    remake: () => kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "1", "--picture", "a calm quay"),
+    clips: () => kit(dir, "clips", "--film", "film", "--storyboard", "storyboard.md", "--stem", "abcd1234", "--stills", urls, "--file", "media/clips.json"),
+  };
+  for (const [name, run] of Object.entries(runs90)) {
+    const r = run();
+    assert.equal(r.status, 2, `${name} ran on a price of another plan: ${r.stdout}`);
+    assert.equal(r.stdout, "", name);
+    assert.ok([GATE, CHANGED].includes(r.stderr.trim()), `${name}: ${r.stderr}`);
+  }
+  assert.equal(existsSync(join(dir, "media", "clips.json")), false);
+  // Priced again (it fits the same ceiling): the stills are built.
+  assert.match(kit(dir, "price", "--film", "film", "--rates", RATES, "--max", "100").stdout, /: FITS\n/);
+  const built = runs90.stills();
+  assert.equal(built.status, 0, built.stderr);
+  assert.equal(sent(built.stdout).length, shots.length);
+  // Priced again under a ceiling the longer plan is over: still nothing.
+  planAt(dir, 30);
+  assert.match(kit(dir, "price", "--film", "film", "--rates", RATES, "--max", "6").stdout, /: FITS\n/);
+  planAt(dir, 90);
+  assert.match(kit(dir, "price", "--film", "film", "--rates", RATES, "--max", "6").stdout, /OVER YOUR CEILING/);
+  const over = runs90.clips();
+  assert.equal(over.status, 2);
+  assert.equal(over.stderr.trim(), GATE);
+});
+
+test("plan removes a price of another plan, and says so; the same plan again keeps it", () => {
+  const dir = songDir();
+  assert.equal(planAt(dir, 30).status, 0);
+  assert.equal(kit(dir, "price", "--film", "film", "--rates", RATES).status, 0);
+  const priced = readFileSync(join(dir, "film", "price.json"), "utf8");
+  const same = planAt(dir, 30);
+  assert.equal(same.status, 0);
+  assert.doesNotMatch(same.stdout, /price\.json/);
+  assert.equal(readFileSync(join(dir, "film", "price.json"), "utf8"), priced, "the same plan keeps its price");
+  const other = planAt(dir, 90);
+  assert.equal(other.status, 0);
+  assert.match(other.stdout, /^film\/price\.json removed: the plan changed since it was priced; run price again$/m);
+  assert.equal(existsSync(join(dir, "film", "price.json")), false);
+});
+
+test("a price.json that doesn't carry the plan's hash builds nothing: an old one, or a plan edited by hand", () => {
+  const dir = priceDir();
+  assert.equal(kit(dir, "price", "--film", "film", "--rates", RATES).status, 0);
+  const priced = JSON.parse(readFileSync(join(dir, "film", "price.json"), "utf8"));
+  assert.match(priced.plan_sha256, /^[0-9a-f]{64}$/);
+  assert.equal(priced.plan_sha256, createHash("sha256").update(readFileSync(join(dir, "film", "plan.json"))).digest("hex"));
+  assert.equal(priced.max_fal_usd, null, "the ceiling it judged against");
+  assert.equal(stillsOf(dir).status, 0);
+  const { plan_sha256, ...old } = priced;
+  writeFileSync(join(dir, "film", "price.json"), JSON.stringify(old));
+  const urls = [1, 2, 3].map((n) => `https://v3.fal.media/files/rabbit/still${n}.png`).join(",");
+  const runs = [
+    () => kit(dir, "stills", "--film", "film", "--storyboard", "storyboard.md", "--stem", "abcd1234", "--file", "media/stills-2.json"),
+    () => kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "1", "--picture", "a calm quay"),
+    () => kit(dir, "clips", "--film", "film", "--storyboard", "storyboard.md", "--stem", "abcd1234", "--stills", urls, "--file", "media/clips.json"),
+  ];
+  for (const run of runs) {
+    const r = run();
+    assert.equal(r.status, 2, r.stdout);
+    assert.equal(r.stdout, "");
+    assert.equal(r.stderr.trim(), CHANGED);
+  }
+  writeFileSync(join(dir, "film", "price.json"), JSON.stringify(priced));
+  const planPath = join(dir, "film", "plan.json");
+  writeFileSync(planPath, readFileSync(planPath, "utf8") + " ");
+  for (const run of runs) {
+    const r = run();
+    assert.equal(r.status, 2, r.stdout);
+    assert.equal(r.stdout, "");
+    assert.equal(r.stderr.trim(), CHANGED);
   }
 });
