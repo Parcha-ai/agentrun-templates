@@ -149,3 +149,90 @@ test("a still that starts between frames shows from its part's first frame, not 
   assert.ok(first > 40, `frame 162 (the still's first) has mean luma ${first.toFixed(1)}: black`);
   assert.ok(Math.abs(first - mid) < 3, `frame 162 (luma ${first.toFixed(1)}) is not the still shown at frame 237 (luma ${mid.toFixed(1)})`);
 });
+
+// ---------- clips: every clip's input built from the storyboard and the plan ----------
+// A grader reads a run's calls cut to fit its prompt, so a clip's prompt and negative_prompt can be cut out of what it
+// sees. The kit's clips command builds each clip's input from the storyboard's motion and the plan, prints each
+// submit_job for the run to send as printed, and writes them to media/clips.json, small enough to reach a grader whole.
+const NEGATIVE = "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, celebrity, blur, distortion, low quality";
+const KLING = "fal-ai/kling-video/v3/pro/image-to-video";
+let runs = 0;
+function clipsRun({ shots = [6, 4, 6], lines, stills, stem = "abcd1234" } = {}) {
+  const dir = join(root, `clips-${++runs}`);
+  mkdirSync(join(dir, "film"), { recursive: true });
+  mkdirSync(join(dir, "media"));
+  cpSync(join(KIT, "beats.mjs"), join(dir, "film", "beats.mjs"));
+  let at = 8.254;
+  const planShots = shots.map((seconds, i) => {
+    const s = { n: i + 1, start_s: Math.round(at * 1000) / 1000, end_s: Math.round((at + seconds) * 1000) / 1000, seconds, bars: 2, partial: false, clip_seconds: Math.max(3, Math.ceil(seconds)) };
+    at += seconds;
+    return s;
+  });
+  const total = shots.reduce((t, s) => t + s, 0);
+  writeFileSync(join(dir, "film", "plan.json"), JSON.stringify({ song: { path: "media/song.wav", seconds: 80 }, cut: { seconds: total, start_s: 8.254, end_s: 8.254 + total, shots: planShots }, aspect: "16:9", width: 1920, height: 1080, lyrics_on: true }));
+  let clock = 0;
+  const shotLines = lines ?? planShots.map((s) => {
+    const line = `${s.n} | ${clock}-${clock + s.seconds} s | ${s.seconds} s | lyric: "none" | picture: a paper ferry ${s.n} on teal water | motion: slow push in ${s.n}`;
+    clock += s.seconds;
+    return line;
+  });
+  writeFileSync(join(dir, "storyboard.md"), ["Style: cut paper, teal and amber", ...shotLines].join("\n") + "\n");
+  const urls = stills ?? planShots.map((s) => `https://v3.fal.media/files/rabbit/still${s.n}.png`);
+  const r = spawnSync(process.execPath, ["film/beats.mjs", "clips", "--film", "film", "--storyboard", "storyboard.md", "--stem", stem, "--stills", urls.join(","), "--file", "media/clips.json"], { cwd: dir, encoding: "utf8" });
+  const file = join(dir, "media", "clips.json");
+  return { r, dir, file: existsSync(file) ? readFileSync(file, "utf8") : undefined };
+}
+const sent = (stdout) => stdout.trim().split("\n").filter((l) => l.startsWith("submit_job ")).map((l) => JSON.parse(l.slice("submit_job ".length)));
+
+test("clips prints each clip's submit_job from the storyboard's motion and the plan's clip seconds", () => {
+  const { r } = clipsRun();
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual(sent(r.stdout), [1, 2, 3].map((n) => ({
+    endpoint_id: KLING,
+    submission_key: `mu-abcd1234-clip-${n}`,
+    input: { prompt: `slow push in ${n}, the scene as it is`, start_image_url: `https://v3.fal.media/files/rabbit/still${n}.png`, duration: String([6, 4, 6][n - 1]), generate_audio: false, negative_prompt: NEGATIVE },
+  })));
+});
+
+test("clips writes media/clips.json: the fixed fields once, then every clip's key, duration, prompt and still, the same as printed", () => {
+  const { r, file } = clipsRun();
+  assert.equal(r.status, 0, r.stderr);
+  const record = JSON.parse(file);
+  assert.equal(record.endpoint_id, KLING);
+  assert.deepEqual(record.every_clip, { generate_audio: false, negative_prompt: NEGATIVE });
+  assert.deepEqual(record.clips.map((c) => c.n), [1, 2, 3]);
+  // Each clip's whole input is its own fields and every_clip's: what the command printed for it.
+  assert.deepEqual(record.clips.map((c) => ({ endpoint_id: record.endpoint_id, submission_key: c.key, input: { prompt: c.prompt, start_image_url: c.start_image_url, duration: c.duration, ...record.every_clip } })), sent(r.stdout));
+});
+
+test("a 12-clip media/clips.json stays small enough to reach a grader whole", () => {
+  const motion = "camera slowly rises and turns as the paper wake spreads behind the ferry toward the dock";
+  const shots = Array(12).fill(5);
+  let clock = 0;
+  const lines = shots.map((s, i) => `${i + 1} | ${clock}-${(clock += s)} s | ${s} s | lyric: "none" | picture: a paper harbor | motion: ${motion}`);
+  const stills = shots.map((_, i) => `https://v3.fal.media/files/rabbit/RsedDXBYySaZbCPxSNh${String(i).padStart(2, "0")}.png`);
+  const { r, file } = clipsRun({ shots, lines, stills });
+  assert.equal(r.status, 0, r.stderr);
+  // One line per clip, the 133-character negative prompt once: about 230 bytes a clip.
+  assert.ok(Buffer.byteLength(file) < 3500, `media/clips.json is ${Buffer.byteLength(file)} bytes`);
+  assert.equal(sent(r.stdout).length, 12);
+});
+
+test("clips refuses a storyboard that doesn't hold the plan's shots, a shot with no motion, or a still list that doesn't match", () => {
+  const cases = [
+    [{ lines: ['1 | 0-6 s | 6 s | lyric: "none" | picture: a | motion: drift', '2 | 6-10 s | 4 s | lyric: "none" | picture: b | motion: drift'] }, /storyboard\.md holds 2 shot lines, the plan 3/],
+    [{ lines: ['1 | 0-6 s | 6 s | lyric: "none" | picture: a | motion: drift', '3 | 6-10 s | 4 s | lyric: "none" | picture: b | motion: drift', '2 | 10-16 s | 6 s | lyric: "none" | picture: c | motion: drift'] }, /shot line 2 is shot 3/],
+    [{ lines: ['1 | 0-6 s | 6 s | lyric: "none" | picture: a | motion: drift', '2 | 6-10 s | 4 s | lyric: "none" | picture: b', '3 | 10-16 s | 6 s | lyric: "none" | picture: c | motion: drift'] }, /shot 2: its storyboard line has no motion/],
+    [{ lines: ['1 | 0-6 s | 6 s | lyric: "none" | picture: a | motion: drift', '2 | 6-10 s | 4 s | lyric: "none" | picture: b | motion:  ', '3 | 10-16 s | 6 s | lyric: "none" | picture: c | motion: drift'] }, /shot 2: its storyboard line has no motion/],
+    [{ stills: ["https://v3.fal.media/a.png", "https://v3.fal.media/b.png"] }, /--stills holds 2 URLs, the plan 3 shots/],
+    [{ stills: ["https://v3.fal.media/a.png", "media/still-2.png", "https://v3.fal.media/c.png"] }, /shot 2: its still URL media\/still-2\.png is not an https URL/],
+    [{ stem: "ABC" }, /--stem is the run's key stem/],
+  ];
+  for (const [given, why] of cases) {
+    const { r, file } = clipsRun(given);
+    assert.equal(r.status, 2, `${JSON.stringify(given)}: exit ${r.status}, ${r.stderr}`);
+    assert.match(r.stderr, why);
+    assert.equal(r.stdout.trim(), "", "nothing is printed to send");
+    assert.equal(file, undefined, "no media/clips.json is written");
+  }
+});
