@@ -39,8 +39,9 @@
 //          kit's own phrases (a currency's unit, compute's sentences) are taken out first, and a description's pair
 //          inside one ("swiss francs") is not a name.
 //          The business's own name, as compute was given it (film/data.json, which the run can write, as it types
-//          compute's --business), is set aside; scan takes no other. With --final and nothing found, it removes the
-//          raw pages. Found only where the whole description is written as it is: a word of a lower-case pair alone,
+//          compute's --business), is set aside; scan takes no other. With --final (after billing), a name's word found
+//          alone only warns on stderr, naming the file and line, never the word, and exits 0; whole values, pairs and
+//          emails still exit 2. With --final and nothing that exits 2 found, it removes the raw pages. Found only where the whole description is written as it is: a word of a lower-case pair alone,
 //          a name with a lower-case particle ("da Silva", "van Gogh", "de la Cruz"), one given name alone in a
 //          longer description ("Tip from Sarah"), a pair in mixed case ("Marisol quintero"). Not found: a
 //          description of one word, a name spelled another way.
@@ -1005,7 +1006,19 @@ function scan() {
     if (/\.(?:html?|svg)$/i.test(rel)) return shownText(text);
     return /\.json$/i.test(rel) ? strings(text) : text;
   };
+  // The line of a file a name's word alone is on, read the way the file is read for words: a JSON line by its string
+  // values, an HTML line by the text it shows. 0 when no one line holds it (a kit phrase across two lines).
+  const lineOf = (path, text, w) => {
+    const rel = (relative(root, path) || path).split("\\").join("/");
+    const read = /\.json$/i.test(rel) ? (l) => (l.match(/"(?:[^"\\]|\\.)*"(?!\s*:)/g) ?? []).join(" ") : /\.(?:html?|svg)$/i.test(rel) ? shownText : (l) => l;
+    return text.split("\n").findIndex((l) => wordsIn(read(l).replace(kitPhrase, " ")).has(w)) + 1;
+  };
+  const final = args.final !== undefined;
   const hits = [];
+  // After billing (--final), a name's word alone only warns, naming the file and the line: the answer keeps tool and
+  // kit words on purpose (a kept warning's code, "timeline_track_too_dense"), and a description can share one ("Track
+  // Day Pass"). Whole values, pairs and emails still stop the film. Before billing, a word alone stops it too.
+  const warnings = [];
   let wordsRead = 0;
   for (const { path, text, label = "" } of [...files, ...voices]) {
     const at = (relative(root, path) || path) + label;
@@ -1023,19 +1036,28 @@ function scan() {
     if (shown !== null) {
       wordsRead++;
       const said = wordsIn(shown.replace(kitPhrase, " "));
-      for (const [w, where] of words) if (said.has(w)) hits.push(`${at} holds a value from Stripe's ${where}`);
+      for (const [w, where] of words) {
+        if (!said.has(w)) continue;
+        if (!final) hits.push(`${at} holds a value from Stripe's ${where}`);
+        else {
+          const line = label ? 0 : lineOf(path, text, w);
+          warnings.push(`warning: a customer's word may be in ${at}${line ? ` line ${line}` : ""} (words-alone check, not a failure after billing)`);
+        }
+      }
     }
     for (const email of text.match(EMAIL) ?? []) if (!values.has(email)) hits.push(`${at} holds an email address`);
   }
   if (hits.length) {
     fail(2, `customer data in the run's files: remove each from the file (and from anything made from it: the voiceover, the film), then scan again:\n- ${[...new Set(hits)].slice(0, 20).join("\n- ")}`);
   }
+  for (const warning of new Set(warnings)) console.error(warning);
+  // Only a warning: nothing that stops the film was found, so the raw pages go as they would with none.
   const removed = [];
-  if (args.final !== undefined) for (const path of raw) {
+  if (final) for (const path of raw) {
     unlinkSync(path);
     removed.push(path);
   }
-  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, name_words: words.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), voices_read: voices.length, files_read_for_words: wordsRead, skill_files_shipped: shipped.size, skill_files_searched: written.length, raw_pages_removed: removed }));
+  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, name_words: words.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), voices_read: voices.length, files_read_for_words: wordsRead, skill_files_shipped: shipped.size, skill_files_searched: written.length, words_alone_warnings: new Set(warnings).size, raw_pages_removed: removed }));
 }
 
 // ---------- the key stem ----------

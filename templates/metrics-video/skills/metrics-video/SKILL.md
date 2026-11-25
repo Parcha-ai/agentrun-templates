@@ -219,8 +219,11 @@ timestamps and what each voice says in them, the answer and anything else outsid
 Stripe's pages hold (not Stripe's own enum words, its fee lines or a description of one word), each name in one (a pair
 of words, in any case, and each of its words alone in what the run says and writes, not in the kit's code or a tool's output named above), and any
 email address. Exit 2 names the file and where the value
-came from, never the value: take it out, render again if it was on screen, scan again, and say so in the report. When it
-finds nothing, it removes `stripe/raw-<n>.json` and prints what it removed.
+came from, never the value: take it out, render again if it was on screen, scan again, and say so in the report. Here,
+after billing, a word of a name found alone only warns (`warning: a customer's word may be in <file> line <n>`, exit
+0): read that line, and if it holds a customer's name, take it out and scan again; a tool's or the kit's word (a kept
+warning's code) can stay. When it finds nothing that stops the film, it removes `stripe/raw-<n>.json` and prints what it
+removed.
 
 ## Never
 

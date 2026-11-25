@@ -295,6 +295,11 @@ function customerData(r, why) {
   assert.equal(r.status, 2, why);
   assert.match(r.out, /customer data in the run's files/, why);
 }
+// After billing (scan --final), a name's word alone only warns: exit 0, a line naming the file.
+function wordWarned(r, file, why) {
+  assert.equal(r.status, 0, why);
+  assert.match(r.out, new RegExp(`^warning: a customer's word may be in ${file.replace(/[./]/g, "\\$&")}\\b.*\\(words-alone check, not a failure after billing\\)$`, "m"), why);
+}
 const CLEAN = "[warm] The week of sixteen November: revenue, net of refunds and Stripe fees, was four thousand dollars.";
 
 test("scan reads what fal spoke: a name the timestamps spell, one letter at a time, fails it", () => {
@@ -612,7 +617,9 @@ test("a whole run whose customers share words with the kit's code scans clean at
     const leak = fixtureRun("week-over-week", "2026-11-23", { items, said, as: `kit-code-words-${n}` });
     customerData(leak.first, `said "${said}", the first scan`);
     assert.match(leak.first.out, /media\/vo\.txt/);
-    customerData(leak.final, `said "${said}", the last scan`);
+    // After billing, a pair still stops the film; a word alone warns.
+    if (n === "pair") customerData(leak.final, `said "${said}", the last scan`);
+    else wordWarned(leak.final, "media/vo.txt", `said "${said}", the last scan`);
   }
   // A pair typed into a scene is still found there.
   const scene = scanRun("kit-code-words-scene", items, { "media/vo.txt": CLEAN, "film/compositions/open.html": "<div>Family Portrait</div>" });
@@ -667,7 +674,7 @@ test("compute's own sentences in data.json are no one's name, and a word the run
     const leak = fixtureRun("week-over-week", "2026-11-23", { items, as: `compute-words-${n}`, edit: (d) => ({ ...d, compare: { ...d.compare, reason: `${d.compare.reason}. ${add}` } }) });
     customerData(leak.first, `data.json's reason with "${add}" added, the first scan`);
     assert.match(leak.first.out, /film\/data\.json/);
-    customerData(leak.final, `data.json's reason with "${add}" added, the last scan`);
+    wordWarned(leak.final, "film/data.json", `data.json's reason with "${add}" added, the last scan`);
   }
   // A week over week that didn't move ("flat"), and a negative figure said ("minus"): compute's words too.
   const flat = scanRun("compute-words-flat", [described("Flat Rate Shipping"), described("Minus Studio Pass", 3000)], { "film/data.json": { business: "Larkspur Ceramics", currencies: [{ change: { direction: "flat" }, days: [{ spoken: "minus two hundred dollars" }] }] }, "media/vo.txt": CLEAN });
