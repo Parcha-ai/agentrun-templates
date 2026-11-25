@@ -148,7 +148,8 @@ counts), no `sync_mode`, no `seed`. The shots are 3:2, a photo's shape that none
 size is a new job, made from the shot.
 
 Then read them all in one `wait_for_jobs`: one item per shot, `index` the shot's number − 1 (0 for shot 1), with its
-`endpoint_id`, `request_id`, `status_url` and `response_url` exactly as its `submit_job` answered. A shot whose
+`endpoint_id`, `request_id`, `status_url` and `response_url` exactly as its `submit_job` answered. A shot re-sent
+after a refusal that was not sent is queued like the others and goes in the same first `wait_for_jobs`. A shot whose
 answer is `pending` is read again after the `poll_after_seconds` it gives, alone or with the other pending shots, at
 its own index: never re-read a shot that already has an outcome, and never submit a pending shot again. A shot fal
 refuses or fails stays failed: note fal's words and don't send it again. A completed shot's fal URL is its
