@@ -26,7 +26,9 @@ inputs:
   url: { type: string, format: uri, title: "The link", maxLength: 2000, description: "A public page the card is for. Its words go to fal and Ideogram as part of the prompt.", examples: ["https://example.com/blog/faster-exports"] }
   headline: { type: string, required: false, maxLength: 80, title: "Headline", description: "The words on the card, if you want to choose them. Otherwise it takes them from the page." }
   look: { type: string, required: false, enum: [bold, minimal, illustrated, photo], default: bold, title: "Look", description: "bold: big type on strong color; minimal: lots of space, one accent; illustrated: a drawing beside the type; photo: a photo behind the type" }
-budget: { per_run_usd: 0.25 }
+# The $1,000 accident guard, not a tuned number: it stops a runaway run, never a normal one. A run makes one card,
+# a few cents on fal, plus the model's share.
+budget: { per_run_usd: 1000 }
 output: { schema: link-social-card.schema.json }
 ---
 FIRST: your first tool call is `read` of `.agents/skills/fal-media/SKILL.md`. It holds how to call fal, how to save

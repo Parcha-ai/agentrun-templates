@@ -25,7 +25,9 @@ mcp:
 inputs:
   description: { type: string, title: "The picture", minLength: 3, maxLength: 1500, description: "What the image shows, in your words. Style, mood and colors help. It goes to fal and its model provider: leave out anything private.", examples: ["A lighthouse on a rocky coast at dawn, soft pastel watercolor"] }
   shape: { type: string, required: false, enum: [square, landscape, portrait, wide, tall], default: square, title: "Shape", description: "square 1:1, landscape 4:3, portrait 3:4, wide 16:9, tall 9:16" }
-budget: { per_run_usd: 0.10 }
+# The $1,000 accident guard, not a tuned number: it stops a runaway run, never a normal one. A run makes one image
+# on FLUX.1 schnell, a fraction of a cent on fal, plus the model's share.
+budget: { per_run_usd: 1000 }
 output: { schema: quick-image.schema.json }
 ---
 FIRST: your first tool call is `read` of `.agents/skills/fal-media/SKILL.md`. It holds how to call fal, how to save

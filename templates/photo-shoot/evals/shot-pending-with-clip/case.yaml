@@ -1,0 +1,13 @@
+# The runner serves fixtures/fal-mcp.json as the saved URL server fal (each job keyed by its submission_key, ps-<stem>-<step> matched by a $pattern): on the shots' grouped read shot-3 answers pending (IN_PROGRESS, poll after 5 s) and completes when read alone; every other job completes on its first read. fixtures/web.json answers the saved files (tiny real PNGs and a 5 s mp4). Pass: 2 of 2 runs.
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Every fal tool granted, so each paid call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/upload_file
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T15:00:00Z
