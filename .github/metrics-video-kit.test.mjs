@@ -353,8 +353,9 @@ const SKILL = new URL("../templates/metrics-video/skills/metrics-video/", import
 // timestamps that say the week, the business, the figures' words, months, days and the scenes, and nothing of a
 // customer; the first scan; then `place`, the kit's captions script (captions.html, words.json, film.vtt) and an
 // answer; then the last scan. `items`: more of the week's transactions; `said`: words the narration (and the voice)
-// adds; `as`: the run's folder. Returns both scans.
-function fixtureRun(name, today, { items = [], said = "", as = name } = {}) {
+// adds; `as`: the run's folder; `edit`: called with film/data.json's object after compute, its return written back (a
+// run that wrote into it). Returns both scans.
+function fixtureRun(name, today, { items = [], said = "", as = name, edit } = {}) {
   const dir = join(root, `case-${as}`);
   mkdirSync(join(dir, "stripe"), { recursive: true });
   mkdirSync(join(dir, "media"), { recursive: true });
@@ -364,6 +365,10 @@ function fixtureRun(name, today, { items = [], said = "", as = name } = {}) {
   const node = (...a) => spawnSync(process.execPath, [join(dir, "film", a[0]), ...a.slice(1)], { encoding: "utf8", cwd: dir });
   const c = node("metrics.mjs", "compute", "--today", today, "--timezone", "UTC", "--pages", join(dir, "stripe"), "--film", join(dir, "film"), "--business", "Larkspur Ceramics");
   assert.equal(c.status, 0, `compute ${name}: ${c.stderr}${c.stdout}`);
+  if (edit) {
+    const dataPath = join(dir, "film", "data.json");
+    writeFileSync(dataPath, JSON.stringify(edit(JSON.parse(readFileSync(dataPath, "utf8"))), null, 1) + "\n");
+  }
   const narration = `[warm] Larkspur Ceramics, the week of Monday sixteen November to Sunday the twenty-second. Revenue, net of refunds and Stripe fees, was nine thousand dollars, up on the week before. One refund, one dispute. Thank you, Larkspur. See you next Monday, December's first week.${said ? ` ${said}` : ""}`;
   writeFileSync(join(dir, "media", "vo.txt"), narration);
   writeFileSync(join(dir, "media", "music.txt"), "Warm acoustic guitar and soft piano, gentle and hopeful, 96 BPM.");
@@ -644,4 +649,24 @@ test("a customer named for the run's time zone is no fault of the source line, a
   const clean = scanRun("tz-word", items, { "film/data.json": data, "media/vo.txt": CLEAN });
   assert.equal(clean.status, 0, clean.out);
   customerData(scanRun("tz-word-said", items, { "film/data.json": data, "media/vo.txt": `${CLEAN} Thanks, Sydney.` }), "the customer's first name, said");
+});
+
+// compute writes sentences of its own into data.json (the source line's "balance transactions", the reason there is
+// no week over week: "the first film of this schedule", "no earlier result was handed"), which the run can't reword:
+// they are the kit's phrases, taken out whole before a name's words alone are looked for. The rest of data.json is
+// still read, so a word the run wrote into it is found.
+test("compute's own sentences in data.json are no one's name, and a word the run writes beside them is found", () => {
+  const items = [described("Class Schedule Change", 6000), described("Test Result Consultation", 9000), described("Commission for Marisol Quintero", 20000)];
+  const r = fixtureRun("week-over-week", "2026-11-23", { items, as: "compute-words" });
+  assert.equal(r.first.status, 0, `the first scan: ${r.first.out}`);
+  assert.equal(r.final.status, 0, `the last scan: ${r.final.out}`);
+  for (const [n, add] of [["schedule", "Thanks, Schedule."], ["first-name", "Thanks, Marisol."]]) {
+    const leak = fixtureRun("week-over-week", "2026-11-23", { items, as: `compute-words-${n}`, edit: (d) => ({ ...d, compare: { ...d.compare, reason: `${d.compare.reason}. ${add}` } }) });
+    customerData(leak.first, `data.json's reason with "${add}" added, the first scan`);
+    assert.match(leak.first.out, /film\/data\.json/);
+    customerData(leak.final, `data.json's reason with "${add}" added, the last scan`);
+  }
+  // A week over week that didn't move ("flat"), and a negative figure said ("minus"): compute's words too.
+  const flat = scanRun("compute-words-flat", [described("Flat Rate Shipping"), described("Minus Studio Pass", 3000)], { "film/data.json": { business: "Larkspur Ceramics", currencies: [{ change: { direction: "flat" }, days: [{ spoken: "minus two hundred dollars" }] }] }, "media/vo.txt": CLEAN });
+  assert.equal(flat.status, 0, flat.out);
 });
