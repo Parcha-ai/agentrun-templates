@@ -105,7 +105,9 @@ will cost on fal, as information. With no `max_fal_usd`, nothing is refused for 
 the user set `max_fal_usd` and the script prints `OVER YOUR CEILING`: call nothing that costs, answer `status:
 "over_budget"`, `plan_usd`, the beats, the cut and its shots from the plan, and nothing paid (`fal_cost_usd` no steps,
 total 0), and say in `error` and the report that the plan's price is over the ceiling the user set and nothing was
-made. Never drop the lyrics, a shot or a second of the cut to save money.
+made. Never drop the lyrics, a shot or a second of the cut to save money. Price comes before every still and clip,
+and the kit holds that order: `stills`, `remake` and `clips` build nothing (exit 2, no call printed) until `price` has
+written `film/price.json` and the plan fits.
 
 ## 4. Keys
 
@@ -203,7 +205,7 @@ exactly as fal returned it, character for character. `web_save` each still's `im
 word, letter or logo in it, a face that reads as a real person) or plainly misses its picture; a still that failed is
 remade the same way (its picture as it was). A remake's input comes from the kit, its picture fixed (what broke a
 rule taken out):
-`node film/beats.mjs remake --file media/stills.json --shot <n> --picture "<the fixed picture>"` prints one
+`node film/beats.mjs remake --film film --file media/stills.json --shot <n> --picture "<the fixed picture>"` prints one
 `submit_job` with key `mu-<stem>-still-<n>-2` and adds it to `media/stills.json`; send it as printed, read it with
 its own one-item `wait_for_jobs` (index 0), save it to `media/still-<n>-2.png`, and use it for that shot from then on.
 At most two remakes in a run (the reserve the price held), and never a third take of one shot: the kit refuses both. A
