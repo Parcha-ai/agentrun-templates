@@ -33,7 +33,8 @@
 //          written and in what each voice says (the letters of fal's timestamps, in any JSON file that holds them).
 //          Each word of a capitalised pair or of an identity name is looked for alone too (in any case; four letters
 //          or more from a pair, not a common word), in every text file the run wrote and what a voice says: a JSON
-//          file's strings, the text an HTML file shows, and each file's name (never printed when it holds one). Not
+//          file's strings, the text an HTML file shows, and each text file's name below the kit's own folders (a path
+//          the kit or the skill names is no one's; never printed when it holds one). Not
 //          in the kit's code (film/'s and the skill folder's .js, .mjs, .cjs and .css; an HTML file's styles, scripts,
 //          comments, tags and attributes: "font-family", "white-space"), a tool's output at the paths the skill names
 //          (media/check.json, media/render.log, media/review*/snapshot.log) or inputs/. The
@@ -1108,7 +1109,21 @@ function scan() {
   // skill name are no one's. A file whose name holds a value is never named: every line about it says "a file whose
   // name holds a customer's word".
   const pathWords = new Set([...NAMED_PATHS, ...[...shipped.keys()].map((rel) => `film/${rel.replace(/^kit\//, "")}`), ...shipped.keys(), relOf(skill)].flatMap((p) => [...wordsIn(p)]));
-  const nameHit = (rel) => {
+  // The kit's paths are no one's, whole, so a description's pair can't match them ("Media Review Group" and the review
+  // step's media/review/snapshot.log): a path the kit or the skill names (or a tool's output at one) is read as empty,
+  // and a path below one of their folders (media/review/, film/assets/, evidence/fal/, the skill folder) only below the
+  // deepest such folder, which is the part the run or a tool chose.
+  const kitPaths = new Set([...NAMED_PATHS, ...[...shipped.keys()].map((rel) => `film/${rel.replace(/^kit\//, "")}`), ...[...shipped.keys()].map((rel) => `${relOf(skill)}/${rel}`)]);
+  const kitDirs = new Set([...kitPaths].flatMap((p) => p.split("/").slice(0, -1).map((_, i, a) => a.slice(0, i + 1).join("/"))));
+  kitDirs.add("evidence/fal");
+  kitDirs.add(relOf(skill));
+  const ownPart = (rel) => {
+    if (kitPaths.has(rel) || TOOL_OUTPUT.some((x) => x.test(rel))) return "";
+    const under = [...kitDirs].filter((d) => rel.startsWith(`${d}/`)).sort((a, b) => b.length - a.length)[0];
+    return under ? rel.slice(under.length + 1) : rel;
+  };
+  const nameHit = (path) => {
+    const rel = ownPart(path);
     const said = wordsIn(rel);
     for (const [w, { where }] of words) if (!pathWords.has(w) && said.has(w)) return where;
     const spaced = fold(rel.replace(/[^\p{L}\p{N}@.+]+/gu, " "));

@@ -233,7 +233,7 @@ of `media/answer.json`. Then run `--final` once more, whether you edited or not:
 That run is the last: a name pair, a whole description or an email found there stops the film, and the raw pages are
 removed on every exit (a refused argument, a fault, a signal). A `--final` that exits 0 has removed
 `stripe/raw-<n>.json` and prints what it removed; exit 0 always means no raw page is left. A file's name is read too,
-and never printed when it holds a customer's word. Never answer on exit 4, and never touch `stripe/`.
+below the folders the kit names (a path this skill names is no one's), and never printed when it holds a customer's word. Never answer on exit 4, and never touch `stripe/`.
 
 ## Never
 
