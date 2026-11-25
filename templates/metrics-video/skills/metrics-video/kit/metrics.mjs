@@ -43,7 +43,7 @@
 // what to fix); 0: done.
 import { createHash, randomBytes } from "node:crypto";
 import { existsSync, lstatSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, resolve } from "node:path";
 
 const METRIC = {
   id: "net-of-refunds-and-fees",
@@ -672,6 +672,9 @@ const STRIPES_WORDS = new Set(
     "failed partial capture account active of to from and the in on at by").split(" "),
 );
 const nameLike = (a, b) => (TITLED(a) && TITLED(b)) || !STRIPES_WORDS.has(a.toLowerCase()) || !STRIPES_WORDS.has(b.toLowerCase());
+// A word of a pair held in lower case that can be half of a name: three letters or more, all lower case, not a common
+// word nor Stripe's (checked against COMMON below).
+const LOWER = /^\p{Ll}[\p{Ll}'’-]{2,}$/u;
 // Words too common to be a name on their own: English's most used words, the calendar, money and shop words, and the
 // words a film of a week's revenue says. A pair held in lower case is a name only when neither word is one of these,
 // and a word of a name looked for alone never is one.
@@ -751,6 +754,7 @@ function customerValues(dir) {
     for (let i = 0; i + 1 < parts.length; i++) add(`${parts[i]} ${parts[i + 1]}`, `${where}: a name in its ${key}`, true, true);
     for (const w of parts) if (!COMMON.has(w.toLowerCase()) && !alone.has(w.toLowerCase())) alone.set(w.toLowerCase(), `${where}: a word of the name in its ${key}`);
   };
+  const plain = (w) => LOWER.test(w) && !COMMON.has(w) && !STRIPES_WORDS.has(w);
   const walk = (value, key, where, owner) => {
     if (key === "fee_details" || STRIPES_OWN.has(key)) return;
     // An identity field's name (not an email: that is found below, whole, in any case).
@@ -765,10 +769,14 @@ function customerValues(dir) {
       const words = v.split(/\s+/).map((w) => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ""));
       for (let i = 0; i + 1 < words.length; i++) {
         const [a, b, c] = [words[i], words[i + 1], words[i + 2]];
-        // Two capitalised words, or two through an initial between them ("First Q. Last"). Words in lower case are a
-        // description's ordinary words ("ceramic vase") as often as a name: a name held only that way is not found.
+        // Two capitalised words, or two through an initial between them ("First Q. Last").
         if (NAMEWORD.test(a) && NAMEWORD.test(b)) pair(a, b, where, key, nameLike(a, b));
         else if (/^\p{L}$/u.test(b) && c !== undefined && NAMEWORD.test(a) && NAMEWORD.test(c)) pair(a, c, where, key, nameLike(a, c));
+        // Two words in lower case (or through an initial), neither a common word nor Stripe's: a name held that way
+        // ("marisol quintero") or a description's ordinary words ("ceramic vase"), which the film never says either.
+        // Looked for as the pair, in any case; never its words alone, which a description's ordinary words would be.
+        else if (plain(a) && plain(b)) add(`${a} ${b}`, `${where}: a pair of words in its ${key}`, true, true);
+        else if (/^\p{L}$/u.test(b) && c !== undefined && plain(a) && plain(c)) add(`${a} ${c}`, `${where}: a pair of words in its ${key}`, true, true);
       }
     } else if (Array.isArray(value)) value.forEach((v) => walk(v, key, where, owner));
     else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) walk(v, k, where, key);
@@ -807,8 +815,10 @@ const wordsOf = (s) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 function scan() {
   const dir = need("pages");
   const root = args.root && args.root !== "true" ? args.root : ".";
-  const { found, alone } = existsSync(dir) && rawFiles(dir).length ? customerValues(dir) : { found: new Map(), alone: new Map() };
-  const raw = new Set(existsSync(dir) ? rawFiles(dir).map((f) => join(dir, f)) : []);
+  // No pages (removed by an earlier scan --final, or never saved): nothing to look for, and nothing to remove.
+  const pages = existsSync(dir) ? rawFiles(dir) : [];
+  const { found, alone } = pages.length ? customerValues(dir) : { found: new Map(), alone: new Map() };
+  const raw = new Set(pages.map((f) => join(dir, f)));
   // The template's own words: the skill folder the kit is copied from (film/ holds that copy, its comments included).
   // The run can write in that folder too, so only a file whose sha256 is the one kit/manifest.json gives (made with the
   // template, checked in its repository) is the template's; any other file there (one the run added or changed, the
@@ -901,14 +911,37 @@ function scan() {
   // film's, not a customer's: they are taken out of a text before a name's words alone are looked for, so a customer
   // named Hong is found and "Hong Kong dollars" is not taken for her. Only the whole phrase is taken out.
   const codes = new Set();
-  if (existsSync(dir)) for (const { list } of readRaw(dir)) for (const item of list.data) if (typeof item?.currency === "string") codes.add(item.currency.toLowerCase());
+  if (pages.length) for (const { list } of readRaw(dir)) for (const item of list.data) if (typeof item?.currency === "string") codes.add(item.currency.toLowerCase());
   const phrases = [...new Set([...Object.values(UNIT).flat(), ...[...codes].flatMap((c) => { try { return [unitWords(c, 1), unitWords(c, 2)]; } catch { return []; } }), "Composio", "ElevenLabs", "HyperFrames", "fal", "Stripe"])]
     .filter((x) => /\p{L}/u.test(x))
     .sort((a, b) => b.length - a.length);
   const kitPhrase = new RegExp(`(?<![\\p{L}])(?:${phrases.map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s+")).join("|")})(?![\\p{L}])`, "giu");
-  // A name said through an initial ("marisol q. quintero", "Marisol Q Quintero") is its pair with the initial left out.
-  const noInitials = (t) => t.replace(/(\p{L}{2,})\s+(?:\p{L}\.|\p{Lu})\s+(?=\p{L}{2,})/gu, "$1 ");
+  // A name said through an initial ("marisol q. quintero", "Marisol Q Quintero", "marisol q quintero") is its pair with
+  // the initial left out.
+  const noInitials = (t) => t.replace(/(\p{L}{2,})\s+\p{L}\.?\s+(?=\p{L}{2,})/gu, "$1 ");
+  // What the run says and writes in words: the narration, the music line, the captions (film.vtt, words.json), the
+  // storyboard, the answer, and the strings compute wrote for the scenes to show (data.json; a scene's text comes from
+  // it, from the kit's own words or from the captions); and what each voice says. A name's word alone is looked for
+  // only there. Elsewhere (a scene's markup, index.html, captions.html: the kit's CSS and GSAP, "font-family",
+  // "white-space", "power2.out") a word is the kit's code, which the run can't reword; whole values, pairs and emails
+  // are still looked for in every file. A JSON file's words are its strings (its keys are the schema's).
+  const prose = new Set([...["vo.txt", "music.txt", "film.vtt", "answer.json"].map((f) => join(root, "media", f)), ...["STORYBOARD.md", "words.json", "data.json"].map((f) => join(film, f))].map((f) => resolve(f)));
+  const strings = (text) => {
+    const out = [];
+    const walk = (v) => {
+      if (typeof v === "string") out.push(v);
+      else if (v && typeof v === "object") Object.values(v).forEach(walk);
+    };
+    try {
+      walk(JSON.parse(text));
+    } catch {
+      return text;
+    }
+    return out.join("\n");
+  };
+  const proseOf = (path, text, label) => (label ? text : !prose.has(resolve(path)) ? null : path.endsWith(".json") ? strings(text) : text);
   const hits = [];
+  let proseRead = 0;
   for (const { path, text, label = "" } of [...files, ...voices]) {
     const at = (relative(root, path) || path) + label;
     const asWritten = squash(text);
@@ -921,8 +954,12 @@ function scan() {
       const holds = (hay) => hay.includes(plain) || (escaped !== plain && hay.includes(escaped));
       if (folds ? holds(anyCase) || holds(anyCaseNoInitials) : holds(asWritten)) hits.push(`${at} holds a value from Stripe's ${where}`);
     }
-    const said = wordsIn(text.replace(kitPhrase, " "));
-    for (const [w, where] of words) if (said.has(w)) hits.push(`${at} holds a value from Stripe's ${where}`);
+    const proseText = proseOf(path, text, label);
+    if (proseText !== null) {
+      proseRead++;
+      const said = wordsIn(proseText.replace(kitPhrase, " "));
+      for (const [w, where] of words) if (said.has(w)) hits.push(`${at} holds a value from Stripe's ${where}`);
+    }
     for (const email of text.match(EMAIL) ?? []) if (!values.has(email)) hits.push(`${at} holds an email address`);
   }
   if (hits.length) {
@@ -933,7 +970,7 @@ function scan() {
     unlinkSync(path);
     removed.push(path);
   }
-  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, name_words: words.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), voices_read: voices.length, skill_files_shipped: shipped.size, skill_files_searched: written.length, raw_pages_removed: removed }));
+  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, name_words: words.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), voices_read: voices.length, prose_read: proseRead, skill_files_shipped: shipped.size, skill_files_searched: written.length, raw_pages_removed: removed }));
 }
 
 // ---------- the key stem ----------
