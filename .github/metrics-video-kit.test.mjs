@@ -448,9 +448,10 @@ test("each scan a grader quotes is a scan agent.md has the run make, with the ca
 });
 
 test("a name or a description pair of ordinary words is no one's name: 'Market', 'ceramic vase'", () => {
-  // "Market" said, and no pair in Stripe holds it: never looked for. "ceramic vase", a description's pair in lower
-  // case: not a name. (The whole description, "Order 1043: ceramic vase", is still looked for as written.)
-  const items = [described("Order 1043: ceramic vase", 31000), described("Commission for Marisol Quintero", 20000)];
+  // "Market" said, and Stripe holds it only outside a pair of capitalised words ("from the Market"): never looked for.
+  // "ceramic vase", a description's pair in lower case: not a name. (Each whole description is still looked for as
+  // written.)
+  const items = [described("Order 1043: ceramic vase", 31000), described("Order 1044 from the Market", 12000), described("Commission for Marisol Quintero", 20000)];
   const vo = `${CLEAN} The Market was busy, and a ceramic vase sold twice.`;
   const r = scanRun("ordinary-words", items, { "media/vo.txt": vo, "media/voiceover-timestamps.json": spokenAs(vo), "film/STORYBOARD.md": "2. Revenue: a Ceramic Vase, at the Market." }, [], SKILL);
   assert.equal(r.status, 0, r.out);
