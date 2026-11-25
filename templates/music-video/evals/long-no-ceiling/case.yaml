@@ -1,0 +1,17 @@
+# The runner serves fixtures/fal-mcp.json as the saved URL server fal (each job keyed by its submission_key
+# mu-<any 8 letter and digit stem>-<step> with its own request id and URLs; every still and clip completes on the
+# grouped read). web.json serves the song (the same tiny real 80 s WAV as sixty-seconds, built to a known beat) and
+# fal's CDN files (tiny real PNGs and 6 s MP4s, never shorter than a shot's clip). The input asks for 90 s and sets no
+# max_fal_usd: the song is used whole, 16 shots, a plan of $14.213, over the old $12 default and made in full. The film
+# is built and rendered for real in the run's sandbox. Pass: 2 of 2.
+mcp:
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# The five fal tools the package lists, granted, so each paid call is the agent's choice.
+grants:
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T15:00:00Z
