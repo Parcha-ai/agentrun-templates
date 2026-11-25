@@ -232,6 +232,54 @@ test("schema: a rendered show's report_markdown must open with the show's embed,
   assert.equal(opens.test(report({ steps: [], total: 0 })), true);
 });
 
+test("check: a report that keeps the total but drops the table, or a step's row, fails", () => {
+  const dir = folder();
+  kit(dir, "cost", "--rates", RATES, "--sent", SENT);
+  const table = /\n\| Step[\s\S]*\| Total \| [\d.]+ \|/;
+  const line = answer(dir, (a) => ((a.report_markdown = a.report_markdown.replace(table, "\nCost: 2.827")), a));
+  assert.equal(line.status, 1, "the total alone on a line passes");
+  assert.match(line.stdout, /answer: 1 problem\n- report_markdown has no cost table with the total: .* 2\.827/);
+  const row = answer(dir, (a) => ((a.report_markdown = a.report_markdown.replace("| anchor-lead-b | 0.48 |\n", "")), a));
+  assert.equal(row.status, 1, "a table missing a priced step's row passes");
+  assert.match(row.stdout, /answer: 1 problem\n- report_markdown's cost table has no row for anchor-lead-b/);
+});
+
+test("cost: a voice whose save failed is priced on the length the run measured (--seconds), and final still answers", () => {
+  const dir = folder();
+  rmSync(join(dir, "media/voice-lead-b.mp3"));
+  const r = kit(dir, "cost", "--rates", RATES, "--sent", SENT, "--seconds", "lead-b=5.4");
+  assert.equal(r.status, 0, r.stderr);
+  const c = JSON.parse(r.stdout);
+  assert.equal(c.steps.find((l) => l.step === "anchor-lead-b").units, 6);
+  assert.equal(c.total, 2.827);
+  assert.match(r.stderr, /anchor-lead-b .*--seconds lead-b=5\.4.*media\/voice-lead-b\.mp3 is missing/);
+  const f = answer(dir, (a) => ((a.status = "not_saved"), (a.notes = ["media/voice-lead-b.mp3 was not saved"]), a));
+  assert.equal(f.status, 0, f.stdout);
+  const fin = kit(dir, "final", "media/answer.json");
+  assert.equal(fin.status, 0, fin.stdout);
+  assert.match(fin.stdout, /^```json\n/);
+  const none = kit(dir, "cost", "--rates", RATES, "--sent", SENT);
+  assert.equal(none.status, 2, "with no file and no --seconds, cost says what it needs");
+  assert.match(none.stderr, /media\/voice-lead-b\.mp3 is missing.*--seconds lead-b=/);
+});
+
+test("final and schema: a show name with brackets is escaped in the embed, and the reply meets the schema", () => {
+  const dir = folder();
+  kit(dir, "cost", "--rates", RATES, "--sent", SENT);
+  const name = "News [Live] \\ Desk";
+  const embed = "![News \\[Live\\] \\\\ Desk, 2026-11-23](media/show.mp4)";
+  const rough = answer(dir, (a) => ((a.show_name = name), (a.report_markdown = a.report_markdown.replace("![The Daily Desk, 2026-11-23](media/show.mp4)", `![${name}, 2026-11-23](media/show.mp4)`)), a));
+  assert.equal(rough.status, 1);
+  assert.ok(rough.stdout.includes(embed), `check names the escaped embed: ${rough.stdout}`);
+  answer(dir, (a) => ((a.show_name = name), (a.report_markdown = a.report_markdown.replace("![The Daily Desk, 2026-11-23](media/show.mp4)", embed)), a));
+  const fin = kit(dir, "final", "media/answer.json");
+  assert.equal(fin.status, 0, fin.stdout);
+  const sent = JSON.parse(/^```json\n([\s\S]*)\n```\n?$/.exec(fin.stdout)[1]);
+  const schema = JSON.parse(readFileSync(new URL("../templates/news-show/news-show.schema.json", import.meta.url), "utf8"));
+  const rule = schema.allOf.find((x) => x?.then?.properties?.report_markdown?.pattern);
+  assert.ok(new RegExp(rule.then.properties.report_markdown.pattern, "u").test(sent.report_markdown), "the escaped embed meets the schema's pattern");
+});
+
 test("rubric: R1's added fact is a substring of the fixture's R1 page, in each eval that lists it", () => {
   const phrase = "on the new section once a full timetable runs in December";
   for (const name of ["show-from-feed", "carried-no-repeats"]) {
