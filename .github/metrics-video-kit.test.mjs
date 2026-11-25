@@ -129,6 +129,41 @@ test("a week in more currencies than the answer can hold is refused in words, ne
   assert.match(r.stderr, /21 currencies/);
 });
 
+// Stripe's reporting categories that are not revenue (the kit keeps charge, refund, dispute, fee and their reversals).
+const NOT_REVENUE = ["advance", "advance_funding", "anticipation_repayment", "climate_order_purchase", "climate_order_refund",
+  "connect_collection_transfer", "connect_reserved_funds", "contribution", "financing_paydown", "financing_paydown_reversal",
+  "financing_payout", "financing_payout_reversal", "issuing_authorization_hold", "issuing_authorization_release",
+  "issuing_dispute", "issuing_transaction", "network_cost", "obligation", "other_adjustment", "payout", "payout_reversal",
+  "platform_earning", "platform_earning_refund", "risk_reserved_funds", "tax", "topup", "topup_reversal", "transfer",
+  "transfer_reversal", "unreconciled_customer_funds"];
+
+test("a week with 25 kinds of movement that are not revenue counts every one, in an answer the schema takes", () => {
+  const kinds = NOT_REVENUE.slice(0, 25);
+  const items = [txn("2026-11-17T10:00:00Z", "usd", "charge", 120000, 3800)];
+  kinds.forEach((k, i) => { for (let n = 0; n <= i % 3; n++) items.push(txn(`2026-11-${17 + (i % 5)}T1${n}:00:00Z`, "usd", k, -1000 * (i + 1))); });
+  const { out } = compute("left-out-25", items, "2026-11-23");
+  const answer = answerFields(out);
+  assert.deepEqual(overLimits(answer), []);
+  assert.deepEqual(
+    Object.fromEntries(answer.left_out.map((l) => [l.category, l.count])),
+    Object.fromEntries(kinds.map((k, i) => [k, (i % 3) + 1])),
+    "every kind of movement left out is in the answer, with its count",
+  );
+});
+
+test("a week with more kinds of movement than the answer can hold is refused in words, never cut short", () => {
+  const items = [txn("2026-11-17T10:00:00Z", "usd", "charge", 120000, 3800)];
+  for (let i = 1; i <= 41; i++) items.push(txn("2026-11-18T10:00:00Z", "usd", `made_up_category_${i}`, -100));
+  const dir = join(root, "left-out-41");
+  const pages = join(dir, "stripe");
+  mkdirSync(pages, { recursive: true });
+  cpSync(KIT, join(dir, "film"), { recursive: true });
+  writeFileSync(join(pages, "raw-1.json"), JSON.stringify({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more: false }));
+  const r = spawnSync(process.execPath, [join(KIT, "metrics.mjs"), "compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", pages, "--film", join(dir, "film")], { encoding: "utf8" });
+  assert.notEqual(r.status, 0, `41 kinds of movement left out in one week: ${r.stdout.slice(0, 300)}`);
+  assert.match(r.stderr, /41 kinds of movement/);
+});
+
 // The refunds scene's script run on the week's data, with a stand-in DOM: the items it lays out, as HTML.
 function refundsScene(data) {
   const html = readFileSync(join(KIT, "compositions", "refunds.html"), "utf8");
