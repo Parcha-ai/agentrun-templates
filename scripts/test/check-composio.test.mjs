@@ -36,6 +36,12 @@ function composio({ tools = {}, baseTools = tools, events = {}, per = 1000, fail
       if (f.times > 0 && f.match.test(url.href)) {
         f.times--;
         if (f.status === "network") throw new TypeError("fetch failed");
+        // Headers arrive (200), then the body: cut off, timed out, or whole but not JSON.
+        if (f.status === "body-drop" || f.status === "body-timeout") {
+          const why = f.status === "body-drop" ? new TypeError("terminated") : new DOMException("The operation was aborted due to timeout", "TimeoutError");
+          return new Response(new ReadableStream({ start(c) { c.enqueue(new TextEncoder().encode('{"items": [')); c.error(why); } }), { status: 200 });
+        }
+        if (f.status === "body-not-json") return new Response("<html>gateway</html>", { status: 200 });
         return new Response(JSON.stringify({ error: { message: "boom" } }), { status: f.status });
       }
     }
@@ -238,6 +244,29 @@ test("network failures retry briefly, then fail naming the toolkit; the key is n
   assert.match(denied.lines[0], /HTTP 401/);
   assert.equal(refused.calls.length, 1);
   assert.ok(!denied.lines.join("\n").includes(KEY));
+});
+
+test("a body cut off or timed out after its headers is retried like a failed fetch; a whole body that is not JSON fails at once", async (t) => {
+  const root = templatesDir(t, { drafter: GMAIL_TRIGGER });
+  const flaky = composio({ ...LIVE, fail: [{ match: /\/tools\?/, status: "body-drop", times: 1 }, { match: /triggers_types/, status: "body-timeout", times: 1 }] });
+  const slept = [];
+  const ok = await checkComposio({ root, key: KEY, fetch: flaky.fetch, sleep: async (ms) => void slept.push(ms) });
+  assert.equal(ok.code, 0, ok.lines.join("\n"));
+  assert.equal(slept.length, 2);
+
+  const cut = composio({ ...LIVE, fail: [{ match: /\/tools\?/, status: "body-drop", times: 99 }] });
+  const out = await checkComposio({ root, key: KEY, fetch: cut.fetch, sleep: noSleep });
+  assert.equal(out.code, 1);
+  assert.match(out.lines[0], /gmail/);
+  assert.match(out.lines[0], /body cut off/);
+  assert.match(out.lines[0], /after 3 tries/);
+  assert.equal(cut.calls.filter((c) => c.url.pathname === "/api/v3/tools").length, 3);
+
+  const html = composio({ ...LIVE, fail: [{ match: /\/tools\?/, status: "body-not-json", times: 99 }] });
+  const bad = await checkComposio({ root, key: KEY, fetch: html.fetch, sleep: noSleep });
+  assert.equal(bad.code, 1);
+  assert.match(bad.lines[0], /not JSON/);
+  assert.equal(html.calls.filter((c) => c.url.pathname === "/api/v3/tools").length, 1, "a body that is not JSON is not retried");
 });
 
 test("non-Composio MCP entries and non-Composio triggers are not checked", async (t) => {

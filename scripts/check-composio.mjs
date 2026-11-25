@@ -72,24 +72,35 @@ export function collect(root) {
 
 class FetchError extends Error {}
 
-/** One GET, retried on a network error, a timeout, 429 or 5xx; any other non-2xx fails at once. */
+/** One GET, retried on a network error or a timeout (before the headers or while the body is read), 429 or 5xx; any
+ *  other non-2xx fails at once, and so does a body read whole that is not JSON. */
 async function getJson(url, { key, fetch, sleep }) {
   let last = "";
+  const failed = (error, what) => (error?.name === "TimeoutError" ? `no ${what} in ${TIMEOUT_MS / 1000}s` : `${what === "answer" ? "network error" : "body cut off"} (${error?.cause?.code ?? error?.message ?? "fetch failed"})`);
   for (let attempt = 1; attempt <= TRIES; attempt++) {
     let response;
     try {
       response = await fetch(url, { headers: { "x-api-key": key, accept: "application/json" }, signal: AbortSignal.timeout(TIMEOUT_MS) });
     } catch (error) {
-      last = error?.name === "TimeoutError" ? `no answer in ${TIMEOUT_MS / 1000}s` : `network error (${error?.cause?.code ?? error?.message ?? "fetch failed"})`;
+      last = failed(error, "answer");
     }
-    if (response) {
-      if (response.ok) {
+    if (response?.ok) {
+      // The headers can arrive before the body: a body cut off or timed out on the way is retried like a fetch that
+      // failed, and only a body read whole is judged as JSON.
+      let text;
+      try {
+        text = await response.text();
+      } catch (error) {
+        last = failed(error, "whole body");
+      }
+      if (text !== undefined) {
         try {
-          return await response.json();
+          return JSON.parse(text);
         } catch {
           throw new FetchError(`answered HTTP ${response.status} with a body that is not JSON`);
         }
       }
+    } else if (response) {
       last = `HTTP ${response.status}`;
       if (response.status !== 429 && response.status < 500) throw new FetchError(last);
     }
