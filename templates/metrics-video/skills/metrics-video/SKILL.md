@@ -157,7 +157,8 @@ node film/build-captions.mjs --script media/vo.txt --timestamps media/voiceover-
   --duration <ffprobe seconds> --offset 0.5 --film film --vtt media/film.vtt
 ```
 
-With a re-voice: `--script` the second script (write it to `media/vo.txt` again), `--timestamps
+With a re-voice (the agent scans its script with `scan --pages stripe` before it is sent): `--script` the second
+script (written to `media/vo.txt` again), `--timestamps
 media/voiceover-2-timestamps.json` and the second voice's seconds. It writes `film/compositions/captions.html`,
 `film/words.json` and the WebVTT file, and prints one JSON line: its `method` is `captions_timing` in the answer
 (`aligned`, `anchored` or `measured`). The spoken text is scanned for customer data (step 9 reads the timestamps), and
@@ -217,15 +218,22 @@ node film/metrics.mjs scan --pages stripe --final
 It looks in every file the run wrote (the narration, the music line, the storyboard, `film/`, the captions, the
 timestamps and what each voice says in them, the answer and anything else outside the dot-folders) for each string
 Stripe's pages hold (not Stripe's own enum words, its fee lines or a description of one word), each name in one (a pair
-of words, in any case, and each of its words alone in what the run says and writes, not in the kit's code or a tool's output named above), and any
+of words, in any case, and each of its words alone in what the run says and writes: not in the kit's code, which is
+`film/`'s and the skill folder's `.js`, `.mjs`, `.cjs` and `.css` and an HTML file's styles, scripts, comments, tags and
+attributes, nor in a tool's output named above or `inputs/`), and any
 email address. Exit 2 names the file and where the value
-came from, never the value: take it out, render again if it was on screen, scan again, and say so in the report. Here,
-after billing, a word of a name found alone only warns (`warning: a customer's word may be in <file> line <n>`, exit
-0). A warning doesn't fail the run. Read the line it names. If it holds a customer's name, take the name out of that
-file's text; never remake a picture, clip or voice for a warning. Then run `--final` once more, whether you edited or
-not: a word may warn again and that's fine. That run is the last: a name pair, a whole description or an email found
-there stops the film, and the raw pages are removed either way. A `--final` that finds nothing removes
-`stripe/raw-<n>.json` and prints what it removed.
+came from, never the value: take it out, render again if it was on screen, scan again, and say so in the report. A
+word of a name found alone stops the film here too, in what it says and shows (a voice's timestamps, `media/vo.txt`,
+`media/film.vtt`, `film/words.json`, the captions, the scenes, `film/data.json`) and in every file but the answer; a
+word of an identity field's name (a billing or shipping name) stops it in the answer as well. Only in
+`media/answer.json` does a description's name word found alone warn (`warning: a customer's word may be in
+media/answer.json line <n>`), as the answer keeps tool words on purpose (a kept warning's code). That `--final` exits 4:
+not done, the raw pages are kept for one more. Read the line it names; if it holds a customer's name, take the name out
+of `media/answer.json`. Then run `--final` once more, whether you edited or not: a word may warn again and that's fine.
+That run is the last: a name pair, a whole description or an email found there stops the film, and the raw pages are
+removed on every exit (a refused argument, a fault, a signal). A `--final` that exits 0 has removed
+`stripe/raw-<n>.json` and prints what it removed; exit 0 always means no raw page is left. A file's name is read too,
+and never printed when it holds a customer's word. Never answer on exit 4, and never touch `stripe/`.
 
 ## Never
 

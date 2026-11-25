@@ -942,7 +942,9 @@ test("the last --final removes the raw pages on every exit: a refused --business
     closeSync(fd);
     const ended = await closed;
     assert.deepEqual(pagesLeft(dir), [], `${signal} on the last --final: ${JSON.stringify(ended)}`);
-    assert.equal(ended.code, signal === "SIGTERM" ? 143 : 130, `it exits as a ${signal} would: ${JSON.stringify(ended)}`);
+    // The kit's work is synchronous: a signal that lands mid-scan is held until the scan ends, which removes the pages
+    // (exit 0, the pages gone) or exits as the signal would (128 + its number). Never killed with the pages kept.
+    assert.ok(ended.sig === null && [0, signal === "SIGTERM" ? 143 : 130].includes(ended.code), `it ends on its own after a ${signal}: ${JSON.stringify(ended)}`);
   }
 });
 

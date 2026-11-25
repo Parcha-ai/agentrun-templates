@@ -128,8 +128,9 @@ The script checks this, in code: `node film/metrics.mjs scan --pages stripe` loo
 timestamps), for each string the raw pages' items hold, each name in one (in any case, and each of its words alone in what the run says and
 writes), and any email address. The business's own name, as compute was given it, is not a customer's (scan reads it from
 compute's output: never pass it `--business`). Exit 2 names each file and where in Stripe's pages the
-value came from (never the value): take it out of that file and anything made from it, then scan again. It runs twice:
-after step 2, before anything is priced or paid, and as the last step before the answer. Still naming a file after two
+value came from (never the value): take it out of that file and anything made from it, then scan again. It runs
+after step 2, before anything is priced or paid; on a re-voice's script before it is sent (step 6); and as the last
+step before the answer. Still naming a file after two
 fixes: `status: "failed"`, `failed_step: "customer_data"`, the files it named in `error`, and nothing more paid.
 
 ## 2. The narration and the storyboard
@@ -192,7 +193,9 @@ not a fault.
 `web_save` answers the voiceover's `duration_s`: that is its length V (if it answers none, measure it with `ffprobe` in
 the sandbox). It plays from 0.5 s and must end by the plan's `voice_must_end_by` (F − 3 s), so it fits when V ≤ F −
 3.5. Over that, voice it once more from a shorter narration: at most floor(W × (F − 3.5) ÷ V × 0.9) words, W the first
-narration's words (tags not counted), whole sentences cut, every figure it keeps said exactly as before. `submit_job` it
+narration's words (tags not counted), whole sentences cut, every figure it keeps said exactly as before. Write it to
+`media/vo.txt` and run `node film/metrics.mjs scan --pages stripe` before it is sent: a name the voice says can't be
+taken out of it later. Exit 2: take out what it names and scan again (step 1). Then `submit_job` it
 once with key `mv-<stem>-voiceover-2`, the same voice and settings, read it with `wait_for_jobs` (one item, index 0),
 save it to `media/voiceover-2.mp3`, `write` its timestamps to `media/voiceover-2-timestamps.json`, and use it. If it
 still runs over, the film runs longer instead: `place --seconds` ceil(V + 4), said in the report. That is allowed up to
@@ -210,12 +213,15 @@ timestamps with the kit's script (writing `media/film.vtt`), the scenes moved on
 
 The skill's step 9: `write` the answer's json (the block below, without the fence) to `media/answer.json`, then run
 `node film/metrics.mjs scan --pages stripe --final`. It looks at everything again, the answer and the captions included, and when it finds nothing that stops the film it removes
-the raw pages: the run leaves no copy of Stripe's answers. Exit 2: fix what it names (step 1) and run it again. A
-`warning:` line (a word of a name found alone, exit 0): a warning doesn't fail the run. Read the line it names. If it
-holds a customer's name, take the name out of that file's text; never remake a picture, clip or voice for a warning.
-Then run `--final` once more, whether you edited or not: a word may warn again and that's fine. That run is the last:
-a name pair, a whole description or an email found there stops the film, and the raw pages are removed either way. Then
-answer with `media/answer.json`'s content. Every run that saved a raw page ends here, the partial and failed ones and
+the raw pages and exits 0: the run leaves no copy of Stripe's answers, and exit 0 always means none is left. Exit 2:
+fix what it names (step 1) and run it again. Here too a word of a customer's name found alone stops the film in what
+it says and shows (the voices, `media/vo.txt`, the captions, the scenes, `film/data.json`) and in every file but the
+answer. Exit 4, with `warning:` lines: a word of a name found alone in `media/answer.json`, which can be a tool's word (a
+kept warning's code). It is not done: the raw pages are kept for one more `--final`. Read the line it names. If it
+holds a customer's name, take the name out of `media/answer.json`. Then run `--final` once more, whether you edited or
+not: a word may warn again and that's fine. That run is the last: a name pair, a whole description or an email found
+there stops the film, and the raw pages are removed on every exit. Never answer on exit 4, and never touch `stripe/`.
+Then answer with `media/answer.json`'s content. Every run that saved a raw page ends here, the partial and failed ones and
 one refused over the owner's ceiling too.
 
 ## When a step fails
