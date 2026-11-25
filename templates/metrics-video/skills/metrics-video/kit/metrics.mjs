@@ -27,12 +27,13 @@
 //          sandbox's random bytes, written there first. A model never makes one.
 // scan     looks for customer data in every file the run wrote: each string a raw page's items hold (a description, a
 //          name, an email, an id; not Stripe's enum fields, its fee lines or a single word alone), each name in one (a
-//          pair of capitalised words, a pair through an initial, a pair in lower case of words that aren't common ones;
-//          in any case), each word of a name alone when it starts with a capital (four letters or more, not a common
-//          word), and any email address, in each file as written and in what each voice says (the letters of every
-//          *-timestamps.json joined). --business sets the business's own name aside. With --final and nothing found,
-//          it removes the raw pages. A name it can't tell from common words (a description of one word, a name of
-//          common words or of short ones, a name spelled another way) is not found.
+//          pair of capitalised words, or two through an initial; in any case, with or without the initial), each word
+//          of such a pair alone (four letters or more, not a common word; in any case), a name in an identity field
+//          (a customer's, a billing or shipping name) in every shape, and any email address, in each file as written
+//          and in what each voice says (the letters of fal's timestamps, in any JSON file that holds them). The
+//          business's own name, as compute was given it (film/data.json), is set aside; scan takes no other. With
+//          --final and nothing found, it removes the raw pages. A name held only in lower case in a description, a
+//          description of one word, or a name spelled another way is not found.
 //
 // A raw page is Stripe's list exactly as Composio answered it ({"object": "list", "data": [...], "has_more": ...}),
 // or Composio's whole answer around it. It holds customers' details (a charge's description can name one), so only
@@ -714,11 +715,15 @@ const COMMON = new Set(
     "small large little great real full half whole extra free paid final main other others"
   ).split(/\s+/),
 );
-// A word that can be half of a name held in lower case: letters only, three or more, not a common word nor Stripe's.
-const nameable = (w) => /^\p{L}{3,}$/u.test(w) && !COMMON.has(w.toLowerCase()) && !STRIPES_WORDS.has(w.toLowerCase());
+// Stripe's fields that say who a customer is: an email, a customer's name, and the name on a billing or shipping
+// address (a list of balance transactions holds them only when a host expands them; this template never does).
+const IDENTITY_OWNERS = new Set(["customer", "customer_details", "billing_details", "shipping", "owner", "cardholder"]);
+const identity = (key, owner) => /(^|_)email$/.test(key) || key === "customer_name" || (key === "name" && IDENTITY_OWNERS.has(owner));
 function customerValues(dir) {
   const found = new Map(); // value -> { where it came from, any case or not, a name pair or not }, never printed with the value
-  const alone = new Map(); // a name's word in lower case -> where it came from: looked for alone, as a word that starts with a capital
+  // A name's word in lower case -> where it came from: looked for alone, in any case. From an identity field's name,
+  // and from a pair of capitalised words in a description; never from any other word of a description.
+  const alone = new Map();
   const add = (value, where, anyCase = false, name = false) => {
     if (value.length < 4) return;
     const seen = found.get(value);
@@ -728,8 +733,9 @@ function customerValues(dir) {
       if (name) seen.name = true;
     }
   };
-  // A name pair: looked for whole, and each of its words alone (four letters or more, not a common word), as a first
-  // name or a last name said by itself is still the customer's.
+  // A name pair: looked for whole, and each of its words alone (four letters or more, not a common word nor Stripe's),
+  // in any case, as a first name or a last name said by itself is still the customer's. A pair of capitalised words
+  // that isn't a name ("Market Day") has its words looked for too: the run rewords and scans again.
   const pair = (a, b, where, key, anyCase) => {
     add(`${a} ${b}`, `${where}: a name in its ${key}`, anyCase, true);
     if (!anyCase) return;
@@ -737,33 +743,41 @@ function customerValues(dir) {
       if (w.length >= 4 && !COMMON.has(w.toLowerCase()) && !STRIPES_WORDS.has(w.toLowerCase()) && !alone.has(w.toLowerCase())) alone.set(w.toLowerCase(), `${where}: a word of a name in its ${key}`);
     }
   };
-  const walk = (value, key, where) => {
+  // A name from an identity field is the customer's in every shape: whole, each pair of its words (an initial left
+  // out), in any case, and each of its words alone (two letters or more, not a common word), in any case.
+  const identityName = (v, where, key) => {
+    add(v, `${where}: its ${key}`, true, true);
+    const parts = v.split(/\s+/).map((w) => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "")).filter((w) => /^\p{L}{2,}$/u.test(w));
+    for (let i = 0; i + 1 < parts.length; i++) add(`${parts[i]} ${parts[i + 1]}`, `${where}: a name in its ${key}`, true, true);
+    for (const w of parts) if (!COMMON.has(w.toLowerCase()) && !alone.has(w.toLowerCase())) alone.set(w.toLowerCase(), `${where}: a word of the name in its ${key}`);
+  };
+  const walk = (value, key, where, owner) => {
     if (key === "fee_details" || STRIPES_OWN.has(key)) return;
-    if (typeof value === "string") {
+    // An identity field's name (not an email: that is found below, whole, in any case).
+    if (typeof value === "string" && identity(key, owner) && !value.includes("@")) identityName(value.trim(), where, key);
+    else if (typeof value === "string") {
       const v = value.trim();
       // A description of one word of letters alone ("Refund", "Payment") is a common word as often as a name, and the
-      // kit's own scenes hold such words: it is not looked for by itself. A name is looked for as a pair of words, and
-      // each word of a pair alone, below.
+      // kit's own scenes hold such words: it is not looked for by itself. A name in it is looked for as a pair of
+      // capitalised words, and each word of the pair alone, below.
       if (!/^\p{L}+$/u.test(v)) add(v, `${where}: its ${key}`);
       for (const email of v.match(EMAIL) ?? []) add(email, `${where}: an email in its ${key}`, true);
       const words = v.split(/\s+/).map((w) => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ""));
       for (let i = 0; i + 1 < words.length; i++) {
         const [a, b, c] = [words[i], words[i + 1], words[i + 2]];
-        // Two capitalised words; or two through an initial between them ("First Q. Last", in any case); or two
-        // words in lower case (or mixed) neither of which is a common word ("commission for marisol quintero").
+        // Two capitalised words, or two through an initial between them ("First Q. Last"). Words in lower case are a
+        // description's ordinary words ("ceramic vase") as often as a name: a name held only that way is not found.
         if (NAMEWORD.test(a) && NAMEWORD.test(b)) pair(a, b, where, key, nameLike(a, b));
         else if (/^\p{L}$/u.test(b) && c !== undefined && NAMEWORD.test(a) && NAMEWORD.test(c)) pair(a, c, where, key, nameLike(a, c));
-        else if (/^\p{L}$/u.test(b) && c !== undefined && nameable(a) && nameable(c)) pair(a, c, where, key, true);
-        else if (nameable(a) && nameable(b)) pair(a, b, where, key, true);
       }
-    } else if (Array.isArray(value)) value.forEach((v) => walk(v, key, where));
-    else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) walk(v, k, where);
+    } else if (Array.isArray(value)) value.forEach((v) => walk(v, key, where, owner));
+    else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) walk(v, k, where, key);
   };
-  for (const { file, list } of readRaw(dir)) list.data.forEach((item, i) => walk(item, "item", `${file} item ${i + 1} (${item?.id ?? "no id"})`));
+  for (const { file, list } of readRaw(dir)) list.data.forEach((item, i) => walk(item, "item", `${file} item ${i + 1} (${item?.id ?? "no id"})`, undefined));
   return { found, alone };
 }
-// The words of a text that start with a capital (a name said in a sentence, in a title, in capitals), in lower case.
-const capitalised = (text) => new Set((text.match(/\p{L}+/gu) ?? []).filter((w) => /^\p{Lu}/u.test(w)).map((w) => w.toLowerCase()));
+// The words of a text, in lower case: a name's word alone is found in any case ("Marisol", "marisol", "MARISOL").
+const wordsIn = (text) => new Set((text.match(/\p{L}+/gu) ?? []).map((w) => w.toLowerCase()));
 // Every file the run wrote under `root`: dot-folders (the skills, the harness's own state) and node_modules are not
 // the run's, the raw pages are where the values come from, a binary file (audio, video, images) holds no text, and a
 // link is not followed (it points at a file the walk reaches anyway, or outside the run).
@@ -907,8 +921,8 @@ function scan() {
       const holds = (hay) => hay.includes(plain) || (escaped !== plain && hay.includes(escaped));
       if (folds ? holds(anyCase) || holds(anyCaseNoInitials) : holds(asWritten)) hits.push(`${at} holds a value from Stripe's ${where}`);
     }
-    const caps = capitalised(text.replace(kitPhrase, " "));
-    for (const [w, where] of words) if (caps.has(w)) hits.push(`${at} holds a value from Stripe's ${where}`);
+    const said = wordsIn(text.replace(kitPhrase, " "));
+    for (const [w, where] of words) if (said.has(w)) hits.push(`${at} holds a value from Stripe's ${where}`);
     for (const email of text.match(EMAIL) ?? []) if (!values.has(email)) hits.push(`${at} holds an email address`);
   }
   if (hits.length) {

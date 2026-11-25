@@ -282,6 +282,8 @@ function scanRun(name, items, files, extra = [], skill) {
   return { status: r.status, out: r.stdout + r.stderr };
 }
 const described = (description, amount = 45000) => ({ ...txn("2026-11-18T12:00:00Z", "usd", "charge", amount, 1335), description });
+// A charge whose source a host expanded: the customer's name on its billing details (an identity field).
+const billedTo = (name, description = "Workshop deposit") => ({ ...described(description), source: { id: `ch_test${++seq}`, object: "charge", billing_details: { name, email: null } } });
 // fal's timestamps for a voice that says `text`: one chunk, one letter per string, as ElevenLabs answers them.
 const spokenAs = (text) => [{
   characters: [...text],
@@ -387,12 +389,16 @@ test("a run of the customer-data-stays-out fake week scans clean, the instructio
 
 // The shapes a name takes beyond a title-case pair repeated in full (one test each): held in lower case, a first name
 // alone, a name through an initial. Each fails the scan wherever the run wrote it.
-test("scan finds a name a description holds in lower case", () => {
+// A stated limit (the PR's Known limits): a name a description holds only in lower case is not told from its ordinary
+// words ("ceramic vase"), so the scan doesn't find it; the no-customer-data grader still reads the output for meaning.
+// Its whole description, as written, is still looked for.
+test("a name a description holds only in lower case is not found by the scan (a stated limit)", () => {
   const items = [described("commission for marisol quintero")];
   const r = scanRun("lower-pair", items, { "media/vo.txt": `${CLEAN} Thank you, Marisol Quintero.` });
-  customerData(r, `the name in title case, from a description in lower case: ${r.out}`);
+  assert.equal(r.status, 0, `the limit: ${r.out}`);
   const alone = scanRun("lower-first", items, { "media/vo.txt": `${CLEAN} Thank you, Marisol.` });
-  customerData(alone, `its first name alone: ${alone.out}`);
+  assert.equal(alone.status, 0, `the limit: ${alone.out}`);
+  customerData(scanRun("lower-whole", items, { "media/vo.txt": `${CLEAN} A commission for marisol quintero.` }), "the whole description, as written");
 });
 
 test("scan finds a customer's first name, or last name, alone", () => {
@@ -415,8 +421,9 @@ test("scan finds a name through an initial", () => {
   // A first name that is also a common word ("June") is still half of a capitalised pair through an initial.
   const june = scanRun("initial-common", [described("Commission for June R. Castillo")], { "media/vo.txt": `${CLEAN} Thank you, June Castillo.` });
   customerData(june, `a capitalised pair through an initial, one of its words a common one: ${june.out}`);
+  // Held only in lower case, through its initial: the stated limit above, not found.
   const lower = scanRun("initial-lower", [described("commission for marisol q. quintero")], { "media/vo.txt": `${CLEAN} Thanks, Marisol.` });
-  customerData(lower, `held in lower case, through its initial, the first name alone: ${lower.out}`);
+  assert.equal(lower.status, 0, `the limit: ${lower.out}`);
 });
 
 // ---------- the delta review ----------
@@ -441,33 +448,48 @@ test("each scan a grader quotes is a scan agent.md has the run make, with the ca
 });
 
 test("a name or a description pair of ordinary words is no one's name: 'Market', 'ceramic vase'", () => {
-  const items = [described("Market Day Booth"), described("ceramic vase", 31000), described("Commission for Marisol Quintero", 20000)];
+  // "Market" said, and no pair in Stripe holds it: never looked for. "ceramic vase", a description's pair in lower
+  // case: not a name. (The whole description, "Order 1043: ceramic vase", is still looked for as written.)
+  const items = [described("Order 1043: ceramic vase", 31000), described("Commission for Marisol Quintero", 20000)];
   const vo = `${CLEAN} The Market was busy, and a ceramic vase sold twice.`;
-  const r = scanRun("ordinary-words", items, { "media/vo.txt": vo, "media/voiceover-timestamps.json": spokenAs(vo), "film/STORYBOARD.md": "2. Revenue: a Ceramic Vase, market day." }, [], SKILL);
+  const r = scanRun("ordinary-words", items, { "media/vo.txt": vo, "media/voiceover-timestamps.json": spokenAs(vo), "film/STORYBOARD.md": "2. Revenue: a Ceramic Vase, at the Market." }, [], SKILL);
   assert.equal(r.status, 0, r.out);
   // The customer in the same week is still found.
   customerData(scanRun("ordinary-words-name", items, { "media/vo.txt": `${vo} Thanks, Marisol.` }, [], SKILL), "the customer beside them");
+  // A stated limit that fails closed: a pair of capitalised words in a description ("Market Day Booth") is looked for
+  // as a pair ("market day") and each of its words alone, in any case, though it names no one. The run rewords.
+  const booth = [described("Market Day Booth"), ...items];
+  customerData(scanRun("ordinary-words-pair", booth, { "media/vo.txt": `${CLEAN} A market day.` }, [], SKILL), "the pair Market Day");
+  customerData(scanRun("ordinary-words-pair-word", booth, { "media/vo.txt": `${CLEAN} The market was busy.` }, [], SKILL), "a word of the pair alone");
+});
+
+test("a customer's name on a charge is found in every shape: whole, its pair, in lower case, its words alone", () => {
+  const items = [billedTo("Marisol Q. Quintero")];
+  for (const [n, said] of [["whole", "Thank you, Marisol Q. Quintero."], ["pair", "Thank you, Marisol Quintero."], ["lower", "thanks to marisol quintero."], ["caps", "THANK YOU, QUINTERO."], ["first", "Thanks, Marisol."], ["first-lower", "thanks, marisol."]]) {
+    customerData(scanRun(`billed-${n}`, items, { "media/vo.txt": `${CLEAN} ${said}` }), `said as "${said}"`);
+  }
 });
 
 test("scan finds a name said through its initial in lower case", () => {
-  for (const [n, description] of [["title", "Commission for Marisol Q. Quintero"], ["lower", "commission for marisol q. quintero"]]) {
-    customerData(scanRun(`said-initial-lower-${n}`, [described(description)], { "media/vo.txt": `${CLEAN} thanks to marisol q. quintero.` }), `${description}, said in lower case through its initial`);
+  for (const [n, item] of [["title", described("Commission for Marisol Q. Quintero")], ["billed", billedTo("marisol q. quintero")]]) {
+    customerData(scanRun(`said-initial-lower-${n}`, [item], { "media/vo.txt": `${CLEAN} thanks to marisol q. quintero.` }), `${n}: said in lower case through its initial`);
   }
 });
 
 test("scan finds a customer's first name, or last name, alone in lower case", () => {
-  const items = [described("Commission for Marisol Quintero")];
-  customerData(scanRun("alone-lower-first", items, { "media/vo.txt": `${CLEAN} thanks, marisol.` }), "the first name alone, in lower case");
-  customerData(scanRun("alone-lower-last", items, { "film/STORYBOARD.md": "6. Endcard: with thanks to quintero." }), "the last name alone, in lower case");
+  for (const [n, item] of [["described", described("Commission for Marisol Quintero")], ["billed", billedTo("Marisol Quintero")]]) {
+    customerData(scanRun(`alone-lower-first-${n}`, [item], { "media/vo.txt": `${CLEAN} thanks, marisol.` }), `${n}: the first name alone, in lower case`);
+    customerData(scanRun(`alone-lower-last-${n}`, [item], { "film/STORYBOARD.md": "6. Endcard: with thanks to quintero." }), `${n}: the last name alone, in lower case`);
+  }
 });
 
 test("a customer whose name is one of the kit's own words is still found: Hong, Madrid", () => {
-  for (const [n, description, said] of [["hong", "Commission for Mei Hong", "Thank you, Hong."], ["madrid", "Commission for Ana Madrid", "Thank you, Madrid."]]) {
-    customerData(scanRun(`kit-word-${n}`, [described(description)], { "media/vo.txt": `${CLEAN} ${said}` }, [], SKILL), `${description}, said as "${said}"`);
+  for (const [n, name, said] of [["hong", "Mei Hong", "Thank you, Hong."], ["madrid", "Ana Madrid", "Thank you, Madrid."]]) {
+    customerData(scanRun(`kit-word-${n}`, [billedTo(name)], { "media/vo.txt": `${CLEAN} ${said}` }, [], SKILL), `${name}, said as "${said}"`);
   }
   // The kit's own phrase is not the customer's: "Hong Kong dollars" said, Mei Hong a customer.
   const vo = `${CLEAN} And nine hundred Hong Kong dollars.`;
-  const r = scanRun("kit-word-unit", [described("Commission for Mei Hong")], { "media/vo.txt": vo }, [], SKILL);
+  const r = scanRun("kit-word-unit", [billedTo("Mei Hong")], { "media/vo.txt": vo }, [], SKILL);
   assert.equal(r.status, 0, r.out);
 });
 
@@ -479,7 +501,7 @@ test("scan reads what fal spoke wherever its timestamps are, and across a chunk'
   assert.match(filed.out, /evidence\/fal\/req-1\.json/);
   // Two chunks that meet between the first and the last name, with no space in either.
   const chunks = [...spokenAs(`${CLEAN} Thank you, Marisol`), ...spokenAs("Quintero.")];
-  const edge = scanRun("spoke-edge", [described("commission for marisol quintero")], { "media/vo.txt": CLEAN, "media/voiceover-timestamps.json": chunks });
+  const edge = scanRun("spoke-edge", [described("Commission for Marisol Quintero")], { "media/vo.txt": CLEAN, "media/voiceover-timestamps.json": chunks });
   customerData(edge, "the name across two chunks");
 });
 
