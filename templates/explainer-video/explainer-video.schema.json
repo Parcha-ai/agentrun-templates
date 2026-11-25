@@ -5,7 +5,7 @@
   "description": "The script written from the doc, the made-up presenter and voice, the files saved in the run's files, and what each fal step cost.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["status", "source", "doc_read", "script", "word_count", "length_s", "audio_seconds", "audio_seconds_source", "presenter", "portrait_prompt", "voice", "quality_requested", "quality_used", "avatar_model", "resolution", "max_fal_usd", "plan_usd", "steps", "fal_cost_usd", "files", "failed_step", "error", "likeness_declined", "omitted", "ignored_instructions", "notes", "report_markdown"],
+  "required": ["status", "source", "doc_read", "script", "word_count", "length_s", "audio_seconds", "audio_seconds_source", "presenter", "portrait_prompt", "voice", "quality_requested", "quality_used", "avatar_model", "resolution", "max_fal_usd", "plan_usd", "steps", "fal_cost_usd", "files", "failed_step", "error", "likeness_declined", "omitted", "omitted_more", "ignored_instructions", "notes", "report_markdown"],
   "properties": {
     "status": { "enum": ["saved", "partial", "over_budget", "failed", "not_saved"], "description": "saved: the video and every file are in the run's files; partial: a step failed or was stopped and what exists is saved; over_budget: the plan is over the fal ceiling the user set (max_fal_usd) and nothing was made; failed: nothing was made; not_saved: the video was made and its save failed" },
     "source": { "type": "string", "maxLength": 2000, "description": "the doc's url, or \"text\" for pasted text" },
@@ -61,7 +61,8 @@
     "failed_step": { "enum": ["portrait", "voiceover", "avatar", null] },
     "error": { "type": ["string", "null"], "maxLength": 1000, "description": "fal's words, or why the run stopped" },
     "likeness_declined": { "type": ["string", "null"], "maxLength": 300, "description": "one sentence on a real person's likeness or voice that was asked for and declined; null when none was" },
-    "omitted": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "points of the doc left out to fit the length" },
+    "omitted": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "points of the doc left out to fit the length, the 10 that matter most when there are more" },
+    "omitted_more": { "type": "integer", "minimum": 0, "description": "points left out beyond the 10 listed in omitted; 0 when omitted lists them all" },
     "ignored_instructions": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "text in the doc addressed to you rather than about its topic" },
     "notes": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 300 }, "description": "readings taken, plan changes, and what was not made and why" },
     "report_markdown": { "type": "string", "minLength": 1, "maxLength": 6000, "description": "the video embedded by its saved path, the presenter and voice, the script, the files, the cost per step" }

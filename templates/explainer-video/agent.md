@@ -79,7 +79,8 @@ Spoken by the presenter to camera, as the fal-audio skill says for the ear:
   When the doc says more, keep what matters most and list each point left out in `omitted`. Before you send the
   script, go through the doc sentence by sentence: each fact, step, figure or date it gives that the script doesn't
   say is a point left out, with its own entry in `omitted`. Part of a sentence counts too: a script that keeps "alerts are
-  sent" but drops "by email" has left out how they are sent.
+  sent" but drops "by email" has left out how they are sent. `omitted` holds at most 10 entries: with more points left
+  out, list the 10 that matter most and give the count of the rest in `omitted_more` (0 when `omitted` lists them all).
 - A few ElevenLabs v3 audio tags (`[warm]`, `[curious]`, `[pauses]`, `[cheerfully]`), at most one per sentence and
   never inside a name or a figure.
 
@@ -189,7 +190,7 @@ stays saved as `media/voiceover.mp3` and listed in `files` (save it first if it 
 checks allow: for OmniHuman 60; with a ceiling, B = (`max_fal_usd` − spent − the new voiceover's price) ÷ the avatar
 rate, and T is B, or the lesser of B and 60 for OmniHuman. Cut the script to at most its spoken words × T ÷ V × 0.9 words (0.9 is the margin; 110 words
 at V 47.0 s with T 40 → 110 × 40 ÷ 47.0 × 0.9 = 84 words), keeping what matters most and adding each point cut to
-`omitted`, with the rules of step 2. Count again before you send it. Send it with `submit_job` on
+`omitted` (or to `omitted_more` past 10), with the rules of step 2. Count again before you send it. Send it with `submit_job` on
 `fal-ai/elevenlabs/tts/eleven-v3`, key `ev-<stem>-voiceover-2`, the same `voice`, `stability`,
 `output_format` and `timestamps`. Follow it with a one-item `wait_for_jobs` whose item has `"index": 2` and the
 handles this `submit_job` answered, copied as they are. Save it to `media/voiceover-2.mp3`. `script` and `word_count` are then the new script's. Check its V the same way, counting both
