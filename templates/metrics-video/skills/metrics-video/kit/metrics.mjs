@@ -379,6 +379,10 @@ const carriedRow = (c, f) => ({
 // The most currencies a result carries to the next week's run (the schema's carried.figures maxItems). A week with more
 // carries the ten it lists first and says it holds only some (complete: false).
 const CARRIED_MAX = 10;
+// The most currencies a week may have, this week or the week before: the answer lists every one of them (figures and
+// gone, maxItems 20 in the schema; restated, at most the carried ten and the week before's twenty, maxItems 30), so a
+// week with more is refused in words, never cut short.
+const MAX_CURRENCIES = 20;
 const COMPARED = ["revenue_minor", "gross_minor", "charges", "refunds_count", "refunds_minor", "disputes_count", "disputes_minor", "fees_minor"];
 
 function compute() {
@@ -397,6 +401,9 @@ function compute() {
   const before = w.week_before ? addUp(transactions, w.week_before) : null;
   const order = [...thisWeek.by.entries()].sort((a, b) => b[1].kept - a[1].kept || a[0].localeCompare(b[0]));
   const empty = order.length === 0;
+  for (const [which, week, by] of [["this week", w.week, thisWeek.by], ["the week before", w.week_before, before?.by]]) {
+    if (by && by.size > MAX_CURRENCIES) fail(3, `${by.size} currencies in ${which} (${week.start} to ${week.end}): this film reports at most ${MAX_CURRENCIES} currencies a week, each with its figures, so it makes nothing for this week. Answer failed, failed_step "figures", with these words.`);
+  }
 
   // The carried figures against Stripe's figures for the same week, read again now.
   let compare = { state: "none", reason: w.compare.reason, restated: [] };
@@ -564,7 +571,7 @@ function compute() {
       best_day: c.best_day ? `${c.best_day.label} ${c.best_day.display}` : null,
       week_before_minor: c.change ? c.change.before.minor : null, change_minor: c.change ? c.change.minor : null,
       change_shown: c.change ? c.change.display : null, change_percent: c.change?.percent ? c.change.percent.value : null,
-    })).slice(0, 20),
+    })),
     gone: gone.map((g) => ({ currency: g.code, week_before_minor: g.before.minor })),
     left_out: Object.entries(thisWeek.leftOut).map(([category, count]) => ({ category: category.slice(0, 60), count })).slice(0, 20),
     carried: data.carry,
@@ -663,6 +670,8 @@ const nameLike = (a, b) => (TITLED(a) && TITLED(b)) || !STRIPES_WORDS.has(a.toLo
 // and a word of a name looked for alone never is one.
 const COMMON = new Set(
   (
+    // the words the kit has the run say or write: each currency's spoken unit, and the tools the skill names
+    Object.values(UNIT).flat().join(" ").toLowerCase() + " composio stripe fal elevenlabs hyperframes " +
     // the calendar
     "january february march april may june july august september october november december jan feb mar apr jun jul aug " +
     "sep sept oct nov dec monday tuesday wednesday thursday friday saturday sunday mon tue tues wed thu thur thurs fri " +
@@ -736,7 +745,7 @@ function customerValues(dir) {
       const words = v.split(/\s+/).map((w) => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ""));
       for (let i = 0; i + 1 < words.length; i++) {
         const [a, b, c] = [words[i], words[i + 1], words[i + 2]];
-        // Two capitalised words; or two through an initial between them ("Marisol Q. Quintero", in any case); or two
+        // Two capitalised words; or two through an initial between them ("First Q. Last", in any case); or two
         // words in lower case (or mixed) neither of which is a common word ("commission for marisol quintero").
         if (NAMEWORD.test(a) && NAMEWORD.test(b)) pair(a, b, where, key, nameLike(a, b));
         else if (/^\p{L}$/u.test(b) && c !== undefined && NAMEWORD.test(a) && NAMEWORD.test(c)) pair(a, c, where, key, nameLike(a, c));
@@ -772,7 +781,7 @@ function runFiles(root, raw) {
   return out;
 }
 // Spacing is set aside for every value (a name broken over a line is the same name); case only for a name or an email.
-// (No example value in this kit's text: a value the skill holds is not looked for, below.)
+// (No example name or email in this kit's text: none is set aside for being there, below, so one would fail a run.)
 const squash = (s) => s.replace(/\s+/g, " ");
 const fold = (s) => squash(s).toLowerCase();
 // Letters and digits only, in lower case, one space between words: how a name is compared with the business's.
@@ -801,20 +810,21 @@ function scan() {
     if (manifest[rel] && createHash("sha256").update(bytes).digest("hex") === manifest[rel]) shipped.set(rel, { bytes, text: f.text });
   }
   // A value a shipped file holds as written ("Stripe processing fees" in a comment) is the template's text, not a
-  // customer's, so it is not looked for. Held as written: a name made of two common words stays looked for when the
-  // skill only has those words in lower case. So this kit's text holds no example name.
+  // customer's, so it is not looked for; but only a value looked for as written. A name or an email (looked for in any
+  // case) is the customer's wherever else it is written, the skill's text included: a run that read it from Stripe
+  // must not write it, so it is always looked for.
   const skillText = squash([...shipped.values()].map((f) => f.text).join("\n"));
   // The business's own name (--business, the name the film opens and ends on) is the film's, not a customer's, though a
   // charge's description holds it (shop plugins write "<store name> - Order <n>"): a value equal to it,
   // or a name pair inside it, is not looked for. A customer's name beside it in the same description still is.
   const business = typeof args.business === "string" && args.business !== "true" ? wordsOf(args.business) : "";
   const theBusiness = (value, { name }) => business !== "" && (wordsOf(value) === business || (name && ` ${business} `.includes(` ${wordsOf(value)} `)));
-  const values = new Map([...found].filter(([value, seen]) => !skillText.includes(squash(value)) && !theBusiness(value, seen)));
-  // A name's word alone is not looked for when it is a word of the business's name, or a capitalised word the
-  // template's own text holds ("Canadian", "Composio").
-  const skillWords = capitalised(skillText);
+  const values = new Map([...found].filter(([value, seen]) => !(!seen.anyCase && skillText.includes(squash(value))) && !theBusiness(value, seen)));
+  // A name's word alone is not looked for when it is a word of the business's name. The words the kit has the run say
+  // or write ("Canadian dollars", "Composio") are common words (COMMON), so never a name's word: a fixed list, never
+  // whatever the skill's text happens to hold.
   const ownWords = new Set(business.split(" "));
-  const words = new Map([...alone].filter(([w]) => !skillWords.has(w) && !ownWords.has(w)));
+  const words = new Map([...alone].filter(([w]) => !ownWords.has(w)));
   // A file in film/ still byte for byte a shipped kit file (metrics.mjs, review.mjs, a scene the run never changed)
   // holds only the template's words: it is not searched, so a customer's name that is also a phrase in the kit's code
   // can't fail every run. A copy the run changed is searched like any other file.

@@ -39,7 +39,7 @@
         "reason": { "type": "string", "maxLength": 400 },
         "restated": {
           "type": "array",
-          "maxItems": 10,
+          "maxItems": 30,
           "items": {
             "type": "object",
             "additionalProperties": false,
@@ -85,7 +85,7 @@
     },
     "gone": {
       "type": "array",
-      "maxItems": 10,
+      "maxItems": 20,
       "description": "currencies with money the week before and none this week",
       "items": {
         "type": "object",
