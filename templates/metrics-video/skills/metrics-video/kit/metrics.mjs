@@ -34,7 +34,8 @@
 //          Each word of a capitalised pair or of an identity name is looked for alone too (in any case; four letters
 //          or more from a pair, not a common word), in every text file the run wrote and what a voice says: a JSON
 //          file's strings, the text an HTML file shows. Not in the kit's code (.js, .mjs, .css, an HTML file's styles,
-//          scripts and tags: "font-family", "white-space"), a tool's log (.log, media/check.json) or inputs/. The
+//          scripts and tags: "font-family", "white-space"), a tool's output at the paths the skill names
+//          (media/check.json, media/render.log, media/review*/snapshot.log) or inputs/. The
 //          kit's own phrases (a currency's unit, compute's sentences) are taken out first, and a description's pair
 //          inside one ("swiss francs") is not a name.
 //          The business's own name, as compute was given it (film/data.json, which the run can write, as it types
@@ -822,6 +823,11 @@ function customerValues(dir) {
   return { found, alone };
 }
 // The words of a text, in lower case: a name's word alone is found in any case ("Marisol", "marisol", "MARISOL").
+// What a tool writes while the run runs it, at the path the skill names: hyperframes check (SKILL.md, 7:
+// media/check.json), hyperframes render (SKILL.md, 8: media/render.log), and hyperframes snapshot through review.mjs
+// (its <out>/snapshot.log; SKILL.md, 7: media/review, media/review-2). A tool's words ("families", "track", "phone"),
+// never the run's: a name's word alone is not looked for there.
+const TOOL_OUTPUT = [/^media\/check\.json$/, /^media\/render\.log$/, /^media\/review(?:-\d+)?\/snapshot\.log$/];
 // The text an HTML (or SVG) file shows: its comments, styles, scripts and tags (attributes and all) left out.
 const shownText = (t) =>
   t
@@ -976,9 +982,9 @@ function scan() {
   // A name's word alone is looked for in every text file the run wrote and in what each voice says, read for its
   // words: a JSON file by its strings (its keys are a schema's), an HTML or SVG file by the text it shows (its styles,
   // scripts, comments and tags are the kit's code, "font-family", "white-space", "power2.out", and the run's restyling
-  // of it). Not in the kit's code (.js, .mjs, .cjs, .css), not in what a tool logged while the run ran it (a .log file;
-  // media/check.json, hyperframes' check), and not in the host's input (inputs/): the run can't reword those. Whole
-  // values, pairs and emails are looked for in every file, markup, code and logs included.
+  // of it). Not in the kit's code (.js, .mjs, .cjs, .css), not in the host's input (inputs/), and not in a tool's own
+  // output at the paths the skill names (TOOL_OUTPUT): the run can't reword those. Any other file, a log the run
+  // writes itself included, is read. Whole values, pairs and emails are looked for in every file.
   const strings = (text) => {
     const out = [];
     const walk = (v) => {
@@ -995,7 +1001,7 @@ function scan() {
   const wordText = (path, text, label) => {
     if (label) return text;
     const rel = (relative(root, path) || path).split("\\").join("/");
-    if (/\.(?:m?js|cjs|css|log)$/i.test(rel) || rel === "media/check.json" || rel.startsWith("inputs/")) return null;
+    if (/\.(?:m?js|cjs|css)$/i.test(rel) || rel.startsWith("inputs/") || TOOL_OUTPUT.some((x) => x.test(rel))) return null;
     if (/\.(?:html?|svg)$/i.test(rel)) return shownText(text);
     return /\.json$/i.test(rel) ? strings(text) : text;
   };
