@@ -38,8 +38,9 @@
 //         extracts every video of a film at once, and six clips' extractions together run a 4 GiB sandbox out of memory.
 // stem    prints the run's key stem: the one in the file when it holds one (a resumed run), else a new one from the
 //         sandbox's random bytes, written there first. A model never makes one.
-// stills, remake and clips build nothing until the plan is priced and fits: film/price.json with fits true. Over the
-//         user's ceiling, or never priced, each exits 2 and prints nothing to send.
+// stills, remake and clips build nothing until the plan is priced and fits: film/price.json with fits true and the
+//         sha256 of film/plan.json as priced. Over the user's ceiling, never priced, or priced for a plan since changed,
+//         each exits 2 and prints nothing to send. plan removes film/price.json when it writes a different plan.
 // stills  every still's submit_job, built from the storyboard and the plan: shot n's prompt is the style line, its
 //         storyboard picture word for word and "No text, no lettering, no logos.", with the fixed fields (one image, the
 //         plan's aspect, 1K, png, no web search). It prints one `submit_job {...}` line per still, to send as printed,
@@ -65,7 +66,7 @@
 // Exit 2: wrong arguments, or a film whose files don't match the plan (place reads every shot back after writing it;
 // the message names the shot); 3: the song can't be decoded, is too short, or has no beat to cut on; 0: done.
 import { spawnSync } from "node:child_process";
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -462,8 +463,17 @@ function plan() {
     aspect, width, height, lyrics_on: lyricsOn,
   };
   mkdirSync(film, { recursive: true });
-  writeFileSync(join(film, "plan.json"), JSON.stringify(data, null, 1) + "\n");
+  // A price is of one plan: a plan that changes removes the price of the old one, so price runs again before anything
+  // is built (stills, remake and clips also check the plan's hash against the one price recorded).
+  const planPath = join(film, "plan.json"), pricePath = join(film, "price.json");
+  const bytes = JSON.stringify(data, null, 1) + "\n";
+  const changed = !existsSync(planPath) || readFileSync(planPath, "utf8") !== bytes;
+  writeFileSync(planPath, bytes);
   const out = [];
+  if (changed && existsSync(pricePath)) {
+    rmSync(pricePath);
+    out.push(`${pricePath} removed: the plan changed since it was priced; run price again`);
+  }
   out.push(`song: ${data.song.seconds} s (${songPath})`);
   out.push(`beats: ${data.beats.bpm} BPM, ${data.beats.count} beats, the first at ${data.beats.first_beat_s} s, bar lines (4/4) from ${data.beats.first_downbeat_s} s every ${data.beats.bar_s} s; tempo ${data.beats.tempo} (grid fit ${data.beats.fit_ms} ms, beat confidence ${data.beats.confidence})`);
   if (data.beats.confidence < 0.2 || data.beats.tempo === "drifting") out.push("NOTE: the beat is weak or drifts here: the cuts land on the computed grid, which may sit off the music in places; say so in the report");
@@ -537,7 +547,9 @@ function price() {
   const minutes = data.song.minutes;
   const p = priceOf(data.cut.shots, minutes, data.lyrics_on, r);
   const fits = max === null || p.total <= max + 1e-9;
-  const out = { rates: r, max_fal_usd: max, lines: p.lines, plan_usd: p.total, fits };
+  // The plan priced, by its bytes' hash, and the ceiling it was judged against: stills, remake and clips build only on
+  // a price of the plan as it is now.
+  const out = { rates: r, max_fal_usd: max, lines: p.lines, plan_usd: p.total, fits, plan_sha256: planHash(film) };
   writeFileSync(join(film, "price.json"), JSON.stringify(out, null, 1) + "\n");
   const lines = [];
   for (const l of p.lines) lines.push(`${l.step}${l.reserve ? " (reserve)" : ""}: ${l.units} ${l.unit} x $${l.rate_usd} = $${l.usd}`);
@@ -838,6 +850,7 @@ function writeStills(file, record) {
 }
 // Nothing is built for fal until the plan is priced and fits: price writes film/price.json, and stills, remake and
 // clips read it first. Over the user's ceiling, or never priced, they print nothing to send.
+const planHash = (film) => createHash("sha256").update(readFileSync(join(film, "plan.json"))).digest("hex");
 function priced(film) {
   const path = join(film, "price.json");
   let p = null;
@@ -846,7 +859,9 @@ function priced(film) {
   } catch {
     p = null;
   }
-  if (p === null || typeof p !== "object" || p.fits !== true) fail(2, "the plan is over the ceiling you set (or not priced yet): nothing is built");
+  if (p === null || typeof p !== "object") fail(2, "the plan is over the ceiling you set (or not priced yet): nothing is built");
+  if (!existsSync(join(film, "plan.json")) || p.plan_sha256 !== planHash(film)) fail(2, "the plan changed since it was priced: run price again (nothing is built)");
+  if (p.fits !== true) fail(2, "the plan is over the ceiling you set (or not priced yet): nothing is built");
 }
 const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
 const never = (what) => `a record of ${what} that may have been sent is never replaced`;

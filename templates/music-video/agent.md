@@ -107,7 +107,8 @@ the user set `max_fal_usd` and the script prints `OVER YOUR CEILING`: call nothi
 total 0), and say in `error` and the report that the plan's price is over the ceiling the user set and nothing was
 made. Never drop the lyrics, a shot or a second of the cut to save money. Price comes before every still and clip,
 and the kit holds that order: `stills`, `remake` and `clips` build nothing (exit 2, no call printed) until `price` has
-written `film/price.json` and the plan fits.
+written `film/price.json` for the plan as it is now and the plan fits. A plan made again with a different cut removes
+that price, so run `price` again after it.
 
 ## 4. Keys
 
