@@ -742,8 +742,14 @@ test("after billing a word alone only warns, naming the file and line; a name st
   assert.ok(line > 1, "the answer is written one field to a line");
   assert.match(r.final.err, new RegExp(`^warning: a customer's word may be in media/answer\\.json line ${line} \\(words-alone check, not a failure after billing\\)$`, "m"));
   assert.doesNotMatch(r.final.err, /track/i, "the warning never prints the word");
-  assert.ok(!existsSync(join(r.dir, "stripe", "raw-1.json")), "the raw pages are removed: nothing that fails was found");
-  assert.equal(JSON.parse(r.final.out.split("\n").find((l) => l.startsWith("{"))).raw_pages_removed.length, 1);
+  // The first --final that warns keeps the raw pages for one more --final after the agent's edit, notes the files and
+  // lines it warned on (never a word), and says so; it is not the clean last scan.
+  assert.ok(existsSync(join(r.dir, "stripe", "raw-1.json")), "the raw pages stay for the one rerun");
+  const said = JSON.parse(r.final.out.split("\n").find((l) => l.startsWith("{")));
+  assert.equal(said.clean, false, "the first --final that warns is not the clean last scan");
+  assert.deepEqual(said.raw_pages_removed, []);
+  assert.deepEqual(JSON.parse(readFileSync(join(r.dir, "media", "final-warned.json"), "utf8")), { warned: [{ file: "media/answer.json", line }] });
+  assert.match(r.final.err, /run scan --pages stripe --final once more/);
   // On a line that holds a key and its string ("note": "..."), the line is still found, its value read unescaped.
   const keyed = fixtureRun("week-over-week", "2026-11-23", { items: [described("Track Day Pass", 6500)], as: "warn-key-line", answer: { note: "Kept:\ntimeline_track_too_dense" } });
   const keyLine = readFileSync(join(keyed.dir, "media", "answer.json"), "utf8").split("\n").findIndex((l) => l.includes('"note"')) + 1;
@@ -756,4 +762,56 @@ test("after billing a word alone only warns, naming the file and line; a name st
   assert.ok(existsSync(join(named.dir, "stripe", "raw-1.json")), "the raw pages stay when the film is stopped");
   // Before billing, a word alone still stops the film.
   customerData(scanRun("word-before-billing", [described("Commission for Marisol Quintero", 20000)], { "media/vo.txt": "Thanks, Marisol." }), "the first scan, a first name alone in the narration");
+});
+
+// The one rerun: after a warning the agent edits the text (or not) and runs --final once more. That run is the last: a
+// whole value, a pair or an email still stops the film and keeps the raw pages; a word alone warns again and is fine;
+// otherwise the raw pages and the note of the warning go. It never asks for another.
+test("after a warning, one more --final checks the agent's edit and is the last", () => {
+  const items = [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)];
+  const kept = { checks: { warnings_kept: ["timeline_track_too_dense on captions: expected"] } };
+  const finalAgain = (dir) => {
+    const r = spawnSync(process.execPath, [join(dir, "film", "metrics.mjs"), "scan", "--pages", join(dir, "stripe"), "--root", dir, "--final"], { encoding: "utf8", cwd: dir });
+    return { status: r.status, out: r.stdout + r.stderr, err: r.stderr };
+  };
+  const editAnswer = (dir, change) => {
+    const path = join(dir, "media", "answer.json");
+    writeFileSync(path, JSON.stringify(change(JSON.parse(readFileSync(path, "utf8"))), null, 1));
+  };
+  const pages = (dir) => existsSync(join(dir, "stripe", "raw-1.json"));
+  const marker = (dir) => existsSync(join(dir, "media", "final-warned.json"));
+  const warnedRun = (as, answer) => {
+    const r = fixtureRun("week-over-week", "2026-11-23", { items, as, answer });
+    assert.equal(r.final.status, 0, `${as}, the first --final: ${r.final.out}`);
+    assert.match(r.final.err, /^warning: /m, `${as}, the first --final warns`);
+    assert.ok(pages(r.dir) && marker(r.dir), `${as}: the first --final that warns keeps the raw pages`);
+    return r.dir;
+  };
+  // (1) The edit pastes an email: the rerun stops the film, the pages stay.
+  const email = warnedRun("rerun-email", { note: "Thanks, Marisol." });
+  editAnswer(email, (a) => ({ ...a, note: "Thanks to our customer (marisol@example.com)." }));
+  const r1 = finalAgain(email);
+  customerData(r1, `an email pasted after the warning: ${r1.out}`);
+  assert.ok(pages(email), "the pages stay when the rerun stops the film");
+  // (2) The edit leaves the whole name: the rerun stops the film.
+  const pair = warnedRun("rerun-pair", { note: "Thanks, Marisol." });
+  editAnswer(pair, (a) => ({ ...a, note: "Thanks, Marisol Quintero." }));
+  const r2 = finalAgain(pair);
+  customerData(r2, `a name pair left after the warning: ${r2.out}`);
+  assert.ok(pages(pair), "the pages stay when the rerun stops the film");
+  // (3) A clean edit: the rerun is clean, the pages and the note go.
+  const clean = warnedRun("rerun-clean", { note: "Thanks, Marisol." });
+  editAnswer(clean, ({ note, ...a }) => a);
+  const r3 = finalAgain(clean);
+  assert.equal(r3.status, 0, r3.out);
+  assert.equal(JSON.parse(r3.out.split("\n").find((l) => l.startsWith("{"))).clean, true);
+  assert.ok(!pages(clean) && !marker(clean), "a clean rerun removes the raw pages and the note");
+  // (4) No edit (the line held a tool's word): the rerun warns again, is fine, and is the last.
+  const none = warnedRun("rerun-no-edit", kept);
+  const r4 = finalAgain(none);
+  assert.equal(r4.status, 0, r4.out);
+  assert.match(r4.err, /^warning: a customer's word may be in media\/answer\.json line \d+ /m, "the word warns again");
+  assert.doesNotMatch(r4.err, /once more/, "the rerun never asks for another");
+  assert.equal(JSON.parse(r4.out.split("\n").find((l) => l.startsWith("{"))).clean, true, "the rerun is the clean last scan");
+  assert.ok(!pages(none) && !marker(none), "the rerun removes the raw pages and the note");
 });
