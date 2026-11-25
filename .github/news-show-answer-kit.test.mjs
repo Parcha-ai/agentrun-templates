@@ -201,6 +201,46 @@ test("check: a show not rendered hands on stories_shown without today's stories"
   assert.match(r.stdout, /stories_shown hands on the earlier list unchanged/);
 });
 
+// Run 01a2116f-7a3a at 014037dc15: its media/answer.json passed check ("answer ok"), its report_markdown media/report.md
+// byte for byte, but the reply retyped that JSON with report_markdown replaced by this line, and the grader failed it.
+const PLACEHOLDER = "(identical to the report text above; see media/report.md)";
+
+test("final: the reply is one json block whose report_markdown is media/report.md's text, whatever the answer file held", () => {
+  const dir = folder();
+  kit(dir, "cost", "--rates", RATES, "--sent", SENT);
+  answer(dir, (a) => ((a.report_markdown = PLACEHOLDER), a), report(JSON.parse(readFileSync(join(dir, "film/cost.json"), "utf8"))));
+  const r = kit(dir, "final", "media/answer.json");
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  const m = /^```json\n([\s\S]*)\n```\n?$/.exec(r.stdout);
+  assert.ok(m, `final prints the reply, one json block and nothing else: ${JSON.stringify(r.stdout.slice(0, 200))}`);
+  const sent = JSON.parse(m[1]);
+  assert.equal(sent.report_markdown, readFileSync(join(dir, "media/report.md"), "utf8"));
+  assert.deepEqual(JSON.parse(readFileSync(join(dir, "media/answer.json"), "utf8")), sent, "the answer file is what the reply carries");
+});
+
+test("final: an answer with problems prints them, not a reply", () => {
+  const dir = folder();
+  kit(dir, "cost", "--rates", RATES, "--sent", SENT);
+  answer(dir, (a) => ((a.fal_cost_usd.total = 3.846), a));
+  const r = kit(dir, "final", "media/answer.json");
+  assert.equal(r.status, 1);
+  assert.doesNotMatch(r.stdout, /```json/);
+  assert.match(r.stdout, /fal_cost_usd is not what `answer\.mjs cost` printed/);
+});
+
+test("schema: a rendered show's report_markdown must open with the show's embed, so the runtime refuses the placeholder", () => {
+  const schema = JSON.parse(readFileSync(new URL("../templates/news-show/news-show.schema.json", import.meta.url), "utf8"));
+  const rule = (schema.allOf ?? []).find((x) => x?.if?.properties?.film && x?.then?.properties?.report_markdown?.pattern);
+  assert.ok(rule, "the schema has an if/then on film.path that sets report_markdown's pattern");
+  assert.deepEqual(rule.if.required, ["film"]);
+  assert.deepEqual(rule.if.properties.film.properties.path, { type: "string" });
+  // JSON Schema patterns are ECMA-262 regular expressions, unanchored.
+  const opens = new RegExp(rule.then.properties.report_markdown.pattern, "u");
+  assert.equal(opens.test(PLACEHOLDER), false);
+  assert.equal(opens.test("The Daily Desk, 2026-11-23: show rendered. See the summary above."), false);
+  assert.equal(opens.test(report({ steps: [], total: 0 })), true);
+});
+
 test("rubric: R1's added fact is a substring of the fixture's R1 page, in each eval that lists it", () => {
   const phrase = "on the new section once a full timetable runs in December";
   for (const name of ["show-from-feed", "carried-no-repeats"]) {
