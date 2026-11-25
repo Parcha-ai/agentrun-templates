@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import vm from "node:vm";
@@ -288,6 +288,11 @@ const spokenAs = (text) => [{
   character_start_times_seconds: [...text].map((_, i) => i * 0.06),
   character_end_times_seconds: [...text].map((_, i) => i * 0.06 + 0.05),
 }];
+// A leak found: exit 2 with the scan's own words. Exit 2 alone also means wrong arguments, so the words are asserted.
+function customerData(r, why) {
+  assert.equal(r.status, 2, why);
+  assert.match(r.out, /customer data in the run's files/, why);
+}
 const CLEAN = "[warm] The week of sixteen November: revenue, net of refunds and Stripe fees, was four thousand dollars.";
 
 test("scan reads what fal spoke: a name the timestamps spell, one letter at a time, fails it", () => {
@@ -296,12 +301,12 @@ test("scan reads what fal spoke: a name the timestamps spell, one letter at a ti
   assert.equal(clean.status, 0, `a voice that says the clean narration scans clean: ${clean.out}`);
   const said = `${CLEAN} And thank you, Marisol Quintero.`;
   const leaked = scanRun("spoke-name", items, { "media/vo.txt": CLEAN, "media/voiceover-timestamps.json": spokenAs(said) });
-  assert.equal(leaked.status, 2, `fal spoke the name, though vo.txt is clean: ${leaked.out}`);
+  customerData(leaked, `fal spoke the name, though vo.txt is clean: ${leaked.out}`);
   assert.match(leaked.out, /voiceover-timestamps\.json/);
   assert.doesNotMatch(leaked.out, /Marisol|Quintero/, "the scan never prints the value");
   // A re-voice's timestamps are read the same way.
   const again = scanRun("spoke-name-2", items, { "media/vo.txt": CLEAN, "media/voiceover-timestamps.json": spokenAs(CLEAN), "media/voiceover-2-timestamps.json": { timestamps: spokenAs(said) } });
-  assert.equal(again.status, 2, `the re-voice spoke the name: ${again.out}`);
+  customerData(again, `the re-voice spoke the name: ${again.out}`);
   assert.match(again.out, /voiceover-2-timestamps\.json/);
 });
 
@@ -321,7 +326,7 @@ test("scan sets the business's own name aside, and still finds a customer's name
   // A customer named in the same description is still found.
   const both = [described("Larkspur Ceramics - Order 1045 for Marisol Quintero")];
   const leaked = scanRun("business-and-name", both, { ...film, "media/vo.txt": `${film["media/vo.txt"]} Thank you, Marisol Quintero.` }, business);
-  assert.equal(leaked.status, 2, `the customer's name beside the business's: ${leaked.out}`);
+  customerData(leaked, `the customer's name beside the business's: ${leaked.out}`);
   assert.match(leaked.out, /media\/vo\.txt/);
   assert.doesNotMatch(leaked.out, /film\/data\.json|film\/index\.html/, "the business's name is not reported");
 });
@@ -385,41 +390,119 @@ test("a run of the customer-data-stays-out fake week scans clean, the instructio
 test("scan finds a name a description holds in lower case", () => {
   const items = [described("commission for marisol quintero")];
   const r = scanRun("lower-pair", items, { "media/vo.txt": `${CLEAN} Thank you, Marisol Quintero.` });
-  assert.equal(r.status, 2, `the name in title case, from a description in lower case: ${r.out}`);
+  customerData(r, `the name in title case, from a description in lower case: ${r.out}`);
   const alone = scanRun("lower-first", items, { "media/vo.txt": `${CLEAN} Thank you, Marisol.` });
-  assert.equal(alone.status, 2, `its first name alone: ${alone.out}`);
+  customerData(alone, `its first name alone: ${alone.out}`);
 });
 
 test("scan finds a customer's first name, or last name, alone", () => {
   for (const [name, description] of [["first-alone", "Commission for Marisol Quintero"], ["first-alone-caps", "COMMISSION FOR MARISOL QUINTERO"]]) {
     const items = [described(description)];
     const first = scanRun(name, items, { "media/vo.txt": `${CLEAN} A big thank you to Marisol!` });
-    assert.equal(first.status, 2, `${description}: the first name alone: ${first.out}`);
+    customerData(first, `${description}: the first name alone: ${first.out}`);
     const last = scanRun(`${name}-last`, items, { "film/STORYBOARD.md": "6. Endcard: thanks, QUINTERO." });
-    assert.equal(last.status, 2, `${description}: the last name alone, in capitals: ${last.out}`);
+    customerData(last, `${description}: the last name alone, in capitals: ${last.out}`);
   }
   // In what fal spoke, too.
   const said = scanRun("first-alone-spoken", [described("Commission for Marisol Quintero")], { "media/vo.txt": CLEAN, "media/voiceover-timestamps.json": spokenAs(`${CLEAN} Thanks, Marisol.`) });
-  assert.equal(said.status, 2, said.out);
+  customerData(said, said.out);
 });
 
 test("scan finds a name through an initial", () => {
   const items = [described("Commission for Marisol Q. Quintero")];
   const r = scanRun("initial", items, { "media/vo.txt": `${CLEAN} Thank you, Marisol Quintero.` });
-  assert.equal(r.status, 2, `the name without its initial: ${r.out}`);
+  customerData(r, `the name without its initial: ${r.out}`);
   // A first name that is also a common word ("June") is still half of a capitalised pair through an initial.
   const june = scanRun("initial-common", [described("Commission for June R. Castillo")], { "media/vo.txt": `${CLEAN} Thank you, June Castillo.` });
-  assert.equal(june.status, 2, `a capitalised pair through an initial, one of its words a common one: ${june.out}`);
+  customerData(june, `a capitalised pair through an initial, one of its words a common one: ${june.out}`);
   const lower = scanRun("initial-lower", [described("commission for marisol q. quintero")], { "media/vo.txt": `${CLEAN} Thanks, Marisol.` });
-  assert.equal(lower.status, 2, `held in lower case, through its initial, the first name alone: ${lower.out}`);
+  customerData(lower, `held in lower case, through its initial, the first name alone: ${lower.out}`);
+});
+
+// ---------- the delta review ----------
+test("each scan a grader quotes is a scan agent.md has the run make, with the case's parameters", () => {
+  const T = new URL("../templates/metrics-video/", import.meta.url).pathname;
+  const agent = readFileSync(join(T, "agent.md"), "utf8");
+  let quoted = 0;
+  for (const c of readdirSync(join(T, "evals"))) {
+    const graders = join(T, "evals", c, "graders");
+    if (!existsSync(graders)) continue;
+    const business = /^\s+business_name:\s*(.+)$/m.exec(readFileSync(join(T, "evals", c, "case.yaml"), "utf8"))?.[1].trim() ?? "";
+    const scans = [...agent.matchAll(/`(node film\/metrics\.mjs scan [^`]*)`/g)].map(([, cmd]) => cmd.replaceAll("${parameters.business_name}", business));
+    assert.ok(scans.length > 0, "agent.md names the scan");
+    for (const g of readdirSync(graders)) {
+      for (const [, q] of readFileSync(join(graders, g), "utf8").matchAll(/`((?:metrics\.mjs )?scan --[^`]*)`/g)) {
+        quoted++;
+        assert.ok(scans.some((cmd) => cmd.endsWith(q)), `${c}/graders/${g} quotes \`${q}\`, none of agent.md's scans: ${scans.join(" | ")}`);
+      }
+    }
+  }
+  assert.ok(quoted > 0, "a grader quotes the scan");
+});
+
+test("a name or a description pair of ordinary words is no one's name: 'Market', 'ceramic vase'", () => {
+  const items = [described("Market Day Booth"), described("ceramic vase", 31000), described("Commission for Marisol Quintero", 20000)];
+  const vo = `${CLEAN} The Market was busy, and a ceramic vase sold twice.`;
+  const r = scanRun("ordinary-words", items, { "media/vo.txt": vo, "media/voiceover-timestamps.json": spokenAs(vo), "film/STORYBOARD.md": "2. Revenue: a Ceramic Vase, market day." }, [], SKILL);
+  assert.equal(r.status, 0, r.out);
+  // The customer in the same week is still found.
+  customerData(scanRun("ordinary-words-name", items, { "media/vo.txt": `${vo} Thanks, Marisol.` }, [], SKILL), "the customer beside them");
+});
+
+test("scan finds a name said through its initial in lower case", () => {
+  for (const [n, description] of [["title", "Commission for Marisol Q. Quintero"], ["lower", "commission for marisol q. quintero"]]) {
+    customerData(scanRun(`said-initial-lower-${n}`, [described(description)], { "media/vo.txt": `${CLEAN} thanks to marisol q. quintero.` }), `${description}, said in lower case through its initial`);
+  }
+});
+
+test("scan finds a customer's first name, or last name, alone in lower case", () => {
+  const items = [described("Commission for Marisol Quintero")];
+  customerData(scanRun("alone-lower-first", items, { "media/vo.txt": `${CLEAN} thanks, marisol.` }), "the first name alone, in lower case");
+  customerData(scanRun("alone-lower-last", items, { "film/STORYBOARD.md": "6. Endcard: with thanks to quintero." }), "the last name alone, in lower case");
+});
+
+test("a customer whose name is one of the kit's own words is still found: Hong, Madrid", () => {
+  for (const [n, description, said] of [["hong", "Commission for Mei Hong", "Thank you, Hong."], ["madrid", "Commission for Ana Madrid", "Thank you, Madrid."]]) {
+    customerData(scanRun(`kit-word-${n}`, [described(description)], { "media/vo.txt": `${CLEAN} ${said}` }, [], SKILL), `${description}, said as "${said}"`);
+  }
+  // The kit's own phrase is not the customer's: "Hong Kong dollars" said, Mei Hong a customer.
+  const vo = `${CLEAN} And nine hundred Hong Kong dollars.`;
+  const r = scanRun("kit-word-unit", [described("Commission for Mei Hong")], { "media/vo.txt": vo }, [], SKILL);
+  assert.equal(r.status, 0, r.out);
+});
+
+test("scan reads what fal spoke wherever its timestamps are, and across a chunk's edge", () => {
+  const items = [described("Commission for Marisol Quintero")];
+  // fal's result filed whole (as serve files it), no voiceover-timestamps.json written.
+  const filed = scanRun("spoke-filed", items, { "media/vo.txt": CLEAN, "evidence/fal/req-1.json": { request_id: "req-1", status: "COMPLETED", result: { audio: { url: "https://fal.media/files/a.mp3" }, timestamps: spokenAs(`${CLEAN} Thank you, Marisol Quintero.`) } } });
+  customerData(filed, "the name in fal's filed result, no timestamps file");
+  assert.match(filed.out, /evidence\/fal\/req-1\.json/);
+  // Two chunks that meet between the first and the last name, with no space in either.
+  const chunks = [...spokenAs(`${CLEAN} Thank you, Marisol`), ...spokenAs("Quintero.")];
+  const edge = scanRun("spoke-edge", [described("commission for marisol quintero")], { "media/vo.txt": CLEAN, "media/voiceover-timestamps.json": chunks });
+  customerData(edge, "the name across two chunks");
+});
+
+test("scan sets aside only the business's name compute was given, never one passed to scan", () => {
+  const items = [described("Larkspur Ceramics - Order 1045 for Marisol Quintero")];
+  const files = { "film/data.json": { business: "Larkspur Ceramics" }, "media/vo.txt": `[warm] Larkspur Ceramics. ${CLEAN} Thank you, Marisol Quintero.` };
+  // compute was given Larkspur Ceramics; a scan handed the customer's name as the business sets nothing aside.
+  const picked = scanRun("business-picked", [described("Commission for Marisol Quintero")], { "film/data.json": { business: "Larkspur Ceramics" }, "media/vo.txt": `${CLEAN} Thank you, Marisol Quintero.` }, ["--business", "Marisol Quintero"]);
+  assert.notEqual(picked.status, 0, `a --business naming the customer: ${picked.out}`);
+  assert.doesNotMatch(picked.out, /"clean":true/);
+  // With no --business, the name compute wrote is set aside and the customer beside it found.
+  const own = scanRun("business-from-compute", items, files);
+  customerData(own, "the customer, beside the business compute named");
+  assert.match(own.out, /media\/vo\.txt/);
+  assert.doesNotMatch(own.out, /film\/data\.json/, "the business's name, from compute, is set aside");
 });
 
 // The skill installed, as every run has it: the template's own text never sets a customer's name aside.
 test("with the skill installed, a customer's name is found even where the skill's own text could hold it", () => {
   const first = scanRun("skill-first-alone", [described("Commission for Marisol Quintero")], { "media/vo.txt": `${CLEAN} Thank you, Marisol.` }, [], SKILL);
-  assert.equal(first.status, 2, `the first name alone: ${first.out}`);
+  customerData(first, `the first name alone: ${first.out}`);
   const initial = scanRun("skill-initial", [described("Commission for Marisol Q. Quintero")], { "media/vo.txt": `${CLEAN} Thank you, Marisol Q. Quintero.` }, [], SKILL);
-  assert.equal(initial.status, 2, `the name repeated through its initial: ${initial.out}`);
+  customerData(initial, `the name repeated through its initial: ${initial.out}`);
   // A skill whose shipped text (vouched for by its manifest) does hold the name: still found.
   const skill = join(root, "skill-with-name");
   cpSync(SKILL, skill, { recursive: true });
@@ -430,7 +513,7 @@ test("with the skill installed, a customer's name is found even where the skill'
   writeFileSync(join(skill, "kit", "manifest.json"), JSON.stringify(manifest));
   for (const [name, description, said] of [["held-first", "Commission for Marisol Quintero", "Thank you, Marisol."], ["held-pair", "Commission for Marisol Quintero", "Thank you, Marisol Quintero."], ["held-initial", "Commission for Marisol Q. Quintero", "Thank you, Marisol Q. Quintero."], ["held-lower", "Commission for Marisol Quintero", "thanks to marisol quintero."]]) {
     const r = scanRun(`skill-${name}`, [described(description)], { "media/vo.txt": `${CLEAN} ${said}` }, [], skill);
-    assert.equal(r.status, 2, `${description}, the skill's text holding the name, said as "${said}": ${r.out}`);
+    customerData(r, `${description}, the skill's text holding the name, said as "${said}": ${r.out}`);
     assert.match(r.out, /media\/vo\.txt/);
   }
   // An email the skill's text holds is still the customer's.
@@ -444,7 +527,7 @@ test("with the skill installed, a customer's name is found even where the skill'
     writeFileSync(join(s, "kit", "manifest.json"), JSON.stringify(m));
     return s;
   })());
-  assert.equal(email.status, 2, `an email the skill's text holds: ${email.out}`);
+  customerData(email, `an email the skill's text holds: ${email.out}`);
 });
 
 test("the kit's own words for a currency are no one's name, with the skill installed", () => {
