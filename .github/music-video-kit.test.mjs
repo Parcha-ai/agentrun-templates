@@ -491,3 +491,136 @@ test("the sent check is VOID (exit 2), not a fail, when it can't find its inputs
     assert.match(r.stdout, why);
   }
 });
+
+// ---------- review: a stills run again keeps the record; the sent check reads only the fields it knows ----------
+test("stills run again on a resumed run keeps media/stills.json: the remake's record and the remake count survive", () => {
+  const dir = stillsDir({ shots: [5, 5, 5, 5] });
+  assert.equal(stillsOf(dir).status, 0);
+  assert.equal(kit(dir, "remake", "--file", "media/stills.json", "--shot", "2", "--picture", "a calm teal quay").status, 0);
+  const before = recordOf(dir, "stills.json");
+  const again = stillsOf(dir);
+  assert.equal(again.status, 0, again.stderr);
+  assert.equal(recordOf(dir, "stills.json"), before, "the record is kept as it was");
+  assert.equal(sent(again.stdout).length, 4, "the first takes are printed as before");
+  assert.equal(kit(dir, "remake", "--file", "media/stills.json", "--shot", "3", "--picture", "a teal harbor wall").status, 0);
+  const third = kit(dir, "remake", "--file", "media/stills.json", "--shot", "4", "--picture", "a quay");
+  assert.equal(third.status, 2, "the run's two remakes still count after stills ran again");
+  assert.match(third.stderr, /two remakes are the most a run makes/);
+});
+
+test("stills refuses, naming the shot, to replace a record whose inputs changed", () => {
+  const dir = stillsDir();
+  assert.equal(stillsOf(dir).status, 0);
+  const before = recordOf(dir, "stills.json");
+  const board = join(dir, "storyboard.md");
+  const text = readFileSync(board, "utf8");
+  writeFileSync(board, text.replace("picture: a paper ferry 2 on teal water, wide", "picture: a red paper ferry"));
+  const picture = stillsOf(dir);
+  assert.equal(picture.status, 2, picture.stderr);
+  assert.match(picture.stderr, /^shot 2: media\/stills\.json already holds its still with another picture \("a paper ferry 2 on teal water, wide"\)/);
+  assert.equal(picture.stdout.trim(), "");
+  assert.equal(recordOf(dir, "stills.json"), before, "the sent record is never overwritten");
+  writeFileSync(board, text.replace(`Style: ${STYLE}`, "Style: risograph print"));
+  const style = stillsOf(dir);
+  assert.equal(style.status, 2, style.stderr);
+  assert.match(style.stderr, /^media\/stills\.json already holds the stills with another style \("cut paper with soft shadows, teal and amber"\)/);
+  assert.equal(recordOf(dir, "stills.json"), before);
+  writeFileSync(board, text);
+  const stem = stillsOf(dir, "zzzz9999");
+  assert.equal(stem.status, 2);
+  assert.match(stem.stderr, /^shot 1: media\/stills\.json already holds its still with another key \("mu-abcd1234-still-1"\)/);
+});
+
+test("the sent check fails a shared field it doesn't know: an every_still or every_clip field never stands in for a built one", () => {
+  const { dir, calls } = sentRun();
+  const stillsPath = join(dir, "media", "stills.json");
+  const stillsRecord = JSON.parse(readFileSync(stillsPath, "utf8"));
+  stillsRecord.every_still.prompt = "a famous singer's face";
+  writeFileSync(stillsPath, JSON.stringify(stillsRecord));
+  const sentSo = calls.map((c) => (c.arguments.endpoint_id === NANO ? { ...c, arguments: { ...c.arguments, input: { ...c.arguments.input, prompt: "a famous singer's face" } } } : c));
+  const r = check(reportOf(dir, sentSo), dir);
+  assert.equal(r.status, 1, r.stdout);
+  assert.equal(r.stdout, "SENT FAIL stills: media/stills.json's every_still has a field prompt; its fields are num_images, aspect_ratio, resolution, output_format, enable_web_search\n");
+  const clip = sentRun();
+  const clipsPath = join(clip.dir, "media", "clips.json");
+  const clipsRecord = JSON.parse(readFileSync(clipsPath, "utf8"));
+  clipsRecord.every_clip.prompt = "a new scene";
+  writeFileSync(clipsPath, JSON.stringify(clipsRecord));
+  const clipSent = clip.calls.map((c) => (c.arguments.endpoint_id === KLING ? { ...c, arguments: { ...c.arguments, input: { ...c.arguments.input, prompt: "a new scene" } } } : c));
+  const c = check(reportOf(clip.dir, clipSent), clip.dir);
+  assert.equal(c.status, 1, c.stdout);
+  assert.equal(c.stdout, "SENT FAIL clips: media/clips.json's every_clip has a field prompt; its fields are generate_audio, negative_prompt\n");
+});
+
+test("the sent check gives one verdict line for a record of the wrong shape, never an uncaught throw", () => {
+  const shapes = [
+    ["stills.json", "null", /^SENT FAIL stills: media\/stills\.json is not a JSON object/],
+    ["stills.json", "[]", /^SENT FAIL stills: media\/stills\.json is not a JSON object/],
+    ["clips.json", "7", /^SENT FAIL clips: media\/clips\.json is not a JSON object/],
+    ["stills.json", (r) => ({ ...r, stills: "all of them" }), /^SENT FAIL stills: media\/stills\.json's stills is not a list/],
+    ["clips.json", (r) => { const { clips, ...rest } = r; return rest; }, /^SENT FAIL clips: media\/clips\.json's clips is not a list/],
+    ["stills.json", (r) => ({ ...r, every_still: null }), /^SENT FAIL stills: media\/stills\.json's every_still is not an object/],
+    ["clips.json", (r) => ({ ...r, every_clip: "none" }), /^SENT FAIL clips: media\/clips\.json's every_clip is not an object/],
+    ["stills.json", (r) => ({ ...r, stills: r.stills.map((s, i) => (i === 1 ? null : s)) }), /^SENT FAIL stills: media\/stills\.json's stills item 2 is not \{n, key, picture\[, remake\]\}/],
+    ["stills.json", (r) => ({ ...r, stills: r.stills.map((s, i) => (i === 2 ? { n: s.n, key: s.key } : s)) }), /^SENT FAIL stills: media\/stills\.json's stills item 3 is not \{n, key, picture\[, remake\]\}/],
+    ["clips.json", (r) => ({ ...r, clips: r.clips.map((s, i) => (i === 0 ? { ...s, duration: 6 } : s)) }), /^SENT FAIL clips: media\/clips\.json's clips item 1 is not \{n, key, duration, prompt, start_image_url\}/],
+    ["clips.json", (r) => ({ ...r, clips: r.clips.map((s, i) => (i === 0 ? { ...s, generate_audio: true } : s)) }), /^SENT FAIL clips: media\/clips\.json's clips item 1 is not \{n, key, duration, prompt, start_image_url\}/],
+  ];
+  for (const [file, change, why] of shapes) {
+    const { dir, calls } = sentRun();
+    const path = join(dir, "media", file);
+    writeFileSync(path, typeof change === "string" ? change : JSON.stringify(change(JSON.parse(readFileSync(path, "utf8")))));
+    const r = checkRaw(reportOf(dir, calls), dir);
+    assert.equal(r.status, 1, `${file} ${change}: exit ${r.status} ${r.stdout}${r.stderr}`);
+    assert.match(r.stdout, why);
+    assert.equal(r.stdout.trim().split("\n").length, 1);
+    assert.equal(r.stderr, "");
+  }
+  // A report whose fake log holds something that is not a call: no verdict.
+  const { dir, calls } = sentRun();
+  const r = checkRaw(reportOf(dir, [...calls, null]), dir);
+  assert.equal(r.status, 2, r.stdout + r.stderr);
+  assert.match(r.stdout, /^SENT VOID the report's mcp_calls item \d+ is not a call$/m);
+});
+
+// ---------- price: the user's ceiling, and never a cheaper plan ----------
+function priceDir() {
+  const dir = stillsDir({ shots: [6, 4, 6] });
+  const planPath = join(dir, "film", "plan.json");
+  const plan = JSON.parse(readFileSync(planPath, "utf8"));
+  plan.song.minutes = 1.25;
+  writeFileSync(planPath, JSON.stringify(plan));
+  return dir;
+}
+const RATES = "isolation=0.1,transcript=0.03,still=0.15,clip=0.14";
+// 1.25 min x (0.10 + 0.03) + (3 stills + 2 in reserve) x 0.15 + (6 + 4 + 6) s x 0.14 = 0.1625 + 0.75 + 2.24
+const PLAN_USD = 3.153;
+test("price: with no ceiling nothing is over; with one, a plan above it is OVER YOUR CEILING and one at or below it FITS; never a cheaper plan", () => {
+  const cases = [
+    [[], true, `plan_usd: ${PLAN_USD} (no ceiling set)`],
+    [["--max", "0"], false, `plan_usd: ${PLAN_USD} (your ceiling, max_fal_usd 0): OVER YOUR CEILING`],
+    [["--max", "3.15"], false, `plan_usd: ${PLAN_USD} (your ceiling, max_fal_usd 3.15): OVER YOUR CEILING`],
+    [["--max", String(PLAN_USD)], true, `plan_usd: ${PLAN_USD} (your ceiling, max_fal_usd ${PLAN_USD}): FITS`],
+    [["--max", "1000"], true, `plan_usd: ${PLAN_USD} (your ceiling, max_fal_usd 1000): FITS`],
+  ];
+  for (const [max, fits, line] of cases) {
+    const dir = priceDir();
+    const r = kit(dir, "price", "--film", "film", "--rates", RATES, ...max);
+    assert.equal(r.status, 0, `${max}: ${r.stderr}`);
+    const out = r.stdout.trim().split("\n");
+    assert.equal(out.at(-2), line, `${max}`);
+    assert.equal(out.at(-1), `answer fields (copy each into the answer exactly as printed): {"plan_usd":${PLAN_USD}}`);
+    const priced = JSON.parse(readFileSync(join(dir, "film", "price.json"), "utf8"));
+    assert.equal(priced.fits, fits, `${max}`);
+    assert.equal(priced.plan_usd, PLAN_USD);
+    assert.equal(priced.max_fal_usd, max.length ? Number(max[1]) : null);
+    assert.equal(priced.lines.filter((l) => l.reserve).length, 2);
+    // Caps out: no downgrade. Nothing prices or names a cheaper plan, whatever the ceiling.
+    assert.doesNotMatch(r.stdout, /cheaper/i);
+    assert.equal(Object.keys(priced).some((k) => /cheaper/i.test(k)), false);
+    assert.doesNotMatch(JSON.stringify(priced), /cheaper/i);
+  }
+  const negative = kit(priceDir(), "price", "--film", "film", "--rates", RATES, "--max", "-1");
+  assert.equal(negative.status, 2);
+  assert.match(negative.stderr, /--max is max_fal_usd, 0 or more/);
+});
