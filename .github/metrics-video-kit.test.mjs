@@ -4,6 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -73,6 +74,59 @@ test("a week of ten currencies carries them all, and one missing next week is a 
   assert.deepEqual(next.data.compare.restated.map((r) => [r.currency, r.carried_revenue_minor]), [["sgd", 0]]);
   // Ten currencies are every currency of that week.
   assert.equal(first.data.carry.complete, true);
+});
+
+// The answer fields compute printed for the agent to copy, and the template's answer schema.
+const answerFields = (out) => JSON.parse(/^answer fields \(copy each into the answer exactly as printed\): (.*)$/m.exec(out)[1]);
+const SCHEMA = JSON.parse(readFileSync(new URL("../templates/metrics-video/metrics-video.schema.json", import.meta.url), "utf8"));
+// Each list of the answer fields against its maxItems in the schema: the misses, in words.
+function overLimits(answer) {
+  const p = SCHEMA.properties;
+  const lists = [
+    ["figures", answer.figures, p.figures], ["gone", answer.gone, p.gone], ["left_out", answer.left_out, p.left_out],
+    ["compare.restated", answer.compare.restated, p.compare.properties.restated], ["carried.figures", answer.carried?.figures ?? [], p.carried.properties.figures],
+  ];
+  return lists.filter(([, list, s]) => list.length > s.maxItems).map(([name, list, s]) => `${name}: ${list.length} > maxItems ${s.maxItems}`);
+}
+const CODES = ["usd", "eur", "gbp", "cad", "aud", "chf", "sek", "nok", "dkk", "nzd", "sgd", "hkd", "jpy", "mxn", "brl", "pln", "inr", "zar", "thb", "myr", "czk"];
+
+test("after a week of eleven currencies, a week with no money names all eleven as gone, in an answer the schema takes", () => {
+  const codes = CODES.slice(0, 11);
+  const before = codes.map((c, i) => txn(`2026-11-1${i % 5}T12:00:00Z`, c, "charge", 200000 - i * 10000, 1000));
+  const first = compute("gone-eleven-first", before, "2026-11-16");
+  const next = compute("gone-eleven-next", before, "2026-11-23", first.data.carry);
+  const answer = answerFields(next.out);
+  assert.deepEqual(answer.gone.map((g) => g.currency).sort(), [...codes].sort(), "every currency of the week before, none dropped");
+  assert.deepEqual(overLimits(answer), []);
+});
+
+test("a complete earlier week that Stripe now lists in more currencies, each restated, is restated whole, in an answer the schema takes", () => {
+  // The week of 9 November: ten currencies, carried complete.
+  const ten = CODES.slice(0, 10);
+  const before = ten.map((c, i) => txn(`2026-11-1${i % 5}T12:00:00Z`, c, "charge", 200000 - i * 10000, 1000));
+  const first = compute("restated-many-first", before, "2026-11-16");
+  assert.equal(first.data.carry.complete, true);
+  // Stripe now lists a refund in each of the ten in that week, and a charge in five more currencies: fifteen restated.
+  const refunds = ten.map((c) => txn("2026-11-13T09:00:00Z", c, "refund", -1000));
+  const more = CODES.slice(10, 15).map((c) => txn("2026-11-12T12:00:00Z", c, "charge", 30000, 300));
+  const week = [txn("2026-11-18T12:00:00Z", "usd", "charge", 50000, 500)];
+  const next = compute("restated-many-next", [...before, ...refunds, ...more, ...week], "2026-11-23", first.data.carry);
+  const answer = answerFields(next.out);
+  assert.equal(answer.compare.state, "restated");
+  assert.deepEqual(answer.compare.restated.map((r) => r.currency).sort(), [...ten, ...CODES.slice(10, 15)].sort(), "every restated currency, none dropped");
+  assert.deepEqual(overLimits(answer), []);
+});
+
+test("a week in more currencies than the answer can hold is refused in words, never cut short", () => {
+  const items = CODES.map((c, i) => txn(`2026-11-${16 + (i % 5)}T12:00:00Z`, c, "charge", 90000 - i * 1000, 500));
+  const dir = join(root, "too-many");
+  const pages = join(dir, "stripe");
+  mkdirSync(pages, { recursive: true });
+  cpSync(KIT, join(dir, "film"), { recursive: true });
+  writeFileSync(join(pages, "raw-1.json"), JSON.stringify({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more: false }));
+  const r = spawnSync(process.execPath, [join(KIT, "metrics.mjs"), "compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", pages, "--film", join(dir, "film")], { encoding: "utf8" });
+  assert.notEqual(r.status, 0, `21 currencies in one week: ${r.stdout.slice(0, 300)}`);
+  assert.match(r.stderr, /21 currencies/);
 });
 
 // The refunds scene's script run on the week's data, with a stand-in DOM: the items it lays out, as HTML.
@@ -179,9 +233,11 @@ test("place refuses a refunds scene too short for each currency's figures to cou
 // ---------- the customer-data scan ----------
 // A run folder: Stripe's raw page of these items, and these files the run wrote (path -> text, or a value as JSON).
 // Returns scan's exit code and what it printed.
-function scanRun(name, items, files, extra = []) {
+// `skill`: a skill folder installed where the template puts it (.agents/skills/metrics-video), its manifest and all.
+function scanRun(name, items, files, extra = [], skill) {
   const dir = join(root, name);
   mkdirSync(join(dir, "stripe"), { recursive: true });
+  if (skill) cpSync(skill, join(dir, ".agents", "skills", "metrics-video"), { recursive: true });
   writeFileSync(join(dir, "stripe", "raw-1.json"), JSON.stringify({ object: "list", data: items, has_more: false }));
   for (const [path, body] of Object.entries(files)) {
     mkdirSync(join(dir, path, ".."), { recursive: true });
@@ -321,6 +377,46 @@ test("scan finds a name through an initial", () => {
   assert.equal(june.status, 2, `a capitalised pair through an initial, one of its words a common one: ${june.out}`);
   const lower = scanRun("initial-lower", [described("commission for marisol q. quintero")], { "media/vo.txt": `${CLEAN} Thanks, Marisol.` });
   assert.equal(lower.status, 2, `held in lower case, through its initial, the first name alone: ${lower.out}`);
+});
+
+// The skill installed, as every run has it: the template's own text never sets a customer's name aside.
+test("with the skill installed, a customer's name is found even where the skill's own text could hold it", () => {
+  const first = scanRun("skill-first-alone", [described("Commission for Marisol Quintero")], { "media/vo.txt": `${CLEAN} Thank you, Marisol.` }, [], SKILL);
+  assert.equal(first.status, 2, `the first name alone: ${first.out}`);
+  const initial = scanRun("skill-initial", [described("Commission for Marisol Q. Quintero")], { "media/vo.txt": `${CLEAN} Thank you, Marisol Q. Quintero.` }, [], SKILL);
+  assert.equal(initial.status, 2, `the name repeated through its initial: ${initial.out}`);
+  // A skill whose shipped text (vouched for by its manifest) does hold the name: still found.
+  const skill = join(root, "skill-with-name");
+  cpSync(SKILL, skill, { recursive: true });
+  const md = `${readFileSync(join(skill, "SKILL.md"), "utf8")}\nFor example, Commission for Marisol Q. Quintero, or Marisol Quintero.\n`;
+  writeFileSync(join(skill, "SKILL.md"), md);
+  const manifest = JSON.parse(readFileSync(join(skill, "kit", "manifest.json"), "utf8"));
+  manifest.sha256["SKILL.md"] = createHash("sha256").update(md).digest("hex");
+  writeFileSync(join(skill, "kit", "manifest.json"), JSON.stringify(manifest));
+  for (const [name, description, said] of [["held-first", "Commission for Marisol Quintero", "Thank you, Marisol."], ["held-pair", "Commission for Marisol Quintero", "Thank you, Marisol Quintero."], ["held-initial", "Commission for Marisol Q. Quintero", "Thank you, Marisol Q. Quintero."]]) {
+    const r = scanRun(`skill-${name}`, [described(description)], { "media/vo.txt": `${CLEAN} ${said}` }, [], skill);
+    assert.equal(r.status, 2, `${description}, the skill's text holding the name, said as "${said}": ${r.out}`);
+    assert.match(r.out, /media\/vo\.txt/);
+  }
+  // An email the skill's text holds is still the customer's.
+  const email = scanRun("skill-email", [described("Order for marisol@quinteroatelier.example")], { "media/vo.txt": `${CLEAN} Write to marisol@quinteroatelier.example.` }, [], (() => {
+    const s = join(root, "skill-with-email");
+    cpSync(SKILL, s, { recursive: true });
+    const text = `${readFileSync(join(s, "SKILL.md"), "utf8")}\nAn email looks like marisol@quinteroatelier.example.\n`;
+    writeFileSync(join(s, "SKILL.md"), text);
+    const m = JSON.parse(readFileSync(join(s, "kit", "manifest.json"), "utf8"));
+    m.sha256["SKILL.md"] = createHash("sha256").update(text).digest("hex");
+    writeFileSync(join(s, "kit", "manifest.json"), JSON.stringify(m));
+    return s;
+  })());
+  assert.equal(email.status, 2, `an email the skill's text holds: ${email.out}`);
+});
+
+test("the kit's own words for a currency are no one's name, with the skill installed", () => {
+  const items = [described("Canadian Workshop Deposit"), described("Swiss Glaze Order", 31000)];
+  const vo = `${CLEAN} And three hundred Canadian dollars, and two hundred Swiss francs.`;
+  const r = scanRun("unit-words", items, { "media/vo.txt": vo, "media/voiceover-timestamps.json": spokenAs(vo) }, [], SKILL);
+  assert.equal(r.status, 0, r.out);
 });
 
 test("months, days, the business, Stripe's words and common words are no one's name", () => {
