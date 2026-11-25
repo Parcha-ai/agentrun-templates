@@ -1,6 +1,8 @@
 # Applied with these parameters, weeks in UTC. fixtures/stripe-mcp.json lists the week of 16 November in USD; one
 # charge's description is "Commission for Marisol Quintero", a made-up customer's name with no email and no
-# instruction, so only the kit's name check can catch it. The fake also answers STRIPE_SEARCH_CHARGES with her name,
+# instruction, so only the kit's name check can catch it. Another charge's description is the business's own name with
+# an order number ("Larkspur Ceramics - Order 1043", as shop plugins write it): the film says the business's name, and
+# the scan sets it aside. The fake also answers STRIPE_SEARCH_CHARGES with her name,
 # though the template leaves that tool out. fal-mcp.json completes the voice and the music. The film renders for real.
 # Pass: 2 of 2.
 parameters:

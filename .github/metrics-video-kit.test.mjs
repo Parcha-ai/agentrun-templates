@@ -213,3 +213,73 @@ test("scan reads what fal spoke: a name the timestamps spell, one letter at a ti
   assert.equal(again.status, 2, `the re-voice spoke the name: ${again.out}`);
   assert.match(again.out, /voiceover-2-timestamps\.json/);
 });
+
+test("scan sets the business's own name aside, and still finds a customer's name beside it", () => {
+  const business = ["--business", "Larkspur Ceramics"];
+  const items = [described("Larkspur Ceramics - Order 1043"), described("Larkspur Ceramics - Order 1044", 31000)];
+  const film = {
+    "film/data.json": { business: "Larkspur Ceramics", week: "16 November" },
+    "film/index.html": "<title>Larkspur Ceramics</title><h1>LARKSPUR CERAMICS</h1>",
+    "media/vo.txt": `[warm] Larkspur Ceramics, the week of sixteen November. ${CLEAN}`,
+  };
+  const own = scanRun("business-own", items, film, business);
+  assert.equal(own.status, 0, `the film names the business, as it must: ${own.out}`);
+  // Its words alone ("Larkspur") are the business's too.
+  const word = scanRun("business-word", items, { ...film, "media/vo.txt": `[warm] A good week at Larkspur. ${CLEAN}` }, business);
+  assert.equal(word.status, 0, `the business's own word alone: ${word.out}`);
+  // A customer named in the same description is still found.
+  const both = [described("Larkspur Ceramics - Order 1045 for Marisol Quintero")];
+  const leaked = scanRun("business-and-name", both, { ...film, "media/vo.txt": `${film["media/vo.txt"]} Thank you, Marisol Quintero.` }, business);
+  assert.equal(leaked.status, 2, `the customer's name beside the business's: ${leaked.out}`);
+  assert.match(leaked.out, /media\/vo\.txt/);
+  assert.doesNotMatch(leaked.out, /film\/data\.json|film\/index\.html/, "the business's name is not reported");
+});
+
+// Every transaction an eval case's fake Stripe lists, across its pages, newest first.
+function fixtureItems(name) {
+  const fixture = JSON.parse(readFileSync(new URL(`../templates/metrics-video/evals/${name}/fixtures/stripe-mcp.json`, import.meta.url), "utf8"));
+  const list = fixture.tools.STRIPE_LIST_BALANCE_TRANSACTIONS;
+  const byId = new Map();
+  for (const result of [...list.answers.map((a) => a.result), list.default].filter(Boolean)) {
+    for (const c of result.content ?? []) {
+      const body = JSON.parse(c.text);
+      for (const item of (body.data?.data ?? body.data ?? [])) byId.set(item.id, item);
+    }
+  }
+  return [...byId.values()].sort((a, b) => b.created - a.created);
+}
+const SKILL = new URL("../templates/metrics-video/skills/metrics-video/", import.meta.url).pathname;
+
+// A whole run of a case's fake week as the template makes it: the skill installed, the kit copied to film/, compute
+// with the business, then a narration, a storyboard, captions and an answer that say the week, the business, the
+// figures' words, months, days and the scenes, and nothing of a customer. Returns the final scan.
+function fixtureRun(name, today) {
+  const dir = join(root, `case-${name}`);
+  mkdirSync(join(dir, "stripe"), { recursive: true });
+  mkdirSync(join(dir, "media"), { recursive: true });
+  cpSync(SKILL, join(dir, ".agents", "skills", "metrics-video"), { recursive: true });
+  cpSync(KIT, join(dir, "film"), { recursive: true });
+  writeFileSync(join(dir, "stripe", "raw-1.json"), JSON.stringify({ object: "list", data: fixtureItems(name), has_more: false }));
+  const c = spawnSync(process.execPath, [join(dir, "film", "metrics.mjs"), "compute", "--today", today, "--timezone", "UTC", "--pages", join(dir, "stripe"), "--film", join(dir, "film"), "--business", "Larkspur Ceramics"], { encoding: "utf8" });
+  assert.equal(c.status, 0, `compute ${name}: ${c.stderr}${c.stdout}`);
+  const narration = "[warm] Larkspur Ceramics, the week of Monday sixteen November to Sunday the twenty-second. Revenue, net of refunds and Stripe fees, was nine thousand dollars, up on the week before. One refund, one dispute. Thank you, Larkspur. See you next Monday, December's first week.";
+  writeFileSync(join(dir, "media", "vo.txt"), narration);
+  writeFileSync(join(dir, "media", "music.txt"), "Warm acoustic guitar and soft piano, gentle and hopeful, 96 BPM.");
+  writeFileSync(join(dir, "media", "voiceover-timestamps.json"), JSON.stringify(spokenAs(narration)));
+  writeFileSync(join(dir, "media", "film.vtt"), `WEBVTT\n\n00:00.500 --> 00:02.000\nLarkspur Ceramics, the week of\n\n00:02.000 --> 00:04.000\nMonday sixteen November\n`);
+  writeFileSync(join(dir, "film", "STORYBOARD.md"), "# Larkspur Ceramics: Weekly Revenue\n\n1. Open: Larkspur Ceramics, Week of 16 November 2026.\n2. Revenue: Net Revenue, Gross Charges, Stripe Fees.\n3. Days: Monday to Sunday, November.\n4. Change: Week Over Week, Up.\n5. Refunds: Refunds and Disputes, Money Won Back.\n6. Endcard: Larkspur Ceramics, Next Monday.\n");
+  writeFileSync(join(dir, "media", "answer.json"), JSON.stringify({ status: "done", script: narration, report_markdown: "## Larkspur Ceramics, week of 16 November 2026\n\n| Currency | Revenue | Gross | Refunds | Disputes | Stripe Fees |\n| USD | ... |\n\nNarration, Music, Captions, Cost.", ignored_instructions: [] }));
+  const r = spawnSync(process.execPath, [join(dir, "film", "metrics.mjs"), "scan", "--pages", join(dir, "stripe"), "--root", dir, "--business", "Larkspur Ceramics", "--final"], { encoding: "utf8" });
+  return { status: r.status, out: r.stdout + r.stderr };
+}
+
+test("a run of the week-over-week fake week scans clean: the business, months, days and scene words are no one's name", () => {
+  const r = fixtureRun("week-over-week", "2026-11-23");
+  assert.equal(r.status, 0, r.out);
+});
+
+test("a run of the customer-name-only fake week, one of whose charges names the business, scans clean when it leaves the customer out", () => {
+  assert.ok(fixtureItems("customer-name-only").some((i) => /Larkspur Ceramics - Order/.test(i.description ?? "")), "the fixture has a charge that names the business");
+  const r = fixtureRun("customer-name-only", "2026-11-23");
+  assert.equal(r.status, 0, r.out);
+});
