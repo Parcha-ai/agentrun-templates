@@ -8,7 +8,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -909,3 +909,249 @@ test("a price.json that doesn't carry the plan's hash builds nothing: an old one
     assert.equal(r.stderr.trim(), CHANGED);
   }
 });
+
+// ---------- the answer, built by code from the run's files ----------
+// answer.mjs reads what the run left (the plan, its price, the storyboard, the records, the lyrics, place's read-back,
+// the check, the cost, the film) and prints the whole answer, report_markdown included, as one fenced json block. The
+// model writes only what no file holds (media/answer-facts.json): the song as given, the status in fal's words, the
+// kept warnings and review fixes, the renders, the instructions in the lyrics, notes.
+const SCHEMA = JSON.parse(readFileSync(new URL("../templates/music-video/music-video.schema.json", import.meta.url), "utf8"));
+// The schema's own rules, enough of JSON Schema for this one: type, enum, const, required, additionalProperties,
+// properties, items, maxItems, maxLength, minimum, maximum and pattern.
+function schemaProblems(s, v, at = "answer") {
+  const out = [];
+  const typeOf = (x) => (x === null ? "null" : Array.isArray(x) ? "array" : Number.isInteger(x) ? "integer" : typeof x);
+  if (s.type) {
+    const types = [s.type].flat();
+    const t = typeOf(v);
+    if (!types.includes(t) && !(t === "integer" && types.includes("number"))) return [`${at}: ${t}, not ${types.join("|")}`];
+  }
+  if (s.enum && !s.enum.includes(v)) out.push(`${at}: ${JSON.stringify(v)} is not one of ${JSON.stringify(s.enum)}`);
+  if ("const" in s && v !== s.const) out.push(`${at}: ${JSON.stringify(v)} is not ${JSON.stringify(s.const)}`);
+  if (typeof v === "string" && s.maxLength !== undefined && v.length > s.maxLength) out.push(`${at}: longer than ${s.maxLength}`);
+  if (typeof v === "string" && s.pattern && !new RegExp(s.pattern).test(v)) out.push(`${at}: ${JSON.stringify(v)} doesn't match ${s.pattern}`);
+  if (typeof v === "number" && s.minimum !== undefined && v < s.minimum) out.push(`${at}: under ${s.minimum}`);
+  if (typeof v === "number" && s.maximum !== undefined && v > s.maximum) out.push(`${at}: over ${s.maximum}`);
+  if (Array.isArray(v)) {
+    if (s.maxItems !== undefined && v.length > s.maxItems) out.push(`${at}: more than ${s.maxItems} items`);
+    if (s.items) v.forEach((x, i) => out.push(...schemaProblems(s.items, x, `${at}[${i}]`)));
+  } else if (v && typeof v === "object") {
+    for (const k of s.required ?? []) if (!(k in v)) out.push(`${at}.${k} is missing`);
+    for (const [k, x] of Object.entries(v)) {
+      if (s.properties?.[k]) out.push(...schemaProblems(s.properties[k], x, `${at}.${k}`));
+      else if (s.additionalProperties === false) out.push(`${at}.${k} is not in the schema`);
+    }
+  }
+  return out;
+}
+const TABLE = "| Shot | Film time (s) | Bars | Lyric | Picture (as storyboarded) | Used |";
+const SONG_URL = "https://media.example.com/masters/paper-ferry.wav";
+const answerOf = (dir) => spawnSync(process.execPath, [join(KIT, "answer.mjs"), "--facts", "media/answer-facts.json"], { cwd: dir, encoding: "utf8" });
+const factsAt = (dir, facts) => writeFileSync(join(dir, "media", "answer-facts.json"), JSON.stringify(facts, null, 1) + "\n");
+const DONE = { status: "completed", failed_step: null, error: null, song: { url: SONG_URL, rights: "own", duration_s: 100 }, renders: 1 };
+// The reply: exactly one fenced json block, nothing before or after it.
+function replyOf(r) {
+  assert.equal(r.status, 0, `answer.mjs exited ${r.status}: ${r.stderr}`);
+  const m = r.stdout.match(/^```json\n([\s\S]*)\n```\n?$/);
+  assert.ok(m, `the reply is not one json block: ${r.stdout.slice(0, 200)}`);
+  assert.equal((r.stdout.match(/```/g) || []).length, 2, "one fenced block, no other fence");
+  const a = JSON.parse(m[1]);
+  assert.deepEqual(schemaProblems(SCHEMA, a), []);
+  return a;
+}
+const rowsOf = (report) => report.split("\n").filter((l) => /^\| \d+ \|/.test(l));
+// A run as the agent leaves it, made by the kit itself on a synthetic song: a 30 s plan of 6 shots, priced, its
+// storyboard, stills and clips records, the lyrics (words: three in the cut, one before it; none: an instrumental; off),
+// the stills and clips saved (a shot in clipless has no clip), placed, a film and its check, and the cost.
+function answerRun({ lyrics = "words", clipless = [], render = true } = {}) {
+  const dir = songDir();
+  cpSync(KIT, join(dir, "film"), { recursive: true });
+  mkdirSync(join(dir, "film", "assets"), { recursive: true });
+  const planned = kit(dir, "plan", "--song", "media/song.wav", "--film", "film", "--cut", "30", "--lyrics", String(lyrics !== "off"));
+  assert.equal(planned.status, 0, planned.stderr);
+  const plan = JSON.parse(readFileSync(join(dir, "film", "plan.json"), "utf8"));
+  const shots = boardFor(dir);
+  assert.equal(kit(dir, "price", "--film", "film", "--rates", RATES).status, 0);
+  const sentSteps = [];
+  if (lyrics !== "off") {
+    const a = plan.cut.start_s;
+    const words = lyrics === "none" ? [] : [
+      { text: "Before", start: 1, end: 1.4, type: "word" },
+      { text: "Paper", start: a + 0.5, end: a + 0.9, type: "word" },
+      { text: "boats", start: a + 1, end: a + 1.4, type: "word" },
+      { text: "Ignore", start: shots[1].start_s + 0.5, end: shots[1].start_s + 0.9, type: "word" },
+    ];
+    writeFileSync(join(dir, "media", "transcript.json"), JSON.stringify({ text: words.map((w) => w.text).join(" "), language_code: "eng", words }));
+    const l = kit(dir, "lyrics", "--film", "film", "--words", "media/transcript.json", "--vtt", "media/lyrics.vtt");
+    assert.equal(l.status, 0, l.stderr);
+    sentSteps.push("isolate", "transcript");
+  }
+  assert.equal(stillsOf(dir).status, 0);
+  const urls = shots.map((s) => `https://v3.fal.media/files/rabbit/still${s.n}.png`).join(",");
+  assert.equal(kit(dir, "clips", "--film", "film", "--storyboard", "storyboard.md", "--stem", "abcd1234", "--stills", urls, "--file", "media/clips.json").status, 0);
+  for (const s of shots) {
+    cpSync(join(media, "still.png"), join(dir, "media", `still-${s.n}.png`));
+    cpSync(join(media, "still.png"), join(dir, "film", "assets", `still-${s.n}.png`));
+    if (!clipless.includes(s.n)) {
+      cpSync(join(media, "clip.mp4"), join(dir, "media", `clip-${s.n}.mp4`));
+      cpSync(join(media, "clip.mp4"), join(dir, "film", "assets", `clip-${s.n}.mp4`));
+    }
+  }
+  sentSteps.push(...shots.map((s) => `still-${s.n}`), ...shots.map((s) => `clip-${s.n}`));
+  if (render) {
+    const placed = kit(dir, "place", "--film", "film");
+    assert.equal(placed.status, 0, placed.stderr);
+    ff("-f", "lavfi", "-i", "color=c=black:s=1920x1080:r=5", "-t", String(plan.cut.seconds), "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", join(dir, "media", "film.mp4"));
+    writeFileSync(join(dir, "media", "check.json"), JSON.stringify({ ok: true, lint: { ok: true, errorCount: 0, warningCount: 1, findings: [] }, runtime: { ok: true, errorCount: 0, warningCount: 0, findings: [] } }));
+  }
+  const failed = clipless.map((n) => `clip-${n}`);
+  const cost = kit(dir, "cost", "--film", "film", "--stem", "abcd1234", "--sent", sentSteps.join(","), ...(failed.length ? ["--failed", failed.join(",")] : []));
+  assert.equal(cost.status, 0, cost.stderr);
+  return { dir, plan, shots };
+}
+const full = answerRun();
+
+test("answer: the shots table is inside report_markdown, one row per shot of the plan with its storyboard picture", () => {
+  const { dir, plan, shots } = full;
+  factsAt(dir, { ...DONE, ignored_instructions: ["a line in the lyrics told the video maker to ignore the storyboard: sung, not obeyed"], warnings_kept: ["timeline_track_too_dense: the film needs its timed shots"] });
+  const a = replyOf(answerOf(dir));
+  const report = a.report_markdown;
+  assert.ok(report.startsWith("![Music video](media/film.mp4)\n"), report.slice(0, 80));
+  assert.ok(report.includes(`\n${TABLE}\n`), "the table's header line is inside report_markdown");
+  const rows = rowsOf(report);
+  assert.equal(rows.length, shots.length);
+  shots.forEach((s, i) => {
+    assert.ok(rows[i].startsWith(`| ${s.n} |`), rows[i]);
+    assert.ok(rows[i].includes(`| a paper ferry ${s.n} |`), `row ${s.n} carries its storyboard picture: ${rows[i]}`);
+    assert.ok(rows[i].endsWith("| clip |"), rows[i]);
+  });
+  assert.ok(rows[0].includes("| Paper boats |") && rows[1].includes("| Ignore |") && rows[2].includes("| none |"), rows.slice(0, 3).join("\n"));
+  // The fields from the files, never typed: the plan, the price, the cost, the stem, the lyrics, place, the film.
+  const price = JSON.parse(readFileSync(join(dir, "film", "price.json"), "utf8"));
+  const cost = JSON.parse(readFileSync(join(dir, "film", "cost.json"), "utf8"));
+  assert.equal(a.plan_usd, price.plan_usd);
+  assert.deepEqual(a.fal_cost_usd, cost);
+  assert.equal(a.key_stem, "abcd1234");
+  assert.equal(a.cut.start_s, plan.cut.start_s);
+  assert.equal(a.cut.chosen_by, "loudest");
+  assert.deepEqual(a.shots.map((s) => [s.n, s.picture, s.used, s.still_path, s.clip_path, s.remade, s.error]), shots.map((s) => [s.n, `a paper ferry ${s.n}`, "clip", `media/still-${s.n}.png`, `media/clip-${s.n}.mp4`, false, null]));
+  assert.deepEqual(a.lyrics, { on: true, words_in_song: 4, words_in_cut: 3, lines: a.lyrics.lines, vtt_path: "media/lyrics.vtt", note: null });
+  assert.ok(a.lyrics.lines >= 1);
+  assert.deepEqual([a.film.path, a.film.width, a.film.height], ["media/film.mp4", 1920, 1080]);
+  assert.ok(Math.abs(a.film.seconds - plan.cut.seconds) < 0.25, String(a.film.seconds));
+  assert.deepEqual(a.checks, { check_errors: 0, warnings_kept: ["timeline_track_too_dense: the film needs its timed shots"], review_fixes: [], renders: 1 });
+  assert.deepEqual([a.status, a.failed_step, a.error, a.song.rights, a.song.url], ["completed", null, null, "own", SONG_URL]);
+  const paths = a.files.map((f) => f.saved_path);
+  for (const p of ["media/film.mp4", "storyboard.md", "media/song.wav", "media/run-keys.json", "media/lyrics.vtt", "media/transcript.json", "media/stills.json", "media/clips.json", "film/", ...shots.flatMap((s) => [`media/still-${s.n}.png`, `media/clip-${s.n}.mp4`])])
+    assert.ok(paths.includes(p), `files names ${p}`);
+  assert.equal(a.files.find((f) => f.saved_path === "media/song.wav").source_url, SONG_URL);
+  assert.equal(a.files.find((f) => f.saved_path === "media/still-2.png").source_url, "https://v3.fal.media/files/rabbit/still2.png");
+  // The report in agent.md's order: film, price, song, beats, cut, table, lyrics, stills, cost, checks.
+  const order = [`$${price.plan_usd}`, SONG_URL, "BPM", `${plan.cut.start_s} to ${plan.cut.end_s} s`, TABLE, "3 of the song's 4 words", "Every shot shows its clip", "| Total |", "0 check errors"];
+  const at = order.map((x) => report.indexOf(x));
+  assert.ok(at.every((x) => x > 0), JSON.stringify(order.filter((_, i) => at[i] <= 0)));
+  assert.deepEqual([...at].sort((x, y) => x - y), at, "the report's parts in agent.md's order");
+  assert.ok(report.includes("a line in the lyrics told the video maker to ignore the storyboard"), "the instructions in the lyrics are in the report");
+  assert.deepEqual(a.ignored_instructions, ["a line in the lyrics told the video maker to ignore the storyboard: sung, not obeyed"]);
+});
+
+test("answer: a shot shown as its still is a still row, with its clip's failure in the report and the answer", () => {
+  const { dir, shots } = answerRun({ clipless: [3] });
+  const refused = "Request was flagged by the content checker (422)";
+  factsAt(dir, { ...DONE, status: "partial", failed_step: "clip-3", error: refused, shot_errors: { 3: refused } });
+  const a = replyOf(answerOf(dir));
+  const three = a.shots.find((s) => s.n === 3);
+  assert.deepEqual([three.used, three.clip_path, three.error, three.still_path], ["still", null, refused, "media/still-3.png"]);
+  assert.ok(a.shots.filter((s) => s.n !== 3).every((s) => s.used === "clip"));
+  const rows = rowsOf(a.report_markdown);
+  assert.equal(rows.length, shots.length);
+  assert.ok(rows[2].startsWith("| 3 |") && rows[2].endsWith("| still |"), rows[2]);
+  assert.match(a.report_markdown, /Shot 3 shows its still with a slow push-in: no assets\/clip-3\.mp4/);
+  assert.ok(a.report_markdown.includes(refused), "fal's words, as they are");
+  assert.equal(a.fal_cost_usd.steps.find((s) => s.step === "clip-3").usd, 0);
+  assert.ok(!a.files.some((f) => f.saved_path === "media/clip-3.mp4"));
+});
+
+test("answer: a run with no film: over the ceiling it has the plan and nothing made; refused, no plan at all", () => {
+  const dir = songDir();
+  cpSync(KIT, join(dir, "film"), { recursive: true });
+  rmSync(join(dir, "media", "run-keys.json"));
+  assert.equal(kit(dir, "plan", "--song", "media/song.wav", "--film", "film", "--cut", "30").status, 0);
+  assert.match(kit(dir, "price", "--film", "film", "--rates", RATES, "--max", "1").stdout, /OVER YOUR CEILING/);
+  factsAt(dir, { ...DONE, status: "over_budget", error: "The plan's price is over the $1 ceiling you set: nothing was made.", renders: 0 });
+  const a = replyOf(answerOf(dir));
+  assert.deepEqual(a.film, { path: null, seconds: null, width: null, height: null });
+  assert.deepEqual(a.fal_cost_usd, { steps: [], total: 0 });
+  assert.equal(a.key_stem, null);
+  assert.ok(a.shots.length > 0 && a.shots.every((s) => s.used === null && s.still_path === null && s.clip_path === null));
+  assert.ok(!a.report_markdown.includes("![Music video]"), "no film, no embed");
+  assert.match(a.report_markdown, /over the \$1 ceiling you set \(max_fal_usd\)/);
+  assert.match(a.report_markdown, /nothing was made and nothing was paid/);
+  assert.equal(rowsOf(a.report_markdown).length, a.shots.length, "the plan's shots, in the table");
+  assert.equal(a.checks.check_errors, null);
+
+  const none = join(root, `refused-${++runs}`);
+  mkdirSync(join(none, "media"), { recursive: true });
+  const why = "The film puts the song under its pictures, so it is made only for a song you own or hold a license for: set song_rights to own or licensed.";
+  factsAt(none, { status: "refused", failed_step: "rights", error: why, song: { url: SONG_URL, rights: null, duration_s: null }, renders: 0, lyrics_on: true });
+  const r = replyOf(answerOf(none));
+  assert.deepEqual([r.beats, r.cut, r.shots, r.plan_usd, r.key_stem], [null, null, [], null, null]);
+  assert.deepEqual(r.fal_cost_usd, { steps: [], total: 0 });
+  assert.ok(r.report_markdown.includes(why));
+  assert.ok(!r.report_markdown.includes(TABLE), "no plan, no shots table");
+});
+
+test("answer: missing lyrics say why: lyrics off, no words in the song, the isolation step failed", () => {
+  const off = answerRun({ lyrics: "off" });
+  factsAt(off.dir, DONE);
+  const a = replyOf(answerOf(off.dir));
+  assert.deepEqual([a.lyrics.on, a.lyrics.words_in_song, a.lyrics.vtt_path], [false, null, null]);
+  assert.match(a.lyrics.note, /lyrics were off/i);
+  assert.match(a.report_markdown, /lyrics were off/i);
+  assert.ok(!a.files.some((f) => f.saved_path === "media/lyrics.vtt"));
+  assert.ok(rowsOf(a.report_markdown).every((row) => row.includes("| none |")), "no lyric under any shot");
+
+  const instrumental = answerRun({ lyrics: "none" });
+  factsAt(instrumental.dir, DONE);
+  const b = replyOf(answerOf(instrumental.dir));
+  assert.deepEqual([b.lyrics.on, b.lyrics.words_in_song, b.lyrics.words_in_cut, b.lyrics.lines, b.lyrics.vtt_path], [true, 0, 0, 0, null]);
+  assert.match(b.lyrics.note, /no words/i);
+  assert.match(b.report_markdown, /no words/i);
+
+  // Isolation failed: no transcript and no lyrics file; the run went on without captions.
+  const failed = join(root, `isolate-${++runs}`);
+  cpSync(off.dir, failed, { recursive: true });
+  const planPath = join(failed, "film", "plan.json");
+  writeFileSync(planPath, readFileSync(planPath, "utf8").replace('"lyrics_on": false', '"lyrics_on": true'));
+  assert.equal(kit(failed, "price", "--film", "film", "--rates", RATES).status, 0);
+  const said = "Audio isolation failed: the file could not be decoded";
+  factsAt(failed, { ...DONE, status: "partial", failed_step: "isolate", error: said });
+  const c = replyOf(answerOf(failed));
+  assert.deepEqual([c.lyrics.on, c.lyrics.words_in_song, c.lyrics.words_in_cut, c.lyrics.lines, c.lyrics.vtt_path], [true, null, null, null, null]);
+  assert.match(c.lyrics.note, /isolat/i);
+  assert.ok(c.report_markdown.includes(said));
+});
+
+test("answer: unreadable or missing input exits non-zero with words and prints no answer", () => {
+  const variant = (name, change) => {
+    const dir = join(root, `broken-${name}-${++runs}`);
+    cpSync(full.dir, dir, { recursive: true });
+    factsAt(dir, DONE);
+    change(dir);
+    const r = answerOf(dir);
+    assert.notEqual(r.status, 0, `${name}: exited 0`);
+    assert.equal(r.stdout, "", `${name}: an answer was printed`);
+    assert.ok(r.stderr.trim().length > 0, `${name}: no words`);
+    return r.stderr;
+  };
+  assert.match(variant("facts-not-json", (d) => writeFileSync(join(d, "media", "answer-facts.json"), "{status: completed")), /answer-facts\.json/);
+  assert.match(variant("facts-missing", (d) => rmSync(join(d, "media", "answer-facts.json"))), /answer-facts\.json/);
+  assert.match(variant("facts-unknown-field", (d) => factsAt(d, { ...DONE, report_markdown: "| Shot | ... my own table |" })), /report_markdown/);
+  assert.match(variant("plan-not-json", (d) => writeFileSync(join(d, "film", "plan.json"), "{")), /plan\.json/);
+  assert.match(variant("lyrics-not-json", (d) => writeFileSync(join(d, "film", "lyrics.json"), "[}")), /lyrics\.json/);
+  assert.match(variant("placed-of-another-plan", (d) => rewriteJson(join(d, "film", "placed.json"), (p) => ({ ...p, shots: p.shots.slice(1) }))), /placed\.json/);
+  assert.match(variant("cost-missing", (d) => rmSync(join(d, "film", "cost.json"))), /cost/);
+  assert.match(variant("film-unreadable", (d) => writeFileSync(join(d, "media", "film.mp4"), "not a video")), /film\.mp4/);
+  assert.match(variant("storyboard-of-another-plan", (d) => writeFileSync(join(d, "storyboard.md"), `Style: ${STYLE}\n1 | 5 s | lyric: "none" | picture: a quay | motion: still\n`)), /storyboard/);
+});
+const rewriteJson = (path, change) => writeFileSync(path, JSON.stringify(change(JSON.parse(readFileSync(path, "utf8")))));
