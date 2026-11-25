@@ -173,6 +173,10 @@ mp3 (`mp3_44100_128`). The mp3's ID3 header adds under 0.05 s, which only makes 
 Only when fal answers no `audio.file_size` (null or missing), V is the end time of the last character in `timestamps`:
 say so in the report, with `voiceover_seconds_source` `"timestamps"`.
 
+As soon as you have each voiceover's V, add it to `media/plan.json` under `takes` (the rest of the file as it was):
+`{"step": "voiceover", "word_count": <its words>, "file_size": <fal's audio.file_size>, "seconds": <V>}`, and the same
+for `voiceover-2`. The answer's `voiceover_takes` comes from this list, so a size read early survives a long run.
+
 - **It fits**: cut with it (step 7).
 - **It overruns**: voice it once more from a shorter script. Rewrite the script to at most W2 = floor(W × (`length` −
   1) ÷ V × 0.9) words, W the first script's words (tags not counted); the 0.9 is the margin. Cut whole phrases and
@@ -265,7 +269,7 @@ answer leaves those empty.
 - `voiceover_seconds`: V of that voiceover, from its file size (step 6), to 2 decimals; `voiceover_seconds_source`:
   `"file_size"` (`"timestamps"` when fal gave no file size); both null when no voiceover came back. `voiceover_takes`:
   each voiceover sent, in order, with its `step` (`voiceover`, `voiceover-2`), `word_count`, `file_size` and `seconds`
-  (null when it failed).
+  (null when it failed), as `media/plan.json`'s `takes` holds them.
 - `fal_cost_usd`: one step per paid call made (each clip, `voiceover`, `voiceover-2` when sent, music, cut) with its
   `rate_usd` and `unit` from `get_pricing`, its `units` counted in that unit (a 640-character script at a rate per
   1000 characters is 0.64 units; a 5 s clip at a per-second rate is 5; 30 s of music at a per-minute rate is 0.5), and
