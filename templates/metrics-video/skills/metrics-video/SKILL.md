@@ -124,11 +124,12 @@ file's line.
 Then, before anything is priced:
 
 ```sh
-node film/metrics.mjs scan --pages stripe
+node film/metrics.mjs scan --pages stripe [--business "<business_name>"]
 ```
 
 It prints `{"clean": true, ...}` or exits 2 naming each file that holds a value from Stripe's pages (a description, a
-name in one in any case, an email, an id) or any email address. The kit's own files, as copied, aren't searched. Rewrite
+name in one in any case or a word of it alone, an email, an id) or any email address. The business's name, given as
+`--business` exactly as to `compute`, is set aside. The kit's own files, as copied, aren't searched. Rewrite
 what it names without it and scan again.
 
 ## 5. Voice and music into the film
@@ -209,14 +210,15 @@ counted in `checks.renders`).
 `write` the answer's json to `media/answer.json` (the agent's step 8), then:
 
 ```sh
-node film/metrics.mjs scan --pages stripe --final
+node film/metrics.mjs scan --pages stripe [--business "<business_name>"] --final
 ```
 
 It looks in every file the run wrote (the narration, the music line, the storyboard, `film/`, the captions, the
-timestamps, the answer and anything else outside the dot-folders) for each string Stripe's pages hold (not Stripe's
-own enum words, its fee lines or a word alone), each pair of capitalised words in one, and any email address. Exit 2
-names the file and where the value came from, never the value: take it out, render again if it was on screen, scan
-again, and say so in the report. When it finds nothing, it removes `stripe/raw-<n>.json` and prints what it removed.
+timestamps and what each voice says in them, the answer and anything else outside the dot-folders) for each string
+Stripe's pages hold (not Stripe's own enum words, its fee lines or a description of one word), each name in one (a pair
+of words, in any case, and each of its words alone), and any email address. Exit 2 names the file and where the value
+came from, never the value: take it out, render again if it was on screen, scan again, and say so in the report. When it
+finds nothing, it removes `stripe/raw-<n>.json` and prints what it removed.
 
 ## Never
 
