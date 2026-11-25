@@ -81,6 +81,8 @@ Spoken by the presenter to camera, as the fal-audio skill says for the ear:
   say is a point left out, with its own entry in `omitted`. Part of a sentence counts too: a script that keeps "alerts are
   sent" but drops "by email" has left out how they are sent. `omitted` holds at most 10 entries: with more points left
   out, list the 10 that matter most and give the count of the rest in `omitted_more` (0 when `omitted` lists them all).
+  A point left out goes in `omitted` (or `omitted_more`), never only in `notes`: a dropped name or qualifier is a point
+  too.
 - A few ElevenLabs v3 audio tags (`[warm]`, `[curious]`, `[pauses]`, `[cheerfully]`), at most one per sentence and
   never inside a name or a figure.
 
