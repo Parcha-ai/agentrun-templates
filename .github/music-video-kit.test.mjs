@@ -236,3 +236,204 @@ test("clips refuses a storyboard that doesn't hold the plan's shots, a shot with
     assert.equal(file, undefined, "no media/clips.json is written");
   }
 });
+
+// ---------- stills and remake: every still's input built from the storyboard and the plan ----------
+// The stills' prompts are cut out of a grader's input the same way. The kit's stills command builds each still's
+// submit_job (the style line, the shot's picture word for word, the fixed ending and fields), prints them to send as
+// printed, and writes media/stills.json: the style and fixed fields once, then one line per still. remake adds one
+// still's second take, its picture fixed, to the same record and prints its submit_job.
+const NANO = "fal-ai/nano-banana-pro";
+const STYLE = "cut paper with soft shadows, teal and amber";
+const ENDING = "No text, no lettering, no logos.";
+function stillsDir({ shots = [6, 4, 6], lines, style = `Style: ${STYLE}`, aspect = "16:9" } = {}) {
+  const dir = join(root, `stills-${++runs}`);
+  mkdirSync(join(dir, "film"), { recursive: true });
+  mkdirSync(join(dir, "media"));
+  cpSync(join(KIT, "beats.mjs"), join(dir, "film", "beats.mjs"));
+  let at = 8.254;
+  const planShots = shots.map((seconds, i) => {
+    const s = { n: i + 1, start_s: Math.round(at * 1000) / 1000, end_s: Math.round((at + seconds) * 1000) / 1000, seconds, bars: 2, partial: false, clip_seconds: Math.max(3, Math.ceil(seconds)) };
+    at += seconds;
+    return s;
+  });
+  const total = shots.reduce((t, s) => t + s, 0);
+  writeFileSync(join(dir, "film", "plan.json"), JSON.stringify({ song: { path: "media/song.wav", seconds: 80 }, cut: { seconds: total, start_s: 8.254, end_s: 8.254 + total, shots: planShots }, aspect, width: 1920, height: 1080, lyrics_on: true }));
+  let clock = 0;
+  const shotLines = lines ?? planShots.map((s) => {
+    const line = `${s.n} | ${clock}-${clock + s.seconds} s | ${s.seconds} s | lyric: "none" | picture: a paper ferry ${s.n} on teal water, wide | motion: slow push in ${s.n}`;
+    clock += s.seconds;
+    return line;
+  });
+  writeFileSync(join(dir, "storyboard.md"), [style, ...shotLines].filter((l) => l !== undefined).join("\n") + "\n");
+  return dir;
+}
+const kit = (dir, ...args) => spawnSync(process.execPath, ["film/beats.mjs", ...args], { cwd: dir, encoding: "utf8" });
+const stillsOf = (dir, stem = "abcd1234") => kit(dir, "stills", "--film", "film", "--storyboard", "storyboard.md", "--stem", stem, "--file", "media/stills.json");
+const recordOf = (dir, name) => (existsSync(join(dir, "media", name)) ? readFileSync(join(dir, "media", name), "utf8") : undefined);
+const fixedStill = (aspect = "16:9") => ({ num_images: 1, aspect_ratio: aspect, resolution: "1K", output_format: "png", enable_web_search: false });
+
+test("stills prints each still's submit_job: the style line, the shot's picture word for word, the fixed ending and fields", () => {
+  const dir = stillsDir({ aspect: "9:16" });
+  const r = stillsOf(dir);
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual(sent(r.stdout), [1, 2, 3].map((n) => ({
+    endpoint_id: NANO,
+    submission_key: `mu-abcd1234-still-${n}`,
+    input: { prompt: `${STYLE}. a paper ferry ${n} on teal water, wide. ${ENDING}`, ...fixedStill("9:16") },
+  })));
+});
+
+test("stills writes media/stills.json: the style and fixed fields once, then each still's key and picture, the same as printed", () => {
+  const dir = stillsDir();
+  const r = stillsOf(dir);
+  assert.equal(r.status, 0, r.stderr);
+  const record = JSON.parse(recordOf(dir, "stills.json"));
+  assert.equal(record.endpoint_id, NANO);
+  assert.equal(record.style, STYLE);
+  assert.equal(record.each_prompt, `<style>. <picture>. ${ENDING}`);
+  assert.deepEqual(record.every_still, fixedStill());
+  assert.deepEqual(record.stills.map((s) => s.n), [1, 2, 3]);
+  assert.deepEqual(record.stills.map((s) => ({ endpoint_id: record.endpoint_id, submission_key: s.key, input: { prompt: `${record.style}. ${s.picture}. ${ENDING}`, ...record.every_still } })), sent(r.stdout));
+});
+
+test("a 12-still media/stills.json stays small enough to reach a grader whole", () => {
+  const picture = "a small amber-windowed paper ferry sliding away from a teal paper quay, rows of amber lamp dots along the harbor wall, wide and calm, dark teal sky";
+  const shots = Array(12).fill(5);
+  let clock = 0;
+  const lines = shots.map((s, i) => `${i + 1} | ${clock}-${(clock += s)} s | ${s} s | lyric: "none" | picture: ${picture} | motion: drift`);
+  const dir = stillsDir({ shots, lines, style: `Style: ${"cut paper with soft shadows, layered paper shapes in deep teal and amber, harbor lights at night, shallow depth between paper layers, handmade texture"}` });
+  const r = stillsOf(dir);
+  assert.equal(r.status, 0, r.stderr);
+  const bytes = Buffer.byteLength(recordOf(dir, "stills.json"));
+  assert.ok(bytes < 3500, `media/stills.json is ${bytes} bytes`);
+  assert.equal(sent(r.stdout).length, 12);
+});
+
+test("stills refuses a storyboard with no style line, lines that aren't the plan's shots, or a shot with no picture", () => {
+  const cases = [
+    [{ style: undefined }, /storyboard\.md has no style line/],
+    [{ lines: ['1 | 0-6 s | 6 s | lyric: "none" | picture: a | motion: m', '2 | 6-10 s | 4 s | lyric: "none" | picture: b | motion: m'] }, /storyboard\.md holds 2 shot lines, the plan 3/],
+    [{ lines: ['2 | 0-6 s | 6 s | lyric: "none" | picture: a | motion: m', '1 | 6-10 s | 4 s | lyric: "none" | picture: b | motion: m', '3 | 10-16 s | 6 s | lyric: "none" | picture: c | motion: m'] }, /shot line 1 is shot 2/],
+    [{ lines: ['1 | 0-6 s | 6 s | lyric: "none" | picture: a | motion: m', '2 | 6-10 s | 4 s | lyric: "none" | motion: m', '3 | 10-16 s | 6 s | lyric: "none" | picture: c | motion: m'] }, /shot 2: its storyboard line has no picture/],
+  ];
+  for (const [given, why] of cases) {
+    const dir = stillsDir(given);
+    const r = stillsOf(dir);
+    assert.equal(r.status, 2, `${JSON.stringify(given)}: exit ${r.status}, ${r.stderr}`);
+    assert.match(r.stderr, why);
+    assert.equal(r.stdout.trim(), "");
+    assert.equal(recordOf(dir, "stills.json"), undefined);
+  }
+  const r = stillsOf(stillsDir(), "ABC");
+  assert.equal(r.status, 2);
+  assert.match(r.stderr, /--stem is the run's key stem/);
+});
+
+test("remake adds one still's second take, its picture fixed, to media/stills.json and prints its submit_job; never a third take or a third remake", () => {
+  const dir = stillsDir({ shots: [5, 5, 5, 5] });
+  assert.equal(stillsOf(dir).status, 0);
+  const r = kit(dir, "remake", "--file", "media/stills.json", "--shot", "2", "--picture", "a paper ferry on teal water, seen from far behind");
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual(sent(r.stdout), [{ endpoint_id: NANO, submission_key: "mu-abcd1234-still-2-2", input: { prompt: `${STYLE}. a paper ferry on teal water, seen from far behind. ${ENDING}`, ...fixedStill() } }]);
+  const record = JSON.parse(recordOf(dir, "stills.json"));
+  assert.deepEqual(record.stills.at(-1), { n: 2, key: "mu-abcd1234-still-2-2", picture: "a paper ferry on teal water, seen from far behind", remake: true });
+  assert.equal(record.stills.length, 5);
+  const refused = [
+    [["--shot", "2", "--picture", "again"], /shot 2 has had its remake/],
+    [["--shot", "9", "--picture", "x"], /shot 9 is not in media\/stills\.json/],
+    [["--shot", "3", "--picture", "  "], /--picture is the fixed picture/],
+  ];
+  for (const [args, why] of refused) {
+    const no = kit(dir, "remake", "--file", "media/stills.json", ...args);
+    assert.equal(no.status, 2, `${args}: ${no.stderr}`);
+    assert.match(no.stderr, why);
+    assert.equal(no.stdout.trim(), "");
+  }
+  assert.equal(kit(dir, "remake", "--file", "media/stills.json", "--shot", "3", "--picture", "a calm teal harbor").status, 0);
+  const third = kit(dir, "remake", "--file", "media/stills.json", "--shot", "4", "--picture", "a quay");
+  assert.equal(third.status, 2);
+  assert.match(third.stderr, /two remakes are the most a run makes/);
+  assert.equal(JSON.parse(recordOf(dir, "stills.json")).stills.length, 6);
+});
+
+// ---------- the sent calls against the records ----------
+// The records are what the kit built. What counts is what the run sent: the fake fal's whole log of submit_job calls,
+// in the eval report. check-sent compares them call by call: every still and clip sent exactly once, each one's
+// arguments equal to its record's, the clips' negative prompt the one exact string, the number of shots the case's.
+const CHECK = new URL("./music-video-check-sent.mjs", import.meta.url).pathname;
+function sentRun({ shots = [6, 4, 6, 5] } = {}) {
+  const dir = stillsDir({ shots });
+  const s = stillsOf(dir);
+  assert.equal(s.status, 0, s.stderr);
+  const urls = shots.map((_, i) => `https://v3.fal.media/files/rabbit/still${i + 1}.png`);
+  const c = kit(dir, "clips", "--film", "film", "--storyboard", "storyboard.md", "--stem", "abcd1234", "--stills", urls.join(","), "--file", "media/clips.json");
+  assert.equal(c.status, 0, c.stderr);
+  const calls = [...sent(s.stdout), ...sent(c.stdout)].map((args) => ({ tool: "mcp:fal/submit_job", arguments: args }));
+  return { dir, calls: [{ tool: "mcp:fal/get_pricing", arguments: {} }, ...calls, { tool: "mcp:fal/wait_for_jobs", arguments: { jobs: [] } }] };
+}
+function check(dir, calls, shots = 4) {
+  const report = join(dir, "report.json");
+  writeFileSync(report, JSON.stringify({ cases: [{ name: "a-case", runs: [{ run: 1, mcp_calls: calls }] }] }));
+  return spawnSync(process.execPath, [CHECK, "--report", report, "--case", "a-case", "--work", dir, "--shots", String(shots)], { encoding: "utf8" });
+}
+const edit = (calls, key, change) => calls.map((c) => (c.arguments.submission_key === key ? { ...c, arguments: change(structuredClone(c.arguments)) } : c));
+
+test("check-sent passes a run whose sent stills and clips equal their records", () => {
+  const { dir, calls } = sentRun();
+  const r = check(dir, calls);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /^PASS stills: 4 sent, each equal to media\/stills\.json$/m);
+  assert.match(r.stdout, /^PASS clips: 4 sent, each equal to media\/clips\.json, negative_prompt exact$/m);
+});
+
+test("check-sent passes a remake sent as recorded, and fails one sent but not recorded", () => {
+  const { dir, calls } = sentRun();
+  const r = kit(dir, "remake", "--file", "media/stills.json", "--shot", "3", "--picture", "a teal quay at dusk");
+  assert.equal(r.status, 0, r.stderr);
+  const remake = { tool: "mcp:fal/submit_job", arguments: sent(r.stdout)[0] };
+  assert.equal(check(dir, [...calls, remake]).status, 0);
+  const stray = structuredClone(remake);
+  stray.arguments.submission_key = "mu-abcd1234-still-4-2";
+  const no = check(dir, [...calls, remake, stray]);
+  assert.equal(no.status, 1);
+  assert.match(no.stdout, /^FAIL stills: mu-abcd1234-still-4-2 was sent and is not in media\/stills\.json$/m);
+});
+
+test("check-sent fails a run whose sent calls differ from the records, naming the call", () => {
+  const { dir, calls } = sentRun();
+  const NEG = "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, celebrity, blur, distortion, low quality";
+  const cases = [
+    [edit(calls, "mu-abcd1234-clip-2", (a) => ((a.input.negative_prompt = NEG.replace(", celebrity", "")), a)), /^FAIL clips: mu-abcd1234-clip-2 was sent with input\.negative_prompt "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, blur, distortion, low quality"; media\/clips\.json has "text, letters/m],
+    [calls.filter((c) => c.arguments.submission_key !== "mu-abcd1234-clip-3"), /^FAIL clips: mu-abcd1234-clip-3 is in media\/clips\.json and was never sent$/m],
+    [edit(calls, "mu-abcd1234-clip-1", (a) => ((a.input.prompt = "a new scene: a city at night"), a)), /^FAIL clips: mu-abcd1234-clip-1 was sent with input\.prompt "a new scene: a city at night"; media\/clips\.json has "slow push in 1, the scene as it is"$/m],
+    [edit(calls, "mu-abcd1234-clip-4", (a) => ((a.input.start_image_url = "https://v3.fal.media/files/rabbit/still1.png"), a)), /^FAIL clips: mu-abcd1234-clip-4 was sent with input\.start_image_url/m],
+    [edit(calls, "mu-abcd1234-still-2", (a) => ((a.input.prompt = a.input.prompt.replace(" on teal water", "")), a)), /^FAIL stills: mu-abcd1234-still-2 was sent with input\.prompt "cut paper with soft shadows, teal and amber\. a paper ferry 2, wide\. No text, no lettering, no logos\."; media\/stills\.json has/m],
+    [edit(calls, "mu-abcd1234-still-1", (a) => ((a.input.enable_web_search = true), a)), /^FAIL stills: mu-abcd1234-still-1 was sent with input\.enable_web_search true; media\/stills\.json has false$/m],
+    [[...calls, calls.find((c) => c.arguments.submission_key === "mu-abcd1234-clip-2")], /^FAIL clips: mu-abcd1234-clip-2 was sent 2 times$/m],
+  ];
+  for (const [mutated, why] of cases) {
+    const r = check(dir, mutated);
+    assert.equal(r.status, 1, r.stdout + r.stderr);
+    assert.match(r.stdout, why);
+    assert.match(r.stdout, /^RESULT FAIL$/m);
+  }
+});
+
+test("check-sent fails records that don't hold the case's shots, the exact negative prompt, or exist at all", () => {
+  const { dir, calls } = sentRun();
+  assert.match(check(dir, calls, 12).stdout, /^FAIL clips: media\/clips\.json holds 4 clips, the case 12 shots$/m);
+  assert.match(check(dir, calls, 12).stdout, /^FAIL stills: media\/stills\.json holds 4 first takes, the case 12 shots$/m);
+  const path = join(dir, "media", "clips.json");
+  const record = JSON.parse(readFileSync(path, "utf8"));
+  record.every_clip.negative_prompt = "text";
+  writeFileSync(path, JSON.stringify(record));
+  // The record and the sent calls agree, and both miss the one negative prompt: still a failure.
+  const both = calls.map((c) => (c.arguments.endpoint_id === KLING ? { ...c, arguments: { ...c.arguments, input: { ...c.arguments.input, negative_prompt: "text" } } } : c));
+  assert.match(check(dir, both).stdout, /^FAIL clips: media\/clips\.json's negative_prompt is "text", not the one exact string$/m);
+  const bare = sentRun();
+  for (const f of ["clips.json", "stills.json"]) writeFileSync(join(bare.dir, "media", f + ".gone"), ""), spawnSync("mv", [join(bare.dir, "media", f), join(bare.dir, "media", f + ".gone")]);
+  const r = check(bare.dir, bare.calls);
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /^FAIL clips: the run left no media\/clips\.json$/m);
+  assert.match(r.stdout, /^FAIL stills: the run left no media\/stills\.json$/m);
+});
