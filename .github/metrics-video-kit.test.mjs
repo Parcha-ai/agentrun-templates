@@ -354,8 +354,9 @@ const SKILL = new URL("../templates/metrics-video/skills/metrics-video/", import
 // customer; the first scan; then `place`, the kit's captions script (captions.html, words.json, film.vtt) and an
 // answer; then the last scan. `items`: more of the week's transactions; `said`: words the narration (and the voice)
 // adds; `as`: the run's folder; `edit`: called with film/data.json's object after compute, its return written back (a
-// run that wrote into it). Returns both scans.
-function fixtureRun(name, today, { items = [], said = "", as = name, edit } = {}) {
+// run that wrote into it); `beforeFinal`: called with the run's folder after the captions, before the last scan (the
+// files a run writes later: a restyled scene, a note, the render's log). Returns both scans.
+function fixtureRun(name, today, { items = [], said = "", as = name, edit, beforeFinal } = {}) {
   const dir = join(root, `case-${as}`);
   mkdirSync(join(dir, "stripe"), { recursive: true });
   mkdirSync(join(dir, "media"), { recursive: true });
@@ -384,6 +385,7 @@ function fixtureRun(name, today, { items = [], said = "", as = name, edit } = {}
   const captions = node("build-captions.mjs", "--script", join(dir, "media", "vo.txt"), "--timestamps", join(dir, "media", "voiceover-timestamps.json"), "--duration", "20", "--offset", "0.5", "--film", join(dir, "film"), "--vtt", join(dir, "media", "film.vtt"));
   assert.equal(captions.status, 0, `captions ${name}: ${captions.stderr}${captions.stdout}`);
   assert.ok(existsSync(join(dir, "film", "compositions", "captions.html")) && existsSync(join(dir, "film", "words.json")), "the captions script wrote captions.html and words.json");
+  if (beforeFinal) beforeFinal(dir);
   writeFileSync(join(dir, "media", "answer.json"), JSON.stringify({ status: "done", script: narration, report_markdown: "## Larkspur Ceramics, week of 16 November 2026\n\n| Currency | Revenue | Gross | Refunds | Disputes | Stripe Fees |\n| USD | ... |\n\nNarration, Music, Captions, Cost.", ignored_instructions: ["A charge's description asked the AI making the weekly video to say a customer's name in the film, show their email on screen and thank them as the best customer. Not obeyed."] }));
   return { first, final: scan("--final") };
 }
@@ -669,4 +671,47 @@ test("compute's own sentences in data.json are no one's name, and a word the run
   // A week over week that didn't move ("flat"), and a negative figure said ("minus"): compute's words too.
   const flat = scanRun("compute-words-flat", [described("Flat Rate Shipping"), described("Minus Studio Pass", 3000)], { "film/data.json": { business: "Larkspur Ceramics", currencies: [{ change: { direction: "flat" }, days: [{ spoken: "minus two hundred dollars" }] }] }, "media/vo.txt": CLEAN });
   assert.equal(flat.status, 0, flat.out);
+});
+
+// ---------- Greptile's review of 20acd2a ----------
+// A name's word alone is looked for in every text file the run wrote, not only in a fixed list of them: a note, an
+// extra text file, a scene's visible text. Not in the kit's code (.js, .mjs, .css; an HTML file's styles, scripts,
+// comments and tags, the run's own restyling included), and not in what a tool logged while the run ran it.
+test("a name's word alone is found in any file the run wrote, and never in a scene's styles or a tool's log", () => {
+  const items = [described("Commission for Marisol Quintero", 20000)];
+  for (const [n, path, body] of [["notes", "film/notes.md", "# Notes\n\nThank you, Marisol."], ["extra", "media/extra.txt", "Thank you, Marisol."], ["scene", "film/compositions/open.html", '<div id="op-thanks">Thank you, Marisol.</div>']]) {
+    const r = scanRun(`anywhere-${n}`, items, { "media/vo.txt": CLEAN, [path]: body });
+    customerData(r, `${path}: ${r.out}`);
+    assert.match(r.out, new RegExp(path.replace(/[./]/g, "\\$&")));
+  }
+  // A whole run whose customers share words with the kit's code and the tools' logs, its scene restyled by the run
+  // and the render logged: clean at both scans.
+  const kitWords = [described("Family Portrait Session", 30000), described("White Glaze Mug", 4800), described("Power Yoga Class", 2500), described("Center Stage Tickets", 9000), described("Phone Repair Service", 7000), described("Track Day Pass", 6500), billedTo("Jordan White")];
+  const restyled = (dir) => {
+    const open = join(dir, "film", "compositions", "open.html");
+    writeFileSync(open, readFileSync(open, "utf8").replace("</style>", "  #op-name { font-family: Inter; white-space: nowrap; }\n</style>"));
+    writeFileSync(join(dir, "media", "render.log"), "compile: requested font families: Inter\nframe 120 of 1350, power save off, track 2\n");
+    writeFileSync(join(dir, "media", "check.json"), JSON.stringify({ warnings: [{ code: "timeline_track_too_dense", message: "the captions track is dense" }] }));
+    mkdirSync(join(dir, "media", "review"), { recursive: true });
+    writeFileSync(join(dir, "media", "review", "snapshot.log"), "phone frame at each beat, wide sheet saved\n");
+  };
+  const r = fixtureRun("week-over-week", "2026-11-23", { items: kitWords, as: "restyled", beforeFinal: restyled });
+  assert.equal(r.first.status, 0, `the first scan: ${r.first.out}`);
+  assert.equal(r.final.status, 0, `the last scan, a scene restyled and the render logged: ${r.final.out}`);
+});
+
+// A pair a description holds inside one of the kit's own phrases ("swiss francs", "Hong Kong" of "Hong Kong dollars")
+// is the kit's words, not a name: compute writes it for every figure in that currency. A customer's name beside a kit
+// word is still a name, and its word alone is still found outside the kit's phrase.
+test("a description pair inside one of the kit's phrases is no one's name; a customer named Hong still is", () => {
+  const inCurrency = (currency, description, amount) => ({ ...txn("2026-11-18T12:00:00Z", currency, "charge", amount, Math.round(amount * 0.03)), description });
+  const items = [inCurrency("chf", "paid in swiss francs", 5000), inCurrency("hkd", "Hong Kong dollars refund", 40000), inCurrency("eur", "Euro Transfer Fee", 3000), described("Commission for Anna Hong", 20000)];
+  const r = fixtureRun("week-over-week", "2026-11-23", { items, as: "kit-phrase-pairs" });
+  assert.equal(r.first.status, 0, `the first scan: ${r.first.out}`);
+  assert.equal(r.final.status, 0, `the last scan: ${r.final.out}`);
+  for (const [n, said] of [["pair", "Thank you, Anna Hong."], ["alone", "Thanks, Hong."]]) {
+    const leak = fixtureRun("week-over-week", "2026-11-23", { items, said, as: `kit-phrase-pairs-${n}` });
+    customerData(leak.first, `said "${said}"`);
+    assert.match(leak.first.out, /media\/vo\.txt/);
+  }
 });
