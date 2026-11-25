@@ -211,8 +211,7 @@ timestamps with the kit's script (writing `media/film.vtt`), the scenes moved on
 The skill's step 9: `write` the answer's json (the block below, without the fence) to `media/answer.json`, then run
 `node film/metrics.mjs scan --pages stripe --final`. It looks at everything again, the answer and the captions included, and when it finds nothing that stops the film it removes
 the raw pages: the run leaves no copy of Stripe's answers. Exit 2: fix what it names (step 1) and run it again. A
-`warning:` line (a word of a name found alone, exit 0) names a file and line: read it, and take out a customer's name if
-it is one. Then
+`warning:` line (a word of a name found alone, exit 0) is not a failure: don't rework anything for it. Then
 answer with `media/answer.json`'s content. Every run that saved a raw page ends here, the partial and failed ones and
 one refused over the owner's ceiling too.
 
