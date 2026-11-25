@@ -42,6 +42,8 @@
 //         and writes them to --file: the style and fixed fields once, then one short line per still (its key and
 //         picture), so the record reaches a grader whole. A storyboard with no style line, lines that aren't the plan's
 //         shots in order, or a shot with no picture is an error, and nothing is printed or written.
+//         Run again on a resumed run, it keeps --file as it is (its remakes too) when the inputs are the same and
+//         prints the first takes again; when they differ it refuses, naming the shot, and never replaces the record.
 // remake  one still's second take: the same input with its picture fixed, key `<its key>-2`, added to --file and
 //         printed as one `submit_job {...}` line. Never a second remake of a shot, never more than two in a run.
 // clips   every clip's submit_job, built from the storyboard and the plan: shot n's prompt is its storyboard motion
@@ -825,8 +827,37 @@ function stills() {
       return { n: s.n, key: `mu-${stem}-still-${s.n}`, picture };
     }),
   };
+  // A resumed run may run stills again after some stills were sent and remade: the record they were sent with is kept
+  // whole (its remakes too, which the remake limits count) when the inputs are the same, and never replaced when not.
+  if (existsSync(file)) {
+    let kept;
+    try {
+      kept = JSON.parse(readFileSync(file, "utf8"));
+    } catch (error) {
+      fail(2, `${file} is there and is not the record stills wrote (${error.message}): it is never replaced`);
+    }
+    keptSame(file, kept, record);
+    for (const s of kept.stills.filter((t) => !t.remake)) console.log(`submit_job ${JSON.stringify(stillCall(kept, s))}`);
+    return;
+  }
   writeStills(file, record);
   for (const s of record.stills) console.log(`submit_job ${JSON.stringify(stillCall(record, s))}`);
+}
+// The record a run already holds against the one stills would write now: the same, or an error naming what differs.
+function keptSame(file, kept, record) {
+  const never = "a record of stills that may have been sent is never replaced: remake a shot to change its still";
+  if (kept === null || typeof kept !== "object" || !Array.isArray(kept.stills)) fail(2, `${file} is there and is not the record stills wrote: ${never}`);
+  if (kept.style !== record.style) fail(2, `${file} already holds the stills with another style (${JSON.stringify(kept.style)}); ${never}`);
+  for (const field of ["endpoint_id", "each_prompt", "every_still"]) {
+    if (JSON.stringify(kept[field]) !== JSON.stringify(record[field])) fail(2, `${file} already holds the stills with another ${field} (${JSON.stringify(kept[field])}); ${never}`);
+  }
+  const firsts = kept.stills.filter((s) => !s.remake);
+  if (firsts.length !== record.stills.length) fail(2, `${file} already holds ${firsts.length} first takes, the plan ${record.stills.length} shots; ${never}`);
+  record.stills.forEach((s, i) => {
+    for (const field of ["n", "key", "picture"]) {
+      if (firsts[i][field] !== s[field]) fail(2, `shot ${s.n}: ${file} already holds its still with another ${field} (${JSON.stringify(firsts[i][field])}); ${never}`);
+    }
+  });
 }
 function remake() {
   const file = need("file"), n = Number(need("shot")), picture = tidy(args.picture ?? "");
