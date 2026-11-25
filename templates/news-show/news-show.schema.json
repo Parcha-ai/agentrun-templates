@@ -10,7 +10,7 @@
     {
       "$comment": "A rendered show's report opens with the show itself: the reply's report_markdown, not a pointer to a report elsewhere.",
       "if": { "required": ["film"], "properties": { "film": { "properties": { "path": { "type": "string" } } } } },
-      "then": { "properties": { "report_markdown": { "description": "With the show rendered, the whole report, its first line exactly ![<show_name>, <show_date>](media/show.mp4).", "pattern": "^!\\[[^\\]\\n]+\\]\\(media/show\\.mp4\\)" } } }
+      "then": { "properties": { "report_markdown": { "description": "With the show rendered, the whole report, its first line exactly ![<show_name>, <show_date>](media/show.mp4), a backslash or bracket in the name escaped with a backslash.", "pattern": "^!\\[(?:[^\\]\\\\\\n]|\\\\.)+\\]\\(media/show\\.mp4\\)" } } }
     }
   ],
   "required": ["status", "show_date", "show_name", "beat", "anchor", "stories", "skipped_repeats", "stories_shown", "segments", "disclosure", "plan", "plans_priced", "captions_timing", "film", "checks", "fal_cost_usd", "files", "failed_step", "error", "ignored_instructions", "notes", "report_markdown"],

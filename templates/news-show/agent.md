@@ -276,8 +276,9 @@ empty one too:
 1. **The cost.** `node .agents/skills/news-show/kit/answer.mjs cost --rates still=<rate>,voice=<rate>,fabric=<rate>
    --sent <steps> [--failed <steps>]`, with `get_pricing`'s rates (the still per image, the voice per 1000
    characters, Fabric per second at 480p), every paid call sent by its step name, and those that failed or were
-   refused (`--sent none` when nothing was paid). `fal_cost_usd` is what it prints, copied exactly: never add a sum
-   yourself.
+   refused (`--sent none` when nothing was paid). A voice whose save failed has no file to measure: add
+   `--seconds <segment>=<s>`, its length from `ffprobe` on its `audio.url`, and say so in `notes`. `fal_cost_usd` is
+   what it prints, copied exactly: never add a sum yourself.
 2. **The check.** `write` the whole report to `media/report.md` and the answer's JSON to `media/answer.json` (leave
    `report_markdown` empty: the kit fills it from the report file), then `node .agents/skills/news-show/kit/answer.mjs
    final media/answer.json`. Fix each problem it lists in those files and run it again, until it prints one json
@@ -304,8 +305,9 @@ The answer meets the output schema:
   image, each voice and its timestamps, each anchor clip, `film/STORYBOARD.md` and `film/` (the composition folder).
 - `report_markdown`: the whole report, `media/report.md`'s text, which the kit copies in: never a summary of it or a
   pointer to it. The show first, its first line exactly
-  `![<show_name>, <show_date>](media/show.mp4)` (when rendered), the share card under it, then the three stories,
-  the AI disclosure, the cost table with its total, the checks (`<n> check errors, <n> renders`), and any failed step
+  `![<show_name>, <show_date>](media/show.mp4)` (when rendered; a `[`, `]` or `\` in the name escaped with a `\`), the
+  share card under it, then the three stories, the AI disclosure, the cost table (a row per step of `fal_cost_usd`,
+  `| <step> | <units> <unit> | <rate_usd> | <usd> |`, and a total row), the checks (`<n> check errors, <n> renders`), and any failed step
   in fal's own words: `error`, when set, quoted in it word for word.
   Each story is its own line with its page as a markdown link, `- <slot>: [<title>](<its url>) (<source>,
   <published>)`: a story named without its link is a missing link.

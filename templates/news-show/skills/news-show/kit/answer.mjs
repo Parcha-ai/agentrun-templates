@@ -6,6 +6,7 @@
 //
 //   node .agents/skills/news-show/kit/answer.mjs cost --rates still=0.15,voice=0.1,fabric=0.08 \
 //        --sent anchor-image,voice-cold-open,...,voice-closing,anchor-cold-open,...,anchor-closing [--failed anchor-lead-b,...]
+//        [--seconds lead-b=5.4,...]   (a voice whose save failed: the length the run measured on its audio.url)
 //   node .agents/skills/news-show/kit/answer.mjs cost --sent none
 //   node .agents/skills/news-show/kit/answer.mjs final media/answer.json
 //
@@ -42,9 +43,18 @@ const fail = (message) => {
 };
 const list = (v) => (v ?? "").split(",").map((x) => x.trim()).filter(Boolean);
 
+// A voice's length: ffprobe on its saved file; when its save failed, the length the run measured itself, passed as
+// --seconds <segment>=<s> (never a guess), and said on stderr.
+const measured = Object.fromEntries(list(args.seconds).map((kv) => kv.split("=").map((x) => x.trim())));
 function voiceSeconds(segment) {
   const path = `media/voice-${segment}.mp3`;
-  if (!existsSync(path)) fail(`${path} is missing: an anchor clip is priced on its voice's length`);
+  if (!existsSync(path)) {
+    const v = Number(measured[segment]);
+    if (!(segment in measured) || !Number.isFinite(v) || v <= 0)
+      fail(`${path} is missing: an anchor clip is priced on its voice's length; its save failed, so pass the length you measured, --seconds ${segment}=<s>`);
+    console.error(`answer.mjs: anchor-${segment} priced on --seconds ${segment}=${v} (${path} is missing)`);
+    return v;
+  }
   const p = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path], { encoding: "utf8" });
   const v = Number((p.stdout ?? "").trim());
   if (p.status !== 0 || !Number.isFinite(v) || v <= 0) fail(`ffprobe could not read ${path}: ${(p.stderr ?? "").trim()}`);
@@ -125,7 +135,8 @@ function check(final) {
   const rendered = existsSync("media/show.mp4") && a.film?.path;
   if (rendered) {
     const first = report.trimStart().split("\n")[0].trim();
-    const embed = `![${a.show_name}, ${a.show_date}](media/show.mp4)`;
+    // Markdown alt text: a backslash or a bracket in the name is escaped, so the embed stays one image.
+    const embed = `![${String(a.show_name).replace(/[\\[\]]/g, "\\$&")}, ${a.show_date}](media/show.mp4)`;
     if (first !== embed) problems.push(`report_markdown must start with the show's embed, its first line exactly ${embed} (it starts: ${JSON.stringify(first.slice(0, 80))})`);
     if (existsSync("media/share-card.png") && !report.includes("](media/share-card.png)")) problems.push("report_markdown has no share card embed, ![...](media/share-card.png), under the show");
     if (!/AI-generated/i.test(report)) problems.push("report_markdown does not say the show and its anchor are AI-generated");
@@ -135,9 +146,19 @@ function check(final) {
       : /\bcheck errors?\b/i.test(report);
     if (!said) problems.push(`report_markdown has no checks: say them as \`${errs ?? "<n>"} check errors, ${renders ?? "<n>"} renders\``);
   }
+  // The cost table: a markdown table with a row for each priced step (its name and usd) and a total row.
+  const steps = Array.isArray(a.fal_cost_usd?.steps) ? a.fal_cost_usd.steps : [];
   const total = a.fal_cost_usd?.total;
-  if (typeof total === "number" && total > 0 && !report.includes(String(total)) && !report.includes(total.toFixed(3)))
-    problems.push(`report_markdown has no cost table with the total: list the steps and their total, ${total}`);
+  if (steps.length && typeof total === "number") {
+    const rows = report.split("\n").filter((l) => /^\s*\|.*\|\s*$/.test(l));
+    const figure = (n) => `(?<![\\d.])(?:${[String(n), n.toFixed(3)].map((x) => x.replace(".", "\\.")).join("|")})(?![\\d])`;
+    const named = (name) => `(?<![\\w-])${name}(?![\\w-])`;
+    const hasRow = (...parts) => rows.some((l) => parts.every((p) => new RegExp(p, "i").test(l)));
+    if (!hasRow("total", figure(total))) problems.push(`report_markdown has no cost table with the total: a markdown table, a row per step and a total row, ${total}`);
+    else for (const l of steps)
+      if (typeof l?.step === "string" && typeof l?.usd === "number" && !hasRow(named(l.step), figure(l.usd)))
+        problems.push(`report_markdown's cost table has no row for ${l.step}: | ${l.step} | ${l.units} ${l.unit} | ${l.rate_usd} | ${l.usd} |`);
+  }
   for (const st of Array.isArray(a.stories) ? a.stories : []) {
     if (st?.url && !report.includes(`](${st.url})`)) problems.push(`report_markdown does not link story ${st.slot ?? "?"}'s page: a line - ${st.slot}: [${st.title}](${st.url}) (...)`);
   }
@@ -161,4 +182,4 @@ function check(final) {
 if (command === "cost") cost();
 else if (command === "check") check(false);
 else if (command === "final") check(true);
-else fail("usage: answer.mjs cost --rates still=..,voice=..,fabric=.. --sent <steps>|none [--failed <steps>] | answer.mjs final media/answer.json | answer.mjs check media/answer.json");
+else fail("usage: answer.mjs cost --rates still=..,voice=..,fabric=.. --sent <steps>|none [--failed <steps>] [--seconds <segment>=<s>] | answer.mjs final media/answer.json | answer.mjs check media/answer.json");
