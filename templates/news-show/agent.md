@@ -284,4 +284,6 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
 - `files`: every file of the run: `media/show.mp4`, `media/show.vtt`, `media/share-card.png`, the still or anchor
   image, each voice and its timestamps, each anchor clip, `film/STORYBOARD.md` and `film/` (the composition folder).
 - `report_markdown`: the show first as `![<show name>, <date>](media/show.mp4)` (when rendered), the share card under
-  it, then each story with its source as a link, the AI disclosure, the cost table, the checks, and any failed step.
+  it, then the three stories, the AI disclosure, the cost table, the checks, and any failed step. Each story is its
+  own line with its page as a markdown link, `- <slot>: [<title>](<its url>) (<source>, <published>)`: a story named
+  without its link is a missing link.
