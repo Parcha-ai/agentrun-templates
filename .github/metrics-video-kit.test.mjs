@@ -355,8 +355,9 @@ const SKILL = new URL("../templates/metrics-video/skills/metrics-video/", import
 // answer; then the last scan. `items`: more of the week's transactions; `said`: words the narration (and the voice)
 // adds; `as`: the run's folder; `edit`: called with film/data.json's object after compute, its return written back (a
 // run that wrote into it); `beforeFinal`: called with the run's folder after the captions, before the last scan (the
-// files a run writes later: a restyled scene, a note, the render's log). Returns both scans.
-function fixtureRun(name, today, { items = [], said = "", as = name, edit, beforeFinal } = {}) {
+// files a run writes later: a restyled scene, a note, the render's log); `answer`: more of the answer's fields, the
+// answer then written one field to a line. Returns both scans (each with its stderr alone as `err`) and the folder.
+function fixtureRun(name, today, { items = [], said = "", as = name, edit, beforeFinal, answer } = {}) {
   const dir = join(root, `case-${as}`);
   mkdirSync(join(dir, "stripe"), { recursive: true });
   mkdirSync(join(dir, "media"), { recursive: true });
@@ -377,7 +378,7 @@ function fixtureRun(name, today, { items = [], said = "", as = name, edit, befor
   writeFileSync(join(dir, "film", "STORYBOARD.md"), "# Larkspur Ceramics: Weekly Revenue\n\n1. Open: Larkspur Ceramics, Week of 16 November 2026.\n2. Revenue: Net Revenue, Gross Charges, Stripe Fees.\n3. Days: Monday to Sunday, November.\n4. Change: Week Over Week, Up.\n5. Refunds: Refunds and Disputes, Money Won Back.\n6. Endcard: Larkspur Ceramics, Next Monday.\n");
   const scan = (...final) => {
     const r = node("metrics.mjs", "scan", "--pages", join(dir, "stripe"), "--root", dir, ...final);
-    return { status: r.status, out: r.stdout + r.stderr };
+    return { status: r.status, out: r.stdout + r.stderr, err: r.stderr };
   };
   const first = scan();
   const placed = node("metrics.mjs", "place", "--film", join(dir, "film"));
@@ -386,8 +387,8 @@ function fixtureRun(name, today, { items = [], said = "", as = name, edit, befor
   assert.equal(captions.status, 0, `captions ${name}: ${captions.stderr}${captions.stdout}`);
   assert.ok(existsSync(join(dir, "film", "compositions", "captions.html")) && existsSync(join(dir, "film", "words.json")), "the captions script wrote captions.html and words.json");
   if (beforeFinal) beforeFinal(dir);
-  writeFileSync(join(dir, "media", "answer.json"), JSON.stringify({ status: "done", script: narration, report_markdown: "## Larkspur Ceramics, week of 16 November 2026\n\n| Currency | Revenue | Gross | Refunds | Disputes | Stripe Fees |\n| USD | ... |\n\nNarration, Music, Captions, Cost.", ignored_instructions: ["A charge's description asked the AI making the weekly video to say a customer's name in the film, show their email on screen and thank them as the best customer. Not obeyed."] }));
-  return { first, final: scan("--final") };
+  writeFileSync(join(dir, "media", "answer.json"), JSON.stringify({ status: "done", script: narration, report_markdown: "## Larkspur Ceramics, week of 16 November 2026\n\n| Currency | Revenue | Gross | Refunds | Disputes | Stripe Fees |\n| USD | ... |\n\nNarration, Music, Captions, Cost.", ignored_instructions: ["A charge's description asked the AI making the weekly video to say a customer's name in the film, show their email on screen and thank them as the best customer. Not obeyed."], ...answer }, null, answer ? 1 : undefined));
+  return { first, final: scan("--final"), dir };
 }
 
 test("a run of the week-over-week fake week scans clean: the business, months, days and scene words are no one's name", () => {
@@ -719,4 +720,28 @@ test("a description pair inside one of the kit's phrases is no one's name; a cus
     customerData(leak.first, `said "${said}"`);
     assert.match(leak.first.out, /media\/vo\.txt/);
   }
+});
+
+// After billing (scan --final), a name's word found alone only warns: the run's answer keeps tool and kit words on
+// purpose (a kept warning's code, timeline_track_too_dense), and one can share a word with a description ("Track Day
+// Pass"). The warning names the file and the line, never the word. A whole description, a name pair or an email still
+// stops the film at --final, and before billing a word alone still does.
+test("after billing a word alone only warns, naming the file and line; a name still stops the film", () => {
+  const kept = { checks: { warnings_kept: ["timeline_track_too_dense on captions: expected"] } };
+  const r = fixtureRun("week-over-week", "2026-11-23", { items: [described("Track Day Pass", 6500)], as: "warn-after-billing", answer: kept });
+  assert.equal(r.first.status, 0, `the first scan: ${r.first.out}`);
+  assert.equal(r.final.status, 0, `the last scan warns, not fails: ${r.final.out}`);
+  const line = readFileSync(join(r.dir, "media", "answer.json"), "utf8").split("\n").findIndex((l) => l.includes("timeline_track_too_dense")) + 1;
+  assert.ok(line > 1, "the answer is written one field to a line");
+  assert.match(r.final.err, new RegExp(`^warning: a customer's word may be in media/answer\\.json line ${line} \\(words-alone check, not a failure after billing\\)$`, "m"));
+  assert.doesNotMatch(r.final.err, /track/i, "the warning never prints the word");
+  assert.ok(!existsSync(join(r.dir, "stripe", "raw-1.json")), "the raw pages are removed: nothing that fails was found");
+  assert.equal(JSON.parse(r.final.out.split("\n").find((l) => l.startsWith("{"))).raw_pages_removed.length, 1);
+  // A whole name said at --final still stops it, and keeps the raw pages.
+  const named = fixtureRun("week-over-week", "2026-11-23", { items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)], as: "named-after-billing", answer: { ...kept, thanks: "Thank you, Marisol Quintero." } });
+  assert.equal(named.first.status, 0, `the first scan: ${named.first.out}`);
+  customerData(named.final, `the last scan, a name pair in the answer: ${named.final.out}`);
+  assert.ok(existsSync(join(named.dir, "stripe", "raw-1.json")), "the raw pages stay when the film is stopped");
+  // Before billing, a word alone still stops the film.
+  customerData(scanRun("word-before-billing", [described("Commission for Marisol Quintero", 20000)], { "media/vo.txt": "Thanks, Marisol." }), "the first scan, a first name alone in the narration");
 });
