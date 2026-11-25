@@ -635,3 +635,13 @@ test("scan finds a name said through a lower-case initial with no dot", () => {
   const scene = scanRun("said-initial-nodot-scene", [described("Commission for Marisol Q. Quintero")], { "media/vo.txt": CLEAN, "film/compositions/open.html": "<div>marisol q quintero</div>" });
   customerData(scene, `through "q" in a scene: ${scene.out}`);
 });
+
+// The run's time zone is the kit's text in data.json ("weeks in Australia/Sydney" on the source line), which the run
+// can't reword: it is taken out whole, as a currency's unit is, and a customer named Sydney said is still found.
+test("a customer named for the run's time zone is no fault of the source line, and is still found when said", () => {
+  const items = [described("Tip from Sydney Brown")];
+  const data = { business: "Larkspur Ceramics", timezone: "Australia/Sydney", source_line: "Revenue: net of refunds and Stripe fees, from Stripe balance transactions · weeks in Australia/Sydney" };
+  const clean = scanRun("tz-word", items, { "film/data.json": data, "media/vo.txt": CLEAN });
+  assert.equal(clean.status, 0, clean.out);
+  customerData(scanRun("tz-word-said", items, { "film/data.json": data, "media/vo.txt": `${CLEAN} Thanks, Sydney.` }), "the customer's first name, said");
+});
