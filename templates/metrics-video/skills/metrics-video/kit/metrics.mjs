@@ -857,9 +857,11 @@ function scan() {
   // so a customer's name can't be set aside by naming it the business. Neither name is printed.
   const film = join(root, typeof args.film === "string" ? args.film : "film");
   let computed = "";
+  let zone = "";
   try {
-    const b = JSON.parse(readFileSync(join(film, "data.json"), "utf8")).business;
-    if (typeof b === "string") computed = b;
+    const d = JSON.parse(readFileSync(join(film, "data.json"), "utf8"));
+    if (typeof d.business === "string") computed = d.business;
+    if (typeof d.timezone === "string") zone = d.timezone;
   } catch {
     computed = "";
   }
@@ -915,12 +917,13 @@ function scan() {
     const said = [...new Set(out.filter(Boolean))];
     if (said.length) voices.push({ path: f.path, text: said.join("\n"), label: " (the words its voice says)" });
   }
-  // The kit's own phrases (each currency's spoken unit, "Hong Kong dollars"; the tools the skill names) are the
-  // film's, not a customer's: they are taken out of a text before a name's words alone are looked for, so a customer
-  // named Hong is found and "Hong Kong dollars" is not taken for her. Only the whole phrase is taken out.
+  // The kit's own phrases (each currency's spoken unit, "Hong Kong dollars"; the tools the skill names; the run's time
+  // zone, "weeks in Australia/Sydney" on the source line) are the film's, not a customer's: they are taken out of a
+  // text before a name's words alone are looked for, so a customer named Hong is found and "Hong Kong dollars" is not
+  // taken for her. Only the whole phrase is taken out.
   const codes = new Set();
   if (pages.length) for (const { list } of readRaw(dir)) for (const item of list.data) if (typeof item?.currency === "string") codes.add(item.currency.toLowerCase());
-  const phrases = [...new Set([...Object.values(UNIT).flat(), ...[...codes].flatMap((c) => { try { return [unitWords(c, 1), unitWords(c, 2)]; } catch { return []; } }), "Composio", "ElevenLabs", "HyperFrames", "fal", "Stripe"])]
+  const phrases = [...new Set([...Object.values(UNIT).flat(), ...[...codes].flatMap((c) => { try { return [unitWords(c, 1), unitWords(c, 2)]; } catch { return []; } }), "Composio", "ElevenLabs", "HyperFrames", "fal", "Stripe", zone])]
     .filter((x) => /\p{L}/u.test(x))
     .sort((a, b) => b.length - a.length);
   const kitPhrase = new RegExp(`(?<![\\p{L}])(?:${phrases.map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s+")).join("|")})(?![\\p{L}])`, "giu");
