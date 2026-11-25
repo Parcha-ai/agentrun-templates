@@ -115,7 +115,7 @@
       "type": ["object", "null"],
       "additionalProperties": false,
       "required": ["metric", "timezone", "week", "figures"],
-      "description": "this week's figures for the next week's run to compare with, exactly as the script printed them; null when they were never worked out",
+      "description": "this week's figures for the next week's run to compare with, exactly as the script printed them (complete included); null when they were never worked out",
       "properties": {
         "metric": { "enum": ["net-of-refunds-and-fees"] },
         "timezone": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_+/-]{0,59}$" },
@@ -128,6 +128,7 @@
             "end": { "type": "string", "format": "date" }
           }
         },
+        "complete": { "type": "boolean", "description": "true when figures holds every currency of the week; false when the week had more than the ten carried" },
         "figures": {
           "type": "array",
           "maxItems": 10,

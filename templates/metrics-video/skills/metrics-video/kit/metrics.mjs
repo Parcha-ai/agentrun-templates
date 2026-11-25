@@ -368,6 +368,9 @@ const carriedRow = (c, f) => ({
   currency: c, revenue_minor: f.revenue, gross_minor: f.gross, charges: f.charges,
   refunds_count: f.refunds[0], refunds_minor: f.refunds[1], disputes_count: f.disputes[0], disputes_minor: f.disputes[1], fees_minor: f.fees,
 });
+// The most currencies a result carries to the next week's run (the schema's carried.figures maxItems). A week with more
+// carries the ten it lists first and says it holds only some (complete: false).
+const CARRIED_MAX = 10;
 const COMPARED = ["revenue_minor", "gross_minor", "charges", "refunds_count", "refunds_minor", "disputes_count", "disputes_minor", "fees_minor"];
 
 function compute() {
@@ -392,11 +395,21 @@ function compute() {
   const priorRow = new Map();
   if (before) {
     const carried = new Map((w.carried.figures ?? []).map((r) => [r.currency, r]));
+    // A currency the carry doesn't hold had no money that week only when the carry holds every currency: it says so
+    // (complete), or, from a result before that field, it holds fewer than the most it could. Else its carried figure
+    // is unknown: it is never checked against the carry, and never said to be restated. Its week before is still
+    // Stripe's, read again, as for every currency.
+    const whole = w.carried.complete === true || (w.carried.complete === undefined && carried.size < CARRIED_MAX);
     const currencies = new Set([...carried.keys(), ...before.by.keys()]);
     const restated = [];
+    const notCarried = [];
     for (const c of [...currencies].sort()) {
       const reread = carriedRow(c, before.by.get(c) ?? emptyFigures());
       priorRow.set(c, reread);
+      if (!carried.has(c) && !whole) {
+        notCarried.push(c);
+        continue;
+      }
       const had = carried.get(c) ?? carriedRow(c, emptyFigures());
       const changed = COMPARED.filter((k) => had[k] !== reread[k]);
       if (changed.length) {
@@ -408,9 +421,10 @@ function compute() {
         });
       }
     }
+    const unchecked = notCarried.length ? ` (${notCarried.map((c) => c.toUpperCase()).join(", ")}: not in the last result's carried figures, which hold only ${CARRIED_MAX} currencies, so not checked against them)` : "";
     compare = restated.length
-      ? { state: "restated", reason: `Stripe's figures for the week of ${w.week_before.start} changed after the last film: the week over week uses them as read now`, restated }
-      : { state: "carried", reason: `the week of ${w.week_before.start} read again matches the carried figures`, restated: [] };
+      ? { state: "restated", reason: `Stripe's figures for the week of ${w.week_before.start} changed after the last film: the week over week uses them as read now${unchecked}`, restated }
+      : { state: "carried", reason: `the week of ${w.week_before.start} read again matches the carried figures${unchecked}`, restated: [] };
   }
 
   const currencies = order.map(([c, f], i) => {
@@ -491,7 +505,8 @@ function compute() {
       metric: METRIC.id,
       timezone: w.timezone,
       week: { start: w.week.start, end: w.week.end },
-      figures: order.map(([c, f]) => carriedRow(c, f)).slice(0, 10),
+      figures: order.map(([c, f]) => carriedRow(c, f)).slice(0, CARRIED_MAX),
+      complete: order.length <= CARRIED_MAX,
     },
   };
   writeFileSync(join(film, "data.json"), JSON.stringify(data, null, 1) + "\n");
