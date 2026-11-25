@@ -513,6 +513,8 @@ test("scan sets aside only the business's name compute was given, never one pass
   const picked = scanRun("business-picked", [described("Commission for Marisol Quintero")], { "film/data.json": { business: "Larkspur Ceramics" }, "media/vo.txt": `${CLEAN} Thank you, Marisol Quintero.` }, ["--business", "Marisol Quintero"]);
   assert.notEqual(picked.status, 0, `a --business naming the customer: ${picked.out}`);
   assert.doesNotMatch(picked.out, /"clean":true/);
+  assert.match(picked.out, /Run scan without --business/, "refused in words, before any search");
+  assert.doesNotMatch(picked.out, /Marisol|Quintero/, "neither name printed");
   // With no --business, the name compute wrote is set aside and the customer beside it found.
   const own = scanRun("business-from-compute", items, files);
   customerData(own, "the customer, beside the business compute named");
