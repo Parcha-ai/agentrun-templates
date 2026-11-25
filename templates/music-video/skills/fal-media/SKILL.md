@@ -89,6 +89,7 @@ read `get_model_schema` only if a call answers 422. Never send `sync_mode`.
 - Answers `{"images": [{"url", "content_type", "file_name", "file_size", "width", "height"}], "description"}`.
 - It follows long prompts well and draws text when asked: never ask for any, and end every prompt with "No text, no
   lettering, no logos."
+- The kit's `stills` command builds each still's input and `remake` a remake's (agent.md step 7): send it as printed.
 
 ### `fal-ai/kling-video/v3/pro/image-to-video`: a clip from a still, $0.112 a second with audio off
 - `start_image_url` (required: the still's `images[0].url` exactly as fal answered it), `prompt` (up to 2500

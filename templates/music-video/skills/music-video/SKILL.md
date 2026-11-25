@@ -170,4 +170,6 @@ run stopped waiting (they count at their full price, with `pending` true: fal ma
 - Never start the render in the background (`nohup`, `&`, `setsid`): the sandbox ends a call's processes when the call
   returns. One foreground call with a `timeout` of 1200.
 - Never make a key stem: `node film/beats.mjs stem --file media/run-keys.json` makes it before the first paid call.
+- Never type a still's or a clip's input: `beats.mjs stills`, `remake` and `clips` build them (agent.md steps 7 and 8),
+  and keep what they were sent with in `media/stills.json` and `media/clips.json`.
 - Never fetch anything from the sandbox: it has no network to the web, and everything it needs is in the run's folder.

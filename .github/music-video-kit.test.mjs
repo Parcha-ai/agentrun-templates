@@ -264,7 +264,7 @@ function stillsDir({ shots = [6, 4, 6], lines, style = `Style: ${STYLE}`, aspect
     clock += s.seconds;
     return line;
   });
-  writeFileSync(join(dir, "storyboard.md"), [style, ...shotLines].filter((l) => l !== undefined).join("\n") + "\n");
+  writeFileSync(join(dir, "storyboard.md"), [style, ...shotLines].filter((l) => l !== null).join("\n") + "\n");
   return dir;
 }
 const kit = (dir, ...args) => spawnSync(process.execPath, ["film/beats.mjs", ...args], { cwd: dir, encoding: "utf8" });
@@ -311,7 +311,7 @@ test("a 12-still media/stills.json stays small enough to reach a grader whole", 
 
 test("stills refuses a storyboard with no style line, lines that aren't the plan's shots, or a shot with no picture", () => {
   const cases = [
-    [{ style: undefined }, /storyboard\.md has no style line/],
+    [{ style: null }, /storyboard\.md has no style line/],
     [{ lines: ['1 | 0-6 s | 6 s | lyric: "none" | picture: a | motion: m', '2 | 6-10 s | 4 s | lyric: "none" | picture: b | motion: m'] }, /storyboard\.md holds 2 shot lines, the plan 3/],
     [{ lines: ['2 | 0-6 s | 6 s | lyric: "none" | picture: a | motion: m', '1 | 6-10 s | 4 s | lyric: "none" | picture: b | motion: m', '3 | 10-16 s | 6 s | lyric: "none" | picture: c | motion: m'] }, /shot line 1 is shot 2/],
     [{ lines: ['1 | 0-6 s | 6 s | lyric: "none" | picture: a | motion: m', '2 | 6-10 s | 4 s | lyric: "none" | motion: m', '3 | 10-16 s | 6 s | lyric: "none" | picture: c | motion: m'] }, /shot 2: its storyboard line has no picture/],

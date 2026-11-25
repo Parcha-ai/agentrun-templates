@@ -10,6 +10,8 @@
 //   node beats.mjs lyrics --film film --words media/transcript.json --vtt media/lyrics.vtt
 //   node beats.mjs place  --film film
 //   node beats.mjs stem   --file media/run-keys.json
+//   node beats.mjs stills --film film --storyboard storyboard.md --stem <stem> --file media/stills.json
+//   node beats.mjs remake --file media/stills.json --shot <n> --picture "<the fixed picture>"
 //   node beats.mjs clips  --film film --storyboard storyboard.md --stem <stem> --stills <url-1>,...,<url-N> --file media/clips.json
 //   node beats.mjs cost   --film film --stem <stem> --sent isolate,transcript,still-1,...,clip-12 [--failed clip-5,...] [--pending clip-7,...]
 //
@@ -34,6 +36,14 @@
 //         extracts every video of a film at once, and six clips' extractions together run a 4 GiB sandbox out of memory.
 // stem    prints the run's key stem: the one in the file when it holds one (a resumed run), else a new one from the
 //         sandbox's random bytes, written there first. A model never makes one.
+// stills  every still's submit_job, built from the storyboard and the plan: shot n's prompt is the style line, its
+//         storyboard picture word for word and "No text, no lettering, no logos.", with the fixed fields (one image, the
+//         plan's aspect, 1K, png, no web search). It prints one `submit_job {...}` line per still, to send as printed,
+//         and writes them to --file: the style and fixed fields once, then one short line per still (its key and
+//         picture), so the record reaches a grader whole. A storyboard with no style line, lines that aren't the plan's
+//         shots in order, or a shot with no picture is an error, and nothing is printed or written.
+// remake  one still's second take: the same input with its picture fixed, key `<its key>-2`, added to --file and
+//         printed as one `submit_job {...}` line. Never a second remake of a shot, never more than two in a run.
 // clips   every clip's submit_job, built from the storyboard and the plan: shot n's prompt is its storyboard motion
 //         and ", the scene as it is", its still the n-th of --stills (fal's URL, as fal answered it), its duration the
 //         plan's clip seconds, then the fixed fields (no audio, the one negative prompt). It prints one
@@ -768,24 +778,85 @@ function stem() {
   console.log(JSON.stringify({ stem: made, made: true }));
 }
 
+// ---------- the stills ----------
+const NANO = "fal-ai/nano-banana-pro";
+const ENDING = "No text, no lettering, no logos.";
+const REMAKES = 2;
+const STEM = /^[a-z0-9]{8}$/;
+const tidy = (text) => text.trim().replace(/[\s.,;:]+$/, "");
+// The shot lines of a storyboard (`<n> | ... | picture: <what the still shows> | motion: <move>`), checked against the
+// plan's shots: one line per shot, in order.
+function shotLines(board, shots) {
+  if (!existsSync(board)) fail(2, `${board} is missing: write the storyboard first`);
+  const text = readFileSync(board, "utf8");
+  const lines = text.split("\n").filter((l) => /^\s*\d+\s*\|/.test(l));
+  if (lines.length !== shots.length) fail(2, `${board} holds ${lines.length} shot lines, the plan ${shots.length}: one line per shot of the plan, in order`);
+  lines.forEach((line, i) => {
+    const n = Number(line.match(/^\s*(\d+)/)[1]);
+    if (n !== shots[i].n) fail(2, `shot line ${i + 1} is shot ${n}: the storyboard's lines are the plan's shots in order`);
+  });
+  return { text, lines };
+}
+const stillInput = (record, picture) => ({ prompt: `${record.style}. ${picture}. ${ENDING}`, ...record.every_still });
+const stillCall = (record, s) => ({ endpoint_id: record.endpoint_id, submission_key: s.key, input: stillInput(record, s.picture) });
+function writeStills(file, record) {
+  const head = { endpoint_id: record.endpoint_id, style: record.style, each_prompt: record.each_prompt, every_still: record.every_still };
+  const top = Object.entries(head).map(([k, v]) => `${JSON.stringify(k)}: ${JSON.stringify(v)}`).join(",\n ");
+  writeFileSync(file, `{${top},\n "stills": [\n${record.stills.map((s) => `  ${JSON.stringify(s)}`).join(",\n")}\n]}\n`);
+}
+function stills() {
+  const film = need("film"), board = need("storyboard"), file = need("file"), stem = need("stem");
+  if (!STEM.test(stem)) fail(2, "--stem is the run's key stem from media/run-keys.json: 8 lowercase letters and digits");
+  const plan = readPlan(film);
+  const { text, lines } = shotLines(board, plan.cut.shots);
+  const styleLine = text.split("\n").find((l) => /^\s*Style:/i.test(l));
+  const style = styleLine === undefined ? "" : tidy(styleLine.replace(/^\s*Style:/i, ""));
+  if (!style) fail(2, `${board} has no style line: its first line is \`Style: <one look for every shot>\``);
+  const record = {
+    endpoint_id: NANO,
+    style,
+    each_prompt: `<style>. <picture>. ${ENDING}`,
+    every_still: { num_images: 1, aspect_ratio: plan.aspect, resolution: "1K", output_format: "png", enable_web_search: false },
+    stills: plan.cut.shots.map((s, i) => {
+      const at = lines[i].indexOf("| picture:");
+      const end = lines[i].lastIndexOf("| motion:");
+      const picture = at < 0 ? "" : tidy(lines[i].slice(at + "| picture:".length, end > at ? end : undefined));
+      if (!picture) fail(2, `shot ${s.n}: its storyboard line has no picture (\`| picture: <what the still shows>\`)`);
+      return { n: s.n, key: `mu-${stem}-still-${s.n}`, picture };
+    }),
+  };
+  writeStills(file, record);
+  for (const s of record.stills) console.log(`submit_job ${JSON.stringify(stillCall(record, s))}`);
+}
+function remake() {
+  const file = need("file"), n = Number(need("shot")), picture = tidy(args.picture ?? "");
+  if (!existsSync(file)) fail(2, `${file} is missing: run stills first`);
+  const record = JSON.parse(readFileSync(file, "utf8"));
+  const first = record.stills.find((s) => s.n === n && !s.remake);
+  if (!first) fail(2, `shot ${need("shot")} is not in ${file}: give the shot number of a still it holds`);
+  if (!picture) fail(2, "--picture is the fixed picture for the remake: what its still shows, with what broke a rule taken out");
+  if (record.stills.some((s) => s.n === n && s.remake)) fail(2, `shot ${n} has had its remake: never a third take of one shot`);
+  if (record.stills.filter((s) => s.remake).length >= REMAKES) fail(2, `two remakes are the most a run makes (the reserve the price held)`);
+  const again = { n, key: `${first.key}-2`, picture, remake: true };
+  record.stills.push(again);
+  writeStills(file, record);
+  console.log(`submit_job ${JSON.stringify(stillCall(record, again))}`);
+}
+
 // ---------- the clips ----------
 const KLING = "fal-ai/kling-video/v3/pro/image-to-video";
 const NEGATIVE = "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, celebrity, blur, distortion, low quality";
 function clips() {
   const film = need("film"), board = need("storyboard"), file = need("file"), stem = need("stem");
-  if (!/^[a-z0-9]{8}$/.test(stem)) fail(2, "--stem is the run's key stem from media/run-keys.json: 8 lowercase letters and digits");
+  if (!STEM.test(stem)) fail(2, "--stem is the run's key stem from media/run-keys.json: 8 lowercase letters and digits");
   const shots = readPlan(film).cut.shots;
-  if (!existsSync(board)) fail(2, `${board} is missing: write the storyboard first`);
-  // A shot line is `<n> | ... | motion: <move>`; its motion is what follows the line's last "| motion:".
-  const lines = readFileSync(board, "utf8").split("\n").filter((l) => /^\s*\d+\s*\|/.test(l));
-  if (lines.length !== shots.length) fail(2, `${board} holds ${lines.length} shot lines, the plan ${shots.length}: one line per shot of the plan, in order`);
+  // A shot's motion is what follows its line's last "| motion:".
+  const { lines } = shotLines(board, shots);
   const urls = need("stills").split(",").map((u) => u.trim());
   if (urls.length !== shots.length) fail(2, `--stills holds ${urls.length} URLs, the plan ${shots.length} shots: each shot's still URL, in shot order`);
   const built = shots.map((s, i) => {
-    const n = Number(lines[i].match(/^\s*(\d+)/)[1]);
-    if (n !== s.n) fail(2, `shot line ${i + 1} is shot ${n}: the storyboard's lines are the plan's shots in order`);
     const at = lines[i].lastIndexOf("| motion:");
-    const motion = at < 0 ? "" : lines[i].slice(at + "| motion:".length).trim().replace(/[\s.,;:]+$/, "");
+    const motion = at < 0 ? "" : tidy(lines[i].slice(at + "| motion:".length));
     if (!motion) fail(2, `shot ${s.n}: its storyboard line has no motion (\`| motion: <the camera or subject move>\` at its end)`);
     if (!/^https:\/\/\S+$/.test(urls[i])) fail(2, `shot ${s.n}: its still URL ${urls[i] || "(empty)"} is not an https URL: give fal's URL for its still, as fal answered it`);
     return { n: s.n, key: `mu-${stem}-clip-${s.n}`, duration: String(s.clip_seconds), prompt: `${motion}, the scene as it is`, start_image_url: urls[i] };
@@ -825,6 +896,8 @@ else if (command === "price") price();
 else if (command === "lyrics") lyrics();
 else if (command === "place") place();
 else if (command === "stem") stem();
+else if (command === "stills") stills();
+else if (command === "remake") remake();
 else if (command === "clips") clips();
 else if (command === "cost") cost();
-else fail(2, "usage: node beats.mjs plan|price|lyrics|place|stem|clips|cost ... (the header of this file says each)");
+else fail(2, "usage: node beats.mjs plan|price|lyrics|place|stem|stills|remake|clips|cost ... (the header of this file says each)");

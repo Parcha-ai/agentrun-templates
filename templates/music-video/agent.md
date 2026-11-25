@@ -176,14 +176,23 @@ then one line per shot of the plan, in order, the times, seconds and lyric copie
 
 ## 7. Stills
 
-With no other call in between, `submit_job` each shot's still once, in shot order, on `fal-ai/nano-banana-pro`, key
-`mu-<stem>-still-<n>`, input exactly:
+The kit builds every still's input:
+
+```sh
+node film/beats.mjs stills --film film --storyboard storyboard.md --stem <stem> --file media/stills.json
+```
+
+It prints one `submit_job {...}` line per shot, on `fal-ai/nano-banana-pro`, key `mu-<stem>-still-<n>`, input:
 
 ```json
 {"prompt": "<the style line>. <shot n's picture>. No text, no lettering, no logos.", "num_images": 1, "aspect_ratio": "<aspect>", "resolution": "1K", "output_format": "png", "enable_web_search": false}
 ```
 
-`<shot n's picture>` is the picture from its storyboard line, word for word, nothing dropped or added.
+`<shot n's picture>` is the picture from its storyboard line, word for word, nothing dropped or added. It writes the
+same inputs to `media/stills.json`, the record of what the stills were sent with. Then, with no other call in between,
+`submit_job` each still once, in shot order, exactly as printed: never edit, retype or rebuild one. When the command
+refuses (no style line, a shot line with no picture, lines that aren't the plan's shots), nothing has been sent: fix
+`storyboard.md` and run it again.
 
 Then **one** `wait_for_jobs` whose `jobs` list holds every still's own handles, at `index` n − 1 for still n. While any
 is pending, wait the `poll_after_seconds` it gives and read the pending ones again (each at its own index); after 10
@@ -192,10 +201,13 @@ exactly as fal returned it, character for character. `web_save` each still's `im
 
 **Look at them, and remake at most two.** `read` each saved still. Remake one only when it breaks a rule of step 6 (a
 word, letter or logo in it, a face that reads as a real person) or plainly misses its picture; a still that failed is
-remade the same way. A remake is one `submit_job` with key `mu-<stem>-still-<n>-2`, the same input with the prompt
-fixed, read with its own one-item `wait_for_jobs` (index 0), saved to `media/still-<n>-2.png`, and used for that shot
-from then on. At most two remakes in a run (the reserve the price held), and never a third take of one shot. A shot
-whose still and remake both failed borrows the nearest shot's still for its clip and its fallback, said in the
+remade the same way (its picture as it was). A remake's input comes from the kit, its picture fixed (what broke a
+rule taken out):
+`node film/beats.mjs remake --file media/stills.json --shot <n> --picture "<the fixed picture>"` prints one
+`submit_job` with key `mu-<stem>-still-<n>-2` and adds it to `media/stills.json`; send it as printed, read it with
+its own one-item `wait_for_jobs` (index 0), save it to `media/still-<n>-2.png`, and use it for that shot from then on.
+At most two remakes in a run (the reserve the price held), and never a third take of one shot: the kit refuses both. A
+shot whose still and remake both failed borrows the nearest shot's still for its clip and its fallback, said in the
 report; the run is `partial` naming the shot.
 
 **Then go on to the clips.** A still fal answered as completed is that shot's still, after at most its one remake,
@@ -289,7 +301,7 @@ When the film is rendered, `node film/beats.mjs cost` (the skill's step 8) gives
   `check_errors`, `warnings_kept`, `review_fixes` and `renders` (null, empty and 0 when nothing was rendered).
 - `files`: every file of the run with what it is: `media/film.mp4`, `storyboard.md`, `media/still-<n>.png` (and remakes),
   `media/clip-<n>.mp4`, `media/lyrics.vtt` (when written), `media/transcript.json` (when written), `media/song.<ext>`,
-  `media/run-keys.json`, `media/clips.json` (when written) and `film/` (the source folder). The files are the delivery.
+  `media/run-keys.json`, `media/stills.json` and `media/clips.json` (when written) and `film/` (the source folder). The files are the delivery.
 - `ignored_instructions` as in step 5, else empty.
 - `report_markdown`: the film first as `![Music video](media/film.mp4)` (when rendered), then what the plan priced at on
   fal (`plan_usd`, before anything was paid), the song and the rights stated, the beats (tempo, bar length,
