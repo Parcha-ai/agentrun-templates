@@ -126,7 +126,7 @@ test("check: a typed total that is not the steps' sum fails (3.846 for 2.846, an
   }
 });
 
-test("check: a one-line summary report pointing above fails on the embed, the card, the AI line, the pointer, the cost, the checks and every link", () => {
+test("check: a one-line summary report pointing above fails on the embed, the card, the AI line, the cost, the checks and every link", () => {
   const dir = folder();
   kit(dir, "cost", "--rates", RATES, "--sent", SENT);
   const r = answer(dir, (a) => ((a.report_markdown = "The Daily Desk, 2026-11-23: show rendered. See the summary above for links, disclosure, checks and notes."), a));
@@ -134,7 +134,6 @@ test("check: a one-line summary report pointing above fails on the embed, the ca
   assert.match(r.stdout, /must start with the show's embed/);
   assert.match(r.stdout, /no share card embed/);
   assert.match(r.stdout, /AI-generated/);
-  assert.match(r.stdout, /points at text outside itself/);
   assert.match(r.stdout, /no cost table with the total/);
   assert.match(r.stdout, /no checks/);
   for (const s of STORIES) assert.ok(r.stdout.includes(`link story ${s.slot}'s page`), s.slot);
@@ -153,14 +152,6 @@ test("check: report_markdown that is not media/report.md byte for byte, or no re
   const gone = answer(dir, (a) => a, null);
   assert.equal(gone.status, 1);
   assert.match(gone.stdout, /media\/report\.md is missing/);
-});
-
-test("check: a full report that points \"see above\" for a part fails", () => {
-  const dir = folder();
-  kit(dir, "cost", "--rates", RATES, "--sent", SENT);
-  const r = answer(dir, (a) => ((a.report_markdown += "\n\nThe segments and their timings: see the JSON above."), a));
-  assert.equal(r.status, 1);
-  assert.match(r.stdout, /answer: 1 problem\n- report_markdown points at text outside itself/);
 });
 
 test("check: a report missing its cost table or its checks fails, each named", () => {

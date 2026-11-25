@@ -278,12 +278,12 @@ empty one too:
    characters, Fabric per second at 480p), every paid call sent by its step name, and those that failed or were
    refused (`--sent none` when nothing was paid). `fal_cost_usd` is what it prints, copied exactly: never add a sum
    yourself.
-2. **The check.** `write` the whole report to `media/report.md` and the answer's JSON to `media/answer.json`, its
-   `report_markdown` that file's text exactly, then `node .agents/skills/news-show/kit/answer.mjs check
-   media/answer.json`. Fix each problem it lists in those files and check again, until it prints `answer ok`. The
-   check decides: don't argue with it or judge the report yourself.
-3. **The reply.** `report_markdown`'s text, then one fenced `json` block that is `media/answer.json` exactly as
-   checked, and nothing after it.
+2. **The check.** `write` the whole report to `media/report.md` and the answer's JSON to `media/answer.json` (leave
+   `report_markdown` empty: the kit fills it from the report file), then `node .agents/skills/news-show/kit/answer.mjs
+   final media/answer.json`. Fix each problem it lists in those files and run it again, until it prints one json
+   block. The check decides: don't argue with it or judge the report yourself.
+3. **The reply.** Exactly the json block `final` printed, every character of it, with nothing before or after it.
+   Never shorten, summarize or replace a field of it, `report_markdown` least of all: the reply is the report.
 
 The answer meets the output schema:
 
@@ -302,8 +302,8 @@ The answer meets the output schema:
   job at 0, and `total` the sum of the listed steps. Estimates from fal's rates, not fal's invoice.
 - `files`: every file of the run: `media/show.mp4`, `media/show.vtt`, `media/share-card.png`, the still or anchor
   image, each voice and its timestamps, each anchor clip, `film/STORYBOARD.md` and `film/` (the composition folder).
-- `report_markdown`: the whole report, in this field itself: the same markdown as your reply above the JSON, never a
-  summary of it or a pointer to it ("see above"). The show first, its first line exactly
+- `report_markdown`: the whole report, `media/report.md`'s text, which the kit copies in: never a summary of it or a
+  pointer to it. The show first, its first line exactly
   `![<show_name>, <show_date>](media/show.mp4)` (when rendered), the share card under it, then the three stories,
   the AI disclosure, the cost table with its total, the checks (`<n> check errors, <n> renders`), and any failed step
   in fal's own words: `error`, when set, quoted in it word for word.

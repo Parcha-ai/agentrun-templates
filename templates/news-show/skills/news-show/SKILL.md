@@ -179,18 +179,19 @@ skill (it needs no copy in `film/`):
 
 ```sh
 node .agents/skills/news-show/kit/answer.mjs cost --rates still=0.15,voice=0.1,fabric=0.08 --sent anchor-image,voice-cold-open,voice-headlines,voice-lead-a,voice-story-a,voice-lead-b,voice-story-b,voice-lead-c,voice-story-c,voice-closing,anchor-cold-open,anchor-lead-a,anchor-lead-b,anchor-lead-c,anchor-closing [--failed anchor-lead-b]
-node .agents/skills/news-show/kit/answer.mjs check media/answer.json
+node .agents/skills/news-show/kit/answer.mjs final media/answer.json
 ```
 
 The rates are `get_pricing`'s, never these examples. `--sent` lists only the calls sent: no `anchor-image` with the
 owner's image, only the plan's anchor segments, none not sent (a voice over 30 s), and `--sent none` when nothing was
 paid. `cost` reads the scripts from `film/show.json` (write it first, its scripts exactly as sent) and each voice's
-length with ffprobe, prints `fal_cost_usd` and keeps it in `film/cost.json`. `check` reads the answer file. It
-confirms that `report_markdown` is `media/report.md` byte for byte (write the whole report there first), with no "see
-above", and that `fal_cost_usd` matches `cost` and the report gives its total. When the show is rendered, it confirms that `report_markdown` opens with
-the show's embed and holds the share card, the AI disclosure and the checks. It also confirms that every story's page is linked,
-that `error` is quoted word for word, and that a show not rendered remembers none of today's stories. It prints
-`answer ok`, or each problem; fix them in the file and run it again.
+length with ffprobe, prints `fal_cost_usd` and keeps it in `film/cost.json`. `final` reads the answer file. It
+sets `report_markdown` to `media/report.md`'s text itself (write the whole report there first) and writes the answer
+file back. It then confirms that `fal_cost_usd` matches `cost` and that the report gives its total. When the show is
+rendered, it confirms that `report_markdown` opens with the show's embed and holds the share card, the AI disclosure
+and the checks. It also confirms that every story's page is linked, that `error` is quoted word for word, and that a
+show not rendered remembers none of today's stories. It prints each problem (fix them in the files and run it again),
+or the reply: the answer file as one json block, which is the whole reply, sent exactly as printed.
 
 ## Never
 

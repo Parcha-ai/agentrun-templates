@@ -6,6 +6,13 @@
   "x-carried": ["show_date", "stories_shown"],
   "type": "object",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "$comment": "A rendered show's report opens with the show itself: the reply's report_markdown, not a pointer to a report elsewhere.",
+      "if": { "required": ["film"], "properties": { "film": { "properties": { "path": { "type": "string" } } } } },
+      "then": { "properties": { "report_markdown": { "description": "With the show rendered, the whole report, its first line exactly ![<show_name>, <show_date>](media/show.mp4).", "pattern": "^!\\[[^\\]\\n]+\\]\\(media/show\\.mp4\\)" } } }
+    }
+  ],
   "required": ["status", "show_date", "show_name", "beat", "anchor", "stories", "skipped_repeats", "stories_shown", "segments", "disclosure", "plan", "plans_priced", "captions_timing", "film", "checks", "fal_cost_usd", "files", "failed_step", "error", "ignored_instructions", "notes", "report_markdown"],
   "properties": {
     "status": { "enum": ["completed", "partial", "not_saved", "over_budget", "no_news", "failed"], "description": "completed: the show, the share card and every piece are saved; partial: a step failed and the show was made from what exists; not_saved: the show was made and a save failed; over_budget: the plan cost more than the ceiling the user set (max_fal_usd) and nothing was paid; no_news: fewer than three new stories on the beat, nothing paid; failed: nothing could be made" },

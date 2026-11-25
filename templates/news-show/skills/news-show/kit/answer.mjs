@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 // answer.mjs: the answer's exact work. `cost` works out fal_cost_usd from the steps sent and get_pricing's rates, so
 // no sum is added by hand; `check` reads the answer the run wrote to a file and lists what it is missing before it is
-// given. Code does the arithmetic and the structural checks; the run writes the words.
+// given; `final` prints the reply itself. Code does the arithmetic, the structural checks and the reply's copy of the
+// report; the run writes the words.
 //
 //   node .agents/skills/news-show/kit/answer.mjs cost --rates still=0.15,voice=0.1,fabric=0.08 \
 //        --sent anchor-image,voice-cold-open,...,voice-closing,anchor-cold-open,...,anchor-closing [--failed anchor-lead-b,...]
 //   node .agents/skills/news-show/kit/answer.mjs cost --sent none
-//   node .agents/skills/news-show/kit/answer.mjs check media/answer.json
+//   node .agents/skills/news-show/kit/answer.mjs final media/answer.json
 //
 // Run from the run's folder. Paths: film/show.json (the scripts as sent), media/voice-<segment>.mp3 (each voice, its
 // length read with ffprobe), film/cost.json (written by cost, read by check), media/show.mp4 and media/share-card.png.
@@ -19,7 +20,10 @@
 // check    the answer file: valid JSON with the schema's fields; fal_cost_usd exactly as cost printed it; when the show
 //          is rendered, report_markdown starts with the show's embed and holds the share card; every story's page is
 //          linked in report_markdown; `error`, when set, is quoted in report_markdown word for word; a show that was
-//          not rendered remembers none of today's stories. It prints "answer ok" (exit 0) or each problem (exit 1).
+//          not rendered remembers none of today's stories; report_markdown is media/report.md byte for byte, with its
+//          cost total and its checks. It prints "answer ok" (exit 0) or each problem (exit 1).
+// final    the reply: report_markdown set to media/report.md's text by code and the answer file written back, then the
+//          same checks. It prints the reply to send, the answer file as one json block (exit 0), or each problem (exit 1).
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
@@ -87,9 +91,11 @@ function cost() {
   console.log(JSON.stringify(out));
 }
 
-function check() {
+// `final` fills report_markdown from media/report.md itself and writes the answer file back, so the report the reply
+// carries is the file, by code; then it checks the answer and prints the reply: the answer file as one json block.
+function check(final) {
   const file = rest.find((a) => !a.startsWith("--"));
-  if (!file) fail("usage: answer.mjs check media/answer.json");
+  if (!file) fail(`usage: answer.mjs ${final ? "final" : "check"} media/answer.json`);
   if (!existsSync(file)) fail(`${file} is missing: write the answer's JSON there first`);
   const problems = [];
   let a;
@@ -99,12 +105,15 @@ function check() {
     console.log(`answer: 1 problem\n- ${file} is not valid JSON: ${e.message}`);
     process.exit(1);
   }
+  if (final && a && typeof a === "object" && existsSync("media/report.md")) {
+    a.report_markdown = readFileSync("media/report.md", "utf8");
+    writeFileSync(file, `${JSON.stringify(a, null, 1)}\n`);
+  }
   for (const k of REQUIRED) if (!(k in a)) problems.push(`the field ${k} is missing`);
   const report = typeof a.report_markdown === "string" ? a.report_markdown : "";
   if (!report.trim()) problems.push("report_markdown is empty: it is the whole report");
   if (!existsSync("media/report.md")) problems.push("media/report.md is missing: write the whole report there, then put the same text in report_markdown");
   else if (readFileSync("media/report.md", "utf8") !== report) problems.push("report_markdown is not media/report.md byte for byte: set report_markdown to the file's whole text, unchanged");
-  if (/\bsee (the [\w ]{0,30})?above\b/i.test(report)) problems.push("report_markdown points at text outside itself (\"see above\"): it is the whole report, so write that part out in it");
 
   if (!existsSync("film/cost.json")) problems.push("film/cost.json is missing: run `answer.mjs cost` and copy what it prints");
   else {
@@ -141,7 +150,7 @@ function check() {
   }
 
   if (!problems.length) {
-    console.log("answer ok");
+    console.log(final ? `\`\`\`json\n${readFileSync(file, "utf8").trimEnd()}\n\`\`\`` : "answer ok");
     return;
   }
   console.log(`answer: ${problems.length} problem${problems.length === 1 ? "" : "s"}`);
@@ -150,5 +159,6 @@ function check() {
 }
 
 if (command === "cost") cost();
-else if (command === "check") check();
-else fail("usage: answer.mjs cost --rates still=..,voice=..,fabric=.. --sent <steps>|none [--failed <steps>] | answer.mjs check media/answer.json");
+else if (command === "check") check(false);
+else if (command === "final") check(true);
+else fail("usage: answer.mjs cost --rates still=..,voice=..,fabric=.. --sent <steps>|none [--failed <steps>] | answer.mjs final media/answer.json | answer.mjs check media/answer.json");
