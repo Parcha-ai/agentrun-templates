@@ -20,7 +20,11 @@ fal's whole log of `submit_job` calls with the files, call by call:
 - the files hold the case's number of shots: the count in the case's own `graders/clips-negative.md`, 12 or 8, never
   the files' word for it (stills: first takes, plus at most two remakes);
 - the stills' fixed fields are one 1K png with no web search;
-- every clip has no audio and the one exact negative prompt.
+- every clip has no audio and the one exact negative prompt;
+- each file has the shape the kit writes: an object whose shared fields (`every_still`, `every_clip`) hold only the
+  fields the kit puts there, so none can stand in for a field built per still or clip, and whose list items hold
+  exactly the kit's fields. A file of another shape is a `SENT FAIL` naming what is wrong, and its calls aren't
+  compared.
 
 ```sh
 node .github/eval-checks/music-video-sent.mjs <report.json> <the run's work folder, or the serve's data folder>
@@ -44,7 +48,7 @@ It prints one line and exits:
 | Exit | Line | Meaning |
 | --- | --- | --- |
 | 0 | `SENT PASS n=<calls checked> (repo check; serve's grade is separate; stopgap for agentrun #3824)` | every still and clip sent equals its file |
-| 1 | `SENT FAIL <the first reason> [(and N more)] (repo check; ...)` | a call differs from its file, is missing, was sent twice, or a file is missing or wrong |
-| 2 | `SENT VOID <why>` | no verdict, never a failure: bad arguments, or the report, the run's folder, the fake log or the case's shot count can't be found |
+| 1 | `SENT FAIL <the first reason> [(and N more)] (repo check; ...)` | a call differs from its file, is missing, was sent twice, or a file is missing, of the wrong shape or wrong |
+| 2 | `SENT VOID <why>` | no verdict, never a failure: bad arguments, or the report, the run's folder, the fake log or the case's shot count can't be found or read (a report that isn't a serve eval report, a log item that isn't a call) |
 
 Node built-ins only. The repo's music-video kit tests (`.github/music-video-kit.test.mjs`) cover it.
