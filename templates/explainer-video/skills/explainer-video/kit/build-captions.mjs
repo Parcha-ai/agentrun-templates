@@ -118,6 +118,7 @@ if (usable.length) {
     method = "aligned";
     let at = 0;
     for (const w of words) {
+      w.at = at;
       if (!w.key.length) continue;
       w.start = usable[at].start;
       w.end = usable[at + w.key.length - 1].end;
@@ -134,6 +135,47 @@ if (usable.length) {
   }
   span = [0, V];
 }
+
+// A word longer than a line (a long compound, a URL) is cut into pieces of at most MAX_LINE characters, after its
+// last hyphen or slash that fits, else at MAX_LINE. The pieces keep the word's characters, so its pieces on
+// consecutive lines read as the word. Each piece is timed by its own letters when aligned. Otherwise it gets its
+// share of the word's time, by letters (`weight`), so a word still counts once in W.
+function pieces(text) {
+  const out = [];
+  let rest = text;
+  while (rest.length > MAX_LINE) {
+    const head = rest.slice(0, MAX_LINE);
+    const at = Math.max(head.lastIndexOf("-"), head.lastIndexOf("/"));
+    const cut = at > 0 ? at + 1 : MAX_LINE;
+    out.push(rest.slice(0, cut).trimEnd()); // a space at a cut becomes the line break
+    rest = rest.slice(cut).trimStart();
+  }
+  if (rest) out.push(rest);
+  // A piece with no letter or digit (a run of dashes) rides on the piece before it when they fit on one line.
+  return out.reduce((acc, p) => {
+    if (acc.length && !norm(p).length && acc[acc.length - 1].length + p.length <= MAX_LINE) acc[acc.length - 1] += p;
+    else acc.push(p);
+    return acc;
+  }, []);
+}
+const units = words.flatMap((w) => {
+  if (w.text.length <= MAX_LINE) return [{ ...w, weight: w.key.length ? 1 : 0 }];
+  let off = 0;
+  return pieces(w.text).map((text) => {
+    const key = norm(text);
+    const u = { text, key, weight: w.key.length ? key.length / w.key.length : 0 };
+    if (method === "aligned" && w.key.length) {
+      if (key.length) {
+        u.start = usable[w.at + off].start;
+        u.end = usable[w.at + off + key.length - 1].end;
+      } else {
+        u.start = u.end = usable[w.at + Math.max(off - 1, 0)].end;
+      }
+    }
+    off += key.length;
+    return u;
+  });
+});
 
 // Cue text: sentences, then clauses, then phrase breaks, each cue as full as two lines allow.
 const wrap = (ws) => {
@@ -175,9 +217,9 @@ function cutPhrase(ws) {
 }
 const sentences = [];
 let s = [];
-words.forEach((w, i) => {
+units.forEach((w, i) => {
   s.push(w);
-  if (/[.!?]["')\]]*$/.test(w.text) || i === words.length - 1) {
+  if (/[.!?]["')\]]*$/.test(w.text) || i === units.length - 1) {
     sentences.push(s);
     s = [];
   }
@@ -213,14 +255,15 @@ let cues;
 if (method === "aligned") {
   cues = groups.map((g) => {
     const spoken = g.filter((w) => w.key.length);
-    return { start: ms(spoken[0].start), end: ms(spoken[spoken.length - 1].end), g };
+    const timed = spoken.length ? spoken : g.filter((w) => Number.isFinite(w.start));
+    return { start: ms(timed[0].start), end: ms(timed[timed.length - 1].end), g };
   });
 } else {
   const [a, b] = span;
   const P = (b - a) / W;
   let k = 0;
   cues = groups.map((g, i) => {
-    const n = g.filter((w) => w.key.length).length;
+    const n = g.reduce((sum, w) => sum + w.weight, 0);
     const start = ms(a + k * P);
     k += n;
     const end = i === groups.length - 1 ? ms(b) : ms(a + k * P);

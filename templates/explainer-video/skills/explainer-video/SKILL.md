@@ -21,7 +21,9 @@ node .agents/skills/explainer-video/kit/build-captions.mjs --script work/script.
 - `--audio-seconds`: V of that voiceover (step 6 of the agent's page). Leave the `--timestamps` file out when fal
   answered none.
 
-It writes `media/explainer.vtt` and prints one JSON line, then the file it wrote. The line's `captions_timing` says how
+It writes `media/explainer.vtt` and prints one JSON line, then the file it wrote. Every cue is one or two lines of at
+most 42 characters. A word longer than a line (a long compound, a URL) is cut across lines, after a hyphen or slash
+when there is one, and keeps its timing. The line's `captions_timing` says how
 the cues were timed:
 
 - `aligned`: fal's letters spell the script; each cue runs from its first letter's start to its last letter's end.

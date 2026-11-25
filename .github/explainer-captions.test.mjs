@@ -9,7 +9,8 @@
 //   and no file, never cues timed from the length. A live run's model retyped its timestamps with a typo, and the
 //   kit then timed every cue from 0 to V.
 // - anchored and measured: the cues run back to back, each lasting its share of the words.
-// - every cue is one or two lines of at most 42 characters, in the script's order, with audio tags dropped.
+// - every cue is one or two lines of at most 42 characters, in the script's order, with audio tags dropped. A word
+//   longer than a line is cut after a hyphen or slash, else at 42, and its pieces keep its timing.
 // - no length at all: exit 2, no file.
 // They need only node. explainer-captions.fixtures.json holds the three takes, each the script sent and fal's
 // `timestamps` as it answered them.
@@ -80,6 +81,28 @@ function letters(timestamps) {
   return out;
 }
 
+const key = (text) => text.normalize("NFKD").toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+
+/** Walks fal's letters cue by cue: each cue owns the next run of letters its lines spell, and runs from the first
+ *  one's start to the last one's end. */
+function onLetters(cues, timestamps) {
+  const L = letters(timestamps);
+  let at = 0;
+  for (const c of cues) {
+    const count = key(c.lines.join(""));
+    assert.ok(Math.abs(c.start - L[at].start) < 0.0005, `${c.lines.join(" ")} starts at ${c.start}, its first letter at ${L[at].start}`);
+    assert.ok(Math.abs(c.end - L[at + count.length - 1].end) < 0.0005, `${c.lines.join(" ")} ends at ${c.end}, its last letter at ${L[at + count.length - 1].end}`);
+    at += count.length;
+  }
+  assert.equal(at, L.length);
+}
+
+/** A take whose characters spell `text` exactly, one every 0.05 s from 0.2 s. */
+function spelled(text) {
+  const ch = [...text];
+  return [{ characters: ch, character_start_times_seconds: ch.map((_, i) => 0.2 + i * 0.05), character_end_times_seconds: ch.map((_, i) => 0.25 + i * 0.05) }];
+}
+
 for (const name of ["take1", "take2", "take3"]) {
   test(`aligned (${name}): every cue runs from its first letter's start to its last letter's end`, () => {
     const { script, timestamps } = TAKES[name];
@@ -89,16 +112,7 @@ for (const name of ["take1", "take2", "take3"]) {
     assert.ok(r.vtt.startsWith("WEBVTT\n"));
     checkLines(r.cues);
     assert.deepEqual(cueWords(r.cues), spokenWords(script));
-    // Walk the letters cue by cue: each cue owns the next run of letters its words spell.
-    const L = letters(timestamps);
-    let at = 0;
-    for (const c of r.cues) {
-      const count = c.lines.join(" ").normalize("NFKD").replace(/[^\p{L}\p{N}]/gu, "").length;
-      assert.ok(Math.abs(c.start - L[at].start) < 0.0005, `${c.lines.join(" ")} starts at ${c.start}, its first letter at ${L[at].start}`);
-      assert.ok(Math.abs(c.end - L[at + count - 1].end) < 0.0005, `${c.lines.join(" ")} ends at ${c.end}, its last letter at ${L[at + count - 1].end}`);
-      at += count;
-    }
-    assert.equal(at, L.length);
+    onLetters(r.cues, timestamps);
   });
 }
 
@@ -196,19 +210,54 @@ test("measured: no timestamps, so the cues run back to back from 0 to V", () => 
   assert.equal(JSON.parse(kit(script, [], 4.2).line).captions_timing, "measured");
 });
 
-test("cues: two lines of at most 42 characters; a sentence that fits stays whole", () => {
-  const script =
-    "Short sentences stay whole. " +
-    "This much longer sentence keeps going well past what two caption lines can hold, with commas in the middle, and with a phrase that runs on and on without a break anywhere in sight for the cutter to use. " +
-    "Supercalifragilisticexpialidocious-extraordinarily-long-compound-word stands alone.";
-  const r = kit(script, undefined, 20);
+const LONG =
+  "Short sentences stay whole. " +
+  "This much longer sentence keeps going well past what two caption lines can hold, with commas in the middle, and with a phrase that runs on and on without a break anywhere in sight for the cutter to use. " +
+  "Supercalifragilisticexpialidocious-extraordinarily-long-compound-word stands alone. " +
+  "See https://example.com/a/very/long/path/that/keeps/going/on/and/on/index.html now. " +
+  "Then Pneumonoultramicroscopicsilicovolcanoconiosisxxxxxxxxxxxxxxx ends.";
+
+test("cues: two lines of at most 42 characters, a word longer than a line cut across lines; a sentence that fits stays whole", () => {
+  const r = kit(LONG, undefined, 20);
   assert.equal(r.status, 0, r.stderr);
-  for (const c of r.cues) {
-    assert.ok(c.lines.length <= 2);
-    for (const l of c.lines) assert.ok(l.length <= 42 || !l.includes(" "), `a line of ${l.length} characters: ${l}`);
-  }
-  assert.deepEqual(cueWords(r.cues), spokenWords(script));
+  checkLines(r.cues);
+  // The cues keep every letter of the script, in order; a long word's pieces sit on consecutive lines.
+  assert.equal(key(r.cues.map((c) => c.lines.join("")).join("")), key(LONG));
+  const lines = r.cues.flatMap((c) => c.lines);
+  assert.ok(lines.includes("Supercalifragilisticexpialidocious-"), `cut after the hyphen: ${lines.join(" / ")}`);
+  assert.ok(lines.some((l) => l.endsWith("https://example.com/a/very/long/path/that/")), `cut after the slash: ${lines.join(" / ")}`);
+  assert.ok(lines.includes("Pneumonoultramicroscopicsilicovolcanoconio"), `no hyphen or slash: cut at 42: ${lines.join(" / ")}`);
   assert.deepEqual(r.cues[0].lines, ["Short sentences stay whole."]);
+  assert.equal(JSON.parse(r.line).words, spokenWords(LONG).length, "a cut word still counts once");
+});
+
+test("a word longer than a line keeps its timing: aligned pieces on their own letters, measured by their share of letters", () => {
+  const aligned = kit(LONG, spelled(LONG), 0.25 + LONG.length * 0.05); // V: the take's last character's end
+  assert.equal(aligned.status, 0, aligned.stderr);
+  assert.equal(JSON.parse(aligned.line).captions_timing, "aligned");
+  checkLines(aligned.cues);
+  onLetters(aligned.cues, spelled(LONG));
+  // Measured: back to back from 0 to V, each cue's time its words' share, a cut word's pieces sharing it by letters.
+  const V = 20;
+  const measured = kit(LONG, undefined, V);
+  const W = spokenWords(LONG).length;
+  // Walk the script's words in order: each token of a cue takes its letters' share of the word it comes from.
+  const spoken = spokenWords(LONG).map(key);
+  let word = 0;
+  let used = 0;
+  measured.cues.forEach((c, i) => {
+    if (i) assert.equal(c.start, measured.cues[i - 1].end, "back to back");
+    let share = 0;
+    for (const t of c.lines.flatMap((l) => l.split(" "))) {
+      const n = key(t).length;
+      if (!n) continue;
+      share += n / spoken[word].length;
+      used += n;
+      if (used === spoken[word].length) [word, used] = [word + 1, 0];
+    }
+    assert.ok(Math.abs(c.end - c.start - (share / W) * V) < 0.002, `${c.lines.join(" / ")}: ${c.end - c.start} s for ${share} of ${W} words`);
+  });
+  assert.equal(measured.cues.at(-1).end, V);
 });
 
 test("no timestamps and no length: exit 2, and no captions file", () => {
