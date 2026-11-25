@@ -9,7 +9,7 @@
 //                            --pages stripe --film film [--business "Name"]
 //   node metrics.mjs place   --film film [--at revenue=5.2,change=14.0,...] [--seconds 47]
 //   node metrics.mjs stem    --file media/run-keys.json --today YYYY-MM-DD --timezone <IANA> [--week-of YYYY-MM-DD]
-//   node metrics.mjs scan    --pages stripe [--root .] [--final]
+//   node metrics.mjs scan    --pages stripe [--root .] [--business "Name"] [--final]
 //
 // --today is the run's date in the time zone: the day the schedule fired (its line names it in the schedule's zone),
 // or for a run by hand the day the run's environment line gives. Never the sandbox's clock.
@@ -656,10 +656,11 @@ const STRIPES_WORDS = new Set(
 );
 const nameLike = (a, b) => (TITLED(a) && TITLED(b)) || !STRIPES_WORDS.has(a.toLowerCase()) || !STRIPES_WORDS.has(b.toLowerCase());
 function customerValues(dir) {
-  const found = new Map(); // value -> { where it came from, any case or not }, never printed with the value
-  const add = (value, where, anyCase = false) => {
+  const found = new Map(); // value -> { where it came from, any case or not, a name pair or not }, never printed with the value
+  const add = (value, where, anyCase = false, name = false) => {
     if (value.length < 4) return;
-    if (!found.has(value)) found.set(value, { where, anyCase });
+    if (!found.has(value)) found.set(value, { where, anyCase, name });
+    else if (name) found.get(value).name = true;
     else if (anyCase) found.get(value).anyCase = true; // a whole description that is only a name is still a name
   };
   const walk = (value, key, where) => {
@@ -673,7 +674,7 @@ function customerValues(dir) {
       const words = v.split(/\s+/).map((w) => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ""));
       for (let i = 0; i + 1 < words.length; i++) {
         if (NAMEWORD.test(words[i]) && NAMEWORD.test(words[i + 1])) {
-          add(`${words[i]} ${words[i + 1]}`, `${where}: a name in its ${key}`, nameLike(words[i], words[i + 1]));
+          add(`${words[i]} ${words[i + 1]}`, `${where}: a name in its ${key}`, nameLike(words[i], words[i + 1]), true);
         }
       }
     } else if (Array.isArray(value)) value.forEach((v) => walk(v, key, where));
@@ -706,6 +707,8 @@ function runFiles(root, raw) {
 // (No example value in this kit's text: a value the skill holds is not looked for, below.)
 const squash = (s) => s.replace(/\s+/g, " ");
 const fold = (s) => squash(s).toLowerCase();
+// Letters and digits only, in lower case, one space between words: how a name is compared with the business's.
+const wordsOf = (s) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 function scan() {
   const dir = need("pages");
   const root = args.root && args.root !== "true" ? args.root : ".";
@@ -733,7 +736,12 @@ function scan() {
   // customer's, so it is not looked for. Held as written: a name made of two common words stays looked for when the
   // skill only has those words in lower case. So this kit's text holds no example name.
   const skillText = squash([...shipped.values()].map((f) => f.text).join("\n"));
-  const values = new Map([...found].filter(([value]) => !skillText.includes(squash(value))));
+  // The business's own name (--business, the name the film opens and ends on) is the film's, not a customer's, though a
+  // charge's description holds it (shop plugins write "<store name> - Order <n>"): a value equal to it,
+  // or a name pair inside it, is not looked for. A customer's name beside it in the same description still is.
+  const business = typeof args.business === "string" && args.business !== "true" ? wordsOf(args.business) : "";
+  const theBusiness = (value, { name }) => business !== "" && (wordsOf(value) === business || (name && ` ${business} `.includes(` ${wordsOf(value)} `)));
+  const values = new Map([...found].filter(([value, seen]) => !skillText.includes(squash(value)) && !theBusiness(value, seen)));
   // A file in film/ still byte for byte a shipped kit file (metrics.mjs, review.mjs, a scene the run never changed)
   // holds only the template's words: it is not searched, so a customer's name that is also a phrase in the kit's code
   // can't fail every run. A copy the run changed is searched like any other file.
