@@ -19,7 +19,7 @@ Read the calls in order and the answer's last fenced `json` block. Pass only if 
 4. **The avatar step.** `steps` holds an avatar step with status `not_run` and `fal_cost_usd` 0.
 5. **What exists is kept.** `files` lists `media/portrait.png` and `media/voiceover.mp3` with their fal URLs; no file of
    kind `video` has a path.
-6. **No captions.** No `write` call wrote `media/explainer.vtt`, `files` lists no captions, and a `notes` entry says
+6. **No captions.** No call wrote `media/explainer.vtt` (no `write` of it, and no caption kit run), `files` lists no captions, and a `notes` entry says
    the captions were not written because the voiceover's length is unknown.
 7. **Costed.** `fal_cost_usd` is the portrait (0.0398) plus the voiceover (the script's characters × 0.0001) within
    0.02, under 0.2.
