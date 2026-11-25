@@ -744,6 +744,11 @@ test("after billing a word alone only warns, naming the file and line; a name st
   assert.doesNotMatch(r.final.err, /track/i, "the warning never prints the word");
   assert.ok(!existsSync(join(r.dir, "stripe", "raw-1.json")), "the raw pages are removed: nothing that fails was found");
   assert.equal(JSON.parse(r.final.out.split("\n").find((l) => l.startsWith("{"))).raw_pages_removed.length, 1);
+  // On a line that holds a key and its string ("note": "..."), the line is still found, its value read unescaped.
+  const keyed = fixtureRun("week-over-week", "2026-11-23", { items: [described("Track Day Pass", 6500)], as: "warn-key-line", answer: { note: "Kept:\ntimeline_track_too_dense" } });
+  const keyLine = readFileSync(join(keyed.dir, "media", "answer.json"), "utf8").split("\n").findIndex((l) => l.includes('"note"')) + 1;
+  assert.equal(keyed.final.status, 0, keyed.final.out);
+  assert.match(keyed.final.err, new RegExp(`media/answer\\.json line ${keyLine} \\(`));
   // A whole name said at --final still stops it, and keeps the raw pages.
   const named = fixtureRun("week-over-week", "2026-11-23", { items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)], as: "named-after-billing", answer: { ...kept, thanks: "Thank you, Marisol Quintero." } });
   assert.equal(named.first.status, 0, `the first scan: ${named.first.out}`);

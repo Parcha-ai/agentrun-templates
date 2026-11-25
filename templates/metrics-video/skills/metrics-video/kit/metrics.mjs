@@ -829,6 +829,19 @@ function customerValues(dir) {
 // (its <out>/snapshot.log; SKILL.md, 7: media/review, media/review-2). A tool's words ("families", "track", "phone"),
 // never the run's: a name's word alone is not looked for there.
 const TOOL_OUTPUT = [/^media\/check\.json$/, /^media\/render\.log$/, /^media\/review(?:-\d+)?\/snapshot\.log$/];
+// The string values on one line of a JSON file, unescaped: each literal in order, a key (a literal followed by a
+// colon) left out.
+const jsonLineStrings = (line) =>
+  [...line.matchAll(/"(?:[^"\\]|\\.)*"(\s*:)?/g)]
+    .filter((m) => m[1] === undefined)
+    .map((m) => {
+      try {
+        return JSON.parse(m[0]);
+      } catch {
+        return m[0];
+      }
+    })
+    .join(" ");
 // The text an HTML (or SVG) file shows: its comments, styles, scripts and tags (attributes and all) left out.
 const shownText = (t) =>
   t
@@ -1010,7 +1023,7 @@ function scan() {
   // values, an HTML line by the text it shows. 0 when no one line holds it (a kit phrase across two lines).
   const lineOf = (path, text, w) => {
     const rel = (relative(root, path) || path).split("\\").join("/");
-    const read = /\.json$/i.test(rel) ? (l) => (l.match(/"(?:[^"\\]|\\.)*"(?!\s*:)/g) ?? []).join(" ") : /\.(?:html?|svg)$/i.test(rel) ? shownText : (l) => l;
+    const read = /\.json$/i.test(rel) ? jsonLineStrings : /\.(?:html?|svg)$/i.test(rel) ? shownText : (l) => l;
     return text.split("\n").findIndex((l) => wordsIn(read(l).replace(kitPhrase, " ")).has(w)) + 1;
   };
   const final = args.final !== undefined;
