@@ -990,6 +990,49 @@ test("a file's name is read too, and never printed when it holds a customer's wo
   assert.equal(kit.final.status, 0, kit.final.out);
 });
 
+// A path the kit or the skill names is no one's, whole: "Media Review Group" gives the pair "Media Review", which the
+// review step's own media/review/snapshot.log holds, and "Film Assets Ltd" gives "Film Assets" (film/assets/). Only
+// the part of a path below the kit's named folder is the run's choice, and that part is read.
+const R4_ITEMS = [described("Media Review Group", 6000), described("Film Assets Ltd", 4000)];
+// Stand-ins: a fake's placeholder audio with no NUL byte is read as text; a frame with one is binary.
+const R4_KIT_WROTE = {
+  "media/review/snapshot.log": "snapshot: 6 sheets written\n",
+  "media/review-2/snapshot.log": "snapshot: 2 frames written\n",
+  "media/review/frame-12.4s.png": "\u0089PNG\u0000\u0000frame",
+  "film/assets/voiceover.mp3": "ID3 placeholder audio",
+  "film/assets/music.mp3": "ID3 placeholder audio",
+};
+test("the kit's own paths are no one's name: the first scan, with the review and the voice's copy written, is clean", () => {
+  const first = scanRun("r4-kit-paths-first", R4_ITEMS, { "media/vo.txt": CLEAN, ...R4_KIT_WROTE });
+  assert.equal(first.status, 0, `the first scan, the kit's paths written: ${first.out}`);
+});
+
+test("the kit's own paths are no one's name: the last --final after the review step exits 0 and removes the pages", () => {
+  const write = (dir) => {
+    for (const [path, body] of Object.entries(R4_KIT_WROTE)) {
+      mkdirSync(join(dir, path, ".."), { recursive: true });
+      writeFileSync(join(dir, path), body);
+    }
+  };
+  const run = fixtureRun("week-over-week", "2026-11-23", { items: R4_ITEMS, as: "r4-kit-paths", beforeFinal: write });
+  assert.equal(run.first.status, 0, run.first.out);
+  assert.equal(run.final.status, 0, `the last --final after the review and the voice were filed: ${run.final.out}`);
+  assert.deepEqual(pagesLeft(run.dir), [], "the pages are gone");
+});
+
+test("a name the run chose for a file is still found under the kit's folders, and never printed", () => {
+  for (const path of ["media/media-review-group.md", "media/review/media-review-group.md", "film/assets/film-assets-ltd.txt"]) {
+    const r = scanRun(`r4-run-named-${path.replace(/\W+/g, "-")}`, R4_ITEMS, { "media/vo.txt": CLEAN, ...R4_KIT_WROTE, [path]: "A note." });
+    customerData(r, `${path}: ${r.out}`);
+    assert.doesNotMatch(r.out, /media-review-group|film-assets-ltd/i, `${path}: the file's name is not printed`);
+  }
+});
+
+test("what a kit-named file holds is still read: the whole description in the review's log stops the film", () => {
+  const inside = scanRun("r4-kit-path-content", R4_ITEMS, { "media/vo.txt": CLEAN, ...R4_KIT_WROTE, "media/review/snapshot.log": "snapshot of Media Review Group\n" });
+  customerData(inside, `the review's log holding the description: ${inside.out}`);
+});
+
 test("code the run writes outside film/ is read for a name's words; the film's own code stays out (a stated limit)", () => {
   const items = [described("Commission for Marisol Quintero")];
   const media = scanRun("r3-run-code", items, { "media/vo.txt": CLEAN, "media/thanks.js": 'export const thanks = "Thanks, Marisol.";' });
