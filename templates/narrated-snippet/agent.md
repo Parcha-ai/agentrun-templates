@@ -26,7 +26,9 @@ inputs:
   text: { type: string, title: "The text", minLength: 20, maxLength: 4000, description: "What to read aloud: an update, release notes, a paragraph. It is rewritten for speaking and cut to about a minute. It goes to fal and ElevenLabs: leave out anything private.", examples: ["Exports are faster this week: a 50,000-row report now takes 9 seconds instead of 58. Scheduled exports are in beta; turn them on in Settings > Reports."] }
   tone: { type: string, required: false, enum: [warm, calm, upbeat, serious], default: warm, title: "Tone", description: "How the voice sounds" }
   voice: { type: string, required: false, enum: [Rachel, Aria, Sarah, Laura, Charlotte, Alice, Matilda, Jessica, Lily, Roger, Charlie, George, Callum, River, Liam, Will, Eric, Chris, Brian, Daniel, Bill], default: Rachel, title: "Voice", description: "An ElevenLabs voice by name" }
-budget: { per_run_usd: 0.25 }
+# The $1,000 accident guard, not a tuned number: it stops a runaway run, never a normal one. A run makes one
+# voiceover, billed by characters on fal, plus the model's share.
+budget: { per_run_usd: 1000 }
 output: { schema: narrated-snippet.schema.json }
 ---
 FIRST: your first tool call is `read` of `.agents/skills/fal-audio/SKILL.md`. It holds how to call fal, how to save
