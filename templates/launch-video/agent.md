@@ -98,6 +98,10 @@ the reserve covers it), the music (`fal-ai/elevenlabs/music`: `length` ÷ 60 × 
 `revoice_reserve_usd` says what the reserve is. The estimate is information for the person: the answer says it up
 front (step "Answer").
 
+Once the plan is priced, and before the ceiling rule below, `write` `media/plan.json`: `{"script": <the script as you
+will send it>, "shots": [{"n": 1, "prompt": <the exact prompt>}, ...], "music_prompt": <the music line>}`. A long run
+can lose its early turns to a context summary; this file keeps what the answer reports, a refusal's included.
+
 - **No `max_fal_usd`**: nothing is refused for price. Run the plan.
 - **`max_fal_usd` set** (the user's own ceiling): run the plan when its `estimated_usd` is at most `max_fal_usd`. When
   it is over, call nothing that costs: answer `status: "over_budget"` with the plan priced in `plans`, the script and
@@ -114,9 +118,6 @@ for that job's retries. The keys share one stem per run:
 - Before the first paid call, `read` `media/run-keys.json`. If it holds `{"stem": "<8 lowercase letters and digits>"}`
   (a resumed run), use that stem. Otherwise make one stem of 8 random lowercase letters and digits and `write` it there
   as `{"stem": "<stem>"}` before any paid call. Never make a second stem in a run: a retry and a resume reuse it.
-- Also before the first paid call, `write` `media/plan.json`: `{"script": <the script as you will send it>, "shots":
-  [{"n": 1, "prompt": <the exact prompt>}, ...], "music_prompt": <the music line>}`. A long run can lose its early
-  turns to a context summary; this file keeps what the answer reports.
 - Keys are `lv-<stem>-<step>`, `<step>` one of `clip-1` ... `clip-N`, `voiceover`, `voiceover-2` (only for step 6's
   re-voice), `music`, `cut`. No date and no host in a key: the page's URL stays in the answer. With the stem
   `m8t3x6qe` (an example: make your own), the first clip's key is `lv-m8t3x6qe-clip-1` and the cut's `lv-m8t3x6qe-cut`.
@@ -251,9 +252,10 @@ same way, by share of words, V being the voice's length.
 
 ## Answer
 
-Exactly one fenced `json` block that meets the output schema, and nothing after it. First `read` `media/plan.json`:
-`script` (`script_2` after a re-voice), `shots`, `music_prompt` and the report's shot list come from that file, never
-from memory.
+Exactly one fenced `json` block that meets the output schema, and nothing after it. First `read` `media/plan.json`
+(step 3 wrote it): `script` (`script_2` after a re-voice), `shots`, `music_prompt` and the report's shot list come from
+that file, never from memory. A run that stopped before step 3 (the page could not be read) has no plan and no file: its
+answer leaves those empty.
 
 - A mismatch between the timestamps' characters and the script, or a saved file's byte size, never makes a run
   partial.
