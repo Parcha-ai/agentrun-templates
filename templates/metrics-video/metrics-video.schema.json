@@ -99,7 +99,7 @@
     },
     "left_out": {
       "type": "array",
-      "maxItems": 20,
+      "maxItems": 40,
       "description": "movements that week that are not revenue (payouts, transfers and the like), counted by Stripe's reporting category",
       "items": {
         "type": "object",

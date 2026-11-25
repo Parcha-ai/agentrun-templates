@@ -383,6 +383,10 @@ const CARRIED_MAX = 10;
 // gone, maxItems 20 in the schema; restated, at most the carried ten and the week before's twenty, maxItems 30), so a
 // week with more is refused in words, never cut short.
 const MAX_CURRENCIES = 20;
+// The most kinds of movement that are not revenue (Stripe's reporting categories: payout, transfer, topup and the like)
+// a week may have. Stripe lists about thirty; the answer names every one with its count (left_out, maxItems 40), so a
+// week with more is refused in words, never cut short.
+const MAX_LEFT_OUT = 40;
 const COMPARED = ["revenue_minor", "gross_minor", "charges", "refunds_count", "refunds_minor", "disputes_count", "disputes_minor", "fees_minor"];
 
 function compute() {
@@ -404,6 +408,8 @@ function compute() {
   for (const [which, week, by] of [["this week", w.week, thisWeek.by], ["the week before", w.week_before, before?.by]]) {
     if (by && by.size > MAX_CURRENCIES) fail(3, `${by.size} currencies in ${which} (${week.start} to ${week.end}): this film reports at most ${MAX_CURRENCIES} currencies a week, each with its figures, so it makes nothing for this week. Answer failed, failed_step "figures", with these words.`);
   }
+  const kinds = Object.keys(thisWeek.leftOut).length;
+  if (kinds > MAX_LEFT_OUT) fail(3, `${kinds} kinds of movement that are not revenue in the week (${w.week.start} to ${w.week.end}): this film names at most ${MAX_LEFT_OUT} with their counts, so it makes nothing for this week. Answer failed, failed_step "figures", with these words.`);
 
   // The carried figures against Stripe's figures for the same week, read again now.
   let compare = { state: "none", reason: w.compare.reason, restated: [] };
@@ -573,7 +579,7 @@ function compute() {
       change_shown: c.change ? c.change.display : null, change_percent: c.change?.percent ? c.change.percent.value : null,
     })),
     gone: gone.map((g) => ({ currency: g.code, week_before_minor: g.before.minor })),
-    left_out: Object.entries(thisWeek.leftOut).map(([category, count]) => ({ category: category.slice(0, 60), count })).slice(0, 20),
+    left_out: Object.entries(thisWeek.leftOut).map(([category, count]) => ({ category: category.slice(0, 60), count })),
     carried: data.carry,
   };
   out.push(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify(answer)}`);
