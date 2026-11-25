@@ -23,16 +23,18 @@ fal's whole log of `submit_job` calls with the files, call by call:
 - every clip has no audio and the one exact negative prompt.
 
 ```sh
-node .github/eval-checks/music-video-sent.mjs <report.json>
+node .github/eval-checks/music-video-sent.mjs <report.json> <the run's work folder, or the serve's data folder>
 ```
 
 - `<report.json>` is the eval report of one music-video run (one case, one run), as serve's template eval writes it.
   The fake fal's whole log is that run's `mcp_calls`: serve copies each call that reached the fake into it, uncut.
-- The report doesn't hold the run's files. They are in the data folder of the serve that ran it, which the report
-  names as `server.data` for a serve run in process; the check uses `disk/agents/<the report's agent_id>-*/runs/<the
-  report's run_id>/work` in it, and only an exact match by both ids. When the report names no data folder, or the run
-  was elsewhere, give the folder as a second argument (or `--work <folder>`): the run's work folder itself (the folder
-  holding `media/`), or a data folder.
+- The report doesn't hold the run's files, so the second argument (or `--work <folder>`) names where they are: the run's
+  work folder itself (the folder holding `media/`), or the data folder of the serve that ran it. In a data folder, the
+  check uses `disk/agents/<the report's agent_id>-*/runs/<the report's run_id>/work`, and only an exact match by both
+  ids.
+- Without a second argument it tries the data folder the report names as `server.data` (a serve run in process). A
+  report can name a folder that has since moved or was never kept: then it prints `SENT VOID no folder at <it>` and
+  exits 2. It never guesses another folder.
 - The case comes from the report. It covers the fake-fal cases that make a film: those with a
   `graders/clips-negative.md`. `live` runs on real fal and has no fake log: `SENT VOID no fake log: live runs aren't
   checked`.

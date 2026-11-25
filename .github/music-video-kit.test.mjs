@@ -480,6 +480,7 @@ test("the sent check is VOID (exit 2), not a fail, when it can't find its inputs
     [[reportOf(dir, calls, { name: "live", runs: [{ run: 1, agent_id: "a", run_id: "r", mcp_calls: [] }] }), dir], /^SENT VOID no fake log: live runs aren't checked/],
     [[reportOf(dir, calls, { name: "user-ceiling" }), dir], /^SENT VOID case user-ceiling has no clips-negative grader \(templates\/music-video\/evals\/user-ceiling\/graders\/clips-negative\.md\): this check covers the fake-fal cases that make a film$/m],
     [[reportOf(dir, calls)], /^SENT VOID the report names no server\.data folder/],
+    [[reportOf(dir, calls, { data: join(root, "data-moved") })], new RegExp(`^SENT VOID no folder at ${join(root, "data-moved").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\n$`)],
     [[reportOf(dir, calls, { runs: [{ run: 1, agent_id: "a", run_id: "r", mcp_calls: calls }, { run: 2, agent_id: "a", run_id: "s", mcp_calls: calls }] }), dir], /^SENT VOID the report holds 2 runs; this check takes a report of one run$/m],
     [[reportOf(dir, calls, { runs: [{ run: 1, agent_id: "a", run_id: "r" }] }), dir], /^SENT VOID no fake log: live runs aren't checked \(case short-song has no mcp_calls in the report\)$/m],
     [[reportOf(dir, calls), mkdtempSync(join(root, "empty-"))], /^SENT VOID .* holds no media\/ and no disk\/agents\/<agent>\/runs\/01aa-run\/work/m],
