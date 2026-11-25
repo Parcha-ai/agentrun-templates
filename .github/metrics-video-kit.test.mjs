@@ -3,9 +3,9 @@
 // from a dispute opened in an earlier week.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, chmodSync, closeSync, constants, cpSync, existsSync, mkdirSync, mkdtempSync, openSync, readdirSync, readFileSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import vm from "node:vm";
@@ -295,11 +295,21 @@ function customerData(r, why) {
   assert.equal(r.status, 2, why);
   assert.match(r.out, /customer data in the run's files/, why);
 }
-// After billing (scan --final), a name's word alone only warns: exit 0, a line naming the file.
+// After billing (scan --final), a word of a description's name found alone in the answer only warns: the first such
+// --final exits 4 (run --final once more; the raw pages are kept for it), with a line naming the file.
 function wordWarned(r, file, why) {
-  assert.equal(r.status, 0, why);
+  assert.equal(r.status, 4, why);
   assert.match(r.out, new RegExp(`^warning: a customer's word may be in ${file.replace(/[./]/g, "\\$&")}\\b.*\\(words-alone check, not a failure after billing\\)$`, "m"), why);
 }
+// The note the first warn-only --final keeps, inside each raw page (never a file of the run's own).
+const MARK = "metrics_video_final_warned";
+const markOf = (dir) => {
+  try {
+    return JSON.parse(readFileSync(join(dir, "stripe", "raw-1.json"), "utf8"))[MARK];
+  } catch {
+    return undefined;
+  }
+};
 const CLEAN = "[warm] The week of sixteen November: revenue, net of refunds and Stripe fees, was four thousand dollars.";
 
 test("scan reads what fal spoke: a name the timestamps spell, one letter at a time, fails it", () => {
@@ -383,6 +393,8 @@ function fixtureRun(name, today, { items = [], said = "", as = name, edit, befor
   writeFileSync(join(dir, "film", "STORYBOARD.md"), "# Larkspur Ceramics: Weekly Revenue\n\n1. Open: Larkspur Ceramics, Week of 16 November 2026.\n2. Revenue: Net Revenue, Gross Charges, Stripe Fees.\n3. Days: Monday to Sunday, November.\n4. Change: Week Over Week, Up.\n5. Refunds: Refunds and Disputes, Money Won Back.\n6. Endcard: Larkspur Ceramics, Next Monday.\n");
   const scan = (...final) => {
     const r = node("metrics.mjs", "scan", "--pages", join(dir, "stripe"), "--root", dir, ...final);
+    // Exit 0 from a --final always means the raw pages are gone.
+    if (final.length && r.status === 0) assert.deepEqual(readdirSync(join(dir, "stripe")).filter((f) => /^raw-\d+\.json$/.test(f)), [], `${as}: a --final that exits 0 leaves no raw page`);
     return { status: r.status, out: r.stdout + r.stderr, err: r.stderr };
   };
   const first = scan();
@@ -617,9 +629,10 @@ test("a whole run whose customers share words with the kit's code scans clean at
     const leak = fixtureRun("week-over-week", "2026-11-23", { items, said, as: `kit-code-words-${n}` });
     customerData(leak.first, `said "${said}", the first scan`);
     assert.match(leak.first.out, /media\/vo\.txt/);
-    // After billing, a pair still stops the film; a word alone warns.
-    if (n === "pair") customerData(leak.final, `said "${said}", the last scan`);
-    else wordWarned(leak.final, "media/vo.txt", `said "${said}", the last scan`);
+    // After billing, a pair still stops the film, and so does a word alone in what the film says ("White" is the
+    // customer's billing surname, an identity field's word).
+    customerData(leak.final, `said "${said}", the last scan`);
+    assert.match(leak.final.out, /media\/vo\.txt/);
   }
   // A pair typed into a scene is still found there.
   const scene = scanRun("kit-code-words-scene", items, { "media/vo.txt": CLEAN, "film/compositions/open.html": "<div>Family Portrait</div>" });
@@ -674,7 +687,9 @@ test("compute's own sentences in data.json are no one's name, and a word the run
     const leak = fixtureRun("week-over-week", "2026-11-23", { items, as: `compute-words-${n}`, edit: (d) => ({ ...d, compare: { ...d.compare, reason: `${d.compare.reason}. ${add}` } }) });
     customerData(leak.first, `data.json's reason with "${add}" added, the first scan`);
     assert.match(leak.first.out, /film\/data\.json/);
-    wordWarned(leak.final, "film/data.json", `data.json's reason with "${add}" added, the last scan`);
+    // data.json's strings are what the film shows: a word alone there stops it after billing too.
+    customerData(leak.final, `data.json's reason with "${add}" added, the last scan`);
+    assert.match(leak.final.out, /film\/data\.json/);
   }
   // A week over week that didn't move ("flat"), and a negative figure said ("minus"): compute's words too.
   const flat = scanRun("compute-words-flat", [described("Flat Rate Shipping"), described("Minus Studio Pass", 3000)], { "film/data.json": { business: "Larkspur Ceramics", currencies: [{ change: { direction: "flat" }, days: [{ spoken: "minus two hundred dollars" }] }] }, "media/vo.txt": CLEAN });
@@ -737,7 +752,7 @@ test("after billing a word alone only warns, naming the file and line; a name st
   const kept = { checks: { warnings_kept: ["timeline_track_too_dense on captions: expected"] } };
   const r = fixtureRun("week-over-week", "2026-11-23", { items: [described("Track Day Pass", 6500)], as: "warn-after-billing", answer: kept });
   assert.equal(r.first.status, 0, `the first scan: ${r.first.out}`);
-  assert.equal(r.final.status, 0, `the last scan warns, not fails: ${r.final.out}`);
+  assert.equal(r.final.status, 4, `the last scan warns, not fails, and asks for one more --final: ${r.final.out}`);
   const line = readFileSync(join(r.dir, "media", "answer.json"), "utf8").split("\n").findIndex((l) => l.includes("timeline_track_too_dense")) + 1;
   assert.ok(line > 1, "the answer is written one field to a line");
   assert.match(r.final.err, new RegExp(`^warning: a customer's word may be in media/answer\\.json line ${line} \\(words-alone check, not a failure after billing\\)$`, "m"));
@@ -748,12 +763,13 @@ test("after billing a word alone only warns, naming the file and line; a name st
   const said = JSON.parse(r.final.out.split("\n").find((l) => l.startsWith("{")));
   assert.equal(said.clean, false, "the first --final that warns is not the clean last scan");
   assert.deepEqual(said.raw_pages_removed, []);
-  assert.deepEqual(JSON.parse(readFileSync(join(r.dir, "media", "final-warned.json"), "utf8")), { warned: [{ file: "media/answer.json", line }] });
+  assert.deepEqual(JSON.parse(readFileSync(join(r.dir, "stripe", "raw-1.json"), "utf8"))[MARK], { warned: [{ file: "media/answer.json", line }] }, "the note is in the raw pages");
+  assert.ok(!existsSync(join(r.dir, "media", "final-warned.json")), "no note the run's own files hold");
   assert.match(r.final.err, /run scan --pages stripe --final once more/);
   // On a line that holds a key and its string ("note": "..."), the line is still found, its value read unescaped.
   const keyed = fixtureRun("week-over-week", "2026-11-23", { items: [described("Track Day Pass", 6500)], as: "warn-key-line", answer: { note: "Kept:\ntimeline_track_too_dense" } });
   const keyLine = readFileSync(join(keyed.dir, "media", "answer.json"), "utf8").split("\n").findIndex((l) => l.includes('"note"')) + 1;
-  assert.equal(keyed.final.status, 0, keyed.final.out);
+  assert.equal(keyed.final.status, 4, keyed.final.out);
   assert.match(keyed.final.err, new RegExp(`media/answer\\.json line ${keyLine} \\(`));
   // A whole name said at --final still stops it, and keeps the raw pages.
   const named = fixtureRun("week-over-week", "2026-11-23", { items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)], as: "named-after-billing", answer: { ...kept, thanks: "Thank you, Marisol Quintero." } });
@@ -779,10 +795,10 @@ test("after a warning, one more --final checks the agent's edit and is the last"
     writeFileSync(path, JSON.stringify(change(JSON.parse(readFileSync(path, "utf8"))), null, 1));
   };
   const pages = (dir) => existsSync(join(dir, "stripe", "raw-1.json"));
-  const marker = (dir) => existsSync(join(dir, "media", "final-warned.json"));
+  const marker = (dir) => markOf(dir) !== undefined;
   const warnedRun = (as, answer) => {
     const r = fixtureRun("week-over-week", "2026-11-23", { items, as, answer });
-    assert.equal(r.final.status, 0, `${as}, the first --final: ${r.final.out}`);
+    assert.equal(r.final.status, 4, `${as}, the first --final: ${r.final.out}`);
     assert.match(r.final.err, /^warning: /m, `${as}, the first --final warns`);
     assert.ok(pages(r.dir) && marker(r.dir), `${as}: the first --final that warns keeps the raw pages`);
     return r.dir;
@@ -820,4 +836,164 @@ test("after a warning, one more --final checks the agent's edit and is the last"
   assert.doesNotMatch(r4.err, /once more/, "the rerun never asks for another");
   assert.equal(JSON.parse(r4.out.split("\n").find((l) => l.startsWith("{"))).clean, true, "the rerun is the clean last scan");
   assert.ok(!pages(none) && !marker(none), "the rerun removes the raw pages and the note");
+});
+
+// ---------- the HARD read r3 ----------
+const pagesLeft = (dir) => readdirSync(join(dir, "stripe")).filter((f) => /^raw-\d+\.json$/.test(f));
+const finalIn = (dir, ...extra) => {
+  const r = spawnSync(process.execPath, [join(dir, "film", "metrics.mjs"), "scan", "--pages", join(dir, "stripe"), "--root", dir, "--final", ...extra], { encoding: "utf8", cwd: dir });
+  return { status: r.status, out: r.stdout + r.stderr, err: r.stderr };
+};
+const KEPT_CODE = { checks: { warnings_kept: ["timeline_track_too_dense on captions: expected"] } };
+// A run whose first --final warned on the answer alone ("track" of "Track Day Pass"): exit 4, the pages kept and noted.
+const warnedOnce = (as) => {
+  const r = fixtureRun("week-over-week", "2026-11-23", { items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)], as, answer: KEPT_CODE });
+  assert.equal(r.final.status, 4, `${as}, the first --final: ${r.final.out}`);
+  assert.ok(pagesLeft(r.dir).length === 1 && markOf(r.dir) !== undefined, `${as}: the first warn-only --final keeps the pages, noted`);
+  return r.dir;
+};
+
+test("after billing, a word alone in what the film says or shows stops it; in the answer it warns, unless it is an identity name's", () => {
+  const items = [described("Commission for Marisol Quintero", 20000)];
+  // A re-voice whose new script says the first name: fal's timestamps of it, at --final.
+  const revoice = fixtureRun("week-over-week", "2026-11-23", { items, as: "r3-revoice-word", beforeFinal: (dir) => writeFileSync(join(dir, "media", "voiceover-2-timestamps.json"), JSON.stringify(spokenAs("[warm] A good week. Thanks, Marisol."))) });
+  customerData(revoice.final, `the re-voice says "Thanks, Marisol.": ${revoice.final.out}`);
+  assert.match(revoice.final.out, /voiceover-2-timestamps\.json/);
+  // The same words in the captions file and in a scene's shown text.
+  for (const [n, path, write] of [
+    ["vtt", "media/film.vtt", (dir) => appendFileSync(join(dir, "media", "film.vtt"), "\n00:00:19.000 --> 00:00:20.000\nThanks, Marisol.\n")],
+    ["scene", "film/compositions/thanks.html", (dir) => writeFileSync(join(dir, "film", "compositions", "thanks.html"), "<div>Thanks, Marisol.</div>")],
+  ]) {
+    const r = fixtureRun("week-over-week", "2026-11-23", { items, as: `r3-${n}-word`, beforeFinal: write });
+    customerData(r.final, `${path} holds "Thanks, Marisol.": ${r.final.out}`);
+    assert.match(r.final.out, new RegExp(path.replace(/[./]/g, "\\$&")));
+    assert.ok(pagesLeft(r.dir).length === 1, "a first --final that stops the film keeps the pages for the fix");
+  }
+  // In the answer, a description's word alone only warns.
+  const answer = fixtureRun("week-over-week", "2026-11-23", { items, as: "r3-answer-word", answer: { note: "Thanks, Marisol." } });
+  wordWarned(answer.final, "media/answer.json", `the answer says "Thanks, Marisol.": ${answer.final.out}`);
+  // An identity field's name: its word alone stops the film in the answer too.
+  const identity = fixtureRun("week-over-week", "2026-11-23", { items: [billedTo("Jordan White")], as: "r3-answer-identity", answer: { note: "Thank you, Ms White." } });
+  customerData(identity.final, `the answer says the billing surname: ${identity.final.out}`);
+  assert.match(identity.final.out, /media\/answer\.json/);
+});
+
+test("a re-voice's script is scanned before it is sent: agent.md's step 6 runs the scan before the voiceover-2 submit, which refuses a name's word", () => {
+  const agent = readFileSync(new URL("../templates/metrics-video/agent.md", import.meta.url), "utf8");
+  const step6 = agent.slice(agent.indexOf("## 6. "), agent.indexOf("## 7. "));
+  const scanAt = step6.indexOf("`node film/metrics.mjs scan --pages stripe`");
+  const submitAt = step6.indexOf("mv-<stem>-voiceover-2");
+  assert.ok(scanAt >= 0 && submitAt > scanAt, "step 6 scans the new script before it submits voiceover-2");
+  const r = scanRun("r3-revoice-script", [described("Commission for Marisol Quintero")], { "media/vo.txt": "[warm] A good week. Thanks, Marisol." });
+  customerData(r, `a re-voice script that thanks the customer: ${r.out}`);
+  assert.match(r.out, /media\/vo\.txt/);
+});
+
+test("the last --final removes the raw pages on every exit: a refused --business, a page gap, a throw, a signal", async () => {
+  // A --business that isn't compute's (exit 2).
+  const business = warnedOnce("r3-exit-business");
+  const a = finalIn(business, "--business", "Someone Else");
+  assert.equal(a.status, 2, a.out);
+  assert.deepEqual(pagesLeft(business), [], "a refused --business on the last --final");
+  // A gap in the pages (exit 3, from reading them).
+  const gap = warnedOnce("r3-exit-gap");
+  writeFileSync(join(gap, "stripe", "raw-3.json"), readFileSync(join(gap, "stripe", "raw-1.json")));
+  const b = finalIn(gap);
+  assert.equal(b.status, 3, b.out);
+  assert.deepEqual(pagesLeft(gap), [], "a page gap on the last --final: every page goes");
+  // A throw: a run file it can't read (EACCES). Root reads it anyway, so the row needs a user that isn't.
+  if (process.getuid?.() !== 0) {
+    const thrown = warnedOnce("r3-exit-throw");
+    const locked = join(thrown, "media", "locked.txt");
+    writeFileSync(locked, "a note");
+    chmodSync(locked, 0);
+    const c = finalIn(thrown);
+    assert.notEqual(c.status, 0, c.out);
+    assert.match(c.out, /EACCES/);
+    assert.deepEqual(pagesLeft(thrown), [], "a throw on the last --final");
+    chmodSync(locked, 0o600);
+  }
+  // A signal while it runs: held at film/data.json (a FIFO it reads), signalled, then let go.
+  for (const signal of ["SIGTERM", "SIGINT"]) {
+    const dir = warnedOnce(`r3-exit-${signal}`);
+    const fifo = join(dir, "film", "data.json");
+    const data = readFileSync(fifo);
+    unlinkSync(fifo);
+    assert.equal(spawnSync("mkfifo", [fifo]).status, 0, "mkfifo");
+    const child = spawn(process.execPath, [join(dir, "film", "metrics.mjs"), "scan", "--pages", join(dir, "stripe"), "--root", dir, "--final"], { cwd: dir, stdio: "ignore" });
+    const closed = new Promise((ok) => child.on("close", (code, sig) => ok({ code, sig })));
+    let fd;
+    const until = Date.now() + 30_000;
+    while (fd === undefined) {
+      try {
+        fd = openSync(fifo, constants.O_WRONLY | constants.O_NONBLOCK);
+      } catch (e) {
+        if (e.code !== "ENXIO" || Date.now() > until) throw e;
+        await new Promise((ok) => setTimeout(ok, 50));
+      }
+    }
+    child.kill(signal);
+    await new Promise((ok) => setTimeout(ok, 300));
+    try {
+      writeSync(fd, data);
+    } catch {
+      // the kit is gone already
+    }
+    closeSync(fd);
+    const ended = await closed;
+    assert.deepEqual(pagesLeft(dir), [], `${signal} on the last --final: ${JSON.stringify(ended)}`);
+    assert.equal(ended.code, signal === "SIGTERM" ? 143 : 130, `it exits as a ${signal} would: ${JSON.stringify(ended)}`);
+  }
+});
+
+test("exit 0 means the raw pages are gone: the first warn-only --final exits 4, and the run's own files can't make another first", () => {
+  // The note is in the raw pages, not a file of the run's: deleting media's files or another --root changes nothing,
+  // and the next --final is the last.
+  const deleted = warnedOnce("r3-mark-deleted");
+  assert.ok(!existsSync(join(deleted, "media", "final-warned.json")) && !existsSync(join(deleted, "stripe", "final-warned.json")), "no note file to delete");
+  const a = finalIn(deleted);
+  assert.equal(a.status, 0, a.out);
+  assert.deepEqual(pagesLeft(deleted), [], "the next --final is the last");
+  const rerooted = warnedOnce("r3-mark-rerooted");
+  const elsewhere = join(root, "r3-elsewhere");
+  mkdirSync(join(elsewhere, "media"), { recursive: true });
+  writeFileSync(join(elsewhere, "media", "vo.txt"), CLEAN);
+  const b = finalIn(rerooted, "--root", elsewhere);
+  assert.notEqual(b.status, 4, b.out);
+  assert.deepEqual(pagesLeft(rerooted), [], "another --root is still the last --final");
+  // What does reset it: rewriting Stripe's raw page without the note (the skill never touches stripe/). The next
+  // --final is a first again: it warns, keeps the pages and exits 4, never 0.
+  const rewritten = warnedOnce("r3-mark-rewritten");
+  const page = join(rewritten, "stripe", "raw-1.json");
+  const { [MARK]: _, ...bare } = JSON.parse(readFileSync(page, "utf8"));
+  writeFileSync(page, JSON.stringify(bare));
+  const c = finalIn(rewritten);
+  assert.equal(c.status, 4, c.out);
+  assert.equal(pagesLeft(rewritten).length, 1);
+});
+
+test("a time zone in data.json that no machine knows is not the kit's phrase: a customer's name it spells is still found", () => {
+  const r = scanRun("r3-zone-forged", [described("Commission for Marisol Quintero")], { "film/data.json": { business: "Larkspur Ceramics", timezone: "Marisol Quintero" }, "media/vo.txt": `${CLEAN} Thank you, Marisol Quintero.` });
+  customerData(r, `a forged time zone: ${r.out}`);
+  assert.match(r.out, /media\/vo\.txt/);
+});
+
+test("a file's name is read too, and never printed when it holds a customer's word", () => {
+  const r = scanRun("r3-path-word", [described("Commission for Marisol Quintero")], { "media/vo.txt": CLEAN, "media/thanks-marisol.txt": "A note." });
+  customerData(r, `a file named for the customer: ${r.out}`);
+  assert.doesNotMatch(r.out, /marisol|quintero/i, "the file's name is not printed");
+  // The words of the paths the kit and the skill name ("media", "review", "index", "timestamps") are no one's name.
+  const kit = fixtureRun("week-over-week", "2026-11-23", { items: [described("Media Review Group", 6000), described("Index Timestamps Partners", 4000)], as: "r3-path-kit" });
+  assert.equal(kit.first.status, 0, kit.first.out);
+  assert.equal(kit.final.status, 0, kit.final.out);
+});
+
+test("code the run writes outside film/ is read for a name's words; the film's own code stays out (a stated limit)", () => {
+  const items = [described("Commission for Marisol Quintero")];
+  const media = scanRun("r3-run-code", items, { "media/vo.txt": CLEAN, "media/thanks.js": 'export const thanks = "Thanks, Marisol.";' });
+  customerData(media, `a script the run wrote in media/: ${media.out}`);
+  // The limit: film/'s .js and .css (the kit's code, and the run's restyling of it) are read for whole values, pairs
+  // and emails only.
+  const film = scanRun("r3-film-code", items, { "media/vo.txt": CLEAN, "film/compositions/thanks.js": 'export const thanks = "Thanks, Marisol.";' });
+  assert.equal(film.status, 0, film.out);
 });
