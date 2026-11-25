@@ -147,6 +147,8 @@ its chyron. Every run that gets this far leaves that file, one refused over the 
 
 ## 4. Price the plan, before any paid call
 
+**Step 4 starts only once `film/STORYBOARD.md` is written** (step 3): no `get_pricing` before that file exists.
+
 Leave `user_intent` out of every fal call. `get_pricing` once with `endpoint_ids` [`fal-ai/nano-banana-pro`,
 `fal-ai/elevenlabs/tts/eleven-v3`, `veed/fabric-1.0`]. The plans, each the sum of its steps:
 
