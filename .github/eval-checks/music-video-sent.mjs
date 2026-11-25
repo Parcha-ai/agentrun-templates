@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// node .github/eval-checks/music-video-sent.mjs <report.json> <the run's work folder or the serve's data folder>
+// node .github/eval-checks/music-video-sent.mjs <report.json> [<the run's work folder or the serve's data folder>]
+// (also: --report <report.json> [--work <folder>])
 //
 // A repo check beside serve's grade, and a stopgap: it goes away when a serve grader can compare a call to a run's file
 // (agentrun #3824, tool_used args_file). README.md beside it says how to run it.
@@ -7,20 +8,22 @@
 // A music-video eval run's stills and clips, as sent, against the records the template's kit wrote in the run's folder
 // (media/stills.json and media/clips.json). A grader reads a run's calls cut to fit its prompt, so it reads the records
 // instead; this check is what ties them to the calls. The sent calls are the fake fal's whole log, which serve keeps in
-// the report as the run's mcp_calls, never the records' word for it. The report doesn't hold the run's files, so the
-// second argument names where they are: the run's work folder itself, or a serve's data folder, in which the folder is
-// disk/agents/<the report's agent_id>-*/runs/<the report's run_id>/work.
+// the report as the run's mcp_calls, never the records' word for it. The report doesn't hold the run's files; they are
+// in the serve's data folder, which the report names as server.data for a serve run in process: the run's folder is
+// disk/agents/<the report's agent_id>-*/runs/<the report's run_id>/work in it, by exact ids. A second argument
+// overrides it: the run's work folder itself, or a data folder.
 //
 // Passes when, for the stills and for the clips:
 // - the record exists and holds the case's number of shots (first takes for the stills, at most two remakes), the
-//   count the case's own clips grader (templates/music-video/evals/<case>/graders/clips.md) holds;
+//   count the case's own grader (templates/music-video/evals/<case>/graders/clips-negative.md) holds, never the records;
 // - every submit_job sent on the endpoint is in the record by its key, was sent once, and its arguments equal the
 //   record's for that key, field by field;
 // - every call in the record was sent;
 // - the stills' fixed fields are one 1K png with no web search, and every clip carries no audio and the one exact
 //   negative prompt.
-// Prints one line: `SENT PASS n=<calls checked> (repo check; serve's grade is separate)` (exit 0), `SENT FAIL <the first
-// reason> [(and N more)]` (exit 1), or `SENT VOID <why>` when it can't find its inputs (exit 2: no verdict).
+// Prints one line: `SENT PASS n=<calls checked> (repo check; serve's grade is separate; stopgap for agentrun #3824)`
+// (exit 0), `SENT FAIL <the first reason> [(and N more)] (...the same)` (exit 1), or `SENT VOID <why>` when it can't
+// find its inputs or has nothing to check (exit 2: no verdict; a live run on real fal has no fake log).
 // Node built-ins only.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -36,10 +39,22 @@ function voided(why) {
   console.log(`SENT VOID ${why}`);
   process.exit(2);
 }
-const [reportPath, where, ...extra] = process.argv.slice(2);
-if (!reportPath || !where || extra.length) voided("usage: node .github/eval-checks/music-video-sent.mjs <report.json> <the run's work folder or the serve's data folder>");
+const USAGE = "usage: node .github/eval-checks/music-video-sent.mjs <report.json> [<the run's work folder or the serve's data folder>]";
+const LABEL = "(repo check; serve's grade is separate; stopgap for agentrun #3824)";
+const argv = process.argv.slice(2);
+const named = {};
+const plain = [];
+for (let i = 0; i < argv.length; i++) {
+  if (argv[i] === "--report" || argv[i] === "--work") {
+    if (argv[i + 1] === undefined) voided(USAGE);
+    named[argv[i].slice(2)] = argv[++i];
+  } else if (argv[i].startsWith("--")) voided(`${USAGE} (unknown option ${argv[i]})`);
+  else plain.push(argv[i]);
+}
+const reportPath = named.report ?? plain.shift();
+let where = named.work ?? plain.shift();
+if (!reportPath || plain.length) voided(USAGE);
 if (!existsSync(reportPath)) voided(`no report at ${reportPath}`);
-if (!existsSync(where) || !statSync(where).isDirectory()) voided(`no folder at ${where}`);
 let report;
 try {
   report = JSON.parse(readFileSync(reportPath, "utf8"));
@@ -50,9 +65,9 @@ if (report?.package?.name !== undefined && report.package.name !== "music-video"
 const runs = (report?.cases ?? []).flatMap((c) => (c.runs ?? []).map((run) => ({ name: c.name, run })));
 if (runs.length !== 1) voided(`the report holds ${runs.length} runs; this check takes a report of one run`);
 const [{ name: caseName, run }] = runs;
-if (!Array.isArray(run.mcp_calls)) voided("the run has no mcp_calls (the fake fal's log) in the report");
-const grader = join(EVALS, String(caseName), "graders", "clips.md");
-if (!existsSync(grader)) voided(`case ${caseName} has no clips grader (templates/music-video/evals/${caseName}/graders/clips.md): this check covers the fake-fal cases that make a film`);
+if (caseName === "live" || !Array.isArray(run.mcp_calls) || !run.mcp_calls.length) voided(`no fake log: live runs aren't checked (case ${caseName} has no mcp_calls in the report)`);
+const grader = join(EVALS, String(caseName), "graders", "clips-negative.md");
+if (!existsSync(grader)) voided(`case ${caseName} has no clips-negative grader (templates/music-video/evals/${caseName}/graders/clips-negative.md): this check covers the fake-fal cases that make a film`);
 const shots = Number(readFileSync(grader, "utf8").match(/^count:\s*(\d+)\s*$/m)?.[1]);
 if (!Number.isSafeInteger(shots) || shots < 1) voided(`${grader} holds no count of clips`);
 // The run's work folder: the folder given, when it holds media/; else the run's folder inside a serve's data folder.
@@ -65,6 +80,9 @@ function workFolder() {
   if (found.length === 1) return found[0];
   voided(`${where} holds no media/ and no disk/agents/<agent>/runs/${run.run_id}/work${found.length > 1 ? ` (it holds ${found.length})` : ""}`);
 }
+if (where === undefined) where = report?.server?.data;
+if (typeof where !== "string" || !where) voided("the report names no server.data folder: give the run's work folder or the serve's data folder");
+if (!existsSync(where) || !statSync(where).isDirectory()) voided(`no folder at ${where}`);
 const work = workFolder();
 
 const lines = [];
@@ -158,8 +176,8 @@ function compare(kind, file, endpoint, calls) {
 }
 
 if (lines.length) {
-  console.log(`SENT FAIL ${lines[0]}${lines.length > 1 ? ` (and ${lines.length - 1} more)` : ""}`);
+  console.log(`SENT FAIL ${lines[0]}${lines.length > 1 ? ` (and ${lines.length - 1} more)` : ""} ${LABEL}`);
   process.exit(1);
 }
-console.log(`SENT PASS n=${checked} (repo check; serve's grade is separate)`);
+console.log(`SENT PASS n=${checked} ${LABEL}`);
 process.exit(0);

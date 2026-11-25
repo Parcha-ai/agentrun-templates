@@ -360,10 +360,11 @@ test("remake adds one still's second take, its picture fixed, to media/stills.js
 // The records are what the kit built. What counts is what the run sent: the fake fal's whole log of submit_job calls,
 // which serve keeps in the eval report as the run's mcp_calls. .github/eval-checks/music-video-sent.mjs compares them
 // call by call: every still and clip sent exactly once, each one's arguments equal to its record's, the clips' negative
-// prompt the one exact string, the number of shots the case's clips grader counts. A stopgap until a serve grader can
-// compare a call to a run's file.
+// prompt the one exact string, the number of shots the case's clips-negative grader counts. A stopgap until a serve
+// grader can compare a call to a run's file (agentrun #3824).
 const CHECK = new URL("./eval-checks/music-video-sent.mjs", import.meta.url).pathname;
-const SHORT = 8; // short-song's clips.md count
+const SHORT = 8; // short-song's clips-negative.md count
+const LABEL = " (repo check; serve's grade is separate; stopgap for agentrun #3824)";
 function sentRun({ shots = Array(SHORT).fill(4) } = {}) {
   const dir = stillsDir({ shots });
   const s = stillsOf(dir);
@@ -374,32 +375,47 @@ function sentRun({ shots = Array(SHORT).fill(4) } = {}) {
   const calls = [...sent(s.stdout), ...sent(c.stdout)].map((args) => ({ tool: "mcp:fal/submit_job", arguments: args }));
   return { dir, calls: [{ tool: "mcp:fal/get_pricing", arguments: {} }, ...calls, { tool: "mcp:fal/wait_for_jobs", arguments: { jobs: [] } }] };
 }
-function reportOf(dir, calls, { name = "short-song", runs } = {}) {
+function reportOf(dir, calls, { name = "short-song", runs, data } = {}) {
   const report = join(dir, `report-${++runs_}.json`);
-  writeFileSync(report, JSON.stringify({ package: { name: "music-video" }, cases: [{ name, runs: runs ?? [{ run: 1, agent_id: "01aa-agent", run_id: "01aa-run", mcp_calls: calls }] }] }));
+  writeFileSync(report, JSON.stringify({ package: { name: "music-video" }, ...(data ? { server: { kind: "in_process", data } } : {}), cases: [{ name, runs: runs ?? [{ run: 1, agent_id: "01aa-agent", run_id: "01aa-run", mcp_calls: calls }] }] }));
   return report;
 }
 let runs_ = 0;
-const check = (...args) => spawnSync(process.execPath, [CHECK, ...args], { encoding: "utf8" });
+const checkRaw = (...args) => spawnSync(process.execPath, [CHECK, ...args], { encoding: "utf8" });
+// Every verdict line ends with the label that says it is the repo's check; the tests below match what comes before it.
+const check = (...args) => {
+  const r = checkRaw(...args);
+  if (r.status !== 2) assert.ok(r.stdout.endsWith(`${LABEL}\n`), `no label: ${r.stdout}`);
+  return { ...r, stdout: r.stdout.replace(LABEL, "") };
+};
 const edit = (calls, key, change) => calls.map((c) => (c.arguments.submission_key === key ? { ...c, arguments: change(structuredClone(c.arguments)) } : c));
 
 test("the sent check passes a run whose sent stills and clips equal their records, in one line that says it is the repo's check", () => {
   const { dir, calls } = sentRun();
   const r = check(reportOf(dir, calls), dir);
   assert.equal(r.status, 0, r.stdout + r.stderr);
-  assert.equal(r.stdout, "SENT PASS n=16 (repo check; serve's grade is separate)\n");
+  assert.equal(r.stdout, "SENT PASS n=16\n");
+  assert.equal(checkRaw(reportOf(dir, calls), dir).stdout, `SENT PASS n=16${LABEL}\n`);
 });
 
-test("the sent check finds the run's work folder in a serve data folder by the report's agent and run ids", () => {
+test("the sent check finds the run's work folder from the report alone: its server.data folder, by the agent and run ids", () => {
   const { dir, calls } = sentRun();
   const data = join(root, `data-${++runs}`);
   const work = join(data, "disk", "agents", "01aa-agent-0f0f", "runs", "01aa-run", "work");
   mkdirSync(join(data, "disk", "agents", "01aa-agent-0f0f", "runs", "01aa-other", "work"), { recursive: true });
   mkdirSync(join(work, ".."), { recursive: true });
   cpSync(dir, work, { recursive: true });
-  const r = check(reportOf(dir, calls), data);
-  assert.equal(r.status, 0, r.stdout + r.stderr);
-  assert.match(r.stdout, /^SENT PASS n=16 /);
+  for (const args of [[reportOf(dir, calls, { data })], ["--report", reportOf(dir, calls, { data })], [reportOf(dir, calls), data], ["--report", reportOf(dir, calls, { data: root }), "--work", work]]) {
+    const r = check(...args);
+    assert.equal(r.status, 0, `${args}: ${r.stdout}${r.stderr}`);
+    assert.equal(r.stdout, "SENT PASS n=16\n");
+  }
+  // The run's folder missing from the data folder: no verdict, not a failure.
+  const gone = join(root, `data-${++runs}`);
+  mkdirSync(join(gone, "disk", "agents", "01aa-agent-0f0f", "runs"), { recursive: true });
+  const r = checkRaw(reportOf(dir, calls, { data: gone }));
+  assert.equal(r.status, 2, r.stdout);
+  assert.match(r.stdout, /^SENT VOID .* holds no media\/ and no disk\/agents\/<agent>\/runs\/01aa-run\/work/);
 });
 
 test("the sent check passes a remake sent as recorded, and fails one sent but not recorded", () => {
@@ -407,7 +423,7 @@ test("the sent check passes a remake sent as recorded, and fails one sent but no
   const r = kit(dir, "remake", "--file", "media/stills.json", "--shot", "3", "--picture", "a teal quay at dusk");
   assert.equal(r.status, 0, r.stderr);
   const remake = { tool: "mcp:fal/submit_job", arguments: sent(r.stdout)[0] };
-  assert.match(check(reportOf(dir, [...calls, remake]), dir).stdout, /^SENT PASS n=17 /);
+  assert.match(check(reportOf(dir, [...calls, remake]), dir).stdout, /^SENT PASS n=17\n$/);
   const stray = structuredClone(remake);
   stray.arguments.submission_key = "mu-abcd1234-still-4-2";
   const no = check(reportOf(dir, [...calls, remake, stray]), dir);
@@ -456,13 +472,16 @@ test("the sent check fails records that don't hold the case's shots or the exact
 
 test("the sent check is VOID (exit 2), not a fail, when it can't find its inputs", () => {
   const { dir, calls } = sentRun();
+  const check = checkRaw;
   const voids = [
-    [[], /^SENT VOID usage: node \.github\/eval-checks\/music-video-sent\.mjs <report\.json> <the run's work folder or the serve's data folder>/],
+    [[], /^SENT VOID usage: node \.github\/eval-checks\/music-video-sent\.mjs <report\.json> \[<the run's work folder or the serve's data folder>\]/],
     [[join(dir, "nope.json"), dir], /^SENT VOID no report at /],
     [[reportOf(dir, calls), join(dir, "nowhere")], /^SENT VOID no folder at /],
-    [[reportOf(dir, calls, { name: "live" }), dir], /^SENT VOID case live has no clips grader \(templates\/music-video\/evals\/live\/graders\/clips\.md\): this check covers the fake-fal cases that make a film$/m],
+    [[reportOf(dir, calls, { name: "live", runs: [{ run: 1, agent_id: "a", run_id: "r", mcp_calls: [] }] }), dir], /^SENT VOID no fake log: live runs aren't checked/],
+    [[reportOf(dir, calls, { name: "user-ceiling" }), dir], /^SENT VOID case user-ceiling has no clips-negative grader \(templates\/music-video\/evals\/user-ceiling\/graders\/clips-negative\.md\): this check covers the fake-fal cases that make a film$/m],
+    [[reportOf(dir, calls)], /^SENT VOID the report names no server\.data folder/],
     [[reportOf(dir, calls, { runs: [{ run: 1, agent_id: "a", run_id: "r", mcp_calls: calls }, { run: 2, agent_id: "a", run_id: "s", mcp_calls: calls }] }), dir], /^SENT VOID the report holds 2 runs; this check takes a report of one run$/m],
-    [[reportOf(dir, calls, { runs: [{ run: 1, agent_id: "a", run_id: "r" }] }), dir], /^SENT VOID the run has no mcp_calls \(the fake fal's log\) in the report$/m],
+    [[reportOf(dir, calls, { runs: [{ run: 1, agent_id: "a", run_id: "r" }] }), dir], /^SENT VOID no fake log: live runs aren't checked \(case short-song has no mcp_calls in the report\)$/m],
     [[reportOf(dir, calls), mkdtempSync(join(root, "empty-"))], /^SENT VOID .* holds no media\/ and no disk\/agents\/<agent>\/runs\/01aa-run\/work/m],
   ];
   for (const [args, why] of voids) {
