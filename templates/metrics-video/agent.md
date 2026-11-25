@@ -212,9 +212,9 @@ The skill's step 9: `write` the answer's json (the block below, without the fenc
 `node film/metrics.mjs scan --pages stripe --final`. It looks at everything again, the answer and the captions included, and when it finds nothing that stops the film it removes
 the raw pages: the run leaves no copy of Stripe's answers. Exit 2: fix what it names (step 1) and run it again. A
 `warning:` line (a word of a name found alone, exit 0): a warning doesn't fail the run. Read the line it names. If it
-holds a customer's name, take the name out of that file's text; never remake a picture, clip or voice for a warning,
-and don't run `--final` again (the raw pages are already gone). If the line holds no name (a kept warning code, your
-own words), leave it. Then
+holds a customer's name, take the name out of that file's text; never remake a picture, clip or voice for a warning.
+Then run `--final` once more, whether you edited or not: a word may warn again and that's fine, but a name pair, a
+whole description or an email still stops the film. Then
 answer with `media/answer.json`'s content. Every run that saved a raw page ends here, the partial and failed ones and
 one refused over the owner's ceiling too.
 

@@ -41,10 +41,12 @@
 //          The business's own name, as compute was given it (film/data.json, which the run can write, as it types
 //          compute's --business), is set aside; scan takes no other. With --final (after billing), a name's word found
 //          alone only warns on stderr, naming the file and line, never the word, and exits 0; whole values, pairs and
-//          emails still exit 2. With --final and nothing that exits 2 found, it removes the raw pages. A warning
-//          doesn't fail the run: the agent reads the line it names and, if it holds a customer's name, takes the name
-//          out of that file's text, never remaking a picture, clip or voice, and doesn't run --final again (the raw
-//          pages are already gone); a line with no name (a kept warning code, its own words) stays. Found only where the whole description is written as it is: a word of a lower-case pair alone,
+//          emails still exit 2. A warning doesn't fail the run: the agent reads the line it names and, if it holds a
+//          customer's name, takes the name out of that file's text, never remaking a picture, clip or voice; then it
+//          runs --final once more, whether it edited or not: a word may warn again and that's fine, but a name pair, a
+//          whole description or an email still stops the film. The first --final that warns keeps the raw pages and
+//          notes the files and lines in media/final-warned.json ("clean": false); the next is the last, and with
+//          nothing that exits 2 it removes the pages and the note. A --final with nothing found removes the pages. Found only where the whole description is written as it is: a word of a lower-case pair alone,
 //          a name with a lower-case particle ("da Silva", "van Gogh", "de la Cruz"), one given name alone in a
 //          longer description ("Tip from Sarah"), a pair in mixed case ("Marisol quintero"). Not found: a
 //          description of one word, a name spelled another way.
@@ -56,7 +58,7 @@
 // file (scan names the file and the item, never the value); 3: the pages are wrong or incomplete (the message says
 // what to fix); 0: done.
 import { createHash, randomBytes } from "node:crypto";
-import { existsSync, lstatSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const METRIC = {
@@ -829,9 +831,10 @@ function customerValues(dir) {
 // The words of a text, in lower case: a name's word alone is found in any case ("Marisol", "marisol", "MARISOL").
 // What a tool writes while the run runs it, at the path the skill names: hyperframes check (SKILL.md, 7:
 // media/check.json), hyperframes render (SKILL.md, 8: media/render.log), and hyperframes snapshot through review.mjs
-// (its <out>/snapshot.log; SKILL.md, 7: media/review, media/review-2). A tool's words ("families", "track", "phone"),
-// never the run's: a name's word alone is not looked for there.
-const TOOL_OUTPUT = [/^media\/check\.json$/, /^media\/render\.log$/, /^media\/review(?:-\d+)?\/snapshot\.log$/];
+// (its <out>/snapshot.log; SKILL.md, 7: media/review, media/review-2); and scan's own note of a --final that warned
+// (media/final-warned.json: files and line numbers). A tool's words ("families", "track", "phone"), never the run's:
+// a name's word alone is not looked for there.
+const TOOL_OUTPUT = [/^media\/check\.json$/, /^media\/render\.log$/, /^media\/review(?:-\d+)?\/snapshot\.log$/, /^media\/final-warned\.json$/];
 // The string values on one line of a JSON file, unescaped: each literal in order, a key (a literal followed by a
 // colon) left out.
 const jsonLineStrings = (line) =>
@@ -1034,7 +1037,12 @@ function scan() {
   // After billing (--final), a name's word alone only warns, naming the file and the line: the answer keeps tool and
   // kit words on purpose (a kept warning's code, "timeline_track_too_dense"), and a description can share one ("Track
   // Day Pass"). Whole values, pairs and emails still stop the film. Before billing, a word alone stops it too.
-  const warnings = [];
+  const warnings = new Map(); // the warning's line -> { file, line }: never the word
+  // The first --final that warns keeps the raw pages and notes the files and lines it warned on here (never a word):
+  // the agent edits what it must and runs --final once more. A --final that finds this note is the last: it removes
+  // the pages and the note unless something stops the film, and never asks for another.
+  const warnedNote = join(root, "media", "final-warned.json");
+  const rerun = final && existsSync(warnedNote);
   let wordsRead = 0;
   for (const { path, text, label = "" } of [...files, ...voices]) {
     const at = (relative(root, path) || path) + label;
@@ -1057,7 +1065,7 @@ function scan() {
         if (!final) hits.push(`${at} holds a value from Stripe's ${where}`);
         else {
           const line = label ? 0 : lineOf(path, text, w);
-          warnings.push(`warning: a customer's word may be in ${at}${line ? ` line ${line}` : ""} (words-alone check, not a failure after billing)`);
+          warnings.set(`warning: a customer's word may be in ${at}${line ? ` line ${line}` : ""} (words-alone check, not a failure after billing)`, line ? { file: at, line } : { file: at });
         }
       }
     }
@@ -1066,14 +1074,21 @@ function scan() {
   if (hits.length) {
     fail(2, `customer data in the run's files: remove each from the file (and from anything made from it: the voiceover, the film), then scan again:\n- ${[...new Set(hits)].slice(0, 20).join("\n- ")}`);
   }
-  for (const warning of new Set(warnings)) console.error(warning);
-  // Only a warning: nothing that stops the film was found, so the raw pages go as they would with none.
+  for (const warning of warnings.keys()) console.error(warning);
   const removed = [];
-  if (final) for (const path of raw) {
-    unlinkSync(path);
-    removed.push(path);
+  const again = final && warnings.size > 0 && !rerun && raw.size > 0;
+  if (again) {
+    mkdirSync(join(root, "media"), { recursive: true });
+    writeFileSync(warnedNote, JSON.stringify({ warned: [...warnings.values()] }, null, 1) + "\n");
+    console.error("the raw pages are kept: read each line named above; if it holds a customer's name, take the name out of that file's text (never remake a picture, clip or voice for a warning); then run scan --pages stripe --final once more, whether you edited or not. That run is the last.");
+  } else if (final) {
+    for (const path of raw) {
+      unlinkSync(path);
+      removed.push(path);
+    }
+    if (existsSync(warnedNote)) unlinkSync(warnedNote);
   }
-  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, name_words: words.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), voices_read: voices.length, files_read_for_words: wordsRead, skill_files_shipped: shipped.size, skill_files_searched: written.length, words_alone_warnings: new Set(warnings).size, raw_pages_removed: removed }));
+  console.log(JSON.stringify({ clean: !again, files: files.length, values: values.size, name_words: words.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), voices_read: voices.length, files_read_for_words: wordsRead, skill_files_shipped: shipped.size, skill_files_searched: written.length, words_alone_warnings: warnings.size, final_again: again, raw_pages_removed: removed }));
 }
 
 // ---------- the key stem ----------
