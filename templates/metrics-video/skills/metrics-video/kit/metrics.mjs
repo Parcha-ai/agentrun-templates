@@ -9,7 +9,7 @@
 //                            --pages stripe --film film [--business "Name"]
 //   node metrics.mjs place   --film film [--at revenue=5.2,change=14.0,...] [--seconds 47]
 //   node metrics.mjs stem    --file media/run-keys.json --today YYYY-MM-DD --timezone <IANA> [--week-of YYYY-MM-DD]
-//   node metrics.mjs scan    --pages stripe [--root .] [--business "Name"] [--final]
+//   node metrics.mjs scan    --pages stripe [--root .] [--film film] [--final]
 //
 // --today is the run's date in the time zone: the day the schedule fired (its line names it in the schedule's zone),
 // or for a run by hand the day the run's environment line gives. Never the sandbox's clock.
@@ -676,8 +676,6 @@ const nameLike = (a, b) => (TITLED(a) && TITLED(b)) || !STRIPES_WORDS.has(a.toLo
 // and a word of a name looked for alone never is one.
 const COMMON = new Set(
   (
-    // the words the kit has the run say or write: each currency's spoken unit, and the tools the skill names
-    Object.values(UNIT).flat().join(" ").toLowerCase() + " composio stripe fal elevenlabs hyperframes " +
     // the calendar
     "january february march april may june july august september october november december jan feb mar apr jun jul aug " +
     "sep sept oct nov dec monday tuesday wednesday thursday friday saturday sunday mon tue tues wed thu thur thurs fri " +
@@ -820,10 +818,23 @@ function scan() {
   // case) is the customer's wherever else it is written, the skill's text included: a run that read it from Stripe
   // must not write it, so it is always looked for.
   const skillText = squash([...shipped.values()].map((f) => f.text).join("\n"));
-  // The business's own name (--business, the name the film opens and ends on) is the film's, not a customer's, though a
-  // charge's description holds it (shop plugins write "<store name> - Order <n>"): a value equal to it,
-  // or a name pair inside it, is not looked for. A customer's name beside it in the same description still is.
-  const business = typeof args.business === "string" && args.business !== "true" ? wordsOf(args.business) : "";
+  // The business's own name (the name the film opens and ends on) is the film's, not a customer's, though a charge's
+  // description holds it (shop plugins write "<store name> - Order <n>"): a value equal to it, or a name pair inside
+  // it, is not looked for. A customer's name beside it in the same description still is. It is the name compute was
+  // given (film/data.json's business), never one handed to scan: a --business here that isn't compute's is refused,
+  // so a customer's name can't be set aside by naming it the business. Neither name is printed.
+  const film = join(root, typeof args.film === "string" ? args.film : "film");
+  let computed = "";
+  try {
+    const b = JSON.parse(readFileSync(join(film, "data.json"), "utf8")).business;
+    if (typeof b === "string") computed = b;
+  } catch {
+    computed = "";
+  }
+  const business = wordsOf(computed);
+  if (args.business !== undefined && wordsOf(args.business === "true" ? "" : String(args.business)) !== business) {
+    fail(2, `scan sets aside only the business's name compute was given (${business ? "in film/data.json" : "none: film/data.json names no business"}), and the --business given here is another. Run scan without --business.`);
+  }
   const theBusiness = (value, { name }) => business !== "" && (wordsOf(value) === business || (name && ` ${business} `.includes(` ${wordsOf(value)} `)));
   const values = new Map([...found].filter(([value, seen]) => !(!seen.anyCase && skillText.includes(squash(value))) && !theBusiness(value, seen)));
   // A name's word alone is not looked for when it is a word of the business's name. The words the kit has the run say
@@ -834,7 +845,6 @@ function scan() {
   // A file in film/ still byte for byte a shipped kit file (metrics.mjs, review.mjs, a scene the run never changed)
   // holds only the template's words: it is not searched, so a customer's name that is also a phrase in the kit's code
   // can't fail every run. A copy the run changed is searched like any other file.
-  const film = join(root, typeof args.film === "string" ? args.film : "film");
   const kitCopy = (path) => {
     const rel = relative(film, path).split("\\").join("/");
     const kitFile = shipped.get(`kit/${rel}`);
@@ -845,33 +855,59 @@ function scan() {
   const files = [...all.filter((f) => !kitCopy(f.path)), ...written];
   // What fal spoke: a voice's timestamps hold its words one letter to a JSON string, which no value matches as the
   // file is written. Their letters joined are the text the voice says, searched as well, so a name sent to fal but
-  // kept out of media/vo.txt is still found.
+  // kept out of media/vo.txt is still found. They are read in any JSON file that holds them (the timestamps the run
+  // wrote, fal's result as filed, anything else), not only a file named for them. fal splits the letters into chunks,
+  // at times in a word and at times between two: the chunks are read joined as they are and joined with a space.
   const voices = [];
+  const letters = (c) => c.characters.map(String).join("");
+  const spoken = (v, out) => {
+    if (Array.isArray(v)) {
+      const chunks = v.filter((c) => c && Array.isArray(c.characters)).map(letters);
+      if (chunks.length) out.push(chunks.join(""), chunks.join(" "));
+      for (const x of v) if (!(x && Array.isArray(x.characters))) spoken(x, out);
+    } else if (v && typeof v === "object") {
+      if (Array.isArray(v.characters)) out.push(letters(v));
+      else for (const x of Object.values(v)) spoken(x, out);
+    }
+  };
   for (const f of files) {
-    if (!/-timestamps\.json$/.test(f.path)) continue;
-    let ts;
+    if (!/^\s*[[{]/.test(f.text)) continue;
+    let json;
     try {
-      ts = JSON.parse(f.text);
+      json = JSON.parse(f.text);
     } catch {
       continue;
     }
-    const list = Array.isArray(ts) ? ts : Array.isArray(ts?.timestamps) ? ts.timestamps : ts ? [ts] : [];
-    const said = list.filter((c) => c && Array.isArray(c.characters)).map((c) => c.characters.map(String).join("")).join("");
-    if (said) voices.push({ path: f.path, text: said, label: " (the words its voice says)" });
+    const out = [];
+    spoken(json, out);
+    const said = [...new Set(out.filter(Boolean))];
+    if (said.length) voices.push({ path: f.path, text: said.join("\n"), label: " (the words its voice says)" });
   }
+  // The kit's own phrases (each currency's spoken unit, "Hong Kong dollars"; the tools the skill names) are the
+  // film's, not a customer's: they are taken out of a text before a name's words alone are looked for, so a customer
+  // named Hong is found and "Hong Kong dollars" is not taken for her. Only the whole phrase is taken out.
+  const codes = new Set();
+  if (existsSync(dir)) for (const { list } of readRaw(dir)) for (const item of list.data) if (typeof item?.currency === "string") codes.add(item.currency.toLowerCase());
+  const phrases = [...new Set([...Object.values(UNIT).flat(), ...[...codes].flatMap((c) => { try { return [unitWords(c, 1), unitWords(c, 2)]; } catch { return []; } }), "Composio", "ElevenLabs", "HyperFrames", "fal", "Stripe"])]
+    .filter((x) => /\p{L}/u.test(x))
+    .sort((a, b) => b.length - a.length);
+  const kitPhrase = new RegExp(`(?<![\\p{L}])(?:${phrases.map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s+")).join("|")})(?![\\p{L}])`, "giu");
+  // A name said through an initial ("marisol q. quintero", "Marisol Q Quintero") is its pair with the initial left out.
+  const noInitials = (t) => t.replace(/(\p{L}{2,})\s+(?:\p{L}\.|\p{Lu})\s+(?=\p{L}{2,})/gu, "$1 ");
   const hits = [];
   for (const { path, text, label = "" } of [...files, ...voices]) {
     const at = (relative(root, path) || path) + label;
     const asWritten = squash(text);
     const anyCase = asWritten.toLowerCase();
+    const anyCaseNoInitials = noInitials(asWritten).toLowerCase();
     for (const [value, { where, anyCase: folds }] of values) {
       const norm = folds ? fold : squash;
-      const hay = folds ? anyCase : asWritten;
       const plain = norm(value);
       const escaped = norm(JSON.stringify(value).slice(1, -1));
-      if (hay.includes(plain) || (escaped !== plain && hay.includes(escaped))) hits.push(`${at} holds a value from Stripe's ${where}`);
+      const holds = (hay) => hay.includes(plain) || (escaped !== plain && hay.includes(escaped));
+      if (folds ? holds(anyCase) || holds(anyCaseNoInitials) : holds(asWritten)) hits.push(`${at} holds a value from Stripe's ${where}`);
     }
-    const caps = capitalised(text);
+    const caps = capitalised(text.replace(kitPhrase, " "));
     for (const [w, where] of words) if (caps.has(w)) hits.push(`${at} holds a value from Stripe's ${where}`);
     for (const email of text.match(EMAIL) ?? []) if (!values.has(email)) hits.push(`${at} holds an email address`);
   }

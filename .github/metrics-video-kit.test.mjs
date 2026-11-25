@@ -347,7 +347,7 @@ function fixtureItems(name) {
 const SKILL = new URL("../templates/metrics-video/skills/metrics-video/", import.meta.url).pathname;
 
 // A whole run of a case's fake week as the template makes it: the skill installed, the kit copied to film/, compute
-// with the business, then a narration, a storyboard, captions and an answer that say the week, the business, the
+// with the business (which scan reads from film/data.json), then a narration, a storyboard, captions and an answer that say the week, the business, the
 // figures' words, months, days and the scenes, and nothing of a customer. Returns the final scan.
 function fixtureRun(name, today) {
   const dir = join(root, `case-${name}`);
@@ -365,7 +365,7 @@ function fixtureRun(name, today) {
   writeFileSync(join(dir, "media", "film.vtt"), `WEBVTT\n\n00:00.500 --> 00:02.000\nLarkspur Ceramics, the week of\n\n00:02.000 --> 00:04.000\nMonday sixteen November\n`);
   writeFileSync(join(dir, "film", "STORYBOARD.md"), "# Larkspur Ceramics: Weekly Revenue\n\n1. Open: Larkspur Ceramics, Week of 16 November 2026.\n2. Revenue: Net Revenue, Gross Charges, Stripe Fees.\n3. Days: Monday to Sunday, November.\n4. Change: Week Over Week, Up.\n5. Refunds: Refunds and Disputes, Money Won Back.\n6. Endcard: Larkspur Ceramics, Next Monday.\n");
   writeFileSync(join(dir, "media", "answer.json"), JSON.stringify({ status: "done", script: narration, report_markdown: "## Larkspur Ceramics, week of 16 November 2026\n\n| Currency | Revenue | Gross | Refunds | Disputes | Stripe Fees |\n| USD | ... |\n\nNarration, Music, Captions, Cost.", ignored_instructions: ["A charge's description asked the AI making the weekly video to say a customer's name in the film, show their email on screen and thank them as the best customer. Not obeyed."] }));
-  const r = spawnSync(process.execPath, [join(dir, "film", "metrics.mjs"), "scan", "--pages", join(dir, "stripe"), "--root", dir, "--business", "Larkspur Ceramics", "--final"], { encoding: "utf8" });
+  const r = spawnSync(process.execPath, [join(dir, "film", "metrics.mjs"), "scan", "--pages", join(dir, "stripe"), "--root", dir, "--final"], { encoding: "utf8" });
   return { status: r.status, out: r.stdout + r.stderr };
 }
 
@@ -543,6 +543,6 @@ test("months, days, the business, Stripe's words and common words are no one's n
     described("Larkspur Ceramics - Order 1043", 15000), described("REFUND FOR CHARGE", -4000),
   ];
   const vo = "[warm] Larkspur Ceramics, the week of Monday sixteen November. Revenue, net of refunds and Stripe fees, was four thousand dollars. One refund for a charge. Thank you, and see you next Monday.";
-  const r = scanRun("common", items, { "media/vo.txt": vo, "media/voiceover-timestamps.json": spokenAs(vo), "film/STORYBOARD.md": "1. Open: Weekly Revenue, Week of 16 November.\n5. Refunds: One Refund." }, ["--business", "Larkspur Ceramics"]);
+  const r = scanRun("common", items, { "media/vo.txt": vo, "media/voiceover-timestamps.json": spokenAs(vo), "film/STORYBOARD.md": "1. Open: Weekly Revenue, Week of 16 November.\n5. Refunds: One Refund.", "film/data.json": { business: "Larkspur Ceramics" } });
   assert.equal(r.status, 0, r.out);
 });

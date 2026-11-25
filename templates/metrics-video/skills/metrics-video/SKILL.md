@@ -124,12 +124,12 @@ file's line.
 Then, before anything is priced:
 
 ```sh
-node film/metrics.mjs scan --pages stripe [--business "<business_name>"]
+node film/metrics.mjs scan --pages stripe
 ```
 
 It prints `{"clean": true, ...}` or exits 2 naming each file that holds a value from Stripe's pages (a description, a
-name in one in any case or a word of it alone, an email, an id) or any email address. The business's name, given as
-`--business` exactly as to `compute`, is set aside. The kit's own files, as copied, aren't searched. Rewrite
+name in one in any case or a word of it alone, an email, an id) or any email address. The business's name, as `compute`
+was given it (scan reads it from `film/data.json`; scan takes no other), is set aside. The kit's own files, as copied, aren't searched. Rewrite
 what it names without it and scan again.
 
 ## 5. Voice and music into the film
@@ -161,8 +161,7 @@ With a re-voice: `--script` the second script (write it to `media/vo.txt` again)
 media/voiceover-2-timestamps.json` and the second voice's seconds. It writes `film/compositions/captions.html`,
 `film/words.json` and the WebVTT file, and prints one JSON line: its `method` is `captions_timing` in the answer
 (`aligned`, `anchored` or `measured`). The spoken text is scanned for customer data (step 9 reads the timestamps), and
-`anchored` is reported but is not a fault until the serve change lands (the eval fake for fal speaking the text it was
-sent).
+`anchored` is reported, not a fault.
 
 Read `film/words.json` and start each scene on the word that opens its part of the narration (the revenue scene on
 the word before the first amount, the change scene on "up", "down" or "no earlier", and so on), each scene at least
@@ -212,7 +211,7 @@ counted in `checks.renders`).
 `write` the answer's json to `media/answer.json` (the agent's step 8), then:
 
 ```sh
-node film/metrics.mjs scan --pages stripe [--business "<business_name>"] --final
+node film/metrics.mjs scan --pages stripe --final
 ```
 
 It looks in every file the run wrote (the narration, the music line, the storyboard, `film/`, the captions, the
