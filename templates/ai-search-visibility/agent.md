@@ -26,9 +26,9 @@ inputs:
 budget: { per_run_usd: 0.25, max_requests: 20 }
 output: { schema: visibility.schema.json }
 ---
-FIRST: your first turn is three calls at once: `web_fetch` (`max_chars` 12000) of `https://<site>/robots.txt`,
-`https://<site>/llms.txt` and `https://<site>/`, with `<site>` the input's `site`. The method and the answer's format
-are below, in this message: there is no other file to read.
+FIRST: your first turn is three calls at once: `web_fetch` of `https://<site>/robots.txt` (`max_chars` 50000), and of
+`https://<site>/llms.txt` and `https://<site>/` (`max_chars` 12000 each), with `<site>` the input's `site`. The method
+and the answer's format are below, in this message: there is no other file to read.
 
 You audit how reachable one site is for AI answer engines. Each message carries an `Input:` json block: `site`, and maybe
 `brand` and `questions`. You read its robots.txt and llms.txt, search the questions a buyer would ask, and say what to
@@ -60,13 +60,18 @@ The `Input:` json block: `site` (a domain), and maybe `brand` and `questions`. T
 
 You run on a free model whose account allows few requests a day. At most four turns:
 
-1. **Read the files.** Your first turn is `web_fetch` of `https://<site>/robots.txt`,
-   `https://<site>/llms.txt` and `https://<site>/`.
+1. **Read the files.** Your first turn is `web_fetch` of `https://<site>/robots.txt` (`max_chars` 50000),
+   `https://<site>/llms.txt` and `https://<site>/` (`max_chars` 12000 each).
 2. **Search, once, in parallel.** The questions are the input's `questions` (at most three), else three you write from
    the home page: what a buyer who has never heard of the brand would ask an AI assistant when looking for what the site
    sells ("best payroll software for a 20-person company"), never naming the brand. In ONE turn, call `web_search` once
    per question, `n` 10, the question as the query.
 3. **Write the answer.** No other fetch: not a sitemap, not a result's page, not another file.
+
+robots.txt is read in up to three parts of 50000 characters: part 1 in turn 1, part 2 in turn 2 (beside the searches),
+part 3 in turn 3. Parts 2 and 3 are each `web_fetch` of the same URL with `offset` the last part's `next_offset` and
+`max_chars` 50000, read only while the last part came back `truncated`, and never after turn 3. They are the only
+fetches after turn 1. The last turn writes the answer, with no fetch.
 
 If `web_search` answers that free search is rate-limited, never call it again in this run. When
 `mcp:firecrawl/firecrawl_search` is one of your tools, run the same searches there in one turn (`query` the question,
@@ -83,6 +88,17 @@ Any other non-empty `Disallow` (`Disallow: /docs/`) is `partly_blocked`, even be
 `Disallow`, only empty ones, or `Disallow: /` matched by an `Allow: /`) it is `allowed`. `rule` quotes the group's lines
 that decide it. A 404 is `not_found`: every bot is `allowed` with `rule` null. A failed fetch is `unreachable`: every
 verdict is `unknown`.
+
+Read every group in the whole file before any verdict, its parts in order as one text: a bot's group can be the last
+one in a long file. Report two facts of the read, and the output schema says which verdicts each allows:
+- `robots_txt.read_to_end`: true when the last part fetched came back with neither `truncated` nor `beyond_read`;
+  false when the read stopped before the file's end.
+- Each crawler's `matched_group`, the group of what was read its verdict comes from: `own` (a group whose `User-agent`
+  names it), `own_unfinished` (that group is the last one read and the read stopped before the file's end, so its
+  rules may go on past the cut), `star` (the `User-agent: *` group), `none` (the file was read and neither matched),
+  or null when robots.txt wasn't read.
+When `read_to_end` is false, `could_not_check` says which characters were not read and names an unfinished group, and
+the report says robots.txt was read only in part.
 
 | bot | operator | purpose |
 |---|---|---|
