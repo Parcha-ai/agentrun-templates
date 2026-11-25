@@ -175,3 +175,41 @@ test("place refuses a refunds scene too short for each currency's figures to cou
   assert.equal(r.status, 2, `place should refuse: ${r.stdout}${r.stderr}`);
   assert.match(r.stderr + r.stdout, /refunds/);
 });
+
+// ---------- the customer-data scan ----------
+// A run folder: Stripe's raw page of these items, and these files the run wrote (path -> text, or a value as JSON).
+// Returns scan's exit code and what it printed.
+function scanRun(name, items, files, extra = []) {
+  const dir = join(root, name);
+  mkdirSync(join(dir, "stripe"), { recursive: true });
+  writeFileSync(join(dir, "stripe", "raw-1.json"), JSON.stringify({ object: "list", data: items, has_more: false }));
+  for (const [path, body] of Object.entries(files)) {
+    mkdirSync(join(dir, path, ".."), { recursive: true });
+    writeFileSync(join(dir, path), typeof body === "string" ? body : JSON.stringify(body));
+  }
+  const r = spawnSync(process.execPath, [join(KIT, "metrics.mjs"), "scan", "--pages", join(dir, "stripe"), "--root", dir, ...extra], { encoding: "utf8" });
+  return { status: r.status, out: r.stdout + r.stderr };
+}
+const described = (description, amount = 45000) => ({ ...txn("2026-11-18T12:00:00Z", "usd", "charge", amount, 1335), description });
+// fal's timestamps for a voice that says `text`: one chunk, one letter per string, as ElevenLabs answers them.
+const spokenAs = (text) => [{
+  characters: [...text],
+  character_start_times_seconds: [...text].map((_, i) => i * 0.06),
+  character_end_times_seconds: [...text].map((_, i) => i * 0.06 + 0.05),
+}];
+const CLEAN = "[warm] The week of sixteen November: revenue, net of refunds and Stripe fees, was four thousand dollars.";
+
+test("scan reads what fal spoke: a name the timestamps spell, one letter at a time, fails it", () => {
+  const items = [described("Commission for Marisol Quintero")];
+  const clean = scanRun("spoke-clean", items, { "media/vo.txt": CLEAN, "media/voiceover-timestamps.json": spokenAs(CLEAN) });
+  assert.equal(clean.status, 0, `a voice that says the clean narration scans clean: ${clean.out}`);
+  const said = `${CLEAN} And thank you, Marisol Quintero.`;
+  const leaked = scanRun("spoke-name", items, { "media/vo.txt": CLEAN, "media/voiceover-timestamps.json": spokenAs(said) });
+  assert.equal(leaked.status, 2, `fal spoke the name, though vo.txt is clean: ${leaked.out}`);
+  assert.match(leaked.out, /voiceover-timestamps\.json/);
+  assert.doesNotMatch(leaked.out, /Marisol|Quintero/, "the scan never prints the value");
+  // A re-voice's timestamps are read the same way.
+  const again = scanRun("spoke-name-2", items, { "media/vo.txt": CLEAN, "media/voiceover-timestamps.json": spokenAs(CLEAN), "media/voiceover-2-timestamps.json": { timestamps: spokenAs(said) } });
+  assert.equal(again.status, 2, `the re-voice spoke the name: ${again.out}`);
+  assert.match(again.out, /voiceover-2-timestamps\.json/);
+});
