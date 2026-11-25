@@ -316,6 +316,9 @@ test("scan finds a name through an initial", () => {
   const items = [described("Commission for Marisol Q. Quintero")];
   const r = scanRun("initial", items, { "media/vo.txt": `${CLEAN} Thank you, Marisol Quintero.` });
   assert.equal(r.status, 2, `the name without its initial: ${r.out}`);
+  // A first name that is also a common word ("June") is still half of a capitalised pair through an initial.
+  const june = scanRun("initial-common", [described("Commission for June R. Castillo")], { "media/vo.txt": `${CLEAN} Thank you, June Castillo.` });
+  assert.equal(june.status, 2, `a capitalised pair through an initial, one of its words a common one: ${june.out}`);
   const lower = scanRun("initial-lower", [described("commission for marisol q. quintero")], { "media/vo.txt": `${CLEAN} Thanks, Marisol.` });
   assert.equal(lower.status, 2, `held in lower case, through its initial, the first name alone: ${lower.out}`);
 });
