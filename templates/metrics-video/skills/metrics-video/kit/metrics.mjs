@@ -32,9 +32,11 @@
 //          field (a customer's, a billing or shipping name) in every shape, and any email address, in each file as
 //          written and in what each voice says (the letters of fal's timestamps, in any JSON file that holds them).
 //          Each word of a capitalised pair or of an identity name is looked for alone too (in any case; four letters
-//          or more from a pair, not a common word), only in what the run says and writes: media/vo.txt, music.txt,
-//          film.vtt and answer.json, film/STORYBOARD.md and words.json, data.json's strings, and what a voice says.
-//          A scene's markup is not read for them: its CSS and GSAP ("font-family", "white-space") are the kit's.
+//          or more from a pair, not a common word), in every text file the run wrote and what a voice says: a JSON
+//          file's strings, the text an HTML file shows. Not in the kit's code (.js, .mjs, .css, an HTML file's styles,
+//          scripts and tags: "font-family", "white-space"), a tool's log (.log, media/check.json) or inputs/. The
+//          kit's own phrases (a currency's unit, compute's sentences) are taken out first, and a description's pair
+//          inside one ("swiss francs") is not a name.
 //          The business's own name, as compute was given it (film/data.json, which the run can write, as it types
 //          compute's --business), is set aside; scan takes no other. With --final and nothing found, it removes the
 //          raw pages. Found only where the whole description is written as it is: a word of a lower-case pair alone,

@@ -217,7 +217,7 @@ node film/metrics.mjs scan --pages stripe --final
 It looks in every file the run wrote (the narration, the music line, the storyboard, `film/`, the captions, the
 timestamps and what each voice says in them, the answer and anything else outside the dot-folders) for each string
 Stripe's pages hold (not Stripe's own enum words, its fee lines or a description of one word), each name in one (a pair
-of words, in any case, and each of its words alone in what the run says and writes, not in the film's markup), and any
+of words, in any case, and each of its words alone in what the run says and writes, not in the kit's code or a tool's log), and any
 email address. Exit 2 names the file and where the value
 came from, never the value: take it out, render again if it was on screen, scan again, and say so in the report. When it
 finds nothing, it removes `stripe/raw-<n>.json` and prints what it removed.
