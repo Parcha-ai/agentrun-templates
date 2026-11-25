@@ -223,9 +223,9 @@ came from, never the value: take it out, render again if it was on screen, scan 
 after billing, a word of a name found alone only warns (`warning: a customer's word may be in <file> line <n>`, exit
 0). A warning doesn't fail the run. Read the line it names. If it holds a customer's name, take the name out of that
 file's text; never remake a picture, clip or voice for a warning. Then run `--final` once more, whether you edited or
-not: a word may warn again and that's fine, but a name pair, a whole description or an email still stops the film.
-That run is the last. When a `--final` finds nothing that stops the film and isn't the one that first warned, it
-removes `stripe/raw-<n>.json` and prints what it removed.
+not: a word may warn again and that's fine. That run is the last: a name pair, a whole description or an email found
+there stops the film, and the raw pages are removed either way. A `--final` that finds nothing removes
+`stripe/raw-<n>.json` and prints what it removed.
 
 ## Never
 

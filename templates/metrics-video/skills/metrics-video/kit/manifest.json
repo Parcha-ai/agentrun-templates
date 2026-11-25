@@ -1,7 +1,7 @@
 {
  "note": "sha256 of each file in this skill folder, written by node .github/lint-templates.mjs --write-manifests",
  "sha256": {
-  "SKILL.md": "9184f2dd44c6b562a1baf10ae4963aaadb9c68c3b9130daf65343bb3927875d7",
+  "SKILL.md": "7119f25cbd62de6c6272e968fba7b7d4196f7bcfb113c6ff03668cd437ceb28b",
   "kit/build-captions.mjs": "911f7add6850f4c7a31f47a3bdbaf7d1b0c5fafea72e1c74013f236c8fc9db70",
   "kit/compositions/change.html": "0c34da8ceb150dd5a96269cb7556c1e9dd04ae25334062451b0042a329aa576f",
   "kit/compositions/days.html": "23545c4e337927514b0aa928934f0830ff81f5e98d2333acefe607643b5fe7bf",
@@ -10,7 +10,7 @@
   "kit/compositions/refunds.html": "f849828f721aaaf5efe80c936106440fe7828f5707c1bca10e7171917f1a47ab",
   "kit/compositions/revenue.html": "1e5d75fbb49f297dde12ff5826321738e0ac1fd211f9368478a492f980cd1a2e",
   "kit/index.html": "9f8437fcd91fa90e5e8f886719e79c9b0b19e845184594132ce12649dd6f3004",
-  "kit/metrics.mjs": "25f6fac593b3e1f498c358b38dae2e4d5555ab2e1633d5c6856cc72ebc82697a",
+  "kit/metrics.mjs": "12d654b91075c2c565419649ed897a6831f4f5101635d40d4daf96704d1ab54b",
   "kit/review.mjs": "e9f98a3acef07fd4c66d2b9831be08d473ad272865bac3b771f4ea95520cac96",
   "references/hyperframes-data-film.md": "49fd5822adff8aade50ae8e98450ebe3728c03a0f91960e55592932e6a0429b9"
  }
