@@ -52,6 +52,10 @@ const METRIC = {
 const KEPT = new Set(["charge", "charge_failure", "partial_capture_reversal", "refund", "refund_failure", "dispute", "dispute_reversal", "fee"]);
 const MAX_PAGES = 10;
 const MAX_FILMED = 3; // currencies the film shows; more are named on the end card and in the report
+// The least time one figure of the refunds scene is on screen: its count (1.4 s from 0.25 s in), a second to read it,
+// and its fade. A currency whose figures can't each have it in turn shows them side by side, so the scene needs this
+// much for each currency it shows (place refuses less).
+const ITEM_SECONDS = 3;
 // Stripe's zero-decimal and three-decimal currencies (stripe.com/docs/currencies); every other one has two.
 const ZERO = new Set("bif clp djf gnf jpy kmf krw mga pyg rwf ugx vnd vuv xaf xof xpf".split(" "));
 const THREE = new Set("bhd jod kwd omr tnd".split(" "));
@@ -499,7 +503,7 @@ function compute() {
     gone,
     left_out: thisWeek.leftOut,
     read: { pages, transactions: transactions.length, from_utc: new Date(w.read.created_gte * 1000).toISOString(), to_utc: new Date(w.read.created_lt * 1000).toISOString() },
-    plan: { film_seconds: filmSeconds, max_words: maxWords, voice_must_end_by: Math.round((filmSeconds - 3) * 10) / 10, scenes: plan },
+    plan: { film_seconds: filmSeconds, max_words: maxWords, voice_must_end_by: Math.round((filmSeconds - 3) * 10) / 10, item_seconds: ITEM_SECONDS, scenes: plan },
     timing: Object.fromEntries(plan.map((s) => [s.name, { start: s.start, seconds: s.seconds }])),
     carry: {
       metric: METRIC.id,
@@ -588,6 +592,7 @@ function place(film, data, at, seconds) {
     const dur = Math.round((end - start) * 100) / 100;
     const n = Math.max(1, ["revenue", "days", "change", "refunds"].includes(s.name) ? data.currencies.filter((c) => c.filmed).length || 1 : 1);
     if (!(dur >= 2.5 * n)) fail(2, `${s.name} would last ${dur} s: each scene needs at least 2.5 s for each currency it shows (${n})`);
+    if (s.name === "refunds" && !(dur >= ITEM_SECONDS * n)) fail(2, `refunds would last ${dur} s: each currency's refunds, disputes and money won back need ${ITEM_SECONDS} s to count and be read (${n} currencies, ${ITEM_SECONDS * n} s)`);
     timing[s.name] = { start, seconds: dur };
     return `      <div id="${s.name}" data-composition-id="${s.name}" data-composition-src="compositions/${s.name}.html" data-start="${start}" data-duration="${dur}" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>`;
   });

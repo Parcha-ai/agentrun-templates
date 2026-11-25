@@ -163,7 +163,8 @@ media/voiceover-2-timestamps.json` and the second voice's seconds. It writes `fi
 
 Read `film/words.json` and start each scene on the word that opens its part of the narration (the revenue scene on
 the word before the first amount, the change scene on "up", "down" or "no earlier", and so on), each scene at least
-2.5 s for each currency it shows:
+2.5 s for each currency it shows, and the refunds scene at least the plan's `item_seconds` (3 s) for each, so every
+figure counts and can be read (place refuses less):
 
 ```sh
 node film/metrics.mjs place --film film --at revenue=<s>,days=<s>,change=<s>,refunds=<s>,endcard=<s> [--seconds <F2>]
