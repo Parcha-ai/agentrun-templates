@@ -45,7 +45,8 @@ that recovers the first job instead of billing again.
 ## Several jobs at once
 
 1. **Price the whole plan first**, with one `get_pricing` call on every endpoint of the plan. The kit's script adds it
-   up; over the cap, no paid call at all.
+   up, and the answer says it before anything is paid. Over a ceiling the user set (`max_fal_usd`), no paid call at
+   all; with none set, nothing is refused for price.
 2. **Queue each job with its own `submit_job` call**, all of a stage (every still, then every clip) before any
    `wait_for_jobs`, with nothing else in between. Keep each job's handles.
 3. **Read them in one `wait_for_jobs` call**: one item per job, `index` the job's place in the stage (shot n at n − 1),
@@ -88,12 +89,14 @@ read `get_model_schema` only if a call answers 422. Never send `sync_mode`.
 - Answers `{"images": [{"url", "content_type", "file_name", "file_size", "width", "height"}], "description"}`.
 - It follows long prompts well and draws text when asked: never ask for any, and end every prompt with "No text, no
   lettering, no logos."
+- The kit's `stills` command builds each still's input and `remake` a remake's (agent.md step 7): send it as printed.
 
 ### `fal-ai/kling-video/v3/pro/image-to-video`: a clip from a still, $0.112 a second with audio off
 - `start_image_url` (required: the still's `images[0].url` exactly as fal answered it), `prompt` (up to 2500
   characters: the motion), `duration` (a string, `"3"` to `"15"`: the shot's `clip_seconds`), `generate_audio`
   (**always `false`**: its default is true, which bills $0.168 a second and puts sound the film doesn't use into the
-  clip), `negative_prompt` (as agent.md gives it). No aspect field: the clip takes the still's shape. Leave
+  clip), `negative_prompt` (as agent.md gives it). The kit's `clips` command builds each clip's input (agent.md step 8):
+  send it as printed. No aspect field: the clip takes the still's shape. Leave
   `multi_prompt`, `elements`, `end_image_url` and `cfg_scale` out.
 - Answers `{"video": {"url", "content_type", "file_name", "file_size"}}`. It takes one to four minutes: expect `pending`
   reads. A clip can come back refused by its content checker: a definite answer, never sent again.

@@ -3,4 +3,4 @@ type: regex
 target: status
 pattern: "^over_budget$"
 ---
-The plan doesn't fit the cap.
+The plan's price is over the ceiling the user set.

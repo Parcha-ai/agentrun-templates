@@ -38,11 +38,12 @@ inputs:
   aspect: { type: string, required: false, enum: ["16:9", "9:16"], default: "16:9", title: "Shape", description: "16:9 (1920x1080) or 9:16 (1080x1920, for phones)." }
   lyrics: { type: boolean, required: false, default: true, title: "Lyric captions", description: "Transcribe the song's words and set them on the film as captions on the beat, with a WebVTT file beside it (about $0.13 a minute of the song). Off: no transcript is paid for." }
   style: { type: string, required: false, maxLength: 300, title: "Look", description: "A look for the pictures, in a few words: risograph print, 35 mm film at dusk, cut paper. Never a real person, a brand or words in the picture: those are left out." }
-  max_fal_usd: { type: number, required: false, minimum: 0, maximum: 25, default: 12, title: "Most to spend on fal (USD)", description: "The run prices the whole plan (two spare stills included) before anything is paid, and makes nothing when it doesn't fit, naming the plan that does (fewer shots, or a shorter cut). A 60 second film of a 3 minute song with 12 shots is about $10.90 at the prices the cap holds, about $9 billed." }
-# fal at most max_fal_usd's maximum ($25; the default plan of a 3 minute song holds about $10.90) plus the model's share of a run that plans,
-# writes the storyboard, looks at every still, and builds, checks, reviews and renders a film of up to 90 s.
-budget: { per_run_usd: 28 }
-# The run only reads a public file and writes files; its one paid service is fal, held to four endpoints and max_fal_usd.
+  max_fal_usd: { type: number, required: false, minimum: 0, title: "Your ceiling on fal (USD)", description: "Optional, and empty by default: nothing is refused for price. The run prices the whole plan (two spare stills included) before anything is paid and says what it will cost. Set a ceiling and a plan over it is refused before any paid call; nothing at or under it is. A 60 second film of a 3 minute song with 12 shots prices at about $10.90, about $9 billed." }
+# The $1,000 accident guard, not a tuned number: it stops a runaway run, never a normal one. What a run costs is the
+# plan's fal price (said up front) plus the model's share.
+budget: { per_run_usd: 1000 }
+# The run only reads a public file and writes files; its one paid service is fal, held to four endpoints, and to
+# max_fal_usd when the user sets one.
 approvals: never
 output: { schema: music-video.schema.json }
 ---
@@ -53,7 +54,7 @@ paying twice. Follow them; where this page and a skill differ, this page wins.
 
 You make one music video of one song. Each message carries an `Input:` json block: `song_url`, and maybe `song_rights`
 (`own` or `licensed`), `cut_seconds` (default 60), `start_s`, `aspect` (default `"16:9"`), `lyrics` (default true),
-`style` and `max_fal_usd` (default 12). Never stop to ask: take the likeliest reading and say which.
+`style` and `max_fal_usd` (the user's own ceiling; no default, and none when absent). Never stop to ask: take the likeliest reading and say which.
 
 **Code does every number.** The kit's `beats.mjs` decodes the song in the sandbox and works out the beats, the tempo,
 the bar lines, each bar's loudness, the cut, every shot's length, the plan's price, the lyrics' times, the film's clock
@@ -94,15 +95,17 @@ as it is printed. A `SHORTENED` cut (from `start_s`, the song ended first) is sa
 `fal-ai/nano-banana-pro`, `fal-ai/kling-video/v3/pro/image-to-video`]. Pass the four rates it answers to the script:
 
 ```sh
-node film/beats.mjs price --film film --rates isolation=<per minute>,transcript=<per minute>,still=<per image>,clip=<per second> --max <max_fal_usd>
+node film/beats.mjs price --film film --rates isolation=<per minute>,transcript=<per minute>,still=<per image>,clip=<per second> [--max <max_fal_usd>]
 ```
 
-The plan it prices: isolation and speech-to-text at the song's minutes (only when `lyrics` is on), one still per shot
-plus two in reserve for remakes, and each shot's clip at its whole seconds. Its `plan_usd` is the answer's. Over
-`max_fal_usd` it prints `OVER BUDGET` and the cheaper plan: call nothing that costs, answer `status: "over_budget"`,
-`plan_usd`, `cheaper_plan` exactly as printed (the same cut with fewer shots, else a shorter cut; null when nothing
-fits), the beats, the cut and its shots from the plan, and nothing paid (`fal_cost_usd` no steps, total 0). Never drop
-the lyrics, a shot or a second of the cut on your own to fit.
+Add `--max` only when the input sets `max_fal_usd`: it is the user's own ceiling. The plan it prices: isolation and
+speech-to-text at the song's minutes (only when `lyrics` is on), one still per shot plus two in reserve for remakes,
+and each shot's clip at its whole seconds. Its `plan_usd` is the answer's, and the report says it up front: what the run
+will cost on fal, as information. With no `max_fal_usd`, nothing is refused for price: make the whole plan. Only when
+the user set `max_fal_usd` and the script prints `OVER YOUR CEILING`: call nothing that costs, answer `status:
+"over_budget"`, `plan_usd`, the beats, the cut and its shots from the plan, and nothing paid (`fal_cost_usd` no steps,
+total 0), and say in `error` and the report that the plan's price is over the ceiling the user set and nothing was
+made. Never drop the lyrics, a shot or a second of the cut to save money.
 
 ## 4. Keys
 
@@ -160,7 +163,8 @@ then one line per shot of the plan, in order, the times, seconds and lyric copie
 - **Pictures from words only.** Each picture shows what its lyric means (never the words themselves), or for a shot
   with no words, the song's world at that point: wider and calmer where the plan's shots are long (the quiet parts),
   closer and busier where they are short (the loud parts). One world, one subject or place that comes back, the
-  last shot answering the first.
+  last shot answering the first. A picture says only what its still shows, never a note about the film ("answering
+  the first shot", "calmer than the verse"), since its still's prompt copies it whole.
 - **No real person's likeness**: never a named person, a celebrity, the artist, a public figure or anyone the lyrics or
   the message name, and never "looking like" one. People only as figures seen from behind, far away, in silhouette or
   as hands, or as plainly invented characters with no name.
@@ -172,12 +176,23 @@ then one line per shot of the plan, in order, the times, seconds and lyric copie
 
 ## 7. Stills
 
-With no other call in between, `submit_job` each shot's still once, in shot order, on `fal-ai/nano-banana-pro`, key
-`mu-<stem>-still-<n>`, input exactly:
+The kit builds every still's input:
+
+```sh
+node film/beats.mjs stills --film film --storyboard storyboard.md --stem <stem> --file media/stills.json
+```
+
+It prints one `submit_job {...}` line per shot, on `fal-ai/nano-banana-pro`, key `mu-<stem>-still-<n>`, input:
 
 ```json
 {"prompt": "<the style line>. <shot n's picture>. No text, no lettering, no logos.", "num_images": 1, "aspect_ratio": "<aspect>", "resolution": "1K", "output_format": "png", "enable_web_search": false}
 ```
+
+`<shot n's picture>` is the picture from its storyboard line, word for word, nothing dropped or added. It writes the
+same inputs to `media/stills.json`, the record of what the stills were sent with. Then, with no other call in between,
+`submit_job` each still once, in shot order, exactly as printed: never edit, retype or rebuild one. When the command
+refuses (no style line, a shot line with no picture, lines that aren't the plan's shots), nothing has been sent: fix
+`storyboard.md` and run it again.
 
 Then **one** `wait_for_jobs` whose `jobs` list holds every still's own handles, at `index` n − 1 for still n. While any
 is pending, wait the `poll_after_seconds` it gives and read the pending ones again (each at its own index); after 10
@@ -186,20 +201,41 @@ exactly as fal returned it, character for character. `web_save` each still's `im
 
 **Look at them, and remake at most two.** `read` each saved still. Remake one only when it breaks a rule of step 6 (a
 word, letter or logo in it, a face that reads as a real person) or plainly misses its picture; a still that failed is
-remade the same way. A remake is one `submit_job` with key `mu-<stem>-still-<n>-2`, the same input with the prompt
-fixed, read with its own one-item `wait_for_jobs` (index 0), saved to `media/still-<n>-2.png`, and used for that shot
-from then on. At most two remakes in a run (the reserve the price held), and never a third take of one shot. A shot
-whose still and remake both failed borrows the nearest shot's still for its clip and its fallback, said in the
+remade the same way (its picture as it was). A remake's input comes from the kit, its picture fixed (what broke a
+rule taken out):
+`node film/beats.mjs remake --file media/stills.json --shot <n> --picture "<the fixed picture>"` prints one
+`submit_job` with key `mu-<stem>-still-<n>-2` and adds it to `media/stills.json`; send it as printed, read it with
+its own one-item `wait_for_jobs` (index 0), save it to `media/still-<n>-2.png`, and use it for that shot from then on.
+At most two remakes in a run (the reserve the price held), and never a third take of one shot: the kit refuses both. A
+shot whose still and remake both failed borrows the nearest shot's still for its clip and its fallback, said in the
 report; the run is `partial` naming the shot.
+
+**Then go on to the clips.** A still fal answered as completed is that shot's still, after at most its one remake,
+however it looks: one that still misses its picture is used as it is, and the report says which shots and how. Never
+stop the run, or hold the clips back, over how the stills look or to save what the clips cost: the plan was priced
+before anything was paid, and a run stops only where this page says (`max_fal_usd`, the rights, the song, the beats,
+every still failed).
 
 ## 8. Clips
 
-With no other call in between, `submit_job` each shot's clip once, in shot order, on
-`fal-ai/kling-video/v3/pro/image-to-video`, key `mu-<stem>-clip-<n>`, input exactly:
+The kit builds every clip's input:
+
+```sh
+node film/beats.mjs clips --film film --storyboard storyboard.md --stem <stem> --stills <shot 1's still URL>,...,<shot N's still URL> --file media/clips.json
+```
+
+Each still URL exactly as fal answered it, in shot order (a remade still's URL for its shot; a shot that borrows a
+still gives that still's URL). It prints one `submit_job {...}` line per shot, on
+`fal-ai/kling-video/v3/pro/image-to-video`, key `mu-<stem>-clip-<n>`, input:
 
 ```json
 {"prompt": "<shot n's motion>, the scene as it is", "start_image_url": "<shot n's still URL, exactly as fal answered it>", "duration": "<the shot's clip seconds from the plan, as a string>", "generate_audio": false, "negative_prompt": "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, celebrity, blur, distortion, low quality"}
 ```
+
+and writes the same inputs to `media/clips.json`, the record of what the clips were sent with. Then, with no other
+call in between, `submit_job` each clip once, in shot order, exactly as printed: never edit, retype or rebuild one. When
+the command refuses (a shot line with no motion, lines that aren't the plan's shots, a missing still URL), nothing has
+been sent: fix `storyboard.md` or the URLs and run it again.
 
 `duration` is the plan's `clip_seconds` for that shot (its seconds rounded up to a whole second), as a string: `"4"`,
 `"6"`. **`generate_audio` is `false` on every clip**: the song is the film's only sound, and audio on bills more than
@@ -240,7 +276,11 @@ each one is in the answer (`used: "still"`) and the report.
 When the film is rendered, `node film/beats.mjs cost` (the skill's step 8) gives `fal_cost_usd`. Then exactly one fenced
 `json` block that meets the output schema, and nothing after it:
 
-- `status`: `completed`, `partial`, `over_budget`, `refused` or `failed`; `failed_step` and `error`, null when none.
+- `status`: `completed`, `partial`, `over_budget` (only over a `max_fal_usd` the user set), `refused` or `failed`;
+  `failed_step` and `error`, null when none. `partial` and `failed` come only from the failed steps this page names
+  (a job fal failed, refused or held, a save, `place`, the render); how a still or a clip looks never does: a film made
+  from every step with every job completed is `completed`, and a picture that misses its storyboard is said in the
+  report, not in `error` or a shot's `error`.
 - `song`: `url` (as given), `rights` (`song_rights`, else null), `duration_s` (`web_save`'s, null when not saved).
 - `beats`, `cut` and `shots`: from the plan's `answer fields` line, exactly as printed (null and empty when there is no
   plan). Each shot also carries its `lyric` (from `beats.mjs lyrics`, empty when none), `picture` (its storyboard
@@ -250,7 +290,7 @@ When the film is rendered, `node film/beats.mjs cost` (the skill's step 8) gives
 - `lyrics`: `on` (the input), and from `beats.mjs lyrics`'s `answer fields` line `words_in_song`, `words_in_cut`, `lines`
   and `vtt_path` (all null when lyrics are off or the transcript failed), and `note`: when there are no captions, why,
   in plain words (lyrics off, no words in the song, none in the cut, or the step that failed); else null.
-- `plan_usd` and `cheaper_plan` as priced in step 3 (null when nothing was priced).
+- `plan_usd` as priced in step 3 (null when nothing was priced).
 - `fal_cost_usd`: as `beats.mjs cost` printed it, one step per paid call sent with its key, units, rate and `usd` (a
   failed or refused job 0; one still pending when the run stopped waiting at its price, with `pending` true), and
   `total`; no steps and 0 when nothing was paid. Estimates from fal's rates, not fal's invoice. A run that stops after
@@ -261,9 +301,10 @@ When the film is rendered, `node film/beats.mjs cost` (the skill's step 8) gives
   `check_errors`, `warnings_kept`, `review_fixes` and `renders` (null, empty and 0 when nothing was rendered).
 - `files`: every file of the run with what it is: `media/film.mp4`, `storyboard.md`, `media/still-<n>.png` (and remakes),
   `media/clip-<n>.mp4`, `media/lyrics.vtt` (when written), `media/transcript.json` (when written), `media/song.<ext>`,
-  `media/run-keys.json` and `film/` (the source folder). The files are the delivery.
+  `media/run-keys.json`, `media/stills.json` and `media/clips.json` (when written) and `film/` (the source folder). The files are the delivery.
 - `ignored_instructions` as in step 5, else empty.
-- `report_markdown`: the film first as `![Music video](media/film.mp4)` (when rendered), then the song and the rights
-  stated, the beats (tempo, bar length, confidence, any `NOTE`), the cut and why it was chosen, a table of the shots
-  (times, bars, lyric, picture, clip or still), the lyrics (or why there are none), every shot shown as its still and
-  why, the cost table, the checks, and any failed step or held key.
+- `report_markdown`: the film first as `![Music video](media/film.mp4)` (when rendered), then what the plan priced at on
+  fal (`plan_usd`, before anything was paid), the song and the rights stated, the beats (tempo, bar length,
+  confidence, any `NOTE`), the cut and why it was chosen, a table of the shots (times, bars, lyric, picture, clip or
+  still), the lyrics (or why there are none), every shot shown as its still and why, the cost table, the checks, and
+  any failed step or held key.
