@@ -1,6 +1,6 @@
 ---
 name: news-show
-description: Make a 90 second daily news show with a fictional AI anchor, in HyperFrames (HTML rendered to video) in the run's sandbox. Covers picking three new stories on a beat without repeating an earlier show's, the fixed script format and its word caps, the AI disclosure, the kit (a build script that lays nine segments on the voices' real lengths and writes every scene, the captions and the share card), the anchor clips and their desk-card fallback, the check, snapshot review and render loop, and what a show must never become. Use for any daily news show, news digest video or anchor-presented briefing made in the sandbox.
+description: Make a 90 second daily news show with a fictional AI anchor, in HyperFrames (HTML rendered to video) in the run's sandbox. Covers picking three new stories on a beat without repeating an earlier show's, the fixed script format and its word caps, the AI disclosure, the kit (a build script that lays nine segments on the voices' real lengths and writes every scene, the captions and the share card), the anchor clips and their desk-card fallback, the check, snapshot review and render loop, the answer script that works out the cost and checks the answer, and what a show must never become. Use for any daily news show, news digest video or anchor-presented briefing made in the sandbox.
 ---
 
 # A daily news show with HyperFrames
@@ -171,6 +171,25 @@ cd film && hyperframes snapshot card --at 0.5 --no-end -o ../media/card && cp ..
 ```
 
 It must print `1200,630`. `read` it once: the name and the headlines readable at a glance, nothing cut at an edge.
+
+## 10. The answer's cost and check
+
+`kit/answer.mjs` does the answer's arithmetic and checks its structure. Run it from the run's folder, straight from the
+skill (it needs no copy in `film/`):
+
+```sh
+node .agents/skills/news-show/kit/answer.mjs cost --rates still=0.15,voice=0.1,fabric=0.08 --sent anchor-image,voice-cold-open,voice-headlines,voice-lead-a,voice-story-a,voice-lead-b,voice-story-b,voice-lead-c,voice-story-c,voice-closing,anchor-cold-open,anchor-lead-a,anchor-lead-b,anchor-lead-c,anchor-closing [--failed anchor-lead-b]
+node .agents/skills/news-show/kit/answer.mjs check media/answer.json
+```
+
+The rates are `get_pricing`'s, never these examples. `--sent` lists only the calls sent: no `anchor-image` with the
+owner's image, only the plan's anchor segments, none not sent (a voice over 30 s), and `--sent none` when nothing was
+paid. `cost` reads the scripts from `film/show.json` (write it first, its scripts exactly as sent) and each voice's
+length with ffprobe, prints `fal_cost_usd` and keeps it in `film/cost.json`. `check` reads the answer file. It
+confirms that `fal_cost_usd` matches `cost`. When the show is rendered, it confirms that `report_markdown` opens with
+the show's embed and holds the share card and the AI disclosure. It also confirms that every story's page is linked,
+that `error` is quoted word for word, and that a show not rendered remembers none of today's stories. It prints
+`answer ok`, or each problem; fix them in the file and run it again.
 
 ## Never
 

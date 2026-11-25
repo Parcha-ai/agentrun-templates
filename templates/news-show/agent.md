@@ -270,7 +270,20 @@ A failed or refused step is said twice, in `error` and in `report_markdown`: wha
 
 ## Answer
 
-Exactly one fenced `json` block that meets the output schema, and nothing after it:
+Before you answer, the kit does the answer's exact work (the skill's section 10). Every run does this, a refused or
+empty one too:
+
+1. **The cost.** `node .agents/skills/news-show/kit/answer.mjs cost --rates still=<rate>,voice=<rate>,fabric=<rate>
+   --sent <steps> [--failed <steps>]`, with `get_pricing`'s rates (the still per image, the voice per 1000
+   characters, Fabric per second at 480p), every paid call sent by its step name, and those that failed or were
+   refused (`--sent none` when nothing was paid). `fal_cost_usd` is what it prints, copied exactly: never add a sum
+   yourself.
+2. **The check.** `write` the answer's JSON to `media/answer.json`, then `node .agents/skills/news-show/kit/answer.mjs
+   check media/answer.json`. Fix each problem it lists in that file and check again, until it prints `answer ok`.
+3. **The reply.** `report_markdown`'s text, then one fenced `json` block that is `media/answer.json` exactly as
+   checked, and nothing after it.
+
+The answer meets the output schema:
 
 - `stories` (A to C, each with its page's URL, source, date, a summary from its page, the figures and quotes exactly
   as on screen, and its chyron), `skipped_repeats`, and `stories_shown` (step 1).
@@ -281,16 +294,16 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
 - `plan`, `plans_priced` (step 4); `captions_timing` as the build script printed it (`anchored` or
   `measured` is still a correct timing, never a fault).
 - `film`: `path`, `seconds`, `width`, `height` as ffprobe read them (null when nothing was rendered); `checks`.
-- `fal_cost_usd`: one step per paid call made (`anchor-image`, `voice-<segment>`, `anchor-<segment>`) with its units
-  (images, thousands of characters, or seconds = that segment's V rounded up to a whole second) and the rate from
-  `get_pricing`, `usd` to 3 decimals, a failed or refused job at 0; `total` the sum of the `usd` values as listed
-  (round each step, then add them: never round the sum of unrounded amounts), so the listed steps add up to it to the
-  last decimal. Estimates from fal's rates, not fal's invoice.
+- `fal_cost_usd`: exactly as the kit's `cost` printed it: one step per paid call made (`anchor-image`,
+  `voice-<segment>`, `anchor-<segment>`) with its units (images, thousands of characters, or seconds = that
+  segment's V rounded up to a whole second) and the rate from `get_pricing`, `usd` to 3 decimals, a failed or refused
+  job at 0, and `total` the sum of the listed steps. Estimates from fal's rates, not fal's invoice.
 - `files`: every file of the run: `media/show.mp4`, `media/show.vtt`, `media/share-card.png`, the still or anchor
   image, each voice and its timestamps, each anchor clip, `film/STORYBOARD.md` and `film/` (the composition folder).
 - `report_markdown`: the whole report, in this field itself: the same markdown as your reply above the JSON, never a
-  summary of it or a pointer to it ("see above"). The show first as `![<show name>, <date>](media/show.mp4)` (when
-  rendered), the share card under it, then the three stories, the AI disclosure, the cost table, the checks, and any
-  failed step in fal's own words.
+  summary of it or a pointer to it ("see above"). The show first, its first line exactly
+  `![<show_name>, <show_date>](media/show.mp4)` (when rendered), the share card under it, then the three stories,
+  the AI disclosure, the cost table, the checks, and any failed step in fal's own words: `error`, when set, quoted in
+  it word for word.
   Each story is its own line with its page as a markdown link, `- <slot>: [<title>](<its url>) (<source>,
   <published>)`: a story named without its link is a missing link.
