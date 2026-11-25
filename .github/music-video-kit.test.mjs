@@ -463,7 +463,7 @@ test("the sent check is VOID (exit 2), not a fail, when it can't find its inputs
     [[reportOf(dir, calls, { name: "live" }), dir], /^SENT VOID case live has no clips grader \(templates\/music-video\/evals\/live\/graders\/clips\.md\): this check covers the fake-fal cases that make a film$/m],
     [[reportOf(dir, calls, { runs: [{ run: 1, agent_id: "a", run_id: "r", mcp_calls: calls }, { run: 2, agent_id: "a", run_id: "s", mcp_calls: calls }] }), dir], /^SENT VOID the report holds 2 runs; this check takes a report of one run$/m],
     [[reportOf(dir, calls, { runs: [{ run: 1, agent_id: "a", run_id: "r" }] }), dir], /^SENT VOID the run has no mcp_calls \(the fake fal's log\) in the report$/m],
-    [[reportOf(dir, calls), root], /^SENT VOID .* holds no media\/ and no disk\/agents\/<agent>\/runs\/01aa-run\/work/m],
+    [[reportOf(dir, calls), mkdtempSync(join(root, "empty-"))], /^SENT VOID .* holds no media\/ and no disk\/agents\/<agent>\/runs\/01aa-run\/work/m],
   ];
   for (const [args, why] of voids) {
     const r = check(...args);
