@@ -129,7 +129,9 @@ With no `max_fal_usd`, nothing is refused for price: `max_fal_usd` is null in th
 ## 5. Portrait and voiceover, in parallel
 
 Make each paid call and each save as its own direct tool call, never from inside a code script: a script that fails
-partway leaves calls behind that you can't see, and repeating them saves or pays twice.
+partway leaves calls behind that you can't see, and repeating them saves or pays twice. `bash` runs the caption kit
+(step 8) and nothing else: read and make every file with `read` and `write`, `media/run-keys.json` and the kit's
+inputs under `work/` included.
 
 Every paid call gets its own `submission_key`, sent beside `endpoint_id` and `input`, never inside `input`, and kept
 for that job's retries. The keys share one stem per run:
