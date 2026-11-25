@@ -8,7 +8,7 @@
 //   (the run can write there), so a manifest that differs from the files is an error. `--write-manifests` rewrites each.
 // Usage: node .github/lint-templates.mjs [--write-manifests]. Prints each hit as file:line and the totals; exit 1 on any hit.
 import { createHash } from "node:crypto";
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 
 const repo = join(import.meta.dirname, "..");
