@@ -677,9 +677,12 @@ test("compute's own sentences in data.json are no one's name, and a word the run
 // A name's word alone is looked for in every text file the run wrote, not only in a fixed list of them: a note, an
 // extra text file, a scene's visible text. Not in the kit's code (.js, .mjs, .css; an HTML file's styles, scripts,
 // comments and tags, the run's own restyling included), and not in what a tool logged while the run ran it.
-test("a name's word alone is found in any file the run wrote, and never in a scene's styles or a tool's log", () => {
+test("a name's word alone is found in any file the run wrote, and never in a scene's styles or a named tool's output", () => {
   const items = [described("Commission for Marisol Quintero", 20000)];
-  for (const [n, path, body] of [["notes", "film/notes.md", "# Notes\n\nThank you, Marisol."], ["extra", "media/extra.txt", "Thank you, Marisol."], ["scene", "film/compositions/open.html", '<div id="op-thanks">Thank you, Marisol.</div>']]) {
+  // A log the run writes itself is read like any other file: only the tools' own output, at the paths the skill names,
+  // is set aside.
+  const logged = "compile: requested font families: Inter\nframe 120 of 1350, power save off, track 2\nThanks, Marisol.\n";
+  for (const [n, path, body] of [["notes", "film/notes.md", "# Notes\n\nThank you, Marisol."], ["extra", "media/extra.txt", "Thank you, Marisol."], ["scene", "film/compositions/open.html", '<div id="op-thanks">Thank you, Marisol.</div>'], ["own-log", "film/notes.log", logged]]) {
     const r = scanRun(`anywhere-${n}`, items, { "media/vo.txt": CLEAN, [path]: body });
     customerData(r, `${path}: ${r.out}`);
     assert.match(r.out, new RegExp(path.replace(/[./]/g, "\\$&")));
@@ -692,8 +695,10 @@ test("a name's word alone is found in any file the run wrote, and never in a sce
     writeFileSync(open, readFileSync(open, "utf8").replace("</style>", "  #op-name { font-family: Inter; white-space: nowrap; }\n</style>"));
     writeFileSync(join(dir, "media", "render.log"), "compile: requested font families: Inter\nframe 120 of 1350, power save off, track 2\n");
     writeFileSync(join(dir, "media", "check.json"), JSON.stringify({ warnings: [{ code: "timeline_track_too_dense", message: "the captions track is dense" }] }));
-    mkdirSync(join(dir, "media", "review"), { recursive: true });
-    writeFileSync(join(dir, "media", "review", "snapshot.log"), "phone frame at each beat, wide sheet saved\n");
+    for (const review of ["review", "review-2"]) {
+      mkdirSync(join(dir, "media", review), { recursive: true });
+      writeFileSync(join(dir, "media", review, "snapshot.log"), "phone frame at each beat, wide sheet saved\n");
+    }
   };
   const r = fixtureRun("week-over-week", "2026-11-23", { items: kitWords, as: "restyled", beforeFinal: restyled });
   assert.equal(r.first.status, 0, `the first scan: ${r.first.out}`);
