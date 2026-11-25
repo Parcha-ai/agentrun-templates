@@ -157,6 +157,11 @@ test("a still that starts between frames shows from its part's first frame, not 
 const NEGATIVE = "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, celebrity, blur, distortion, low quality";
 const KLING = "fal-ai/kling-video/v3/pro/image-to-video";
 let runs = 0;
+// A run prices its plan before any still or clip (film/price.json, fits) and saves its key stem (media/run-keys.json).
+function priced(dir, stem = "abcd1234") {
+  writeFileSync(join(dir, "film", "price.json"), JSON.stringify({ max_fal_usd: null, plan_usd: 3, fits: true }) + "\n");
+  writeFileSync(join(dir, "media", "run-keys.json"), JSON.stringify({ stem }) + "\n");
+}
 function clipsRun({ shots = [6, 4, 6], lines, stills, stem = "abcd1234" } = {}) {
   const dir = join(root, `clips-${++runs}`);
   mkdirSync(join(dir, "film"), { recursive: true });
@@ -177,6 +182,7 @@ function clipsRun({ shots = [6, 4, 6], lines, stills, stem = "abcd1234" } = {}) 
     return line;
   });
   writeFileSync(join(dir, "storyboard.md"), ["Style: cut paper, teal and amber", ...shotLines].join("\n") + "\n");
+  priced(dir);
   const urls = stills ?? planShots.map((s) => `https://v3.fal.media/files/rabbit/still${s.n}.png`);
   const r = spawnSync(process.execPath, ["film/beats.mjs", "clips", "--film", "film", "--storyboard", "storyboard.md", "--stem", stem, "--stills", urls.join(","), "--file", "media/clips.json"], { cwd: dir, encoding: "utf8" });
   const file = join(dir, "media", "clips.json");
@@ -265,6 +271,7 @@ function stillsDir({ shots = [6, 4, 6], lines, style = `Style: ${STYLE}`, aspect
     return line;
   });
   writeFileSync(join(dir, "storyboard.md"), [style, ...shotLines].filter((l) => l !== null).join("\n") + "\n");
+  priced(dir);
   return dir;
 }
 const kit = (dir, ...args) => spawnSync(process.execPath, ["film/beats.mjs", ...args], { cwd: dir, encoding: "utf8" });
@@ -332,7 +339,7 @@ test("stills refuses a storyboard with no style line, lines that aren't the plan
 test("remake adds one still's second take, its picture fixed, to media/stills.json and prints its submit_job; never a third take or a third remake", () => {
   const dir = stillsDir({ shots: [5, 5, 5, 5] });
   assert.equal(stillsOf(dir).status, 0);
-  const r = kit(dir, "remake", "--file", "media/stills.json", "--shot", "2", "--picture", "a paper ferry on teal water, seen from far behind");
+  const r = kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "2", "--picture", "a paper ferry on teal water, seen from far behind");
   assert.equal(r.status, 0, r.stderr);
   assert.deepEqual(sent(r.stdout), [{ endpoint_id: NANO, submission_key: "mu-abcd1234-still-2-2", input: { prompt: `${STYLE}. a paper ferry on teal water, seen from far behind. ${ENDING}`, ...fixedStill() } }]);
   const record = JSON.parse(recordOf(dir, "stills.json"));
@@ -344,13 +351,13 @@ test("remake adds one still's second take, its picture fixed, to media/stills.js
     [["--shot", "3", "--picture", "  "], /--picture is the fixed picture/],
   ];
   for (const [args, why] of refused) {
-    const no = kit(dir, "remake", "--file", "media/stills.json", ...args);
+    const no = kit(dir, "remake", "--film", "film", "--file", "media/stills.json", ...args);
     assert.equal(no.status, 2, `${args}: ${no.stderr}`);
     assert.match(no.stderr, why);
     assert.equal(no.stdout.trim(), "");
   }
-  assert.equal(kit(dir, "remake", "--file", "media/stills.json", "--shot", "3", "--picture", "a calm teal harbor").status, 0);
-  const third = kit(dir, "remake", "--file", "media/stills.json", "--shot", "4", "--picture", "a quay");
+  assert.equal(kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "3", "--picture", "a calm teal harbor").status, 0);
+  const third = kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "4", "--picture", "a quay");
   assert.equal(third.status, 2);
   assert.match(third.stderr, /two remakes are the most a run makes/);
   assert.equal(JSON.parse(recordOf(dir, "stills.json")).stills.length, 6);
@@ -420,7 +427,7 @@ test("the sent check finds the run's work folder from the report alone: its serv
 
 test("the sent check passes a remake sent as recorded, and fails one sent but not recorded", () => {
   const { dir, calls } = sentRun();
-  const r = kit(dir, "remake", "--file", "media/stills.json", "--shot", "3", "--picture", "a teal quay at dusk");
+  const r = kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "3", "--picture", "a teal quay at dusk");
   assert.equal(r.status, 0, r.stderr);
   const remake = { tool: "mcp:fal/submit_job", arguments: sent(r.stdout)[0] };
   assert.match(check(reportOf(dir, [...calls, remake]), dir).stdout, /^SENT PASS n=17\n$/);
@@ -496,14 +503,14 @@ test("the sent check is VOID (exit 2), not a fail, when it can't find its inputs
 test("stills run again on a resumed run keeps media/stills.json: the remake's record and the remake count survive", () => {
   const dir = stillsDir({ shots: [5, 5, 5, 5] });
   assert.equal(stillsOf(dir).status, 0);
-  assert.equal(kit(dir, "remake", "--file", "media/stills.json", "--shot", "2", "--picture", "a calm teal quay").status, 0);
+  assert.equal(kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "2", "--picture", "a calm teal quay").status, 0);
   const before = recordOf(dir, "stills.json");
   const again = stillsOf(dir);
   assert.equal(again.status, 0, again.stderr);
   assert.equal(recordOf(dir, "stills.json"), before, "the record is kept as it was");
   assert.equal(sent(again.stdout).length, 4, "the first takes are printed as before");
-  assert.equal(kit(dir, "remake", "--file", "media/stills.json", "--shot", "3", "--picture", "a teal harbor wall").status, 0);
-  const third = kit(dir, "remake", "--file", "media/stills.json", "--shot", "4", "--picture", "a quay");
+  assert.equal(kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "3", "--picture", "a teal harbor wall").status, 0);
+  const third = kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "4", "--picture", "a quay");
   assert.equal(third.status, 2, "the run's two remakes still count after stills ran again");
   assert.match(third.stderr, /two remakes are the most a run makes/);
 });
@@ -623,4 +630,172 @@ test("price: with no ceiling nothing is over; with one, a plan above it is OVER 
   const negative = kit(priceDir(), "price", "--film", "film", "--rates", RATES, "--max", "-1");
   assert.equal(negative.status, 2);
   assert.match(negative.stderr, /--max is max_fal_usd, 0 or more/);
+});
+
+// ---------- the kit's gates: the ceiling, the rates, a rerun, a corrupt record ----------
+const GATE = "the plan is over the ceiling you set (or not priced yet): nothing is built";
+test("stills, remake and clips build nothing when the plan is over the user's ceiling or not priced", () => {
+  const dir = priceDir();
+  assert.equal(kit(dir, "price", "--film", "film", "--rates", RATES).status, 0);
+  assert.equal(stillsOf(dir).status, 0, "a plan priced with no ceiling fits");
+  const stillsBefore = recordOf(dir, "stills.json");
+  const over = kit(dir, "price", "--film", "film", "--rates", RATES, "--max", "0");
+  assert.equal(over.status, 0);
+  assert.match(over.stdout, /OVER YOUR CEILING/);
+  const urls = [1, 2, 3].map((n) => `https://v3.fal.media/files/rabbit/still${n}.png`).join(",");
+  const refused = {
+    stills: () => stillsOf(dir),
+    remake: () => kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "2", "--picture", "a calm quay"),
+    clips: () => kit(dir, "clips", "--film", "film", "--storyboard", "storyboard.md", "--stem", "abcd1234", "--stills", urls, "--file", "media/clips.json"),
+  };
+  for (const [name, run] of Object.entries(refused)) {
+    const r = run();
+    assert.equal(r.status, 2, `${name}: ${r.stdout}${r.stderr}`);
+    assert.equal(r.stdout, "", `${name} prints nothing to send`);
+    assert.equal(r.stderr.trim(), GATE, name);
+  }
+  assert.equal(recordOf(dir, "stills.json"), stillsBefore, "remake added nothing");
+  assert.equal(recordOf(dir, "clips.json"), undefined, "clips wrote nothing");
+  // Never priced: no film/price.json at all.
+  const bare = priceDir();
+  spawnSync("rm", [join(bare, "film", "price.json")]);
+  for (const [name, r] of [["stills", stillsOf(bare)], ["clips", kit(bare, "clips", "--film", "film", "--storyboard", "storyboard.md", "--stem", "abcd1234", "--stills", urls, "--file", "media/clips.json")]]) {
+    assert.equal(r.status, 2, `${name}: ${r.stdout}${r.stderr}`);
+    assert.equal(r.stdout, "");
+    assert.equal(r.stderr.trim(), GATE);
+  }
+  writeFileSync(join(bare, "media", "stills.json"), JSON.stringify({ stills: [{ n: 1, key: "mu-abcd1234-still-1", picture: "a quay" }] }));
+  const remake = kit(bare, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "1", "--picture", "a calm quay");
+  assert.equal(remake.status, 2);
+  assert.equal(remake.stdout, "");
+  assert.equal(remake.stderr.trim(), GATE);
+});
+
+// List prices the bands are based on: isolation $0.10 a minute, speech-to-text $0.03 a minute, a 1K still $0.15, a clip
+// $0.112 a second (audio off). The band is a quarter of the list price to four times it.
+const BANDS = { isolation: [0.025, 0.4], transcript: [0.0075, 0.12], still: [0.0375, 0.6], clip: [0.028, 0.448] };
+const ENDPOINTS = { isolation: "fal-ai/elevenlabs/audio-isolation", transcript: "fal-ai/elevenlabs/speech-to-text", still: "fal-ai/nano-banana-pro", clip: "fal-ai/kling-video/v3/pro/image-to-video" };
+test("price refuses a rate outside its endpoint's band, naming the endpoint and the band; both edges are inside", () => {
+  const base = { isolation: 0.1, transcript: 0.03, still: 0.15, clip: 0.14 };
+  const rates = (k, v) => Object.entries({ ...base, [k]: v }).map(([a, b]) => `${a}=${b}`).join(",");
+  for (const [k, [low, high]] of Object.entries(BANDS)) {
+    for (const v of [low, high]) {
+      const r = kit(priceDir(), "price", "--film", "film", "--rates", rates(k, v));
+      assert.equal(r.status, 0, `${k}=${v} is on the band's edge: ${r.stderr}`);
+    }
+    for (const v of [low * 0.99, high * 1.01, 0]) {
+      const r = kit(priceDir(), "price", "--film", "film", "--rates", rates(k, v));
+      assert.equal(r.status, 2, `${k}=${v}: ${r.stdout}`);
+      assert.equal(r.stdout, "");
+      assert.match(r.stderr, new RegExp(`^--rates ${k}=${String(v).replace(".", "\\.")}: ${ENDPOINTS[k]}'s rate is outside ${String(low).replace(".", "\\.")} to ${String(high).replace(".", "\\.")} USD`));
+    }
+  }
+  // A model that misreads get_pricing's clip rate by a factor of ten is refused, not priced under the user's ceiling.
+  const slip = kit(priceDir(), "price", "--film", "film", "--rates", rates("clip", 0.0112), "--max", "1");
+  assert.equal(slip.status, 2);
+});
+
+test("clips run again on a resumed run keeps an identical media/clips.json, and refuses changed inputs naming the shot", () => {
+  const { dir, r } = clipsRun();
+  assert.equal(r.status, 0, r.stderr);
+  const before = recordOf(dir, "clips.json");
+  const urls = [1, 2, 3].map((n) => `https://v3.fal.media/files/rabbit/still${n}.png`);
+  const clipsAgain = (list) => kit(dir, "clips", "--film", "film", "--storyboard", "storyboard.md", "--stem", "abcd1234", "--stills", list.join(","), "--file", "media/clips.json");
+  const again = clipsAgain(urls);
+  assert.equal(again.status, 0, again.stderr);
+  assert.equal(again.stdout, r.stdout, "the same calls, printed again");
+  assert.equal(recordOf(dir, "clips.json"), before);
+  const moved = clipsAgain(urls.map((u, i) => (i === 1 ? "https://v3.fal.media/files/rabbit/other2.png" : u)));
+  assert.equal(moved.status, 2, moved.stdout);
+  assert.equal(moved.stdout, "");
+  assert.match(moved.stderr, /^shot 2: media\/clips\.json already holds its clip with another start_image_url \("https:\/\/v3\.fal\.media\/files\/rabbit\/still2\.png"\)/);
+  assert.equal(recordOf(dir, "clips.json"), before, "the sent record is never overwritten");
+  const board = join(dir, "storyboard.md");
+  writeFileSync(board, readFileSync(board, "utf8").replace("motion: slow push in 3", "motion: fast whip pan"));
+  const motion = clipsAgain(urls);
+  assert.equal(motion.status, 2);
+  assert.match(motion.stderr, /^shot 3: media\/clips\.json already holds its clip with another prompt \("slow push in 3, the scene as it is"\)/);
+  writeFileSync(join(dir, "media", "clips.json"), "{not json");
+  const corrupt = clipsAgain(urls);
+  assert.equal(corrupt.status, 2);
+  assert.match(corrupt.stderr, /^media\/clips\.json is there and is not the record clips wrote/);
+});
+
+test("remake and stills give a corrupt media/stills.json an error in words, never a stack", () => {
+  const corrupt = [
+    ["{not json", /^media\/stills\.json is there and is not the record stills wrote/],
+    ["null", /^media\/stills\.json is there and is not the record stills wrote/],
+    [JSON.stringify({ stills: [null] }), /^media\/stills\.json is there and is not the record stills wrote/],
+    [JSON.stringify({ stills: [{ n: 1, key: "mu-abcd1234-still-1", picture: "a quay" }, 7] }), /^media\/stills\.json is there and is not the record stills wrote/],
+  ];
+  for (const [text, why] of corrupt) {
+    const dir = stillsDir();
+    writeFileSync(join(dir, "media", "stills.json"), text);
+    for (const r of [kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "1", "--picture", "a calm quay"), stillsOf(dir)]) {
+      assert.equal(r.status, 2, `${text}: ${r.stdout}${r.stderr}`);
+      assert.equal(r.stdout, "");
+      assert.match(r.stderr, why);
+      assert.doesNotMatch(r.stderr, /\n\s+at |TypeError|SyntaxError: /, "an error in words, not a stack");
+      assert.equal(readFileSync(join(dir, "media", "stills.json"), "utf8"), text, "left as it was");
+    }
+  }
+});
+
+// ---------- the sent check rebuilds the records the kit would build ----------
+// The calls a run would send for the records on disk, so only the records' own content is under test.
+function callsFrom(dir) {
+  const st = JSON.parse(readFileSync(join(dir, "media", "stills.json"), "utf8"));
+  const cl = JSON.parse(readFileSync(join(dir, "media", "clips.json"), "utf8"));
+  const stills = st.stills.map((s) => ({ endpoint_id: NANO, submission_key: s.key, input: { prompt: `${st.style}. ${s.picture}. ${ENDING}`, ...st.every_still } }));
+  const clips = cl.clips.map((c) => ({ endpoint_id: KLING, submission_key: c.key, input: { prompt: c.prompt, start_image_url: c.start_image_url, duration: c.duration, ...cl.every_clip } }));
+  return [...stills, ...clips].map((a) => ({ tool: "mcp:fal/submit_job", arguments: a }));
+}
+function rewrite(dir, name, change) {
+  const path = join(dir, "media", name);
+  const record = JSON.parse(readFileSync(path, "utf8"));
+  change(record);
+  writeFileSync(path, JSON.stringify(record));
+}
+test("the sent check fails a record in the kit's shape, its calls sent to match, that the kit would not have built", () => {
+  const cases = [
+    ["a picture not in the storyboard", (d) => rewrite(d, "stills.json", (r) => (r.stills[2].picture = "a famous singer on stage")), /^SENT FAIL stills: media\/stills\.json's shot 3 is not what the kit builds from film\/plan\.json, storyboard\.md and media\/run-keys\.json: picture "a famous singer on stage", the kit's "a paper ferry 3 on teal water, wide"/],
+    ["a duplicate n", (d) => rewrite(d, "stills.json", (r) => (r.stills[1].n = 1)), /^SENT FAIL stills: media\/stills\.json's shot 2 is not what the kit builds .*: n 1, the kit's 2/],
+    ["a wrong key stem", (d) => { rewrite(d, "stills.json", (r) => r.stills.forEach((s) => (s.key = s.key.replace("abcd1234", "zzzz9999")))); }, /^SENT FAIL stills: media\/stills\.json's shot 1 is not what the kit builds .*: key "mu-zzzz9999-still-1", the kit's "mu-abcd1234-still-1"/],
+    ["a remake of a shot with no first take", (d) => rewrite(d, "stills.json", (r) => r.stills.push({ n: 9, key: "mu-abcd1234-still-9-2", picture: "a quay", remake: true })), /^SENT FAIL stills: media\/stills\.json's remake of shot 9 is not one the kit makes: shot 9 is not in /],
+    ["a clip duration that isn't the plan's clip seconds", (d) => rewrite(d, "clips.json", (r) => (r.clips[0].duration = "5")), /^SENT FAIL clips: media\/clips\.json's shot 1 is not what the kit builds .*: duration "5", the kit's "4"/],
+    ["a clip prompt not from the storyboard", (d) => rewrite(d, "clips.json", (r) => (r.clips[4].prompt = "a slow push in, a city skyline")), /^SENT FAIL clips: media\/clips\.json's shot 5 is not what the kit builds .*: prompt "a slow push in, a city skyline", the kit's "slow push in 5, the scene as it is"/],
+    ["a missing shot, every count still right", (d) => rewrite(d, "clips.json", (r) => (r.clips[7] = { ...r.clips[6], key: "mu-abcd1234-clip-8b" })), /^SENT FAIL clips: media\/clips\.json's shot 7 is not what the kit builds|^SENT FAIL clips: media\/clips\.json's shot 8 is not what the kit builds/],
+  ];
+  for (const [what, change, why] of cases) {
+    const { dir } = sentRun();
+    change(dir);
+    const r = check(reportOf(dir, callsFrom(dir)), dir);
+    assert.equal(r.status, 1, `${what}: ${r.stdout}${r.stderr}`);
+    assert.match(r.stdout, why, what);
+  }
+  // The kit's own records, sent as printed, still pass; so does a remake the kit made.
+  const { dir } = sentRun();
+  assert.equal(kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "3", "--picture", "a teal quay at dusk").status, 0);
+  assert.equal(check(reportOf(dir, callsFrom(dir)), dir).stdout, "SENT PASS n=17\n");
+  // No media/run-keys.json: the records can't be tied to the run's stem.
+  const nokeys = sentRun();
+  spawnSync("rm", [join(nokeys.dir, "media", "run-keys.json")]);
+  const r = check(reportOf(nokeys.dir, nokeys.calls), nokeys.dir);
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /^SENT FAIL stills: the run left no media\/run-keys\.json/);
+});
+
+test("the sent check fails a top-level record field it doesn't know, and an each_prompt that isn't the kit's", () => {
+  const cases = [
+    ["stills.json", (r) => (r.note = "x"), "SENT FAIL stills: media/stills.json has a field note; its fields are endpoint_id, style, each_prompt, every_still, stills\n"],
+    ["clips.json", (r) => (r.style = "x"), "SENT FAIL clips: media/clips.json has a field style; its fields are endpoint_id, every_clip, clips\n"],
+    ["stills.json", (r) => (r.each_prompt = "<style>. <picture>."), `SENT FAIL stills: media/stills.json's each_prompt is "<style>. <picture>.", not "<style>. <picture>. ${ENDING}"\n`],
+  ];
+  for (const [file, change, line] of cases) {
+    const { dir, calls } = sentRun();
+    rewrite(dir, file, change);
+    const r = check(reportOf(dir, calls), dir);
+    assert.equal(r.status, 1, r.stdout);
+    assert.equal(r.stdout, line);
+  }
 });
