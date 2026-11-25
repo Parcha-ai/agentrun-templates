@@ -356,12 +356,15 @@ test("remake adds one still's second take, its picture fixed, to media/stills.js
   assert.equal(JSON.parse(recordOf(dir, "stills.json")).stills.length, 6);
 });
 
-// ---------- the sent calls against the records ----------
+// ---------- the sent calls against the records (a repo check beside serve's grade) ----------
 // The records are what the kit built. What counts is what the run sent: the fake fal's whole log of submit_job calls,
-// in the eval report. check-sent compares them call by call: every still and clip sent exactly once, each one's
-// arguments equal to its record's, the clips' negative prompt the one exact string, the number of shots the case's.
-const CHECK = new URL("./music-video-check-sent.mjs", import.meta.url).pathname;
-function sentRun({ shots = [6, 4, 6, 5] } = {}) {
+// which serve keeps in the eval report as the run's mcp_calls. .github/eval-checks/music-video-sent.mjs compares them
+// call by call: every still and clip sent exactly once, each one's arguments equal to its record's, the clips' negative
+// prompt the one exact string, the number of shots the case's clips grader counts. A stopgap until a serve grader can
+// compare a call to a run's file.
+const CHECK = new URL("./eval-checks/music-video-sent.mjs", import.meta.url).pathname;
+const SHORT = 8; // short-song's clips.md count
+function sentRun({ shots = Array(SHORT).fill(4) } = {}) {
   const dir = stillsDir({ shots });
   const s = stillsOf(dir);
   assert.equal(s.status, 0, s.stderr);
@@ -371,69 +374,100 @@ function sentRun({ shots = [6, 4, 6, 5] } = {}) {
   const calls = [...sent(s.stdout), ...sent(c.stdout)].map((args) => ({ tool: "mcp:fal/submit_job", arguments: args }));
   return { dir, calls: [{ tool: "mcp:fal/get_pricing", arguments: {} }, ...calls, { tool: "mcp:fal/wait_for_jobs", arguments: { jobs: [] } }] };
 }
-function check(dir, calls, shots = 4) {
-  const report = join(dir, "report.json");
-  writeFileSync(report, JSON.stringify({ cases: [{ name: "a-case", runs: [{ run: 1, mcp_calls: calls }] }] }));
-  return spawnSync(process.execPath, [CHECK, "--report", report, "--case", "a-case", "--work", dir, "--shots", String(shots)], { encoding: "utf8" });
+function reportOf(dir, calls, { name = "short-song", runs } = {}) {
+  const report = join(dir, `report-${++runs_}.json`);
+  writeFileSync(report, JSON.stringify({ package: { name: "music-video" }, cases: [{ name, runs: runs ?? [{ run: 1, agent_id: "01aa-agent", run_id: "01aa-run", mcp_calls: calls }] }] }));
+  return report;
 }
+let runs_ = 0;
+const check = (...args) => spawnSync(process.execPath, [CHECK, ...args], { encoding: "utf8" });
 const edit = (calls, key, change) => calls.map((c) => (c.arguments.submission_key === key ? { ...c, arguments: change(structuredClone(c.arguments)) } : c));
 
-test("check-sent passes a run whose sent stills and clips equal their records", () => {
+test("the sent check passes a run whose sent stills and clips equal their records, in one line that says it is the repo's check", () => {
   const { dir, calls } = sentRun();
-  const r = check(dir, calls);
+  const r = check(reportOf(dir, calls), dir);
   assert.equal(r.status, 0, r.stdout + r.stderr);
-  assert.match(r.stdout, /^PASS stills: 4 sent, each equal to media\/stills\.json$/m);
-  assert.match(r.stdout, /^PASS clips: 4 sent, each equal to media\/clips\.json, negative_prompt exact$/m);
+  assert.equal(r.stdout, "SENT PASS n=16 (repo check; serve's grade is separate)\n");
 });
 
-test("check-sent passes a remake sent as recorded, and fails one sent but not recorded", () => {
+test("the sent check finds the run's work folder in a serve data folder by the report's agent and run ids", () => {
+  const { dir, calls } = sentRun();
+  const data = join(root, `data-${++runs}`);
+  const work = join(data, "disk", "agents", "01aa-agent-0f0f", "runs", "01aa-run", "work");
+  mkdirSync(join(data, "disk", "agents", "01aa-agent-0f0f", "runs", "01aa-other", "work"), { recursive: true });
+  mkdirSync(join(work, ".."), { recursive: true });
+  cpSync(dir, work, { recursive: true });
+  const r = check(reportOf(dir, calls), data);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /^SENT PASS n=16 /);
+});
+
+test("the sent check passes a remake sent as recorded, and fails one sent but not recorded", () => {
   const { dir, calls } = sentRun();
   const r = kit(dir, "remake", "--file", "media/stills.json", "--shot", "3", "--picture", "a teal quay at dusk");
   assert.equal(r.status, 0, r.stderr);
   const remake = { tool: "mcp:fal/submit_job", arguments: sent(r.stdout)[0] };
-  assert.equal(check(dir, [...calls, remake]).status, 0);
+  assert.match(check(reportOf(dir, [...calls, remake]), dir).stdout, /^SENT PASS n=17 /);
   const stray = structuredClone(remake);
   stray.arguments.submission_key = "mu-abcd1234-still-4-2";
-  const no = check(dir, [...calls, remake, stray]);
+  const no = check(reportOf(dir, [...calls, remake, stray]), dir);
   assert.equal(no.status, 1);
-  assert.match(no.stdout, /^FAIL stills: mu-abcd1234-still-4-2 was sent and is not in media\/stills\.json$/m);
+  assert.equal(no.stdout, "SENT FAIL stills: mu-abcd1234-still-4-2 was sent and is not in media/stills.json\n");
 });
 
-test("check-sent fails a run whose sent calls differ from the records, naming the call", () => {
+test("the sent check fails a run whose sent calls differ from the records, naming the call", () => {
   const { dir, calls } = sentRun();
   const NEG = "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, celebrity, blur, distortion, low quality";
   const cases = [
-    [edit(calls, "mu-abcd1234-clip-2", (a) => ((a.input.negative_prompt = NEG.replace(", celebrity", "")), a)), /^FAIL clips: mu-abcd1234-clip-2 was sent with input\.negative_prompt "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, blur, distortion, low quality"; media\/clips\.json has "text, letters/m],
-    [calls.filter((c) => c.arguments.submission_key !== "mu-abcd1234-clip-3"), /^FAIL clips: mu-abcd1234-clip-3 is in media\/clips\.json and was never sent$/m],
-    [edit(calls, "mu-abcd1234-clip-1", (a) => ((a.input.prompt = "a new scene: a city at night"), a)), /^FAIL clips: mu-abcd1234-clip-1 was sent with input\.prompt "a new scene: a city at night"; media\/clips\.json has "slow push in 1, the scene as it is"$/m],
-    [edit(calls, "mu-abcd1234-clip-4", (a) => ((a.input.start_image_url = "https://v3.fal.media/files/rabbit/still1.png"), a)), /^FAIL clips: mu-abcd1234-clip-4 was sent with input\.start_image_url/m],
-    [edit(calls, "mu-abcd1234-still-2", (a) => ((a.input.prompt = a.input.prompt.replace(" on teal water", "")), a)), /^FAIL stills: mu-abcd1234-still-2 was sent with input\.prompt "cut paper with soft shadows, teal and amber\. a paper ferry 2, wide\. No text, no lettering, no logos\."; media\/stills\.json has/m],
-    [edit(calls, "mu-abcd1234-still-1", (a) => ((a.input.enable_web_search = true), a)), /^FAIL stills: mu-abcd1234-still-1 was sent with input\.enable_web_search true; media\/stills\.json has false$/m],
-    [[...calls, calls.find((c) => c.arguments.submission_key === "mu-abcd1234-clip-2")], /^FAIL clips: mu-abcd1234-clip-2 was sent 2 times$/m],
+    [edit(calls, "mu-abcd1234-clip-2", (a) => ((a.input.negative_prompt = NEG.replace(", celebrity", "")), a)), /^SENT FAIL clips: mu-abcd1234-clip-2 was sent with input\.negative_prompt "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, blur, distortion, low quality"; media\/clips\.json has "text, letters/],
+    [calls.filter((c) => c.arguments.submission_key !== "mu-abcd1234-clip-3"), /^SENT FAIL clips: mu-abcd1234-clip-3 is in media\/clips\.json and was never sent\n$/],
+    [edit(calls, "mu-abcd1234-clip-1", (a) => ((a.input.prompt = "a new scene: a city at night"), a)), /^SENT FAIL clips: mu-abcd1234-clip-1 was sent with input\.prompt "a new scene: a city at night"; media\/clips\.json has "slow push in 1, the scene as it is"\n$/],
+    [edit(calls, "mu-abcd1234-clip-4", (a) => ((a.input.start_image_url = "https://v3.fal.media/files/rabbit/still1.png"), a)), /^SENT FAIL clips: mu-abcd1234-clip-4 was sent with input\.start_image_url/],
+    [edit(calls, "mu-abcd1234-still-2", (a) => ((a.input.prompt = a.input.prompt.replace(" on teal water", "")), a)), /^SENT FAIL stills: mu-abcd1234-still-2 was sent with input\.prompt "cut paper with soft shadows, teal and amber\. a paper ferry 2, wide\. No text, no lettering, no logos\."; media\/stills\.json has/],
+    [edit(calls, "mu-abcd1234-still-1", (a) => ((a.input.enable_web_search = true), a)), /^SENT FAIL stills: mu-abcd1234-still-1 was sent with input\.enable_web_search true; media\/stills\.json has false\n$/],
+    [[...calls, calls.find((c) => c.arguments.submission_key === "mu-abcd1234-clip-2")], /^SENT FAIL clips: mu-abcd1234-clip-2 was sent 2 times\n$/],
+    [edit(edit(calls, "mu-abcd1234-clip-1", (a) => ((a.input.prompt = "x"), a)), "mu-abcd1234-clip-2", (a) => ((a.input.prompt = "y"), a)), /^SENT FAIL clips: mu-abcd1234-clip-1 was sent with input\.prompt "x"; media\/clips\.json has "slow push in 1, the scene as it is" \(and 1 more\)\n$/],
   ];
   for (const [mutated, why] of cases) {
-    const r = check(dir, mutated);
+    const r = check(reportOf(dir, mutated), dir);
     assert.equal(r.status, 1, r.stdout + r.stderr);
     assert.match(r.stdout, why);
-    assert.match(r.stdout, /^RESULT FAIL$/m);
   }
 });
 
-test("check-sent fails records that don't hold the case's shots, the exact negative prompt, or exist at all", () => {
+test("the sent check fails records that don't hold the case's shots or the exact negative prompt, or that the run never left", () => {
   const { dir, calls } = sentRun();
-  assert.match(check(dir, calls, 12).stdout, /^FAIL clips: media\/clips\.json holds 4 clips, the case 12 shots$/m);
-  assert.match(check(dir, calls, 12).stdout, /^FAIL stills: media\/stills\.json holds 4 first takes, the case 12 shots$/m);
+  const twelve = check(reportOf(dir, calls, { name: "sixty-seconds" }), dir);
+  assert.equal(twelve.status, 1);
+  assert.match(twelve.stdout, /^SENT FAIL stills: media\/stills\.json holds 8 first takes, the case 12 shots \(and 1 more\)\n$/);
   const path = join(dir, "media", "clips.json");
   const record = JSON.parse(readFileSync(path, "utf8"));
   record.every_clip.negative_prompt = "text";
   writeFileSync(path, JSON.stringify(record));
   // The record and the sent calls agree, and both miss the one negative prompt: still a failure.
   const both = calls.map((c) => (c.arguments.endpoint_id === KLING ? { ...c, arguments: { ...c.arguments, input: { ...c.arguments.input, negative_prompt: "text" } } } : c));
-  assert.match(check(dir, both).stdout, /^FAIL clips: media\/clips\.json's negative_prompt is "text", not the one exact string$/m);
+  assert.equal(check(reportOf(dir, both), dir).stdout, "SENT FAIL clips: media/clips.json's negative_prompt is \"text\", not the one exact string\n");
   const bare = sentRun();
-  for (const f of ["clips.json", "stills.json"]) writeFileSync(join(bare.dir, "media", f + ".gone"), ""), spawnSync("mv", [join(bare.dir, "media", f), join(bare.dir, "media", f + ".gone")]);
-  const r = check(bare.dir, bare.calls);
+  for (const f of ["clips.json", "stills.json"]) spawnSync("mv", [join(bare.dir, "media", f), join(bare.dir, "media", f + ".gone")]);
+  const r = check(reportOf(bare.dir, bare.calls), bare.dir);
   assert.equal(r.status, 1);
-  assert.match(r.stdout, /^FAIL clips: the run left no media\/clips\.json$/m);
-  assert.match(r.stdout, /^FAIL stills: the run left no media\/stills\.json$/m);
+  assert.equal(r.stdout, "SENT FAIL stills: the run left no media/stills.json (and 1 more)\n");
+});
+
+test("the sent check is VOID (exit 2), not a fail, when it can't find its inputs", () => {
+  const { dir, calls } = sentRun();
+  const voids = [
+    [[], /^SENT VOID usage: node \.github\/eval-checks\/music-video-sent\.mjs <report\.json> <the run's work folder or the serve's data folder>/],
+    [[join(dir, "nope.json"), dir], /^SENT VOID no report at /],
+    [[reportOf(dir, calls), join(dir, "nowhere")], /^SENT VOID no folder at /],
+    [[reportOf(dir, calls, { name: "live" }), dir], /^SENT VOID case live has no clips grader \(templates\/music-video\/evals\/live\/graders\/clips\.md\): this check covers the fake-fal cases that make a film$/m],
+    [[reportOf(dir, calls, { runs: [{ run: 1, agent_id: "a", run_id: "r", mcp_calls: calls }, { run: 2, agent_id: "a", run_id: "s", mcp_calls: calls }] }), dir], /^SENT VOID the report holds 2 runs; this check takes a report of one run$/m],
+    [[reportOf(dir, calls, { runs: [{ run: 1, agent_id: "a", run_id: "r" }] }), dir], /^SENT VOID the run has no mcp_calls \(the fake fal's log\) in the report$/m],
+    [[reportOf(dir, calls), root], /^SENT VOID .* holds no media\/ and no disk\/agents\/<agent>\/runs\/01aa-run\/work/m],
+  ];
+  for (const [args, why] of voids) {
+    const r = check(...args);
+    assert.equal(r.status, 2, `${args}: ${r.stdout}${r.stderr}`);
+    assert.match(r.stdout, why);
+  }
 });
