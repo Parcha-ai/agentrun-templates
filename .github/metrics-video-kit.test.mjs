@@ -316,6 +316,8 @@ test("scan finds a name through an initial", () => {
   const items = [described("Commission for Marisol Q. Quintero")];
   const r = scanRun("initial", items, { "media/vo.txt": `${CLEAN} Thank you, Marisol Quintero.` });
   assert.equal(r.status, 2, `the name without its initial: ${r.out}`);
+  const lower = scanRun("initial-lower", [described("commission for marisol q. quintero")], { "media/vo.txt": `${CLEAN} Thanks, Marisol.` });
+  assert.equal(lower.status, 2, `held in lower case, through its initial, the first name alone: ${lower.out}`);
 });
 
 test("months, days, the business, Stripe's words and common words are no one's name", () => {

@@ -26,10 +26,13 @@
 // stem     prints the run's key stem: the one in the file when it was made for this week, else a new one from the
 //          sandbox's random bytes, written there first. A model never makes one.
 // scan     looks for customer data in every file the run wrote: each string a raw page's items hold (a description, a
-//          name, an email, an id; not Stripe's enum fields, its fee lines or a single word alone), each pair of
-//          capitalised words in one (a name's shape), and any email address, in each file as written and in what each
-//          voice says (the letters of every *-timestamps.json joined). With --final and nothing found, it removes the
-//          raw pages.
+//          name, an email, an id; not Stripe's enum fields, its fee lines or a single word alone), each name in one (a
+//          pair of capitalised words, a pair through an initial, a pair in lower case of words that aren't common ones;
+//          in any case), each word of a name alone when it starts with a capital (four letters or more, not a common
+//          word), and any email address, in each file as written and in what each voice says (the letters of every
+//          *-timestamps.json joined). --business sets the business's own name aside. With --final and nothing found,
+//          it removes the raw pages. A name it can't tell from common words (a description of one word, a name of
+//          common words or of short ones, a name spelled another way) is not found.
 //
 // A raw page is Stripe's list exactly as Composio answered it ({"object": "list", "data": [...], "has_more": ...}),
 // or Composio's whole answer around it. It holds customers' details (a charge's description can name one), so only
@@ -655,34 +658,99 @@ const STRIPES_WORDS = new Set(
     "failed partial capture account active of to from and the in on at by").split(" "),
 );
 const nameLike = (a, b) => (TITLED(a) && TITLED(b)) || !STRIPES_WORDS.has(a.toLowerCase()) || !STRIPES_WORDS.has(b.toLowerCase());
+// Words too common to be a name on their own: English's most used words, the calendar, money and shop words, and the
+// words a film of a week's revenue says. A pair held in lower case is a name only when neither word is one of these,
+// and a word of a name looked for alone never is one.
+const COMMON = new Set(
+  (
+    // the calendar
+    "january february march april may june july august september october november december jan feb mar apr jun jul aug " +
+    "sep sept oct nov dec monday tuesday wednesday thursday friday saturday sunday mon tue tues wed thu thur thurs fri " +
+    "sat sun today tomorrow yesterday tonight morning afternoon evening night day days week weeks weekly weekend month " +
+    "months monthly year years yearly annual annually daily hour hours minute minutes second seconds quarter quarterly " +
+    "spring summer autumn fall winter holiday holidays christmas easter season " +
+    // money, shops and orders
+    "revenue gross net total totals subtotal sum amount amounts price prices cost costs paid pay pays paying sale sales " +
+    "sold buy bought purchase purchases order orders ordered invoice invoices receipt bill bills balance deposit " +
+    "deposits subscription subscriptions renewal renewals plan plans membership member members premium basic standard " +
+    "pro plus starter trial monthly annual credit credits debit card cards gift gifts voucher coupon discount discounts " +
+    "promo code codes shipping delivery handling service services product products item items package packages bundle " +
+    "set sets kit kits class classes course courses lesson lessons workshop workshops session sessions booking bookings " +
+    "ticket tickets event events pass passes entry admission rental rent hire commission commissions custom made " +
+    "handmade shop store stores online web website app checkout cart customer customers client clients guest guests " +
+    "user users account accounts business company team staff studio office home house dollar dollars euro euros pound " +
+    "pounds cent cents currency currencies money cash tax taxes vat fees fee tip tips donation donations " +
+    // a film of the week
+    "film films video videos movie scene scenes screen title voice voiceover narration music caption captions storyboard " +
+    "week change changes up down open opening end endcard days figure figures number numbers thousand thousands hundred " +
+    "hundreds million millions percent per cent zero one two three four five six seven eight nine ten eleven twelve " +
+    "thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty thirty forty fifty sixty seventy eighty ninety " +
+    "first second third fourth fifth last next previous before after earlier later new old best good great big small " +
+    "more less most least high higher low lower same thank thanks welcome hello note notes message please " +
+    // English's most used words
+    "the and for are but not you all any can had her was one our out has him his how its may new now old see two way who " +
+    "boy did get let put say she too use that with have this will your from they know want been much some time very when " +
+    "come here just like long make many over such take than them well were what also back call each even find give hand " +
+    "high keep kind last left life live look made more most move must name need only part place right same seem show side " +
+    "tell turn used want ways work world would about above again along also always among another around because become " +
+    "being below between both bring came could does doing done during every from going gone into item itself later might " +
+    "mine more never other ours own rather really said should since still such than that their theirs then there these " +
+    "thing things think those though three through thus under until upon using what whatever where whether which while " +
+    "whom whose why with within without would yours yourself making made saying showing asked asks ask said says tell " +
+    "told thank thanked remember forget write read written words word line lines list today ever only just very really " +
+    "small large little great real full half whole extra free paid final main other others"
+  ).split(/\s+/),
+);
+// A word that can be half of a name held in lower case: letters only, three or more, not a common word nor Stripe's.
+const nameable = (w) => /^\p{L}{3,}$/u.test(w) && !COMMON.has(w.toLowerCase()) && !STRIPES_WORDS.has(w.toLowerCase());
 function customerValues(dir) {
   const found = new Map(); // value -> { where it came from, any case or not, a name pair or not }, never printed with the value
+  const alone = new Map(); // a name's word in lower case -> where it came from: looked for alone, as a word that starts with a capital
   const add = (value, where, anyCase = false, name = false) => {
     if (value.length < 4) return;
-    if (!found.has(value)) found.set(value, { where, anyCase, name });
-    else if (name) found.get(value).name = true;
-    else if (anyCase) found.get(value).anyCase = true; // a whole description that is only a name is still a name
+    const seen = found.get(value);
+    if (!seen) found.set(value, { where, anyCase, name });
+    else {
+      if (anyCase) seen.anyCase = true; // a whole description that is only a name is still a name
+      if (name) seen.name = true;
+    }
+  };
+  // A name pair: looked for whole, and each of its words alone (four letters or more, not a common word), as a first
+  // name or a last name said by itself is still the customer's.
+  const pair = (a, b, where, key, anyCase) => {
+    add(`${a} ${b}`, `${where}: a name in its ${key}`, anyCase, true);
+    if (!anyCase) return;
+    for (const w of `${a} ${b}`.split(/[^\p{L}]+/u)) {
+      if (w.length >= 4 && !COMMON.has(w.toLowerCase()) && !STRIPES_WORDS.has(w.toLowerCase()) && !alone.has(w.toLowerCase())) alone.set(w.toLowerCase(), `${where}: a word of a name in its ${key}`);
+    }
   };
   const walk = (value, key, where) => {
     if (key === "fee_details" || STRIPES_OWN.has(key)) return;
     if (typeof value === "string") {
       const v = value.trim();
-      // One word of letters alone ("Refund", "Payment") is a common word as often as a name, and the kit's own scenes
-      // hold such words: it is not looked for by itself. A name is looked for as a pair of words, below.
+      // A description of one word of letters alone ("Refund", "Payment") is a common word as often as a name, and the
+      // kit's own scenes hold such words: it is not looked for by itself. A name is looked for as a pair of words, and
+      // each word of a pair alone, below.
       if (!/^\p{L}+$/u.test(v)) add(v, `${where}: its ${key}`);
       for (const email of v.match(EMAIL) ?? []) add(email, `${where}: an email in its ${key}`, true);
       const words = v.split(/\s+/).map((w) => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ""));
       for (let i = 0; i + 1 < words.length; i++) {
-        if (NAMEWORD.test(words[i]) && NAMEWORD.test(words[i + 1])) {
-          add(`${words[i]} ${words[i + 1]}`, `${where}: a name in its ${key}`, nameLike(words[i], words[i + 1]), true);
-        }
+        const [a, b, c] = [words[i], words[i + 1], words[i + 2]];
+        // Two capitalised words; or two through an initial between them ("Marisol Q. Quintero", in any case); or two
+        // words in lower case (or mixed) neither of which is a common word ("commission for marisol quintero").
+        if (NAMEWORD.test(a) && NAMEWORD.test(b)) pair(a, b, where, key, nameLike(a, b));
+        else if (/^\p{L}$/u.test(b) && c !== undefined && NAMEWORD.test(a) && NAMEWORD.test(c)) pair(a, c, where, key, nameLike(a, c));
+        else if (/^\p{L}$/u.test(b) && c !== undefined && nameable(a) && nameable(c)) pair(a, c, where, key, true);
+        else if (nameable(a) && nameable(b)) pair(a, b, where, key, true);
       }
     } else if (Array.isArray(value)) value.forEach((v) => walk(v, key, where));
     else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) walk(v, k, where);
   };
   for (const { file, list } of readRaw(dir)) list.data.forEach((item, i) => walk(item, "item", `${file} item ${i + 1} (${item?.id ?? "no id"})`));
-  return found;
+  return { found, alone };
 }
+// The words of a text that start with a capital (a name said in a sentence, in a title, in capitals), in lower case.
+const capitalised = (text) => new Set((text.match(/\p{L}+/gu) ?? []).filter((w) => /^\p{Lu}/u.test(w)).map((w) => w.toLowerCase()));
 // Every file the run wrote under `root`: dot-folders (the skills, the harness's own state) and node_modules are not
 // the run's, the raw pages are where the values come from, a binary file (audio, video, images) holds no text, and a
 // link is not followed (it points at a file the walk reaches anyway, or outside the run).
@@ -712,7 +780,7 @@ const wordsOf = (s) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 function scan() {
   const dir = need("pages");
   const root = args.root && args.root !== "true" ? args.root : ".";
-  const found = existsSync(dir) && rawFiles(dir).length ? customerValues(dir) : new Map();
+  const { found, alone } = existsSync(dir) && rawFiles(dir).length ? customerValues(dir) : { found: new Map(), alone: new Map() };
   const raw = new Set(existsSync(dir) ? rawFiles(dir).map((f) => join(dir, f)) : []);
   // The template's own words: the skill folder the kit is copied from (film/ holds that copy, its comments included).
   // The run can write in that folder too, so only a file whose sha256 is the one kit/manifest.json gives (made with the
@@ -742,6 +810,11 @@ function scan() {
   const business = typeof args.business === "string" && args.business !== "true" ? wordsOf(args.business) : "";
   const theBusiness = (value, { name }) => business !== "" && (wordsOf(value) === business || (name && ` ${business} `.includes(` ${wordsOf(value)} `)));
   const values = new Map([...found].filter(([value, seen]) => !skillText.includes(squash(value)) && !theBusiness(value, seen)));
+  // A name's word alone is not looked for when it is a word of the business's name, or a capitalised word the
+  // template's own text holds ("Canadian", "Composio").
+  const skillWords = capitalised(skillText);
+  const ownWords = new Set(business.split(" "));
+  const words = new Map([...alone].filter(([w]) => !skillWords.has(w) && !ownWords.has(w)));
   // A file in film/ still byte for byte a shipped kit file (metrics.mjs, review.mjs, a scene the run never changed)
   // holds only the template's words: it is not searched, so a customer's name that is also a phrase in the kit's code
   // can't fail every run. A copy the run changed is searched like any other file.
@@ -782,6 +855,8 @@ function scan() {
       const escaped = norm(JSON.stringify(value).slice(1, -1));
       if (hay.includes(plain) || (escaped !== plain && hay.includes(escaped))) hits.push(`${at} holds a value from Stripe's ${where}`);
     }
+    const caps = capitalised(text);
+    for (const [w, where] of words) if (caps.has(w)) hits.push(`${at} holds a value from Stripe's ${where}`);
     for (const email of text.match(EMAIL) ?? []) if (!values.has(email)) hits.push(`${at} holds an email address`);
   }
   if (hits.length) {
@@ -792,7 +867,7 @@ function scan() {
     unlinkSync(path);
     removed.push(path);
   }
-  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), voices_read: voices.length, skill_files_shipped: shipped.size, skill_files_searched: written.length, raw_pages_removed: removed }));
+  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, name_words: words.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), voices_read: voices.length, skill_files_shipped: shipped.size, skill_files_searched: written.length, raw_pages_removed: removed }));
 }
 
 // ---------- the key stem ----------
