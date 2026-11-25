@@ -765,8 +765,8 @@ test("after billing a word alone only warns, naming the file and line; a name st
 });
 
 // The one rerun: after a warning the agent edits the text (or not) and runs --final once more. That run is the last: a
-// whole value, a pair or an email still stops the film and keeps the raw pages; a word alone warns again and is fine;
-// otherwise the raw pages and the note of the warning go. It never asks for another.
+// whole value, a pair or an email still stops the film; a word alone warns again and is fine; and either way the raw
+// pages and the note of the warning go. It never asks for another.
 test("after a warning, one more --final checks the agent's edit and is the last", () => {
   const items = [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)];
   const kept = { checks: { warnings_kept: ["timeline_track_too_dense on captions: expected"] } };
@@ -792,13 +792,19 @@ test("after a warning, one more --final checks the agent's edit and is the last"
   editAnswer(email, (a) => ({ ...a, note: "Thanks to our customer (marisol@example.com)." }));
   const r1 = finalAgain(email);
   customerData(r1, `an email pasted after the warning: ${r1.out}`);
-  assert.ok(pages(email), "the pages stay when the rerun stops the film");
+  const gone = (r, dir) => {
+    assert.ok(!pages(dir) && !marker(dir), "the last --final removes the raw pages and the note even when it stops the film");
+    const said = JSON.parse(r.out.split("\n").find((l) => l.startsWith("{")));
+    assert.equal(said.clean, false);
+    assert.equal(said.raw_pages_removed.length, 1);
+  };
+  gone(r1, email);
   // (2) The edit leaves the whole name: the rerun stops the film.
   const pair = warnedRun("rerun-pair", { note: "Thanks, Marisol." });
   editAnswer(pair, (a) => ({ ...a, note: "Thanks, Marisol Quintero." }));
   const r2 = finalAgain(pair);
   customerData(r2, `a name pair left after the warning: ${r2.out}`);
-  assert.ok(pages(pair), "the pages stay when the rerun stops the film");
+  gone(r2, pair);
   // (3) A clean edit: the rerun is clean, the pages and the note go.
   const clean = warnedRun("rerun-clean", { note: "Thanks, Marisol." });
   editAnswer(clean, ({ note, ...a }) => a);
