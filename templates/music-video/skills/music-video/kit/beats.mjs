@@ -4,7 +4,8 @@
 // the cut, splits it into shots on bar lines, prices the plan from fal's rates, maps the lyrics' word times into the
 // cut, writes the film's scene list and reads it back. Nothing here guesses a figure it cannot work out: that is an
 // error, never an estimate. It uses only node's fs, path, url and child_process, and runs only ffmpeg and ffprobe. A
-// check may import it for buildStills, addRemake and buildClips (to rebuild what the kit builds); then it runs no command.
+// check may import it for buildStills, addRemake and buildClips (to rebuild what the kit builds), and answer.mjs for the
+// plan's own words; then it runs no command.
 //
 //   node beats.mjs plan   --song media/song.mp3 --film film [--cut 60] [--start 42.5] [--aspect 16:9] [--lyrics true]
 //   node beats.mjs price  --film film --rates isolation=0.1,transcript=0.03,still=0.15,clip=0.14 [--max 20]
@@ -61,7 +62,7 @@
 //         when it is the same and prints the same calls; when anything differs it refuses, naming the shot.
 // cost    the answer's fal_cost_usd from the steps sent (a failed or refused one at 0; one still pending when the run
 //         stopped waiting at its full price, pending true, since fal may yet finish and bill it), at the rates price
-//         used, each with its key mu-<stem>-<step>.
+//         used, each with its key mu-<stem>-<step>. It writes film/cost.json, which answer.mjs reads.
 //
 // Exit 2: wrong arguments, or a film whose files don't match the plan (place reads every shot back after writing it;
 // the message names the shot); 3: the song can't be decoded, is too short, or has no beat to cut on; 0: done.
@@ -476,16 +477,23 @@ function plan() {
   }
   out.push(`song: ${data.song.seconds} s (${songPath})`);
   out.push(`beats: ${data.beats.bpm} BPM, ${data.beats.count} beats, the first at ${data.beats.first_beat_s} s, bar lines (4/4) from ${data.beats.first_downbeat_s} s every ${data.beats.bar_s} s; tempo ${data.beats.tempo} (grid fit ${data.beats.fit_ms} ms, beat confidence ${data.beats.confidence})`);
-  if (data.beats.confidence < 0.2 || data.beats.tempo === "drifting") out.push("NOTE: the beat is weak or drifts here: the cuts land on the computed grid, which may sit off the music in places; say so in the report");
+  const note = weakBeat(data);
+  if (note) out.push(note);
   out.push(`bars (dB): ${data.bars.map((b) => `${b.n}@${b.start_s}:${b.db}`).join(" ")}`);
-  const how = { whole_song: `the song whole (it is shorter than the ${cutAsked} s asked)`, start_s: `from the bar line nearest ${startAsked} s${cut.shortened ? `, SHORTENED to the ${cut.bars} whole bars left before the song ends (say so in the answer)` : ""}`, loudest: `the loudest ${cut.bars} bars that start on a bar line` }[cut.chosen_by];
-  out.push(`cut: ${cut.start_s} s to ${cut.end_s} s of the song, ${cut.seconds} s, ${how}`);
+  out.push(`cut: ${cut.start_s} s to ${cut.end_s} s of the song, ${cut.seconds} s, ${cutHow(data)}`);
   for (const s of cut.shots) out.push(`shot ${s.n}: ${r3(s.start_s - cut.start_s)} to ${r3(s.end_s - cut.start_s)} s of the film (${s.start_s} to ${s.end_s} s of the song), ${s.seconds} s, ${s.bars} bar${s.bars === 1 ? "" : "s"}${s.partial ? " with the song's lead-in or tail" : ""}, clip ${s.clip_seconds} s`);
   out.push(`plan: ${cut.shots.length} shots, ${cut.shots.length + RESERVE} stills priced (${RESERVE} in reserve), ${cut.shots.reduce((t, s) => t + s.clip_seconds, 0)} s of clips, film ${cut.seconds} s at ${width}x${height}, lyrics ${lyricsOn ? "on" : "off"}`);
   out.push(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify(answerFields(data))}`);
   console.log(out.join("\n"));
 }
-function answerFields(data) {
+// The plan's own words for a weak beat and for how the cut was chosen: plan prints them, answer.mjs puts them in the
+// report.
+export const weakBeat = (data) => (data.beats.confidence < 0.2 || data.beats.tempo === "drifting" ? "NOTE: the beat is weak or drifts here: the cuts land on the computed grid, which may sit off the music in places; say so in the report" : null);
+export function cutHow(data) {
+  const cut = data.cut;
+  return { whole_song: `the song whole (it is shorter than the ${cut.asked_s} s asked)`, start_s: `from the bar line nearest ${cut.start_asked_s} s${cut.shortened ? `, SHORTENED to the ${cut.bars} whole bars left before the song ends (say so in the answer)` : ""}`, loudest: `the loudest ${cut.bars} bars that start on a bar line` }[cut.chosen_by];
+}
+export function answerFields(data) {
   return {
     song_seconds: data.song.seconds,
     beats: { bpm: data.beats.bpm, meter: data.beats.meter, count: data.beats.count, first_downbeat_s: data.beats.first_downbeat_s, bar_s: data.beats.bar_s, tempo: data.beats.tempo, confidence: data.beats.confidence },
@@ -830,7 +838,7 @@ const STEM = /^[a-z0-9]{8}$/;
 export const tidy = (text) => text.trim().replace(/[\s.,;:]+$/, "");
 // The shot lines of a storyboard (`<n> | ... | picture: <what the still shows> | motion: <move>`), checked against the
 // plan's shots: one line per shot, in order.
-function shotLines(board, shots) {
+export function shotLines(board, shots) {
   if (!existsSync(board)) fail(2, `${board} is missing: write the storyboard first`);
   const text = readFileSync(board, "utf8");
   const lines = text.split("\n").filter((l) => /^\s*\d+\s*\|/.test(l));
@@ -876,6 +884,12 @@ function readRecord(file, list, command) {
   if (!isObj(kept) || !Array.isArray(kept[list]) || !kept[list].every(isObj)) fail(2, `${file} is there and is not the record ${command} wrote (no list of ${list}, each an object): ${never(list)}`);
   return kept;
 }
+// A storyboard line's picture: what follows "| picture:", up to its last "| motion:".
+export function pictureOf(line) {
+  const at = line.indexOf("| picture:");
+  const end = line.lastIndexOf("| motion:");
+  return at < 0 ? "" : tidy(line.slice(at + "| picture:".length, end > at ? end : undefined));
+}
 // The stills record from the plan and the storyboard: what stills prints and writes, and what a check rebuilds.
 export function buildStills(film, board, stem) {
   if (!STEM.test(stem)) fail(2, "--stem is the run's key stem from media/run-keys.json: 8 lowercase letters and digits");
@@ -890,9 +904,7 @@ export function buildStills(film, board, stem) {
     each_prompt: `<style>. <picture>. ${ENDING}`,
     every_still: { num_images: 1, aspect_ratio: plan.aspect, resolution: "1K", output_format: "png", enable_web_search: false },
     stills: plan.cut.shots.map((s, i) => {
-      const at = lines[i].indexOf("| picture:");
-      const end = lines[i].lastIndexOf("| motion:");
-      const picture = at < 0 ? "" : tidy(lines[i].slice(at + "| picture:".length, end > at ? end : undefined));
+      const picture = pictureOf(lines[i]);
       if (!picture) fail(2, `shot ${s.n}: its storyboard line has no picture (\`| picture: <what the still shows>\`)`);
       return { n: s.n, key: `mu-${stem}-still-${s.n}`, picture };
     }),
@@ -1015,6 +1027,7 @@ function cost() {
   const remakes = sent.filter((s) => /^still-\d+-2$/.test(s)).length;
   if (remakes > RESERVE) fail(2, `--sent holds ${remakes} remade stills: at most ${RESERVE}`);
   const total = usd(steps.reduce((t, s) => t + s.usd, 0));
+  writeFileSync(join(film, "cost.json"), JSON.stringify({ steps, total }, null, 1) + "\n");
   console.log(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify({ fal_cost_usd: { steps, total } })}`);
 }
 

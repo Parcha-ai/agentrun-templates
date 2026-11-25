@@ -21,7 +21,7 @@ mkdir -p film media && cp -r .agents/skills/music-video/kit/. film/ && mkdir -p 
 ```
 
 `film/` now holds `beats.mjs` (every number), `index.html` (the film project: its shots, captions and song are written
-by `place`) and `review.mjs` (snapshot sheets to look at).
+by `place`), `review.mjs` (snapshot sheets to look at) and `answer.mjs` (the answer, step 9).
 
 ## 2. The plan
 
@@ -49,8 +49,8 @@ node film/beats.mjs plan --song media/song.mp3 --film film --cut <cut_seconds> [
   where the song is quieter. Each shot's clip is its seconds rounded up to a whole second (`clip_seconds`), at least 3.
 
 It writes `film/plan.json` (every later command reads it) and prints the beats, each bar's loudness, the cut, each
-shot (film times and song times) and one `answer fields` line: copy `beats`, `cut` and `shots` from it into the answer
-exactly as printed. Exit 3: the song has no beat to cut on or is too short.
+shot (film times and song times) and one `answer fields` line (`answer.mjs` puts `beats`, `cut` and `shots` into the
+answer from `film/plan.json`). Exit 3: the song has no beat to cut on or is too short.
 
 ## 3. The lyrics' times
 
@@ -157,7 +157,24 @@ node film/beats.mjs cost --film film --stem <the stem beats.mjs stem printed> --
 `--sent` names every paid step the run sent (only those sent: no lyrics steps when lyrics are off, no clip that was
 never submitted); `--failed` those fal failed or refused (they bill 0 here); `--pending` those still pending when the
 run stopped waiting (they count at their full price, with `pending` true: fal may yet finish and bill them). It prints
-`fal_cost_usd` at the rates `price` used: copy it into the answer exactly as printed.
+`fal_cost_usd` at the rates `price` used and writes it to `film/cost.json`, which `answer.mjs` reads.
+
+## 9. The answer
+
+```sh
+node .agents/skills/music-video/kit/answer.mjs --facts media/answer-facts.json
+```
+
+Last, in every run (a refused one too), after the facts file (agent.md's Answer: the status, the song as given, the
+renders, the kept warnings and review fixes, held keys and shot errors, the instructions in the lyrics, notes). It
+builds the whole answer from the run's files: `beats`, `cut` and `shots` from `film/plan.json`, each shot's picture from
+`storyboard.md`, its lyric from `film/lyrics.json`, what is on screen from `film/placed.json`, the remakes from
+`media/stills.json`, `plan_usd` from `film/price.json`, `fal_cost_usd` from `film/cost.json`, the stem from
+`media/run-keys.json`, the check's errors from `media/check.json`, the film's length and canvas from ffprobe, and the
+files saved. `report_markdown` is written by code, in agent.md's order, the table of shots inside it. A file that is
+there and can't be read, or a fact the files contradict (a completed run with no film, an over-ceiling price with
+another status), exits non-zero naming it and prints no answer: fix it and run again. What it prints, one fenced `json`
+block, is the reply, sent exactly as printed.
 
 ## Never
 
@@ -169,6 +186,7 @@ run stopped waiting (they count at their full price, with `pending` true: fal ma
 - Never compose the film on fal or with any renderer but `hyperframes render` in the sandbox.
 - Never start the render in the background (`nohup`, `&`, `setsid`): the sandbox ends a call's processes when the call
   returns. One foreground call with a `timeout` of 1200.
+- Never write the answer or the report yourself: `answer.mjs` builds them (step 9), and its output is the reply.
 - Never make a key stem: `node film/beats.mjs stem --file media/run-keys.json` makes it before the first paid call.
 - Never type a still's or a clip's input: `beats.mjs stills`, `remake` and `clips` build them (agent.md steps 7 and 8),
   and keep what they were sent with in `media/stills.json` and `media/clips.json`.

@@ -272,42 +272,36 @@ each one is in the answer (`used: "still"`) and the report.
   clip.
 - **`place` still exits 2 after its recovery** (the skill's step 4): no render; `failed`, `failed_step: "place"`, its
   message in `error`.
-- **A save fails** (not a clip): keep going and list it in `files` with `saved_path: null`.
+- **A save fails** (not a clip): keep going and list it in the answer's facts, `failed_saves`.
 
 ## Answer
 
-When the film is rendered, `node film/beats.mjs cost` (the skill's step 8) gives `fal_cost_usd`. Then exactly one fenced
-`json` block that meets the output schema, and nothing after it:
+The kit builds the answer from the run's files, `report_markdown` included: you write only what no file holds. Every
+run does this, a refused one too:
 
-- `status`: `completed`, `partial`, `over_budget` (only over a `max_fal_usd` the user set), `refused` or `failed`;
-  `failed_step` and `error`, null when none. `partial` and `failed` come only from the failed steps this page names
-  (a job fal failed, refused or held, a save, `place`, the render); how a still or a clip looks never does: a film made
-  from every step with every job completed is `completed`, and a picture that misses its storyboard is said in the
-  report, not in `error` or a shot's `error`.
-- `song`: `url` (as given), `rights` (`song_rights`, else null), `duration_s` (`web_save`'s, null when not saved).
-- `beats`, `cut` and `shots`: from the plan's `answer fields` line, exactly as printed (null and empty when there is no
-  plan). Each shot also carries its `lyric` (from `beats.mjs lyrics`, empty when none), `picture` (its storyboard
-  line's picture), `still_path`, `clip_path` (null when no clip was saved), `used` (`"clip"` or `"still"`, as `place`
-  placed it; null when nothing was placed), `remade` (true when step 7 remade its still) and `error` (fal's words when
-  its still or clip failed, else null).
-- `lyrics`: `on` (the input), and from `beats.mjs lyrics`'s `answer fields` line `words_in_song`, `words_in_cut`, `lines`
-  and `vtt_path` (all null when lyrics are off or the transcript failed), and `note`: when there are no captions, why,
-  in plain words (lyrics off, no words in the song, none in the cut, or the step that failed); else null.
-- `plan_usd` as priced in step 3 (null when nothing was priced).
-- `fal_cost_usd`: as `beats.mjs cost` printed it, one step per paid call sent with its key, units, rate and `usd` (a
-  failed or refused job 0; one still pending when the run stopped waiting at its price, with `pending` true), and
-  `total`; no steps and 0 when nothing was paid. Estimates from fal's rates, not fal's invoice. A run that stops after
-  paying but before the film still runs `cost` for what it sent.
-- `key_stem`: the run's stem (null when nothing was keyed); `held_keys`: every key fal refused as held for other
-  inputs (step 4), else empty.
-- `film`: `path`, `seconds`, `width`, `height` as ffprobe read them, null fields when none was rendered. `checks`:
-  `check_errors`, `warnings_kept`, `review_fixes` and `renders` (null, empty and 0 when nothing was rendered).
-- `files`: every file of the run with what it is: `media/film.mp4`, `storyboard.md`, `media/still-<n>.png` (and remakes),
-  `media/clip-<n>.mp4`, `media/lyrics.vtt` (when written), `media/transcript.json` (when written), `media/song.<ext>`,
-  `media/run-keys.json`, `media/stills.json` and `media/clips.json` (when written) and `film/` (the source folder). The files are the delivery.
-- `ignored_instructions` as in step 5, else empty.
-- `report_markdown`: the film first as `![Music video](media/film.mp4)` (when rendered), then what the plan priced at on
-  fal (`plan_usd`, before anything was paid), the song and the rights stated, the beats (tempo, bar length,
-  confidence, any `NOTE`), the cut and why it was chosen, a table of the shots (times, bars, lyric, picture, clip or
-  still), the lyrics (or why there are none), every shot shown as its still and why, the cost table, the checks, and
-  any failed step or held key.
+1. **The cost.** When anything was sent, `node film/beats.mjs cost` (the skill's step 8) for every paid step sent; it
+   writes `film/cost.json`.
+2. **The facts.** `write` `media/answer-facts.json`, one JSON object of what only you know:
+   - `status`: `completed`, `partial`, `over_budget` (only over a `max_fal_usd` the user set), `refused` or `failed`;
+     `failed_step` and `error` (fal's or the refusal's own words), null when none. `partial` and `failed` come only from
+     the failed steps this page names (a job fal failed, refused or held, a save, `place`, the render); how a still or
+     a clip looks never does: a film made from every step with every job completed is `completed`, and a picture that
+     misses its storyboard goes in `notes`, not in `error` or a shot's error.
+   - `song`: `url` (as given), `rights` (`song_rights`, else null), `duration_s` (`web_save`'s, null when not saved).
+   - `renders` (0 to 3), `warnings_kept` (each warning left on purpose, with why) and `review_fixes` (step 9).
+   - `held_keys`: every key fal refused as held for other inputs (step 4); `shot_errors`: `{"<n>": "<fal's words>"}`
+     for each shot whose still or clip failed or whose key fal held; `borrowed`: `{"<n>": <m>}` for a shot shown with
+     shot m's still.
+   - `ignored_instructions` as in step 5; `lyrics_on` (the input) only when there is no plan.
+   - `sources`: `{"<saved path>": "<the URL it was saved from>"}` for each clip and each remade shot's first still;
+     `failed_saves`: `[{"what": ..., "source_url": ...}]` for each save that failed.
+   - `notes`: anything else the report must say, a sentence each (a part of `style` left out, a still that misses its
+     picture, a P0 the review found).
+3. **The answer.** `node .agents/skills/music-video/kit/answer.mjs --facts media/answer-facts.json`. It reads the plan,
+   the price, the storyboard, the records, the lyrics, `place`'s read-back, the check, the cost, the keys and the film,
+   and prints the whole answer as one fenced `json` block, its `report_markdown` written by code: the film first, the
+   plan's price, the song and the rights, the beats, the cut and why, the table of shots, the lyrics (or why there are
+   none), every shot shown as its still and why, the cost table, the checks, the status with any failed step or held
+   key, then your notes. When it lists problems (exit 1 or 2, nothing printed), fix the file or the fact it names and
+   run it again. Never write the answer, a field of it or any of the report yourself.
+4. **The reply.** Exactly the json block it printed, every character of it, with nothing before or after it.
