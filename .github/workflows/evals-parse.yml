@@ -41,6 +41,9 @@ jobs:
       # memory).
       - run: command -v ffmpeg || (sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg)
       - run: node --test .github/music-video-kit.test.mjs
+      # The metrics film kit, node only, on synthetic Stripe pages: a currency the last result could not carry (a week of
+      # more than ten) is never said to be restated, and money won back from an earlier week's dispute is on the film.
+      - run: node --test .github/metrics-video-kit.test.mjs
       # `latest` is the dist-tag every AgentRun release is published under.
       - run: npm install --prefix "$RUNNER_TEMP/serve" --no-save --no-audit --no-fund --ignore-scripts @parcha/agentrun-serve@latest
       - run: node .github/parse-evals.mjs "$RUNNER_TEMP/serve"
