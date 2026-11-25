@@ -221,8 +221,10 @@ of words, in any case, and each of its words alone in what the run says and writ
 email address. Exit 2 names the file and where the value
 came from, never the value: take it out, render again if it was on screen, scan again, and say so in the report. Here,
 after billing, a word of a name found alone only warns (`warning: a customer's word may be in <file> line <n>`, exit
-0): a warning is not a failure, so don't rework the film or the answer for it. When it finds nothing that stops the
-film, it removes `stripe/raw-<n>.json` and prints what it removed.
+0). A warning doesn't fail the run. Read the line it names. If it holds a customer's name, take the name out of that
+file's text; never remake a picture, clip or voice for a warning, and don't run `--final` again (the raw pages are
+already gone). If the line holds no name (a kept warning code, your own words), leave it. When it finds nothing that
+stops the film, it removes `stripe/raw-<n>.json` and prints what it removed.
 
 ## Never
 

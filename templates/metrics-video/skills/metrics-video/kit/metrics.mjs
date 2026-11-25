@@ -41,7 +41,10 @@
 //          The business's own name, as compute was given it (film/data.json, which the run can write, as it types
 //          compute's --business), is set aside; scan takes no other. With --final (after billing), a name's word found
 //          alone only warns on stderr, naming the file and line, never the word, and exits 0; whole values, pairs and
-//          emails still exit 2. With --final and nothing that exits 2 found, it removes the raw pages. Found only where the whole description is written as it is: a word of a lower-case pair alone,
+//          emails still exit 2. With --final and nothing that exits 2 found, it removes the raw pages. A warning
+//          doesn't fail the run: the agent reads the line it names and, if it holds a customer's name, takes the name
+//          out of that file's text, never remaking a picture, clip or voice, and doesn't run --final again (the raw
+//          pages are already gone); a line with no name (a kept warning code, its own words) stays. Found only where the whole description is written as it is: a word of a lower-case pair alone,
 //          a name with a lower-case particle ("da Silva", "van Gogh", "de la Cruz"), one given name alone in a
 //          longer description ("Tip from Sarah"), a pair in mixed case ("Marisol quintero"). Not found: a
 //          description of one word, a name spelled another way.
