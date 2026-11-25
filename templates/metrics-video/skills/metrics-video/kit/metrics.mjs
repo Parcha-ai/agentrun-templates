@@ -56,6 +56,29 @@ const METRIC = {
   id: "net-of-refunds-and-fees",
   label: "Revenue: net of refunds and Stripe fees, from Stripe balance transactions",
 };
+// The words compute writes into data.json itself: its sentences (each "{}" filled with a value, in order), the
+// comparison's states, a change's directions and the words it says a figure in. They are written from here only, and
+// scan takes each sentence's fixed parts and each word out of a text, whole, as the kit's own phrases, before a
+// name's words alone are looked for: the run can't reword them, and a value filled into one is still searched.
+const SAYS = {
+  first: "no earlier result was handed to this run: the first film of this schedule, or a run by hand",
+  otherMetric: "the last result counted another figure ({}): no week over week",
+  otherZone: "the last result's weeks were in {}, this run's in {}: no week over week",
+  otherWeek: "the last result covered the week of {}, not the week before this one ({}): no week over week",
+  unknownDay: "an unknown day",
+  carried: "the last result carried the week of {}: it is read again from Stripe and compared",
+  restated: "Stripe's figures for the week of {} changed after the last film: the week over week uses them as read now{}",
+  matches: "the week of {} read again matches the carried figures{}",
+  unchecked: " ({}: not in the last result's carried figures, which hold only {} currencies, so not checked against them)",
+  zone: "weeks in {}",
+};
+const says = (key, ...values) => {
+  let i = 0;
+  return SAYS[key].replace(/\{\}/g, () => String(values[i++]));
+};
+const STATE = { none: "none", carried: "carried", restated: "restated" };
+const DIRECTION = { up: "up", down: "down", flat: "flat" };
+const NUMBER_WORDS = { minus: "minus", point: "point", scales: [[1e12, "trillion"], [1e9, "billion"], [1e6, "million"], [1e3, "thousand"]] };
 // Stripe's reporting categories that make up the figure: money in (charge) and what takes it back off the charges (a
 // charge that failed after it was credited, charge_failure; the uncaptured rest of a partial capture,
 // partial_capture_reversal), money back (refund) and a refund that failed and returned (refund_failure), money taken
@@ -186,12 +209,12 @@ function weeks() {
   const week = weekOf(monday, tz);
   const before = weekOf(monday - 7, tz);
   const carried = readCarried(args.carried);
-  let compare = { with_carried: false, reason: "no earlier result was handed to this run: the first film of this schedule, or a run by hand" };
+  let compare = { with_carried: false, reason: says("first") };
   if (carried) {
-    if (carried.metric !== METRIC.id) compare.reason = `the last result counted another figure (${String(carried.metric).slice(0, 60)}): no week over week`;
-    else if (carried.timezone !== tz) compare.reason = `the last result's weeks were in ${String(carried.timezone).slice(0, 40)}, this run's in ${tz}: no week over week`;
-    else if (!carried.week || carried.week.start !== before.start) compare.reason = `the last result covered the week of ${carried.week?.start ?? "an unknown day"}, not the week before this one (${before.start}): no week over week`;
-    else compare = { with_carried: true, reason: `the last result carried the week of ${before.start}: it is read again from Stripe and compared` };
+    if (carried.metric !== METRIC.id) compare.reason = says("otherMetric", String(carried.metric).slice(0, 60));
+    else if (carried.timezone !== tz) compare.reason = says("otherZone", String(carried.timezone).slice(0, 40), tz);
+    else if (!carried.week || carried.week.start !== before.start) compare.reason = says("otherWeek", carried.week?.start ?? says("unknownDay"), before.start);
+    else compare = { with_carried: true, reason: says("carried", before.start) };
   }
   const read = compare.with_carried ? { created_gte: before.from_unix, created_lt: week.to_unix } : { created_gte: week.from_unix, created_lt: week.to_unix };
   return { today: iso(fromDayNumber(today)), end_of_today_unix: endOfToday / 1000, timezone: tz, week, week_before: compare.with_carried ? before : null, compare, read, carried };
@@ -227,11 +250,11 @@ function wholeString(w, c) {
 const ONES = "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split(" ");
 const TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
 function words(n) {
-  if (n < 0) return `minus ${words(-n)}`;
+  if (n < 0) return `${NUMBER_WORDS.minus} ${words(-n)}`;
   if (n < 20) return ONES[n];
   if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? `-${ONES[n % 10]}` : "");
   if (n < 1000) return `${ONES[Math.floor(n / 100)]} hundred${n % 100 ? ` ${words(n % 100)}` : ""}`;
-  for (const [v, name] of [[1e12, "trillion"], [1e9, "billion"], [1e6, "million"], [1e3, "thousand"]]) {
+  for (const [v, name] of NUMBER_WORDS.scales) {
     if (n >= v) return `${words(Math.floor(n / v))} ${name}${n % v ? ` ${words(n % v)}` : ""}`;
   }
   return String(n);
@@ -258,7 +281,7 @@ function percent(change, before) {
   const value = (change < 0 ? -t : t) / 10;
   const whole = Math.floor(t / 10);
   const tenth = t % 10;
-  const spoken = `${words(whole)}${tenth ? ` point ${ONES[tenth]}` : ""} percent`;
+  const spoken = `${words(whole)}${tenth ? ` ${NUMBER_WORDS.point} ${ONES[tenth]}` : ""} percent`;
   const display = `${change > 0 ? "+" : change < 0 ? MINUS : ""}${whole}.${tenth}%`;
   return { value, display, spoken };
 }
@@ -420,7 +443,7 @@ function compute() {
   if (kinds > MAX_LEFT_OUT) fail(3, `${kinds} kinds of movement that are not revenue in the week (${w.week.start} to ${w.week.end}): this film names at most ${MAX_LEFT_OUT} with their counts, so it makes nothing for this week. Answer failed, failed_step "figures", with these words.`);
 
   // The carried figures against Stripe's figures for the same week, read again now.
-  let compare = { state: "none", reason: w.compare.reason, restated: [] };
+  let compare = { state: STATE.none, reason: w.compare.reason, restated: [] };
   const priorRow = new Map();
   if (before) {
     const carried = new Map((w.carried.figures ?? []).map((r) => [r.currency, r]));
@@ -450,10 +473,10 @@ function compute() {
         });
       }
     }
-    const unchecked = notCarried.length ? ` (${notCarried.map((c) => c.toUpperCase()).join(", ")}: not in the last result's carried figures, which hold only ${CARRIED_MAX} currencies, so not checked against them)` : "";
+    const unchecked = notCarried.length ? says("unchecked", notCarried.map((c) => c.toUpperCase()).join(", "), CARRIED_MAX) : "";
     compare = restated.length
-      ? { state: "restated", reason: `Stripe's figures for the week of ${w.week_before.start} changed after the last film: the week over week uses them as read now${unchecked}`, restated }
-      : { state: "carried", reason: `the week of ${w.week_before.start} read again matches the carried figures${unchecked}`, restated: [] };
+      ? { state: STATE.restated, reason: says("restated", w.week_before.start, unchecked), restated }
+      : { state: STATE.carried, reason: says("matches", w.week_before.start, unchecked), restated: [] };
   }
 
   const currencies = order.map(([c, f], i) => {
@@ -471,7 +494,7 @@ function compute() {
         exact: exactString(f.revenue - prior, c),
         ...moneyWhole(shown, c),
         display: `${shown > 0 ? "+" : shown < 0 ? MINUS : ""}${wholeString(Math.abs(shown), c)}`,
-        direction: f.revenue > prior ? "up" : f.revenue < prior ? "down" : "flat",
+        direction: f.revenue > prior ? DIRECTION.up : f.revenue < prior ? DIRECTION.down : DIRECTION.flat,
         percent: percent(f.revenue - prior, prior),
       };
     }
@@ -513,7 +536,7 @@ function compute() {
   const maxWords = Math.floor((filmSeconds - 4.5) * 2.4);
 
   const business = args.business && args.business !== "true" ? String(args.business).slice(0, 40) : null;
-  const tzNote = w.timezone === "UTC" ? "weeks in UTC" : `weeks in ${w.timezone}`;
+  const tzNote = says("zone", w.timezone);
   const data = {
     metric: METRIC,
     source_line: `${METRIC.label} · ${tzNote}`,
@@ -918,12 +941,13 @@ function scan() {
     if (said.length) voices.push({ path: f.path, text: said.join("\n"), label: " (the words its voice says)" });
   }
   // The kit's own phrases (each currency's spoken unit, "Hong Kong dollars"; the tools the skill names; the run's time
-  // zone, "weeks in Australia/Sydney" on the source line) are the film's, not a customer's: they are taken out of a
-  // text before a name's words alone are looked for, so a customer named Hong is found and "Hong Kong dollars" is not
-  // taken for her. Only the whole phrase is taken out.
+  // zone, "weeks in Australia/Sydney" on the source line; compute's own words in data.json, from SAYS and the rest
+  // above) are the film's, not a customer's: they are taken out of a text before a name's words alone are looked for,
+  // so a customer named Hong is found and "Hong Kong dollars" is not taken for her. Only the whole phrase is taken out.
+  const computeWords = [METRIC.label, ...Object.values(SAYS).flatMap((t) => t.split("{}").map((x) => x.trim())), ...Object.values(STATE), ...Object.values(DIRECTION), NUMBER_WORDS.minus, NUMBER_WORDS.point, ...NUMBER_WORDS.scales.map(([, name]) => name)];
   const codes = new Set();
   if (pages.length) for (const { list } of readRaw(dir)) for (const item of list.data) if (typeof item?.currency === "string") codes.add(item.currency.toLowerCase());
-  const phrases = [...new Set([...Object.values(UNIT).flat(), ...[...codes].flatMap((c) => { try { return [unitWords(c, 1), unitWords(c, 2)]; } catch { return []; } }), "Composio", "ElevenLabs", "HyperFrames", "fal", "Stripe", zone])]
+  const phrases = [...new Set([...Object.values(UNIT).flat(), ...[...codes].flatMap((c) => { try { return [unitWords(c, 1), unitWords(c, 2)]; } catch { return []; } }), "Composio", "ElevenLabs", "HyperFrames", "fal", "Stripe", zone, ...computeWords])]
     .filter((x) => /\p{L}/u.test(x))
     .sort((a, b) => b.length - a.length);
   const kitPhrase = new RegExp(`(?<![\\p{L}])(?:${phrases.map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s+")).join("|")})(?![\\p{L}])`, "giu");
