@@ -109,3 +109,69 @@ test("money won back from a dispute opened in an earlier week is shown, with no 
   assert.doesNotMatch(stage, /No refunds or disputes/, "the scene says nothing came back when $649 did");
   assert.match(stage, /won back/i, `the scene shows the money won back: ${stage}`);
 });
+
+// A count's length, as the kit's index.html runs it (mvCount), and the least time to read a figure once it has counted.
+const COUNT_SECONDS = Number(/window\.mvCount = [\s\S]*?duration: ([0-9.]+)/.exec(readFileSync(join(KIT, "index.html"), "utf8"))[1]);
+const HOLD = 1.0;
+
+// The refunds scene's timeline on the week's placed data: when each figure's count starts, and when it leaves the
+// screen (the first fade-out after its count starts, or the scene's end). One item is on screen at a time.
+function refundsTimeline(data) {
+  const html = readFileSync(join(KIT, "compositions", "refunds.html"), "utf8");
+  const script = /<script>([\s\S]*?)<\/script>/.exec(html)[1];
+  const outs = [];
+  const counts = [];
+  const tl = { fromTo: () => tl, to: (target, vars, at) => (vars.opacity === 0 && outs.push(at), tl) };
+  const ctx = {
+    MV: data,
+    mvFilmed: () => data.currencies.filter((c) => c.filmed),
+    mvSeg: (name) => data.timing[name].seconds / Math.max(1, data.currencies.filter((c) => c.filmed).length),
+    rfReady: () => ({ then: (f) => f() }),
+    rfFit: () => {},
+    mvCount: (_tl, el, money, _symbol, at) => counts.push({ figure: money.display, at }),
+    gsap: { timeline: () => tl },
+    getComputedStyle: () => ({}),
+    innerWidth: 1920,
+    innerHeight: 1080,
+    document: { getElementById: () => ({ textContent: "", innerHTML: "", style: {} }), querySelector: () => null },
+    __timelines: {},
+  };
+  ctx.window = ctx;
+  vm.runInNewContext(script, ctx);
+  const end = data.timing.refunds.seconds;
+  return counts.map((c) => ({ ...c, gone: Math.min(end, ...outs.filter((t) => t > c.at)) }));
+}
+
+// Three currencies, each with a refund, a dispute and money won back from an earlier week's dispute.
+function threeWithEverything() {
+  const items = [];
+  for (const [i, c] of ["usd", "eur", "gbp"].entries()) {
+    items.push(txn(`2026-11-17T1${i}:00:00Z`, c, "charge", 300000 - i * 50000, 9000));
+    items.push(txn(`2026-11-18T1${i}:00:00Z`, c, "refund", -25000));
+    items.push(txn(`2026-11-19T1${i}:00:00Z`, c, "dispute", -64900, 1500));
+    items.push(txn(`2026-11-20T1${i}:00:00Z`, c, "dispute_reversal", 40000, -1500));
+  }
+  return items;
+}
+
+test("with three currencies of refunds, disputes and money won back, every figure stays on screen until it is read", () => {
+  const { data } = compute("three-everything", threeWithEverything(), "2026-11-23");
+  assert.equal(data.currencies.filter((c) => c.filmed).length, 3);
+  const shown = refundsTimeline(data);
+  assert.equal(shown.length, 9, "nine figures: a refund, a dispute and money won back in each of three currencies");
+  for (const f of shown) {
+    assert.ok(f.gone - f.at >= COUNT_SECONDS + HOLD - 1e-9,
+      `${f.figure} counts from ${f.at.toFixed(2)} s and is gone at ${f.gone.toFixed(2)} s: it needs ${COUNT_SECONDS} s to count and ${HOLD} s to be read`);
+  }
+});
+
+test("place refuses a refunds scene too short for each currency's figures to count and be read", () => {
+  const { data } = compute("three-short", threeWithEverything(), "2026-11-23");
+  const film = join(root, "three-short", "film");
+  const at = Object.fromEntries(data.plan.scenes.map((s) => [s.name, s.start]));
+  // Refunds cut to 8 s, 2.67 s for each of three currencies: more than 2.5 s, less than a count and its hold.
+  const starts = { ...at, endcard: at.refunds + 8 };
+  const r = spawnSync(process.execPath, [join(KIT, "metrics.mjs"), "place", "--film", film, "--at", Object.entries(starts).map(([k, v]) => `${k}=${v}`).join(",")], { encoding: "utf8" });
+  assert.equal(r.status, 2, `place should refuse: ${r.stdout}${r.stderr}`);
+  assert.match(r.stderr + r.stdout, /refunds/);
+});
