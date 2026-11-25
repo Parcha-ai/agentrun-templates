@@ -2,7 +2,7 @@
 type: llm
 ---
 A news-show run on a fake fal, started by hand with nothing handed from an earlier show: topic "city transit", the
-feed https://transitwire.example/feed.xml, the anchor generated (Rowan, voice Aria), max_fal_usd 4 (the default). The
+feed https://transitwire.example/feed.xml, the anchor generated (Rowan, voice Aria), no ceiling (max_fal_usd not set). The
 show's date is 2026-11-23 (Monday). lead-b's voice `submit_job` lost its reply; `get_submission` found the job and it
 completed like the others, so the show is the same as one with no lost reply.
 

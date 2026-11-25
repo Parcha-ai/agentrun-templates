@@ -10,10 +10,10 @@
     #root { position: absolute; inset: 0; background: var(--night); container-type: size; overflow: hidden; }
     #{{P}}-cam { position: absolute; inset: 0; transform-origin: 50% 34%; }
     #{{P}}-video { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; }
-    #root.panel #{{P}}-video { left: auto; right: 0; width: {{PANEL_W}}%; }
+    #{{P}}-cam.panel #{{P}}-video { left: auto; right: 0; width: {{PANEL_W}}%; }
     #{{P}}-desk { position: absolute; left: 7cqw; top: 13cqh; width: 82cqw; display: none; }
-    #root.desk #{{P}}-desk, #root.panel #{{P}}-desk { display: block; }
-    #root.panel #{{P}}-desk { width: calc(100cqw - {{PANEL_W}}cqw - 12cqw); }
+    #{{P}}-cam.desk #{{P}}-desk, #{{P}}-cam.panel #{{P}}-desk { display: block; }
+    #{{P}}-cam.panel #{{P}}-desk { width: calc(100cqw - {{PANEL_W}}cqw - 12cqw); }
     #{{P}}-show { font-family: var(--font-display); font-size: 17cqh; line-height: 0.92; color: var(--paper); text-transform: uppercase; }
     #{{P}}-rule { height: 1.1cqh; width: 18cqw; background: var(--accent); margin: 3.4cqh 0 3cqh; transform-origin: left center; }
     #{{P}}-desk-line { font-family: var(--font-text); font-weight: 900; font-size: 5cqh; line-height: 1.1; letter-spacing: -0.02em; color: var(--paper); }
@@ -24,8 +24,8 @@
     #{{P}}-chyron { background: var(--paper); color: var(--ink); font-family: var(--font-text); font-weight: 900; font-size: 4.6cqh;
       letter-spacing: -0.01em; padding: 0.26em 0.6em; white-space: nowrap; }
   </style>
-  <div id="root" class="{{MODE}}" data-composition-id="{{ID}}" data-width="1920" data-height="1080">
-    <div id="{{P}}-cam">
+  <div id="root" data-composition-id="{{ID}}" data-width="1920" data-height="1080">
+    <div id="{{P}}-cam" class="{{MODE}}">
       {{VIDEO}}
       <div id="{{P}}-desk">
         <div id="{{P}}-show">{{SHOW}}</div>
@@ -39,14 +39,14 @@
   </div>
   <script>
     const D = {{D}}, STRAP_IN = {{STRAP_IN}}, STRAP_DUR = {{STRAP_DUR}};
-    const mode = document.getElementById("root").className;
+    const mode = document.getElementById("{{P}}-cam").className;
     const tl = gsap.timeline({ paused: true });
     // The camera: one slow push for the whole hold, so the frame is never still.
     tl.fromTo("#{{P}}-cam", { scale: 1 }, { scale: 1.035, duration: D, ease: "none" }, 0);
     // The strap wipes in from the left (the cold open's is already there at frame 0) and wipes out before its end,
     // unless it holds to the scene's end.
     if (STRAP_IN > 0) tl.fromTo("#{{P}}-strap-in", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, STRAP_IN);
-    if (STRAP_IN + STRAP_DUR < D - 0.05) tl.fromTo("#{{P}}-strap-in", { clipPath: "inset(0 0% 0 0)" }, { clipPath: "inset(0 0% 0 100%)", duration: 0.2, ease: "power3.in" }, STRAP_IN + STRAP_DUR - 0.24);
+    if (STRAP_IN + STRAP_DUR < D - 0.05) tl.fromTo("#{{P}}-strap-in", { clipPath: "inset(0 0% 0 0)" }, { clipPath: "inset(0 0% 0 100%)", duration: 0.2, ease: "power3.in", immediateRender: false }, STRAP_IN + STRAP_DUR - 0.24);
     // The desk card builds once: the name blurs in, the rule draws, the line lands.
     if (mode !== "video") {
       tl.fromTo("#{{P}}-show", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out" }, 0.05);

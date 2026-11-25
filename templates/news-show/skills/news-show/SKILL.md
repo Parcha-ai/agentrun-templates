@@ -1,6 +1,6 @@
 ---
 name: news-show
-description: Make a 90 second daily news show with a fictional AI anchor, in HyperFrames (HTML rendered to video) in the run's sandbox. Covers picking three new stories on a beat without repeating an earlier show's, the fixed script format and its word caps, the AI disclosure, the kit (a build script that lays nine segments on the voices' real lengths and writes every scene, the captions and the share card), the anchor clips and their desk-card fallback, the check, snapshot review and render loop, and what a show must never become. Use for any daily news show, news digest video or anchor-presented briefing made in the sandbox.
+description: Make a 90 second daily news show with a fictional AI anchor, in HyperFrames (HTML rendered to video) in the run's sandbox. Covers picking three new stories on a beat without repeating an earlier show's, the fixed script format and its word caps, the AI disclosure, the kit (a build script that lays nine segments on the voices' real lengths and writes every scene, the captions and the share card), the anchor clips and their desk-card fallback, the check, snapshot review and render loop, the answer script that works out the cost and checks the answer, and what a show must never become. Use for any daily news show, news digest video or anchor-presented briefing made in the sandbox.
 ---
 
 # A daily news show with HyperFrames
@@ -81,7 +81,7 @@ Then `write` `film/show.json` in the shape of `film/show.example.json`: the show
 (`date_label`, like "Monday, November 23"), the anchor's name and image (`media/anchor.png` or the owner's
 `media/anchor.<ext>`; null when there is none), and the nine segments with the exact scripts you sent to fal, their
 voice files and timestamps, each anchor segment's clip (`media/anchor-<segment>.mp4`, or null when its job failed,
-the plan leaves it out or the budget drops it: that segment becomes the desk card) and the words on screen. Every
+or the plan leaves it out: that segment becomes the desk card) and the words on screen. Every
 placeholder starts with `KIT`, and the build refuses any left. Then build:
 
 ```sh
@@ -95,8 +95,8 @@ long as its clip or voice, a voiceover segment 0.35 s of air either side), adds 
 `media/show.vtt`. It prints one JSON line: `method` is `captions_timing` in the answer; `segments` gives each
 segment's `start` and `end` (the answer's `start_s` and `end_s`) and its mode (`video`, `panel` for an anchor image that
 is not 16:9, `desk`); `disclosure` gives the cold open's AI sentence and the second it ends. A warning that the
-sentence ends after 10 s means the cold open is too long before it: shorten it, voice it again only if the plan's
-budget allows, else say so in `notes`. Run the build again after any change to `show.json` or `film/scenes/`.
+sentence ends after 10 s means the cold open is too long before it: shorten it and voice it again (with a ceiling set,
+only when the show still fits it), else say so in `notes`. Run the build again after any change to `show.json` or `film/scenes/`.
 
 **Restyling**: change `film/scenes/*.html` (the palette is the `:root` block of `scenes/index.html` and
 `scenes/card.html`), never the generated files, then build again. Keep the contract in the reference, the `{{...}}` tokens,
@@ -105,7 +105,8 @@ square corners everywhere (no `border-radius`), and the cold open's strap with i
 ## 5. Captions and timing
 
 Each segment's captions come from its own timestamps: `aligned` when fal's characters spell its script, `anchored`
-when they don't (another take), `measured` when a segment has none. All three are correct timings, never a fault. The
+when they don't (another take), `measured` when a segment has none. All three are correct timings, never a fault:
+an `anchored` segment is never "fixed" by rewriting its script to the take's words or by reordering the stories. The
 headlines' lines land on the sentences that say them and each story's facts on the sentence that says each one, from
 the same words; read `film/words.json` when a line lands early or late, and fix the script's sentence breaks rather
 than the times.
@@ -114,11 +115,10 @@ than the times.
 
 Fabric answers a clip as long as its voice, at the still's aspect. The build plays each clip muted with its voice
 beside it, from the same second, so lips and voice stay together; it never trims either. An owner's image that is not
-16:9 plays as a panel at the right with the desk beside it. A clip that failed or was dropped for the budget is a desk
-card: the show's name and the chyron in type while the voice plays; never the still alone with a voice (a face that
-doesn't move reads as broken). When the budget drops every anchor segment (lead-c, then lead-b, then lead-a, then the
-closing, then the cold open), the show is desk-only: every anchor segment's clip is null and the build lays them all
-as desk cards.
+16:9 plays as a panel at the right with the desk beside it. A clip that failed, was refused or was not sent is a desk card:
+the show's name and the chyron in type while the voice plays; never the still alone with a voice (a face that doesn't
+move reads as broken). On the `voice-only` plan the show is desk-only: every anchor segment's clip is null and the
+build lays them all as desk cards.
 
 ## 7. Check, look, fix
 
@@ -145,28 +145,21 @@ face and over no caption, no fact or headline runs off the frame, and the end ca
 
 ## 8. Render
 
-A 90 second show renders for several minutes, longer than one `bash` call may wait, so start it in the background
-and read its log:
-
 ```sh
-cd film && (hyperframes render --quality looks -o ../media/show.mp4 > ../media/render.log 2>&1; echo "render exit $?" >> ../media/render.log) > /dev/null 2>&1 &
-```
-
-Then, every minute or so, with a `bash` `timeout` of 120:
-
-```sh
-sleep 60; grep "render exit" media/render.log || tail -2 media/render.log
-```
-
-Wait until it prints `render exit 0` (at most 25 minutes in all), then:
-
-```sh
+(cd film && hyperframes render --quality looks --video-frame-format jpg -o ../media/show.mp4 > ../media/render.log 2>&1; echo "render exit $?"); tail -c 400 media/render.log
 ffprobe -v error -show_entries format=duration:stream=width,height -of json media/show.mp4
 ```
 
-It must show 1920x1080 and the root's duration (`film_s` from the build). A failed render (`render exit` not 0):
-read the log's error, fix, render again (at most 3 renders in all, counted in `checks.renders`). Start one render at
-a time, never a second while one runs.
+Run it as written, in one `bash` call in the foreground with a `timeout` of 1200, and wait for it. The sandbox ends
+every process a call started when the call returns, so a render started in the background (`&`, `nohup`, `setsid`)
+is killed part way and its log stops mid-capture. `--video-frame-format jpg` extracts the anchor clips' frames as
+JPEG, HyperFrames' choice for camera footage, at a fraction of PNG's size on the sandbox's disk. A 90 second show
+takes several minutes (capture runs a few frames a second on software GL; the log's "BeginFrame did not run" line is
+expected).
+
+The ffprobe must show 1920x1080 and the root's duration (`film_s` from the build), within a frame. A failed render
+(`render exit` not 0): read the log's error, fix, render again (at most 3 renders in all, counted in
+`checks.renders`).
 
 ## 9. The share card
 
@@ -178,6 +171,29 @@ cd film && hyperframes snapshot card --at 0.5 --no-end -o ../media/card && cp ..
 ```
 
 It must print `1200,630`. `read` it once: the name and the headlines readable at a glance, nothing cut at an edge.
+
+## 10. The answer's cost and check
+
+`kit/answer.mjs` does the answer's arithmetic and checks its structure. Run it from the run's folder, straight from the
+skill (it needs no copy in `film/`):
+
+```sh
+node .agents/skills/news-show/kit/answer.mjs cost --rates still=0.15,voice=0.1,fabric=0.08 --sent anchor-image,voice-cold-open,voice-headlines,voice-lead-a,voice-story-a,voice-lead-b,voice-story-b,voice-lead-c,voice-story-c,voice-closing,anchor-cold-open,anchor-lead-a,anchor-lead-b,anchor-lead-c,anchor-closing [--failed anchor-lead-b]
+node .agents/skills/news-show/kit/answer.mjs final media/answer.json
+```
+
+The rates are `get_pricing`'s, never these examples. `--sent` lists only the calls sent: no `anchor-image` with the
+owner's image, only the plan's anchor segments, none not sent (a voice over 30 s), and `--sent none` when nothing was
+paid. `cost` reads the scripts from `film/show.json` (write it first, its scripts exactly as sent) and each voice's
+length with ffprobe (a voice whose save failed: `--seconds <segment>=<s>`, the length you measured on its `audio.url`,
+which it says it used), prints `fal_cost_usd` and keeps it in `film/cost.json`. `final` reads the answer file. It
+sets `report_markdown` to `media/report.md`'s text itself (write the whole report there first) and writes the answer
+file back. It then confirms that `fal_cost_usd` matches `cost` and that the report's cost table has a row for each
+step and a total row. When the show is
+rendered, it confirms that `report_markdown` opens with the show's embed (a bracket or backslash in the name escaped) and holds the share card, the AI disclosure
+and the checks. It also confirms that every story's page is linked, that `error` is quoted word for word, and that a
+show not rendered remembers none of today's stories. It prints each problem (fix them in the files and run it again),
+or the reply: the answer file as one json block, which is the whole reply, sent exactly as printed.
 
 ## Never
 

@@ -8,7 +8,7 @@ Read the answer's last fenced `json` block. Pass only if all hold:
 
 1. **The owner's anchor.** `anchor.image` is `owner` and `anchor.image_url` is https://deskcast.example/press/anchor-rowan.png; `anchor.resolution` is
    `480p`. No `anchor-image` step in `fal_cost_usd`.
-2. **Plan.** `plan.name` is `full`, its `usd` between 2.4 and 2.95 (no still); `cheaper_plan` null.
+2. **Plan.** `plan.name` is `full`, its `usd` between 2.4 and 2.95 (no still).
 3. **Show.** `status` is `completed`; every anchor segment `animated` (lead-c too: it completed on its second read);
    `film.path` `media/show.mp4` at 1920x1080, `film.seconds` between 96.8 and 98.3.
 4. **Cost.** `fal_cost_usd.steps` has the nine voices and the five anchor clips (units 8, 5, 6, 5, 8 seconds at 0.08)

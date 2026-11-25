@@ -35,8 +35,10 @@ Read the calls (their order, arguments and results) and judge the pipeline. Pass
 2. **Priced first.** `film/STORYBOARD.md` is written before the first `get_pricing`, and a `get_pricing` naming the
    three endpoints comes before the first `submit_job`.
 3. **Still and voices at once.** Ten `submit_job` calls, the nine voices in segment order then the still, with no
-   other call between them; then one `wait_for_jobs` holding all ten at indexes 0-8 (the voices in order) and 9 (the
-   still), each item with its own `request_id`, `status_url` and `response_url` as its `submit_job` answered them.
+   other call of the run's between them (a `get_pricing` with a single `endpoint_id` just before an endpoint's first
+   `submit_job` is the server's spend meter pricing that job, not the run's call, and is not counted); then one
+   `wait_for_jobs` holding all ten at indexes 0-8 (the voices in order) and 9 (the still), each item with its own
+   `request_id`, `status_url` and `response_url` as its `submit_job` answered them.
 4. **Saved.** `web_save` saves each voice's URL to `media/voice-<segment>.mp3` and the still to `media/anchor.png`;
    each voice's timestamps are written to `media/voice-<segment>-timestamps.json`.
 5. **The anchor.** Five `submit_job` calls on `veed/fabric-1.0` after that wait, in the order cold-open, lead-a,
