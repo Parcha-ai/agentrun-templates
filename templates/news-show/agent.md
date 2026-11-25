@@ -263,6 +263,9 @@ second it ends (from `film/words.json`).
 - **A save fails**: keep going, list it in `files` with `saved_path: null`; `not_saved` when everything else worked.
 - Never make the show any other way: no fal composition, no other renderer.
 
+A failed or refused step is said twice, in `error` and in `report_markdown`: what failed, what the show did instead
+(a desk card, no render), and fal's (or the refusal's) own words quoted, never only a paraphrase.
+
 ## Answer
 
 Exactly one fenced `json` block that meets the output schema, and nothing after it:
@@ -284,6 +287,6 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
 - `files`: every file of the run: `media/show.mp4`, `media/show.vtt`, `media/share-card.png`, the still or anchor
   image, each voice and its timestamps, each anchor clip, `film/STORYBOARD.md` and `film/` (the composition folder).
 - `report_markdown`: the show first as `![<show name>, <date>](media/show.mp4)` (when rendered), the share card under
-  it, then the three stories, the AI disclosure, the cost table, the checks, and any failed step. Each story is its
-  own line with its page as a markdown link, `- <slot>: [<title>](<its url>) (<source>, <published>)`: a story named
-  without its link is a missing link.
+  it, then the three stories, the AI disclosure, the cost table, the checks, and any failed step in fal's own words.
+  Each story is its own line with its page as a markdown link, `- <slot>: [<title>](<its url>) (<source>,
+  <published>)`: a story named without its link is a missing link.
