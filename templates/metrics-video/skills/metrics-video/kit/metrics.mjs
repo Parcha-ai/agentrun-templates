@@ -27,8 +27,9 @@
 //          sandbox's random bytes, written there first. A model never makes one.
 // scan     looks for customer data in every file the run wrote: each string a raw page's items hold (a description, a
 //          name, an email, an id; not Stripe's enum fields, its fee lines or a single word alone), each pair of
-//          capitalised words in one (a name's shape), and any email address. With --final and nothing found, it
-//          removes the raw pages.
+//          capitalised words in one (a name's shape), and any email address, in each file as written and in what each
+//          voice says (the letters of every *-timestamps.json joined). With --final and nothing found, it removes the
+//          raw pages.
 //
 // A raw page is Stripe's list exactly as Composio answered it ({"object": "list", "data": [...], "has_more": ...}),
 // or Composio's whole answer around it. It holds customers' details (a charge's description can name one), so only
@@ -745,9 +746,25 @@ function scan() {
   const all = runFiles(root, raw);
   const written = skillFiles.filter((f) => !shipped.has(relative(skill, f.path).split("\\").join("/")));
   const files = [...all.filter((f) => !kitCopy(f.path)), ...written];
+  // What fal spoke: a voice's timestamps hold its words one letter to a JSON string, which no value matches as the
+  // file is written. Their letters joined are the text the voice says, searched as well, so a name sent to fal but
+  // kept out of media/vo.txt is still found.
+  const voices = [];
+  for (const f of files) {
+    if (!/-timestamps\.json$/.test(f.path)) continue;
+    let ts;
+    try {
+      ts = JSON.parse(f.text);
+    } catch {
+      continue;
+    }
+    const list = Array.isArray(ts) ? ts : Array.isArray(ts?.timestamps) ? ts.timestamps : ts ? [ts] : [];
+    const said = list.filter((c) => c && Array.isArray(c.characters)).map((c) => c.characters.map(String).join("")).join("");
+    if (said) voices.push({ path: f.path, text: said, label: " (the words its voice says)" });
+  }
   const hits = [];
-  for (const { path, text } of files) {
-    const at = relative(root, path) || path;
+  for (const { path, text, label = "" } of [...files, ...voices]) {
+    const at = (relative(root, path) || path) + label;
     const asWritten = squash(text);
     const anyCase = asWritten.toLowerCase();
     for (const [value, { where, anyCase: folds }] of values) {
@@ -767,7 +784,7 @@ function scan() {
     unlinkSync(path);
     removed.push(path);
   }
-  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), skill_files_shipped: shipped.size, skill_files_searched: written.length, raw_pages_removed: removed }));
+  console.log(JSON.stringify({ clean: true, files: files.length, values: values.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), voices_read: voices.length, skill_files_shipped: shipped.size, skill_files_searched: written.length, raw_pages_removed: removed }));
 }
 
 // ---------- the key stem ----------
