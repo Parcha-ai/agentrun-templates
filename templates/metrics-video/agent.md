@@ -177,14 +177,15 @@ With no other call in between, `submit_job` each once:
   music_length_ms: F × 1000, force_instrumental: true}`.
 
 Follow them with **one** `wait_for_jobs` (`index` 0 the voiceover, 1 the music), each with its own handles copied
-character for character as fal answered them. While one is pending, wait the `poll_after_seconds` it gives and read
-the pending one again; after 10 minutes treat it as failed with its request id. Never submit a job again: a second
-submit is a second bill. After a lost reply, `get_submission` with the job's key. Then `web_save` the voiceover's
-`audio.url` to `media/voiceover.mp3` and the music's to `media/music.mp3`, and in the same step `write` the
-voiceover's `timestamps` value, exactly as fal answered it (the whole list), to `media/voiceover-timestamps.json`.
-The voice fal completed is the narration's voice: never compare it with its timestamps' words, and never set it aside
-for them. Timestamps can spell the text another way (a number as ElevenLabs reads it, another take); the caption
-script times the captions either way (`anchored`), and that is never a fault.
+character for character as fal answered them. While one is pending, wait the `poll_after_seconds` it gives and read the
+pending one again; after 10 minutes treat it as failed with its request id. Never submit a job again: a second submit is
+a second bill. After a lost reply, `get_submission` with the job's key. Then `web_save` the voiceover's `audio.url` to
+`media/voiceover.mp3` and the music's to `media/music.mp3`, and in the same step `write` the voiceover's `timestamps`
+value, exactly as fal answered it (the whole list), to `media/voiceover-timestamps.json`. The voice fal completed is the
+narration's voice: never compare it with its timestamps' words, and never set it aside for them. Timestamps can spell
+the text another way (a number as ElevenLabs reads it, another take); the caption script times the captions either way
+(`anchored`). The spoken text is scanned for customer data (the scans read the timestamps), and `anchored` is reported
+but is not a fault until the serve change lands (the eval fake for fal speaking the text it was sent).
 
 ## 6. A voiceover too long for the film
 

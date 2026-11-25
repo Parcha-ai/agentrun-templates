@@ -160,7 +160,9 @@ node film/build-captions.mjs --script media/vo.txt --timestamps media/voiceover-
 With a re-voice: `--script` the second script (write it to `media/vo.txt` again), `--timestamps
 media/voiceover-2-timestamps.json` and the second voice's seconds. It writes `film/compositions/captions.html`,
 `film/words.json` and the WebVTT file, and prints one JSON line: its `method` is `captions_timing` in the answer
-(`aligned`, `anchored` and `measured` are all correct timings, never a fault).
+(`aligned`, `anchored` or `measured`). The spoken text is scanned for customer data (step 9 reads the timestamps), and
+`anchored` is reported but is not a fault until the serve change lands (the eval fake for fal speaking the text it was
+sent).
 
 Read `film/words.json` and start each scene on the word that opens its part of the narration (the revenue scene on
 the word before the first amount, the change scene on "up", "down" or "no earlier", and so on), each scene at least
