@@ -278,8 +278,10 @@ empty one too:
    characters, Fabric per second at 480p), every paid call sent by its step name, and those that failed or were
    refused (`--sent none` when nothing was paid). `fal_cost_usd` is what it prints, copied exactly: never add a sum
    yourself.
-2. **The check.** `write` the answer's JSON to `media/answer.json`, then `node .agents/skills/news-show/kit/answer.mjs
-   check media/answer.json`. Fix each problem it lists in that file and check again, until it prints `answer ok`.
+2. **The check.** `write` the whole report to `media/report.md` and the answer's JSON to `media/answer.json`, its
+   `report_markdown` that file's text exactly, then `node .agents/skills/news-show/kit/answer.mjs check
+   media/answer.json`. Fix each problem it lists in those files and check again, until it prints `answer ok`. The
+   check decides: don't argue with it or judge the report yourself.
 3. **The reply.** `report_markdown`'s text, then one fenced `json` block that is `media/answer.json` exactly as
    checked, and nothing after it.
 
@@ -303,7 +305,7 @@ The answer meets the output schema:
 - `report_markdown`: the whole report, in this field itself: the same markdown as your reply above the JSON, never a
   summary of it or a pointer to it ("see above"). The show first, its first line exactly
   `![<show_name>, <show_date>](media/show.mp4)` (when rendered), the share card under it, then the three stories,
-  the AI disclosure, the cost table, the checks, and any failed step in fal's own words: `error`, when set, quoted in
-  it word for word.
+  the AI disclosure, the cost table with its total, the checks (`<n> check errors, <n> renders`), and any failed step
+  in fal's own words: `error`, when set, quoted in it word for word.
   Each story is its own line with its page as a markdown link, `- <slot>: [<title>](<its url>) (<source>,
   <published>)`: a story named without its link is a missing link.

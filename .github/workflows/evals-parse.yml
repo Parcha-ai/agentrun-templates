@@ -41,6 +41,11 @@ jobs:
       # memory).
       - run: command -v ffmpeg || (sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg)
       - run: node --test .github/music-video-kit.test.mjs
+      # The news show kit's answer script, on synthetic answers and media: the cost is worked out in code and its total is
+      # the sum of the rounded steps; the check fails a typed total, a summary or "see above" report, a report that is not
+      # media/report.md byte for byte, a missing section or story link, and an error not quoted; R1's added rubric fact
+      # is a substring of the fixture's page.
+      - run: node --test .github/news-show-answer-kit.test.mjs
       # `latest` is the dist-tag every AgentRun release is published under.
       - run: npm install --prefix "$RUNNER_TEMP/serve" --no-save --no-audit --no-fund --ignore-scripts @parcha/agentrun-serve@latest
       - run: node .github/parse-evals.mjs "$RUNNER_TEMP/serve"

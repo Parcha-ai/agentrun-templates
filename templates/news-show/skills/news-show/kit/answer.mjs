@@ -102,6 +102,9 @@ function check() {
   for (const k of REQUIRED) if (!(k in a)) problems.push(`the field ${k} is missing`);
   const report = typeof a.report_markdown === "string" ? a.report_markdown : "";
   if (!report.trim()) problems.push("report_markdown is empty: it is the whole report");
+  if (!existsSync("media/report.md")) problems.push("media/report.md is missing: write the whole report there, then put the same text in report_markdown");
+  else if (readFileSync("media/report.md", "utf8") !== report) problems.push("report_markdown is not media/report.md byte for byte: set report_markdown to the file's whole text, unchanged");
+  if (/\bsee (the [\w ]{0,30})?above\b/i.test(report)) problems.push("report_markdown points at text outside itself (\"see above\"): it is the whole report, so write that part out in it");
 
   if (!existsSync("film/cost.json")) problems.push("film/cost.json is missing: run `answer.mjs cost` and copy what it prints");
   else {
@@ -117,7 +120,15 @@ function check() {
     if (first !== embed) problems.push(`report_markdown must start with the show's embed, its first line exactly ${embed} (it starts: ${JSON.stringify(first.slice(0, 80))})`);
     if (existsSync("media/share-card.png") && !report.includes("](media/share-card.png)")) problems.push("report_markdown has no share card embed, ![...](media/share-card.png), under the show");
     if (!/AI-generated/i.test(report)) problems.push("report_markdown does not say the show and its anchor are AI-generated");
+    const { check_errors: errs, renders } = a.checks ?? {};
+    const said = Number.isInteger(errs) && Number.isInteger(renders)
+      ? new RegExp(`\\b${errs} check errors?\\b`, "i").test(report) && new RegExp(`\\b${renders} renders?\\b`, "i").test(report)
+      : /\bcheck errors?\b/i.test(report);
+    if (!said) problems.push(`report_markdown has no checks: say them as \`${errs ?? "<n>"} check errors, ${renders ?? "<n>"} renders\``);
   }
+  const total = a.fal_cost_usd?.total;
+  if (typeof total === "number" && total > 0 && !report.includes(String(total)) && !report.includes(total.toFixed(3)))
+    problems.push(`report_markdown has no cost table with the total: list the steps and their total, ${total}`);
   for (const st of Array.isArray(a.stories) ? a.stories : []) {
     if (st?.url && !report.includes(`](${st.url})`)) problems.push(`report_markdown does not link story ${st.slot ?? "?"}'s page: a line - ${st.slot}: [${st.title}](${st.url}) (...)`);
   }
