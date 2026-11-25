@@ -27,13 +27,20 @@
 //          sandbox's random bytes, written there first. A model never makes one.
 // scan     looks for customer data in every file the run wrote: each string a raw page's items hold (a description, a
 //          name, an email, an id; not Stripe's enum fields, its fee lines or a single word alone), each name in one (a
-//          pair of capitalised words, or two through an initial; in any case, with or without the initial), each word
-//          of such a pair alone (four letters or more, not a common word; in any case), a name in an identity field
-//          (a customer's, a billing or shipping name) in every shape, and any email address, in each file as written
-//          and in what each voice says (the letters of fal's timestamps, in any JSON file that holds them). The
-//          business's own name, as compute was given it (film/data.json), is set aside; scan takes no other. With
-//          --final and nothing found, it removes the raw pages. A name held only in lower case in a description, a
-//          description of one word, or a name spelled another way is not found.
+//          pair of capitalised words, or two through an initial; in any case, with or without the initial), each
+//          pair of lower-case words in one, neither a common word nor Stripe's (in any case), a name in an identity
+//          field (a customer's, a billing or shipping name) in every shape, and any email address, in each file as
+//          written and in what each voice says (the letters of fal's timestamps, in any JSON file that holds them).
+//          Each word of a capitalised pair or of an identity name is looked for alone too (in any case; four letters
+//          or more from a pair, not a common word), only in what the run says and writes: media/vo.txt, music.txt,
+//          film.vtt and answer.json, film/STORYBOARD.md and words.json, data.json's strings, and what a voice says.
+//          A scene's markup is not read for them: its CSS and GSAP ("font-family", "white-space") are the kit's.
+//          The business's own name, as compute was given it (film/data.json, which the run can write, as it types
+//          compute's --business), is set aside; scan takes no other. With --final and nothing found, it removes the
+//          raw pages. Found only where the whole description is written as it is: a word of a lower-case pair alone,
+//          a name with a lower-case particle ("da Silva", "van Gogh", "de la Cruz"), one given name alone in a
+//          longer description ("Tip from Sarah"), a pair in mixed case ("Marisol quintero"). Not found: a
+//          description of one word, a name spelled another way.
 //
 // A raw page is Stripe's list exactly as Composio answered it ({"object": "list", "data": [...], "has_more": ...}),
 // or Composio's whole answer around it. It holds customers' details (a charge's description can name one), so only
@@ -737,8 +744,9 @@ function customerValues(dir) {
     }
   };
   // A name pair: looked for whole, and each of its words alone (four letters or more, not a common word nor Stripe's),
-  // in any case, as a first name or a last name said by itself is still the customer's. A pair of capitalised words
-  // that isn't a name ("Market Day") has its words looked for too: the run rewords and scans again.
+  // in any case, in what the run says and writes, as a first name or a last name said by itself is still the
+  // customer's. A pair of capitalised words that isn't a name ("Market Day") has its words looked for too: the run
+  // rewords and scans again.
   const pair = (a, b, where, key, anyCase) => {
     add(`${a} ${b}`, `${where}: a name in its ${key}`, anyCase, true);
     if (!anyCase) return;

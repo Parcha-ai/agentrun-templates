@@ -128,7 +128,7 @@ node film/metrics.mjs scan --pages stripe
 ```
 
 It prints `{"clean": true, ...}` or exits 2 naming each file that holds a value from Stripe's pages (a description, a
-name in one in any case or a word of it alone, an email, an id) or any email address. The business's name, as `compute`
+name in one in any case, a word of it alone in what the run says and writes, an email, an id) or any email address. The business's name, as `compute`
 was given it (scan reads it from `film/data.json`; scan takes no other), is set aside. The kit's own files, as copied, aren't searched. Rewrite
 what it names without it and scan again.
 
@@ -217,7 +217,8 @@ node film/metrics.mjs scan --pages stripe --final
 It looks in every file the run wrote (the narration, the music line, the storyboard, `film/`, the captions, the
 timestamps and what each voice says in them, the answer and anything else outside the dot-folders) for each string
 Stripe's pages hold (not Stripe's own enum words, its fee lines or a description of one word), each name in one (a pair
-of words, in any case, and each of its words alone), and any email address. Exit 2 names the file and where the value
+of words, in any case, and each of its words alone in what the run says and writes, not in the film's markup), and any
+email address. Exit 2 names the file and where the value
 came from, never the value: take it out, render again if it was on screen, scan again, and say so in the report. When it
 finds nothing, it removes `stripe/raw-<n>.json` and prints what it removed.
 
