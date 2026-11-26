@@ -26,11 +26,23 @@
 //   items exactly the kit's fields (else a FAIL naming it);
 // - each record is what the kit builds: rebuilt with the repo's own kit (never the run's copy, which the run can write)
 //   from the run's film/plan.json, storyboard.md and media/run-keys.json, the remakes by the kit's rules and the clips
-//   with the record's still URLs; the first field that differs fails, naming the shot.
+//   with the record's still URLs; the first field that differs fails, naming the shot;
+// - each clip starts from its shot's still as the fake fal made it: the fake log holds each call's arguments, never
+//   fal's answers, so the answers come from the case's own fake in this repo (templates/music-video/evals/<case>/
+//   fixtures/fal-mcp.json): the still key's submit_job answer gives its request_id, and wait_for_jobs' completed answer
+//   for that request its images[0].url. Shot n's still is its remake's output when media/still-<n>-2.png was saved,
+//   else its first take's; a shot the fake made no still for may start from another shot's (a borrowed still);
+// - film/price.json is there, priced the plan rebuilt from (its plan_sha256 is film/plan.json's) and fits (true). Its
+//   lines are the run's to write, so none is trusted: the plan is priced again with the repo's kit (priceOf) from
+//   film/plan.json and the file's rates, which must be in their bands (offBand); the file's lines and plan_usd must be
+//   that price, and that price at or under max_fal_usd. Each paid call sent under the run's stem is priced from those
+//   lines, as cost bills it (a remake at its shot's still, from the reserve): a call the plan has no line for fails,
+//   naming it, and the calls sent come to at most max_fal_usd.
 // Prints one line: `SENT PASS n=<calls checked> (repo check; serve's grade is separate; stopgap for agentrun #3824)`
 // (exit 0), `SENT FAIL <the first reason> [(and N more)] (...the same)` (exit 1), or `SENT VOID <why>` when it can't
 // find its inputs or has nothing to check (exit 2: no verdict; a live run on real fal has no fake log).
 // Node built-ins only, and the repo's own music-video kit (templates/music-video/skills/music-video/kit/beats.mjs).
+import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { isDeepStrictEqual } from "node:util";
@@ -256,6 +268,48 @@ function checkStills(data, bad) {
   }, bad, before);
 }
 
+// ---------- the fake fal's answers ----------
+// Each still key's output URL as the case's fake fal answers it, from the case's fixture in this repo (never the run's).
+const FAKE = join(EVALS, String(caseName), "fixtures", "fal-mcp.json");
+let fake;
+function fakeStill(key) {
+  if (fake === undefined) {
+    try {
+      const tools = JSON.parse(readFileSync(FAKE, "utf8")).tools;
+      const outputs = new Map();
+      for (const a of [...(tools.wait_for_jobs?.answers ?? []), ...(tools.get_submission?.answers ?? [])]) {
+        for (const c of a.result?.content ?? []) {
+          let j;
+          try {
+            j = JSON.parse(c.text);
+          } catch {
+            continue;
+          }
+          for (const job of Array.isArray(j?.jobs) ? j.jobs : [j]) {
+            const url = job?.result?.images?.[0]?.url;
+            if (job?.outcome !== "completed" || typeof url !== "string") continue;
+            if (outputs.has(job.request_id) && outputs.get(job.request_id) !== url) voided(`${FAKE} answers request ${job.request_id} with two images`);
+            outputs.set(job.request_id, url);
+          }
+        }
+      }
+      fake = { submits: tools.submit_job?.answers ?? [], outputs };
+    } catch (error) {
+      voided(`the case's fake fal (${FAKE}) can't be read: ${error.message.split("\n")[0]}`);
+    }
+  }
+  // The first answer whose when matches, as the fake picks: a {"$pattern": ...} value matches the whole key.
+  const matches = (want, got) => (isObj(want) && typeof want.$pattern === "string" ? typeof got === "string" && new RegExp(`^(?:${want.$pattern})$`).test(got) : isDeepStrictEqual(want, got));
+  const answer = fake.submits.find((a) => [a.when].flat().some((w) => isObj(w) && Object.entries(w).every(([k, v]) => matches(v, { endpoint_id: NANO, submission_key: key }[k]))));
+  let id;
+  try {
+    id = JSON.parse(answer?.result?.content?.[0]?.text ?? "null")?.request_id;
+  } catch {
+    id = undefined;
+  }
+  return fake.outputs.get(id);
+}
+
 // ---------- clips ----------
 {
   const { data, missing } = record("clips.json");
@@ -282,6 +336,84 @@ function checkClips(data, bad) {
   compare("clips", "clips.json", KLING, calls);
   // The kit's clips from the run's plan and storyboard, with the still URLs the record holds (fal's, in shot order).
   rebuilt("clips.json", data, "clips", (stem) => kit.buildClips(join(work, "film"), join(work, "storyboard.md"), stem, data.clips.map((c) => c.start_image_url)), bad, before);
+  // Each clip from its shot's still as fal made it: the remake's when media/still-<n>-2.png was saved, else the first
+  // take's. Checked only when the clips passed everything above.
+  if (lines.length > before) return;
+  const stem = runStem().stem;
+  const stillOf = (n) => (existsSync(join(work, "media", `still-${n}-2.png`)) ? { url: fakeStill(`mu-${stem}-still-${n}-2`), take: `its remake, saved as media/still-${n}-2.png` } : { url: fakeStill(`mu-${stem}-still-${n}`), take: "its first take" });
+  const made = new Set(data.clips.map((c) => stillOf(c.n).url).filter(Boolean));
+  for (const c of data.clips) {
+    const want = stillOf(c.n);
+    if (want.url === undefined ? !made.has(c.start_image_url) : c.start_image_url !== want.url)
+      return bad(`shot ${c.n}'s clip starts from ${show(c.start_image_url)}, not shot ${c.n}'s still as the fake fal made it: ${want.url === undefined ? "the fake made none, and it is no other shot's still either" : `${show(want.url)} (${want.take})`}`);
+  }
+}
+
+// ---------- the price the run built on ----------
+{
+  const bad = (why) => say(false, `price: ${why}`);
+  const path = join(work, "film", "price.json");
+  let p;
+  if (!existsSync(path)) bad("the run left no film/price.json");
+  else {
+    try {
+      p = JSON.parse(readFileSync(path, "utf8"));
+    } catch (error) {
+      bad(`film/price.json is not JSON: ${error.message}`);
+    }
+  }
+  if (p !== undefined) checkPrice(p, bad);
+}
+function checkPrice(p, bad) {
+  if (!isObj(p) || typeof p.plan_usd !== "number" || !Array.isArray(p.lines) || !(p.max_fal_usd === null || typeof p.max_fal_usd === "number")) return bad("film/price.json is not what the kit's price writes");
+  const planPath = join(work, "film", "plan.json");
+  const hash = existsSync(planPath) ? createHash("sha256").update(readFileSync(planPath)).digest("hex") : null;
+  if (p.plan_sha256 !== hash) bad("film/price.json's plan_sha256 is not film/plan.json's: the price is of another plan");
+  if (p.fits !== true) bad(`film/price.json's fits is ${show(p.fits)}, not true`);
+  // The file's lines and plan_usd are the run's to write: the plan is priced again here, with the repo's kit, from the
+  // run's plan and the file's rates, and those rates must be in their bands.
+  const off = kit.offBand(p.rates);
+  if (off) return bad(`film/price.json's rates: ${off}`);
+  let plan;
+  try {
+    plan = JSON.parse(readFileSync(planPath, "utf8"));
+  } catch (error) {
+    return bad(`film/plan.json can't be read to price it again: ${error.message.split("\n")[0]}`);
+  }
+  let price;
+  try {
+    price = kit.priceOf(plan.cut.shots, plan.song.minutes, plan.lyrics_on, p.rates);
+  } catch (error) {
+    return bad(`film/plan.json can't be priced again: ${error.message.split("\n")[0]}`);
+  }
+  if (!(price.lines.length && price.lines.every((l) => typeof l.usd === "number" && Number.isFinite(l.usd)) && Number.isFinite(price.total))) return bad("film/plan.json can't be priced again: its shots or song minutes are not what plan writes");
+  const want = JSON.parse(JSON.stringify(price.lines));
+  const at = [...Array(Math.max(want.length, p.lines.length)).keys()].find((i) => !isDeepStrictEqual(p.lines[i], want[i]));
+  if (at !== undefined) bad(`film/price.json's lines are not the plan's at its rates: ${want[at]?.step ?? `line ${at + 1}`} is ${show(p.lines[at])}, not ${show(want[at])}`);
+  else if (p.plan_usd !== price.total) bad(`film/price.json's plan_usd ${p.plan_usd} is not the plan's price at its rates, ${price.total}`);
+  const max = p.max_fal_usd;
+  if (max !== null && price.total > max + 1e-9) bad(`film/price.json's plan_usd ${price.total} is over its max_fal_usd ${max}`);
+  // The paid calls sent, each at the plan's own line (a remake at its shot's still, from the reserve), as beats.mjs
+  // cost bills them. A call sent under the run's stem that the plan has no line for fails, naming it.
+  const { stem } = runStem();
+  if (stem === undefined) return;
+  const lineOf = (step) => {
+    const remake = step.match(/^still-(\d+)-2$/);
+    return price.lines.find((l) => l.step === step && !l.reserve) ?? (remake ? price.lines.find((l) => l.step === `still-${remake[1]}`) : undefined);
+  };
+  let total = 0;
+  for (const c of run.mcp_calls) {
+    const key = c.tool === "mcp:fal/submit_job" && isObj(c.arguments) ? c.arguments.submission_key : undefined;
+    if (typeof key !== "string" || !key.startsWith(`mu-${stem}-`)) continue;
+    const line = lineOf(key.slice(`mu-${stem}-`.length));
+    if (!line) {
+      bad(`the call sent as ${key} has no line in the plan's price (its steps: isolate, transcript, still-<n>, still-<n>-2, clip-<n> of the plan's shots)`);
+      continue;
+    }
+    total += line.usd;
+  }
+  total = Math.round(total * 1000) / 1000;
+  if (max !== null && total > max + 1e-9) bad(`the calls sent come to $${total} at film/price.json's rates, over its max_fal_usd ${max}`);
 }
 
 if (lines.length) {

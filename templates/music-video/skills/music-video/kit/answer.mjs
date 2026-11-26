@@ -7,7 +7,7 @@
 //
 // Run it from the run's folder, last, in every run (a refused one too). It reads, each only when it is there:
 //   film/plan.json     beats, cut and shots (plan's answer fields), the plan's words for the cut and a weak beat
-//   film/price.json    plan_usd and the ceiling it was judged against
+//   film/price.json    plan_usd and the ceiling it was judged against; film/ceiling.json: the run's ceiling as recorded
 //   storyboard.md      each shot's picture (the plan's shots, in order)
 //   film/lyrics.json   the words in the song and the cut, the caption lines, the lyric under each shot
 //   media/stills.json  which shots were remade; media/clips.json: each still's URL as fal answered it
@@ -17,6 +17,8 @@
 //   media/still-<n>.png, still-<n>-2.png, clip-<n>.mp4, song.*, lyrics.vtt, transcript.json: the files saved
 // The facts file (JSON) holds the rest:
 //   status, failed_step, error          the run's outcome, error in fal's (or the refusal's) own words
+//   max_fal_usd                         the input's max_fal_usd as given, or null when the user set none; the price and
+//                                       the recorded ceiling must be the same
 //   song: {url, rights, duration_s}     song_url as given, song_rights (or null), web_save's duration_s (or null)
 //   renders                             renders run (0 to 3)
 //   lyrics_on                           the input's lyrics, needed only when there is no plan
@@ -125,7 +127,7 @@ function readJson(path, what, shape = () => true) {
 }
 
 // ---------- the facts the model gives ----------
-const FACTS = ["status", "failed_step", "error", "song", "renders", "lyrics_on", "lyrics_note", "held_keys", "shot_errors", "borrowed", "warnings_kept", "review_fixes", "sources", "failed_saves", "ignored_instructions", "notes"];
+const FACTS = ["status", "failed_step", "error", "max_fal_usd", "song", "renders", "lyrics_on", "lyrics_note", "held_keys", "shot_errors", "borrowed", "warnings_kept", "review_fixes", "sources", "failed_saves", "ignored_instructions", "notes"];
 if (!existsSync(factsPath)) stop(`${factsPath} is missing: write the facts no file holds there first (agent.md's Answer)`);
 const facts = readJson(factsPath, "write it again as one JSON object", isObj);
 const problems = [];
@@ -145,6 +147,8 @@ const song = facts.song;
 if (!isObj(song) || typeof song.url !== "string" || !song.url || !["own", "licensed", null].includes(song.rights) || !(song.duration_s === null || (typeof song.duration_s === "number" && song.duration_s >= 0)))
   problems.push(`${factsPath}: song is {url: song_url as given, rights: own, licensed or null, duration_s: web_save's or null}`);
 if (!(Number.isInteger(facts.renders) && facts.renders >= 0 && facts.renders <= 3)) problems.push(`${factsPath}: renders is how many renders ran, 0 to 3`);
+const maxGiven = "max_fal_usd" in facts && (facts.max_fal_usd === null || (typeof facts.max_fal_usd === "number" && facts.max_fal_usd >= 0));
+if (!maxGiven) problems.push(`${factsPath}: max_fal_usd is the input's max_fal_usd as given, or null when the user set none`);
 for (const k of ["shot_errors", "borrowed", "sources"]) if (k in facts && !isObj(facts[k])) problems.push(`${factsPath}: ${k} is an object`);
 const warningsKept = strings("warnings_kept"), reviewFixes = strings("review_fixes"), ignored = strings("ignored_instructions"), notes = strings("notes", 1000);
 const failedSaves = Array.isArray(facts.failed_saves ?? []) ? facts.failed_saves ?? [] : [];
@@ -161,6 +165,16 @@ const planShots = fields ? fields.shots : [];
 const price = readJson("film/price.json", "run beats.mjs price again", (p) => isObj(p) && typeof p.plan_usd === "number" && typeof p.fits === "boolean");
 if (price && plan && price.plan_sha256 !== createHash("sha256").update(readFileSync("film/plan.json")).digest("hex"))
   problems.push("film/price.json is the price of another plan: run beats.mjs price again");
+// The ceiling the price used and the one the run's first price recorded are the input's, as the facts give it.
+const ceiling = readJson("film/ceiling.json", "it is written by beats.mjs price only", (c) => isObj(c) && (c.max_fal_usd === null || (typeof c.max_fal_usd === "number" && c.max_fal_usd >= 0)));
+if (price && !ceiling) problems.push("film/price.json is there but film/ceiling.json is not: run beats.mjs price again with --max <the input's max_fal_usd> (left out only when it is null)");
+if (maxGiven) {
+  const said = facts.max_fal_usd === null ? "null (no ceiling)" : facts.max_fal_usd;
+  if (price && price.max_fal_usd !== facts.max_fal_usd)
+    problems.push(`max_fal_usd: film/price.json judged the plan against ${price.max_fal_usd ?? "no ceiling"}, and the input's max_fal_usd in ${factsPath} is ${said}: run beats.mjs price again with --max <the input's max_fal_usd> (left out only when it is null)`);
+  if (ceiling && ceiling.max_fal_usd !== facts.max_fal_usd)
+    problems.push(`max_fal_usd: film/ceiling.json records ${ceiling.max_fal_usd ?? "no ceiling"} as this run's ceiling, and the input's max_fal_usd in ${factsPath} is ${said}: the run was priced against another ceiling than the user's`);
+}
 const keys = readJson("media/run-keys.json", "it is written by beats.mjs stem only", (k) => isObj(k) && /^[a-z0-9]{8}$/.test(k.stem));
 const stem = keys ? keys.stem : null;
 
@@ -191,6 +205,21 @@ if (!cost) {
   cost = { steps: [], total: 0 };
 }
 for (const s of cost.steps) if (stem && s.key !== `mu-${stem}-${s.step}`) problems.push(`film/cost.json: ${s.step}'s key is not mu-${stem}-${s.step}: run beats.mjs cost again with --stem ${stem}`);
+// Each still and clip the records hold is billed exactly once; no step is billed twice, and none the records don't hold
+// (isolate and transcript the run sends itself).
+{
+  const named = (step) => (stem ? `mu-${stem}-${step}` : step);
+  const recorded = new Map();
+  for (const [file, list] of [["media/stills.json", stillsRecord?.stills], ["media/clips.json", clipsRecord?.clips]])
+    for (const item of list ?? []) if (typeof item.key === "string") recorded.set(item.key.replace(/^mu-[a-z0-9]{8}-/, ""), { key: item.key, file });
+  const times = new Map();
+  for (const s of cost.steps) times.set(s.step, (times.get(s.step) ?? 0) + 1);
+  for (const [step, n] of times) if (n > 1) problems.push(`film/cost.json bills ${named(step)} ${n} times: run beats.mjs cost again with each step sent once`);
+  for (const step of times.keys()) if (!recorded.has(step) && !["isolate", "transcript"].includes(step)) problems.push(`film/cost.json bills ${named(step)}, which neither media/stills.json nor media/clips.json records: run beats.mjs cost again with the steps sent`);
+  for (const [step, { key, file }] of recorded) if (!times.has(step)) problems.push(`film/cost.json has no step for ${key}, which ${file} records: run beats.mjs cost again with every still and clip sent`);
+}
+// A remake's outcome as cost billed it: failed (0), pending, or made (billed in full).
+const remakeStep = (n) => cost.steps.find((s) => s.step === `still-${n}-2`);
 
 // The film as ffprobe reads it.
 let film = { path: null, seconds: null, width: null, height: null };
@@ -267,18 +296,29 @@ if (["partial", "failed", "refused"].includes(facts.status) && (facts.failed_ste
 if (facts.status === "completed" && !film.path) problems.push("a completed run has its film: media/film.mp4 is missing");
 if (price && price.fits === false && facts.status !== "over_budget") problems.push("film/price.json says the plan is over your ceiling: the status is over_budget");
 if (facts.status === "over_budget" && !(price && price.fits === false)) problems.push("over_budget is only for a plan film/price.json prices over the ceiling the user set");
+if (facts.status === "over_budget" && cost.total > 0) problems.push(`over_budget says nothing was paid, and film/cost.json bills $${cost.total}: an over_budget run sends no paid call; a run that paid for a step is partial or failed, naming it`);
 const held = Array.isArray(facts.held_keys ?? []) ? facts.held_keys ?? [] : [];
 for (const k of held) if (typeof k !== "string" || !stem || !new RegExp(`^mu-${stem}-(isolate|transcript|still-\\d{1,2}|still-\\d{1,2}-2|clip-\\d{1,2})$`).test(k)) problems.push(`${factsPath}: held_keys holds ${JSON.stringify(k)}, not a key of this run (mu-${stem ?? "<stem>"}-<step>)`);
 
 // Every file of the run, with the URL it was saved from (null for what the sandbox made).
 const stillUrl = new Map((clipsRecord?.clips ?? []).map((c) => [c.n, c.start_image_url]));
+// The still file a clip's URL came from. With no remake made, it is the first take's. With one made, the URL is either
+// take's (the clips may have been built before the remake): the run's sources tell which, by the first take's URL;
+// without them it is credited to neither. A borrowed still is another shot's, so it is credited to neither.
+const clipFrom = (n) => {
+  const url = stillUrl.get(n);
+  if (typeof url !== "string" || String(n) in borrowed) return null;
+  const step = remakeStep(n);
+  if (!remakeSent.has(n) || (step && step.usd === 0 && !step.pending)) return `media/still-${n}.png`;
+  const first = sources[`media/still-${n}.png`];
+  return typeof first !== "string" ? null : first === url ? `media/still-${n}.png` : `media/still-${n}-2.png`;
+};
 const files = [];
 const add = (what, path, url = null) => exists(path.replace(/\/$/, "")) && files.push({ what, saved_path: path, source_url: sources[path] ?? url });
 add("film", "media/film.mp4");
 add("storyboard", "storyboard.md");
 for (const s of planShots) {
-  add("still", `media/still-${s.n}.png`, takeOf(s.n) === 1 ? stillUrl.get(s.n) ?? null : null);
-  add("still", `media/still-${s.n}-2.png`, takeOf(s.n) === 2 ? stillUrl.get(s.n) ?? null : null);
+  for (const path of [`media/still-${s.n}.png`, `media/still-${s.n}-2.png`]) add("still", path, clipFrom(s.n) === path ? stillUrl.get(s.n) : null);
 }
 for (const s of planShots) add("clip", `media/clip-${s.n}.mp4`);
 add("lyrics", "media/lyrics.vtt");
@@ -322,7 +362,12 @@ if (plan) {
     const take = takeOf(s.n), from = borrowed[String(s.n)], parts = [];
     if (s.used === "still") parts.push(`shows ${from === undefined ? "its still" : `shot ${from}'s still`} with a slow push-in: ${placed.shots.find((p) => p.n === s.n)?.why ?? "its clip can't be used"}`);
     if (take === 2) parts.push("had its still remade once, and the film uses the second take");
-    else if (take === 1 && remakeSent.has(s.n)) parts.push("had a remake of its still tried, which failed, so the film uses its first take");
+    else if (take === 1 && remakeSent.has(s.n)) {
+      const step = remakeStep(s.n);
+      if (step?.pending) parts.push("had a remake of its still sent, still pending when the run stopped waiting, so the film uses its first take");
+      else if (step && step.usd > 0) parts.push("had a remake of its still made, not saved (fal finished it and billed it, and its file never reached media/), so the film uses its first take");
+      else parts.push("had a remake of its still tried, which failed, so the film uses its first take");
+    }
     if (from !== undefined) parts.push(`has no still of its own (${remakeSent.has(s.n) ? "its first take and its remake both failed" : "its still failed"}) and borrows shot ${from}'s`);
     if (parts.length) lines.push(`- Shot ${s.n} ${parts.join("; ")}.${s.error ? ` Fal's words: ${s.error}` : ""}`);
   }
@@ -371,7 +416,7 @@ const FROM = [
   [/^checks\.(warnings_kept|review_fixes|renders)\b/, (m) => `${m[1]} in ${factsPath}`],
   [/^(song|status|failed_step|error|held_keys|ignored_instructions)\b/, (m) => `${m[1]} in ${factsPath}`],
   [/^shots\[(\d+)\]\.picture/, (m) => `storyboard.md, shot ${planShots[Number(m[1])]?.n}'s picture`],
-  [/^report_markdown/, () => `the facts the report quotes (notes, the kept warnings and review fixes, the instructions) in ${factsPath}`],
+  [/^report_markdown/, () => `what holds its length: the storyboard's pictures in the shots table (storyboard.md, sent with the stills, so shorten them only before the stills), then the facts the report quotes (notes, the kept warnings and review fixes, the instructions) in ${factsPath}`],
 ];
 for (const [at, what] of breaks(schema, JSON.parse(text), "")) {
   const hit = FROM.map(([re, to]) => [at.match(re), to]).find(([m]) => m);
