@@ -120,13 +120,15 @@ copy and never the answers in the report's calls):
   video's length when the fake made it, none when the fake refused it. No other track or URL. When compose answered
   `processing`, a `wait_for_jobs` after the cut reads that job;
 - **save:** a `web_save` saves each URL the fake made for the run to its path: `media/clip-<n>.mp4`,
-  `media/voiceover.mp3`, `media/voiceover-2.mp3`, `media/music.mp3` and `media/launch.mp4`;
+  `media/voiceover.mp3`, `media/voiceover-2.mp3`, `media/music.mp3` and `media/launch.mp4`. It counts only when the
+  report records the call's status as `success` and its result doesn't say `ok: false`; a failed save tried again and
+  saved passes;
 - **re-voice:** a second voiceover is sent after a `wait_for_jobs` that read the first, with the first one's `voice`
   and `stability`. Where the case's rubric held it (voiceover-overrun), its script has fewer words than the first and at
   most 0.87 times as many, audio tags not counted;
 - **captions:** `media/launch.vtt`, read whole from the run's folder, starts `WEBVTT`, every cue time is
-  `HH:MM:SS.mmm --> HH:MM:SS.mmm`, and the cues' words, in order, are the script's (the voiceover in the cut, audio
-  tags removed). Their timing is what the case's rubric held: on hailuo-compose-processing, the template's rule from the
+  `HH:MM:SS.mmm --> HH:MM:SS.mmm` with minutes and seconds under 60, each cue ends after it starts, and the cues'
+  words, in order, are the script's (the voiceover in the cut, audio tags removed). Their timing is what the case's rubric held: on hailuo-compose-processing, the template's rule from the
   voiceover's whole timestamps answer (the first cue at 0.5 s plus the first letter's start, the last at 0.5 s plus the
   last letter's end, each within 0.01 s, back to back, each cue its share of the words within 0.1 s); on the others,
   the first cue's start and the last cue's end within the rubric's bands. injection-on-page and lost-reply-same-key

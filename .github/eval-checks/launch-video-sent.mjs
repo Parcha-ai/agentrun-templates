@@ -24,8 +24,10 @@
 //   clip key, in clip order, back to back, each the plan's length), the voiceover in the cut (the re-voice when one was
 //   made) at 0 to 1000 ms for at most the cut's length, and the music at 0 for the cut's length when the fake made it,
 //   none when it refused it; when compose answered processing, a wait_for_jobs after it reads that job;
-// - saves: a web_save saves each URL the fake made for the run (clips, voiceovers, music, the cut) to its media path;
-// - captions: media/launch.vtt, read whole, starts WEBVTT, has cues in HH:MM:SS.mmm --> HH:MM:SS.mmm form whose words
+// - saves: a web_save saves each URL the fake made for the run (clips, voiceovers, music, the cut) to its media path,
+//   and serve recorded that call a success whose result doesn't say ok: false;
+// - captions: media/launch.vtt, read whole, starts WEBVTT, has cues in HH:MM:SS.mmm --> HH:MM:SS.mmm form (minutes and
+//   seconds under 60), each ending after it starts, whose words
 //   are the script's (the voiceover in the cut, audio tags removed) in order, timed as the case's captions condition
 //   held them (CASES below): from the voiceover's whole timestamps answer, or within the case's bands;
 // - re-voice: a second voiceover is sent after the read that answered the first one's file_size, with the first one's
@@ -332,7 +334,19 @@ function checkRun(run, work, which) {
     const bad = (why) => say(false, `save: ${why}`);
     if (!Array.isArray(run.calls)) bad("the report holds no calls list for the run, so its web_save calls can't be read");
     else {
-      const saves = run.calls.filter((c) => isObj(c) && c.tool === "web_save" && isObj(c.arguments)).map((c) => c.arguments);
+      // A save counts only when serve recorded its call a success and the tool's result, when it reads as JSON, doesn't
+      // say ok: false.
+      const outcome = (c) => {
+        if (c.status !== "success") return `status ${show(c.status)}`;
+        let result;
+        try {
+          result = typeof c.result === "string" ? JSON.parse(c.result) : c.result;
+        } catch {
+          return null;
+        }
+        return isObj(result) && result.ok === false ? "its result says ok: false" : null;
+      };
+      const saves = run.calls.filter((c) => isObj(c) && c.tool === "web_save" && isObj(c.arguments)).map((c) => ({ ...c.arguments, failed: outcome(c) }));
       const want = [];
       for (let n = 1; n <= clips; n++) if (sentOn(CLIP, `clip-${n}`) && outputOf(`clip-${n}`)) want.push([urlOf(outputOf(`clip-${n}`)), `media/clip-${n}.mp4`]);
       if (outputOf("voiceover")) want.push([urlOf(outputOf("voiceover")), "media/voiceover.mp3"]);
@@ -341,7 +355,11 @@ function checkRun(run, work, which) {
       const cutJob = cuts[0] && answerTo("run_model", cuts[0].args);
       const cutUrl = cutJob?.status === "completed" ? cutJob.result?.video_url : urlOf(made(outcomes.get(cutJob?.request_id)));
       if (typeof cutUrl === "string") want.push([cutUrl, "media/launch.mp4"]);
-      for (const [url, path] of want) if (!saves.some((s) => s.url === url && s.path === path)) bad(`no web_save saves ${url} to ${path}`);
+      for (const [url, path] of want) {
+        const tried = saves.filter((s) => s.url === url && s.path === path);
+        if (!tried.length) bad(`no web_save saves ${url} to ${path}`);
+        else if (!tried.some((s) => s.failed === null)) bad(`the web_save of ${url} to ${path} did not succeed (${tried[tried.length - 1].failed})`);
+      }
     }
   }
 
@@ -379,16 +397,28 @@ function checkRun(run, work, which) {
       if (!/^WEBVTT(\s|$)/.test(rows[0])) bad("media/launch.vtt does not start with WEBVTT");
       const cues = [];
       const sec = (h, m, s, ms) => Number(h) * 3600 + Number(m) * 60 + Number(s) + Number(ms) / 1000;
+      // Each cue's times are read before any timing rule: a minute or second of 60 or more isn't a time, and a cue ends
+      // after it starts.
+      let n = 0;
       for (let i = 0; i < rows.length; i++) {
         if (!rows[i].includes("-->")) continue;
+        n++;
         const m = rows[i].match(/^(\d{2}):(\d{2}):(\d{2})\.(\d{3}) --> (\d{2}):(\d{2}):(\d{2})\.(\d{3})(?:\s.*)?$/);
         if (!m) {
           bad(`media/launch.vtt has a cue time ${show(rows[i])} not in HH:MM:SS.mmm --> HH:MM:SS.mmm form`);
           continue;
         }
+        for (const [at, which] of [[1, "start"], [5, "end"]]) {
+          const time = m.slice(at, at + 4);
+          if (Number(time[1]) >= 60) bad(`cue ${n}'s ${which} ${show(`${time[0]}:${time[1]}:${time[2]}.${time[3]}`)} has 60 or more minutes`);
+          else if (Number(time[2]) >= 60) bad(`cue ${n}'s ${which} ${show(`${time[0]}:${time[1]}:${time[2]}.${time[3]}`)} has 60 or more seconds`);
+        }
+        const start = sec(...m.slice(1, 5));
+        const end = sec(...m.slice(5, 9));
+        if (!(end > start)) bad(`cue ${n} ends at ${end} s, not after its start at ${start} s`);
         const body = [];
         for (let j = i + 1; j < rows.length && rows[j].trim() !== ""; j++) body.push(rows[j]);
-        cues.push({ start: sec(...m.slice(1, 5)), end: sec(...m.slice(5, 9)), words: words(body.join(" ")) });
+        cues.push({ start, end, words: words(body.join(" ")) });
       }
       const said = words(script);
       const cued = cues.flatMap((c) => c.words);
