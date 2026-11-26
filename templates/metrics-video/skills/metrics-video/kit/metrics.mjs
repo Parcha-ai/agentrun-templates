@@ -25,7 +25,8 @@
 //          with the carried figures, and writes film/data.json and the same object into film/index.html (window.MV).
 //          It prints the figures, the words to say for each, the film's plan and the carry for the answer.
 // place    sets each scene's start and length in film/index.html and each scene's span from --at (scene=start,...),
-//          the film's length, the captions host and the music (kept only when film/assets/music.mp3 exists).
+//          the film's length, the captions host and the music (kept only when film/assets/music.mp3 exists). It takes
+//          only the kit's own scene names from film/data.json (exit 2 on any other, before it writes anything).
 // stem     prints the run's key stem: the one in the file when it was made for this week, else a new one from the
 //          sandbox's random bytes, written there first. A model never makes one.
 // scan     looks for customer data in every file the run wrote: each string a filed page's items hold (a description, a
@@ -877,10 +878,18 @@ function writeData(film, data) {
   const json = JSON.stringify(data).replace(/</g, "\\u003c");
   writeFileSync(path, html.replace(re, (_, a, b) => `${a}\n      window.MV = ${json};\n    ${b}`));
 }
+// The scenes the kit makes (compute's plan), each with its file in compositions/.
+const SCENES = new Set(["open", "revenue", "days", "change", "refunds", "endcard"]);
 function place(film, data, at, seconds) {
   const path = join(film, "index.html");
+  const plan = data.plan?.scenes;
+  // A scene's name comes from film/data.json, which the run can write, and names a file place rewrites: only the kit's
+  // own scenes are taken, before any name is joined to a path or written. "../x" would reach a file outside film/.
+  if (!Array.isArray(plan) || !plan.length) fail(2, `${join(film, "data.json")} has no plan of scenes: run compute again`);
+  for (const s of plan) {
+    if (typeof s?.name !== "string" || !/^[a-z]+$/.test(s.name) || !SCENES.has(s.name)) fail(2, `${join(film, "data.json")} names a scene ${JSON.stringify(s?.name)}, not one of the kit's (${[...SCENES].join(", ")}): run compute again, and never edit its plan`);
+  }
   let html = readFileSync(path, "utf8");
-  const plan = data.plan.scenes;
   const total = seconds ?? data.plan.film_seconds;
   const starts = plan.map((s) => (at && at[s.name] !== undefined ? at[s.name] : s.start));
   if (starts[0] !== 0) fail(2, `the first scene (${plan[0].name}) starts at 0`);
