@@ -1976,3 +1976,26 @@ test("--purge enters only the folder it checked, even one inside the run: stripe
   assert.match(r.stderr, /changed after it was checked/, out);
   assert.equal(readdirSync(join(dir, "stripe-moved")).filter((f) => FILED.test(f)).length, 2, "the folder checked is never reached through another");
 });
+
+// ---------- place writes only the kit's scenes ----------
+test("place takes only the kit's scene names from film/data.json: a scene named with ../ never rewrites a file outside film/", () => {
+  const outside = join(root, "p8-place-outside");
+  mkdirSync(outside, { recursive: true });
+  const html = '<div data-mv-span data-duration="1"></div>\n';
+  writeFileSync(join(outside, "x.html"), html);
+  for (const [what, name] of [["../ to a file outside film/", "../../../p8-place-outside/x"], ["a name that is not one of the kit's", "intro"], ["a name in capitals", "Endcard"]]) {
+    const as = `p8-place-${what.replace(/[^a-z]+/gi, "-")}`;
+    compute(as, FILED_WEEK, "2026-11-23");
+    const film = join(root, as, "film");
+    const dataPath = join(film, "data.json");
+    const data = JSON.parse(readFileSync(dataPath, "utf8"));
+    data.plan.scenes.at(-1).name = name;
+    writeFileSync(dataPath, JSON.stringify(data));
+    const index = readFileSync(join(film, "index.html"), "utf8");
+    const r = spawnSync(process.execPath, [join(film, "metrics.mjs"), "place", "--film", film], { encoding: "utf8", cwd: join(root, as) });
+    assert.equal(r.status, 2, `${what}: ${r.stdout}${r.stderr}`);
+    assert.match(r.stderr, /scene/, what);
+    assert.equal(readFileSync(join(outside, "x.html"), "utf8"), html, `${what}: the file outside film/ is as it was`);
+    assert.equal(readFileSync(join(film, "index.html"), "utf8"), index, `${what}: nothing is written`);
+  }
+});
