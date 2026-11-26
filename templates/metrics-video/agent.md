@@ -130,10 +130,12 @@ right before this one, and reads that week again from Stripe.
 Stripe can't be read (the summary shows `successful: false` or an error, more than 10 pages), or the script refuses
 the pages (an exit 3 that says to answer failed: a page the run wrote, answers that were not filed, items that don't
 check): make nothing, pay nothing, `status: "failed"`, `failed_step: "stripe"` (or `"figures"` when the script says
-so), and the error in your words. That exit has already removed Stripe's pages. An exit 3 asking for the next page, or
-for the run's date as `--today`, keeps them: do what it says and run `compute` again. Call for the next page at most
-twice. If one is still missing after that, run `node film/metrics.mjs scan --pages stripe --purge`, then answer
-`failed`, `failed_step: "stripe"`. Never write or edit a page to make the script pass. The balance list is the run's
+so), and the error in your words. That exit has already removed Stripe's pages. An exit 3 that refuses `--pages`
+itself removes nothing: run `node film/metrics.mjs scan --pages stripe --purge` from the run's folder first. An exit 3
+asking for the next page, or for the run's date as `--today`, keeps them: do what it says and run `compute` again. Call
+for the next page at most twice. If one is still missing after that, run
+`node film/metrics.mjs scan --pages stripe --purge`, then answer `failed`, `failed_step: "stripe"`. Never write or edit
+a page to make the script pass. The balance list is the run's
 only Stripe tool: charge search returns customers' details and no figure needs it. If the balance list fails, nothing
 stands in for it.
 
@@ -239,8 +241,10 @@ The skill's step 9: `write` the answer's json (the block below, without the fenc
 `node film/metrics.mjs scan --pages stripe --final`. It looks at everything again, the answer and the captions included, and when it finds nothing that stops the film it removes
 the filed pages and exits 0: the run leaves no copy of Stripe's answers, and exit 0 always means none is left. Exit 2
 naming a file: fix what it names (step 1) and run it again; the pages are kept for that run. Any other exit but 4 (a
-refused argument, a page the run wrote, a fault) removes the pages, so nothing can check the run's files again: the
-film stops, `failed`, `failed_step: "customer_data"` unless the script names another step.
+refused argument other than `--pages`, a page the run wrote, a fault) removes the pages, so nothing can check the run's
+files again: the film stops, `failed`, `failed_step: "customer_data"` unless the script names another step. An exit 3
+that refuses `--pages` itself removes nothing: run `node film/metrics.mjs scan --pages stripe --purge` from the run's
+folder first.
 Here too a word of a customer's name found alone stops the film in what
 it says and shows (the voices, `media/vo.txt`, the captions, the scenes, `film/data.json`) and in every file but the
 answer. Exit 4, with `warning:` lines: a word of a name found alone in `media/answer.json`, which can be a tool's word (a
