@@ -70,7 +70,8 @@
 //         used, each with its key mu-<stem>-<step>. Every still and clip the kit recorded (media/stills.json,
 //         media/clips.json) is in --sent exactly once: a step named twice, a recorded key left out, or a still or clip
 //         the records don't hold is an error naming the key, and nothing is written. It writes film/cost.json, which
-//         answer.mjs reads.
+//         answer.mjs reads. It checks film/price.json as stills, remake and clips do, and bills each step from the
+//         plan priced again at its rates, never from the file's lines.
 //
 // Exit 2: wrong arguments, or a film whose files don't match the plan (place reads every shot back after writing it;
 // the message names the shot); 3: the song can't be decoded, is too short, or has no beat to cut on; 0: done.
@@ -894,9 +895,10 @@ function writeStills(file, record) {
 }
 // Nothing is built for fal until the plan is priced and fits: price writes film/price.json, and stills, remake and
 // clips read it first. Over the user's ceiling, or never priced, they print nothing to send. The price is judged again
-// here from the plan and its rates against the recorded ceiling, never by the flags a file can be given by hand.
+// here from the plan and its rates against the recorded ceiling, never by the flags a file can be given by hand. cost
+// makes the same check and bills from the plan's price as it works it out here, never the file's lines.
 const planHash = (film) => createHash("sha256").update(readFileSync(join(film, "plan.json"))).digest("hex");
-function priced(film) {
+function judgedPrice(film, nothing) {
   const path = join(film, "price.json");
   let p = null;
   try {
@@ -904,16 +906,18 @@ function priced(film) {
   } catch {
     p = null;
   }
-  if (p === null || typeof p !== "object") fail(2, "the plan is over the ceiling you set (or not priced yet): nothing is built");
-  if (!existsSync(join(film, "plan.json")) || p.plan_sha256 !== planHash(film)) fail(2, "the plan changed since it was priced: run price again (nothing is built)");
+  if (p === null || typeof p !== "object") fail(2, `the plan is over the ceiling you set (or not priced yet): ${nothing}`);
+  if (!existsSync(join(film, "plan.json")) || p.plan_sha256 !== planHash(film)) fail(2, `the plan changed since it was priced: run price again (${nothing})`);
   const kept = recordedCeiling(film);
-  if (!kept || p.max_fal_usd !== kept.max_fal_usd) fail(2, "film/price.json was not judged against the ceiling film/ceiling.json records for this run: run price again with --max <the user's max_fal_usd> (nothing is built)");
+  if (!kept || p.max_fal_usd !== kept.max_fal_usd) fail(2, `film/price.json was not judged against the ceiling film/ceiling.json records for this run: run price again with --max <the user's max_fal_usd> (${nothing})`);
   const off = offBand(p.rates);
-  if (off) fail(2, `film/price.json: ${off} (nothing is built)`);
+  if (off) fail(2, `film/price.json: ${off} (${nothing})`);
   const data = readPlan(film);
-  const total = priceOf(data.cut.shots, data.song.minutes, data.lyrics_on, p.rates).total;
-  if (!Number.isFinite(total) || (kept.max_fal_usd !== null && total > kept.max_fal_usd + 1e-9) || p.fits !== true) fail(2, "the plan is over the ceiling you set (or not priced yet): nothing is built");
+  const price = priceOf(data.cut.shots, data.song.minutes, data.lyrics_on, p.rates);
+  if (!Number.isFinite(price.total) || (kept.max_fal_usd !== null && price.total > kept.max_fal_usd + 1e-9) || p.fits !== true) fail(2, `the plan is over the ceiling you set (or not priced yet): ${nothing}`);
+  return price;
 }
+const priced = (film) => judgedPrice(film, "nothing is built");
 const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
 const never = (what) => `a record of ${what} that may have been sent is never replaced`;
 // A record a run already holds: parsed, an object whose `list` is a list of objects; else an error in words.
@@ -1067,7 +1071,15 @@ function cost() {
   const film = need("film");
   const pricePath = join(film, "price.json");
   if (!existsSync(pricePath)) fail(2, `${pricePath} is missing: run price first`);
-  const p = JSON.parse(readFileSync(pricePath, "utf8"));
+  let p;
+  try {
+    p = JSON.parse(readFileSync(pricePath, "utf8"));
+  } catch (error) {
+    fail(2, `${pricePath} is not JSON (${error.message.split("\n")[0]}): run price again (nothing is billed)`);
+  }
+  if (!isObj(p) || !Array.isArray(p.lines)) fail(2, `${pricePath} has no lines: it is not what price writes; run price again (nothing is billed)`);
+  // Billed at the plan's price as the builders judge it, from the plan and the file's rates, never the file's lines.
+  const price = judgedPrice(film, "nothing is billed");
   const list = (k) => (args[k] && args[k] !== "true" ? args[k].split(",").map((s) => s.trim()).filter(Boolean) : []);
   const sent = list("sent"), failed = new Set(list("failed")), pending = new Set(list("pending"));
   const stem = args.stem === undefined ? null : args.stem;
@@ -1086,7 +1098,7 @@ function cost() {
   for (const [step, { key, file }] of recorded) if (!times.has(step)) fail(2, `--sent leaves out ${key}, which ${file} records: every still and clip the kit built was sent, so each is in --sent once (in --failed too when fal failed or refused it)`);
   const steps = sent.map((step) => {
     const remake = step.match(/^still-(\d+)-2$/);
-    const line = p.lines.find((l) => l.step === step && !l.reserve) ?? (remake ? p.lines.find((l) => l.step === `still-${remake[1]}`) : undefined);
+    const line = price.lines.find((l) => l.step === step && !l.reserve) ?? (remake ? price.lines.find((l) => l.step === `still-${remake[1]}`) : undefined);
     if (!line) fail(2, `--sent names ${step}, which the plan has no line for (its steps: isolate, transcript, still-<n>, still-<n>-2, clip-<n>)`);
     return { step, key: stem ? `mu-${stem}-${step}` : null, endpoint_id: line.endpoint_id, units: line.units, unit: line.unit, rate_usd: line.rate_usd, usd: failed.has(step) ? 0 : line.usd, pending: pending.has(step) };
   });
