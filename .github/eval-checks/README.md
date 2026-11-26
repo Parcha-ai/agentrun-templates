@@ -40,8 +40,12 @@ fal's whole log of `submit_job` calls with the files, call by call:
   still, or the first take when the remake was saved, is a `SENT FAIL` naming the shot; a shot the fake made no still
   for may start from another shot's (a borrowed still);
 - `film/price.json` is there and is the price the run built on: its `plan_sha256` is the sha256 of the run's
-  `film/plan.json`, `fits` is true and its `plan_usd` is at or under its `max_fal_usd`, and the paid calls sent (each at
-  its price line, a remake at its shot's still, as `beats.mjs cost` bills them) come to at most its `max_fal_usd`.
+  `film/plan.json` and `fits` is true. Its lines are the run's to write, so none is trusted: the check prices the plan
+  again with the repo's kit (`priceOf`) from `film/plan.json` and the file's `rates`, which must be in their bands
+  (`offBand`). The file's `lines` and `plan_usd` must be that price, and that price at or under `max_fal_usd`. Each paid
+  call sent under the run's stem is priced from those lines (a remake at its shot's still, from the reserve, as
+  `beats.mjs cost` bills it): a call the plan has no line for is a `SENT FAIL` naming it, and the calls sent come to at
+  most `max_fal_usd`.
 
 ```sh
 node .github/eval-checks/music-video-sent.mjs <report.json> <the run's work folder, or the serve's data folder>

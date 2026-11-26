@@ -528,7 +528,7 @@ const RATE_BANDS = {
   still: { endpoint_id: "fal-ai/nano-banana-pro", list: 0.15, unit: "an image" },
   clip: { endpoint_id: "fal-ai/kling-video/v3/pro/image-to-video", list: 0.112, unit: "a second" },
 };
-function priceOf(shots, minutes, lyricsOn, r) {
+export function priceOf(shots, minutes, lyricsOn, r) {
   const lines = [];
   if (lyricsOn) {
     lines.push({ step: "isolate", endpoint_id: "fal-ai/elevenlabs/audio-isolation", units: minutes, unit: "minutes", rate_usd: r.isolation });
@@ -544,7 +544,7 @@ function priceOf(shots, minutes, lyricsOn, r) {
   return { lines, total: usd(lines.reduce((t, l) => t + l.units * l.rate_usd, 0)) };
 }
 // The first rate outside its band, in words; undefined when every rate is in its band.
-function offBand(r) {
+export function offBand(r) {
   for (const k of STEP_RATES) {
     const b = RATE_BANDS[k], low = b.list, high = b.list * 4;
     if (!(typeof r?.[k] === "number" && r[k] >= low - 1e-12 && r[k] <= high + 1e-12)) return `--rates ${k}=${r?.[k]}: ${b.endpoint_id}'s rate is outside ${low} to ${high} USD ${b.unit} (its list price to four times it; under list prices the plan below what fal bills): copy the rate from get_pricing's answer again`;

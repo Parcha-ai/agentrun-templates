@@ -32,9 +32,12 @@
 //   fixtures/fal-mcp.json): the still key's submit_job answer gives its request_id, and wait_for_jobs' completed answer
 //   for that request its images[0].url. Shot n's still is its remake's output when media/still-<n>-2.png was saved,
 //   else its first take's; a shot the fake made no still for may start from another shot's (a borrowed still);
-// - film/price.json is there, priced the plan rebuilt from (its plan_sha256 is film/plan.json's), fits (true, and its
-//   plan_usd at or under its max_fal_usd), and the paid calls sent, each at its price line as cost bills it, come to at
-//   most its max_fal_usd.
+// - film/price.json is there, priced the plan rebuilt from (its plan_sha256 is film/plan.json's) and fits (true). Its
+//   lines are the run's to write, so none is trusted: the plan is priced again with the repo's kit (priceOf) from
+//   film/plan.json and the file's rates, which must be in their bands (offBand); the file's lines and plan_usd must be
+//   that price, and that price at or under max_fal_usd. Each paid call sent under the run's stem is priced from those
+//   lines, as cost bills it (a remake at its shot's still, from the reserve): a call the plan has no line for fails,
+//   naming it, and the calls sent come to at most max_fal_usd.
 // Prints one line: `SENT PASS n=<calls checked> (repo check; serve's grade is separate; stopgap for agentrun #3824)`
 // (exit 0), `SENT FAIL <the first reason> [(and N more)] (...the same)` (exit 1), or `SENT VOID <why>` when it can't
 // find its inputs or has nothing to check (exit 2: no verdict; a live run on real fal has no fake log).
@@ -367,25 +370,50 @@ function checkPrice(p, bad) {
   const hash = existsSync(planPath) ? createHash("sha256").update(readFileSync(planPath)).digest("hex") : null;
   if (p.plan_sha256 !== hash) bad("film/price.json's plan_sha256 is not film/plan.json's: the price is of another plan");
   if (p.fits !== true) bad(`film/price.json's fits is ${show(p.fits)}, not true`);
+  // The file's lines and plan_usd are the run's to write: the plan is priced again here, with the repo's kit, from the
+  // run's plan and the file's rates, and those rates must be in their bands.
+  const off = kit.offBand(p.rates);
+  if (off) return bad(`film/price.json's rates: ${off}`);
+  let plan;
+  try {
+    plan = JSON.parse(readFileSync(planPath, "utf8"));
+  } catch (error) {
+    return bad(`film/plan.json can't be read to price it again: ${error.message.split("\n")[0]}`);
+  }
+  let price;
+  try {
+    price = kit.priceOf(plan.cut.shots, plan.song.minutes, plan.lyrics_on, p.rates);
+  } catch (error) {
+    return bad(`film/plan.json can't be priced again: ${error.message.split("\n")[0]}`);
+  }
+  if (!(price.lines.length && price.lines.every((l) => typeof l.usd === "number" && Number.isFinite(l.usd)) && Number.isFinite(price.total))) return bad("film/plan.json can't be priced again: its shots or song minutes are not what plan writes");
+  const want = JSON.parse(JSON.stringify(price.lines));
+  const at = [...Array(Math.max(want.length, p.lines.length)).keys()].find((i) => !isDeepStrictEqual(p.lines[i], want[i]));
+  if (at !== undefined) bad(`film/price.json's lines are not the plan's at its rates: ${want[at]?.step ?? `line ${at + 1}`} is ${show(p.lines[at])}, not ${show(want[at])}`);
+  else if (p.plan_usd !== price.total) bad(`film/price.json's plan_usd ${p.plan_usd} is not the plan's price at its rates, ${price.total}`);
   const max = p.max_fal_usd;
-  if (max !== null && p.plan_usd > max + 1e-9) bad(`film/price.json's plan_usd ${p.plan_usd} is over its max_fal_usd ${max}`);
-  if (max === null) return;
-  // The paid calls sent, each at its price line (a remake at its shot's still), as beats.mjs cost bills them.
+  if (max !== null && price.total > max + 1e-9) bad(`film/price.json's plan_usd ${price.total} is over its max_fal_usd ${max}`);
+  // The paid calls sent, each at the plan's own line (a remake at its shot's still, from the reserve), as beats.mjs
+  // cost bills them. A call sent under the run's stem that the plan has no line for fails, naming it.
   const { stem } = runStem();
   if (stem === undefined) return;
   const lineOf = (step) => {
     const remake = step.match(/^still-(\d+)-2$/);
-    return p.lines.find((l) => isObj(l) && l.step === step && !l.reserve) ?? (remake ? p.lines.find((l) => isObj(l) && l.step === `still-${remake[1]}`) : undefined);
+    return price.lines.find((l) => l.step === step && !l.reserve) ?? (remake ? price.lines.find((l) => l.step === `still-${remake[1]}`) : undefined);
   };
   let total = 0;
   for (const c of run.mcp_calls) {
     const key = c.tool === "mcp:fal/submit_job" && isObj(c.arguments) ? c.arguments.submission_key : undefined;
     if (typeof key !== "string" || !key.startsWith(`mu-${stem}-`)) continue;
     const line = lineOf(key.slice(`mu-${stem}-`.length));
-    if (line && typeof line.usd === "number") total += line.usd;
+    if (!line) {
+      bad(`the call sent as ${key} has no line in the plan's price (its steps: isolate, transcript, still-<n>, still-<n>-2, clip-<n> of the plan's shots)`);
+      continue;
+    }
+    total += line.usd;
   }
   total = Math.round(total * 1000) / 1000;
-  if (total > max + 1e-9) bad(`the calls sent come to $${total} at film/price.json's rates, over its max_fal_usd ${max}`);
+  if (max !== null && total > max + 1e-9) bad(`the calls sent come to $${total} at film/price.json's rates, over its max_fal_usd ${max}`);
 }
 
 if (lines.length) {
