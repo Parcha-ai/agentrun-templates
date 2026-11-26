@@ -154,10 +154,13 @@ time on the beat grid either way, so the cut still lands on its bar line.
 node film/beats.mjs cost --film film --stem <the stem beats.mjs stem printed> --sent isolate,transcript,still-1,...,still-N[,still-<n>-2],clip-1,...,clip-N [--failed clip-5,...] [--pending clip-7,...]
 ```
 
-`--sent` names every paid step the run sent (only those sent: no lyrics steps when lyrics are off, no clip that was
-never submitted); `--failed` those fal failed or refused (they bill 0 here); `--pending` those still pending when the
-run stopped waiting (they count at their full price, with `pending` true: fal may yet finish and bill them). It prints
-`fal_cost_usd` at the rates `price` used and writes it to `film/cost.json`, which `answer.mjs` reads.
+`--sent` names every paid step the run sent, each once (only those sent: no lyrics steps when lyrics are off, no clip
+that was never submitted); `--failed` those fal failed or refused (they bill 0 here); `--pending` those still pending
+when the run stopped waiting (they count at their full price, with `pending` true: fal may yet finish and bill them).
+Every still, remake and clip in `media/stills.json` and `media/clips.json` is in `--sent` exactly once: a step named
+twice, a recorded key left out, or a still or clip the records don't hold is refused, naming the key, and nothing is
+written. It prints `fal_cost_usd` at the rates `price` used and writes it to `film/cost.json`, which `answer.mjs` reads
+and checks against the records the same way.
 
 ## 9. The answer
 
@@ -165,8 +168,8 @@ run stopped waiting (they count at their full price, with `pending` true: fal ma
 node .agents/skills/music-video/kit/answer.mjs --facts media/answer-facts.json
 ```
 
-Last, in every run (a refused one too), after the facts file (agent.md's Answer: the status, the song as given, the
-renders, the kept warnings and review fixes, held keys and shot errors, the instructions in the lyrics, notes). It
+Last, in every run (a refused one too), after the facts file (agent.md's Answer: the status, the input's max_fal_usd,
+the song as given, the renders, the kept warnings and review fixes, held keys and shot errors, the instructions in the lyrics, notes). It
 builds the whole answer from the run's files: `beats`, `cut` and `shots` from `film/plan.json`, each shot's picture from
 `storyboard.md`, its lyric from `film/lyrics.json`, what is on screen from `film/placed.json`, the remakes from
 `media/stills.json` (a remake is the shot's still only when `media/still-<n>-2.png` was saved; one that failed is said
