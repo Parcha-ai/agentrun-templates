@@ -108,7 +108,10 @@ total 0), and say in `error` and the report that the plan's price is over the ce
 made. Never drop the lyrics, a shot or a second of the cut to save money. Price comes before every still and clip,
 and the kit holds that order: `stills`, `remake` and `clips` build nothing (exit 2, no call printed) until `price` has
 written `film/price.json` for the plan as it is now and the plan fits. A plan made again with a different cut removes
-that price, so run `price` again after it.
+that price, so run `price` again after it. Each rate is copied exactly as `get_pricing` answers it: `price` refuses one
+under fal's list price or over four times it, naming the endpoint. The first `price` records the ceiling it was given
+in `film/ceiling.json`, and every later `price` in the run takes the same `--max`: one left out or changed is refused,
+so give `--max` from the first `price` on whenever the input sets `max_fal_usd`.
 
 ## 4. Keys
 
@@ -282,7 +285,10 @@ run does this, a refused one too:
 1. **The cost.** When anything was sent, `node film/beats.mjs cost` (the skill's step 8) for every paid step sent; it
    writes `film/cost.json`.
 2. **The facts.** `write` `media/answer-facts.json`, one JSON object of what only you know:
-   - `status`: `completed`, `partial`, `over_budget` (only over a `max_fal_usd` the user set), `refused` or `failed`;
+   - `max_fal_usd`: the input's `max_fal_usd` exactly as given, or null when it sets none. The answer is refused when
+     the price or the recorded ceiling was judged against another.
+   - `status`: `completed`, `partial`, `over_budget` (only over a `max_fal_usd` the user set, with nothing paid),
+     `refused` or `failed`;
      `failed_step` and `error` (fal's or the refusal's own words), null when none. `partial` and `failed` come only from
      the failed steps this page names (a job fal failed, refused or held, a save, `place`, the render); how a still or
      a clip looks never does: a film made from every step with every job completed is `completed`, and a picture that

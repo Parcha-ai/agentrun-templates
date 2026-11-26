@@ -28,8 +28,11 @@
 // price   the plan priced from get_pricing's rates (isolation and transcript per minute of the song, a still per image,
 //         a clip per second), with two stills held in reserve for remakes. --max is the user's own ceiling
 //         (max_fal_usd), given only when they set one: a plan over it prints OVER YOUR CEILING. Without --max nothing is
-//         over. It writes film/price.json. A rate outside its endpoint's band (a quarter to four times fal's list price,
-//         RATE_BANDS) is a misread answer: an error naming the endpoint and the band, and nothing is priced.
+//         over. It writes film/price.json. A rate outside its endpoint's band (fal's list price to four times it,
+//         RATE_BANDS) is a misread answer: an error naming the endpoint and the band, and nothing is priced. A rate under
+//         list would price a plan below what fal bills, so the band has no room below it. The run's first price records
+//         its --max (or none) in film/ceiling.json, which plan never removes: once a ceiling is recorded, a price with
+//         --max left out or another --max is refused, and a ceiling given after a first price with none is recorded.
 // lyrics  speech-to-text's words (fal's answer, written to a file as fal gave it) mapped into the cut: lines, the lyric
 //         under each shot, film/lyrics.json, the WebVTT file and film/compositions/lyrics.html (the captions scene).
 // place   writes each shot into film/index.html on the cut's clock (its clip, or its still with a slow push-in when
@@ -39,9 +42,11 @@
 //         extracts every video of a film at once, and six clips' extractions together run a 4 GiB sandbox out of memory.
 // stem    prints the run's key stem: the one in the file when it holds one (a resumed run), else a new one from the
 //         sandbox's random bytes, written there first. A model never makes one.
-// stills, remake and clips build nothing until the plan is priced and fits: film/price.json with fits true and the
-//         sha256 of film/plan.json as priced. Over the user's ceiling, never priced, or priced for a plan since changed,
-//         each exits 2 and prints nothing to send. plan removes film/price.json when it writes a different plan.
+// stills, remake and clips build nothing until the plan is priced and fits: film/price.json with the sha256 of
+//         film/plan.json as priced and the ceiling film/ceiling.json records, its rates in their bands, and the plan's
+//         price worked out again from the plan and those rates at or under that ceiling (never its fits flag). Over the
+//         user's ceiling, never priced, or priced for a plan since changed, each exits 2 and prints nothing to send.
+//         plan removes film/price.json when it writes a different plan.
 // stills  every still's submit_job, built from the storyboard and the plan: shot n's prompt is the style line, its
 //         storyboard picture word for word and "No text, no lettering, no logos.", with the fixed fields (one image, the
 //         plan's aspect, 1K, png, no web search). It prints one `submit_job {...}` line per still, to send as printed,
@@ -62,7 +67,10 @@
 //         when it is the same and prints the same calls; when anything differs it refuses, naming the shot.
 // cost    the answer's fal_cost_usd from the steps sent (a failed or refused one at 0; one still pending when the run
 //         stopped waiting at its full price, pending true, since fal may yet finish and bill it), at the rates price
-//         used, each with its key mu-<stem>-<step>. It writes film/cost.json, which answer.mjs reads.
+//         used, each with its key mu-<stem>-<step>. Every still and clip the kit recorded (media/stills.json,
+//         media/clips.json) is in --sent exactly once: a step named twice, a recorded key left out, or a still or clip
+//         the records don't hold is an error naming the key, and nothing is written. It writes film/cost.json, which
+//         answer.mjs reads.
 //
 // Exit 2: wrong arguments, or a film whose files don't match the plan (place reads every shot back after writing it;
 // the message names the shot); 3: the song can't be decoded, is too short, or has no beat to cut on; 0: done.
@@ -509,17 +517,18 @@ const readPlan = (film) => {
 
 // ---------- the price ----------
 const STEP_RATES = ["isolation", "transcript", "still", "clip"];
-// A sanity band per endpoint for the rates the run copies from get_pricing's answer: a quarter of fal's list price to
-// four times it. A rate outside its band is a misread answer (a slipped digit prices a plan under a ceiling it is
-// over), so price refuses it. List prices: audio-isolation $0.10 a minute, speech-to-text $0.03 a minute, Nano Banana
-// Pro $0.15 an image at 1K, Kling 3.0 Pro image to video $0.112 a second with audio off.
+// A sanity band per endpoint for the rates the run copies from get_pricing's answer: fal's list price to four times it.
+// A rate outside its band is a misread answer, so price refuses it. Under list is the side a ceiling can't afford (a
+// slipped digit prices a plan under a ceiling it is over), so the band has no room there; over it, a misread prices
+// high, which is safe. List prices: audio-isolation $0.10 a minute, speech-to-text $0.03 a minute, Nano Banana Pro
+// $0.15 an image at 1K, Kling 3.0 Pro image to video $0.112 a second with audio off.
 const RATE_BANDS = {
   isolation: { endpoint_id: "fal-ai/elevenlabs/audio-isolation", list: 0.1, unit: "a minute" },
   transcript: { endpoint_id: "fal-ai/elevenlabs/speech-to-text", list: 0.03, unit: "a minute" },
   still: { endpoint_id: "fal-ai/nano-banana-pro", list: 0.15, unit: "an image" },
   clip: { endpoint_id: "fal-ai/kling-video/v3/pro/image-to-video", list: 0.112, unit: "a second" },
 };
-function priceOf(shots, minutes, lyricsOn, r) {
+export function priceOf(shots, minutes, lyricsOn, r) {
   const lines = [];
   if (lyricsOn) {
     lines.push({ step: "isolate", endpoint_id: "fal-ai/elevenlabs/audio-isolation", units: minutes, unit: "minutes", rate_usd: r.isolation });
@@ -534,6 +543,29 @@ function priceOf(shots, minutes, lyricsOn, r) {
   }
   return { lines, total: usd(lines.reduce((t, l) => t + l.units * l.rate_usd, 0)) };
 }
+// The first rate outside its band, in words; undefined when every rate is in its band.
+export function offBand(r) {
+  for (const k of STEP_RATES) {
+    const b = RATE_BANDS[k], low = b.list, high = b.list * 4;
+    if (!(typeof r?.[k] === "number" && r[k] >= low - 1e-12 && r[k] <= high + 1e-12)) return `--rates ${k}=${r?.[k]}: ${b.endpoint_id}'s rate is outside ${low} to ${high} USD ${b.unit} (its list price to four times it; under list prices the plan below what fal bills): copy the rate from get_pricing's answer again`;
+  }
+  return undefined;
+}
+// The run's ceiling as its first price recorded it (film/ceiling.json): {max_fal_usd: <USD or null>}, or undefined
+// before any price. plan never removes it, so a new plan is priced against the same ceiling.
+const ceilingPath = (film) => join(film, "ceiling.json");
+function recordedCeiling(film) {
+  const path = ceilingPath(film);
+  if (!existsSync(path)) return undefined;
+  let c;
+  try {
+    c = JSON.parse(readFileSync(path, "utf8"));
+  } catch {
+    c = null;
+  }
+  if (!isObj(c) || !(c.max_fal_usd === null || (typeof c.max_fal_usd === "number" && c.max_fal_usd >= 0))) fail(2, `${path} is not what price writes ({"max_fal_usd": <the user's ceiling, or null>}): nothing is priced or built`);
+  return c;
+}
 function price() {
   const film = need("film");
   const data = readPlan(film);
@@ -544,14 +576,18 @@ function price() {
     r[k] = Number(v);
   }
   for (const k of STEP_RATES) if (r[k] === undefined) fail(2, `--rates is missing ${k}`);
-  for (const k of STEP_RATES) {
-    const b = RATE_BANDS[k], low = b.list / 4, high = b.list * 4;
-    if (r[k] < low - 1e-12 || r[k] > high + 1e-12) fail(2, `--rates ${k}=${r[k]}: ${b.endpoint_id}'s rate is outside ${low} to ${high} USD ${b.unit} (a quarter to four times its list price, ${b.list}): copy the rate from get_pricing's answer again`);
-  }
+  const off = offBand(r);
+  if (off) fail(2, off);
   // --max is max_fal_usd, given only when the user set one: their own ceiling. Without it nothing is refused for
   // price, and the price is information for the answer.
   const max = num("max", null);
   if (max !== null && !(max >= 0)) fail(2, "--max is max_fal_usd, 0 or more; leave it out when the user set none");
+  // The user's ceiling holds for the whole run: the first price records it, and once one is recorded a price without
+  // it, or with another, is refused (a ceiling the user set is never dropped or moved by a re-price).
+  const kept = recordedCeiling(film);
+  if (kept && kept.max_fal_usd !== null && max !== kept.max_fal_usd)
+    fail(2, `--max ${max === null ? "left out" : max}: film/ceiling.json records max_fal_usd ${kept.max_fal_usd}, this run's ceiling from its first price: give --max ${kept.max_fal_usd} (the user's ceiling never changes in a run); nothing is priced`);
+  if (!kept || kept.max_fal_usd !== max) writeFileSync(ceilingPath(film), JSON.stringify({ max_fal_usd: max }) + "\n");
   const minutes = data.song.minutes;
   const p = priceOf(data.cut.shots, minutes, data.lyrics_on, r);
   const fits = max === null || p.total <= max + 1e-9;
@@ -857,7 +893,8 @@ function writeStills(file, record) {
   writeFileSync(file, `{${top},\n "stills": [\n${record.stills.map((s) => `  ${JSON.stringify(s)}`).join(",\n")}\n]}\n`);
 }
 // Nothing is built for fal until the plan is priced and fits: price writes film/price.json, and stills, remake and
-// clips read it first. Over the user's ceiling, or never priced, they print nothing to send.
+// clips read it first. Over the user's ceiling, or never priced, they print nothing to send. The price is judged again
+// here from the plan and its rates against the recorded ceiling, never by the flags a file can be given by hand.
 const planHash = (film) => createHash("sha256").update(readFileSync(join(film, "plan.json"))).digest("hex");
 function priced(film) {
   const path = join(film, "price.json");
@@ -869,7 +906,13 @@ function priced(film) {
   }
   if (p === null || typeof p !== "object") fail(2, "the plan is over the ceiling you set (or not priced yet): nothing is built");
   if (!existsSync(join(film, "plan.json")) || p.plan_sha256 !== planHash(film)) fail(2, "the plan changed since it was priced: run price again (nothing is built)");
-  if (p.fits !== true) fail(2, "the plan is over the ceiling you set (or not priced yet): nothing is built");
+  const kept = recordedCeiling(film);
+  if (!kept || p.max_fal_usd !== kept.max_fal_usd) fail(2, "film/price.json was not judged against the ceiling film/ceiling.json records for this run: run price again with --max <the user's max_fal_usd> (nothing is built)");
+  const off = offBand(p.rates);
+  if (off) fail(2, `film/price.json: ${off} (nothing is built)`);
+  const data = readPlan(film);
+  const total = priceOf(data.cut.shots, data.song.minutes, data.lyrics_on, p.rates).total;
+  if (!Number.isFinite(total) || (kept.max_fal_usd !== null && total > kept.max_fal_usd + 1e-9) || p.fits !== true) fail(2, "the plan is over the ceiling you set (or not priced yet): nothing is built");
 }
 const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
 const never = (what) => `a record of ${what} that may have been sent is never replaced`;
@@ -1006,6 +1049,20 @@ function clips() {
 }
 
 // ---------- the cost ----------
+// The steps the records hold, by step (still-<n>, still-<n>-2, clip-<n>): the key each was built with, and its file.
+function recordedSteps(stem) {
+  const out = new Map();
+  for (const [file, list, command] of [["media/stills.json", "stills", "stills"], ["media/clips.json", "clips", "clips"]]) {
+    if (!existsSync(file)) continue;
+    const record = readRecord(file, list, command);
+    for (const item of record[list]) {
+      const m = typeof item.key === "string" ? item.key.match(/^mu-([a-z0-9]{8})-(.+)$/) : null;
+      if (!m || (stem !== null && m[1] !== stem)) fail(2, `${file} holds the key ${JSON.stringify(item.key)}, not a key of this run (mu-${stem ?? "<stem>"}-<step>): run cost with the run's --stem`);
+      out.set(m[2], { key: item.key, file });
+    }
+  }
+  return out;
+}
 function cost() {
   const film = need("film");
   const pricePath = join(film, "price.json");
@@ -1018,6 +1075,15 @@ function cost() {
   for (const f of failed) if (!sent.includes(f)) fail(2, `--failed names ${f}, which --sent doesn't`);
   for (const f of pending) if (!sent.includes(f)) fail(2, `--pending names ${f}, which --sent doesn't`);
   for (const f of pending) if (failed.has(f)) fail(2, `${f} is in both --failed and --pending: a job fal failed or refused is --failed; one with no answer yet is --pending`);
+  // Every still and clip the kit built is in its record, and each was sent once: --sent names each exactly once, and
+  // names no still or clip the records don't hold (isolate and transcript the run sends itself).
+  const keyOf = (step) => (stem ? `mu-${stem}-${step}` : step);
+  const recorded = recordedSteps(stem);
+  const times = new Map();
+  for (const step of sent) times.set(step, (times.get(step) ?? 0) + 1);
+  for (const [step, n] of times) if (n > 1) fail(2, `--sent names ${keyOf(step)} ${n} times: each step sent is in --sent once`);
+  for (const step of times.keys()) if (!recorded.has(step) && !["isolate", "transcript"].includes(step)) fail(2, `--sent names ${keyOf(step)}, which neither media/stills.json nor media/clips.json records: --sent holds the stills and clips the kit built, as their records hold them`);
+  for (const [step, { key, file }] of recorded) if (!times.has(step)) fail(2, `--sent leaves out ${key}, which ${file} records: every still and clip the kit built was sent, so each is in --sent once (in --failed too when fal failed or refused it)`);
   const steps = sent.map((step) => {
     const remake = step.match(/^still-(\d+)-2$/);
     const line = p.lines.find((l) => l.step === step && !l.reserve) ?? (remake ? p.lines.find((l) => l.step === `still-${remake[1]}`) : undefined);
