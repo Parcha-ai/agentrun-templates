@@ -154,8 +154,9 @@ time on the beat grid either way, so the cut still lands on its bar line.
 node film/beats.mjs cost --film film --stem <the stem beats.mjs stem printed> --sent isolate,transcript,still-1,...,still-N[,still-<n>-2],clip-1,...,clip-N [--failed clip-5,...] [--pending clip-7,...]
 ```
 
-`--sent` names every paid step the run sent, each once (only those sent: no lyrics steps when lyrics are off, no clip
-that was never submitted); `--failed` those fal failed or refused (they bill 0 here); `--pending` those still pending
+`--sent` names every paid step the run sent, each once (only those sent: no lyrics steps when lyrics are off; every
+call `stills`, `remake` and `clips` printed was sent as printed, so each is there); `--failed` those fal failed,
+refused or answered as held for other inputs (they bill 0 here); `--pending` those still pending
 when the run stopped waiting (they count at their full price, with `pending` true: fal may yet finish and bill them).
 Every still, remake and clip in `media/stills.json` and `media/clips.json` is in `--sent` exactly once: a step named
 twice, a recorded key left out, or a still or clip the records don't hold is refused, naming the key, and nothing is
