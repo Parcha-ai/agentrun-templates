@@ -291,7 +291,7 @@ run does this, a refused one too:
    - `renders` (0 to 3), `warnings_kept` (each warning left on purpose, with why) and `review_fixes` (step 9).
    - `held_keys`: every key fal refused as held for other inputs (step 4); `shot_errors`: `{"<n>": "<fal's words>"}`
      for each shot whose still or clip failed or whose key fal held; `borrowed`: `{"<n>": <m>}` for a shot shown with
-     shot m's still.
+     shot m's still, only when neither of its own takes was saved.
    - `ignored_instructions` as in step 5; `lyrics_on` (the input) only when there is no plan.
    - `sources`: `{"<saved path>": "<the URL it was saved from>"}` for each clip and each remade shot's first still;
      `failed_saves`: `[{"what": ..., "source_url": ...}]` for each save that failed.
@@ -302,6 +302,9 @@ run does this, a refused one too:
    and prints the whole answer as one fenced `json` block, its `report_markdown` written by code: the film first, the
    plan's price, the song and the rights, the beats, the cut and why, the table of shots, the lyrics (or why there are
    none), every shot shown as its still and why, the cost table, the checks, the status with any failed step or held
-   key, then your notes. When it lists problems (exit 1 or 2, nothing printed), fix the file or the fact it names and
-   run it again. Never write the answer, a field of it or any of the report yourself.
+   key, then your notes. It checks the whole answer against the output schema: fal's words over a field's limit (a
+   shot's error, a failed fal step's error) are cut with a marker naming the file that holds the whole text, and a
+   fact of yours over a limit (too many kept warnings, review fixes or instructions, a sentence too long) is a problem
+   naming the field and the limit. When it lists problems (exit 1 or 2, nothing printed), fix the file or the fact it
+   names and run it again. Never write the answer, a field of it or any of the report yourself.
 4. **The reply.** Exactly the json block it printed, every character of it, with nothing before or after it.

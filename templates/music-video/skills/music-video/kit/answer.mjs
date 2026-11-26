@@ -26,6 +26,13 @@
 // A file that is there and can't be read, or facts that don't fit the files, exit non-zero with words and print no
 // answer: fix the file (or run the kit command that writes it) and run this again. Its output, one fenced json block,
 // is the reply, sent as printed.
+//
+// The whole answer is checked against music-video.schema.json beside this file (the template's schema, kept the same by
+// a repo test; a run holds only the skill's folder), rule by rule as the file states them; a rule this check doesn't
+// know stops it. Fal's words the kit carries (a shot's error, the error of a failed fal step, the transcript's lyric
+// under a shot) are cut at a field's limit with a marker naming the file that holds the whole text, and the cut is said
+// on stderr. What the model wrote in the facts is its own to shorten: over a limit it is a problem naming the field and
+// the limit, never cut.
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
@@ -41,6 +48,68 @@ const factsPath = argv[1];
 
 const TABLE_HEAD = "| Shot | Film time (s) | Bars | Lyric | Picture (as storyboarded) | Used |";
 const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
+
+// ---------- the schema the answer is checked against ----------
+let schema;
+try {
+  schema = JSON.parse(readFileSync(new URL("./music-video.schema.json", import.meta.url), "utf8"));
+} catch (e) {
+  stop(`the kit's music-video.schema.json can't be read (${e.message.split("\n")[0]}): the kit is not as it ships`);
+}
+const NOTES = new Set(["$schema", "$id", "title", "description"]);
+const RULES = new Set(["type", "enum", "const", "required", "additionalProperties", "properties", "items", "maxItems", "maxLength", "minimum", "maximum", "pattern"]);
+(function known(s, at) {
+  if (!isObj(s)) stop(`music-video.schema.json: ${at} is not a schema object`);
+  for (const k of Object.keys(s)) if (!NOTES.has(k) && !RULES.has(k)) stop(`music-video.schema.json uses ${k} at ${at}, a rule answer.mjs doesn't check: the kit is not as it ships`);
+  if ("additionalProperties" in s && typeof s.additionalProperties !== "boolean") stop(`music-video.schema.json: ${at}'s additionalProperties is a schema, which answer.mjs doesn't check`);
+  for (const [k, x] of Object.entries(s.properties ?? {})) known(x, `${at}.${k}`);
+  if ("items" in s) known(s.items, `${at}[]`);
+})(schema, "the answer");
+// JSON Schema counts a string's characters (code points), not UTF-16 units.
+const chars = (v) => [...v].length;
+const typeOf = (v) => (v === null ? "null" : Array.isArray(v) ? "array" : Number.isInteger(v) ? "integer" : typeof v);
+const same = (x, y) => JSON.stringify(x) === JSON.stringify(y);
+// Each rule the value breaks, with its path and the schema's limit.
+function breaks(s, v, at, out = []) {
+  if (s.type !== undefined) {
+    const types = [s.type].flat(), t = typeOf(v);
+    if (!types.includes(t) && !(t === "integer" && types.includes("number"))) {
+      out.push([at, `is ${t}, not the schema's ${types.join(" or ")}`]);
+      return out;
+    }
+  }
+  if (s.enum && !s.enum.some((x) => same(x, v))) out.push([at, `is ${JSON.stringify(v)}, not one of the schema's ${s.enum.map((x) => JSON.stringify(x)).join(", ")}`]);
+  if ("const" in s && !same(s.const, v)) out.push([at, `is ${JSON.stringify(v)}, not the schema's ${JSON.stringify(s.const)}`]);
+  if (typeof v === "string") {
+    if (s.maxLength !== undefined && chars(v) > s.maxLength) out.push([at, `runs ${chars(v)} characters, over the schema's maxLength of ${s.maxLength}`]);
+    if (s.pattern !== undefined && !new RegExp(s.pattern, "u").test(v)) out.push([at, `is ${JSON.stringify(v.slice(0, 80))}, which doesn't match the schema's pattern ${s.pattern}`]);
+  }
+  if (typeof v === "number") {
+    if (s.minimum !== undefined && v < s.minimum) out.push([at, `is ${v}, under the schema's minimum of ${s.minimum}`]);
+    if (s.maximum !== undefined && v > s.maximum) out.push([at, `is ${v}, over the schema's maximum of ${s.maximum}`]);
+  }
+  if (Array.isArray(v)) {
+    if (s.maxItems !== undefined && v.length > s.maxItems) out.push([at, `holds ${v.length} items, over the schema's maxItems of ${s.maxItems}`]);
+    if (s.items) v.forEach((x, i) => breaks(s.items, x, `${at}[${i}]`, out));
+  } else if (isObj(v)) {
+    for (const k of s.required ?? []) if (!(k in v)) out.push([`${at ? `${at}.` : ""}${k}`, "is missing, and the schema requires it"]);
+    for (const [k, x] of Object.entries(v)) {
+      const path = `${at ? `${at}.` : ""}${k}`;
+      if (s.properties && k in s.properties) breaks(s.properties[k], x, path, out);
+      else if (s.additionalProperties === false) out.push([path, "is not a field the schema allows"]);
+    }
+  }
+  return out;
+}
+const shotRules = schema.properties?.shots?.items?.properties ?? {};
+// Fal's words the kit carries, cut at a limit: the start as fal gave it, then a marker naming where the whole text is.
+const cuts = [];
+function carry(text, max, where, what) {
+  if (typeof text !== "string" || max === undefined || chars(text) <= max) return text;
+  const mark = `… (cut at ${max} characters; the whole text is in ${where})`;
+  cuts.push(`${what} cut at ${max} characters; the whole text is in ${where}`);
+  return [...text].slice(0, Math.max(0, max - chars(mark))).join("").trimEnd() + mark;
+}
 const isInt = (v) => Number.isInteger(v) && v >= 0;
 // A file the run wrote: undefined when it isn't there; not JSON, or not the shape its writer gives it, stops the answer.
 function readJson(path, what, shape = () => true) {
@@ -61,9 +130,10 @@ if (!existsSync(factsPath)) stop(`${factsPath} is missing: write the facts no fi
 const facts = readJson(factsPath, "write it again as one JSON object", isObj);
 const problems = [];
 for (const k of Object.keys(facts)) if (!FACTS.includes(k)) problems.push(`${factsPath}: ${k} is not a fact this command takes (it takes ${FACTS.join(", ")}); every other field is built from the run's files`);
-const strings = (k, max) => {
+// A list of sentences; its limits are the schema's (notes, in the report only, at most 1000 characters each).
+const strings = (k, max = Infinity) => {
   const v = facts[k] ?? [];
-  if (!Array.isArray(v) || !v.every((x) => typeof x === "string" && x.trim() && x.length <= max)) problems.push(`${factsPath}: ${k} is a list of sentences, each at most ${max} characters`);
+  if (!Array.isArray(v) || !v.every((x) => typeof x === "string" && x.trim() && chars(x) <= max)) problems.push(`${factsPath}: ${k} is a list of sentences${max < Infinity ? `, each at most ${max} characters` : ""}`);
   return Array.isArray(v) ? v.map(String) : [];
 };
 const STATUS = ["completed", "partial", "over_budget", "refused", "failed"];
@@ -76,7 +146,7 @@ if (!isObj(song) || typeof song.url !== "string" || !song.url || !["own", "licen
   problems.push(`${factsPath}: song is {url: song_url as given, rights: own, licensed or null, duration_s: web_save's or null}`);
 if (!(Number.isInteger(facts.renders) && facts.renders >= 0 && facts.renders <= 3)) problems.push(`${factsPath}: renders is how many renders ran, 0 to 3`);
 for (const k of ["shot_errors", "borrowed", "sources"]) if (k in facts && !isObj(facts[k])) problems.push(`${factsPath}: ${k} is an object`);
-const warningsKept = strings("warnings_kept", 300), reviewFixes = strings("review_fixes", 300), ignored = strings("ignored_instructions", 400), notes = strings("notes", 1000);
+const warningsKept = strings("warnings_kept"), reviewFixes = strings("review_fixes"), ignored = strings("ignored_instructions"), notes = strings("notes", 1000);
 const failedSaves = Array.isArray(facts.failed_saves ?? []) ? facts.failed_saves ?? [] : [];
 if (!failedSaves.every((f) => isObj(f) && typeof f.what === "string" && f.what && (f.source_url === null || typeof f.source_url === "string")))
   problems.push(`${factsPath}: failed_saves is a list of {what, source_url}, one per save that failed`);
@@ -111,7 +181,8 @@ if (placed && (placed.shots.length !== planShots.length || placed.shots.some((s,
   stop("film/placed.json is not this plan's shots: run beats.mjs place again");
 const stillsRecord = readJson("media/stills.json", "it is written by beats.mjs stills only", (r) => isObj(r) && Array.isArray(r.stills) && r.stills.every(isObj));
 const clipsRecord = readJson("media/clips.json", "it is written by beats.mjs clips only", (r) => isObj(r) && Array.isArray(r.clips) && r.clips.every(isObj));
-const remade = new Set((stillsRecord?.stills ?? []).filter((s) => s.remake === true).map((s) => s.n));
+// The remakes sent; a remake counts as the shot's still only when its file was saved.
+const remakeSent = new Set((stillsRecord?.stills ?? []).filter((s) => s.remake === true).map((s) => s.n));
 const check = readJson("media/check.json", "write it again with hyperframes check --json (the skill's step 5)", isObj);
 
 let cost = readJson("film/cost.json", "run beats.mjs cost again", (c) => isObj(c) && Array.isArray(c.steps) && c.steps.every(isObj) && typeof c.total === "number");
@@ -143,23 +214,29 @@ const checkErrors = film.path && check ? sum("errorCount") : null;
 
 // ---------- the answer ----------
 const exists = (p) => existsSync(p);
-const stillOf = (n) => (remade.has(n) && exists(`media/still-${n}-2.png`) ? `media/still-${n}-2.png` : exists(`media/still-${n}.png`) ? `media/still-${n}.png` : null);
+// The take a shot's still is: 2 when its remake was sent and saved, else 1 when its first was saved, else none.
+const takeOf = (n) => (remakeSent.has(n) && exists(`media/still-${n}-2.png`) ? 2 : exists(`media/still-${n}.png`) ? 1 : null);
+const stillOf = (n) => ({ 1: `media/still-${n}.png`, 2: `media/still-${n}-2.png` })[takeOf(n)] ?? null;
 const lyricUnder = new Map((lyricsFile?.under_shots ?? []).map((u) => [u?.n, typeof u?.lyric === "string" ? u.lyric : ""]));
 for (const n of Object.keys(shotErrors)) if (!planShots.some((s) => String(s.n) === n) || typeof shotErrors[n] !== "string") problems.push(`${factsPath}: shot_errors names shot ${n}, which the plan has no shot for (or its words are not a string)`);
-for (const [n, m] of Object.entries(borrowed)) if (!planShots.some((s) => String(s.n) === n) || !planShots.some((s) => s.n === m)) problems.push(`${factsPath}: borrowed maps a shot to the shot whose still it shows, {"<n>": <m>}, both the plan's`);
+for (const [n, m] of Object.entries(borrowed)) {
+  if (!planShots.some((s) => String(s.n) === n) || !planShots.some((s) => s.n === m)) problems.push(`${factsPath}: borrowed maps a shot to the shot whose still it shows, {"<n>": <m>}, both the plan's`);
+  else if (takeOf(Number(n)) !== null) problems.push(`${factsPath}: borrowed names shot ${n}, but its own still is saved (${stillOf(Number(n))}): a shot borrows another's still only when neither of its takes was saved`);
+  else if (takeOf(m) === null) problems.push(`${factsPath}: borrowed gives shot ${n} shot ${m}'s still, but no still of shot ${m} is saved either`);
+}
 const shots = planShots.map((s, i) => {
   const used = placed ? placed.shots[i].use : null;
   const clip = exists(`media/clip-${s.n}.mp4`) ? `media/clip-${s.n}.mp4` : null;
   if (used === "clip" && !clip) problems.push(`shot ${s.n}: place shows its clip, but media/clip-${s.n}.mp4 is not saved`);
   return {
     ...s,
-    lyric: lyricUnder.get(s.n) ?? "",
+    lyric: carry(lyricUnder.get(s.n) ?? "", shotRules.lyric?.maxLength, "film/lyrics.json", `shot ${s.n}'s lyric`),
     picture: pictures[i],
     still_path: String(s.n) in borrowed ? stillOf(borrowed[String(s.n)]) : stillOf(s.n),
     clip_path: clip,
     used,
-    remade: remade.has(s.n),
-    error: shotErrors[String(s.n)] ?? null,
+    remade: takeOf(s.n) === 2,
+    error: carry(shotErrors[String(s.n)] ?? null, shotRules.error?.maxLength, factsPath, `shot ${s.n}'s error`),
   };
 });
 
@@ -200,8 +277,8 @@ const add = (what, path, url = null) => exists(path.replace(/\/$/, "")) && files
 add("film", "media/film.mp4");
 add("storyboard", "storyboard.md");
 for (const s of planShots) {
-  add("still", `media/still-${s.n}.png`, remade.has(s.n) ? null : stillUrl.get(s.n) ?? null);
-  add("still", `media/still-${s.n}-2.png`, remade.has(s.n) ? stillUrl.get(s.n) ?? null : null);
+  add("still", `media/still-${s.n}.png`, takeOf(s.n) === 1 ? stillUrl.get(s.n) ?? null : null);
+  add("still", `media/still-${s.n}-2.png`, takeOf(s.n) === 2 ? stillUrl.get(s.n) ?? null : null);
 }
 for (const s of planShots) add("clip", `media/clip-${s.n}.mp4`);
 add("lyrics", "media/lyrics.vtt");
@@ -212,6 +289,10 @@ add("stills record", "media/stills.json");
 add("clips record", "media/clips.json");
 add("composition", "film/");
 for (const f of failedSaves) files.push({ what: f.what, saved_path: null, source_url: f.source_url ?? null });
+
+// The run's error: fal's words when a fal job's step failed (the kit carries them, cut at the limit); else the model's.
+const FAL_STEP = /^(isolate|transcript|stills|still-\d{1,2}|clip-\d{1,2})$/;
+const error = FAL_STEP.test(facts.failed_step ?? "") ? carry(facts.error, schema.properties?.error?.maxLength, factsPath, "error") : facts.error ?? null;
 
 // ---------- the report, in agent.md's order ----------
 const cell = (v) => String(v).replace(/\s+/g, " ").replace(/\|/g, "\\|").trim();
@@ -236,12 +317,15 @@ if (plan) {
   const lines = [];
   if (!placed) lines.push("No shot was placed: no film was cut.");
   else if (!stillShots.length) lines.push("Every shot shows its clip.");
-  for (const s of stillShots) {
-    const why = placed.shots.find((p) => p.n === s.n)?.why;
-    lines.push(`- Shot ${s.n} shows its still with a slow push-in: ${why ?? "its clip can't be used"}${s.error ? `. Its clip: ${s.error}` : ""}.`);
+  // One line per shot: what it shows, which take, or whose still it borrows.
+  for (const s of shots) {
+    const take = takeOf(s.n), from = borrowed[String(s.n)], parts = [];
+    if (s.used === "still") parts.push(`shows ${from === undefined ? "its still" : `shot ${from}'s still`} with a slow push-in: ${placed.shots.find((p) => p.n === s.n)?.why ?? "its clip can't be used"}`);
+    if (take === 2) parts.push("had its still remade once, and the film uses the second take");
+    else if (take === 1 && remakeSent.has(s.n)) parts.push("had a remake of its still tried, which failed, so the film uses its first take");
+    if (from !== undefined) parts.push(`has no still of its own (${remakeSent.has(s.n) ? "its first take and its remake both failed" : "its still failed"}) and borrows shot ${from}'s`);
+    if (parts.length) lines.push(`- Shot ${s.n} ${parts.join("; ")}.${s.error ? ` Fal's words: ${s.error}` : ""}`);
   }
-  for (const s of shots) if (s.remade) lines.push(`- Shot ${s.n}'s still was remade once; the film uses its second take.`);
-  for (const [n, m] of Object.entries(borrowed)) lines.push(`- Shot ${n} has no still of its own: it shows shot ${m}'s.`);
   const said = lines.filter((l) => !l.startsWith("- ")), listed = lines.filter((l) => l.startsWith("- "));
   out.push(`**Stills shown:**${said.length ? ` ${said.join(" ")}` : ""}${listed.length ? `\n${listed.join("\n")}` : ""}`);
 }
@@ -254,7 +338,7 @@ if (film.path) {
   out.push(`**Checks:** ${checkErrors} check errors and ${warns} warning${warns === 1 ? "" : "s"} from hyperframes check; ${facts.renders} render${facts.renders === 1 ? "" : "s"}.${warningsKept.length ? `\nWarnings kept:\n${warningsKept.map((x) => `- ${x}`).join("\n")}` : ""}${reviewFixes.length ? `\nReview fixes:\n${reviewFixes.map((x) => `- ${x}`).join("\n")}` : ""}`);
 } else out.push(`**Checks:** no film was rendered${facts.renders ? ` (${facts.renders} render${facts.renders === 1 ? "" : "s"} tried)` : ""}.`);
 const end = [`**Status:** ${facts.status}${facts.failed_step ? `, failed at ${facts.failed_step}` : ""}.`];
-if (facts.error) end.push(`> ${String(facts.error).replace(/\n/g, "\n> ")}`);
+if (error) end.push(`> ${String(error).replace(/\n/g, "\n> ")}`);
 if (held.length) end.push(`Keys fal holds for other inputs (never sent again, nothing taken from them): ${held.map((k) => `\`${k}\``).join(", ")}.`);
 for (const f of failedSaves) end.push(`- A save failed: ${f.what}${f.source_url ? ` from ${f.source_url}` : ""}.`);
 out.push(end.join("\n"));
@@ -276,16 +360,27 @@ const answer = {
   checks: { check_errors: checkErrors, warnings_kept: warningsKept, review_fixes: reviewFixes, renders: facts.renders },
   files,
   failed_step: facts.failed_step ?? null,
-  error: facts.error ?? null,
+  error: error ?? null,
   ignored_instructions: ignored,
   report_markdown: report,
 };
 const text = JSON.stringify(answer, null, 1);
 if (text.includes("```")) problems.push(`${factsPath}: a fact holds three backticks, which would end the reply's json block: write it without them`);
-if (report.length > 30000) problems.push(`report_markdown runs ${report.length} characters, over the schema's 30000: shorten the notes`);
+// The answer as printed, against the schema: each rule broken names the field, its limit and where to fix it.
+const FROM = [
+  [/^checks\.(warnings_kept|review_fixes|renders)\b/, (m) => `${m[1]} in ${factsPath}`],
+  [/^(song|status|failed_step|error|held_keys|ignored_instructions)\b/, (m) => `${m[1]} in ${factsPath}`],
+  [/^shots\[(\d+)\]\.picture/, (m) => `storyboard.md, shot ${planShots[Number(m[1])]?.n}'s picture`],
+  [/^report_markdown/, () => `the facts the report quotes (notes, the kept warnings and review fixes, the instructions) in ${factsPath}`],
+];
+for (const [at, what] of breaks(schema, JSON.parse(text), "")) {
+  const hit = FROM.map(([re, to]) => [at.match(re), to]).find(([m]) => m);
+  problems.push(`${at} ${what}: fix ${hit ? hit[1](hit[0]) : "the run's file it is built from, or run the kit command that writes it"}`);
+}
 if (problems.length) {
   console.error(`answer.mjs: ${problems.length} problem${problems.length === 1 ? "" : "s"}; no answer printed:`);
   for (const p of problems) console.error(`- ${p}`);
   process.exit(1);
 }
+for (const c of cuts) console.error(`answer.mjs: ${c}`);
 console.log("```json\n" + text + "\n```");

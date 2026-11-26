@@ -169,11 +169,14 @@ Last, in every run (a refused one too), after the facts file (agent.md's Answer:
 renders, the kept warnings and review fixes, held keys and shot errors, the instructions in the lyrics, notes). It
 builds the whole answer from the run's files: `beats`, `cut` and `shots` from `film/plan.json`, each shot's picture from
 `storyboard.md`, its lyric from `film/lyrics.json`, what is on screen from `film/placed.json`, the remakes from
-`media/stills.json`, `plan_usd` from `film/price.json`, `fal_cost_usd` from `film/cost.json`, the stem from
+`media/stills.json` (a remake is the shot's still only when `media/still-<n>-2.png` was saved; one that failed is said
+as a failed attempt, the first take in use), `plan_usd` from `film/price.json`, `fal_cost_usd` from `film/cost.json`, the stem from
 `media/run-keys.json`, the check's errors from `media/check.json`, the film's length and canvas from ffprobe, and the
 files saved. `report_markdown` is written by code, in agent.md's order, the table of shots inside it. A file that is
 there and can't be read, or a fact the files contradict (a completed run with no film, an over-ceiling price with
-another status), exits non-zero naming it and prints no answer: fix it and run again. What it prints, one fenced `json`
+another status), exits non-zero naming it and prints no answer: fix it and run again. The whole answer is checked
+against the output schema (`kit/music-video.schema.json`, the template's own): fal's words over a limit are cut with a
+marker naming the file that holds them whole; a fact of yours over a limit is refused, naming the field and the limit. What it prints, one fenced `json`
 block, is the reply, sent exactly as printed.
 
 ## Never
