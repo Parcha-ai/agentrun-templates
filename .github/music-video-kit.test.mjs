@@ -917,7 +917,8 @@ test("a price.json that doesn't carry the plan's hash builds nothing: an old one
 // kept warnings and review fixes, the renders, the instructions in the lyrics, notes.
 const SCHEMA = JSON.parse(readFileSync(new URL("../templates/music-video/music-video.schema.json", import.meta.url), "utf8"));
 // The schema's own rules, enough of JSON Schema for this one: type, enum, const, required, additionalProperties,
-// properties, items, maxItems, maxLength, minimum, maximum and pattern.
+// properties, items, maxItems, maxLength, minimum, maximum and pattern. A length counts characters (code points), as JSON
+// Schema does, and a pattern is an unanchored ECMA-262 expression.
 function schemaProblems(s, v, at = "answer") {
   const out = [];
   const typeOf = (x) => (x === null ? "null" : Array.isArray(x) ? "array" : Number.isInteger(x) ? "integer" : typeof x);
@@ -928,8 +929,8 @@ function schemaProblems(s, v, at = "answer") {
   }
   if (s.enum && !s.enum.includes(v)) out.push(`${at}: ${JSON.stringify(v)} is not one of ${JSON.stringify(s.enum)}`);
   if ("const" in s && v !== s.const) out.push(`${at}: ${JSON.stringify(v)} is not ${JSON.stringify(s.const)}`);
-  if (typeof v === "string" && s.maxLength !== undefined && v.length > s.maxLength) out.push(`${at}: longer than ${s.maxLength}`);
-  if (typeof v === "string" && s.pattern && !new RegExp(s.pattern).test(v)) out.push(`${at}: ${JSON.stringify(v)} doesn't match ${s.pattern}`);
+  if (typeof v === "string" && s.maxLength !== undefined && [...v].length > s.maxLength) out.push(`${at}: longer than ${s.maxLength}`);
+  if (typeof v === "string" && s.pattern && !new RegExp(s.pattern, "u").test(v)) out.push(`${at}: ${JSON.stringify(v)} doesn't match ${s.pattern}`);
   if (typeof v === "number" && s.minimum !== undefined && v < s.minimum) out.push(`${at}: under ${s.minimum}`);
   if (typeof v === "number" && s.maximum !== undefined && v > s.maximum) out.push(`${at}: over ${s.maximum}`);
   if (Array.isArray(v)) {
@@ -1155,3 +1156,132 @@ test("answer: unreadable or missing input exits non-zero with words and prints n
   assert.match(variant("storyboard-of-another-plan", (d) => writeFileSync(join(d, "storyboard.md"), `Style: ${STYLE}\n1 | 5 s | lyric: "none" | picture: a quay | motion: still\n`)), /storyboard/);
 });
 const rewriteJson = (path, change) => writeFileSync(path, JSON.stringify(change(JSON.parse(readFileSync(path, "utf8")))));
+
+// ---------- the answer against the schema, and the remakes ----------
+// The answer is checked against the schema before it is printed, rule by rule as the schema file states them. Fal's
+// words (a shot's error, the error of a failed fal step) and the transcript's lyric are the kit's to carry: over a
+// limit they are cut, with a marker naming where the whole text is. What the model wrote in the facts is its own to
+// shorten: over a limit it is refused, naming the field and the limit, and nothing is printed.
+const KIT_SCHEMA = join(KIT, "music-video.schema.json");
+const copyOf = (name, from = full.dir) => {
+  const dir = join(root, `${name}-${++runs}`);
+  cpSync(from, dir, { recursive: true });
+  return dir;
+};
+const refusedBy = (r, name) => {
+  assert.notEqual(r.status, 0, `${name}: exited 0`);
+  assert.equal(r.stdout, "", `${name}: an answer was printed`);
+  return r.stderr;
+};
+const lineOf = (stderr, field) => stderr.split("\n").find((l) => l.includes(field)) ?? "";
+const cutMarker = (max, where) => `… (cut at ${max} characters; the whole text is in ${where})`;
+
+test("answer: the kit's music-video.schema.json is the template's, byte for byte", () => {
+  assert.ok(existsSync(KIT_SCHEMA), "the kit ships the schema answer.mjs checks against (a run holds only the skill's folder)");
+  assert.equal(readFileSync(KIT_SCHEMA, "utf8"), readFileSync(new URL("../templates/music-video/music-video.schema.json", import.meta.url), "utf8"));
+});
+
+test("answer: fal's words over a field's limit are cut with a marker naming the whole text's file, and the answer fits the schema", () => {
+  const dir = copyOf("long-words");
+  // Characters outside the BMP: a length counts code points, and a cut never splits one.
+  const shotWords = "Kling refused the job 🎬 ".repeat(80);
+  const stepWords = "fal answered 500 Internal Server Error 🎵 ".repeat(70);
+  rewriteJson(join(dir, "film", "lyrics.json"), (l) => ({ ...l, under_shots: l.under_shots.map((u) => (u.n === 2 ? { ...u, lyric: "la ".repeat(300) } : u)) }));
+  factsAt(dir, { ...DONE, status: "partial", failed_step: "clip-3", error: stepWords, shot_errors: { 3: shotWords } });
+  const r = answerOf(dir);
+  const a = replyOf(r);
+  const three = a.shots.find((s) => s.n === 3), two = a.shots.find((s) => s.n === 2);
+  assert.ok(three.error.endsWith(cutMarker(600, "media/answer-facts.json")), three.error.slice(-120));
+  assert.ok(three.error.startsWith(shotWords.slice(0, 200)), "the start of fal's words, as they are");
+  assert.ok([...three.error].length <= 600 && three.error.isWellFormed());
+  assert.ok(a.error.endsWith(cutMarker(2000, "media/answer-facts.json")), a.error.slice(-120));
+  assert.ok([...a.error].length <= 2000 && a.error.isWellFormed());
+  assert.ok(two.lyric.endsWith(cutMarker(600, "film/lyrics.json")), two.lyric.slice(-120));
+  assert.ok(a.report_markdown.includes(cutMarker(2000, "media/answer-facts.json")), "the report shows the cut");
+  assert.match(r.stderr, /cut/, "and says so");
+  // Under the limit nothing is cut.
+  factsAt(dir, { ...DONE, status: "partial", failed_step: "clip-3", error: "fal: 422", shot_errors: { 3: "fal: 422" } });
+  const b = replyOf(answerOf(dir));
+  assert.deepEqual([b.error, b.shots.find((s) => s.n === 3).error], ["fal: 422", "fal: 422"]);
+});
+
+test("answer: the model's facts over the schema's limits are refused, naming each field and its limit", () => {
+  const dir = copyOf("long-facts");
+  const many = (what) => Array.from({ length: 21 }, (_, i) => `${what} ${i + 1}`);
+  factsAt(dir, { ...DONE, warnings_kept: many("a warning kept"), review_fixes: many("a review fix"), ignored_instructions: many("an instruction in the lyrics") });
+  const e = refusedBy(answerOf(dir), "21 of each");
+  for (const field of ["warnings_kept", "review_fixes", "ignored_instructions"]) assert.match(lineOf(e, field), /\b20\b/, `${field}: ${e}`);
+  factsAt(dir, { ...DONE, ignored_instructions: ["x".repeat(401)] });
+  assert.match(lineOf(refusedBy(answerOf(dir), "a long instruction"), "ignored_instructions"), /\b400\b/);
+  factsAt(dir, { ...DONE, song: { ...DONE.song, url: `${SONG_URL}?${"q".repeat(2000)}` } });
+  assert.match(lineOf(refusedBy(answerOf(dir), "a long song url"), "song.url"), /\b2000\b/);
+  // A refusal's own words are the model's: refused, never cut.
+  const none = join(root, `refused-long-${++runs}`);
+  mkdirSync(join(none, "media"), { recursive: true });
+  factsAt(none, { status: "refused", failed_step: "rights", error: "Set song_rights to own or licensed. ".repeat(60), song: { url: SONG_URL, rights: null, duration_s: null }, renders: 0, lyrics_on: true });
+  assert.match(lineOf(refusedBy(answerOf(none), "a long refusal"), "error"), /\b2000\b/);
+});
+
+test("answer: the check is the schema file's: a tightened limit in the kit's copy refuses, and a keyword it doesn't check stops it", () => {
+  const kitCopy = join(root, `kit-${++runs}`);
+  cpSync(KIT, kitCopy, { recursive: true });
+  const schemaAt = join(kitCopy, "music-video.schema.json");
+  const schema = JSON.parse(readFileSync(KIT_SCHEMA, "utf8"));
+  const run = (s) => {
+    writeFileSync(schemaAt, JSON.stringify(s));
+    factsAt(full.dir, DONE);
+    return spawnSync(process.execPath, [join(kitCopy, "answer.mjs"), "--facts", "media/answer-facts.json"], { cwd: full.dir, encoding: "utf8" });
+  };
+  const tight = structuredClone(schema);
+  tight.properties.shots.items.properties.picture.maxLength = 5;
+  assert.match(lineOf(refusedBy(run(tight), "picture at 5"), "picture"), /\b5\b/);
+  const unknown = structuredClone(schema);
+  unknown.properties.shots.items.properties.picture.minLength = 1;
+  assert.match(refusedBy(run(unknown), "an unknown keyword"), /minLength/);
+  assert.equal(run(schema).status, 0, "the copy as shipped passes");
+});
+
+test("answer: a failed remake is a failed attempt and the first take; a borrowed still only when both takes are missing; one line per shot", () => {
+  const dir = copyOf("remade");
+  const r = kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "2", "--picture", "a paper ferry on teal water, seen from far behind");
+  assert.equal(r.status, 0, r.stderr);
+  const url2 = "https://v3.fal.media/files/rabbit/still2.png";
+  const linesOf = (report, n) => report.split("\n").filter((l) => new RegExp(`^- Shot ${n}\\b`).test(l));
+  const sourceOf = (a, path) => a.files.find((f) => f.saved_path === path)?.source_url;
+
+  // The remake failed: nothing at media/still-2-2.png, so the film uses the first take.
+  const failed = { ...DONE, status: "partial", failed_step: "still-2", error: "fal: the remake failed", shot_errors: { 2: "fal: the remake failed" } };
+  factsAt(dir, failed);
+  const a = replyOf(answerOf(dir));
+  const two = a.shots.find((s) => s.n === 2);
+  assert.deepEqual([two.remade, two.still_path], [false, "media/still-2.png"]);
+  assert.equal(linesOf(a.report_markdown, 2).length, 1, a.report_markdown);
+  assert.match(linesOf(a.report_markdown, 2)[0], /remake failed/);
+  assert.doesNotMatch(a.report_markdown, /second take/);
+  assert.equal(sourceOf(a, "media/still-2.png"), url2);
+
+  // The remake saved: the film uses the second take.
+  cpSync(join(media, "still.png"), join(dir, "media", "still-2-2.png"));
+  factsAt(dir, DONE);
+  const b = replyOf(answerOf(dir));
+  const two2 = b.shots.find((s) => s.n === 2);
+  assert.deepEqual([two2.remade, two2.still_path], [true, "media/still-2-2.png"]);
+  assert.equal(linesOf(b.report_markdown, 2).length, 1);
+  assert.match(linesOf(b.report_markdown, 2)[0], /second take/);
+  assert.deepEqual([sourceOf(b, "media/still-2-2.png"), sourceOf(b, "media/still-2.png")], [url2, null]);
+
+  // Both takes missing: it borrows shot 1's still, in one line, and no take of its own is said to be used.
+  rmSync(join(dir, "media", "still-2-2.png"));
+  rmSync(join(dir, "media", "still-2.png"));
+  factsAt(dir, { ...failed, borrowed: { 2: 1 } });
+  const c = replyOf(answerOf(dir));
+  const two3 = c.shots.find((s) => s.n === 2);
+  assert.deepEqual([two3.remade, two3.still_path], [false, "media/still-1.png"]);
+  assert.equal(linesOf(c.report_markdown, 2).length, 1, c.report_markdown);
+  assert.match(linesOf(c.report_markdown, 2)[0], /shot 1's/);
+  assert.doesNotMatch(c.report_markdown, /second take/);
+
+  // A shot whose own still is saved borrows nothing.
+  cpSync(join(media, "still.png"), join(dir, "media", "still-2.png"));
+  assert.match(refusedBy(answerOf(dir), "borrowed with a still of its own"), /borrowed/);
+});
