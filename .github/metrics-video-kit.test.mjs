@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { appendFileSync, chmodSync, closeSync, constants, cpSync, existsSync, linkSync, mkdirSync, openSync, readdirSync, readFileSync, symlinkSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
-import { join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { tempRoot } from "./temp-root.mjs";
 import vm from "node:vm";
 
@@ -1759,6 +1759,26 @@ test("--purge removes only in a folder that is inside the run's once entered: st
   assert.equal(r.status, 2, `the pages it could not reach are named: ${out}`);
   assert.match(r.stderr, /changed after it was checked/, out);
   assert.deepEqual(readdirSync(join(dir, "nested-moved", "stripe")), [inside], "the run's own page, never reached through the link, is left for the run to purge again");
+});
+
+test("--purge never works in the run's folder itself: stripe's parent swapped for a link to the folder above, the run's own files stay", () => {
+  const { dir } = filedFolder("p7-race-self", []);
+  const name = basename(dir);
+  mkdirSync(join(dir, "nested", name), { recursive: true });
+  const top = filedName();
+  writeFileSync(join(dir, top), "the run's own file");
+  writeFileSync(join(dir, "raw-1.json"), "the run's own file");
+  const page = filedName();
+  writeFileSync(join(dir, "nested", name, page), JSON.stringify(composioAnswer(stripeList(FILED_WEEK))));
+  // nested/<the run's name>, once nested is a link to the folder above the run, is the run's folder itself.
+  const r = spawnSync(process.execPath, ["--import", swapPreload(), join(dir, "film", "metrics.mjs"), "scan", "--pages", `nested/${name}`, "--purge"], {
+    encoding: "utf8", cwd: dir, env: { ...process.env, MV_SWAP: "parent", MV_NTH: "2", MV_RUN: dir, MV_OUTSIDE: dirname(dir) },
+  });
+  const out = r.stdout + r.stderr;
+  assert.ok(existsSync(join(dir, "nested-moved")), `the swap happened: ${out}`);
+  assert.ok(existsSync(join(dir, top)) && existsSync(join(dir, "raw-1.json")), `the run's own files stay: ${out}`);
+  assert.equal(r.status, 2, out);
+  assert.match(r.stderr, /changed after it was checked/, out);
 });
 
 test("a note that can't be written whole is never counted: a short write then ENOSPC stops the run (exit 3) and removes the pages", () => {
