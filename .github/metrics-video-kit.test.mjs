@@ -1138,8 +1138,11 @@ test("an agent-written raw page is refused: Stripe's answers were not filed, and
   const b = computeIn(planted.dir);
   assert.equal(b.status, 3, `a raw page beside the filed ones: ${b.out}`);
   assert.match(b.stderr, /not filed/);
-  // The scan refuses it too: it never reads values from a page the run wrote, nor calls such a run clean.
-  const s = kitIn(planted.dir, "scan", "--pages", "stripe");
+  // The scan refuses it too: it never reads values from a page the run wrote, nor calls such a run clean. (compute's
+  // refusal removed every page above, so the scan gets a folder of its own.)
+  const scanned = filedFolder("raw-beside-scan", FILED_PAGES.map(composioAnswer));
+  writeFileSync(join(scanned.dir, "stripe", "raw-3.json"), JSON.stringify(stripeList([txn("2026-11-19T10:00:00Z", "usd", "charge", 999900, 100)])));
+  const s = kitIn(scanned.dir, "scan", "--pages", "stripe");
   assert.notEqual(s.status, 0, `scan with a raw page: ${s.out}`);
   assert.match(s.out, /not filed/);
   assert.doesNotMatch(s.stdout, /"clean":true/);
