@@ -38,7 +38,7 @@ function compute(name, items, today, carried) {
     writeFileSync(join(dir, "carried.json"), JSON.stringify(carried));
     args.push("--carried", join(dir, "carried.json"));
   }
-  const r = spawnSync(process.execPath, args, { encoding: "utf8" });
+  const r = spawnSync(process.execPath, args, { encoding: "utf8", cwd: dir });
   assert.equal(r.status, 0, `compute ${name} exited ${r.status}: ${r.stderr}${r.stdout}`);
   return { data: JSON.parse(readFileSync(join(film, "data.json"), "utf8")), out: r.stdout };
 }
@@ -128,7 +128,7 @@ test("a week in more currencies than the answer can hold is refused in words, ne
   mkdirSync(pages, { recursive: true });
   cpSync(KIT, join(dir, "film"), { recursive: true });
   writeFileSync(join(pages, PAGE), JSON.stringify({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more: false }));
-  const r = spawnSync(process.execPath, [join(KIT, "metrics.mjs"), "compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", pages, "--film", join(dir, "film")], { encoding: "utf8" });
+  const r = spawnSync(process.execPath, [join(KIT, "metrics.mjs"), "compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", pages, "--film", join(dir, "film")], { encoding: "utf8", cwd: dir });
   assert.notEqual(r.status, 0, `21 currencies in one week: ${r.stdout.slice(0, 300)}`);
   assert.match(r.stderr, /21 currencies/);
 });
@@ -163,7 +163,7 @@ test("a week with more kinds of movement than the answer can hold is refused in 
   mkdirSync(pages, { recursive: true });
   cpSync(KIT, join(dir, "film"), { recursive: true });
   writeFileSync(join(pages, PAGE), JSON.stringify({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more: false }));
-  const r = spawnSync(process.execPath, [join(KIT, "metrics.mjs"), "compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", pages, "--film", join(dir, "film")], { encoding: "utf8" });
+  const r = spawnSync(process.execPath, [join(KIT, "metrics.mjs"), "compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", pages, "--film", join(dir, "film")], { encoding: "utf8", cwd: dir });
   assert.notEqual(r.status, 0, `41 kinds of movement left out in one week: ${r.stdout.slice(0, 300)}`);
   assert.match(r.stderr, /41 kinds of movement/);
 });
@@ -1364,13 +1364,15 @@ test("agent.md stops on an unfiled result, removes the pages on a customer_data 
   const said = (phrase) => new RegExp(phrase.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&").replace(/ /g, "\\s+"));
   assert.match(one, said('If a balance-list result shows transactions rather than the `filed whole at` summary, stop: `failed`, `failed_step: "stripe"`, and quote nothing from it.'));
   assert.match(one, said("Still naming a file after two fixes: run `node film/metrics.mjs scan --pages stripe --purge`"));
+  // As SKILL.md's step 3 says it: the next page, asked for twice and still missing, ends the run, its pages purged.
+  assert.match(one, said('If one is still missing after that, run `node film/metrics.mjs scan --pages stripe --purge`, then answer `failed`, `failed_step: "stripe"`.'));
   const need = agent.slice(agent.indexOf("  - source: composio"), agent.indexOf("  - source: url"));
   assert.match(need, /`error` is free text from the provider[\s\S]{0,240}?200 characters/);
   assert.match(skill, /scan --pages stripe --purge/);
 });
 
-test("a pages folder that is a link is never entered, written as stripe/ or stripe// too: --purge and compute's refusal", () => {
-  for (const [i, pages] of ["stripe/", "stripe//"].entries()) {
+test("a pages folder that is a link is never entered, written as stripe/, stripe//, stripe/. or ./stripe/: --purge and compute's refusal", () => {
+  for (const [i, pages] of ["stripe/", "stripe//", "stripe/.", "./stripe/"].entries()) {
     const run = join(root, `p3-slash-${i}`);
     const outside = join(root, `p3-slash-outside-${i}`);
     mkdirSync(outside, { recursive: true });
@@ -1389,4 +1391,65 @@ test("a pages folder that is a link is never entered, written as stripe/ or stri
     assert.equal(c.status, 3, `compute with --pages ${pages}: ${c.stdout}${c.stderr}`);
     assert.deepEqual(outsideNow(), [filed, "raw-1.json"].sort(), `compute's refusal with --pages ${pages} leaves the link's target alone`);
   }
+});
+
+// ---------- --pages names a folder inside the run's, read and written only as a folder of files ----------
+test("--pages outside the run's folder is refused, nothing read or removed: '..', an absolute path, a linked parent, a linked folder", () => {
+  const page = JSON.stringify(composioAnswer(stripeList(FILED_WEEK)));
+  for (const [i, spelled] of ["dots", "absolute", "linked parent", "linked folder"].entries()) {
+    const run = join(root, `p4-contain-${i}`);
+    const outside = join(root, `p4-contain-outside-${i}`);
+    mkdirSync(join(outside, "stripe"), { recursive: true });
+    mkdirSync(join(run, "media"), { recursive: true });
+    cpSync(KIT, join(run, "film"), { recursive: true });
+    writeFileSync(join(run, "media", "vo.txt"), CLEAN);
+    const filed = filedName();
+    writeFileSync(join(outside, "stripe", filed), page);
+    if (spelled === "linked parent") symlinkSync(outside, join(run, "a"));
+    if (spelled === "linked folder") symlinkSync(join(outside, "stripe"), join(run, "stripe"));
+    const pages = { dots: `../p4-contain-outside-${i}/stripe`, absolute: join(outside, "stripe"), "linked parent": "a/stripe", "linked folder": "stripe" }[spelled];
+    const refused = (r, what) => {
+      assert.equal(r.status, 3, `${what} with --pages ${pages} (${spelled}): ${r.out}`);
+      assert.match(r.stderr, /read and removed nothing/, `${what} with --pages ${pages} says so`);
+      const now = readdirSync(join(outside, "stripe")).map((f) => [f, readFileSync(join(outside, "stripe", f), "utf8")]);
+      assert.deepEqual(now, [[filed, page]], `${what} with --pages ${pages} (${spelled}) leaves the folder outside as it was`);
+    };
+    refused(kitIn(run, "compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", pages, "--film", "film"), "compute");
+    assert.ok(!existsSync(join(run, "film", "data.json")), `compute with --pages ${pages} (${spelled}) read no page`);
+    refused(kitIn(run, "scan", "--pages", pages), "scan");
+    refused(kitIn(run, "scan", "--pages", pages, "--final"), "scan --final");
+    refused(kitIn(run, "scan", "--pages", pages, "--purge"), "scan --purge");
+  }
+  // Spelled with "..", a folder that is still the run's own is read: the check is on where it is, not how it is written.
+  const { dir } = filedFolder("p4-contain-own", FILED_PAGES.map(composioAnswer));
+  const own = kitIn(dir, "compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", "../filed-p4-contain-own/stripe", "--film", "film");
+  assert.equal(own.status, 0, own.out);
+  assert.equal(revenueOf(dir).revenue.minor, filedNet);
+});
+
+test("the first --final's note goes only into a page that is a file: a page-named link is skipped and said, its target unchanged", () => {
+  const target = join(root, "p4-mark-target.json");
+  const body = JSON.stringify(stripeList([txn("2026-11-18T09:00:00Z", "usd", "charge", 1000, 59)]));
+  writeFileSync(target, body);
+  const linked = "STRIPE_LIST_BALANCE_TRANSACTIONS-2026-11-23T07-59-59-999Z-deadbeef.json";
+  const r = fixtureRun("week-over-week", "2026-11-23", {
+    items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)],
+    as: "p4-mark-link",
+    answer: KEPT_CODE,
+    beforeFinal: (dir) => symlinkSync(target, join(dir, "stripe", linked)),
+  });
+  assert.equal(r.final.status, 4, r.final.out);
+  assert.equal(readFileSync(target, "utf8"), body, "the note is never written through a link");
+  assert.ok(markOf(r.dir) !== undefined, "the filed page that is a file holds the note");
+  assert.match(r.final.err, /not marked: [^\n]*deadbeef\.json/, "the skipped link is named");
+});
+
+test("a throw in compute still removes the pages: a folder named as a filed page", () => {
+  const { dir } = filedFolder("p4-compute-throw", FILED_PAGES.map(composioAnswer));
+  const folder = filedName();
+  mkdirSync(join(dir, "stripe", folder));
+  const r = computeIn(dir);
+  assert.notEqual(r.status, 0, r.out);
+  assert.deepEqual(pagesIn(dir), [folder], "every filed page goes; the folder named as one is never entered");
+  assert.match(r.stderr, /Stripe's pages are removed/, r.out);
 });
