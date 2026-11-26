@@ -340,7 +340,7 @@ const OWN_PAGE = /^raw-\d+\.json$/;
 const notFiled = (dir, own) =>
   `${own.map((f) => `${dir}/${f}`).join(", ")}: a page the run wrote itself. Stripe's answers were not filed by AgentRun: the owner removed the agent's file setting on ${TOOL}, or the call was not made through it. The kit reads only the answers AgentRun files (${dir}/${TOOL}-<time>-<id>.json) and never a page the run wrote: make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`;
 function refuseOwnPages(dir) {
-  const own = existsSync(dir) ? readdirSync(dir).filter((f) => OWN_PAGE.test(f)).sort() : [];
+  const own = existsSync(pagesAt) ? readdirSync(pagesAt).filter((f) => OWN_PAGE.test(f)).sort() : [];
   if (own.length) stop(notFiled(dir, own));
 }
 // Every page in the folder, filed or the run's own, removed by its name in the folder itself and nothing else: a link
@@ -374,8 +374,11 @@ function removePagesIn(dir) {
   }
   return { removed, left };
 }
-// The folder of pages this command was given (compute's and scan's --pages).
+// The folder of pages this command was given (compute's and scan's --pages), as given: it names the folder in messages.
 let pagesDir = null;
+// Where checkPages found it (pagesFolder's real path): every page is listed and read there, never through the path as
+// given, whose ".." would be taken after a link it passes ("a/../stripe" with a a link is the link's ../stripe).
+let pagesAt = null;
 // The folder --pages must be inside: the run's, the one that holds the kit's own folder (film/metrics.mjs in a run). Not
 // the folder the kit runs in, nor scan's --root: the run chooses those, and `cd /` or `--root /` would make the whole
 // disk the run's.
@@ -423,7 +426,8 @@ function pagesFolder(dir) {
 // compute and scan start here: a pages folder outside the run's, or one that is a link, is refused before any page
 // is read or removed.
 function checkPages(dir) {
-  const { refused } = pagesFolder(dir);
+  const { at, refused } = pagesFolder(dir);
+  pagesAt = at;
   if (refused) fail(3, `--pages ${dir}: ${refused}. The kit reads and removes pages only in a folder inside the run's (the folder that holds film/), never through a link, so it read and removed nothing. AgentRun files Stripe's answers in stripe/ in the run's folder: run from there with --pages stripe. Otherwise make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`);
 }
 // A refusal that ends the run's use of the pages (the message says to answer failed): every page goes before it exits,
@@ -457,8 +461,8 @@ function filedPages(dir) {
   refuseOwnPages(dir);
   const pages = [];
   let errors = 0;
-  for (const f of existsSync(dir) ? rawFiles(dir) : []) {
-    const text = readFileSync(join(dir, f), "utf8");
+  for (const f of existsSync(pagesAt) ? rawFiles(pagesAt) : []) {
+    const text = readFileSync(join(pagesAt, f), "utf8");
     if (errorAnswer(text)) {
       errors++;
       continue;
@@ -1080,7 +1084,7 @@ function scan() {
   const final = args.final !== undefined;
   const pageFiles = () => {
     try {
-      return existsSync(dir) ? rawFiles(dir) : [];
+      return existsSync(pagesAt) ? rawFiles(pagesAt) : [];
     } catch {
       return [];
     }
@@ -1093,7 +1097,7 @@ function scan() {
   // retry. Each page is removed on its own, best effort. Only a SIGKILL (which no process can catch) leaves them.
   const marked = (f) => {
     try {
-      const page = JSON.parse(readFileSync(join(dir, f), "utf8"));
+      const page = JSON.parse(readFileSync(join(pagesAt, f), "utf8"));
       return page !== null && typeof page === "object" && Object.hasOwn(page, MARK);
     } catch {
       return false;
