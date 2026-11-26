@@ -1739,7 +1739,6 @@ test("the sent check reads film/cost.json: every step it bills was sent under it
   const cases = [
     ["no cost", (d) => rmSync(costPath(d)), /^SENT FAIL cost: the run left no film\/cost\.json/],
     ["a call sent that cost leaves out", (d) => rewriteJson(costPath(d), (c) => ({ ...c, steps: c.steps.filter((s) => s.step !== "clip-2") })), /^SENT FAIL cost: the call sent as mu-abcd1234-clip-2 is not in film\/cost\.json's steps\n$/],
-    ["a call sent that cost lists as never sent", (d) => rewriteJson(costPath(d), (c) => ({ ...c, steps: c.steps.filter((s) => s.step !== "clip-2"), unsent: ["clip-2"] })), /^SENT FAIL cost: the call sent as mu-abcd1234-clip-2 is not in film\/cost\.json's steps \(it lists it as never sent\)\n$/],
     ["a step billed that was never sent", (d) => rewriteJson(costPath(d), (c) => ({ ...c, steps: [...c.steps, { ...c.steps[0], step: "isolate", key: "mu-abcd1234-isolate" }] })), /^SENT FAIL cost: film\/cost\.json bills mu-abcd1234-isolate as sent, and no call was sent under that key\n$/],
   ];
   for (const [what, change, line] of cases) {
@@ -1749,6 +1748,32 @@ test("the sent check reads film/cost.json: every step it bills was sent under it
     assert.equal(r.status, 1, `${what}: ${r.stdout}`);
     assert.match(r.stdout, line, what);
   }
+});
+
+// A step film/cost.json lists as never sent was not sent: an entry it also bills, or one a call was sent under, is a
+// record that contradicts itself, and each entry is a step's name. One no call was sent under, and not billed, holds.
+test("the sent check fails a film/cost.json that lists a step as never sent and bills it, or a call was sent under it; each entry a string", () => {
+  const costPath = (d) => join(d, "film", "cost.json");
+  const cases = [
+    ["billed and listed as never sent, a call sent under it", (c) => ({ ...c, unsent: ["clip-2"] }), /^SENT FAIL cost: film\/cost\.json both bills clip-2 and lists it as never sent( \(and \d+ more\))?\n$/],
+    ["not billed and listed as never sent, a call sent under it", (c) => ({ ...c, steps: c.steps.filter((s) => s.step !== "clip-2"), unsent: ["clip-2"] }), /^SENT FAIL cost: the call sent as mu-abcd1234-clip-2 is listed as never sent in film\/cost\.json( \(and \d+ more\))?\n$/],
+    ["an entry that is not a step's name", (c) => ({ ...c, unsent: [7] }), /^SENT FAIL cost: film\/cost\.json is not what the kit's cost writes\n$/],
+  ];
+  for (const [what, change, line] of cases) {
+    const { dir, calls } = sentRun();
+    rewriteJson(costPath(dir), change);
+    const r = check(reportOf(dir, calls), dir);
+    assert.equal(r.status, 1, `${what}: ${r.stdout}`);
+    assert.match(r.stdout, line, what);
+  }
+  // Listed as never sent, with no call sent under it and not billed: it holds. (A step the records hold that no call
+  // was sent under fails before the cost is read, as "is in media/... and was never sent", so this one is a remake the
+  // run never made.)
+  const { dir, calls } = sentRun();
+  rewriteJson(costPath(dir), (c) => ({ ...c, unsent: ["still-2-2"] }));
+  const r = check(reportOf(dir, calls), dir);
+  assert.equal(r.stdout, "SENT PASS n=16\n");
+  assert.equal(r.status, 0);
 });
 
 // Two remakes at once both read the record before either wrote it: both pass the limit and the second write drops the
