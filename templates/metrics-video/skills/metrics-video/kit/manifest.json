@@ -1,7 +1,7 @@
 {
  "note": "sha256 of each file in this skill folder, written by node .github/lint-templates.mjs --write-manifests",
  "sha256": {
-  "SKILL.md": "c48092df016306d4c4f91d72ce8137b09619348bcfe280638675221c1116b938",
+  "SKILL.md": "8239fc43dadcf1c367f61b2fad76f86f667379904a10dde4d3f30a8e32d34238",
   "kit/build-captions.mjs": "911f7add6850f4c7a31f47a3bdbaf7d1b0c5fafea72e1c74013f236c8fc9db70",
   "kit/compositions/change.html": "0c34da8ceb150dd5a96269cb7556c1e9dd04ae25334062451b0042a329aa576f",
   "kit/compositions/days.html": "23545c4e337927514b0aa928934f0830ff81f5e98d2333acefe607643b5fe7bf",
