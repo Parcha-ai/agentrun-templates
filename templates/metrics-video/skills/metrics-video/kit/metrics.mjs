@@ -74,6 +74,7 @@
 // is never entered, nor a pages folder that is itself a link.
 // --pages names a folder inside the run's (the folder the kit runs in, or scan's --root), wherever its links lead:
 // compute and scan refuse any other (exit 3), read nothing there and remove nothing.
+// The first --final's note is written only into a page that is a file, never a link.
 // Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
 // them; the message names the scene), or customer data in a file (scan names the file and the item, never the value);
 // 3: the pages are wrong or incomplete, or a page is the run's own (the message says what to do); 4: scan --final only warned, the filed pages are kept for one more --final (not done); 0: done.
@@ -1349,8 +1350,18 @@ function scan() {
   const again = final && warnings.size > 0 && !rerun && raw.size > 0;
   if (again) {
     // The note goes into each raw page (MARK), never a file of the run's: the next --final is the last.
-    // An error answer filed as text (no JSON object) holds no note; the lists do.
+    // An error answer filed as text (no JSON object) holds no note; the lists do. A page-named link (or anything not a
+    // file) is never written: the note would land wherever it points. It is skipped, and said.
+    const skipped = [];
     for (const path of raw) {
+      try {
+        if (!lstatSync(path).isFile()) {
+          skipped.push(path);
+          continue;
+        }
+      } catch {
+        continue;
+      }
       let page;
       try {
         page = JSON.parse(readFileSync(path, "utf8"));
@@ -1361,6 +1372,7 @@ function scan() {
       page[MARK] = { warned: [...warnings.values()] };
       writeFileSync(path, JSON.stringify(page));
     }
+    if (skipped.length) console.error(`not marked: ${skipped.join(", ")} (a link, or not a file: the note is never written through one)`);
     console.log(stats(false, true));
     keep = true;
     fail(4, "exit 4, not done: the filed pages are kept for one more --final. Read each line named above; if it holds a customer's name, take the name out of media/answer.json; then run scan --pages stripe --final once more, whether you edited or not. That run is the last.");
