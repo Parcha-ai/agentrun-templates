@@ -1600,7 +1600,8 @@ test("the first --final's note skips a page-named hard link, and names it: the f
 });
 
 // A preload that swaps a name between the kit's check and its use, as a run's own process could: MV_SWAP=folder swaps
-// stripe/ for a link to MV_OUTSIDE at the first listing (after --purge has checked the folder); MV_SWAP=page swaps the
+// stripe/ for a link to MV_OUTSIDE at the first listing (after --purge has checked the folder), MV_SWAP=enter as the kit
+// first changes into a folder named stripe (after the same check); MV_SWAP=page swaps the
 // page MV_PAGE for a link to MV_TARGET once it has been looked at (lstat), as it is opened or written by name.
 const SWAP = String.raw`import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
@@ -1616,6 +1617,17 @@ if (MV_SWAP === "folder") {
       symlinkSync(MV_OUTSIDE, MV_RUN + "/stripe");
     }
     return readdirSync.apply(this, a);
+  };
+}
+if (MV_SWAP === "enter") {
+  const { chdir } = process;
+  process.chdir = function (p, ...a) {
+    if (!done && typeof p === "string" && p.endsWith("/stripe")) {
+      done = true;
+      renameSync(MV_RUN + "/stripe", MV_RUN + "/stripe-moved");
+      symlinkSync(MV_OUTSIDE, MV_RUN + "/stripe");
+    }
+    return chdir.call(this, p, ...a);
   };
 }
 if (MV_SWAP === "page") {
@@ -1652,6 +1664,23 @@ test("--purge removes in the folder it checked: stripe/ swapped for a link after
   assert.ok(existsSync(join(dir, "stripe-moved")), `the swap happened: ${r.stdout}${r.stderr}`);
   assert.deepEqual(readdirSync(outside).sort(), [outsideName, "raw-1.json"].sort(), `nothing outside is removed: ${r.stdout}${r.stderr}`);
   assert.deepEqual(readdirSync(join(dir, "stripe-moved")).filter((f) => FILED.test(f)), [], "the pages of the folder checked are the ones removed");
+});
+
+test("--purge enters only the folder it checked: stripe/ swapped for a link just before it is entered, nothing goes", () => {
+  const { dir } = filedFolder("p6-race-enter", FILED_PAGES.map(composioAnswer));
+  const outside = join(root, "p6-race-enter-outside");
+  mkdirSync(outside, { recursive: true });
+  const outsideName = filedName();
+  writeFileSync(join(outside, outsideName), "outside");
+  const r = spawnSync(process.execPath, ["--import", swapPreload(), join(dir, "film", "metrics.mjs"), "scan", "--pages", "stripe", "--purge"], {
+    encoding: "utf8", cwd: dir, env: { ...process.env, MV_SWAP: "enter", MV_RUN: dir, MV_OUTSIDE: outside },
+  });
+  const out = r.stdout + r.stderr;
+  assert.ok(existsSync(join(dir, "stripe-moved")), `the swap happened: ${out}`);
+  assert.deepEqual(readdirSync(outside), [outsideName], `nothing outside is removed: ${out}`);
+  assert.equal(r.status, 2, `the pages it could not reach are named: ${out}`);
+  assert.match(r.stderr, /changed after it was checked/, out);
+  assert.equal(readdirSync(join(dir, "stripe-moved")).filter((f) => FILED.test(f)).length, 2, "the folder checked is never reached through another");
 });
 
 test("the note goes through the page it opened: a page swapped for a link after it was looked at never takes it", () => {
