@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { appendFileSync, chmodSync, closeSync, constants, cpSync, existsSync, linkSync, mkdirSync, openSync, readdirSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
+import { appendFileSync, chmodSync, closeSync, constants, cpSync, existsSync, linkSync, lstatSync, mkdirSync, openSync, readdirSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { tempRoot } from "./temp-root.mjs";
 import vm from "node:vm";
@@ -1610,12 +1610,15 @@ test("the first --final's note skips a page-named hard link, and names it: the f
 // to an opened file short and the rest fail (ENOSPC), MV_SWAP=kill makes it short and then kills the kit (SIGKILL: no
 // handler runs, as on an OOM kill), MV_SWAP=ancestor moves the run's folder MV_RUN aside and puts a link to MV_OUTSIDE
 // in its place once the kit has looked at a folder named stripe (its --pages check); MV_SWAP=page swaps the
-// page MV_PAGE for a link to MV_TARGET once it has been looked at (lstat), as it is opened or written by name.
+// page MV_PAGE for a link to MV_TARGET once it has been looked at (lstat), as it is opened or written by name;
+// MV_SWAP=recheck moves the page MV_PAGE aside (MV_PAGE.moved) once its note's copy is written whole and synced, before
+// it is renamed over the page, and puts in its place a hard link (MV_LINK=hard) or a link (MV_LINK=sym) to MV_TARGET, a
+// file in the same folder.
 const SWAP = String.raw`import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
 import { basename } from "node:path";
-const { MV_SWAP, MV_RUN, MV_OUTSIDE, MV_PAGE, MV_TARGET, MV_NTH } = process.env;
-const { readdirSync, writeFileSync, writeSync, lstatSync, openSync, realpathSync, renameSync, symlinkSync } = fs;
+const { MV_SWAP, MV_RUN, MV_OUTSIDE, MV_PAGE, MV_TARGET, MV_NTH, MV_LINK } = process.env;
+const { readdirSync, writeFileSync, writeSync, lstatSync, openSync, fsyncSync, linkSync, realpathSync, renameSync, symlinkSync } = fs;
 let done = false;
 if (MV_SWAP === "folder") {
   fs.readdirSync = function (...a) {
@@ -1709,6 +1712,26 @@ if (MV_SWAP === "page") {
   fs.lstatSync = function (p, ...a) { if (!done && typeof p === "string" && basename(p) === MV_PAGE) armed = p; return lstatSync.call(this, p, ...a); };
   fs.openSync = function (p, ...a) { swap(p); return openSync.call(this, p, ...a); };
   fs.writeFileSync = function (p, ...a) { swap(p); return writeFileSync.call(this, p, ...a); };
+}
+if (MV_SWAP === "recheck") {
+  // The fd of MV_PAGE's note copy (.<page>.note-<hex>, a bare name in the pages folder the kit works in); its fsync is
+  // the last step before the recheck and the rename.
+  let copy = null;
+  fs.openSync = function (p, ...a) {
+    const fd = openSync.call(this, p, ...a);
+    if (copy === null && typeof p === "string" && basename(p).startsWith("." + MV_PAGE + ".note-")) copy = fd;
+    return fd;
+  };
+  fs.fsyncSync = function (fd, ...a) {
+    const r = fsyncSync.call(this, fd, ...a);
+    if (!done && fd === copy) {
+      done = true;
+      renameSync(MV_PAGE, MV_PAGE + ".moved");
+      if (MV_LINK === "hard") linkSync(MV_TARGET, MV_PAGE);
+      else symlinkSync(MV_TARGET, MV_PAGE);
+    }
+    return r;
+  };
 }
 syncBuiltinESMExports();
 `;
@@ -2040,5 +2063,43 @@ test("a file named as a note's copy outside the pages folder is searched as any 
     const r = scanRun(`p9-copy-name-${folder.replace("/", "-")}`, items, { "media/vo.txt": CLEAN, [`${folder}/${name}`]: "Thank you, Marisol Quintero." });
     assert.equal(r.status, 2, `${folder}: ${r.out}`);
     assert.ok(r.out.includes(`${folder}/${name} holds a value`), `${folder}: the file is named: ${r.out}`);
+  }
+});
+
+// The recheck after the note's copy is written: the page's name swapped, after the copy is synced and before it is
+// renamed over the page, for another name of a file in the same folder (a hard link, or a link). The copy is never
+// renamed over it: the swapped-in name still reads its own file, the page is named as not marked, and no copy is left.
+test("the note is renamed over the page only when the page is still the file it read: a name swapped in after the copy is written is skipped", () => {
+  const second = "STRIPE_LIST_BALANCE_TRANSACTIONS-2026-11-23T07-59-59-999Z-5ca1ab1e.json";
+  const secondBody = JSON.stringify(stripeList([txn("2026-11-18T09:00:00Z", "usd", "charge", 1000, 59)]));
+  const otherBody = JSON.stringify({ kept: "another file of the pages folder" });
+  for (const link of ["hard", "sym"]) {
+    const saved = { NODE_OPTIONS: process.env.NODE_OPTIONS, MV_SWAP: undefined, MV_PAGE: undefined, MV_TARGET: undefined, MV_LINK: undefined };
+    let r;
+    try {
+      r = fixtureRun("week-over-week", "2026-11-23", {
+        items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)],
+        as: `p10-recheck-${link}`,
+        answer: KEPT_CODE,
+        // A second filed page (it sorts after the first), and the file whose name is swapped in for it; only the --final
+        // runs with the preload.
+        beforeFinal: (dir) => {
+          writeFileSync(join(dir, "stripe", second), secondBody);
+          writeFileSync(join(dir, "stripe", "other.json"), otherBody);
+          Object.assign(process.env, { NODE_OPTIONS: `${saved.NODE_OPTIONS ?? ""} --import ${swapPreload()}`.trim(), MV_SWAP: "recheck", MV_PAGE: second, MV_TARGET: "other.json", MV_LINK: link });
+        },
+      });
+    } finally {
+      for (const [k, v] of Object.entries(saved)) if (v === undefined) delete process.env[k]; else process.env[k] = v;
+    }
+    const stripe = join(r.dir, "stripe");
+    assert.equal(readFileSync(join(stripe, `${second}.moved`), "utf8"), secondBody, `${link}: the swap happened after the copy was written, the page itself never noted: ${r.final.out}`);
+    assert.equal(r.final.status, 4, `${link}: the first page is noted and the --final asks for one more: ${r.final.out}`);
+    assert.ok(markOf(r.dir) !== undefined, `${link}: the first page holds the note`);
+    assert.equal(lstatSync(join(stripe, second)).isSymbolicLink(), link === "sym", `${link}: the swapped-in name is still the ${link === "sym" ? "link" : "hard link"} put there`);
+    assert.equal(readFileSync(join(stripe, second), "utf8"), otherBody, `${link}: the swapped-in name still reads its own file, never the note's copy`);
+    assert.equal(readFileSync(join(stripe, "other.json"), "utf8"), otherBody, `${link}: the file it names stays as it was`);
+    assert.match(r.final.err, new RegExp(`not marked: [^\\n]*${second.replace(/[.]/g, "\\.")}`), `${link}: the swapped page is named`);
+    assert.deepEqual(readdirSync(stripe).filter((f) => /\.note-/.test(f)), [], `${link}: no note copy is left`);
   }
 });
