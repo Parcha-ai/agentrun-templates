@@ -497,7 +497,9 @@ test("the sent check fails records that don't hold the case's shots or the exact
   const { dir, calls } = sentRun();
   const twelve = check(reportOf(dir, calls, { name: "sixty-seconds" }), dir);
   assert.equal(twelve.status, 1);
-  assert.match(twelve.stdout, /^SENT FAIL stills: media\/stills\.json holds 8 first takes, the case 12 shots \(and 1 more\)\n$/);
+  // The storyboard is read first: the plan's 8 shots against the case's 12, then its 4 missing lines, then the records:
+  // 8 first takes and 8 clips, each short of the case's 12.
+  assert.match(twelve.stdout, /^SENT FAIL storyboard: film\/plan\.json holds 8 shots, the case 12 \(and 6 more\)\n$/);
   const path = join(dir, "media", "clips.json");
   const record = JSON.parse(readFileSync(path, "utf8"));
   record.every_clip.negative_prompt = "text";

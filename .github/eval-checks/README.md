@@ -59,7 +59,16 @@ fal's whole log of `submit_job` calls with the files, call by call:
   null when it sets none. `film/price.json`'s `max_fal_usd`, and `film/ceiling.json`'s when it is there, must be it;
 - `film/cost.json` is there: every step it bills was sent under its key, and every call sent under the run's stem is
   one of its steps. A step it lists as never sent (`unsent`, each a step's name) is neither billed nor sent under its
-  key.
+  key;
+- the storyboard is the plan's, read from the run's `storyboard.md` and `film/plan.json` whole, with the kit's own
+  storyboard parser (`boardLines`, `isStyleLine`, `fieldsOf`). On a run this size a grader's prompt cuts the run's files
+  too (the storyboard's middle and the plan's shots), so the storyboard grader judges only that it was written before
+  the first still, and this check holds the rest: the style line first; one line per shot of the case (the count
+  above), in order; each line's times and seconds the plan's (shot n's film times are its `start_s` and `end_s` less
+  `cut.start_s`, as `plan` prints them); and where `film/lyrics.json` has no words under a shot, a lyric that is empty,
+  `none` or `(no words)`. A line too many, a line missing, a line out of order or a time that differs is a `SENT FAIL`
+  naming the shot and the field. A run with no `storyboard.md` or no `film/plan.json` is a `SENT FAIL`, as a missing
+  record is.
 
 ```sh
 node .github/eval-checks/music-video-sent.mjs <report.json> <the run's work folder, or the serve's data folder>

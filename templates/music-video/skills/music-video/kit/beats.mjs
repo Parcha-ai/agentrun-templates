@@ -878,12 +878,26 @@ const ENDING = "No text, no lettering, no logos.";
 const REMAKES = 2;
 const STEM = /^[a-z0-9]{8}$/;
 export const tidy = (text) => text.trim().replace(/[\s.,;:]+$/, "");
-// The shot lines of a storyboard (`<n> | ... | picture: <what the still shows> | motion: <move>`), checked against the
-// plan's shots: one line per shot, in order.
+// A storyboard's shot lines (`<n> | ... | picture: <what the still shows> | motion: <move>`), in the file's order.
+export const boardLines = (text) => text.split("\n").filter((l) => /^\s*\d+\s*\|/.test(l));
+// The style line: the storyboard's first line, `Style: <one look for every shot>`.
+export const isStyleLine = (line) => /^\s*Style:/i.test(line);
+// A shot line's leading fields as written: `<n> | <film start>-<film end> s | <seconds> s | lyric: "<words>" | ...`.
+// Each is a number (the lyric its words, one pair of quotes taken off), or undefined where the line doesn't hold one.
+export function fieldsOf(line) {
+  const f = line.split("|").map((x) => x.trim());
+  const times = (f[1] ?? "").match(/^(\d+(?:\.\d+)?)\s*[-–]\s*(\d+(?:\.\d+)?)\s*s?$/);
+  const seconds = (f[2] ?? "").match(/^(\d+(?:\.\d+)?)\s*s?$/);
+  const at = line.indexOf("| lyric:");
+  const end = at < 0 ? -1 : line.indexOf("| picture:", at);
+  const lyric = at < 0 ? undefined : line.slice(at + "| lyric:".length, end < 0 ? undefined : end).trim().replace(/^"([\s\S]*)"$/, "$1");
+  return { n: Number(f[0]), start: times ? Number(times[1]) : undefined, end: times ? Number(times[2]) : undefined, seconds: seconds ? Number(seconds[1]) : undefined, lyric };
+}
+// The shot lines of a storyboard, checked against the plan's shots: one line per shot, in order.
 export function shotLines(board, shots) {
   if (!existsSync(board)) fail(2, `${board} is missing: write the storyboard first`);
   const text = readFileSync(board, "utf8");
-  const lines = text.split("\n").filter((l) => /^\s*\d+\s*\|/.test(l));
+  const lines = boardLines(text);
   if (lines.length !== shots.length) fail(2, `${board} holds ${lines.length} shot lines, the plan ${shots.length}: one line per shot of the plan, in order`);
   lines.forEach((line, i) => {
     const n = Number(line.match(/^\s*(\d+)/)[1]);
@@ -950,7 +964,7 @@ export function buildStills(film, board, stem) {
   if (!STEM.test(stem)) fail(2, "--stem is the run's key stem from media/run-keys.json: 8 lowercase letters and digits");
   const plan = readPlan(film);
   const { text, lines } = shotLines(board, plan.cut.shots);
-  const styleLine = text.split("\n").find((l) => /^\s*Style:/i.test(l));
+  const styleLine = text.split("\n").find(isStyleLine);
   const style = styleLine === undefined ? "" : tidy(styleLine.replace(/^\s*Style:/i, ""));
   if (!style) fail(2, `${board} has no style line: its first line is \`Style: <one look for every shot>\``);
   return {

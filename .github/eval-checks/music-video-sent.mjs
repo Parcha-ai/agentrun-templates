@@ -13,7 +13,11 @@
 // disk/agents/<the report's agent_id>-*/runs/<the report's run_id>/work in it, by exact ids. A second argument
 // overrides it: the run's work folder itself, or a data folder.
 //
-// Passes when, for the stills and for the clips:
+// Passes when the storyboard is the plan's: the run's storyboard.md and film/plan.json, read whole with the kit's own
+// storyboard parser, hold the style line first, one line per shot of the case in order, each line's times and seconds
+// the plan's (shot n's film times are its start_s and end_s less cut.start_s), and, where film/lyrics.json has no words
+// under a shot, a lyric that is empty, none or (no words): a grader reads the run's files cut too, on a run this size.
+// And, for the stills and for the clips:
 // - the record exists and holds the case's number of shots (first takes for the stills, at most two remakes), the
 //   count the case's own grader (templates/music-video/evals/<case>/graders/clips-negative.md) holds, never the records;
 // - every submit_job sent on the endpoint is in the record by its key, was sent once, and its arguments equal the
@@ -256,6 +260,71 @@ function rebuilt(file, data, list, build, bad, before) {
   }
 }
 const only = (x, required, optional = []) => required.every((k) => k in x) && Object.keys(x).every((k) => required.includes(k) || optional.includes(k));
+
+// ---------- the storyboard against the plan ----------
+// A grader reads the run's files cut too, on a run this size: the storyboard's middle and the plan's shots. So the
+// storyboard's exact part is held here, from the run's storyboard.md and film/plan.json read whole, with the kit's own
+// storyboard parser (boardLines, isStyleLine, fieldsOf): the style line first; one line per shot of the case, in
+// order; each line's times and seconds the plan's (shot n's film times are its start_s and end_s less cut.start_s, as
+// plan prints them); and, where film/lyrics.json (the kit's lyrics) has no words under a shot, a lyric that is empty,
+// none or (no words), as the kit prints such a shot: no lyric made up.
+{
+  const bad = (why) => say(false, `storyboard: ${why}`);
+  const boardPath = join(work, "storyboard.md");
+  const planPath = join(work, "film", "plan.json");
+  let plan;
+  try {
+    plan = existsSync(planPath) ? JSON.parse(readFileSync(planPath, "utf8")) : undefined;
+  } catch (error) {
+    bad(`film/plan.json can't be read: ${error.message.split("\n")[0]}`);
+    plan = null;
+  }
+  const planShots = plan?.cut?.shots;
+  if (!existsSync(boardPath)) bad("the run left no storyboard.md");
+  else if (plan === undefined) bad("the run left no film/plan.json");
+  else if (plan !== null && !(Array.isArray(planShots) && planShots.every((s) => isObj(s) && [s.start_s, s.end_s, s.seconds].every(Number.isFinite)) && Number.isFinite(plan.cut.start_s))) bad("film/plan.json holds no shots as plan writes them (cut.start_s, and cut.shots each with start_s, end_s and seconds)");
+  else if (plan !== null) {
+    const text = readFileSync(boardPath, "utf8");
+    if (!kit.isStyleLine(text.split("\n")[0])) bad("storyboard.md's first line is not its style line (`Style: <one look for every shot>`)");
+    if (planShots.length !== shots) bad(`film/plan.json holds ${planShots.length} shots, the case ${shots}`);
+    const lines = kit.boardLines(text).map((line) => ({ line, ...kit.fieldsOf(line) }));
+    const count = new Map();
+    for (const l of lines) count.set(l.n, (count.get(l.n) ?? 0) + 1);
+    for (const [n, k] of count) {
+      if (!(Number.isSafeInteger(n) && n >= 1 && n <= shots)) bad(`storyboard.md has a line for shot ${n}; the case has ${shots} shots`);
+      else if (k > 1) bad(`storyboard.md has ${k} lines for shot ${n}`);
+    }
+    for (let n = 1; n <= shots; n++) if (!count.has(n)) bad(`storyboard.md has no line for shot ${n}`);
+    // The shots' own lines, once each: in order, then each against its plan shot.
+    const own = lines.filter((l) => Number.isSafeInteger(l.n) && l.n >= 1 && l.n <= shots && count.get(l.n) === 1);
+    const late = own.findIndex((l, i) => i > 0 && l.n < own[i - 1].n);
+    if (late > 0) bad(`storyboard.md's line for shot ${own[late - 1].n} comes before shot ${own[late].n}'s`);
+    let under;
+    const lyricsPath = join(work, "film", "lyrics.json");
+    if (existsSync(lyricsPath)) {
+      try {
+        const kept = JSON.parse(readFileSync(lyricsPath, "utf8"))?.under_shots;
+        if (!(Array.isArray(kept) && kept.every((u) => isObj(u) && Number.isSafeInteger(u.n) && typeof u.lyric === "string"))) throw new Error("no under_shots list, each {n, lyric}");
+        under = new Map(kept.map((u) => [u.n, u.lyric]));
+      } catch (error) {
+        bad(`film/lyrics.json is not the kit's: ${error.message.split("\n")[0]}`);
+      }
+    }
+    const r3 = (v) => Math.round(v * 1000) / 1000;
+    const NO_WORDS = ["", "none", "(no words)"];
+    for (const l of own) {
+      const s = planShots[l.n - 1];
+      if (!s) continue;
+      const want = { start: r3(s.start_s - plan.cut.start_s), end: r3(s.end_s - plan.cut.start_s), seconds: s.seconds };
+      const from = { start: `its start_s ${s.start_s} less cut.start_s ${plan.cut.start_s}`, end: `its end_s ${s.end_s} less cut.start_s ${plan.cut.start_s}`, seconds: "its seconds" };
+      if (l.start === undefined) bad(`shot ${l.n}'s times are not \`<start>-<end> s\` in its line`);
+      if (l.seconds === undefined) bad(`shot ${l.n}'s seconds are not \`<seconds> s\` in its line`);
+      for (const f of ["start", "end", "seconds"]) if (l[f] !== undefined && r3(l[f]) !== r3(want[f])) bad(`shot ${l.n}'s ${f} is ${l[f]} s, not the plan's ${want[f]} s (film/plan.json: ${from[f]})`);
+      if (l.lyric === undefined) bad(`shot ${l.n}'s line has no lyric (\`| lyric: "<the words under it, or none>"\`)`);
+      else if (under?.get(l.n) === "" && !NO_WORDS.includes(l.lyric.trim().toLowerCase())) bad(`shot ${l.n}'s lyric is ${show(l.lyric)}; film/lyrics.json has no words under shot ${l.n}, so its lyric is empty, none or (no words)`);
+    }
+  }
+}
 
 // ---------- stills ----------
 {
