@@ -77,13 +77,15 @@
 // --pages names a folder inside the run's folder, wherever its links lead: compute and scan refuse any other (exit 3),
 // read nothing there and remove nothing. The run's folder is the one that holds the kit's own folder (film/ in a run),
 // never where the kit runs nor scan's --root: the run chooses both. It is never the pages folder itself.
-// The first --final's note is written only into a page that is a file, never a link.
+// The first --final's note is written only into a page that is a file, never a link. Removal and the note work from
+// inside the folder checked (the same device and inode), and the note opens each page without following a link and
+// checks the open file is the one looked at: a name swapped after the check is never followed.
 // A throw in compute removes the pages too, as its refusals do.
 // Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
 // them; the message names the scene), or customer data in a file (scan names the file and the item, never the value);
 // 3: the pages are wrong or incomplete, or a page is the run's own (the message says what to do); 4: scan --final only warned, the filed pages are kept for one more --final (not done); 0: done.
 import { createHash, randomBytes } from "node:crypto";
-import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync, unlinkSync, writeFileSync } from "node:fs";
+import { closeSync, constants, existsSync, fstatSync, ftruncateSync, lstatSync, openSync, readFileSync, readdirSync, realpathSync, statSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -346,32 +348,34 @@ function refuseOwnPages(dir) {
 // Every page in the folder, filed or the run's own, removed by its name in the folder itself and nothing else: a link
 // is removed as a link (what it points at stays), a folder named as a page is not entered, and a folder that is itself
 // a link is not entered at all. Returns what went and what could not.
-// The folder is the one pagesFolder (below) checks: inside the run's folder, and not a link.
+// The folder is the one pagesFolder (below) checks: inside the run's folder, and not a link. It is listed and each page
+// removed from inside it (inPagesFolder), never through a path looked up again after the check.
 function removePagesIn(dir) {
   const removed = [];
   const left = [];
-  const { at, refused, missing } = pagesFolder(dir);
-  if (refused) return { removed, left: [`${dir} (${refused}: never entered)`] };
-  if (missing) return { removed, left };
-  let names;
-  try {
-    names = readdirSync(at);
-  } catch {
-    return { removed, left: [dir] };
-  }
-  for (const f of names.filter((f) => FILED.test(f) || OWN_PAGE.test(f)).sort()) {
-    const path = join(dir, f);
+  const { refused } = inPagesFolder(dir, () => {
+    let names;
     try {
-      if (lstatSync(join(at, f)).isDirectory()) {
-        left.push(path);
-        continue;
-      }
-      unlinkSync(join(at, f));
-      removed.push(path);
+      names = readdirSync(".");
     } catch {
-      left.push(path);
+      left.push(dir);
+      return;
     }
-  }
+    for (const f of names.filter((f) => FILED.test(f) || OWN_PAGE.test(f)).sort()) {
+      const path = join(dir, f);
+      try {
+        if (lstatSync(f).isDirectory()) {
+          left.push(path);
+          continue;
+        }
+        unlinkSync(f);
+        removed.push(path);
+      } catch {
+        left.push(path);
+      }
+    }
+  });
+  if (refused) return { removed, left: [`${dir} (${refused}: never entered)`] };
   return { removed, left };
 }
 // The folder of pages this command was given (compute's and scan's --pages), as given: it names the folder in messages.
@@ -413,15 +417,40 @@ function pagesFolder(dir) {
   // The run's folder itself ("." or "" from there) holds the run's files, never Stripe's pages alone.
   if (rel === "") return { refused: "it is the run's folder itself" };
   if (isAbsolute(rel) || rel.split(sep)[0] === "..") return { refused: "it is outside the run's folder" };
+  let st;
   try {
-    const st = lstatSync(at);
-    if (st.isSymbolicLink()) return { refused: "it is a link" };
-    if (!st.isDirectory()) return { refused: "it is not a folder" };
+    st = lstatSync(at);
   } catch (e) {
     if (e?.code === "ENOENT") return { at, missing: true };
     return { refused: `it can't be looked at (${e?.code ?? e})` };
   }
-  return { at };
+  if (st.isSymbolicLink()) return { refused: "it is a link" };
+  if (!st.isDirectory()) return { refused: "it is not a folder" };
+  return { at, st };
+}
+// Runs fn with the pages folder as the folder the kit works in, once that is the very folder pagesFolder checked (the
+// same device and inode): every name fn uses is a bare name in that folder, so a name on the folder's path swapped for
+// a link after the check changes nothing fn reads, writes or removes. The kit's own folder is restored after, and must
+// be the one it left. Returns { value } (fn's), or { refused } or { missing } when fn never ran. fn must not exit.
+function inPagesFolder(dir, fn) {
+  const checked = pagesFolder(dir);
+  if (checked.refused || checked.missing) return checked;
+  const back = process.cwd();
+  const home = statSync(".");
+  try {
+    process.chdir(checked.at);
+  } catch (e) {
+    return { refused: `it can't be entered (${e?.code ?? e})` };
+  }
+  try {
+    const here = statSync(".");
+    if (here.dev !== checked.st.dev || here.ino !== checked.st.ino) return { refused: "it changed after it was checked" };
+    return { value: fn() };
+  } finally {
+    process.chdir(back);
+    const now = statSync(".");
+    if (now.dev !== home.dev || now.ino !== home.ino) throw new Error(`${back} changed while the kit worked in ${dir}: it can't go on there`);
+  }
 }
 // compute and scan start here: a pages folder outside the run's, or one that is a link, is refused before any page
 // is read or removed.
@@ -1368,29 +1397,53 @@ function scan() {
   if (again) {
     // The note goes into each raw page (MARK), never a file of the run's: the next --final is the last.
     // An error answer filed as text (no JSON object) holds no note; the lists do. A page-named link (or anything not a
-    // file) is never written: the note would land wherever it points. It is skipped, and said.
+    // file) is never written: the note would land wherever it points. It is skipped, and said. Each page is opened
+    // without following a link (O_NOFOLLOW), in the folder checked (inPagesFolder), and must be, as opened, the file
+    // its lstat saw (same device and inode): a name swapped after the look is skipped, never written through.
     const skipped = [];
-    let noted = 0;
-    for (const path of raw) {
-      try {
-        if (!lstatSync(path).isFile()) {
-          skipped.push(path);
+    const { value: noted = 0 } = inPagesFolder(dir, () => {
+      let n = 0;
+      for (const f of pages) {
+        let seen;
+        try {
+          seen = lstatSync(f);
+        } catch {
           continue;
         }
-      } catch {
-        continue;
+        if (!seen.isFile()) {
+          skipped.push(join(dir, f));
+          continue;
+        }
+        let fd;
+        try {
+          fd = openSync(f, constants.O_RDWR | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+        } catch {
+          skipped.push(join(dir, f));
+          continue;
+        }
+        try {
+          const st = fstatSync(fd);
+          if (!st.isFile() || st.dev !== seen.dev || st.ino !== seen.ino) {
+            skipped.push(join(dir, f));
+            continue;
+          }
+          let page;
+          try {
+            page = JSON.parse(readFileSync(fd, "utf8"));
+          } catch {
+            continue;
+          }
+          if (page === null || typeof page !== "object" || Array.isArray(page)) continue;
+          page[MARK] = { warned: [...warnings.values()] };
+          ftruncateSync(fd, 0);
+          writeSync(fd, JSON.stringify(page), 0);
+          n++;
+        } finally {
+          closeSync(fd);
+        }
       }
-      let page;
-      try {
-        page = JSON.parse(readFileSync(path, "utf8"));
-      } catch {
-        continue;
-      }
-      if (page === null || typeof page !== "object" || Array.isArray(page)) continue;
-      page[MARK] = { warned: [...warnings.values()] };
-      writeFileSync(path, JSON.stringify(page));
-      noted++;
-    }
+      return n;
+    });
     if (skipped.length) console.error(`not marked: ${skipped.join(", ")} (a link, or not a file: the note is never written through one)`);
     // No note written: the next --final would be a first again, and warn and exit 4 again, for ever. It stops here.
     if (noted === 0) stop(`no page could carry the note the next --final needs (each was a link, or held no list), so the run's files can't be checked again: make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`);
