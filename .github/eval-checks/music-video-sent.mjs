@@ -41,7 +41,7 @@
 // - max_fal_usd is the user's: the case's own prompt.md input in this repo (never the run's copy or its record), or
 //   null when it sets none. film/price.json's max_fal_usd, and film/ceiling.json's when it is there, must be it;
 // - film/cost.json is there: every step it bills was sent under its key, and every call sent under the run's stem is
-//   one of its steps (one it lists as never sent was not).
+//   one of its steps. A step it lists as never sent is neither billed nor sent under its key.
 // Prints one line: `SENT PASS n=<calls checked> (repo check; serve's grade is separate; stopgap for agentrun #3824)`
 // (exit 0), `SENT FAIL <the first reason> [(and N more)] (...the same)` (exit 1), or `SENT VOID <why>` when it can't
 // find its inputs or has nothing to check (exit 2: no verdict; a live run on real fal has no fake log).
@@ -461,8 +461,9 @@ function checkPrice(p, bad) {
 
 // ---------- the cost the run billed ----------
 // film/cost.json (beats.mjs cost) bills each step the run sent: every step it bills was sent under its key, and every
-// call sent under the run's stem is one of its steps (a step it lists as never sent was not). Checked only when all
-// above passed: a run already failed needs no second reason.
+// call sent under the run's stem is one of its steps. A step it lists as never sent (unsent, each a step's name) was
+// not sent: it is not also billed, and no call was sent under its key. Checked only when all above passed: a run
+// already failed needs no second reason.
 if (!lines.length) {
   const bad = (why) => say(false, `cost: ${why}`);
   const path = join(work, "film", "cost.json");
@@ -478,10 +479,12 @@ if (!lines.length) {
   if (c !== undefined) {
     const { stem } = runStem();
     const unsent = isObj(c) && Array.isArray(c.unsent) ? c.unsent : [];
-    if (!isObj(c) || !Array.isArray(c.steps) || !c.steps.every((s) => isObj(s) && typeof s.step === "string") || !(c.unsent === undefined || Array.isArray(c.unsent))) bad("film/cost.json is not what the kit's cost writes");
+    if (!isObj(c) || !Array.isArray(c.steps) || !c.steps.every((s) => isObj(s) && typeof s.step === "string") || !(c.unsent === undefined || (Array.isArray(c.unsent) && c.unsent.every((s) => typeof s === "string")))) bad("film/cost.json is not what the kit's cost writes");
     else {
       const billed = new Set(c.steps.map((s) => `mu-${stem}-${s.step}`));
       const calls = new Set(run.mcp_calls.filter((x) => x.tool === "mcp:fal/submit_job" && isObj(x.arguments) && typeof x.arguments.submission_key === "string" && x.arguments.submission_key.startsWith(`mu-${stem}-`)).map((x) => x.arguments.submission_key));
+      for (const step of unsent) if (c.steps.some((s) => s.step === step)) bad(`film/cost.json both bills ${step} and lists it as never sent`);
+      for (const step of unsent) if (calls.has(`mu-${stem}-${step}`)) bad(`the call sent as mu-${stem}-${step} is listed as never sent in film/cost.json`);
       for (const key of billed) if (!calls.has(key)) bad(`film/cost.json bills ${key} as sent, and no call was sent under that key`);
       for (const key of calls) if (!billed.has(key)) bad(`the call sent as ${key} is not in film/cost.json's steps${unsent.includes(key.slice(`mu-${stem}-`.length)) ? " (it lists it as never sent)" : ""}`);
     }

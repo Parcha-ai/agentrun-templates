@@ -49,7 +49,8 @@ fal's whole log of `submit_job` calls with the files, call by call:
 - `max_fal_usd` is the user's: the case's own `prompt.md` input in this repo (never the run's copy or its record), or
   null when it sets none. `film/price.json`'s `max_fal_usd`, and `film/ceiling.json`'s when it is there, must be it;
 - `film/cost.json` is there: every step it bills was sent under its key, and every call sent under the run's stem is
-  one of its steps (one it lists as never sent was not).
+  one of its steps. A step it lists as never sent (`unsent`, each a step's name) is neither billed nor sent under its
+  key.
 
 ```sh
 node .github/eval-checks/music-video-sent.mjs <report.json> <the run's work folder, or the serve's data folder>
