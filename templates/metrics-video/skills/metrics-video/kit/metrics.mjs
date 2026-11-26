@@ -49,7 +49,9 @@
 //          every other file, in what a voice says, and for an identity field's name anywhere, it exits 2, as whole
 //          values, pairs and emails do. The first --final that only warns keeps the filed pages, notes the files and
 //          lines inside each page (MARK, never a file of the run's own) and exits 4 ("clean": false): the agent takes
-//          a customer's name out of the answer and runs --final once more, whether it edited or not. That run is the
+//          a customer's name out of the answer and runs --final once more, whether it edited or not. When no page can
+//          carry the note (each a link, or holding no JSON object), that --final would be a first again, every time:
+//          it stops instead (exit 3, failed_step "stripe"), the pages removed, links as links. Otherwise that run is the
 //          last: a word may warn again and that's fine, anything else found stops the film, and the filed pages are
 //          removed on every exit (its own, a refused argument, bad pages, a throw, SIGTERM, SIGINT or SIGHUP). A first
 //          --final removes them on every exit but two, which keep them for its retry: a value found (exit 2: take it
@@ -72,12 +74,16 @@
 // answers outlives a run that stops there. Exit 3 asking for the next page, or for the run's --today, keeps them for
 // the compute that follows. A page is removed by its name in the folder: a link goes, never what it points at; a folder
 // is never entered, nor a pages folder that is itself a link.
+// --pages names a folder inside the run's (the folder the kit runs in, or scan's --root), wherever its links lead:
+// compute and scan refuse any other (exit 3), read nothing there and remove nothing.
+// The first --final's note is written only into a page that is a file, never a link.
+// A throw in compute removes the pages too, as its refusals do.
 // Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
 // them; the message names the scene), or customer data in a file (scan names the file and the item, never the value);
 // 3: the pages are wrong or incomplete, or a page is the run's own (the message says what to do); 4: scan --final only warned, the filed pages are kept for one more --final (not done); 0: done.
 import { createHash, randomBytes } from "node:crypto";
-import { existsSync, lstatSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
-import { join, relative, resolve } from "node:path";
+import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync, unlinkSync, writeFileSync } from "node:fs";
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 
 const METRIC = {
   id: "net-of-refunds-and-fees",
@@ -129,7 +135,10 @@ const UNIT = {
   sgd: ["Singapore dollar", "Singapore dollars"], hkd: ["Hong Kong dollar", "Hong Kong dollars"], pln: ["zloty", "zloty"],
 };
 
+// Set by every exit this script chooses, so an exit hook can tell a throw from them.
+let chosenExit = false;
 function fail(code, message) {
+  chosenExit = true;
   console.error(message);
   process.exit(code);
 }
@@ -335,18 +344,18 @@ function refuseOwnPages(dir) {
 // Every page in the folder, filed or the run's own, removed by its name in the folder itself and nothing else: a link
 // is removed as a link (what it points at stays), a folder named as a page is not entered, and a folder that is itself
 // a link is not entered at all. Returns what went and what could not.
-// The folder is looked at as resolve() writes it: "stripe/", "stripe//" or "stripe/." would have lstat follow a link
-// named stripe, so its target's pages would go, outside the run's folder.
+// The folder is the one pagesFolder (below) checks: inside the run's folder, and not a link.
 function removePagesIn(dir) {
   const removed = [];
   const left = [];
-  const at = resolve(dir);
+  const { at, refused, missing } = pagesFolder(dir);
+  if (refused) return { removed, left: [`${dir} (${refused}: never entered)`] };
+  if (missing) return { removed, left };
   let names;
   try {
-    if (!lstatSync(at).isDirectory()) return { removed, left: [`${dir} (not a folder: never entered)`] };
     names = readdirSync(at);
-  } catch (e) {
-    return { removed, left: e?.code === "ENOENT" ? [] : [dir] };
+  } catch {
+    return { removed, left: [dir] };
   }
   for (const f of names.filter((f) => FILED.test(f) || OWN_PAGE.test(f)).sort()) {
     const path = join(dir, f);
@@ -365,6 +374,63 @@ function removePagesIn(dir) {
 }
 // The folder of pages this command was given (compute's and scan's --pages).
 let pagesDir = null;
+// The folders --pages must be inside: the one the kit runs in, and scan's --root when it names one.
+const pagesRoots = ["."];
+// A path with every link in it resolved, as far as it exists; the rest as written.
+function realOf(path) {
+  const rest = [];
+  for (let head = path; ; head = dirname(head)) {
+    try {
+      return join(realpathSync(head), ...rest);
+    } catch (e) {
+      if (e?.code !== "ENOENT" || dirname(head) === head) throw e;
+      rest.unshift(basename(head));
+    }
+  }
+}
+// Where --pages is, once its links are resolved: its parent folder's real path, and its own name looked at with lstat
+// (never followed). It must be inside one of pagesRoots (its path from there neither starts with .. nor is absolute),
+// and be a folder, not a link. "stripe/", "stripe//" and "stripe/." are looked at as resolve() writes them, so a link
+// named stripe is seen as the link. Returns { at } (the real path), { missing } (no folder there: no page), or
+// { refused } (why: nothing in it is read or removed).
+function pagesFolder(dir) {
+  let at;
+  let bases;
+  try {
+    const given = resolve(dir);
+    at = join(realOf(dirname(given)), basename(given));
+    // A --root that isn't there names no folder: only the others count.
+    bases = pagesRoots.flatMap((r) => {
+      try {
+        return [realpathSync(r)];
+      } catch {
+        return [];
+      }
+    });
+  } catch (e) {
+    return { refused: `it can't be looked at (${e?.code ?? e})` };
+  }
+  const inside = bases.some((base) => {
+    const rel = relative(base, at);
+    return !isAbsolute(rel) && rel.split(sep)[0] !== "..";
+  });
+  if (!inside) return { refused: "it is outside the run's folder" };
+  try {
+    const st = lstatSync(at);
+    if (st.isSymbolicLink()) return { refused: "it is a link" };
+    if (!st.isDirectory()) return { refused: "it is not a folder" };
+  } catch (e) {
+    if (e?.code === "ENOENT") return { at, missing: true };
+    return { refused: `it can't be looked at (${e?.code ?? e})` };
+  }
+  return { at };
+}
+// compute and scan start here: a pages folder outside the run's, or one that is a link, is refused before any page
+// is read or removed.
+function checkPages(dir) {
+  const { refused } = pagesFolder(dir);
+  if (refused) fail(3, `--pages ${dir}: ${refused}. The kit reads and removes pages only in a folder inside the run's (where it runs, or scan's --root), never through a link, so it read and removed nothing. AgentRun files Stripe's answers in stripe/ in the run's folder: run from there with --pages stripe. Otherwise make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`);
+}
 // A refusal that ends the run's use of the pages (the message says to answer failed): every page goes before it exits,
 // so no copy of Stripe's answers outlives a run that stops here.
 function stop(message) {
@@ -522,11 +588,25 @@ const MAX_CURRENCIES = 20;
 const MAX_LEFT_OUT = 40;
 const COMPARED = ["revenue_minor", "gross_minor", "charges", "refunds_count", "refunds_minor", "disputes_count", "disputes_minor", "fees_minor"];
 
+// A throw in compute (a page it can't read, a fault of its own) ends the run's use of the pages, as its refusals do:
+// they go, once, from a try/finally around compute and from an exit hook. compute's own exits (fail) are left as they
+// are: the asks for the next page and for --today keep the pages, and stop() has removed them.
+let removedAfterThrow = false;
+function removeAfterThrow() {
+  if (removedAfterThrow || pagesDir === null) return;
+  removedAfterThrow = true;
+  const { left } = removePagesIn(pagesDir);
+  console.error(`compute stopped on an error, not a refusal. Stripe's pages are removed${left.length ? ` (but not ${left.join(", ")}: remove them before answering)` : ""}. Make nothing, pay nothing, and answer failed, failed_step "figures", with the error's first line.`);
+}
 function compute() {
   const w = weeks();
   const film = need("film");
   if (!existsSync(join(film, "index.html"))) fail(2, `${film}/index.html is missing: copy the kit into ${film}/ first`);
   pagesDir = need("pages");
+  checkPages(pagesDir);
+  process.on("exit", (code) => {
+    if (code !== 0 && !chosenExit) removeAfterThrow();
+  });
   const { transactions, lastHasMore, pages, errors } = readPages(pagesDir);
   const oldest = Math.min(...transactions.map((t) => t.created));
   if (lastHasMore && !(oldest < w.read.created_gte)) {
@@ -992,6 +1072,9 @@ const wordsOf = (s) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 function scan() {
   const dir = need("pages");
   pagesDir = dir;
+  const root = args.root && args.root !== "true" ? args.root : ".";
+  pagesRoots.push(root);
+  checkPages(dir);
   // --purge: every page goes, nothing is searched. For a run that stops with customer data still in a file (failed_step
   // customer_data): its last --final would find it and keep the pages for a retry the run won't make.
   if (args.purge !== undefined) {
@@ -1000,7 +1083,6 @@ function scan() {
     if (left.length) fail(2, `could not remove ${left.join(", ")}: remove them before answering`);
     return;
   }
-  const root = args.root && args.root !== "true" ? args.root : ".";
   const final = args.final !== undefined;
   const pageFiles = () => {
     try {
@@ -1287,8 +1369,19 @@ function scan() {
   const again = final && warnings.size > 0 && !rerun && raw.size > 0;
   if (again) {
     // The note goes into each raw page (MARK), never a file of the run's: the next --final is the last.
-    // An error answer filed as text (no JSON object) holds no note; the lists do.
+    // An error answer filed as text (no JSON object) holds no note; the lists do. A page-named link (or anything not a
+    // file) is never written: the note would land wherever it points. It is skipped, and said.
+    const skipped = [];
+    let noted = 0;
     for (const path of raw) {
+      try {
+        if (!lstatSync(path).isFile()) {
+          skipped.push(path);
+          continue;
+        }
+      } catch {
+        continue;
+      }
       let page;
       try {
         page = JSON.parse(readFileSync(path, "utf8"));
@@ -1298,7 +1391,11 @@ function scan() {
       if (page === null || typeof page !== "object" || Array.isArray(page)) continue;
       page[MARK] = { warned: [...warnings.values()] };
       writeFileSync(path, JSON.stringify(page));
+      noted++;
     }
+    if (skipped.length) console.error(`not marked: ${skipped.join(", ")} (a link, or not a file: the note is never written through one)`);
+    // No note written: the next --final would be a first again, and warn and exit 4 again, for ever. It stops here.
+    if (noted === 0) stop(`no page could carry the note the next --final needs (each was a link, or held no list), so the run's files can't be checked again: make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`);
     console.log(stats(false, true));
     keep = true;
     fail(4, "exit 4, not done: the filed pages are kept for one more --final. Read each line named above; if it holds a customer's name, take the name out of media/answer.json; then run scan --pages stripe --final once more, whether you edited or not. That run is the last.");
@@ -1336,7 +1433,13 @@ if (command === "weeks") {
   delete w.carried;
   console.log(JSON.stringify(w, null, 1));
 } else if (command === "compute") {
-  compute();
+  let returned = false;
+  try {
+    compute();
+    returned = true;
+  } finally {
+    if (!returned) removeAfterThrow();
+  }
 } else if (command === "place") {
   const film = need("film");
   const data = JSON.parse(readFileSync(join(film, "data.json"), "utf8"));
