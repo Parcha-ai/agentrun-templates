@@ -81,7 +81,8 @@
 // The first --final's note is written only into a page that is a file of its own, never a link (nor a hard link: its
 // file has another name). Removal and the note work from inside the folder checked (the same device and inode, and
 // once entered really inside the run's folder), and the note opens each page without following a link and checks the
-// open file is the one looked at: a name swapped after the check, the folder's or a parent's, is never followed.
+// open file is the one looked at: a name swapped after the check, the folder's or a parent's, is never followed. A note
+// that can't be written whole (a short write, a full disk) stops the run: exit 3, every page removed.
 // A throw in compute removes the pages too, as its refusals do.
 // Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
 // them; the message names the scene), or customer data in a file (scan names the file and the item, never the value);
@@ -1410,6 +1411,9 @@ function scan() {
     // (O_NOFOLLOW), in the folder checked (inPagesFolder), and must be, as opened, the file its lstat saw (same device
     // and inode, one name): a name swapped after the look is skipped, never written through.
     const skipped = [];
+    // A page whose note could not be written whole: it may now hold broken JSON, which the next --final would take for
+    // a filed error answer and never search. It is never counted; the run stops below.
+    let unwritten = null;
     const { value: noted = 0 } = inPagesFolder(dir, () => {
       let n = 0;
       for (const f of pages) {
@@ -1444,8 +1448,20 @@ function scan() {
           }
           if (page === null || typeof page !== "object" || Array.isArray(page)) continue;
           page[MARK] = { warned: [...warnings.values()] };
-          ftruncateSync(fd, 0);
-          writeSync(fd, JSON.stringify(page), 0);
+          // Every byte goes through the fd: a write may take fewer bytes than asked (a full disk, a quota), and one
+          // that takes none, or throws, leaves the page cut short.
+          const bytes = Buffer.from(JSON.stringify(page));
+          try {
+            ftruncateSync(fd, 0);
+            for (let done = 0; done < bytes.length; ) {
+              const wrote = writeSync(fd, bytes, done, bytes.length - done, done);
+              if (!(wrote > 0)) throw new Error("a write took no bytes");
+              done += wrote;
+            }
+          } catch (e) {
+            unwritten = `${join(dir, f)} (${e?.code ?? e?.message ?? e})`;
+            break;
+          }
           n++;
         } finally {
           closeSync(fd);
@@ -1454,6 +1470,7 @@ function scan() {
       return n;
     });
     if (skipped.length) console.error(`not marked: ${skipped.join(", ")} (a link, not a file, or a file another name shares: the note is never written through one)`);
+    if (unwritten !== null) stop(`the note could not be written into ${unwritten}, so the next --final can't check the run's files: make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`);
     // No note written: the next --final would be a first again, and warn and exit 4 again, for ever. It stops here.
     if (noted === 0) stop(`no page could carry the note the next --final needs (each was a link or shared its file, or held no list), so the run's files can't be checked again: make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`);
     console.log(stats(false, true));
