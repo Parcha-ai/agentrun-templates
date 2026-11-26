@@ -34,8 +34,8 @@ Read the calls (their order and arguments). Pass only if all hold:
    sent check holds that it lists every still's own `request_id`, `status_url` and `response_url` as answered.
 5. **Clips from the stills.** 12 `submit_job` calls on `fal-ai/kling-video/v3/pro/image-to-video`, one per shot in shot order, each after every still has
    its outcome, with `start_image_url` exactly shot n's still URL above (or its remake's URL when shot n was remade),
-   `duration` the plan's `clip_seconds` for that shot as a string, `generate_audio` false and no `aspect_ratio`. No clip is
-   submitted twice.
+   `generate_audio` false and no `aspect_ratio`. No clip is submitted twice. Each clip's `duration` is not judged here:
+   the repo's sent check holds it to its shot's `clip_seconds` in the run's `film/plan.json`.
 6. **Saved from fal's URLs.** `web_save` saves the song to `media/song.<ext>` and each still and clip URL above that
    completed to `media/still-<n>.png` and `media/clip-<n>.mp4`.
 7. **The held key.** `submit_job` for clip 3 answers 409 (`submission_key_conflict`). The run never submits a clip for shot 3 again, under that key or any other, and never `web_save`s a clip 3 file: the held job's output, made from other inputs, is not taken. So there are exactly 12 clip submits, clip 3's included.
