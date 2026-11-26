@@ -15,7 +15,7 @@
 //   node beats.mjs stills --film film --storyboard storyboard.md --stem <stem> --file media/stills.json
 //   node beats.mjs remake --film film --file media/stills.json --shot <n> --picture "<the fixed picture>"
 //   node beats.mjs clips  --film film --storyboard storyboard.md --stem <stem> --stills <url-1>,...,<url-N> --file media/clips.json
-//   node beats.mjs cost   --film film --stem <stem> --sent isolate,transcript,still-1,...,clip-12 [--failed clip-5,...] [--pending clip-7,...]
+//   node beats.mjs cost   --film film --stem <stem> --sent isolate,transcript,still-1,...,clip-12 [--failed clip-5,...] [--pending clip-7,...] [--unsent clip-12,...]
 //
 // plan    decodes the song (mono, 11025 Hz), builds an onset curve from three frequency bands, finds the tempo by
 //         autocorrelation (60 to 200 BPM, weighted toward 120), fits a beat grid to the whole song, snaps it to the
@@ -71,7 +71,8 @@
 //         media/clips.json) is in --sent exactly once: a step named twice, a recorded key left out, or a still or clip
 //         the records don't hold is an error naming the key, and nothing is written. It writes film/cost.json, which
 //         answer.mjs reads. It checks film/price.json as stills, remake and clips do, and bills each step from the
-//         plan priced again at its rates, never from the file's lines.
+//         plan priced again at its rates, never from the file's lines. --unsent names a recorded still or clip the run
+//         never sent: in neither --sent nor the steps, billed nothing, and listed as unsent in film/cost.json.
 //
 // Exit 2: wrong arguments, or a film whose files don't match the plan (place reads every shot back after writing it;
 // the message names the shot); 3: the song can't be decoded, is too short, or has no beat to cut on; 0: done.
@@ -1095,7 +1096,15 @@ function cost() {
   for (const step of sent) times.set(step, (times.get(step) ?? 0) + 1);
   for (const [step, n] of times) if (n > 1) fail(2, `--sent names ${keyOf(step)} ${n} times: each step sent is in --sent once`);
   for (const step of times.keys()) if (!recorded.has(step) && !["isolate", "transcript"].includes(step)) fail(2, `--sent names ${keyOf(step)}, which neither media/stills.json nor media/clips.json records: --sent holds the stills and clips the kit built, as their records hold them`);
-  for (const [step, { key, file }] of recorded) if (!times.has(step)) fail(2, `--sent leaves out ${key}, which ${file} records: every still and clip the kit built was sent, so each is in --sent once (in --failed too when fal failed or refused it)`);
+  // A still or clip the kit recorded that the run never sent (it stopped first) is --unsent: billed nothing, and in
+  // neither --sent nor the cost's steps.
+  const unsent = list("unsent");
+  for (const step of unsent) {
+    if (unsent.indexOf(step) !== unsent.lastIndexOf(step)) fail(2, `--unsent names ${keyOf(step)} twice: each step never sent is in --unsent once`);
+    if (times.has(step)) fail(2, `${keyOf(step)} is in both --sent and --unsent: a step the run sent is --sent (and --failed when fal failed or refused it); one the kit recorded and the run never sent is --unsent`);
+    if (!recorded.has(step)) fail(2, `--unsent names ${keyOf(step)}, which neither media/stills.json nor media/clips.json records: --unsent holds only stills and clips the kit recorded and the run never sent`);
+  }
+  for (const [step, { key, file }] of recorded) if (!times.has(step) && !unsent.includes(step)) fail(2, `--sent leaves out ${key}, which ${file} records: every still and clip the kit built was sent, so each is in --sent once (in --failed too when fal failed or refused it), or in --unsent when the run never sent it`);
   const steps = sent.map((step) => {
     const remake = step.match(/^still-(\d+)-2$/);
     const line = price.lines.find((l) => l.step === step && !l.reserve) ?? (remake ? price.lines.find((l) => l.step === `still-${remake[1]}`) : undefined);
@@ -1105,7 +1114,7 @@ function cost() {
   const remakes = sent.filter((s) => /^still-\d+-2$/.test(s)).length;
   if (remakes > RESERVE) fail(2, `--sent holds ${remakes} remade stills: at most ${RESERVE}`);
   const total = usd(steps.reduce((t, s) => t + s.usd, 0));
-  writeFileSync(join(film, "cost.json"), JSON.stringify({ steps, total }, null, 1) + "\n");
+  writeFileSync(join(film, "cost.json"), JSON.stringify({ steps, total, ...(unsent.length ? { unsent } : {}) }, null, 1) + "\n");
   console.log(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify({ fal_cost_usd: { steps, total } })}`);
 }
 

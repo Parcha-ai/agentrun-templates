@@ -47,7 +47,9 @@ fal's whole log of `submit_job` calls with the files, call by call:
   `beats.mjs cost` bills it): a call the plan has no line for is a `SENT FAIL` naming it, and the calls sent come to at
   most `max_fal_usd`;
 - `max_fal_usd` is the user's: the case's own `prompt.md` input in this repo (never the run's copy or its record), or
-  null when it sets none. `film/price.json`'s `max_fal_usd`, and `film/ceiling.json`'s when it is there, must be it.
+  null when it sets none. `film/price.json`'s `max_fal_usd`, and `film/ceiling.json`'s when it is there, must be it;
+- `film/cost.json` is there: every step it bills was sent under its key, and every call sent under the run's stem is
+  one of its steps (one it lists as never sent was not).
 
 ```sh
 node .github/eval-checks/music-video-sent.mjs <report.json> <the run's work folder, or the serve's data folder>
@@ -71,7 +73,7 @@ It prints one line and exits:
 | Exit | Line | Meaning |
 | --- | --- | --- |
 | 0 | `SENT PASS n=<calls checked> (repo check; serve's grade is separate; stopgap for agentrun #3824)` | every still and clip sent equals its file |
-| 1 | `SENT FAIL <the first reason> [(and N more)] (repo check; ...)` | a call differs from its file, is missing, was sent twice, a clip starts from another still than its shot's, `film/price.json` is missing or doesn't hold, or a file is missing, of the wrong shape or wrong |
+| 1 | `SENT FAIL <the first reason> [(and N more)] (repo check; ...)` | a call differs from its file, is missing, was sent twice, a clip starts from another still than its shot's, `film/price.json` or `film/cost.json` is missing or doesn't hold, or a file is missing, of the wrong shape or wrong |
 | 2 | `SENT VOID <why>` | no verdict, never a failure: bad arguments, or the report, the run's folder, the fake log, the case's fake fal, shot count or `prompt.md` ceiling can't be found or read (a report that isn't a serve eval report, a log item that isn't a call) |
 
 Node built-ins only, and the repo's own kit (`templates/music-video/skills/music-video/kit/beats.mjs`). The repo's music-video kit tests (`.github/music-video-kit.test.mjs`) cover it.

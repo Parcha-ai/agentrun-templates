@@ -283,7 +283,7 @@ The kit builds the answer from the run's files, `report_markdown` included: you 
 run does this, a refused one too:
 
 1. **The cost.** When anything was sent, `node film/beats.mjs cost` (the skill's step 8) for every paid step sent; it
-   writes `film/cost.json`.
+   writes `film/cost.json`. A still or clip the kit recorded that you never sent goes in `--unsent`, never `--sent`.
 2. **The facts.** `write` `media/answer-facts.json`, one JSON object of what only you know:
    - `max_fal_usd`: the input's `max_fal_usd` exactly as given, or null when it sets none. The answer is refused when
      the price or the recorded ceiling was judged against another.
