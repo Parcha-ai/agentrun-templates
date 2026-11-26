@@ -71,10 +71,10 @@
 // The tool's result the model gets never holds it; the model's own bash can still open it, so the skill says never to.
 // A page the run wrote itself (stripe/raw-<n>.json) is refused by both, exit 3: the answers were not filed.
 // Every exit 3 that says to answer failed removes every page first (filed, or the run's own), so no copy of Stripe's
-// answers outlives a run that stops there; but one, the refusal of --pages itself, which removes nothing and says to run
-// scan --pages stripe --purge from the run's folder first. Exit 3 asking for the next page, or for the run's --today, keeps them for
-// the compute that follows. A page is removed by its name in the folder: a link goes, never what it points at; a folder
-// is never entered, nor a pages folder that is itself a link.
+// answers outlives a run that stops there; but one, the refusal of --pages itself, which removes nothing and says to
+// run scan --pages stripe --purge from the run's folder first. Exit 3 asking for the next page, or for the run's
+// --today, keeps them for the compute that follows. A page is removed by its name in the folder: a link goes, never
+// what it points at; a folder is never entered, nor a pages folder that is itself a link.
 // --pages names a folder inside the run's folder, wherever its links lead: compute and scan refuse any other (exit 3),
 // read nothing there and remove nothing. The run's folder is the one that holds the kit's own folder (film/ in a run),
 // never where the kit runs nor scan's --root: the run chooses both. It is never the pages folder itself.
@@ -385,9 +385,9 @@ let pagesDir = null;
 // Where checkPages found it (pagesFolder's real path): every page is listed and read there, never through the path as
 // given, whose ".." would be taken after a link it passes ("a/../stripe" with a a link is the link's ../stripe).
 let pagesAt = null;
-// The folder --pages must be inside: the run's, the one that holds the kit's own folder (film/metrics.mjs in a run). Not
-// the folder the kit runs in, nor scan's --root: the run chooses those, and `cd /` or `--root /` would make the whole
-// disk the run's.
+// The folder --pages must be inside: the run's, the one that holds the kit's own folder (film/metrics.mjs in a run).
+// Not the folder the kit runs in, nor scan's --root: the run chooses those, and `cd /` or `--root /` would make the
+// whole disk the run's.
 const runFolder = () => realpathSync(dirname(dirname(fileURLToPath(import.meta.url))));
 // A path with every link in it resolved, as far as it exists; the rest as written.
 function realOf(path) {
@@ -403,9 +403,9 @@ function realOf(path) {
 }
 // Where --pages is, once its links are resolved: its parent folder's real path, and its own name looked at with lstat
 // (never followed). It must be inside runFolder() (its path from there neither starts with .. nor is absolute), not be
-// that folder itself, and be a folder, not a link. "stripe/", "stripe//" and "stripe/." are looked at as resolve() writes them, so a link
-// named stripe is seen as the link. Returns { at } (the real path), { missing } (no folder there: no page), or
-// { refused } (why: nothing in it is read or removed).
+// that folder itself, and be a folder, not a link. "stripe/", "stripe//" and "stripe/." are looked at as resolve()
+// writes them, so a link named stripe is seen as the link. Returns { at, st } (the real path, and its lstat),
+// { at, missing } (no folder there: no page), or { refused } (why: nothing in it is read or removed).
 function pagesFolder(dir) {
   let at;
   let rel;
@@ -1400,9 +1400,9 @@ function scan() {
     // The note goes into each raw page (MARK), never a file of the run's: the next --final is the last.
     // An error answer filed as text (no JSON object) holds no note; the lists do. A page-named link (or anything not a
     // file of its own: a hard link shares its file with another name) is never written: the note would reach a file
-    // that isn't the page's alone. It is skipped, and said. Each page is opened without following a link (O_NOFOLLOW), in the folder
-    // checked (inPagesFolder), and must be, as opened, the file its lstat saw (same device and inode, one name): a name
-    // swapped after the look is skipped, never written through.
+    // that isn't the page's alone. It is skipped, and said. Each page is opened without following a link
+    // (O_NOFOLLOW), in the folder checked (inPagesFolder), and must be, as opened, the file its lstat saw (same device
+    // and inode, one name): a name swapped after the look is skipped, never written through.
     const skipped = [];
     const { value: noted = 0 } = inPagesFolder(dir, () => {
       let n = 0;
