@@ -1042,3 +1042,154 @@ test("code the run writes outside film/ is read for a name's words; the film's o
   const film = scanRun("r3-film-code", items, { "media/vo.txt": CLEAN, "film/compositions/thanks.js": 'export const thanks = "Thanks, Marisol.";' });
   assert.equal(film.status, 0, film.out);
 });
+
+// ---------- Stripe's answers as AgentRun files them ----------
+// The template sets `file` on STRIPE_LIST_BALANCE_TRANSACTIONS: serve writes each answer whole at
+// stripe/STRIPE_LIST_BALANCE_TRANSACTIONS-<time>-<id>.json (the time an ISO instant with : and . as -, the id 8 hex
+// characters) and the model gets only a summary. The kit reads those pages, in name order (the time's), and nothing
+// the run wrote there itself.
+const TOOL = "STRIPE_LIST_BALANCE_TRANSACTIONS";
+let filedClock = Date.parse("2026-11-23T07:00:00.000Z");
+const filedName = () => `${TOOL}-${new Date((filedClock += 1234)).toISOString().replace(/[:.]/g, "-")}-${createHash("sha256").update(String(filedClock)).digest("hex").slice(0, 8)}.json`;
+const FILED = /^STRIPE_LIST_BALANCE_TRANSACTIONS-.+\.json$/;
+const composioAnswer = (list) => ({ data: list, successful: true, error: null });
+const stripeList = (items, has_more = false) => ({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more, url: "/v1/balance_transactions" });
+// A run folder with these answers filed in stripe/ (each an object written as serve writes the tool's text, or a string
+// written as it is), the kit in film/. Returns the folder and each filed name, in the order filed.
+function filedFolder(name, answers) {
+  const dir = join(root, `filed-${name}`);
+  mkdirSync(join(dir, "stripe"), { recursive: true });
+  mkdirSync(join(dir, "media"), { recursive: true });
+  cpSync(KIT, join(dir, "film"), { recursive: true });
+  const names = answers.map((a) => {
+    const n = filedName();
+    writeFileSync(join(dir, "stripe", n), typeof a === "string" ? a : JSON.stringify(a));
+    return n;
+  });
+  return { dir, names };
+}
+const kitIn = (dir, ...a) => {
+  const r = spawnSync(process.execPath, [join(dir, "film", "metrics.mjs"), ...a], { encoding: "utf8", cwd: dir });
+  return { status: r.status, out: r.stdout + r.stderr, stdout: r.stdout, stderr: r.stderr };
+};
+const computeIn = (dir, today = "2026-11-23", ...extra) => kitIn(dir, "compute", "--today", today, "--timezone", "UTC", "--pages", "stripe", "--film", "film", ...extra);
+const revenueOf = (dir, c = "usd") => JSON.parse(readFileSync(join(dir, "film", "data.json"), "utf8")).currencies.find((x) => x.code === c);
+// The week of 16 November: five charges and a refund, in two pages of Stripe's list (newest first).
+const FILED_WEEK = [
+  txn("2026-11-22T10:00:00Z", "usd", "charge", 120000, 3510),
+  txn("2026-11-21T10:00:00Z", "usd", "charge", 45000, 1335),
+  txn("2026-11-20T10:00:00Z", "usd", "refund", -20000),
+  txn("2026-11-18T10:00:00Z", "usd", "charge", 31000, 929),
+  txn("2026-11-17T10:00:00Z", "usd", "charge", 72000, 2118),
+  txn("2026-11-16T10:00:00Z", "usd", "charge", 89900, 2637),
+];
+const FILED_PAGES = [stripeList(FILED_WEEK.slice(0, 3), true), stripeList(FILED_WEEK.slice(3), false)];
+const filedNet = FILED_WEEK.reduce((s, t) => s + t.net, 0);
+
+test("compute reads Stripe's answers as AgentRun files them: Composio's envelope at the tool's filed names, in name order", () => {
+  const { dir } = filedFolder("composio", FILED_PAGES.map(composioAnswer));
+  const r = computeIn(dir);
+  assert.equal(r.status, 0, `compute on filed pages: ${r.out}`);
+  assert.match(r.stdout, /read 2 page\(s\), 6 transactions/);
+  assert.equal(revenueOf(dir).revenue.minor, filedNet, "the week's revenue is every filed transaction's net");
+  // Stripe's own list, unwrapped, is a page too; and a page filed first is read first whatever its file's age.
+  const plain = filedFolder("stripe-list", [FILED_PAGES[0], composioAnswer(FILED_PAGES[1])]);
+  const p = computeIn(plain.dir);
+  assert.equal(p.status, 0, `Stripe's list and Composio's answer, one page each: ${p.out}`);
+  assert.equal(revenueOf(plain.dir).revenue.minor, filedNet);
+});
+
+test("a page filed twice (a repeated call) counts each transaction once", () => {
+  const once = filedFolder("once", FILED_PAGES.map(composioAnswer));
+  const twice = filedFolder("twice", [composioAnswer(FILED_PAGES[0]), composioAnswer(FILED_PAGES[0]), composioAnswer(FILED_PAGES[1]), composioAnswer(FILED_PAGES[1])]);
+  const a = computeIn(once.dir);
+  const b = computeIn(twice.dir);
+  assert.equal(a.status, 0, a.out);
+  assert.equal(b.status, 0, `a retried call files its answer again: ${b.out}`);
+  assert.match(b.stdout, /6 transactions/, "each transaction id is counted once");
+  assert.deepEqual(revenueOf(twice.dir), revenueOf(once.dir), "the figures don't double");
+});
+
+test("carried.json beside the pages is never a page", () => {
+  const { dir } = filedFolder("carried-beside", FILED_PAGES.map(composioAnswer));
+  writeFileSync(join(dir, "stripe", "carried.json"), JSON.stringify({ metric: "net-of-refunds-and-fees", timezone: "UTC", week: { start: "2026-11-09" }, figures: [] }));
+  const r = computeIn(dir);
+  assert.equal(r.status, 0, `a carried object in the pages' folder: ${r.out}`);
+  assert.match(r.stdout, /read 2 page\(s\)/, "only the filed answers are pages");
+});
+
+test("an agent-written raw page is refused: Stripe's answers were not filed, and nothing stands in for them", () => {
+  // Only a page the run wrote: refused, no figures.
+  const own = filedFolder("raw-only", []);
+  writeFileSync(join(own.dir, "stripe", "raw-1.json"), JSON.stringify(composioAnswer(stripeList(FILED_WEEK))));
+  const a = computeIn(own.dir);
+  assert.equal(a.status, 3, `a raw page alone: ${a.out}`);
+  assert.match(a.stderr, /not filed/);
+  assert.match(a.stderr, /file setting/);
+  assert.ok(!existsSync(join(own.dir, "film", "data.json")), "no figures from a raw page");
+  // A raw page beside filed ones (one the run planted): refused too, never read beside them.
+  const planted = filedFolder("raw-beside", FILED_PAGES.map(composioAnswer));
+  writeFileSync(join(planted.dir, "stripe", "raw-3.json"), JSON.stringify(stripeList([txn("2026-11-19T10:00:00Z", "usd", "charge", 999900, 100)])));
+  const b = computeIn(planted.dir);
+  assert.equal(b.status, 3, `a raw page beside the filed ones: ${b.out}`);
+  assert.match(b.stderr, /not filed/);
+  // The scan refuses it too: it never reads values from a page the run wrote, nor calls such a run clean.
+  const s = kitIn(planted.dir, "scan", "--pages", "stripe");
+  assert.notEqual(s.status, 0, `scan with a raw page: ${s.out}`);
+  assert.match(s.out, /not filed/);
+  assert.doesNotMatch(s.stdout, /"clean":true/);
+});
+
+test("the last --final removes the filed pages, and no scan searches them", () => {
+  const items = [...FILED_WEEK, described("Commission for Marisol Quintero", 20000)];
+  const { dir, names } = filedFolder("final", [composioAnswer(stripeList(items.slice(0, 4), true)), composioAnswer(stripeList(items.slice(4)))]);
+  writeFileSync(join(dir, "media", "vo.txt"), CLEAN);
+  const first = kitIn(dir, "scan", "--pages", "stripe");
+  assert.equal(first.status, 0, `the pages hold the name, and are not a file the run wrote: ${first.out}`);
+  assert.ok(JSON.parse(first.stdout).values > 0, "the scan read the customer's values from the filed pages");
+  const final = kitIn(dir, "scan", "--pages", "stripe", "--final");
+  assert.equal(final.status, 0, final.out);
+  assert.deepEqual(readdirSync(join(dir, "stripe")).filter((f) => FILED.test(f)), [], "no filed page is left");
+  assert.deepEqual(JSON.parse(final.stdout).raw_pages_removed.map((p) => p.split("/").pop()).sort(), [...names].sort());
+});
+
+test("an error answer filed beside the pages is passed over; with no list filed, compute refuses", () => {
+  const error = { data: {}, successful: false, error: "Rate limited: try again" };
+  const { dir } = filedFolder("error-then-pages", [error, "MCP error -32603: upstream timed out", ...FILED_PAGES.map(composioAnswer)]);
+  const r = computeIn(dir);
+  assert.equal(r.status, 0, `an error answer, then the pages: ${r.out}`);
+  assert.equal(revenueOf(dir).revenue.minor, filedNet);
+  const only = filedFolder("error-only", [error]);
+  const o = computeIn(only.dir);
+  assert.equal(o.status, 3, o.out);
+  assert.match(o.stderr, /error/);
+});
+
+test("the template files the Stripe list where the kit reads it, and carried.json lives outside that folder", () => {
+  const T = new URL("../templates/metrics-video/", import.meta.url).pathname;
+  const agent = readFileSync(join(T, "agent.md"), "utf8");
+  const skill = readFileSync(join(T, "skills", "metrics-video", "SKILL.md"), "utf8");
+  // agent.md's mcp need: the file setting on the balance list, folder stripe, the summary's show paths; expand pinned out.
+  const need = agent.slice(agent.indexOf("  - source: composio"), agent.indexOf("  - source: url"));
+  assert.match(need, /\bfile:\s*\{\s*STRIPE_LIST_BALANCE_TRANSACTIONS:\s*\{\s*folder:\s*stripe,\s*show:\s*\[successful, error, data\.has_more, data\.data\.-1\.id, data\.data\.-1\.created\]\s*\}\s*\}/);
+  assert.match(need, /\bpin:\s*\{\s*STRIPE_LIST_BALANCE_TRANSACTIONS:\s*\{\s*expand:\s*null\s*\}\s*\}/);
+  // Every scan and compute reads that folder.
+  for (const [, cmd] of [...agent.matchAll(/`(node film\/metrics\.mjs (?:scan|compute)[^`]*)`/g), ...skill.matchAll(/(node film\/metrics\.mjs (?:scan|compute)[^\n]*)/g)]) {
+    if (/--pages/.test(cmd)) assert.match(cmd, /--pages stripe\b/, cmd);
+  }
+  // The carried object is written and read at carried.json in the run's folder, never under the filed folder (serve's
+  // tool gate refuses the agent's write there).
+  for (const [file, text] of [["agent.md", agent], ["SKILL.md", skill]]) {
+    assert.doesNotMatch(text, /stripe\/carried\.json/, `${file} names stripe/carried.json`);
+    assert.doesNotMatch(text, /raw-<n>\.json|raw-1\.json/, `${file} still has the run save raw pages`);
+    for (const [, path] of text.matchAll(/--carried ([^\s\]`]+)/g)) assert.equal(path, "carried.json", `${file}: --carried ${path}`);
+  }
+  // And the kit reads it there.
+  const { dir } = filedFolder("carried-root", [composioAnswer(stripeList([...FILED_WEEK, txn("2026-11-10T10:00:00Z", "usd", "charge", 50000, 500)]))]);
+  writeFileSync(join(dir, "carried.json"), JSON.stringify({ metric: "net-of-refunds-and-fees", timezone: "UTC", week: { start: "2026-11-09", end: "2026-11-15" }, complete: true, figures: [{ currency: "usd", revenue_minor: 49500, gross_minor: 50000, charges: 1, refunds_count: 0, refunds_minor: 0, disputes_count: 0, disputes_minor: 0, fees_minor: 500 }] }));
+  const w = kitIn(dir, "weeks", "--today", "2026-11-23", "--timezone", "UTC", "--carried", "carried.json");
+  assert.equal(w.status, 0, w.out);
+  assert.equal(JSON.parse(w.stdout).compare.with_carried, true, "the carried figures are read from carried.json");
+  const c = computeIn(dir, "2026-11-23", "--carried", "carried.json");
+  assert.equal(c.status, 0, c.out);
+});
