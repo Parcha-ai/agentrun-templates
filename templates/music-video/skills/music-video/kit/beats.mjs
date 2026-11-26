@@ -74,6 +74,9 @@
 //         answer.mjs reads. It checks film/price.json as stills, remake and clips do, and bills each step from the
 //         plan priced again at its rates, never from the file's lines. --unsent names a recorded still or clip the run
 //         never sent: in neither --sent nor the steps, billed nothing, and listed as unsent in film/cost.json.
+//         A plan price judged over the recorded ceiling (fits false, all else checked) bills nothing: with no --sent
+//         it writes no steps and $0, so a run that stops there after making its stem can answer; a step in --sent is
+//         an error.
 //
 // Exit 2: wrong arguments, or a film whose files don't match the plan (place reads every shot back after writing it;
 // the message names the shot); 3: the song can't be decoded, is too short, or has no beat to cut on; 0: done.
@@ -898,9 +901,10 @@ function writeStills(file, record) {
 // Nothing is built for fal until the plan is priced and fits: price writes film/price.json, and stills, remake and
 // clips read it first. Over the user's ceiling, or never priced, they print nothing to send. The price is judged again
 // here from the plan and its rates against the recorded ceiling, never by the flags a file can be given by hand. cost
-// makes the same check and bills from the plan's price as it works it out here, never the file's lines.
+// makes the same check and bills from the plan's price as it works it out here, never the file's lines. With overOk
+// (cost's), a plan priced over the recorded ceiling (fits false) comes back marked over, after every other check.
 const planHash = (film) => createHash("sha256").update(readFileSync(join(film, "plan.json"))).digest("hex");
-function judgedPrice(film, nothing) {
+function judgedPrice(film, nothing, overOk = false) {
   const path = join(film, "price.json");
   let p = null;
   try {
@@ -916,7 +920,9 @@ function judgedPrice(film, nothing) {
   if (off) fail(2, `film/price.json: ${off} (${nothing})`);
   const data = readPlan(film);
   const price = priceOf(data.cut.shots, data.song.minutes, data.lyrics_on, p.rates);
-  if (!Number.isFinite(price.total) || (kept.max_fal_usd !== null && price.total > kept.max_fal_usd + 1e-9) || p.fits !== true) fail(2, `the plan is over the ceiling you set (or not priced yet): ${nothing}`);
+  const over = Number.isFinite(price.total) && kept.max_fal_usd !== null && price.total > kept.max_fal_usd + 1e-9;
+  if (overOk && over && p.fits === false) return { ...price, over: true };
+  if (!Number.isFinite(price.total) || over || p.fits !== true) fail(2, `the plan is over the ceiling you set (or not priced yet): ${nothing}`);
   return price;
 }
 const priced = (film) => judgedPrice(film, "nothing is built");
@@ -1098,9 +1104,11 @@ function cost() {
   }
   if (!isObj(p) || !Array.isArray(p.lines)) fail(2, `${pricePath} has no lines: it is not what price writes; run price again (nothing is billed)`);
   // Billed at the plan's price as the builders judge it, from the plan and the file's rates, never the file's lines.
-  const price = judgedPrice(film, "nothing is billed");
+  // A plan over the ceiling (a run stops there with its stem already made) bills only nothing: no steps, $0.
+  const price = judgedPrice(film, "nothing is billed", true);
   const list = (k) => (args[k] && args[k] !== "true" ? args[k].split(",").map((s) => s.trim()).filter(Boolean) : []);
   const sent = list("sent"), failed = new Set(list("failed")), pending = new Set(list("pending"));
+  if (price.over && sent.length) fail(2, `the plan is over the ceiling you set, and --sent names ${sent.join(", ")}: over the ceiling nothing is sent, so nothing is billed`);
   const stem = args.stem === undefined ? null : args.stem;
   if (stem !== null && !/^[a-z0-9]{8}$/.test(stem)) fail(2, "--stem is the run's key stem from media/run-keys.json: 8 lowercase letters and digits");
   for (const f of failed) if (!sent.includes(f)) fail(2, `--failed names ${f}, which --sent doesn't`);

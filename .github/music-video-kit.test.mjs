@@ -1775,3 +1775,37 @@ test("remake takes an exclusive lock on media/stills.json: a lock held refuses w
   assert.equal(again.status, 2, "never a second remake of a shot");
   assert.equal(existsSync(lock), false, "a remake refused removes its lock");
 });
+
+// A run makes its stem before the first paid call, so a run over its ceiling can hold media/run-keys.json; answer then
+// needs film/cost.json. cost on a price over the recorded ceiling, with nothing sent, writes no steps and $0: every
+// other check of the price still holds, and a step in --sent is still refused (nothing is billed).
+test("cost over the recorded ceiling with nothing sent writes no steps and $0, so an over_budget run with a stem answers", () => {
+  const dir = songDir();
+  cpSync(KIT, join(dir, "film"), { recursive: true });
+  assert.equal(kit(dir, "plan", "--song", "media/song.wav", "--film", "film", "--cut", "30").status, 0);
+  assert.match(kit(dir, "price", "--film", "film", "--rates", RATES, "--max", "1").stdout, /OVER YOUR CEILING/);
+  const costPath = join(dir, "film", "cost.json");
+  for (const [what, sent] of [["the isolation", "isolate"], ["the transcript", "transcript"]]) {
+    const no = kit(dir, "cost", "--film", "film", "--stem", "abcd1234", "--sent", sent);
+    assert.equal(no.status, 2, `${what} sent over the ceiling: ${no.stdout}`);
+    assert.equal(no.stdout, "", what);
+    assert.match(no.stderr, /over the ceiling you set/, what);
+    assert.equal(existsSync(costPath), false, `${what}: no film/cost.json`);
+  }
+  const r = kit(dir, "cost", "--film", "film", "--stem", "abcd1234");
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual(JSON.parse(readFileSync(costPath, "utf8")), { steps: [], total: 0 });
+  factsAt(dir, { ...DONE, status: "over_budget", error: "The plan's price is over the $1 ceiling you set: nothing was made.", renders: 0, max_fal_usd: 1 });
+  const a = replyOf(answerOf(dir));
+  assert.equal(a.status, "over_budget");
+  assert.equal(a.key_stem, "abcd1234");
+  assert.deepEqual(a.fal_cost_usd, { steps: [], total: 0 });
+  assert.match(a.report_markdown, /nothing was made and nothing was paid/);
+  // Over the ceiling, the price is still checked: a plan changed since it was priced refuses, with nothing written.
+  rmSync(costPath);
+  writeFileSync(join(dir, "film", "plan.json"), readFileSync(join(dir, "film", "plan.json"), "utf8") + " ");
+  const changed = kit(dir, "cost", "--film", "film", "--stem", "abcd1234");
+  assert.equal(changed.status, 2, changed.stdout);
+  assert.match(changed.stderr, /the plan changed since it was priced/);
+  assert.equal(existsSync(costPath), false);
+});
