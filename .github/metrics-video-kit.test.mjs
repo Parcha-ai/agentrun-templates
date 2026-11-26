@@ -1368,3 +1368,25 @@ test("agent.md stops on an unfiled result, removes the pages on a customer_data 
   assert.match(need, /`error` is free text from the provider[\s\S]{0,240}?200 characters/);
   assert.match(skill, /scan --pages stripe --purge/);
 });
+
+test("a pages folder that is a link is never entered, written as stripe/ or stripe// too: --purge and compute's refusal", () => {
+  for (const [i, pages] of ["stripe/", "stripe//"].entries()) {
+    const run = join(root, `p3-slash-${i}`);
+    const outside = join(root, `p3-slash-outside-${i}`);
+    mkdirSync(outside, { recursive: true });
+    mkdirSync(run, { recursive: true });
+    const filed = filedName();
+    writeFileSync(join(outside, filed), JSON.stringify(composioAnswer(stripeList(FILED_WEEK))));
+    writeFileSync(join(outside, "raw-1.json"), "{}");
+    symlinkSync(outside, join(run, "stripe"));
+    cpSync(KIT, join(run, "film"), { recursive: true });
+    const outsideNow = () => readdirSync(outside).sort();
+    const purge = spawnSync(process.execPath, [join(run, "film", "metrics.mjs"), "scan", "--pages", pages, "--purge"], { encoding: "utf8", cwd: run });
+    assert.notEqual(purge.status, 0, `--purge with --pages ${pages}: ${purge.stdout}${purge.stderr}`);
+    assert.deepEqual(outsideNow(), [filed, "raw-1.json"].sort(), `--purge with --pages ${pages} leaves the link's target alone`);
+    // compute refuses raw-1.json (exit 3), and its refusal's removal must not reach through the link either.
+    const c = spawnSync(process.execPath, [join(run, "film", "metrics.mjs"), "compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", pages, "--film", "film"], { encoding: "utf8", cwd: run });
+    assert.equal(c.status, 3, `compute with --pages ${pages}: ${c.stdout}${c.stderr}`);
+    assert.deepEqual(outsideNow(), [filed, "raw-1.json"].sort(), `compute's refusal with --pages ${pages} leaves the link's target alone`);
+  }
+});
