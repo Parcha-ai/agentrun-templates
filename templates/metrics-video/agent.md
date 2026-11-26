@@ -241,8 +241,10 @@ The skill's step 9: `write` the answer's json (the block below, without the fenc
 `node film/metrics.mjs scan --pages stripe --final`. It looks at everything again, the answer and the captions included, and when it finds nothing that stops the film it removes
 the filed pages and exits 0: the run leaves no copy of Stripe's answers, and exit 0 always means none is left. Exit 2
 naming a file: fix what it names (step 1) and run it again; the pages are kept for that run. Any other exit but 4 (a
-refused argument, a page the run wrote, a fault) removes the pages, so nothing can check the run's files again: the
-film stops, `failed`, `failed_step: "customer_data"` unless the script names another step.
+refused argument other than `--pages`, a page the run wrote, a fault) removes the pages, so nothing can check the run's
+files again: the film stops, `failed`, `failed_step: "customer_data"` unless the script names another step. An exit 3
+that refuses `--pages` itself removes nothing: run `node film/metrics.mjs scan --pages stripe --purge` from the run's
+folder first.
 Here too a word of a customer's name found alone stops the film in what
 it says and shows (the voices, `media/vo.txt`, the captions, the scenes, `film/data.json`) and in every file but the
 answer. Exit 4, with `warning:` lines: a word of a name found alone in `media/answer.json`, which can be a tool's word (a
