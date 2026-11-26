@@ -71,9 +71,10 @@ node film/metrics.mjs compute --today <today> --timezone <timezone> [--week-of <
 ```
 
 Exit 3 names what is wrong with the pages. When it asks for the next page, call the tool with `starting_after` as it
-says (AgentRun files that page too) and run `compute` again, at most twice. Any other exit 3 (a page the run wrote, no
-answer filed, every answer an error, items that don't check) and a next page still missing after two: answer
-`failed`, `failed_step: "stripe"`, nothing paid. Never write or edit a page to make it pass. It
+says (AgentRun files that page too) and run `compute` again, at most twice; that exit, and one asking for the run's date
+as `--today`, keep the pages. Any other exit 3 (a page the run wrote, no answer filed, every answer an error, items
+that don't check) removes them first: answer `failed`, `failed_step: "stripe"`, nothing paid. A next page still
+missing after two: the same answer, after `scan --pages stripe --purge`. Never write or edit a page to make it pass. It
 writes `film/data.json`, the one data module, into `film/index.html` as `window.MV` (every scene reads it) and
 places the scenes at the plan's times. It prints, per currency:
 
@@ -223,7 +224,12 @@ of words, in any case, and each of its words alone in what the run says and writ
 `film/`'s and the skill folder's `.js`, `.mjs`, `.cjs` and `.css` and an HTML file's styles, scripts, comments, tags and
 attributes, nor in a tool's output named above or `inputs/`), and any
 email address. Exit 2 names the file and where the value
-came from, never the value: take it out, render again if it was on screen, scan again, and say so in the report. A
+came from, never the value: take it out, render again if it was on screen, scan again, and say so in the report (the
+pages are kept for that scan). Any other exit but 4 of a first `--final` (a refused argument, a page the run wrote, a
+fault) removes the pages, and with them any way to check again: the film stops, `failed`, `failed_step:
+"customer_data"` unless the script names another step. A run that stops on customer data still in a file runs
+`node film/metrics.mjs scan --pages stripe --purge` before it answers: it removes every page (filed, or one the run
+wrote) and searches nothing. A
 word of a name found alone stops the film here too, in what it says and shows (a voice's timestamps, `media/vo.txt`,
 `media/film.vtt`, `film/words.json`, the captions, the scenes, `film/data.json`) and in every file but the answer; a
 word of an identity field's name (a billing or shipping name) stops it in the answer as well. Only in
