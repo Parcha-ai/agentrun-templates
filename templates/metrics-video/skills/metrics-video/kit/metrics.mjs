@@ -79,9 +79,9 @@
 // read nothing there and remove nothing. The run's folder is the one that holds the kit's own folder (film/ in a run),
 // never where the kit runs nor scan's --root: the run chooses both. It is never the pages folder itself.
 // The first --final's note is written only into a page that is a file of its own, never a link (nor a hard link: its
-// file has another name). Removal and the note work from inside the folder checked (the same device and inode), and
-// the note opens each page without following a link and checks the open file is the one looked at: a name swapped
-// after the check is never followed.
+// file has another name). Removal and the note work from inside the folder checked (the same device and inode, and
+// once entered really inside the run's folder), and the note opens each page without following a link and checks the
+// open file is the one looked at: a name swapped after the check, the folder's or a parent's, is never followed.
 // A throw in compute removes the pages too, as its refusals do.
 // Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
 // them; the message names the scene), or customer data in a file (scan names the file and the item, never the value);
@@ -431,8 +431,9 @@ function pagesFolder(dir) {
   return { at, st };
 }
 // Runs fn with the pages folder as the folder the kit works in, once that is the very folder pagesFolder checked (the
-// same device and inode): every name fn uses is a bare name in that folder, so a name on the folder's path swapped for
-// a link after the check changes nothing fn reads, writes or removes. The kit's own folder is restored after, and must
+// same device and inode) and, entered, is really inside the run's folder: every name fn uses is a bare name in that
+// folder, so a name on the folder's path swapped for a link after the check changes nothing fn reads, writes or
+// removes. The kit's own folder is restored after, and must
 // be the one it left. Returns { value } (fn's), or { refused } or { missing } when fn never ran. fn must not exit.
 function inPagesFolder(dir, fn) {
   const checked = pagesFolder(dir);
@@ -447,6 +448,11 @@ function inPagesFolder(dir, fn) {
   try {
     const here = statSync(".");
     if (here.dev !== checked.st.dev || here.ino !== checked.st.ino) return { refused: "it changed after it was checked" };
+    // And where the folder entered really is: the working folder's real path, as the system gives it after the chdir,
+    // never the path text checked. A folder on that path swapped for a link after the check (stripe's parent, say)
+    // leads elsewhere, and the device and inode, read through the same link, would agree; this does not.
+    const where = relative(runFolder(), process.cwd());
+    if (where === "" || isAbsolute(where) || where.split(sep)[0] === "..") return { refused: "it changed after it was checked" };
     return { value: fn() };
   } finally {
     process.chdir(back);
