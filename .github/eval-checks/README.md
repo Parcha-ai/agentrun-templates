@@ -32,13 +32,22 @@ fal's whole log of `submit_job` calls with the files, call by call:
   fields the kit puts there, so none can stand in for a field built per still or clip, and whose list items hold
   exactly the kit's fields. A file of another shape is a `SENT FAIL` naming what is wrong, and its calls aren't
   compared.
-- each clip starts from its shot's still as the fake fal made it. The fake log holds each call's arguments only, never
-  fal's answers, so the check reads the answers from the case's own fake in this repo
-  (`templates/music-video/evals/<case>/fixtures/fal-mcp.json`, never the run's copy): a still key's `submit_job` answer
-  gives its request, and `wait_for_jobs`' completed answer for that request gives its `images[0].url`. Shot n's still is
-  its remake's output when the run saved `media/still-<n>-2.png`, else its first take's. A clip given another shot's
-  still, or the first take when the remake was saved, is a `SENT FAIL` naming the shot; a shot the fake made no still
-  for may start from another shot's (a borrowed still);
+- each clip starts from its shot's still as the fake fal made it. The check reads fal's answers from the case's own
+  fake in this repo (`templates/music-video/evals/<case>/fixtures/fal-mcp.json`, never the run's copy), whole. The
+  report's `mcp_calls` carry each call's result too, but as the run's timeline holds it (through the run's redaction,
+  each string cut at serve's call-result limit), so the check doesn't read answers there. A still key's `submit_job`
+  answer gives its request, and `wait_for_jobs`' completed answer for that request gives its `images[0].url`. Shot n's
+  still is its remake's output when the run saved `media/still-<n>-2.png`, else its first take's. A clip given another
+  shot's still, or the first take when the remake was saved, is a `SENT FAIL` naming the shot; a shot the fake made no
+  still for may start from another shot's (a borrowed still);
+- the reads list each job's own handles. A pipeline grader reads the fake's calls cut to fit its prompt, and a
+  `submit_job`'s answer is the part a cut takes, so this check holds them, with the answers from the case's own fake as
+  above. The first `wait_for_jobs` that reads a still lists every still the run sent (shot 1 to the case's count, first
+  takes) with its own `request_id`, `status_url` and `response_url` exactly as its `submit_job` answered them: a still
+  it leaves out, or a field that differs, is a `SENT FAIL` naming the shot and the field. Every other job a
+  `wait_for_jobs` lists under a request the fake answered one of the run's `submit_job`s with (a clip still pending,
+  read again alone) carries that answer's `status_url` and `response_url`. A run with no read of a still has nothing to
+  check here;
 - `film/price.json` is there and is the price the run built on: its `plan_sha256` is the sha256 of the run's
   `film/plan.json` and `fits` is true. Its lines are the run's to write, so none is trusted: the check prices the plan
   again with the repo's kit (`priceOf`) from `film/plan.json` and the file's `rates`, which must be in their bands

@@ -27,11 +27,16 @@
 // - each record is what the kit builds: rebuilt with the repo's own kit (never the run's copy, which the run can write)
 //   from the run's film/plan.json, storyboard.md and media/run-keys.json, the remakes by the kit's rules and the clips
 //   with the record's still URLs; the first field that differs fails, naming the shot;
-// - each clip starts from its shot's still as the fake fal made it: the fake log holds each call's arguments, never
-//   fal's answers, so the answers come from the case's own fake in this repo (templates/music-video/evals/<case>/
-//   fixtures/fal-mcp.json): the still key's submit_job answer gives its request_id, and wait_for_jobs' completed answer
+// - each clip starts from its shot's still as the fake fal made it: fal's answers come from the case's own fake in this
+//   repo (templates/music-video/evals/<case>/fixtures/fal-mcp.json), whole, never from the report, whose calls carry
+//   them as the run's timeline holds them (redacted, each string cut at serve's call-result limit): the still key's
+//   submit_job answer gives its request_id, and wait_for_jobs' completed answer
 //   for that request its images[0].url. Shot n's still is its remake's output when media/still-<n>-2.png was saved,
 //   else its first take's; a shot the fake made no still for may start from another shot's (a borrowed still);
+// - the first wait_for_jobs that reads a still lists every still the run sent with its own request_id, status_url and
+//   response_url exactly as the fake answered its submit_job (a still left out, or a field that differs, fails, naming
+//   the shot and the field), and every other job a read lists under a request the fake answered carries that answer's
+//   status_url and response_url: a grader reads the calls cut, and a submit_job's answer is what a cut takes;
 // - film/price.json is there, priced the plan rebuilt from (its plan_sha256 is film/plan.json's) and fits (true). Its
 //   lines are the run's to write, so none is trusted: the plan is priced again with the repo's kit (priceOf) from
 //   film/plan.json and the file's rates, which must be in their bands (offBand); the file's lines and plan_usd must be
@@ -297,10 +302,11 @@ function checkStills(data, bad) {
 }
 
 // ---------- the fake fal's answers ----------
-// Each still key's output URL as the case's fake fal answers it, from the case's fixture in this repo (never the run's).
+// What the case's fake fal answers, from the case's fixture in this repo (never the run's): a submit_job's answer for
+// an endpoint and key, and each still key's output URL.
 const FAKE = join(EVALS, String(caseName), "fixtures", "fal-mcp.json");
 let fake;
-function fakeStill(key) {
+function loadFake() {
   if (fake === undefined) {
     try {
       const tools = JSON.parse(readFileSync(FAKE, "utf8")).tools;
@@ -326,17 +332,22 @@ function fakeStill(key) {
       voided(`the case's fake fal (${FAKE}) can't be read: ${error.message.split("\n")[0]}`);
     }
   }
-  // The first answer whose when matches, as the fake picks: a {"$pattern": ...} value matches the whole key.
-  const matches = (want, got) => (isObj(want) && typeof want.$pattern === "string" ? typeof got === "string" && new RegExp(`^(?:${want.$pattern})$`).test(got) : isDeepStrictEqual(want, got));
-  const answer = fake.submits.find((a) => [a.when].flat().some((w) => isObj(w) && Object.entries(w).every(([k, v]) => matches(v, { endpoint_id: NANO, submission_key: key }[k]))));
-  let id;
-  try {
-    id = JSON.parse(answer?.result?.content?.[0]?.text ?? "null")?.request_id;
-  } catch {
-    id = undefined;
-  }
-  return fake.outputs.get(id);
+  return fake;
 }
+// The submit_job answer the fake gives an endpoint and key, parsed (its request_id, status_url, response_url and the
+// rest), or undefined: the first answer whose when matches, as the fake picks; a {"$pattern": ...} value matches the
+// whole key.
+function fakeAnswer(endpoint_id, key) {
+  const matches = (want, got) => (isObj(want) && typeof want.$pattern === "string" ? typeof got === "string" && new RegExp(`^(?:${want.$pattern})$`).test(got) : isDeepStrictEqual(want, got));
+  const answer = loadFake().submits.find((a) => [a.when].flat().some((w) => isObj(w) && Object.entries(w).every(([k, v]) => matches(v, { endpoint_id, submission_key: key }[k]))));
+  try {
+    const j = JSON.parse(answer?.result?.content?.[0]?.text ?? "null");
+    return isObj(j) ? j : undefined;
+  } catch {
+    return undefined;
+  }
+}
+const fakeStill = (key) => loadFake().outputs.get(fakeAnswer(NANO, key)?.request_id);
 
 // ---------- clips ----------
 {
@@ -374,6 +385,59 @@ function checkClips(data, bad) {
     const want = stillOf(c.n);
     if (want.url === undefined ? !made.has(c.start_image_url) : c.start_image_url !== want.url)
       return bad(`shot ${c.n}'s clip starts from ${show(c.start_image_url)}, not shot ${c.n}'s still as the fake fal made it: ${want.url === undefined ? "the fake made none, and it is no other shot's still either" : `${show(want.url)} (${want.take})`}`);
+  }
+}
+
+// ---------- the reads: each job's own handles ----------
+// A grader reads the fake's calls cut to fit its prompt, and a submit_job's answer is the part a cut takes, so the
+// handles are held here. The fake's answers come from the case's fixture (fakeAnswer), whole; the reads are the
+// run's wait_for_jobs calls in the report. The first wait_for_jobs that reads a still lists every still the run sent
+// (shot 1 to the case's count, first takes) with its own request_id, status_url and response_url exactly as its
+// submit_job answered them; a still is found there by any one of them, and a still it doesn't list, or a field that
+// differs, fails, naming the shot and the field. Every other job a wait_for_jobs lists under a request the fake
+// answered one of the run's submit_jobs with carries that answer's status_url and response_url. A run with no read
+// of a still has nothing to check here.
+{
+  const bad = (why) => say(false, `read: ${why}`);
+  const { stem } = runStem();
+  if (stem) {
+    const FIELDS = ["request_id", "status_url", "response_url"];
+    const handles = (a) => (isObj(a) && FIELDS.every((f) => typeof a[f] === "string") ? a : undefined);
+    const submits = run.mcp_calls.filter((x) => x.tool === "mcp:fal/submit_job" && isObj(x.arguments) && typeof x.arguments.submission_key === "string" && x.arguments.submission_key.startsWith(`mu-${stem}-`));
+    const answered = new Map();
+    for (const { arguments: a } of submits) {
+      const h = handles(fakeAnswer(a.endpoint_id, a.submission_key));
+      if (h) answered.set(h.request_id, { key: a.submission_key, h });
+    }
+    const stills = [];
+    for (let n = 1; n <= shots; n++) {
+      const key = `mu-${stem}-still-${n}`;
+      const h = submits.some(({ arguments: a }) => a.endpoint_id === NANO && a.submission_key === key) ? handles(fakeAnswer(NANO, key)) : undefined;
+      if (h) stills.push({ n, h });
+    }
+    const jobsOf = (x) => (isObj(x.arguments) && Array.isArray(x.arguments.jobs) ? x.arguments.jobs.filter(isObj) : []);
+    const same = (j, h) => FIELDS.some((f) => j[f] === h[f]);
+    const isStill = (j) => j.endpoint_id === NANO || /-still-\d+(-2)?$/.test(answered.get(j.request_id)?.key ?? "") || stills.some((s) => same(j, s.h));
+    const reads = run.mcp_calls.filter((x) => x.tool === "mcp:fal/wait_for_jobs");
+    const first = reads.find((x) => jobsOf(x).some(isStill));
+    const held = new Set();
+    if (first) {
+      for (const { n, h } of stills) {
+        const job = jobsOf(first).find((j) => same(j, h));
+        if (!job) {
+          bad(`the first wait_for_jobs that reads a still leaves out shot ${n}'s still (request ${h.request_id})`);
+          continue;
+        }
+        held.add(job);
+        for (const f of FIELDS) if (job[f] !== h[f]) bad(`the first wait_for_jobs that reads a still gives shot ${n}'s ${f} as ${show(job[f])}, not ${show(h[f])} as its submit_job answered`);
+      }
+    }
+    for (const x of reads) {
+      for (const j of jobsOf(x)) {
+        const a = held.has(j) ? undefined : answered.get(j.request_id);
+        if (a) for (const f of ["status_url", "response_url"]) if (j[f] !== a.h[f]) bad(`a wait_for_jobs reads ${a.key} (request ${j.request_id}) with its ${f} ${show(j[f])}, not ${show(a.h[f])} as its submit_job answered`);
+      }
+    }
   }
 }
 
