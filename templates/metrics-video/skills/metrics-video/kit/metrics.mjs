@@ -10,6 +10,7 @@
 //   node metrics.mjs place   --film film [--at revenue=5.2,change=14.0,...] [--seconds 47]
 //   node metrics.mjs stem    --file media/run-keys.json --today YYYY-MM-DD --timezone <IANA> [--week-of YYYY-MM-DD]
 //   node metrics.mjs scan    --pages stripe [--root .] [--film film] [--final]
+//   node metrics.mjs scan    --pages stripe --purge
 //
 // --today is the run's date in the time zone: the day the schedule fired (its line names it in the schedule's zone),
 // or for a run by hand the day the run's environment line gives. Never the sandbox's clock.
@@ -50,8 +51,13 @@
 //          lines inside each page (MARK, never a file of the run's own) and exits 4 ("clean": false): the agent takes
 //          a customer's name out of the answer and runs --final once more, whether it edited or not. That run is the
 //          last: a word may warn again and that's fine, anything else found stops the film, and the filed pages are
-//          removed on every exit (its own, a refused argument, bad pages, a throw, SIGTERM, SIGINT or SIGHUP). A
-//          --final that exits 0 has removed every filed page. Found only where the whole description is written as it is: a word of a lower-case pair alone,
+//          removed on every exit (its own, a refused argument, bad pages, a throw, SIGTERM, SIGINT or SIGHUP). A first
+//          --final removes them on every exit but two, which keep them for its retry: a value found (exit 2: take it
+//          out, --final again) and a warning alone (exit 4). Any other exit of it (a refused argument, bad pages, a
+//          throw) leaves no scan able to check the run's files again, so the film stops. A --final that exits 0 has
+//          removed every filed page. Every --final removes a page the run wrote too.
+// --purge  removes every page (filed, or the run's own) and searches nothing: for a run that stops with customer data
+//          still in a file (failed_step customer_data), whose --final would keep the pages for a retry. Found only where the whole description is written as it is: a word of a lower-case pair alone,
 //          a name with a lower-case particle ("da Silva", "van Gogh", "de la Cruz"), one given name alone in a
 //          longer description ("Tip from Sarah"), a pair in mixed case ("Marisol quintero"). Not found: a
 //          description of one word, a name spelled another way.
@@ -62,12 +68,16 @@
 // one), so only compute and scan read it, scan never searches it as a file the run wrote, and scan --final removes it.
 // The tool's result the model gets never holds it; the model's own bash can still open it, so the skill says never to.
 // A page the run wrote itself (stripe/raw-<n>.json) is refused by both, exit 3: the answers were not filed.
+// Every exit 3 that says to answer failed removes every page first (filed, or the run's own), so no copy of Stripe's
+// answers outlives a run that stops there. Exit 3 asking for the next page, or for the run's --today, keeps them for
+// the compute that follows. A page is removed by its name in the folder: a link goes, never what it points at; a folder
+// is never entered, nor a pages folder that is itself a link.
 // Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
 // them; the message names the scene), or customer data in a file (scan names the file and the item, never the value);
 // 3: the pages are wrong or incomplete, or a page is the run's own (the message says what to do); 4: scan --final only warned, the filed pages are kept for one more --final (not done); 0: done.
 import { createHash, randomBytes } from "node:crypto";
 import { existsSync, lstatSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, resolve } from "node:path";
 
 const METRIC = {
   id: "net-of-refunds-and-fees",
@@ -320,7 +330,46 @@ const notFiled = (dir, own) =>
   `${own.map((f) => `${dir}/${f}`).join(", ")}: a page the run wrote itself. Stripe's answers were not filed by AgentRun: the owner removed the agent's file setting on ${TOOL}, or the call was not made through it. The kit reads only the answers AgentRun files (${dir}/${TOOL}-<time>-<id>.json) and never a page the run wrote: make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`;
 function refuseOwnPages(dir) {
   const own = existsSync(dir) ? readdirSync(dir).filter((f) => OWN_PAGE.test(f)).sort() : [];
-  if (own.length) fail(3, notFiled(dir, own));
+  if (own.length) stop(notFiled(dir, own));
+}
+// Every page in the folder, filed or the run's own, removed by its name in the folder itself and nothing else: a link
+// is removed as a link (what it points at stays), a folder named as a page is not entered, and a folder that is itself
+// a link is not entered at all. Returns what went and what could not.
+// The folder is looked at as resolve() writes it: "stripe/", "stripe//" or "stripe/." would have lstat follow a link
+// named stripe, so its target's pages would go, outside the run's folder.
+function removePagesIn(dir) {
+  const removed = [];
+  const left = [];
+  const at = resolve(dir);
+  let names;
+  try {
+    if (!lstatSync(at).isDirectory()) return { removed, left: [`${dir} (not a folder: never entered)`] };
+    names = readdirSync(at);
+  } catch (e) {
+    return { removed, left: e?.code === "ENOENT" ? [] : [dir] };
+  }
+  for (const f of names.filter((f) => FILED.test(f) || OWN_PAGE.test(f)).sort()) {
+    const path = join(dir, f);
+    try {
+      if (lstatSync(join(at, f)).isDirectory()) {
+        left.push(path);
+        continue;
+      }
+      unlinkSync(join(at, f));
+      removed.push(path);
+    } catch {
+      left.push(path);
+    }
+  }
+  return { removed, left };
+}
+// The folder of pages this command was given (compute's and scan's --pages).
+let pagesDir = null;
+// A refusal that ends the run's use of the pages (the message says to answer failed): every page goes before it exits,
+// so no copy of Stripe's answers outlives a run that stops here.
+function stop(message) {
+  const { left } = pagesDir === null ? { left: [] } : removePagesIn(pagesDir);
+  fail(3, `${message}\n${left.length ? `Could not remove ${left.join(", ")}: remove them before answering.` : "Stripe's pages are removed."}`);
 }
 // A page: Stripe's list ({"object": "list", "data": [...], "has_more": ...}), or Composio's whole answer around it
 // ({"data": <that list>, "successful": true, ...}).
@@ -354,7 +403,7 @@ function filedPages(dir) {
       continue;
     }
     const list = listOf(JSON.parse(text));
-    if (!list) fail(3, `${dir}/${f} is not Stripe's list ({"object": "list", "data": [...], "has_more": true|false}) nor Composio's answer around it: the film can't be made from it. Answer failed, failed_step "stripe".`);
+    if (!list) stop(`${dir}/${f} is not Stripe's list ({"object": "list", "data": [...], "has_more": true|false}) nor Composio's answer around it: the film can't be made from it. Answer failed, failed_step "stripe".`);
     pages.push({ file: f, list });
   }
   return { pages, errors };
@@ -362,9 +411,9 @@ function filedPages(dir) {
 // compute's pages: at least one list, at most MAX_PAGES.
 function readRaw(dir) {
   const { pages, errors } = filedPages(dir);
-  if (!pages.length && !errors) fail(3, `no answer of ${TOOL} is filed in ${dir}: call the tool (AgentRun files each answer there, whole). If you called it and nothing was filed, the owner removed the agent's file setting on it: make nothing and answer failed, failed_step "stripe".`);
-  if (!pages.length) fail(3, `every answer of ${TOOL} filed in ${dir} is an error (${errors}): nothing to work out. Answer failed, failed_step "stripe", with the error the tool's result showed.`);
-  if (pages.length > MAX_PAGES) fail(3, `${pages.length} pages: this film reads at most ${MAX_PAGES} pages (${MAX_PAGES * 100} transactions). Answer failed, failed_step "stripe".`);
+  if (!pages.length && !errors) stop(`no answer of ${TOOL} is filed in ${dir}: call the tool (AgentRun files each answer there, whole). If you called it and nothing was filed, the owner removed the agent's file setting on it: make nothing and answer failed, failed_step "stripe".`);
+  if (!pages.length) stop(`every answer of ${TOOL} filed in ${dir} is an error (${errors}): nothing to work out. Answer failed, failed_step "stripe", with the error the tool's result showed.`);
+  if (pages.length > MAX_PAGES) stop(`${pages.length} pages: this film reads at most ${MAX_PAGES} pages (${MAX_PAGES * 100} transactions). Answer failed, failed_step "stripe".`);
   return Object.assign(pages, { errors });
 }
 function readPages(dir) {
@@ -397,7 +446,7 @@ function readPages(dir) {
   }
   // Serve files Stripe's answers whole: an item that fails these checks is Stripe's (or Composio's) as it answered, and
   // nothing the run does can fix it.
-  if (problems.length) fail(3, `Stripe's answers as filed don't check, so the film can't be made from them. Answer failed, failed_step "stripe", with these lines:\n- ${problems.slice(0, 20).join("\n- ")}`);
+  if (problems.length) stop(`Stripe's answers as filed don't check, so the film can't be made from them. Answer failed, failed_step "stripe", with these lines:\n- ${problems.slice(0, 20).join("\n- ")}`);
   return { transactions: [...byId.values()], lastHasMore: last.has_more, pages: raw.length, errors: raw.errors };
 }
 
@@ -452,7 +501,7 @@ function addUp(transactions, week) {
   }
   for (const [c, f] of by) {
     // The identity the figure must meet: net = charges - refunds - disputes + reversals - fees.
-    if (f.revenue !== f.gross - f.refunds[1] - f.disputes[1] + f.reversals[1] - f.fees) fail(3, `the ${c} figures do not add up; a category this script does not know moved money`);
+    if (f.revenue !== f.gross - f.refunds[1] - f.disputes[1] + f.reversals[1] - f.fees) stop(`the ${c} figures do not add up; a category this script does not know moved money. Answer failed, failed_step "figures", with these words.`);
   }
   return { by, leftOut };
 }
@@ -477,7 +526,8 @@ function compute() {
   const w = weeks();
   const film = need("film");
   if (!existsSync(join(film, "index.html"))) fail(2, `${film}/index.html is missing: copy the kit into ${film}/ first`);
-  const { transactions, lastHasMore, pages, errors } = readPages(need("pages"));
+  pagesDir = need("pages");
+  const { transactions, lastHasMore, pages, errors } = readPages(pagesDir);
   const oldest = Math.min(...transactions.map((t) => t.created));
   if (lastHasMore && !(oldest < w.read.created_gte)) {
     fail(3, `Stripe said has_more on the last page filed and the oldest transaction read (${new Date(oldest * 1000).toISOString()}) is not before the window's start (${new Date(w.read.created_gte * 1000).toISOString()}): call ${TOOL} again with starting_after the last id its result showed (AgentRun files that page too), then compute again`);
@@ -490,10 +540,10 @@ function compute() {
   const order = [...thisWeek.by.entries()].sort((a, b) => b[1].kept - a[1].kept || a[0].localeCompare(b[0]));
   const empty = order.length === 0;
   for (const [which, week, by] of [["this week", w.week, thisWeek.by], ["the week before", w.week_before, before?.by]]) {
-    if (by && by.size > MAX_CURRENCIES) fail(3, `${by.size} currencies in ${which} (${week.start} to ${week.end}): this film reports at most ${MAX_CURRENCIES} currencies a week, each with its figures, so it makes nothing for this week. Answer failed, failed_step "figures", with these words.`);
+    if (by && by.size > MAX_CURRENCIES) stop(`${by.size} currencies in ${which} (${week.start} to ${week.end}): this film reports at most ${MAX_CURRENCIES} currencies a week, each with its figures, so it makes nothing for this week. Answer failed, failed_step "figures", with these words.`);
   }
   const kinds = Object.keys(thisWeek.leftOut).length;
-  if (kinds > MAX_LEFT_OUT) fail(3, `${kinds} kinds of movement that are not revenue in the week (${w.week.start} to ${w.week.end}): this film names at most ${MAX_LEFT_OUT} with their counts, so it makes nothing for this week. Answer failed, failed_step "figures", with these words.`);
+  if (kinds > MAX_LEFT_OUT) stop(`${kinds} kinds of movement that are not revenue in the week (${w.week.start} to ${w.week.end}): this film names at most ${MAX_LEFT_OUT} with their counts, so it makes nothing for this week. Answer failed, failed_step "figures", with these words.`);
 
   // The carried figures against Stripe's figures for the same week, read again now.
   let compare = { state: STATE.none, reason: w.compare.reason, restated: [] };
@@ -941,6 +991,15 @@ const fold = (s) => squash(s).toLowerCase();
 const wordsOf = (s) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 function scan() {
   const dir = need("pages");
+  pagesDir = dir;
+  // --purge: every page goes, nothing is searched. For a run that stops with customer data still in a file (failed_step
+  // customer_data): its last --final would find it and keep the pages for a retry the run won't make.
+  if (args.purge !== undefined) {
+    const { removed, left } = removePagesIn(dir);
+    console.log(JSON.stringify({ raw_pages_removed: removed }));
+    if (left.length) fail(2, `could not remove ${left.join(", ")}: remove them before answering`);
+    return;
+  }
   const root = args.root && args.root !== "true" ? args.root : ".";
   const final = args.final !== undefined;
   const pageFiles = () => {
@@ -950,10 +1009,12 @@ function scan() {
       return [];
     }
   };
-  // A --final whose pages hold the note of a first --final that warned (MARK) is the last: it removes the pages on
-  // every exit, its own (a hit, a clean run), a refused argument or bad pages (fail), a throw, and a signal (SIGTERM,
-  // SIGINT, SIGHUP: it ends with 128 + the signal's number). Each page is removed on its own, best effort. Only a
-  // SIGKILL (which no process can catch) leaves them.
+  // Every --final removes the pages on every exit (its own, a refused argument, bad pages, a throw) but two, where a
+  // retry needs them: a first --final that found a value (exit 2: the run takes it out and runs --final again, which
+  // must still know what to look for), and one that only warned (exit 4, the pages noted with MARK). A --final whose
+  // pages hold that note is the last: it removes them on every exit, a value found included, and on a signal too
+  // (SIGTERM, SIGINT, SIGHUP: it ends with 128 + the signal's number). A signal on a first --final leaves them, for its
+  // retry. Each page is removed on its own, best effort. Only a SIGKILL (which no process can catch) leaves them.
   const marked = (f) => {
     try {
       const page = JSON.parse(readFileSync(join(dir, f), "utf8"));
@@ -965,24 +1026,23 @@ function scan() {
   const rerun = final && pageFiles().some(marked);
   const removed = [];
   const left = [];
+  // Filed pages and pages the run wrote: the last --final leaves neither.
   const removePages = () => {
+    const r = removePagesIn(dir);
+    removed.push(...r.removed);
     left.length = 0;
-    for (const f of pageFiles()) {
-      const path = join(dir, f);
-      try {
-        unlinkSync(path);
-        removed.push(path);
-      } catch {
-        left.push(path);
-      }
-    }
+    left.push(...r.left);
   };
-  if (rerun) {
-    process.on("exit", () => {
+  // Set where this --final keeps the pages for a retry, or has removed them itself.
+  let keep = false;
+  if (final) {
+    process.on("exit", (code) => {
+      if (keep) return;
       removePages();
-      if (left.length) process.stderr.write(`the last --final could not remove ${left.join(", ")}: remove them before answering\n`);
+      if (left.length) process.stderr.write(`the --final could not remove ${left.join(", ")}: remove them before answering\n`);
+      else if (code !== 0) process.stderr.write(`Stripe's pages are removed, so no scan can check the run's files again: the film stops here. Answer failed, failed_step "customer_data" unless the words above name another step.\n`);
     });
-    for (const [signal, code] of [["SIGTERM", 143], ["SIGINT", 130], ["SIGHUP", 129]]) process.on(signal, () => process.exit(code));
+    if (rerun) for (const [signal, code] of [["SIGTERM", 143], ["SIGINT", 130], ["SIGHUP", 129]]) process.on(signal, () => process.exit(code));
   }
   // A page the run wrote itself: refused, as compute refuses it. Its values would never be looked for (only filed pages
   // give them), so a scan beside one is never clean.
@@ -1208,6 +1268,7 @@ function scan() {
   // always means no raw page is left.
   const removeAll = () => {
     removePages();
+    keep = true;
     if (left.length) fail(2, `could not remove ${left.join(", ")}: remove them before answering`);
   };
   const stats = (clean, again) => JSON.stringify({ clean, files: files.length, values: values.size, name_words: words.size, values_in_the_template: found.size - values.size, kit_copies_skipped: all.length - (files.length - written.length), voices_read: voices.length, files_read_for_words: wordsRead, skill_files_shipped: shipped.size, skill_files_searched: written.length, words_alone_warnings: warnings.size, final_again: again, raw_pages_removed: removed });
@@ -1220,6 +1281,7 @@ function scan() {
       console.log(stats(false, false));
       fail(2, `customer data in the run's files, found by the last --final: the film stops here (the filed pages are removed):\n${list}`);
     }
+    keep = true;
     fail(2, `customer data in the run's files: remove each from the file (and from anything made from it: the voiceover, the film), then scan again:\n${list}`);
   }
   const again = final && warnings.size > 0 && !rerun && raw.size > 0;
@@ -1238,6 +1300,7 @@ function scan() {
       writeFileSync(path, JSON.stringify(page));
     }
     console.log(stats(false, true));
+    keep = true;
     fail(4, "exit 4, not done: the filed pages are kept for one more --final. Read each line named above; if it holds a customer's name, take the name out of media/answer.json; then run scan --pages stripe --final once more, whether you edited or not. That run is the last.");
   } else if (final) removeAll();
   console.log(stats(!again, again));
