@@ -75,6 +75,7 @@
 // --pages names a folder inside the run's (the folder the kit runs in, or scan's --root), wherever its links lead:
 // compute and scan refuse any other (exit 3), read nothing there and remove nothing.
 // The first --final's note is written only into a page that is a file, never a link.
+// A throw in compute removes the pages too, as its refusals do.
 // Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
 // them; the message names the scene), or customer data in a file (scan names the file and the item, never the value);
 // 3: the pages are wrong or incomplete, or a page is the run's own (the message says what to do); 4: scan --final only warned, the filed pages are kept for one more --final (not done); 0: done.
@@ -132,7 +133,10 @@ const UNIT = {
   sgd: ["Singapore dollar", "Singapore dollars"], hkd: ["Hong Kong dollar", "Hong Kong dollars"], pln: ["zloty", "zloty"],
 };
 
+// Set by every exit this script chooses, so an exit hook can tell a throw from them.
+let chosenExit = false;
 function fail(code, message) {
+  chosenExit = true;
   console.error(message);
   process.exit(code);
 }
@@ -582,12 +586,25 @@ const MAX_CURRENCIES = 20;
 const MAX_LEFT_OUT = 40;
 const COMPARED = ["revenue_minor", "gross_minor", "charges", "refunds_count", "refunds_minor", "disputes_count", "disputes_minor", "fees_minor"];
 
+// A throw in compute (a page it can't read, a fault of its own) ends the run's use of the pages, as its refusals do:
+// they go, once, from a try/finally around compute and from an exit hook. compute's own exits (fail) are left as they
+// are: the asks for the next page and for --today keep the pages, and stop() has removed them.
+let removedAfterThrow = false;
+function removeAfterThrow() {
+  if (removedAfterThrow || pagesDir === null) return;
+  removedAfterThrow = true;
+  const { left } = removePagesIn(pagesDir);
+  console.error(`compute stopped on an error, not a refusal. Stripe's pages are removed${left.length ? ` (but not ${left.join(", ")}: remove them before answering)` : ""}. Make nothing, pay nothing, and answer failed, failed_step "figures", with the error's first line.`);
+}
 function compute() {
   const w = weeks();
   const film = need("film");
   if (!existsSync(join(film, "index.html"))) fail(2, `${film}/index.html is missing: copy the kit into ${film}/ first`);
   pagesDir = need("pages");
   checkPages(pagesDir);
+  process.on("exit", (code) => {
+    if (code !== 0 && !chosenExit) removeAfterThrow();
+  });
   const { transactions, lastHasMore, pages, errors } = readPages(pagesDir);
   const oldest = Math.min(...transactions.map((t) => t.created));
   if (lastHasMore && !(oldest < w.read.created_gte)) {
@@ -1410,7 +1427,13 @@ if (command === "weeks") {
   delete w.carried;
   console.log(JSON.stringify(w, null, 1));
 } else if (command === "compute") {
-  compute();
+  let returned = false;
+  try {
+    compute();
+    returned = true;
+  } finally {
+    if (!returned) removeAfterThrow();
+  }
 } else if (command === "place") {
   const film = need("film");
   const data = JSON.parse(readFileSync(join(film, "data.json"), "utf8"));
