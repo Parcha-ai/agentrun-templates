@@ -1511,3 +1511,56 @@ test("the sent check reads film/price.json: there, of the plan rebuilt, fitting 
   assert.equal(over.status, 1, over.stdout);
   assert.match(over.stdout, new RegExp(`^SENT FAIL price: the calls sent come to \\$6\\.345 at film/price\\.json's rates, over its max_fal_usd ${String(plan).replace(".", "\\.")}\\n$`));
 });
+
+// ---------- review of the sent check's price: it prices the calls sent from the plan, never from the file's lines ----------
+// film/price.json's lines are the run's to write. The check prices the plan again from film/plan.json and the file's
+// rates (in their bands), with the repo's kit, and prices each call sent from those lines: a file with no lines, a line
+// that isn't a number, lines under the plan's price at rates in band, rates under list, or a call the plan has no line
+// for all fail.
+const ISOLATE_CALL = (key = "mu-abcd1234-isolate") => ({ tool: "mcp:fal/submit_job", arguments: { endpoint_id: "fal-ai/elevenlabs/audio-isolation", submission_key: key, input: { audio_url: SONG_URL } } });
+// A run priced at a ceiling equal to its plan: the calls the records hold fit it exactly.
+function fittedRun() {
+  const run = sentRun();
+  const plan = JSON.parse(readFileSync(join(run.dir, "film", "price.json"), "utf8")).plan_usd;
+  assert.match(kit(run.dir, "price", "--film", "film", "--rates", RATES, "--max", String(plan)).stdout, /: FITS\n/);
+  assert.equal(check(reportOf(run.dir, run.calls), run.dir).stdout, "SENT PASS n=16\n");
+  return { ...run, path: join(run.dir, "film", "price.json") };
+}
+function sentFails(dir, calls, first, more) {
+  const r = check(reportOf(dir, calls), dir);
+  assert.equal(r.status, 1, r.stdout);
+  assert.match(r.stdout, first);
+  if (more) assert.match(r.stdout, more);
+}
+test("the sent check: a price.json with no lines fails, and the calls sent are priced from the plan, over its ceiling", () => {
+  const { dir, calls, path } = fittedRun();
+  rewriteJson(path, (p) => ({ ...p, lines: [] }));
+  sentFails(dir, [...calls, ...Array(5).fill(ISOLATE_CALL())], /^SENT FAIL price: film\/price\.json's lines are not the plan's at its rates/, /\(and 1 more\)/);
+});
+test("the sent check: a price line whose usd is not a number fails, naming its step", () => {
+  const { dir, calls, path } = fittedRun();
+  rewriteJson(path, (p) => ({ ...p, lines: p.lines.map((l) => (l.step === "still-1" ? { ...l, usd: "0.15" } : l)) }));
+  sentFails(dir, calls, /^SENT FAIL price: film\/price\.json's lines are not the plan's at its rates: still-1 /);
+});
+test("the sent check: lines under the plan's price at rates in band fail, and the plan's own price is over the file's ceiling", () => {
+  const { dir, calls, path } = fittedRun();
+  rewriteJson(path, (p) => {
+    const lines = p.lines.map((l) => (l.step.startsWith("clip-") ? { ...l, usd: Math.round(l.usd * 100) / 1000 } : l));
+    const low = Math.round(lines.reduce((t, l) => t + l.usd, 0) * 1000) / 1000;
+    return { ...p, lines, plan_usd: low, max_fal_usd: low };
+  });
+  sentFails(dir, calls, /^SENT FAIL price: film\/price\.json's lines are not the plan's at its rates: clip-1 /, /\(and [1-9]\d* more\)/);
+});
+test("the sent check: rates under list fail, naming the rate, even with lines and a ceiling worked out from them", () => {
+  const { dir, calls, path } = fittedRun();
+  rewriteJson(path, (p) => {
+    const lines = p.lines.map((l) => (l.step.startsWith("clip-") ? { ...l, rate_usd: 0.03, usd: Math.round(l.units * 0.03 * 1000) / 1000 } : l));
+    const total = Math.round(lines.reduce((t, l) => t + l.units * l.rate_usd, 0) * 1000) / 1000;
+    return { ...p, rates: { ...p.rates, clip: 0.03 }, lines, plan_usd: total, max_fal_usd: total };
+  });
+  sentFails(dir, calls, /^SENT FAIL price: film\/price\.json's rates: --rates clip=0\.03: fal-ai\/kling-video\/v3\/pro\/image-to-video's rate is outside 0\.112 to 0\.448 USD/);
+});
+test("the sent check: a call sent under the run's stem that the plan has no line for fails, naming the call", () => {
+  const { dir, calls } = fittedRun();
+  sentFails(dir, [...calls, ISOLATE_CALL("mu-abcd1234-isolate-2")], /^SENT FAIL price: the call sent as mu-abcd1234-isolate-2 has no line in the plan's price/);
+});
