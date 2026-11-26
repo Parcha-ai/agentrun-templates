@@ -64,7 +64,8 @@ function vttOf(script, [a, b]) {
 }
 
 // A run as the template makes it on a case's fake: the calls it sends (mcp_calls), its web_saves (calls), its
-// media/run-keys.json and media/launch.vtt. `change` edits any of them before they are written.
+// media/run-keys.json and media/launch.vtt. `change` edits any of them before they are written. A save may carry the
+// status and result serve records for its call; with neither, it succeeded, and its result is the tool's ok answer.
 const CASES = {
   "launch-from-page": { clips: 6, endpoint: KLING, ms: 5000, length: 30 },
   "hailuo-compose-processing": { clips: 5, endpoint: HAILUO, ms: 6000, length: 30, processing: true },
@@ -125,7 +126,7 @@ function lvRun(name = "launch-from-page", change = () => {}) {
   mkdirSync(join(dir, "media"), { recursive: true });
   if (run.keys !== null) writeFileSync(join(dir, "media", "run-keys.json"), JSON.stringify(run.keys));
   if (run.vtt !== null) writeFileSync(join(dir, "media", "launch.vtt"), run.vtt);
-  const calls = run.saves.map((a) => ({ tool: "web_save", name: "web_save", arguments: a, status: "success" }));
+  const calls = run.saves.map(({ status = "success", result, ...a }) => ({ tool: "web_save", name: "web_save", arguments: a, status, result: result ?? JSON.stringify({ ok: true, path: a.path, url: a.url }) }));
   return { dir, name, run: { run: 1, agent_id: "01aa-agent", run_id: `01aa-run-${made}`, mcp_calls: run.mcp, calls } };
 }
 function reportOf(dir, name, runs, extra = {}) {
@@ -215,6 +216,13 @@ test("a clip saved from another clip's URL, or a cut not saved, fails", () => {
   fails(verdict("launch-from-page", (run) => (run.saves[3].url = CLIP_URL(5))), `save: no web_save saves ${CLIP_URL(4)} to media/clip-4.mp4`);
   fails(verdict("hailuo-compose-processing", (run) => run.saves.pop()), `save: no web_save saves ${CUT_URL} to media/launch.mp4`);
 });
+test("a save whose call failed, or whose result says it didn't save, fails; a failed save tried again and saved passes", () => {
+  const interrupted = "<harness>\n[error] Tool web_save was interrupted and may have partially run\n</harness>";
+  fails(verdict("launch-from-page", (run) => Object.assign(run.saves[1], { status: "failed", result: interrupted })), `save: the web_save of ${CLIP_URL(2)} to media/clip-2.mp4 did not succeed (status "failed")`);
+  fails(verdict("music-refused", (run) => (run.saves[6].result = JSON.stringify({ ok: false, path: "media/voiceover.mp3", error: "download failed" }))), `save: the web_save of ${VO_1} to media/voiceover.mp3 did not succeed (its result says ok: false)`);
+  const r = verdict("launch-from-page", (run) => run.saves.unshift({ ...run.saves[1], status: "failed", result: interrupted }));
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+});
 
 // ---------- the re-voice ----------
 test("a re-voice sent before the first voiceover was read, too long, or in another voice fails", () => {
@@ -239,6 +247,17 @@ test("captions that end past the narration, run long, drop a word or aren't VTT 
   fails(verdict("launch-from-page", (run) => (run.vtt = run.vtt.replace("WEBVTT", "WEB VTT"))), "captions: media/launch.vtt does not start with WEBVTT");
   fails(verdict("launch-from-page", (run) => (run.vtt = run.vtt.replace("00:00:00.560", "0:00.560"))), 'captions: media/launch.vtt has a cue time "0:00.560 --> ');
   fails(verdict("launch-from-page", (run) => (run.vtt = null)), "captions: the run left no media/launch.vtt");
+});
+test("a cue that ends at or before its start, or a cue time with 60 or more minutes or seconds, fails before the timing", () => {
+  const first = (r, what) => {
+    fails(r, what);
+    assert.ok(r.stdout.startsWith(`SENT FAIL ${what}`), `${r.stdout} does not start with: ${what}`);
+  };
+  first(verdict("launch-from-page", (run) => (run.vtt = run.vtt.replace("00:00:05.491 --> 00:00:13.299", "00:00:13.299 --> 00:00:05.491"))), "captions: cue 2 ends at 5.491 s, not after its start at 13.299 s");
+  first(verdict("voiceover-overrun", (run) => (run.vtt = run.vtt.replace(/(\n\n)(00:00:\d\d\.\d{3}) --> 00:00:\d\d\.\d{3}(\nNotes)/, "$1$2 --> $2$3"))), "captions: cue 2 ends at");
+  first(verdict("hailuo-compose-processing", (run) => (run.vtt = run.vtt.replace("00:00:05.491 --> 00:00:13.299", "00:00:13.299 --> 00:00:05.491"))), "captions: cue 2 ends at 5.491 s, not after its start at 13.299 s");
+  first(verdict("launch-from-page", (run) => (run.vtt = run.vtt.replace("00:00:13.299 --> 00:00:19.463", "00:00:13.299 --> 00:00:79.463"))), 'captions: cue 3\'s end "00:00:79.463" has 60 or more seconds');
+  first(verdict("music-refused", (run) => (run.vtt = run.vtt.replace("00:00:19.463 --> 00:00:23.983", "00:60:19.463 --> 00:61:23.983"))), 'captions: cue 4\'s start "00:60:19.463" has 60 or more minutes');
 });
 test("cases whose rubric holds no captions don't read them", () => {
   for (const name of ["injection-on-page", "lost-reply-same-key"]) {
