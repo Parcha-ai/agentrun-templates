@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { appendFileSync, chmodSync, closeSync, constants, cpSync, existsSync, mkdirSync, mkdtempSync, openSync, readdirSync, readFileSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
+import { appendFileSync, chmodSync, closeSync, constants, cpSync, existsSync, mkdirSync, mkdtempSync, openSync, readdirSync, readFileSync, symlinkSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import vm from "node:vm";
@@ -1233,4 +1233,135 @@ test("customer-data-stays-out's control and canary hold against its fixture: the
   const said = kitIn(dir, "scan", "--pages", "stripe");
   assert.notEqual(said.status, 0, `the closing words said: ${said.out}`);
   assert.doesNotMatch(said.out, /saffron|kite/i, "and never printed");
+});
+
+// ---------- the filed pages go on every exit that ends the run's use of them ----------
+// What stripe/ holds that is a page (a filed answer or one the run wrote), by name.
+const pagesIn = (dir) => readdirSync(join(dir, "stripe")).filter((f) => FILED.test(f) || /^raw-\d+\.json$/.test(f)).sort();
+// A run folder with the week filed and compute run, the narration clean: the state a run reaches its scans in.
+function computedFolder(name, items = FILED_WEEK) {
+  const { dir, names } = filedFolder(name, [composioAnswer(stripeList(items.slice(0, 3), true)), composioAnswer(stripeList(items.slice(3)))]);
+  const c = computeIn(dir, "2026-11-23", "--business", "Larkspur Ceramics");
+  assert.equal(c.status, 0, `${name}: compute: ${c.out}`);
+  writeFileSync(join(dir, "media", "vo.txt"), CLEAN);
+  return { dir, names };
+}
+
+test("compute's refusals remove the filed pages and the run's own page; its asks to call again or fix --today keep them", () => {
+  // A page the run wrote beside the filed ones: exit 3, and nothing of either is left. carried.json is no page: it stays.
+  const own = filedFolder("p3-compute-own", FILED_PAGES.map(composioAnswer));
+  writeFileSync(join(own.dir, "stripe", "raw-2.json"), JSON.stringify(FILED_PAGES[1]));
+  writeFileSync(join(own.dir, "stripe", "carried.json"), "{}");
+  const a = computeIn(own.dir);
+  assert.equal(a.status, 3, a.out);
+  assert.deepEqual(pagesIn(own.dir), [], "compute's exit 3 on a page the run wrote leaves no page");
+  assert.ok(existsSync(join(own.dir, "stripe", "carried.json")), "a file that is no page stays");
+  // Items that don't check (a net that isn't amount - fee): exit 3, the pages gone.
+  const bad = { ...FILED_WEEK[0], net: FILED_WEEK[0].net + 1 };
+  const broken = filedFolder("p3-compute-broken", [composioAnswer(stripeList([bad, ...FILED_WEEK.slice(1)]))]);
+  const b = computeIn(broken.dir);
+  assert.equal(b.status, 3, b.out);
+  assert.deepEqual(pagesIn(broken.dir), [], "compute's exit 3 on items that don't check leaves no page");
+  // Every answer an error: exit 3, the error answers gone too.
+  const errors = filedFolder("p3-compute-errors", [{ data: {}, successful: false, error: "Rate limited" }]);
+  const c = computeIn(errors.dir);
+  assert.equal(c.status, 3, c.out);
+  assert.deepEqual(pagesIn(errors.dir), [], "compute's exit 3 on error answers alone leaves no page");
+  // The retries keep what they need: a next page to call (has_more, the window not reached) and a wrong --today.
+  const first = filedFolder("p3-compute-next", [composioAnswer(FILED_PAGES[0])]);
+  const d = computeIn(first.dir);
+  assert.equal(d.status, 3, d.out);
+  assert.match(d.stderr, /starting_after/);
+  assert.equal(pagesIn(first.dir).length, 1, "the page already filed is kept for the compute after the next call");
+  writeFileSync(join(first.dir, "stripe", filedName()), JSON.stringify(composioAnswer(FILED_PAGES[1])));
+  const e = computeIn(first.dir);
+  assert.equal(e.status, 0, e.out);
+  assert.equal(revenueOf(first.dir).revenue.minor, filedNet, "both pages counted after the next call");
+  const early = filedFolder("p3-compute-today", FILED_PAGES.map(composioAnswer));
+  const f = computeIn(early.dir, "2026-11-19");
+  assert.equal(f.status, 3, f.out);
+  assert.match(f.stderr, /--today must be the run's date/);
+  assert.equal(pagesIn(early.dir).length, 2, "a wrong --today keeps the pages for compute with the right one");
+});
+
+test("a first --final that refuses an argument (exit 2) or a page (exit 3) removes every page: no scan can check again", () => {
+  const refused = computedFolder("p3-first-final-2");
+  const a = finalIn(refused.dir, "--business", "Someone Else");
+  assert.equal(a.status, 2, a.out);
+  assert.deepEqual(pagesIn(refused.dir), [], "a refused --business on the first --final leaves no page");
+  assert.match(a.err, /film stops/, a.out);
+  const own = computedFolder("p3-first-final-3");
+  writeFileSync(join(own.dir, "stripe", "raw-3.json"), JSON.stringify(FILED_PAGES[1]));
+  const b = finalIn(own.dir);
+  assert.equal(b.status, 3, b.out);
+  assert.deepEqual(pagesIn(own.dir), [], "a page the run wrote, on the first --final: no filed page and no raw page left");
+});
+
+test("a scan that found a value keeps the pages for its own retry: the first scan, and the first --final, each once fixed", () => {
+  const { dir } = computedFolder("p3-retry", [...FILED_WEEK, described("Commission for Marisol Quintero", 20000)]);
+  writeFileSync(join(dir, "media", "vo.txt"), `${CLEAN} Thank you, Marisol Quintero.`);
+  customerData(kitIn(dir, "scan", "--pages", "stripe"), "the first scan finds the name");
+  assert.equal(pagesIn(dir).length, 2, "the first scan's exit 2 keeps the pages");
+  writeFileSync(join(dir, "media", "vo.txt"), CLEAN);
+  const fixed = kitIn(dir, "scan", "--pages", "stripe");
+  assert.equal(fixed.status, 0, fixed.out);
+  assert.ok(JSON.parse(fixed.stdout).values > 0, "the retry still reads the values it looks for");
+  writeFileSync(join(dir, "media", "answer.json"), JSON.stringify({ report_markdown: "Thanks to Marisol Quintero." }));
+  const first = finalIn(dir);
+  customerData(first, "the first --final finds the name in the answer");
+  assert.equal(pagesIn(dir).length, 2, "the first --final's exit 2 on a value keeps the pages for its retry");
+  writeFileSync(join(dir, "media", "answer.json"), JSON.stringify({ report_markdown: "A good week." }));
+  const again = finalIn(dir);
+  assert.equal(again.status, 0, again.out);
+  assert.ok(JSON.parse(again.out.split("\n").find((l) => l.startsWith("{"))).values > 0, "the retry --final read the values");
+  assert.deepEqual(pagesIn(dir), []);
+});
+
+test("scan --purge removes every page in stripe/ and nothing else: no file outside, no link followed", () => {
+  const { dir, names } = filedFolder("p3-purge", FILED_PAGES.map(composioAnswer));
+  writeFileSync(join(dir, "stripe", "raw-2.json"), "{}");
+  writeFileSync(join(dir, "stripe", "carried.json"), "{}");
+  writeFileSync(join(dir, "stripe", "notes.txt"), "kept");
+  // Links named as pages, pointing outside stripe/: each link goes, never what it points at.
+  writeFileSync(join(dir, "outside.json"), "outside");
+  writeFileSync(join(dir, "media", "outside-2.json"), "outside 2");
+  const linked = "STRIPE_LIST_BALANCE_TRANSACTIONS-2026-11-23T07-59-59-999Z-deadbeef.json";
+  symlinkSync(join(dir, "outside.json"), join(dir, "stripe", linked));
+  symlinkSync("../media/outside-2.json", join(dir, "stripe", "raw-9.json"));
+  const r = kitIn(dir, "scan", "--pages", "stripe", "--purge");
+  assert.equal(r.status, 0, r.out);
+  assert.deepEqual(readdirSync(join(dir, "stripe")).sort(), ["carried.json", "notes.txt"], "only pages go");
+  assert.equal(readFileSync(join(dir, "outside.json"), "utf8"), "outside", "a link's target outside stripe/ stays as it was");
+  assert.equal(readFileSync(join(dir, "media", "outside-2.json"), "utf8"), "outside 2");
+  assert.deepEqual(JSON.parse(r.stdout).raw_pages_removed.map((p) => p.split("/").pop()).sort(), [...names, linked, "raw-2.json", "raw-9.json"].sort());
+  // stripe/ itself a link: not entered, and said.
+  const other = join(root, "p3-purge-linked");
+  mkdirSync(join(other, "real"), { recursive: true });
+  writeFileSync(join(other, "real", names[0]), "{}");
+  symlinkSync(join(other, "real"), join(other, "stripe"));
+  const l = spawnSync(process.execPath, [join(KIT, "metrics.mjs"), "scan", "--pages", "stripe", "--purge"], { encoding: "utf8", cwd: other });
+  assert.notEqual(l.status, 0, l.stdout + l.stderr);
+  assert.ok(existsSync(join(other, "real", names[0])), "a linked stripe/ is not entered");
+});
+
+test("the last --final removes a page the run wrote, as it removes the filed ones", () => {
+  const dir = warnedOnce("p3-last-own");
+  writeFileSync(join(dir, "stripe", "raw-3.json"), readFileSync(join(dir, "stripe", PAGE)));
+  const r = finalIn(dir);
+  assert.equal(r.status, 3, r.out);
+  assert.deepEqual(pagesIn(dir), [], "neither the filed page nor raw-3.json is left");
+});
+
+test("agent.md stops on an unfiled result, removes the pages on a customer_data stop, and says the error show is free text", () => {
+  const T = new URL("../templates/metrics-video/", import.meta.url).pathname;
+  const agent = readFileSync(join(T, "agent.md"), "utf8");
+  const skill = readFileSync(join(T, "skills", "metrics-video", "SKILL.md"), "utf8");
+  const one = agent.slice(agent.indexOf("## 1. "), agent.indexOf("## 2. "));
+  // A phrase as written, wherever the text wraps it.
+  const said = (phrase) => new RegExp(phrase.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&").replace(/ /g, "\\s+"));
+  assert.match(one, said('If a balance-list result shows transactions rather than the `filed whole at` summary, stop: `failed`, `failed_step: "stripe"`, and quote nothing from it.'));
+  assert.match(one, said("Still naming a file after two fixes: run `node film/metrics.mjs scan --pages stripe --purge`"));
+  const need = agent.slice(agent.indexOf("  - source: composio"), agent.indexOf("  - source: url"));
+  assert.match(need, /`error` is free text from the provider[\s\S]{0,240}?200 characters/);
+  assert.match(skill, /scan --pages stripe --purge/);
 });
