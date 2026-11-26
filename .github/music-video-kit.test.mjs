@@ -1834,3 +1834,58 @@ test("cost over the recorded ceiling with nothing sent writes no steps and $0, s
   assert.match(changed.stderr, /the plan changed since it was priced/);
   assert.equal(existsSync(costPath), false);
 });
+
+// ---------- the grouped read's handles: the repo check holds them, from the case's own fake ----------
+// A grader's prompt is cut to its cap, and the fake's calls lose their middles first: a submit_job's answer (its
+// request_id, status_url and response_url) is the part a cut takes. The repo check reads the fake's answers whole from
+// the case's fixtures/fal-mcp.json in this repo. The first wait_for_jobs that reads a still lists every still's own
+// three handles exactly as its submit_job answered them, and any read of a job lists that job's own handles.
+const SHORT_FAKE = JSON.parse(readFileSync(new URL("../templates/music-video/evals/short-song/fixtures/fal-mcp.json", import.meta.url), "utf8"));
+// short-song's fake answer to a submit_job, as the fake picks it: the answer whose when matches the endpoint and key.
+function answered(endpoint_id, key) {
+  const a = SHORT_FAKE.tools.submit_job.answers.find((x) => x.when.endpoint_id === endpoint_id && new RegExp(`^(?:${x.when.submission_key.$pattern})$`).test(key));
+  const { request_id, status_url, response_url } = JSON.parse(a.result.content[0].text);
+  return { endpoint_id, request_id, status_url, response_url };
+}
+// The run's calls with its grouped read of the stills right after the last still is sent: every still, in shot order.
+function withStillRead(calls) {
+  const stills = calls.filter((c) => c.tool === "mcp:fal/submit_job" && c.arguments.endpoint_id === NANO);
+  const at = calls.indexOf(stills.at(-1)) + 1;
+  const read = { tool: "mcp:fal/wait_for_jobs", arguments: { jobs: stills.map((c, index) => ({ index, ...answered(NANO, c.arguments.submission_key) })) } };
+  return [...calls.slice(0, at), read, ...calls.slice(at)];
+}
+const firstStillRead = (calls) => calls.find((c) => c.tool === "mcp:fal/wait_for_jobs" && c.arguments.jobs.some((j) => j.endpoint_id === NANO));
+const changeJob = (calls, key, change) => {
+  const read = structuredClone(firstStillRead(calls));
+  const { request_id } = answered(NANO, key);
+  read.arguments.jobs = change(read.arguments.jobs, read.arguments.jobs.findIndex((j) => j.request_id === request_id));
+  return calls.map((c) => (c === firstStillRead(calls) ? read : c));
+};
+test("the sent check holds the first wait_for_jobs that reads a still to every still's own handles as its submit_job answered them", () => {
+  const { dir, calls } = sentRun();
+  const read = withStillRead(calls);
+  assert.equal(check(reportOf(dir, read), dir).stdout, "SENT PASS n=16\n", "every still's own handles: it holds");
+  const three = answered(NANO, "mu-abcd1234-still-3");
+  const cases = [
+    ["shot 3's response_url changed", changeJob(read, "mu-abcd1234-still-3", (jobs, i) => jobs.with(i, { ...jobs[i], response_url: `${three.response_url}x` })),
+      `SENT FAIL read: the first wait_for_jobs that reads a still gives shot 3's response_url as ${JSON.stringify(`${three.response_url}x`)}, not ${JSON.stringify(three.response_url)} as its submit_job answered\n`],
+    ["shot 3's status_url changed", changeJob(read, "mu-abcd1234-still-3", (jobs, i) => jobs.with(i, { ...jobs[i], status_url: `${three.status_url}x` })),
+      `SENT FAIL read: the first wait_for_jobs that reads a still gives shot 3's status_url as ${JSON.stringify(`${three.status_url}x`)}, not ${JSON.stringify(three.status_url)} as its submit_job answered\n`],
+    ["shot 3's request_id changed", changeJob(read, "mu-abcd1234-still-3", (jobs, i) => jobs.with(i, { ...jobs[i], request_id: "00000000-0000-0000-0000-000000000000" })),
+      `SENT FAIL read: the first wait_for_jobs that reads a still gives shot 3's request_id as "00000000-0000-0000-0000-000000000000", not ${JSON.stringify(three.request_id)} as its submit_job answered\n`],
+    ["shot 5's still left out", changeJob(read, "mu-abcd1234-still-5", (jobs, i) => jobs.toSpliced(i, 1)),
+      `SENT FAIL read: the first wait_for_jobs that reads a still leaves out shot 5's still (request ${answered(NANO, "mu-abcd1234-still-5").request_id})\n`],
+  ];
+  for (const [what, sentCalls, line] of cases) {
+    const r = check(reportOf(dir, sentCalls), dir);
+    assert.equal(r.status, 1, `${what}: ${r.stdout}`);
+    assert.equal(r.stdout, line, what);
+  }
+  // A later read of one job (a clip still pending, read alone) lists its own handles too.
+  const clip2 = answered(KLING, "mu-abcd1234-clip-2");
+  const alone = (job) => [...read, { tool: "mcp:fal/wait_for_jobs", arguments: { jobs: [{ index: 0, ...job }] } }];
+  assert.equal(check(reportOf(dir, alone(clip2)), dir).stdout, "SENT PASS n=16\n", "a clip read alone with its own handles: it holds");
+  const r = check(reportOf(dir, alone({ ...clip2, status_url: `${clip2.status_url}x` })), dir);
+  assert.equal(r.status, 1, r.stdout);
+  assert.equal(r.stdout, `SENT FAIL read: a wait_for_jobs reads mu-abcd1234-clip-2 (request ${clip2.request_id}) with its status_url ${JSON.stringify(`${clip2.status_url}x`)}, not ${JSON.stringify(clip2.status_url)} as its submit_job answered\n`);
+});
