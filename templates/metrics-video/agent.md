@@ -33,7 +33,7 @@ mcp:
     # gated by path), so the skill says never to, and the kit's scan checks every file the run writes for each value.
     # `error` is free text from the provider, which serve shows cut at 200 characters: Composio's errors echo no
     # items today, but a list tool that ever echoed rows in `error` would put them in front of the model.
-    # A serve whose tool gate guards a filed folder (0.1.0-beta.62 and later) also refuses the agent's read, write and
+    # A serve whose tool gate guards a filed folder (0.1.0-beta.63 and later) also refuses the agent's read, write and
     # edit there. `expand` would add billing details: the pin leaves it out of every call. Charge search and every tool
     # that writes are left out. Stripe's reads take no other scope to pin: the connection is one account.
     file: { STRIPE_LIST_BALANCE_TRANSACTIONS: { folder: stripe, show: [successful, error, data.has_more, data.data.-1.id, data.data.-1.created] } }
