@@ -76,7 +76,7 @@
 // is never entered, nor a pages folder that is itself a link.
 // --pages names a folder inside the run's folder, wherever its links lead: compute and scan refuse any other (exit 3),
 // read nothing there and remove nothing. The run's folder is the one that holds the kit's own folder (film/ in a run),
-// never where the kit runs nor scan's --root: the run chooses both.
+// never where the kit runs nor scan's --root: the run chooses both. It is never the pages folder itself.
 // The first --final's note is written only into a page that is a file, never a link.
 // A throw in compute removes the pages too, as its refusals do.
 // Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
@@ -393,8 +393,8 @@ function realOf(path) {
   }
 }
 // Where --pages is, once its links are resolved: its parent folder's real path, and its own name looked at with lstat
-// (never followed). It must be inside runFolder() (its path from there neither starts with .. nor is absolute),
-// and be a folder, not a link. "stripe/", "stripe//" and "stripe/." are looked at as resolve() writes them, so a link
+// (never followed). It must be inside runFolder() (its path from there neither starts with .. nor is absolute), not be
+// that folder itself, and be a folder, not a link. "stripe/", "stripe//" and "stripe/." are looked at as resolve() writes them, so a link
 // named stripe is seen as the link. Returns { at } (the real path), { missing } (no folder there: no page), or
 // { refused } (why: nothing in it is read or removed).
 function pagesFolder(dir) {
@@ -407,6 +407,8 @@ function pagesFolder(dir) {
   } catch (e) {
     return { refused: `it can't be looked at (${e?.code ?? e})` };
   }
+  // The run's folder itself ("." or "" from there) holds the run's files, never Stripe's pages alone.
+  if (rel === "") return { refused: "it is the run's folder itself" };
   if (isAbsolute(rel) || rel.split(sep)[0] === "..") return { refused: "it is outside the run's folder" };
   try {
     const st = lstatSync(at);
