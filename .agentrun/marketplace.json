@@ -1222,6 +1222,22 @@
       "summary": "Cuts a music video to your song's beat, with lyric captions, stills and clips. For songs you own or license. Billed to your fal account."
     },
     {
+      "name": "metrics-video",
+      "source": "./templates/metrics-video",
+      "category": "finance",
+      "tags": [
+        "video",
+        "stripe",
+        "revenue",
+        "weekly",
+        "hyperframes",
+        "voiceover",
+        "fal",
+        "elevenlabs"
+      ],
+      "summary": "A 45-second film each week of last week's Stripe revenue, net of refunds and fees, per currency, against the week before."
+    },
+    {
       "name": "photo-shoot",
       "source": "./templates/photo-shoot",
       "category": "marketing",

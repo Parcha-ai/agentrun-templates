@@ -1,0 +1,77 @@
+{
+ "server": "stripe",
+ "description": "A fake Composio Stripe toolkit for Larkspur Ceramics (larkspur.example), USD only: 8 charges, a refund and a dispute in the week of 16 November 2026 (UTC), a payout, two charges the week before and one after. Its list answers every transaction on one page. It reads nothing real.",
+ "tools": {
+  "STRIPE_LIST_BALANCE_TRANSACTIONS": {
+   "description": "List balance transactions (the money moving in and out of your Stripe balance), newest first. Filter by created (gt, gte, lt, lte, Unix seconds), currency, payout, source, type; page with limit (1-100) and starting_after or ending_before.",
+   "input": {
+    "type": "object",
+    "properties": {
+     "created": {
+      "type": "object",
+      "description": "Only transactions created in this range, Unix seconds: gt, gte, lt, lte."
+     },
+     "currency": {
+      "type": "string"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+     },
+     "starting_after": {
+      "type": "string",
+      "description": "A transaction id: the page after it."
+     },
+     "ending_before": {
+      "type": "string"
+     },
+     "type": {
+      "type": "string"
+     },
+     "payout": {
+      "type": "string"
+     },
+     "source": {
+      "type": "string"
+     }
+    }
+   },
+   "answers": [],
+   "default": {
+    "content": [
+     {
+      "type": "text",
+      "text": "{\"data\":{\"object\":\"list\",\"data\":[{\"id\":\"txn_3Qp6fCDng6DGMABmH44VXvUT\",\"object\":\"balance_transaction\",\"amount\":45000,\"available_on\":1795570200,\"created\":1795397400,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":1335,\"fee_details\":[{\"amount\":1335,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":43665,\"reporting_category\":\"charge\",\"source\":\"ch_3QMwPjN3wxBme2H57RvTDNEK\",\"status\":\"available\",\"type\":\"charge\"},{\"id\":\"txn_3Qv4UGG2QTLhVeTkBdZKXSiH\",\"object\":\"balance_transaction\",\"amount\":31000,\"available_on\":1795521600,\"created\":1795348800,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":929,\"fee_details\":[{\"amount\":929,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":30071,\"reporting_category\":\"charge\",\"source\":\"ch_3QdmdZ9hFUUBUvKgt4G3PxNX\",\"status\":\"available\",\"type\":\"charge\"},{\"id\":\"txn_3Qkc29Xmj4KhUCnzvaeCRcon\",\"object\":\"balance_transaction\",\"amount\":72000,\"available_on\":1795450200,\"created\":1795277400,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":2118,\"fee_details\":[{\"amount\":2118,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":69882,\"reporting_category\":\"charge\",\"source\":\"ch_3QqNg6KoV5nDj96wSSnoEEKg\",\"status\":\"available\",\"type\":\"charge\"},{\"id\":\"txn_3QxdeVmTgRMU58mJSF4QYHqq\",\"object\":\"balance_transaction\",\"amount\":-36550,\"available_on\":1795424400,\"created\":1795251600,\"currency\":\"usd\",\"description\":\"Chargeback withdrawal for disputed charge\",\"exchange_rate\":null,\"fee\":1500,\"fee_details\":[{\"amount\":1500,\"application\":null,\"currency\":\"usd\",\"description\":\"Dispute fee\",\"type\":\"stripe_fee\"}],\"net\":-38050,\"reporting_category\":\"dispute\",\"source\":\"du_3QqgYkHToVFeCMmj7rrrqZN7\",\"status\":\"available\",\"type\":\"adjustment\"},{\"id\":\"txn_3QJFZZtZHNuZc8rtfTFrqgwV\",\"object\":\"balance_transaction\",\"amount\":-500000,\"available_on\":1795366800,\"created\":1795194000,\"currency\":\"usd\",\"description\":\"STRIPE PAYOUT\",\"exchange_rate\":null,\"fee\":0,\"fee_details\":[],\"net\":-500000,\"reporting_category\":\"payout\",\"source\":\"po_3QjJ4CjzX2mSyJJWhT2AxdW5\",\"status\":\"pending\",\"type\":\"payout\"},{\"id\":\"txn_3Q7Qpe8MRwowgM34vibRw4cM\",\"object\":\"balance_transaction\",\"amount\":164000,\"available_on\":1795355100,\"created\":1795182300,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":4786,\"fee_details\":[{\"amount\":4786,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":159214,\"reporting_category\":\"charge\",\"source\":\"ch_3Qfz9HYf724GfTyZciV2Dgf3\",\"status\":\"available\",\"type\":\"charge\"},{\"id\":\"txn_3QboZYaAi3GcyzRZCgpMzKue\",\"object\":\"balance_transaction\",\"amount\":-48000,\"available_on\":1795274400,\"created\":1795101600,\"currency\":\"usd\",\"description\":\"REFUND FOR CHARGE\",\"exchange_rate\":null,\"fee\":0,\"fee_details\":[],\"net\":-48000,\"reporting_category\":\"refund\",\"source\":\"re_3QgRELMD9EJCqdzJNd4m3Yfe\",\"status\":\"available\",\"type\":\"refund\"},{\"id\":\"txn_3QdKxGcqKzUWSmcr3HJ7MFSn\",\"object\":\"balance_transaction\",\"amount\":89900,\"available_on\":1795255200,\"created\":1795082400,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":2637,\"fee_details\":[{\"amount\":2637,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":87263,\"reporting_category\":\"charge\",\"source\":\"ch_3Q7TCSkREnMGFhz32QEKXvLP\",\"status\":\"available\",\"type\":\"charge\"},{\"id\":\"txn_3QbP4Wo9mt88YdWPoVWfxS9f\",\"object\":\"balance_transaction\",\"amount\":36550,\"available_on\":1795203000,\"created\":1795030200,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":1090,\"fee_details\":[{\"amount\":1090,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":35460,\"reporting_category\":\"charge\",\"source\":\"ch_3QM64a5vTSVvaoohvB2mQd3V\",\"status\":\"available\",\"type\":\"charge\"},{\"id\":\"txn_3QLhMEU3oYiCXLrmRjWw5xve\",\"object\":\"balance_transaction\",\"amount\":210000,\"available_on\":1795172700,\"created\":1794999900,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":6120,\"fee_details\":[{\"amount\":6120,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":203880,\"reporting_category\":\"charge\",\"source\":\"ch_3QKDaQVPeC5XjxuVRnE6XcTY\",\"status\":\"available\",\"type\":\"charge\"},{\"id\":\"txn_3QY86rFXxYBqR6WfaT3odtFd\",\"object\":\"balance_transaction\",\"amount\":48000,\"available_on\":1795099200,\"created\":1794926400,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":1422,\"fee_details\":[{\"amount\":1422,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":46578,\"reporting_category\":\"charge\",\"source\":\"ch_3QKNA459nwAaJZaPN7dKV8wM\",\"status\":\"available\",\"type\":\"charge\"},{\"id\":\"txn_3QwdkJXZStmeDbQ7bVDF6qEf\",\"object\":\"balance_transaction\",\"amount\":125000,\"available_on\":1794993120,\"created\":1794820320,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":3655,\"fee_details\":[{\"amount\":3655,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":121345,\"reporting_category\":\"charge\",\"source\":\"ch_3QAAfCrXXzh2HcAAW3FEJ73A\",\"status\":\"available\",\"type\":\"charge\"},{\"id\":\"txn_3QShGHB5BXetpMqEPaaFFoGV\",\"object\":\"balance_transaction\",\"amount\":140000,\"available_on\":1794841500,\"created\":1794668700,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":4090,\"fee_details\":[{\"amount\":4090,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":135910,\"reporting_category\":\"charge\",\"source\":\"ch_3QApdEpcdeXxqHVJo7i7vedg\",\"status\":\"available\",\"type\":\"charge\"},{\"id\":\"txn_3QkCsYy5jVicuCGzwrdgFr9J\",\"object\":\"balance_transaction\",\"amount\":99000,\"available_on\":1794651600,\"created\":1794478800,\"currency\":\"usd\",\"description\":null,\"exchange_rate\":null,\"fee\":2901,\"fee_details\":[{\"amount\":2901,\"application\":null,\"currency\":\"usd\",\"description\":\"Stripe processing fees\",\"type\":\"stripe_fee\"}],\"net\":96099,\"reporting_category\":\"charge\",\"source\":\"ch_3QvGMdRaqr9GCQsQJQnVxZni\",\"status\":\"available\",\"type\":\"charge\"}],\"has_more\":false,\"url\":\"/v1/balance_transactions\"},\"successful\":true,\"error\":null}"
+     }
+    ]
+   }
+  },
+  "STRIPE_SEARCH_CHARGES": {
+   "description": "Search charges with Stripe's search query language (query, limit, page).",
+   "input": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     },
+     "limit": {
+      "type": "integer"
+     },
+     "page": {
+      "type": "string"
+     }
+    }
+   },
+   "answers": [],
+   "default": {
+    "content": [
+     {
+      "type": "text",
+      "text": "{\"data\":{\"object\":\"search_result\",\"data\":[{\"id\":\"ch_3QMwPjN3wxBme2H57RvTDNEK\",\"object\":\"charge\",\"amount\":45000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1795397400,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}},{\"id\":\"ch_3QdmdZ9hFUUBUvKgt4G3PxNX\",\"object\":\"charge\",\"amount\":31000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1795348800,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}},{\"id\":\"ch_3QqNg6KoV5nDj96wSSnoEEKg\",\"object\":\"charge\",\"amount\":72000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1795277400,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}},{\"id\":\"ch_3Qfz9HYf724GfTyZciV2Dgf3\",\"object\":\"charge\",\"amount\":164000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1795182300,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}},{\"id\":\"ch_3Q7TCSkREnMGFhz32QEKXvLP\",\"object\":\"charge\",\"amount\":89900,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1795082400,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}},{\"id\":\"ch_3QM64a5vTSVvaoohvB2mQd3V\",\"object\":\"charge\",\"amount\":36550,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1795030200,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}},{\"id\":\"ch_3QKDaQVPeC5XjxuVRnE6XcTY\",\"object\":\"charge\",\"amount\":210000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1794999900,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}},{\"id\":\"ch_3QKNA459nwAaJZaPN7dKV8wM\",\"object\":\"charge\",\"amount\":48000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1794926400,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}},{\"id\":\"ch_3QAAfCrXXzh2HcAAW3FEJ73A\",\"object\":\"charge\",\"amount\":125000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1794820320,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}},{\"id\":\"ch_3QApdEpcdeXxqHVJo7i7vedg\",\"object\":\"charge\",\"amount\":140000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1794668700,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}},{\"id\":\"ch_3QvGMdRaqr9GCQsQJQnVxZni\",\"object\":\"charge\",\"amount\":99000,\"amount_refunded\":0,\"currency\":\"usd\",\"status\":\"succeeded\",\"paid\":true,\"created\":1794478800,\"description\":null,\"billing_details\":{\"name\":null,\"email\":null,\"address\":null,\"phone\":null},\"receipt_email\":null,\"metadata\":{}}],\"has_more\":false,\"next_page\":null},\"successful\":true,\"error\":null}"
+     }
+    ]
+   }
+  }
+ }
+}

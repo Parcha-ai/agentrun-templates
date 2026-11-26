@@ -1,0 +1,41 @@
+<!-- Open (the first 4-5 s): frame 0 already shows the week, the biggest thing on screen, with the business's name over
+     it and what the film is under it. The stack pushes in slowly; the accent rule draws under the week. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--ground); container-type: size; overflow: hidden; }
+    #op-stack { position: absolute; left: 8cqw; right: 8cqw; top: 20cqh; display: flex; flex-direction: column; gap: 2.6cqh; transform-origin: 0% 50%; }
+    #op-name { font-family: var(--font-text); font-weight: 700; font-size: 4.4cqh; color: var(--ink); letter-spacing: -0.01em; }
+    #op-week { font-family: var(--font-display); font-size: 26cqh; line-height: 0.92; color: var(--ink); text-transform: uppercase; white-space: nowrap; }
+    #op-rule { height: 1.1cqh; width: 18cqw; background: var(--accent); transform-origin: left center; }
+    #op-what { font-family: var(--font-text); font-weight: 400; font-size: 4.4cqh; color: var(--ink); }
+  </style>
+  <div id="root" data-composition-id="open" data-width="1920" data-height="1080">
+    <div id="op-span" class="clip" data-start="0" data-duration="5" data-mv-span>
+      <div id="op-stack">
+        <div id="op-name"></div>
+        <div id="op-week"></div>
+        <div id="op-rule"></div>
+        <div id="op-what"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const mv = window.MV;
+    const opName = document.getElementById("op-name");
+    if (mv.business) opName.textContent = mv.business;
+    else opName.remove();
+    document.getElementById("op-week").textContent = mv.week.short;
+    document.getElementById("op-what").textContent = `Revenue, the week of ${mv.week.label}`;
+    rfReady(["op-week", "op-what"]).then(() => {
+      rfFit(document.getElementById("op-week"), { w: 0.84 * innerWidth, max: 0.3 * innerHeight });
+      rfFit(document.getElementById("op-what"), { w: 0.84 * innerWidth, max: 0.044 * innerHeight });
+      const D = mv.timing.open.seconds;
+      const tl = gsap.timeline({ paused: true });
+      // The week is on screen from frame 0; the push is the scene's one move, the rule and the line follow it.
+      tl.fromTo("#op-stack", { scale: 1 }, { scale: 1.04, duration: D, ease: "none" }, 0);
+      tl.fromTo("#op-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 0.25);
+      tl.fromTo("#op-what", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.35, ease: "power4.out" }, 0.55);
+      window.__timelines["open"] = tl;
+    });
+  </script>
+</template>

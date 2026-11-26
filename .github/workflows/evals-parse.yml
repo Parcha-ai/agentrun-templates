@@ -41,6 +41,9 @@ jobs:
       # memory).
       - run: command -v ffmpeg || (sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg)
       - run: node --test .github/music-video-kit.test.mjs
+      # The metrics film kit, node only, on synthetic Stripe pages: a currency the last result could not carry (a week of
+      # more than ten) is never said to be restated, and money won back from an earlier week's dispute is on the film.
+      - run: node --test .github/metrics-video-kit.test.mjs
       # The explainer's caption kit, node only, on two recorded ElevenLabs takes and synthetic scripts: every cue is one
       # or two lines of at most 42 characters, timed in code (aligned to fal's letters, anchored, or measured), and a
       # voice with no timestamps and no length exits 2.

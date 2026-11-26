@@ -1,0 +1,20 @@
+# Applied with these parameters, weeks in UTC. No earlier film: the run is started as the schedule starts it, with
+# nothing handed. fixtures/stripe-mcp.json lists the week of 16 November in USD (8 charges, a refund, a dispute, a
+# payout) and two charges the week before. The grouped fal read answers the voice completed and the music PENDING; a
+# one-item read of the music completes it. The film renders for real. Pass: 2 of 2.
+parameters:
+  business_name: Larkspur Ceramics
+  timezone: UTC
+mcp:
+  stripe: fixtures/stripe-mcp.json
+  fal: fixtures/fal-mcp.json
+web: fixtures/web.json
+# Stripe's balance list and every fal tool granted, so each call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:stripe/STRIPE_LIST_BALANCE_TRANSACTIONS
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T07:00:00Z

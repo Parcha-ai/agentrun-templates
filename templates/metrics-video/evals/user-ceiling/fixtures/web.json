@@ -1,0 +1,17 @@
+{
+ "search": {
+  "answers": [],
+  "default": {
+   "results": []
+  }
+ },
+ "fetch": {
+  "answers": [],
+  "default": {
+   "error": "fetch failed: 404 Not Found"
+  }
+ },
+ "save": {
+  "answers": []
+ }
+}

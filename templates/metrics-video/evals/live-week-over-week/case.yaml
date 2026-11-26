@@ -1,0 +1,21 @@
+# Live fal, fixture Stripe: week-over-week's Stripe fake and last film, with the voice and the music made on the real
+# ElevenLabs v3 and ElevenLabs Music. Only stripe is faked; fal is the fal MCP server saved in the owner's data (toolkit
+# fal, their own key), and web_save downloads the real files, so this case runs only with --on-data on a data folder
+# that has fal saved, on a server with the media box. About $0.57 of fal a run (more with a re-voice). The figures are
+# week-over-week's: the week of 16 November in Europe/Madrid, matching the carried week before. The film renders for
+# real, on a real voice's length, so the fit and re-voice step meets a real duration. Pass: 2 of 2.
+parameters:
+  business_name: Larkspur Ceramics
+  timezone: Europe/Madrid
+mcp:
+  stripe: fixtures/stripe-mcp.json
+previous: fixtures/previous.json
+# Stripe's balance list and every fal tool granted, so each call is the agent's choice, not a permission prompt's.
+grants:
+  - mcp:stripe/STRIPE_LIST_BALANCE_TRANSACTIONS
+  - mcp:fal/get_pricing
+  - mcp:fal/get_model_schema
+  - mcp:fal/submit_job
+  - mcp:fal/wait_for_jobs
+  - mcp:fal/get_submission
+now: 2026-11-23T06:00:00Z
