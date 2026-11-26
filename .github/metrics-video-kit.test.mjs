@@ -1999,3 +1999,46 @@ test("place takes only the kit's scene names from film/data.json: a scene named 
     assert.equal(readFileSync(join(film, "index.html"), "utf8"), index, `${what}: nothing is written`);
   }
 });
+
+// ---------- a note's copy a kill left ----------
+// The note is written whole under .<page>.note-<12 hex> in the pages folder, then renamed over the page. A kill between
+// the two leaves that copy, the customers' values in it.
+const NOTE_COPY = /^\.STRIPE_LIST_BALANCE_TRANSACTIONS-.+\.json\.note-[0-9a-f]{12}$/;
+
+test("a note's copy a kill left in the pages folder is no file the run wrote: the --final run again, its files clean, exits 0 and removes it", () => {
+  const saved = { NODE_OPTIONS: process.env.NODE_OPTIONS, MV_SWAP: undefined };
+  let r;
+  try {
+    r = fixtureRun("week-over-week", "2026-11-23", {
+      items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)],
+      as: "p9-kill-resume",
+      answer: KEPT_CODE,
+      beforeFinal: () => Object.assign(process.env, { NODE_OPTIONS: `${saved.NODE_OPTIONS ?? ""} --import ${swapPreload()}`.trim(), MV_SWAP: "kill" }),
+    });
+  } finally {
+    for (const [k, v] of Object.entries(saved)) if (v === undefined) delete process.env[k]; else process.env[k] = v;
+  }
+  assert.equal(r.final.status, null, `the kit was killed while it wrote the note: ${r.final.out}`);
+  const copies = readdirSync(join(r.dir, "stripe")).filter((f) => NOTE_COPY.test(f));
+  assert.equal(copies.length, 1, "the kill left the note's copy");
+  assert.match(readFileSync(join(r.dir, "stripe", copies[0]), "utf8"), /Marisol Quintero/, "and it holds a customer's value");
+  // The run's own files clean: the answer without the tool word that warned.
+  const answerPath = join(r.dir, "media", "answer.json");
+  const answer = JSON.parse(readFileSync(answerPath, "utf8"));
+  delete answer.checks;
+  writeFileSync(answerPath, JSON.stringify(answer));
+  const again = finalIn(r.dir);
+  assert.equal(again.status, 0, `the --final again, the run's files clean: ${again.out}`);
+  assert.doesNotMatch(again.out, /note-[0-9a-f]{12} holds/, "the copy is never searched as a file the run wrote");
+  assert.deepEqual(readdirSync(join(r.dir, "stripe")), [], "the pages and the copy are removed");
+});
+
+test("a file named as a note's copy outside the pages folder is searched as any file the run wrote: its name hides nothing", () => {
+  const items = [described("Commission for Marisol Quintero")];
+  const name = ".STRIPE_LIST_BALANCE_TRANSACTIONS-2026-11-23T07-00-01-000Z-0a1b2c3d.json.note-0123456789ab";
+  for (const folder of ["media", "media/stripe"]) {
+    const r = scanRun(`p9-copy-name-${folder.replace("/", "-")}`, items, { "media/vo.txt": CLEAN, [`${folder}/${name}`]: "Thank you, Marisol Quintero." });
+    assert.equal(r.status, 2, `${folder}: ${r.out}`);
+    assert.ok(r.out.includes(`${folder}/${name} holds a value`), `${folder}: the file is named: ${r.out}`);
+  }
+});
