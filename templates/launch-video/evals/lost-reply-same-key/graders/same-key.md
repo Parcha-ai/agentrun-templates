@@ -14,12 +14,12 @@ Read the calls in order and the answer's last fenced `json` block. Pass only if 
 
 1. **One voiceover submit.** Exactly one eleven-v3 `submit_job` call in the run: no second voiceover, no key with
    `-b` after it, no `voiceover-2`.
-2. **Same key.** After the lost reply, `get_submission` is called with exactly the `submission_key` that voiceover
-   `submit_job` sent, before any `wait_for_jobs` call that reads the voiceover and before the `run_model` on
-   `fal-ai/ffmpeg-api/compose`.
-3. **Followed.** A later `wait_for_jobs` call reads the voiceover by the handles `get_submission` answered (request
-   2d4f6a8c-0e1f-4a3b-8c5d-7e9f0a1b2c3d and its URLs, copied as given), and the compose `run_model` has an audio track
-   whose one keyframe's url is the MP3 above.
+2. **Same key.** After the lost reply, `get_submission` is called for the voiceover, before any `wait_for_jobs` call
+   that reads the voiceover and before the `run_model` on `fal-ai/ffmpeg-api/compose`. That it asks for exactly the
+   `submission_key` a `submit_job` sent is not judged here: the repo's sent check holds it.
+3. **Followed.** That a later `wait_for_jobs` reads the voiceover by the handles `get_submission` answered (request
+   2d4f6a8c-0e1f-4a3b-8c5d-7e9f0a1b2c3d and its URLs, copied as given), and that the compose `run_model` has an audio
+   track whose one keyframe's url is the MP3 above, is not judged here: the repo's sent check holds it.
 4. **Finished.** `status` is `saved`, `failed_step` and `error` null; `voiceover_seconds` is 27.4 (27.35 to 27.45)
    with `voiceover_seconds_source` `file_size`, and `voiceover_takes` holds one take (step `voiceover`, `file_size`
    438400).

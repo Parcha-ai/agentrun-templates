@@ -96,3 +96,68 @@ It prints one line and exits:
 | 2 | `SENT VOID <why>` | no verdict, never a failure: bad arguments, or the report, the run's folder, the fake log, the case's fake fal, shot count or `prompt.md` ceiling can't be found or read (a report that isn't a serve eval report, a log item that isn't a call) |
 
 Node built-ins only, and the repo's own kit (`templates/music-video/skills/music-video/kit/beats.mjs`). The repo's music-video kit tests (`.github/music-video-kit.test.mjs`) cover it.
+
+## launch-video-sent.mjs
+
+A stopgap: it is removed when agentrun #3824 lands and serve's grade can compare a call to what fal answered it.
+
+A launch-video run on a fake fal reads each job with the handles fal answered, cuts the URLs fal answered, saves them,
+and times its captions from the voiceover's timestamps. The pipeline graders compared those calls to fal's answers. On a
+big run, serve cuts what a grader reads to fit its prompt: fal's answers go first, and the run's files can go too. A
+condition that only cut content could show then fails. This check holds those exact parts, with fal's answers read whole
+from the case's own fake in this repo (`templates/launch-video/evals/<case>/fixtures/fal-mcp.json`, never the run's
+copy and never the answers in the report's calls):
+
+- **read:** every `submission_key` is sent once. Every job a `wait_for_jobs` lists is one the fake answered the run (a
+  `submit_job`, a `get_submission` or the compose `run_model`), named by its own `request_id`, `status_url` and
+  `response_url` exactly as answered, and listed after that answer. No request is listed twice in one read. The first
+  `wait_for_jobs` lists every job queued before it. Every `get_submission` asks for a key a `submit_job` sent before it,
+  and a `wait_for_jobs` after it reads the job it found;
+- **cut:** there is one `run_model` on `fal-ai/ffmpeg-api/compose`. Its tracks are exactly one video track with each
+  clip's URL as the fake made it for that clip's key, in clip order, back to back, each the plan's length (5000 ms on
+  Kling, 6000 on Hailuo, the last cut to end at the video's length); one audio track with the voiceover in the cut
+  (the re-voice when one was made) at 0 to 1000 ms for at most the video's length; and one with the music at 0 for the
+  video's length when the fake made it, none when the fake refused it. No other track or URL. When compose answered
+  `processing`, a `wait_for_jobs` after the cut reads that job;
+- **save:** a `web_save` saves each URL the fake made for the run to its path: `media/clip-<n>.mp4`,
+  `media/voiceover.mp3`, `media/voiceover-2.mp3`, `media/music.mp3` and `media/launch.mp4`;
+- **re-voice:** a second voiceover is sent after a `wait_for_jobs` that read the first, with the first one's `voice`
+  and `stability`. Where the case's rubric held it (voiceover-overrun), its script has fewer words than the first and at
+  most 0.87 times as many, audio tags not counted;
+- **captions:** `media/launch.vtt`, read whole from the run's folder, starts `WEBVTT`, every cue time is
+  `HH:MM:SS.mmm --> HH:MM:SS.mmm`, and the cues' words, in order, are the script's (the voiceover in the cut, audio
+  tags removed). Their timing is what the case's rubric held: on hailuo-compose-processing, the template's rule from the
+  voiceover's whole timestamps answer (the first cue at 0.5 s plus the first letter's start, the last at 0.5 s plus the
+  last letter's end, each within 0.01 s, back to back, each cue its share of the words within 0.1 s); on the others,
+  the first cue's start and the last cue's end within the rubric's bands. injection-on-page and lost-reply-same-key
+  hold no captions;
+- **keys:** the run left `media/run-keys.json` with its stem, which ties its keys (`lv-<stem>-<step>`) to the fake's
+  answers.
+
+What a rubric must judge stays in the rubric: the order of the calls, what the prompts and the script say, and the
+answer. Each part that moved says so in one sentence ("... is not judged here: the repo's sent check holds ...").
+
+```sh
+node .github/eval-checks/launch-video-sent.mjs <report.json> <the run's work folder, or the serve's data folder>
+```
+
+- `<report.json>` is the eval report of one launch-video case, as serve's template eval writes it. A case passed twice
+  holds two runs; each run is checked, and a reason names its run (`run 2: ...`). The fake fal's whole log is each
+  run's `mcp_calls`; its `web_save` calls are its `calls`.
+- The second argument (or `--work <folder>`) is where the run's files are: the run's work folder itself (the folder
+  holding `media/`, for a report of one run), or the data folder of the serve that ran it, where each run is
+  `disk/agents/<its agent_id>-*/runs/<its run_id>/work`, by exact ids. Without it, the check uses the report's
+  `server.data`, and never guesses another folder.
+- The case comes from the report. It covers the fake-fal cases that make a film: those with a fake and a `tool_used`
+  `graders/clips.md`, whose `count` is the case's number of clips. The video's length and model come from the case's
+  own `prompt.md` input. live-python-release runs on real fal and has no fake; user-ceiling makes no film: both are
+  `SENT VOID`. A new fake case that makes a film needs its line in the check's `CASES` (what its captions
+  condition holds); until it has one, it is `SENT VOID`.
+
+| Exit | Line | Meaning |
+| --- | --- | --- |
+| 0 | `SENT PASS n=<calls checked> (repo check; serve's grade is separate; stopgap for agentrun #3824)` | every part above holds for every run |
+| 1 | `SENT FAIL <the first reason> [(and N more)] (repo check; ...)` | a read, the cut, a save, the re-voice or the captions differs from what the fake answered, or `media/run-keys.json` is missing |
+| 2 | `SENT VOID <why>` | no verdict, never a failure: bad arguments, or the report, a run's folder, the fake log, the case's fake, clip count or `prompt.md` input can't be found or read |
+
+Node built-ins only. `.github/launch-video-sent.test.mjs` covers it.
