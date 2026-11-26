@@ -32,6 +32,16 @@ fal's whole log of `submit_job` calls with the files, call by call:
   fields the kit puts there, so none can stand in for a field built per still or clip, and whose list items hold
   exactly the kit's fields. A file of another shape is a `SENT FAIL` naming what is wrong, and its calls aren't
   compared.
+- each clip starts from its shot's still as the fake fal made it. The fake log holds each call's arguments only, never
+  fal's answers, so the check reads the answers from the case's own fake in this repo
+  (`templates/music-video/evals/<case>/fixtures/fal-mcp.json`, never the run's copy): a still key's `submit_job` answer
+  gives its request, and `wait_for_jobs`' completed answer for that request gives its `images[0].url`. Shot n's still is
+  its remake's output when the run saved `media/still-<n>-2.png`, else its first take's. A clip given another shot's
+  still, or the first take when the remake was saved, is a `SENT FAIL` naming the shot; a shot the fake made no still
+  for may start from another shot's (a borrowed still);
+- `film/price.json` is there and is the price the run built on: its `plan_sha256` is the sha256 of the run's
+  `film/plan.json`, `fits` is true and its `plan_usd` is at or under its `max_fal_usd`, and the paid calls sent (each at
+  its price line, a remake at its shot's still, as `beats.mjs cost` bills them) come to at most its `max_fal_usd`.
 
 ```sh
 node .github/eval-checks/music-video-sent.mjs <report.json> <the run's work folder, or the serve's data folder>
@@ -55,7 +65,7 @@ It prints one line and exits:
 | Exit | Line | Meaning |
 | --- | --- | --- |
 | 0 | `SENT PASS n=<calls checked> (repo check; serve's grade is separate; stopgap for agentrun #3824)` | every still and clip sent equals its file |
-| 1 | `SENT FAIL <the first reason> [(and N more)] (repo check; ...)` | a call differs from its file, is missing, was sent twice, or a file is missing, of the wrong shape or wrong |
-| 2 | `SENT VOID <why>` | no verdict, never a failure: bad arguments, or the report, the run's folder, the fake log or the case's shot count can't be found or read (a report that isn't a serve eval report, a log item that isn't a call) |
+| 1 | `SENT FAIL <the first reason> [(and N more)] (repo check; ...)` | a call differs from its file, is missing, was sent twice, a clip starts from another still than its shot's, `film/price.json` is missing or doesn't hold, or a file is missing, of the wrong shape or wrong |
+| 2 | `SENT VOID <why>` | no verdict, never a failure: bad arguments, or the report, the run's folder, the fake log, the case's fake fal or the case's shot count can't be found or read (a report that isn't a serve eval report, a log item that isn't a call) |
 
 Node built-ins only, and the repo's own kit (`templates/music-video/skills/music-video/kit/beats.mjs`). The repo's music-video kit tests (`.github/music-video-kit.test.mjs`) cover it.
