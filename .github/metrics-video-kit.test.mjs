@@ -1453,3 +1453,53 @@ test("a throw in compute still removes the pages: a folder named as a filed page
   assert.deepEqual(pagesIn(dir), [folder], "every filed page goes; the folder named as one is never entered");
   assert.match(r.stderr, /Stripe's pages are removed/, r.out);
 });
+
+// ---------- a warn-only --final with no page to carry its note ----------
+test("every filed page a link: the first --final that only warns can't keep its note, so it stops (exit 3) and removes the links, never their targets", () => {
+  const outside = join(root, "p5-all-links-outside");
+  mkdirSync(outside, { recursive: true });
+  const target = join(outside, PAGE);
+  let body;
+  const r = fixtureRun("week-over-week", "2026-11-23", {
+    items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)],
+    as: "p5-all-links",
+    answer: KEPT_CODE,
+    // The filed page moved outside the run, and a link named as it left in stripe/.
+    beforeFinal: (dir) => {
+      body = readFileSync(join(dir, "stripe", PAGE), "utf8");
+      writeFileSync(target, body);
+      unlinkSync(join(dir, "stripe", PAGE));
+      symlinkSync(target, join(dir, "stripe", PAGE));
+    },
+  });
+  // The answer unchanged: the next --final must never be a first again, asking for one more.
+  const next = finalIn(r.dir);
+  assert.notEqual(next.status, 4, `the next --final never asks for another: ${next.out}`);
+  assert.equal(r.final.status, 3, r.final.out);
+  assert.match(r.final.err, /no page could carry the note/, r.final.out);
+  assert.match(r.final.err, /answer failed, failed_step "stripe"/, r.final.out);
+  assert.match(r.final.err, /not marked: [^\n]*STRIPE_LIST_BALANCE_TRANSACTIONS-[^\n]*\.json/, "the skipped link is named");
+  assert.deepEqual(pagesIn(r.dir), [], "every page-named link is removed, as a link");
+  assert.equal(readFileSync(target, "utf8"), body, "the link's target is as it was");
+});
+
+test("one filed page a file and one a link: the note goes into the file, the link is named, and the next --final is the last", () => {
+  const target = join(root, "p5-mixed-target.json");
+  const body = JSON.stringify(stripeList([txn("2026-11-18T09:00:00Z", "usd", "charge", 1000, 59)]));
+  writeFileSync(target, body);
+  const linked = "STRIPE_LIST_BALANCE_TRANSACTIONS-2026-11-23T07-59-59-999Z-deadbeef.json";
+  const r = fixtureRun("week-over-week", "2026-11-23", {
+    items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)],
+    as: "p5-mixed",
+    answer: KEPT_CODE,
+    beforeFinal: (dir) => symlinkSync(target, join(dir, "stripe", linked)),
+  });
+  assert.equal(r.final.status, 4, r.final.out);
+  assert.ok(markOf(r.dir) !== undefined, "the filed page that is a file holds the note");
+  assert.match(r.final.err, /not marked: [^\n]*deadbeef\.json/, "the skipped link is named");
+  const last = finalIn(r.dir);
+  assert.equal(last.status, 0, `the next --final is the last: ${last.out}`);
+  assert.doesNotMatch(last.err, /once more/, "the last never asks for another");
+  assert.deepEqual(pagesIn(r.dir), [], "the last --final removes the page and the link");
+  assert.equal(readFileSync(target, "utf8"), body, "the link's target is as it was");
+});
