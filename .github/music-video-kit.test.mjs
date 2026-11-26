@@ -1889,3 +1889,77 @@ test("the sent check holds the first wait_for_jobs that reads a still to every s
   assert.equal(r.status, 1, r.stdout);
   assert.equal(r.stdout, `SENT FAIL read: a wait_for_jobs reads mu-abcd1234-clip-2 (request ${clip2.request_id}) with its status_url ${JSON.stringify(`${clip2.status_url}x`)}, not ${JSON.stringify(clip2.status_url)} as its submit_job answered\n`);
 });
+
+// ---------- the storyboard against the plan: the repo check holds it ----------
+// A grader's prompt is cut to its cap, and on a sixty-second film's run the files are cut too: the storyboard's middle
+// and the plan's shots. The repo check reads the run's storyboard.md and film/plan.json whole, with the kit's own
+// storyboard parser: the style line first, then one line per shot of the case in order, each line's times and seconds
+// the plan's (film times: its start_s and end_s less cut.start_s); and where film/lyrics.json has no words under a
+// shot, its lyric is empty, none or (no words): no lyric made up.
+const boardPath = (dir) => join(dir, "storyboard.md");
+function editBoard(dir, change) {
+  const lines = readFileSync(boardPath(dir), "utf8").split("\n");
+  writeFileSync(boardPath(dir), change(lines).join("\n"));
+}
+const lineOf = (lines, n) => lines.findIndex((l) => l.startsWith(`${n} |`));
+// Each edit on its own copy of one built run: its records and calls stay the kit's, so only the storyboard differs.
+function boardCase(edit) {
+  const { dir, calls } = sentRun();
+  edit(dir);
+  return check(reportOf(dir, calls), dir);
+}
+test("the sent check holds storyboard.md to the case's shots in order, each line's times and seconds the plan's", () => {
+  // short-song's 8 shots of 4 s (2 bars of 2 s), from 8.254 s of the song: shot n is film time 4(n-1) to 4n.
+  assert.equal(boardCase(() => {}).stdout, "SENT PASS n=16\n", "the storyboard as written: it holds");
+  const exact = [
+    ["shot 8 a bar late", (lines) => lines.with(lineOf(lines, 8), lines[lineOf(lines, 8)].replace("8 | 28-32 s", "8 | 30-32 s")),
+      "SENT FAIL storyboard: shot 8's start is 30 s, not the plan's 28 s (film/plan.json: its start_s 36.254 less cut.start_s 8.254)\n"],
+    ["shot 8 ends a bar early", (lines) => lines.with(lineOf(lines, 8), lines[lineOf(lines, 8)].replace("8 | 28-32 s | 4 s", "8 | 28-30 s | 4 s")),
+      "SENT FAIL storyboard: shot 8's end is 30 s, not the plan's 32 s (film/plan.json: its end_s 40.254 less cut.start_s 8.254)\n"],
+    ["shot 8's seconds a bar short", (lines) => lines.with(lineOf(lines, 8), lines[lineOf(lines, 8)].replace("8 | 28-32 s | 4 s", "8 | 28-32 s | 2 s")),
+      "SENT FAIL storyboard: shot 8's seconds is 2 s, not the plan's 4 s (film/plan.json: its seconds)\n"],
+    ["shots 3 and 4's times swapped, their numbers in place", (lines) => lines.with(lineOf(lines, 3), lines[lineOf(lines, 3)].replace("3 | 8-12 s", "3 | 12-16 s")).with(lineOf(lines, 4), lines[lineOf(lines, 4)].replace("4 | 12-16 s", "4 | 8-12 s")),
+      "SENT FAIL storyboard: shot 3's start is 12 s, not the plan's 8 s (film/plan.json: its start_s 16.254 less cut.start_s 8.254) (and 3 more)\n"],
+    ["the style line after shot 1", (lines) => [lines[1], lines[0], ...lines.slice(2)],
+      "SENT FAIL storyboard: storyboard.md's first line is not its style line (`Style: <one look for every shot>`)\n"],
+  ];
+  for (const [what, change, line] of exact) {
+    const r = boardCase((dir) => editBoard(dir, change));
+    assert.equal(r.status, 1, `${what}: ${r.stdout}`);
+    assert.equal(r.stdout, line, what);
+  }
+  // A line too many, a line missing, two lines swapped whole and no storyboard: the kit can't rebuild the stills from
+  // that storyboard either, so more reasons follow; the storyboard's comes first, naming the shot.
+  const first = [
+    ["a 13th line", (lines) => lines.toSpliced(lineOf(lines, 8) + 1, 0, '13 | 32-36 s | 4 s | lyric: "none" | picture: a paper ferry 13 on teal water, wide | motion: slow push in 13'),
+      /^SENT FAIL storyboard: storyboard\.md has a line for shot 13; the case has 8 shots \(and \d+ more\)\n$/],
+    ["shot 5's line missing", (lines) => lines.toSpliced(lineOf(lines, 5), 1), /^SENT FAIL storyboard: storyboard\.md has no line for shot 5 \(and \d+ more\)\n$/],
+    ["shots 3 and 4 swapped whole", (lines) => lines.with(lineOf(lines, 3), lines[lineOf(lines, 4)]).with(lineOf(lines, 4), lines[lineOf(lines, 3)]),
+      /^SENT FAIL storyboard: storyboard\.md's line for shot 4 comes before shot 3's \(and \d+ more\)\n$/],
+    ["shot 6 twice", (lines) => lines.toSpliced(lineOf(lines, 6) + 1, 0, lines[lineOf(lines, 6)]), /^SENT FAIL storyboard: storyboard\.md has 2 lines for shot 6 \(and \d+ more\)\n$/],
+  ];
+  for (const [what, change, line] of first) {
+    const r = boardCase((dir) => editBoard(dir, change));
+    assert.equal(r.status, 1, `${what}: ${r.stdout}`);
+    assert.match(r.stdout, line, what);
+  }
+  const none = boardCase((dir) => rmSync(boardPath(dir)));
+  assert.equal(none.status, 1, none.stdout);
+  assert.match(none.stdout, /^SENT FAIL storyboard: the run left no storyboard\.md \(and \d+ more\)\n$/);
+});
+test("the sent check: where film/lyrics.json has no words under a shot, its storyboard lyric is empty, none or (no words)", () => {
+  // As the kit writes it when speech-to-text found no words: every shot's lyric empty.
+  const noWords = (dir) => writeFileSync(join(dir, "film", "lyrics.json"), JSON.stringify({ words_in_song: 0, words_in_cut: 0, lines: [], under_shots: Array.from({ length: SHORT }, (_, i) => ({ n: i + 1, lyric: "" })) }));
+  assert.equal(boardCase(noWords).stdout, "SENT PASS n=16\n", "every lyric none: it holds");
+  const forms = boardCase((dir) => {
+    noWords(dir);
+    editBoard(dir, (lines) => lines.map((l) => l.replace('2 | 4-8 s | 4 s | lyric: "none"', '2 | 4-8 s | 4 s | lyric: ""').replace('3 | 8-12 s | 4 s | lyric: "none"', '3 | 8-12 s | 4 s | lyric: "(no words)"')));
+  });
+  assert.equal(forms.stdout, "SENT PASS n=16\n", "empty and (no words), as the kit prints a shot with no words: it holds");
+  const made = boardCase((dir) => {
+    noWords(dir);
+    editBoard(dir, (lines) => lines.map((l) => l.replace('2 | 4-8 s | 4 s | lyric: "none"', '2 | 4-8 s | 4 s | lyric: "dancing in the rain"')));
+  });
+  assert.equal(made.status, 1, made.stdout);
+  assert.equal(made.stdout, 'SENT FAIL storyboard: shot 2\'s lyric is "dancing in the rain"; film/lyrics.json has no words under shot 2, so its lyric is empty, none or (no words)\n');
+});
