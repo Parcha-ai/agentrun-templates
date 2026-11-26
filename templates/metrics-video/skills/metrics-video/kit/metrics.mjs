@@ -77,7 +77,8 @@
 // --pages names a folder inside the run's folder, wherever its links lead: compute and scan refuse any other (exit 3),
 // read nothing there and remove nothing. The run's folder is the one that holds the kit's own folder (film/ in a run),
 // never where the kit runs nor scan's --root: the run chooses both. It is never the pages folder itself.
-// The first --final's note is written only into a page that is a file, never a link. Removal and the note work from
+// The first --final's note is written only into a page that is a file of its own, never a link (nor a hard link: its file
+// has another name). Removal and the note work from
 // inside the folder checked (the same device and inode), and the note opens each page without following a link and
 // checks the open file is the one looked at: a name swapped after the check is never followed.
 // A throw in compute removes the pages too, as its refusals do.
@@ -1397,9 +1398,10 @@ function scan() {
   if (again) {
     // The note goes into each raw page (MARK), never a file of the run's: the next --final is the last.
     // An error answer filed as text (no JSON object) holds no note; the lists do. A page-named link (or anything not a
-    // file) is never written: the note would land wherever it points. It is skipped, and said. Each page is opened
-    // without following a link (O_NOFOLLOW), in the folder checked (inPagesFolder), and must be, as opened, the file
-    // its lstat saw (same device and inode): a name swapped after the look is skipped, never written through.
+    // file of its own: a hard link shares its file with another name) is never written: the note would reach a file
+    // that isn't the page's alone. It is skipped, and said. Each page is opened without following a link (O_NOFOLLOW), in the folder
+    // checked (inPagesFolder), and must be, as opened, the file its lstat saw (same device and inode, one name): a name
+    // swapped after the look is skipped, never written through.
     const skipped = [];
     const { value: noted = 0 } = inPagesFolder(dir, () => {
       let n = 0;
@@ -1410,7 +1412,7 @@ function scan() {
         } catch {
           continue;
         }
-        if (!seen.isFile()) {
+        if (!seen.isFile() || seen.nlink !== 1) {
           skipped.push(join(dir, f));
           continue;
         }
@@ -1423,7 +1425,7 @@ function scan() {
         }
         try {
           const st = fstatSync(fd);
-          if (!st.isFile() || st.dev !== seen.dev || st.ino !== seen.ino) {
+          if (!st.isFile() || st.nlink !== 1 || st.dev !== seen.dev || st.ino !== seen.ino) {
             skipped.push(join(dir, f));
             continue;
           }
@@ -1444,9 +1446,9 @@ function scan() {
       }
       return n;
     });
-    if (skipped.length) console.error(`not marked: ${skipped.join(", ")} (a link, or not a file: the note is never written through one)`);
+    if (skipped.length) console.error(`not marked: ${skipped.join(", ")} (a link, not a file, or a file another name shares: the note is never written through one)`);
     // No note written: the next --final would be a first again, and warn and exit 4 again, for ever. It stops here.
-    if (noted === 0) stop(`no page could carry the note the next --final needs (each was a link, or held no list), so the run's files can't be checked again: make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`);
+    if (noted === 0) stop(`no page could carry the note the next --final needs (each was a link or shared its file, or held no list), so the run's files can't be checked again: make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`);
     console.log(stats(false, true));
     keep = true;
     fail(4, "exit 4, not done: the filed pages are kept for one more --final. Read each line named above; if it holds a customer's name, take the name out of media/answer.json; then run scan --pages stripe --final once more, whether you edited or not. That run is the last.");
