@@ -1603,7 +1603,8 @@ test("the first --final's note skips a page-named hard link, and names it: the f
 // stripe/ for a link to MV_OUTSIDE at the first listing (after --purge has checked the folder), MV_SWAP=enter as the kit
 // first changes into a folder named stripe (after the same check), MV_SWAP=parent swaps the folder nested (stripe's
 // parent) for a link to MV_OUTSIDE once the kit has resolved it MV_NTH times, MV_SWAP=short makes the first write
-// to an opened file short and the rest fail (ENOSPC); MV_SWAP=page swaps the
+// to an opened file short and the rest fail (ENOSPC), MV_SWAP=kill makes it short and then kills the kit (SIGKILL: no
+// handler runs, as on an OOM kill); MV_SWAP=page swaps the
 // page MV_PAGE for a link to MV_TARGET once it has been looked at (lstat), as it is opened or written by name.
 const SWAP = String.raw`import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
@@ -1647,23 +1648,37 @@ if (MV_SWAP === "parent") {
   swapped.native = realpathSync.native;
   fs.realpathSync = swapped;
 }
+// Half of what writeSync(fd, data, ...a) was asked to write, written.
+const half = function (fd, data, a) {
+  let bytes;
+  let at;
+  if (typeof data === "string") {
+    bytes = Buffer.from(data, typeof a[1] === "string" ? a[1] : "utf8");
+    at = a[0];
+  } else {
+    const offset = a[0] ?? 0;
+    bytes = data.subarray(offset, offset + (a[1] ?? data.length - offset));
+    at = a[2];
+  }
+  return writeSync.call(this, fd, bytes, 0, Math.max(1, bytes.length >> 1), at ?? null);
+};
 if (MV_SWAP === "short") {
   // The first write to a file the kit opened writes half its bytes; every write after it fails, as on a full disk.
   let calls = 0;
   fs.writeSync = function (fd, data, ...a) {
     if (fd <= 2) return writeSync.call(this, fd, data, ...a);
     if (++calls > 1) throw Object.assign(new Error("ENOSPC: no space left on device, write"), { code: "ENOSPC", errno: -28, syscall: "write" });
-    let bytes;
-    let at;
-    if (typeof data === "string") {
-      bytes = Buffer.from(data, typeof a[1] === "string" ? a[1] : "utf8");
-      at = a[0];
-    } else {
-      const offset = a[0] ?? 0;
-      bytes = data.subarray(offset, offset + (a[1] ?? data.length - offset));
-      at = a[2];
-    }
-    return writeSync.call(this, fd, bytes, 0, Math.max(1, bytes.length >> 1), at ?? null);
+    return half.call(this, fd, data, a);
+  };
+}
+if (MV_SWAP === "kill") {
+  // The first write to a file the kit opened writes half its bytes, and the kit is killed there.
+  fs.writeSync = function (fd, data, ...a) {
+    if (fd <= 2) return writeSync.call(this, fd, data, ...a);
+    half.call(this, fd, data, a);
+    process.kill(process.pid, "SIGKILL");
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10000);
+    throw new Error("not killed");
   };
 }
 if (MV_SWAP === "page") {
@@ -1816,4 +1831,63 @@ test("agent.md and SKILL.md say an exit 3 refusing --pages removes nothing, and 
   assert.match(section(skill, 3), saidAs(PURGE_FIRST), "SKILL.md step 3");
   assert.match(section(skill, 9), saidAs(PURGE_FIRST), "SKILL.md step 9");
   assert.doesNotMatch(section(skill, 9), /\(a refused argument, a page the run wrote, a fault\) removes the pages/, "step 9 no longer says every refused argument removes the pages");
+});
+
+// ---------- a page that is neither a list nor a filed error ----------
+// Serve files an MCP error answer as the server's own text (no JSON), and Composio's as JSON that says successful:
+// false. A page that is empty, or starts as JSON and doesn't parse, is neither: it was cut short.
+const cutOf = (page) => {
+  const text = JSON.stringify(page);
+  return text.slice(0, text.length >> 1);
+};
+const CUT_FORMS = [["cut mid-JSON", cutOf(composioAnswer(stripeList(FILED_WEEK.slice(2, 4), true)))], ["empty", ""], ["blank", " \n"], ["a list cut short", cutOf([FILED_WEEK[2]])]];
+
+test("a page cut short in the middle of the list, or empty, stops compute (exit 3), never passed over as an error answer", () => {
+  for (const [what, cut] of CUT_FORMS) {
+    const { dir, names } = filedFolder(`p8-cut-${what.replace(/ /g, "-")}`, [composioAnswer(stripeList(FILED_WEEK.slice(0, 2), true)), cut, composioAnswer(stripeList(FILED_WEEK.slice(4)))]);
+    const r = computeIn(dir);
+    assert.equal(r.status, 3, `${what}: the week's figures would miss the page's transactions: ${r.out}`);
+    assert.match(r.stderr, /a page that is neither JSON nor a filed error/, what);
+    assert.ok(r.stderr.includes(names[1]), `${what}: the page is named`);
+    assert.match(r.stderr, /failed_step "stripe"/, what);
+    assert.deepEqual(pagesIn(dir), [], `${what}: every page is removed`);
+    assert.ok(!existsSync(join(dir, "film", "data.json")), `${what}: no figures`);
+  }
+});
+
+test("scan stops on a cut page (exit 3) and removes the pages: --final never calls a run clean whose page it can't read", () => {
+  const cut = cutOf(composioAnswer(stripeList([described("Commission for Marisol Quintero", 20000)])));
+  for (const final of [true, false]) {
+    const { dir } = computedFolder(`p8-cut-scan-${final ? "final" : "first"}`);
+    writeFileSync(join(dir, "stripe", filedName()), cut);
+    writeFileSync(join(dir, "media", "vo.txt"), `${CLEAN} Thank you, Marisol Quintero.`);
+    const r = final ? finalIn(dir) : kitIn(dir, "scan", "--pages", "stripe");
+    assert.equal(r.status, 3, `${final ? "--final" : "the first scan"} with a cut page: ${r.out}`);
+    assert.match(r.out, /a page that is neither JSON nor a filed error/);
+    assert.match(r.out, /failed_step "stripe"/);
+    assert.doesNotMatch(r.out, /"clean":true/);
+    assert.deepEqual(pagesIn(dir), [], "every page is removed");
+  }
+});
+
+test("a note cut off by a kill mid-write leaves the page whole: its old bytes or the noted ones, never part of either", () => {
+  const saved = { NODE_OPTIONS: process.env.NODE_OPTIONS, MV_SWAP: undefined };
+  let r;
+  try {
+    r = fixtureRun("week-over-week", "2026-11-23", {
+      items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)],
+      as: "p8-kill-note",
+      answer: KEPT_CODE,
+      beforeFinal: () => Object.assign(process.env, { NODE_OPTIONS: `${saved.NODE_OPTIONS ?? ""} --import ${swapPreload()}`.trim(), MV_SWAP: "kill" }),
+    });
+  } finally {
+    for (const [k, v] of Object.entries(saved)) if (v === undefined) delete process.env[k]; else process.env[k] = v;
+  }
+  assert.equal(r.final.status, null, `the kit was killed while it wrote the note: ${r.final.out}`);
+  let page;
+  assert.doesNotThrow(() => (page = JSON.parse(readFileSync(join(r.dir, "stripe", PAGE), "utf8"))), "the page is whole JSON");
+  assert.equal(page.object, "list", "and still Stripe's list");
+  const purge = kitIn(r.dir, "scan", "--pages", "stripe", "--purge");
+  assert.equal(purge.status, 0, purge.out);
+  assert.deepEqual(readdirSync(join(r.dir, "stripe")), [], "--purge leaves no page, nor any part-written note");
 });
