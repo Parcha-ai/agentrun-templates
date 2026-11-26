@@ -77,8 +77,10 @@
 // --today, keeps them for the compute that follows. A page is removed by its name in the folder: a link goes, never
 // what it points at; a folder is never entered, nor a pages folder that is itself a link.
 // --pages names a folder inside the run's folder, wherever its links lead: compute and scan refuse any other (exit 3),
-// read nothing there and remove nothing. The run's folder is the one that holds the kit's own folder (film/ in a run),
-// never where the kit runs nor scan's --root: the run chooses both. It is never the pages folder itself.
+// read nothing there and remove nothing. The run's folder is the one that holds the kit's own folder, never where the
+// kit runs nor scan's --root: the run chooses both. It is never the pages folder itself. The kit must run as
+// film/metrics.mjs, film/ a folder and not a link (compute and scan refuse otherwise, exit 3, reading and removing
+// nothing), and the run's folder is fixed when the kit starts.
 // The first --final's note is written only into a page that is a file of its own, never a link (nor a hard link: its
 // file has another name). Removal and the note work from inside the folder checked (the same device and inode, and
 // once entered really inside the run's folder), and the note opens each page without following a link and checks the
@@ -94,7 +96,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { closeSync, constants, existsSync, fstatSync, fsyncSync, lstatSync, openSync, readFileSync, readdirSync, realpathSync, renameSync, statSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
 
 const METRIC = {
   id: "net-of-refunds-and-fees",
@@ -398,8 +399,20 @@ let pagesDir = null;
 let pagesAt = null;
 // The folder --pages must be inside: the run's, the one that holds the kit's own folder (film/metrics.mjs in a run).
 // Not the folder the kit runs in, nor scan's --root: the run chooses those, and `cd /` or `--root /` would make the
-// whole disk the run's.
-const runFolder = () => realpathSync(dirname(dirname(fileURLToPath(import.meta.url))));
+// whole disk the run's. The kit's folder is taken as the run invoked it (process.argv[1], its links not followed) and
+// must be film/, a folder, not a link: film/ a link to a copy elsewhere, or a copy run from another folder, would make
+// that copy's parent the run's folder. Its real path is taken once, when the kit starts, and kept: resolved again
+// later, a folder above the run moved aside for a link would move it. { at } or { refused }.
+const RUN = (() => {
+  try {
+    const kit = dirname(resolve(process.argv[1]));
+    if (basename(kit) !== "film") return { refused: `the kit runs from ${kit}, not from film/ in the run's folder` };
+    if (lstatSync(kit).isSymbolicLink()) return { refused: `the kit's folder ${kit} is a link, not film/ in the run's folder` };
+    return { at: realpathSync(dirname(kit)) };
+  } catch (e) {
+    return { refused: `the kit's own folder can't be looked at (${e?.code ?? e}): run it as film/metrics.mjs in the run's folder` };
+  }
+})();
 // A path with every link in it resolved, as far as it exists; the rest as written.
 function realOf(path) {
   const rest = [];
@@ -413,17 +426,18 @@ function realOf(path) {
   }
 }
 // Where --pages is, once its links are resolved: its parent folder's real path, and its own name looked at with lstat
-// (never followed). It must be inside runFolder() (its path from there neither starts with .. nor is absolute), not be
+// (never followed). It must be inside RUN.at (its path from there neither starts with .. nor is absolute), not be
 // that folder itself, and be a folder, not a link. "stripe/", "stripe//" and "stripe/." are looked at as resolve()
 // writes them, so a link named stripe is seen as the link. Returns { at, st } (the real path, and its lstat),
 // { at, missing } (no folder there: no page), or { refused } (why: nothing in it is read or removed).
 function pagesFolder(dir) {
+  if (RUN.refused) return { refused: RUN.refused };
   let at;
   let rel;
   try {
     const given = resolve(dir);
     at = join(realOf(dirname(given)), basename(given));
-    rel = relative(runFolder(), at);
+    rel = relative(RUN.at, at);
   } catch (e) {
     return { refused: `it can't be looked at (${e?.code ?? e})` };
   }
@@ -462,7 +476,7 @@ function inPagesFolder(dir, fn) {
     // And where the folder entered really is: the working folder's real path, as the system gives it after the chdir,
     // never the path text checked. A folder on that path swapped for a link after the check (stripe's parent, say)
     // leads elsewhere, and the device and inode, read through the same link, would agree; this does not.
-    const where = relative(runFolder(), process.cwd());
+    const where = relative(RUN.at, process.cwd());
     if (where === "" || isAbsolute(where) || where.split(sep)[0] === "..") return { refused: "it changed after it was checked" };
     return { value: fn() };
   } finally {
