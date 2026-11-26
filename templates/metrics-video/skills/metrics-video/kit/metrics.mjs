@@ -77,7 +77,7 @@
 // 3: the pages are wrong or incomplete, or a page is the run's own (the message says what to do); 4: scan --final only warned, the filed pages are kept for one more --final (not done); 0: done.
 import { createHash, randomBytes } from "node:crypto";
 import { existsSync, lstatSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, resolve } from "node:path";
 
 const METRIC = {
   id: "net-of-refunds-and-fees",
@@ -335,24 +335,27 @@ function refuseOwnPages(dir) {
 // Every page in the folder, filed or the run's own, removed by its name in the folder itself and nothing else: a link
 // is removed as a link (what it points at stays), a folder named as a page is not entered, and a folder that is itself
 // a link is not entered at all. Returns what went and what could not.
+// The folder is looked at as resolve() writes it: "stripe/", "stripe//" or "stripe/." would have lstat follow a link
+// named stripe, so its target's pages would go, outside the run's folder.
 function removePagesIn(dir) {
   const removed = [];
   const left = [];
+  const at = resolve(dir);
   let names;
   try {
-    if (!lstatSync(dir).isDirectory()) return { removed, left: [`${dir} (not a folder: never entered)`] };
-    names = readdirSync(dir);
+    if (!lstatSync(at).isDirectory()) return { removed, left: [`${dir} (not a folder: never entered)`] };
+    names = readdirSync(at);
   } catch (e) {
     return { removed, left: e?.code === "ENOENT" ? [] : [dir] };
   }
   for (const f of names.filter((f) => FILED.test(f) || OWN_PAGE.test(f)).sort()) {
     const path = join(dir, f);
     try {
-      if (lstatSync(path).isDirectory()) {
+      if (lstatSync(join(at, f)).isDirectory()) {
         left.push(path);
         continue;
       }
-      unlinkSync(path);
+      unlinkSync(join(at, f));
       removed.push(path);
     } catch {
       left.push(path);
