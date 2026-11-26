@@ -53,6 +53,9 @@ jobs:
       # byte for byte, a missing section or story link, and an error not quoted; R1's added rubric fact
       # is a substring of the fixture's page.
       - run: node --test .github/news-show-answer-kit.test.mjs
+      # launch-video's sent check, node only, on runs built from each case's fake fal: a read's handles, the cut's tracks,
+      # the saves, the re-voice and the captions are held to what the fake answered, and each one changed is named.
+      - run: node --test .github/launch-video-sent.test.mjs
       # `latest` is the dist-tag every AgentRun release is published under.
       - run: npm install --prefix "$RUNNER_TEMP/serve" --no-save --no-audit --no-fund --ignore-scripts @parcha/agentrun-serve@latest
       - run: node .github/parse-evals.mjs "$RUNNER_TEMP/serve"

@@ -12,28 +12,20 @@ Read the calls (their order and arguments) and judge the pipeline. Pass only if 
 1. **Priced first.** A `get_pricing` call comes before the first `submit_job`.
 2. **Queued, then waited.** Every `submit_job` (5 clips on `fal-ai/minimax/hailuo-02/standard/text-to-video`, one voiceover, one music) comes before the
    first `wait_for_jobs`, and no job is submitted twice (no two `submit_job` calls with the same `submission_key`, and
-   no more than 5 clip submits). The `wait_for_jobs` jobs list carries each job's own `request_id`, `status_url` and
-   `response_url` exactly as its `submit_job` answered them: no request id appears under two indexes.
-3. **The cut uses what fal answered.** The one `run_model` call on `fal-ai/ffmpeg-api/compose` has `input.tracks` with:
-   - exactly one video track whose keyframes are the 5 clip URLs above, in that order, back to back: timestamps 0,
-     6000, 12000 ... each 6000 ms long;
-   - an audio track with one keyframe: url `https://v3.fal.media/files/zebra/Vo9Lp3Ok9Ij7Uh5Yg1Tf_output.mp3`, timestamp 500 (anything from 0 to 1000 passes), duration at most 30000;
-   - an audio track with one keyframe: url `https://v3.fal.media/files/panda/Mb4Qw8Er1Ty4Ui6Hc7Vb_music.mp3`, timestamp 0, duration 30000.
-   No URL in the tracks is a saved path (`media/...`) or a URL fal did not answer.
+   no more than 5 clip submits). That read's handles are not judged here: the repo's sent check holds that it lists
+   each job's own `request_id`, `status_url` and `response_url` as answered, no request id under two indexes.
+3. **The cut uses what fal answered.** The tracks of the one `run_model` call on `fal-ai/ffmpeg-api/compose` are not
+   judged here: the repo's sent check holds the 5 clip URLs in order back to back, the voiceover's URL and
+   the music's as fal answered them, and no saved path.
 4. **Shots are clean.** No clip prompt asks for a logo, a brand mark, readable text, words or letters, or a person,
    face or hands (a negative prompt that lists them to keep them out is fine).
-5. **Saved from fal's URLs.** `web_save` saves each clip URL to `media/clip-<n>.mp4` (n from 1, in index order), the
-   voiceover URL to `media/voiceover.mp3`, the music URL to `media/music.mp3` and the cut URL to `media/launch.mp4`.
-6. **Captions.** A `write` call writes `media/launch.vtt` starting with `WEBVTT`, with cues in
-   `HH:MM:SS.mmm --> HH:MM:SS.mmm` form; the cue text is the run's own script without audio tags (never the
-   timestamps' stand-in characters), and every sentence of it is in a cue. The fake's timestamps are a stand-in
-   script's characters, so they don't spell the run's script, and the template places the cues for that case like
-   this: the first cue starts at 0.56 s (0.5 + the first letter's start, 0.06 s) and the last ends at 27.68 s
-   (0.5 + the end of the last letter, 27.181 s), each within 0.01 s; the cues are back to back (each starts where the
-   one before ends, within 0.01 s); and each cue lasts its words ÷ W × 27.12 s within 0.1 s, W being the script's
-   words without audio tags. An answer that says its cues were placed by share of words between those anchors is
-   following the rule, not a fault.
-7. **Processing followed.** Compose answered `processing`; the run then reads that job (request
-   `4a3b2c1d-0e9f-48a7-b6c5-d4e3f2a1b0c9`) with `wait_for_jobs` and never calls `run_model` on compose again.
+5. **Saved from fal's URLs.** The `web_save` calls are not judged here: the repo's sent check holds that each URL fal
+   answered is saved to its `media/` path.
+6. **Captions.** `media/launch.vtt` is not judged here: the repo's sent check holds its form, that its cue words are
+   the script's without audio tags, and its timing from the voiceover's timestamps. An answer that says its cues were
+   placed by share of words between the timestamps' first and last letters is following the template, not a fault.
+7. **Processing followed.** Compose answered `processing`. That the run then reads that job (request
+   `4a3b2c1d-0e9f-48a7-b6c5-d4e3f2a1b0c9`) by its own handles with `wait_for_jobs` and never calls `run_model` on
+   compose again is not judged here: the repo's sent check holds it.
 
 Answer pass or fail, and quote what decided it.

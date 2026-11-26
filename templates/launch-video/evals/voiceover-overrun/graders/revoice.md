@@ -19,27 +19,23 @@ Read the calls (their order and arguments). Let W1 be the words of the first `su
 `fal-ai/elevenlabs/tts/eleven-v3` (its `input.text`, audio tags not counted) and W2 those of the second. Pass only if all hold:
 
 1. **Priced, queued, waited.** `get_pricing` comes before the first `submit_job`; the 6 clips, the first voiceover and
-   the music are all submitted before the first `wait_for_jobs`, whose jobs list carries each job's own `request_id`
-   as its `submit_job` answered it (no request id under two indexes).
-2. **One re-voice, shorter, after the overrun was seen.** The second voiceover `submit_job` comes after the
-   `wait_for_jobs` that answered the first voiceover's `file_size`, with a different `submission_key` from the first
-   (the `-voiceover-2` key), the same `voice` and `stability`, and a shorter text: W2 is less than W1 and at most
-   0.87 × W1 (the template cuts to W1 × 29 ÷ 31.6 × 0.9 ≈ 0.83 × W1). It adds no claim the page doesn't make. There
-   is no third voiceover and no second submit of any clip or the music.
+   the music are all submitted before the first `wait_for_jobs`. That read's handles are not judged here: the repo's
+   sent check holds that it lists each job's own `request_id`, `status_url` and `response_url` as answered, no request
+   id under two indexes.
+2. **One re-voice, shorter, after the overrun was seen.** The second voiceover `submit_job` has a different
+   `submission_key` from the first (the `-voiceover-2` key). It adds no claim the page doesn't make. There is no third
+   voiceover and no second submit of any clip or the music. That it comes after the `wait_for_jobs` that answered the
+   first voiceover's `file_size`, with the same `voice` and `stability`, and that W2 is less than W1 and at most
+   0.87 × W1, is not judged here: the repo's sent check holds it.
 3. **The cut uses the second voiceover.** The one `run_model` call on `fal-ai/ffmpeg-api/compose` comes after the
-   second voiceover completed. Its tracks: one video track whose keyframes are the 6 clip URLs in clip order, back to
-   back (0, 5000 ... 25000, each 5000 ms); an audio track with one keyframe whose url is
-   `https://v3.fal.media/files/zebra/Vt2Xc6Bn8Mq4Wr1Ez5Ka_output.mp3`, timestamp 0 to 1000, duration at most 30000;
-   an audio track with the music URL at 0 for 30000. The first voiceover's URL (`Vo9Lp3...`) is in no track.
-4. **Saved.** `web_save` saves the first voiceover URL to `media/voiceover.mp3`, the second to
-   `media/voiceover-2.mp3`, each clip to `media/clip-<n>.mp4`, the music to `media/music.mp3` and the cut to
-   `media/launch.mp4`.
-5. **Captions end within the narration.** A `write` call writes `media/launch.vtt` starting with `WEBVTT`, cues in
-   `HH:MM:SS.mmm --> HH:MM:SS.mmm` form, text from the second script without audio tags; the first cue starts between
-   0.5 and 0.7 s and the last ends between 24.5 and 26.1 s (the second voiceover's narration ends at 0.5 + 25.6 =
-   26.1 s; a last cue after 26.1 s runs past the speech and fails).
-   An answer that says its cues were placed by share of words between the timestamps' first and last letters is
-   following the template, not a fault.
+   second voiceover completed. Its tracks are not judged here: the repo's sent check holds the 6 clip URLs in clip
+   order back to back, the second voiceover's URL, the music's, and the first voiceover's URL in no track.
+4. **Saved.** The `web_save` calls are not judged here: the repo's sent check holds that each URL fal answered (both
+   voiceovers included) is saved to its `media/` path.
+5. **Captions end within the narration.** `media/launch.vtt` is not judged here: the repo's sent check holds its form,
+   that its cue words are the second script's without audio tags, and that the first cue starts between 0.5 and 0.7 s
+   and the last ends between 24.5 and 26.1 s. An answer that says its cues were placed by share of words between the
+   timestamps' first and last letters is following the template, not a fault.
 
 Then read the answer's last fenced `json` block. Rates: Kling 0.07/s, ElevenLabs v3 0.10 per 1000 characters, music
 0.60/min, compose 0.0002/s. Also pass only if all hold:
