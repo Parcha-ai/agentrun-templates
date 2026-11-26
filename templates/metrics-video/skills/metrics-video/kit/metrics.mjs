@@ -18,13 +18,15 @@
 //          the window to read from Stripe: both weeks when the carried figures are for the week before (they are
 //          compared), else the week alone.
 // compute  reads every answer of STRIPE_LIST_BALANCE_TRANSACTIONS AgentRun filed in stripe/, in name order (an error
-//          answer passed over, a transaction on two pages counted once), takes eight fields of each item (id, created, type,
+//          answer passed over: JSON that says successful: false or isError, or a tool's words that are no JSON; a page
+//          empty or cut short is no error and stops it, exit 3; a transaction on two pages counted once), takes eight fields of each item (id, created, type,
 //          reporting_category, currency, amount, fee, net) and nothing else, checks each (net = amount - fee), keeps the
 //          revenue categories, adds each week up per currency (never across currencies), compares the week before
 //          with the carried figures, and writes film/data.json and the same object into film/index.html (window.MV).
 //          It prints the figures, the words to say for each, the film's plan and the carry for the answer.
 // place    sets each scene's start and length in film/index.html and each scene's span from --at (scene=start,...),
-//          the film's length, the captions host and the music (kept only when film/assets/music.mp3 exists).
+//          the film's length, the captions host and the music (kept only when film/assets/music.mp3 exists). It takes
+//          only the kit's own scene names from film/data.json (exit 2 on any other, before it writes anything).
 // stem     prints the run's key stem: the one in the file when it was made for this week, else a new one from the
 //          sandbox's random bytes, written there first. A model never makes one.
 // scan     looks for customer data in every file the run wrote: each string a filed page's items hold (a description, a
@@ -76,21 +78,26 @@
 // --today, keeps them for the compute that follows. A page is removed by its name in the folder: a link goes, never
 // what it points at; a folder is never entered, nor a pages folder that is itself a link.
 // --pages names a folder inside the run's folder, wherever its links lead: compute and scan refuse any other (exit 3),
-// read nothing there and remove nothing. The run's folder is the one that holds the kit's own folder (film/ in a run),
-// never where the kit runs nor scan's --root: the run chooses both. It is never the pages folder itself.
+// read nothing there and remove nothing. The run's folder is the one that holds the kit's own folder, never where the
+// kit runs nor scan's --root: the run chooses both. It is never the pages folder itself. The kit must run as
+// film/metrics.mjs, film/ a folder and not a link (compute and scan refuse otherwise, exit 3, reading and removing
+// nothing), and the run's folder is fixed when the kit starts.
 // The first --final's note is written only into a page that is a file of its own, never a link (nor a hard link: its
 // file has another name). Removal and the note work from inside the folder checked (the same device and inode, and
 // once entered really inside the run's folder), and the note opens each page without following a link and checks the
 // open file is the one looked at: a name swapped after the check, the folder's or a parent's, is never followed. A note
-// that can't be written whole (a short write, a full disk) stops the run: exit 3, every page removed.
+// that can't be written whole (a short write, a full disk) stops the run: exit 3, every page removed. It is written whole
+// under a dot name of its own in that folder and renamed over the page, so a kill mid-write leaves the page as it was
+// (and that name, which --purge and every removal take with the pages, and no scan searches there as a file the run
+// wrote). compute and scan stop (exit 3, every page
+// removed) on a page that is empty or JSON cut short: it is neither a list nor a filed error answer.
 // A throw in compute removes the pages too, as its refusals do.
 // Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
 // them; the message names the scene), or customer data in a file (scan names the file and the item, never the value);
 // 3: the pages are wrong or incomplete, or a page is the run's own (the message says what to do); 4: scan --final only warned, the filed pages are kept for one more --final (not done); 0: done.
 import { createHash, randomBytes } from "node:crypto";
-import { closeSync, constants, existsSync, fstatSync, ftruncateSync, lstatSync, openSync, readFileSync, readdirSync, realpathSync, statSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
+import { closeSync, constants, existsSync, fstatSync, fsyncSync, lstatSync, openSync, readFileSync, readdirSync, realpathSync, renameSync, statSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
 
 const METRIC = {
   id: "net-of-refunds-and-fees",
@@ -342,6 +349,12 @@ const FILED = /^STRIPE_LIST_BALANCE_TRANSACTIONS-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\
 const rawFiles = (dir) => readdirSync(dir).filter((f) => FILED.test(f)).sort();
 // A page the run wrote itself (stripe/raw-<n>.json, as this kit once had the agent save them): refused, never read.
 const OWN_PAGE = /^raw-\d+\.json$/;
+// The name scan --final writes a page's note under before it renames it over the page (.<page>.note-<12 hex>): a copy
+// of the page that a kill can leave behind, so it is removed with the pages.
+const noteTemp = (f) => {
+  const m = /^\.(.+)\.note-[0-9a-f]{12}$/.exec(f);
+  return m !== null && FILED.test(m[1]);
+};
 const notFiled = (dir, own) =>
   `${own.map((f) => `${dir}/${f}`).join(", ")}: a page the run wrote itself. Stripe's answers were not filed by AgentRun: the owner removed the agent's file setting on ${TOOL}, or the call was not made through it. The kit reads only the answers AgentRun files (${dir}/${TOOL}-<time>-<id>.json) and never a page the run wrote: make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`;
 function refuseOwnPages(dir) {
@@ -364,7 +377,7 @@ function removePagesIn(dir) {
       left.push(dir);
       return;
     }
-    for (const f of names.filter((f) => FILED.test(f) || OWN_PAGE.test(f)).sort()) {
+    for (const f of names.filter((f) => FILED.test(f) || OWN_PAGE.test(f) || noteTemp(f)).sort()) {
       const path = join(dir, f);
       try {
         if (lstatSync(f).isDirectory()) {
@@ -388,8 +401,20 @@ let pagesDir = null;
 let pagesAt = null;
 // The folder --pages must be inside: the run's, the one that holds the kit's own folder (film/metrics.mjs in a run).
 // Not the folder the kit runs in, nor scan's --root: the run chooses those, and `cd /` or `--root /` would make the
-// whole disk the run's.
-const runFolder = () => realpathSync(dirname(dirname(fileURLToPath(import.meta.url))));
+// whole disk the run's. The kit's folder is taken as the run invoked it (process.argv[1], its links not followed) and
+// must be film/, a folder, not a link: film/ a link to a copy elsewhere, or a copy run from another folder, would make
+// that copy's parent the run's folder. Its real path is taken once, when the kit starts, and kept: resolved again
+// later, a folder above the run moved aside for a link would move it. { at } or { refused }.
+const RUN = (() => {
+  try {
+    const kit = dirname(resolve(process.argv[1]));
+    if (basename(kit) !== "film") return { refused: `the kit runs from ${kit}, not from film/ in the run's folder` };
+    if (lstatSync(kit).isSymbolicLink()) return { refused: `the kit's folder ${kit} is a link, not film/ in the run's folder` };
+    return { at: realpathSync(dirname(kit)) };
+  } catch (e) {
+    return { refused: `the kit's own folder can't be looked at (${e?.code ?? e}): run it as film/metrics.mjs in the run's folder` };
+  }
+})();
 // A path with every link in it resolved, as far as it exists; the rest as written.
 function realOf(path) {
   const rest = [];
@@ -403,17 +428,18 @@ function realOf(path) {
   }
 }
 // Where --pages is, once its links are resolved: its parent folder's real path, and its own name looked at with lstat
-// (never followed). It must be inside runFolder() (its path from there neither starts with .. nor is absolute), not be
+// (never followed). It must be inside RUN.at (its path from there neither starts with .. nor is absolute), not be
 // that folder itself, and be a folder, not a link. "stripe/", "stripe//" and "stripe/." are looked at as resolve()
 // writes them, so a link named stripe is seen as the link. Returns { at, st } (the real path, and its lstat),
 // { at, missing } (no folder there: no page), or { refused } (why: nothing in it is read or removed).
 function pagesFolder(dir) {
+  if (RUN.refused) return { refused: RUN.refused };
   let at;
   let rel;
   try {
     const given = resolve(dir);
     at = join(realOf(dirname(given)), basename(given));
-    rel = relative(runFolder(), at);
+    rel = relative(RUN.at, at);
   } catch (e) {
     return { refused: `it can't be looked at (${e?.code ?? e})` };
   }
@@ -452,7 +478,7 @@ function inPagesFolder(dir, fn) {
     // And where the folder entered really is: the working folder's real path, as the system gives it after the chdir,
     // never the path text checked. A folder on that path swapped for a link after the check (stripe's parent, say)
     // leads elsewhere, and the device and inode, read through the same link, would agree; this does not.
-    const where = relative(runFolder(), process.cwd());
+    const where = relative(RUN.at, process.cwd());
     if (where === "" || isAbsolute(where) || where.split(sep)[0] === "..") return { refused: "it changed after it was checked" };
     return { value: fn() };
   } finally {
@@ -481,31 +507,38 @@ function listOf(page) {
   if (page && typeof page === "object" && "successful" in page && Array.isArray(page.data?.data) && typeof page.data.has_more === "boolean") return page.data;
   return null;
 }
-// An answer that is an error, filed as every answer is: Composio's `successful: false`, a tool error's text that is no
-// JSON, or JSON that says isError. The model saw `successful` and `error` in the summary; the kit passes it over, and
-// the check that the pages reach the window's start still holds without it.
-const errorAnswer = (text) => {
+// What a filed page's text is: { page } (JSON), { error } (an error answer, filed as every answer is) or { cut }.
+// AgentRun files an answer's text as it is: Composio's error is JSON that says `successful: false` (or an MCP result
+// that says isError), a tool server's error is its own words, no JSON. The model saw `successful` and `error` in the
+// summary; the kit passes an error over, and the check that the pages reach the window's start still holds without it.
+// A page that is empty, or starts as JSON ({ or [) and doesn't parse, is neither: it was cut short, and the
+// transactions and customer details it held can't be read. It is never passed over: compute and scan stop on it.
+function pageOf(text) {
+  if (text.trim() === "") return { cut: true };
   let page;
   try {
     page = JSON.parse(text);
   } catch {
-    return true;
+    return /^\s*[[{]/.test(text) ? { cut: true } : { error: true };
   }
-  return page !== null && typeof page === "object" && (page.successful === false || page.isError === true);
-};
+  if (page !== null && typeof page === "object" && (page.successful === false || page.isError === true)) return { error: true };
+  return { page };
+}
+const cutPage = (dir, f) => `${dir}/${f} is a page that is neither JSON nor a filed error (empty, or JSON cut short): the transactions and customer details it held can't be read, so the film can't be made or checked. Make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`;
 // Each filed page's list, in name order, and how many filed answers were errors. A page the run wrote is refused; a
-// filed answer that is neither a list nor an error is too.
+// filed answer that is neither a list nor an error is too, and a cut page stops the run.
 function filedPages(dir) {
   refuseOwnPages(dir);
   const pages = [];
   let errors = 0;
   for (const f of existsSync(pagesAt) ? rawFiles(pagesAt) : []) {
-    const text = readFileSync(join(pagesAt, f), "utf8");
-    if (errorAnswer(text)) {
+    const read = pageOf(readFileSync(join(pagesAt, f), "utf8"));
+    if (read.cut) stop(cutPage(dir, f));
+    if (read.error) {
       errors++;
       continue;
     }
-    const list = listOf(JSON.parse(text));
+    const list = listOf(read.page);
     if (!list) stop(`${dir}/${f} is not Stripe's list ({"object": "list", "data": [...], "has_more": true|false}) nor Composio's answer around it: the film can't be made from it. Answer failed, failed_step "stripe".`);
     pages.push({ file: f, list });
   }
@@ -846,10 +879,18 @@ function writeData(film, data) {
   const json = JSON.stringify(data).replace(/</g, "\\u003c");
   writeFileSync(path, html.replace(re, (_, a, b) => `${a}\n      window.MV = ${json};\n    ${b}`));
 }
+// The scenes the kit makes (compute's plan), each with its file in compositions/.
+const SCENES = new Set(["open", "revenue", "days", "change", "refunds", "endcard"]);
 function place(film, data, at, seconds) {
   const path = join(film, "index.html");
+  const plan = data.plan?.scenes;
+  // A scene's name comes from film/data.json, which the run can write, and names a file place rewrites: only the kit's
+  // own scenes are taken, before any name is joined to a path or written. "../x" would reach a file outside film/.
+  if (!Array.isArray(plan) || !plan.length) fail(2, `${join(film, "data.json")} has no plan of scenes: run compute again`);
+  for (const s of plan) {
+    if (typeof s?.name !== "string" || !/^[a-z]+$/.test(s.name) || !SCENES.has(s.name)) fail(2, `${join(film, "data.json")} names a scene ${JSON.stringify(s?.name)}, not one of the kit's (${[...SCENES].join(", ")}): run compute again, and never edit its plan`);
+  }
   let html = readFileSync(path, "utf8");
-  const plan = data.plan.scenes;
   const total = seconds ?? data.plan.film_seconds;
   const starts = plan.map((s) => (at && at[s.name] !== undefined ? at[s.name] : s.start));
   if (starts[0] !== 0) fail(2, `the first scene (${plan[0].name}) starts at 0`);
@@ -1082,7 +1123,18 @@ const shownText = (t) =>
 const wordsIn = (text) => new Set((text.match(/\p{L}+/gu) ?? []).map((w) => w.toLowerCase()));
 // Every file the run wrote under `root`: dot-folders (the skills, the harness's own state) and node_modules are not
 // the run's, the raw pages are where the values come from, a binary file (audio, video, images) holds no text, and a
-// link is not followed (it points at a file the walk reaches anyway, or outside the run).
+// link is not followed (it points at a file the walk reaches anyway, or outside the run). A note's copy a killed --final
+// left (noteTemp's name) in the pages folder checked holds a page's values, not the run's words, and goes with the pages:
+// it is not searched there, and only there (the folder's real path is where checkPages found the pages). The same name
+// anywhere else is searched as any file the run wrote.
+const noteCopyHere = (dir, name) => {
+  if (!noteTemp(name) || pagesAt === null) return false;
+  try {
+    return realpathSync(dir) === pagesAt;
+  } catch {
+    return false;
+  }
+};
 function runFiles(root, raw) {
   const out = [];
   const walk = (dir) => {
@@ -1091,7 +1143,7 @@ function runFiles(root, raw) {
       const st = lstatSync(path);
       if (st.isDirectory()) {
         if (!name.startsWith(".") && name !== "node_modules") walk(path);
-      } else if (st.isFile() && !raw.has(path) && st.size <= 50e6) {
+      } else if (st.isFile() && !raw.has(path) && !noteCopyHere(dir, name) && st.size <= 50e6) {
         const bytes = readFileSync(path);
         if (!bytes.subarray(0, 8000).includes(0)) out.push({ path, text: bytes.toString("utf8") });
       }
@@ -1133,13 +1185,16 @@ function scan() {
   // pages hold that note is the last: it removes them on every exit, a value found included, and on a signal too
   // (SIGTERM, SIGINT, SIGHUP: it ends with 128 + the signal's number). A signal on a first --final leaves them, for its
   // retry. Each page is removed on its own, best effort. Only a SIGKILL (which no process can catch) leaves them.
+  // A cut page holds no note here; it could have held the note, or the values the --final must look for, and
+  // customerValues (below, for every --final with pages) stops on it.
   const marked = (f) => {
+    let read;
     try {
-      const page = JSON.parse(readFileSync(join(pagesAt, f), "utf8"));
-      return page !== null && typeof page === "object" && Object.hasOwn(page, MARK);
+      read = pageOf(readFileSync(join(pagesAt, f), "utf8"));
     } catch {
       return false;
     }
+    return read.page !== null && typeof read.page === "object" && Object.hasOwn(read.page, MARK);
   };
   const rerun = final && pageFiles().some(marked);
   const removed = [];
@@ -1410,9 +1465,12 @@ function scan() {
     // that isn't the page's alone. It is skipped, and said. Each page is opened without following a link
     // (O_NOFOLLOW), in the folder checked (inPagesFolder), and must be, as opened, the file its lstat saw (same device
     // and inode, one name): a name swapped after the look is skipped, never written through.
+    // The noted page is written whole under a name of its own in that folder (a dot name no page or search takes),
+    // synced, and only then renamed over the page, once the page's name is still the file looked at: a kill, a crash or
+    // a full disk mid-write leaves the page as it was, never cut short. rename replaces a link, never follows one.
     const skipped = [];
-    // A page whose note could not be written whole: it may now hold broken JSON, which the next --final would take for
-    // a filed error answer and never search. It is never counted; the run stops below.
+    // A page whose note could not be written whole: it keeps its old bytes, but the next --final would not be the last.
+    // It is never counted; the run stops below.
     let unwritten = null;
     const { value: noted = 0 } = inPagesFolder(dir, () => {
       let n = 0;
@@ -1427,45 +1485,67 @@ function scan() {
           skipped.push(join(dir, f));
           continue;
         }
+        const same = (st) => st.isFile() && st.nlink === 1 && st.dev === seen.dev && st.ino === seen.ino;
         let fd;
         try {
-          fd = openSync(f, constants.O_RDWR | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+          fd = openSync(f, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
         } catch {
           skipped.push(join(dir, f));
           continue;
         }
+        let page;
         try {
-          const st = fstatSync(fd);
-          if (!st.isFile() || st.nlink !== 1 || st.dev !== seen.dev || st.ino !== seen.ino) {
+          if (!same(fstatSync(fd))) {
             skipped.push(join(dir, f));
             continue;
           }
-          let page;
           try {
             page = JSON.parse(readFileSync(fd, "utf8"));
           } catch {
             continue;
           }
-          if (page === null || typeof page !== "object" || Array.isArray(page)) continue;
-          page[MARK] = { warned: [...warnings.values()] };
-          // Every byte goes through the fd: a write may take fewer bytes than asked (a full disk, a quota), and one
-          // that takes none, or throws, leaves the page cut short.
-          const bytes = Buffer.from(JSON.stringify(page));
-          try {
-            ftruncateSync(fd, 0);
-            for (let done = 0; done < bytes.length; ) {
-              const wrote = writeSync(fd, bytes, done, bytes.length - done, done);
-              if (!(wrote > 0)) throw new Error("a write took no bytes");
-              done += wrote;
-            }
-          } catch (e) {
-            unwritten = `${join(dir, f)} (${e?.code ?? e?.message ?? e})`;
-            break;
-          }
-          n++;
         } finally {
           closeSync(fd);
         }
+        if (page === null || typeof page !== "object" || Array.isArray(page)) continue;
+        page[MARK] = { warned: [...warnings.values()] };
+        const bytes = Buffer.from(JSON.stringify(page));
+        const tmp = `.${f}.note-${randomBytes(6).toString("hex")}`;
+        let out = null;
+        let moved = false;
+        try {
+          out = openSync(tmp, constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW | constants.O_WRONLY, 0o600);
+          // Every byte: a write may take fewer bytes than asked (a full disk, a quota), and one that takes none, or
+          // throws, leaves the note cut short.
+          for (let done = 0; done < bytes.length; ) {
+            const wrote = writeSync(out, bytes, done, bytes.length - done, done);
+            if (!(wrote > 0)) throw new Error("a write took no bytes");
+            done += wrote;
+          }
+          fsyncSync(out);
+          closeSync(out);
+          out = null;
+          moved = !same(lstatSync(f));
+          if (!moved) renameSync(tmp, f);
+        } catch (e) {
+          unwritten = `${join(dir, f)} (${e?.code ?? e?.message ?? e})`;
+        }
+        if (out !== null) {
+          try {
+            closeSync(out);
+          } catch {}
+        }
+        if (unwritten !== null || moved) {
+          try {
+            unlinkSync(tmp);
+          } catch {}
+        }
+        if (unwritten !== null) break;
+        if (moved) {
+          skipped.push(join(dir, f));
+          continue;
+        }
+        n++;
       }
       return n;
     });

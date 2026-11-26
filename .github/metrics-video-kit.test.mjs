@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { appendFileSync, chmodSync, closeSync, constants, cpSync, existsSync, linkSync, mkdirSync, openSync, readdirSync, readFileSync, symlinkSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
+import { appendFileSync, chmodSync, closeSync, constants, cpSync, existsSync, linkSync, mkdirSync, openSync, readdirSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { tempRoot } from "./temp-root.mjs";
 import vm from "node:vm";
@@ -270,13 +270,17 @@ test("place refuses a refunds scene too short for each currency's figures to cou
 });
 
 // ---------- the customer-data scan ----------
-// The kit bounds --pages by the run's folder, the one that holds the kit's own folder (film/ in a run). A scan of a
-// folder with no film/ runs a copy of metrics.mjs from <dir>/.kit: its parent is the run's folder, and scan never
-// searches a dot-folder, so the copy adds nothing to what is scanned.
-function kitCopy(dir) {
-  mkdirSync(join(dir, ".kit"), { recursive: true });
-  cpSync(join(KIT, "metrics.mjs"), join(dir, ".kit", "metrics.mjs"));
-  return join(dir, ".kit", "metrics.mjs");
+// The kit bounds --pages by the run's folder, the one that holds the kit's own folder, which must be film/ (a folder,
+// not a link). A scan of a folder with no film/ runs one copy of metrics.mjs from film/ in the folder that holds every
+// test's folder: each folder scanned is inside the run's folder that copy bounds, and scan searches only its --root,
+// so the copy adds nothing to what is scanned.
+function kitCopy() {
+  const kit = join(root, "film", "metrics.mjs");
+  if (!existsSync(kit)) {
+    mkdirSync(join(root, "film"), { recursive: true });
+    cpSync(join(KIT, "metrics.mjs"), kit);
+  }
+  return kit;
 }
 // A run folder: Stripe's raw page of these items, and these files the run wrote (path -> text, or a value as JSON).
 // Returns scan's exit code and what it printed.
@@ -290,7 +294,7 @@ function scanRun(name, items, files, extra = [], skill) {
     mkdirSync(join(dir, path, ".."), { recursive: true });
     writeFileSync(join(dir, path), typeof body === "string" ? body : JSON.stringify(body));
   }
-  const r = spawnSync(process.execPath, [kitCopy(dir), "scan", "--pages", join(dir, "stripe"), "--root", dir, ...extra], { encoding: "utf8" });
+  const r = spawnSync(process.execPath, [kitCopy(), "scan", "--pages", join(dir, "stripe"), "--root", dir, ...extra], { encoding: "utf8" });
   return { status: r.status, out: r.stdout + r.stderr };
 }
 const described = (description, amount = 45000) => ({ ...txn("2026-11-18T12:00:00Z", "usd", "charge", amount, 1335), description });
@@ -658,13 +662,13 @@ test("scan after the last scan removed the pages, or with a stripe folder of no 
   const final = scanRun("pages-gone", items, { "media/vo.txt": CLEAN }, ["--final"]);
   assert.equal(final.status, 0, final.out);
   assert.equal(readdirSync(join(dir, "stripe")).length, 0, "the last scan removed the pages");
-  const again = spawnSync(process.execPath, [kitCopy(dir), "scan", "--pages", join(dir, "stripe"), "--root", dir], { encoding: "utf8" });
+  const again = spawnSync(process.execPath, [kitCopy(), "scan", "--pages", join(dir, "stripe"), "--root", dir], { encoding: "utf8" });
   assert.equal(again.status, 0, `a scan after the pages are gone: ${again.stdout}${again.stderr}`);
   const empty = join(root, "pages-none");
   mkdirSync(join(empty, "stripe"), { recursive: true });
   mkdirSync(join(empty, "media"), { recursive: true });
   writeFileSync(join(empty, "media", "vo.txt"), CLEAN);
-  const none = spawnSync(process.execPath, [kitCopy(empty), "scan", "--pages", join(empty, "stripe"), "--root", empty], { encoding: "utf8" });
+  const none = spawnSync(process.execPath, [kitCopy(), "scan", "--pages", join(empty, "stripe"), "--root", empty], { encoding: "utf8" });
   assert.equal(none.status, 0, `a stripe folder with no pages: ${none.stdout}${none.stderr}`);
 });
 
@@ -1350,7 +1354,7 @@ test("scan --purge removes every page in stripe/ and nothing else: no file outsi
   mkdirSync(join(other, "real"), { recursive: true });
   writeFileSync(join(other, "real", names[0]), "{}");
   symlinkSync(join(other, "real"), join(other, "stripe"));
-  const l = spawnSync(process.execPath, [kitCopy(other), "scan", "--pages", "stripe", "--purge"], { encoding: "utf8", cwd: other });
+  const l = spawnSync(process.execPath, [kitCopy(), "scan", "--pages", "stripe", "--purge"], { encoding: "utf8", cwd: other });
   assert.notEqual(l.status, 0, l.stdout + l.stderr);
   assert.ok(existsSync(join(other, "real", names[0])), "a linked stripe/ is not entered");
 });
@@ -1603,7 +1607,9 @@ test("the first --final's note skips a page-named hard link, and names it: the f
 // stripe/ for a link to MV_OUTSIDE at the first listing (after --purge has checked the folder), MV_SWAP=enter as the kit
 // first changes into a folder named stripe (after the same check), MV_SWAP=parent swaps the folder nested (stripe's
 // parent) for a link to MV_OUTSIDE once the kit has resolved it MV_NTH times, MV_SWAP=short makes the first write
-// to an opened file short and the rest fail (ENOSPC); MV_SWAP=page swaps the
+// to an opened file short and the rest fail (ENOSPC), MV_SWAP=kill makes it short and then kills the kit (SIGKILL: no
+// handler runs, as on an OOM kill), MV_SWAP=ancestor moves the run's folder MV_RUN aside and puts a link to MV_OUTSIDE
+// in its place once the kit has looked at a folder named stripe (its --pages check); MV_SWAP=page swaps the
 // page MV_PAGE for a link to MV_TARGET once it has been looked at (lstat), as it is opened or written by name.
 const SWAP = String.raw`import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
@@ -1647,23 +1653,48 @@ if (MV_SWAP === "parent") {
   swapped.native = realpathSync.native;
   fs.realpathSync = swapped;
 }
+// Half of what writeSync(fd, data, ...a) was asked to write, written.
+const half = function (fd, data, a) {
+  let bytes;
+  let at;
+  if (typeof data === "string") {
+    bytes = Buffer.from(data, typeof a[1] === "string" ? a[1] : "utf8");
+    at = a[0];
+  } else {
+    const offset = a[0] ?? 0;
+    bytes = data.subarray(offset, offset + (a[1] ?? data.length - offset));
+    at = a[2];
+  }
+  return writeSync.call(this, fd, bytes, 0, Math.max(1, bytes.length >> 1), at ?? null);
+};
 if (MV_SWAP === "short") {
   // The first write to a file the kit opened writes half its bytes; every write after it fails, as on a full disk.
   let calls = 0;
   fs.writeSync = function (fd, data, ...a) {
     if (fd <= 2) return writeSync.call(this, fd, data, ...a);
     if (++calls > 1) throw Object.assign(new Error("ENOSPC: no space left on device, write"), { code: "ENOSPC", errno: -28, syscall: "write" });
-    let bytes;
-    let at;
-    if (typeof data === "string") {
-      bytes = Buffer.from(data, typeof a[1] === "string" ? a[1] : "utf8");
-      at = a[0];
-    } else {
-      const offset = a[0] ?? 0;
-      bytes = data.subarray(offset, offset + (a[1] ?? data.length - offset));
-      at = a[2];
+    return half.call(this, fd, data, a);
+  };
+}
+if (MV_SWAP === "kill") {
+  // The first write to a file the kit opened writes half its bytes, and the kit is killed there.
+  fs.writeSync = function (fd, data, ...a) {
+    if (fd <= 2) return writeSync.call(this, fd, data, ...a);
+    half.call(this, fd, data, a);
+    process.kill(process.pid, "SIGKILL");
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10000);
+    throw new Error("not killed");
+  };
+}
+if (MV_SWAP === "ancestor") {
+  fs.lstatSync = function (p, ...a) {
+    const st = lstatSync.call(this, p, ...a);
+    if (!done && typeof p === "string" && p.endsWith("/stripe")) {
+      done = true;
+      renameSync(MV_RUN, MV_RUN + "-moved");
+      symlinkSync(MV_OUTSIDE, MV_RUN);
     }
-    return writeSync.call(this, fd, bytes, 0, Math.max(1, bytes.length >> 1), at ?? null);
+    return st;
   };
 }
 if (MV_SWAP === "page") {
@@ -1816,4 +1847,198 @@ test("agent.md and SKILL.md say an exit 3 refusing --pages removes nothing, and 
   assert.match(section(skill, 3), saidAs(PURGE_FIRST), "SKILL.md step 3");
   assert.match(section(skill, 9), saidAs(PURGE_FIRST), "SKILL.md step 9");
   assert.doesNotMatch(section(skill, 9), /\(a refused argument, a page the run wrote, a fault\) removes the pages/, "step 9 no longer says every refused argument removes the pages");
+});
+
+// ---------- a page that is neither a list nor a filed error ----------
+// Serve files an MCP error answer as the server's own text (no JSON), and Composio's as JSON that says successful:
+// false. A page that is empty, or starts as JSON and doesn't parse, is neither: it was cut short.
+const cutOf = (page) => {
+  const text = JSON.stringify(page);
+  return text.slice(0, text.length >> 1);
+};
+const CUT_FORMS = [["cut mid-JSON", cutOf(composioAnswer(stripeList(FILED_WEEK.slice(2, 4), true)))], ["empty", ""], ["blank", " \n"], ["a list cut short", cutOf([FILED_WEEK[2]])]];
+
+test("a page cut short in the middle of the list, or empty, stops compute (exit 3), never passed over as an error answer", () => {
+  for (const [what, cut] of CUT_FORMS) {
+    const { dir, names } = filedFolder(`p8-cut-${what.replace(/ /g, "-")}`, [composioAnswer(stripeList(FILED_WEEK.slice(0, 2), true)), cut, composioAnswer(stripeList(FILED_WEEK.slice(4)))]);
+    const r = computeIn(dir);
+    assert.equal(r.status, 3, `${what}: the week's figures would miss the page's transactions: ${r.out}`);
+    assert.match(r.stderr, /a page that is neither JSON nor a filed error/, what);
+    assert.ok(r.stderr.includes(names[1]), `${what}: the page is named`);
+    assert.match(r.stderr, /failed_step "stripe"/, what);
+    assert.deepEqual(pagesIn(dir), [], `${what}: every page is removed`);
+    assert.ok(!existsSync(join(dir, "film", "data.json")), `${what}: no figures`);
+  }
+});
+
+test("scan stops on a cut page (exit 3) and removes the pages: --final never calls a run clean whose page it can't read", () => {
+  const cut = cutOf(composioAnswer(stripeList([described("Commission for Marisol Quintero", 20000)])));
+  for (const final of [true, false]) {
+    const { dir } = computedFolder(`p8-cut-scan-${final ? "final" : "first"}`);
+    writeFileSync(join(dir, "stripe", filedName()), cut);
+    writeFileSync(join(dir, "media", "vo.txt"), `${CLEAN} Thank you, Marisol Quintero.`);
+    const r = final ? finalIn(dir) : kitIn(dir, "scan", "--pages", "stripe");
+    assert.equal(r.status, 3, `${final ? "--final" : "the first scan"} with a cut page: ${r.out}`);
+    assert.match(r.out, /a page that is neither JSON nor a filed error/);
+    assert.match(r.out, /failed_step "stripe"/);
+    assert.doesNotMatch(r.out, /"clean":true/);
+    assert.deepEqual(pagesIn(dir), [], "every page is removed");
+  }
+});
+
+test("a note cut off by a kill mid-write leaves the page whole: its old bytes or the noted ones, never part of either", () => {
+  const saved = { NODE_OPTIONS: process.env.NODE_OPTIONS, MV_SWAP: undefined };
+  let r;
+  try {
+    r = fixtureRun("week-over-week", "2026-11-23", {
+      items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)],
+      as: "p8-kill-note",
+      answer: KEPT_CODE,
+      beforeFinal: () => Object.assign(process.env, { NODE_OPTIONS: `${saved.NODE_OPTIONS ?? ""} --import ${swapPreload()}`.trim(), MV_SWAP: "kill" }),
+    });
+  } finally {
+    for (const [k, v] of Object.entries(saved)) if (v === undefined) delete process.env[k]; else process.env[k] = v;
+  }
+  assert.equal(r.final.status, null, `the kit was killed while it wrote the note: ${r.final.out}`);
+  let page;
+  assert.doesNotThrow(() => (page = JSON.parse(readFileSync(join(r.dir, "stripe", PAGE), "utf8"))), "the page is whole JSON");
+  assert.equal(page.object, "list", "and still Stripe's list");
+  const purge = kitIn(r.dir, "scan", "--pages", "stripe", "--purge");
+  assert.equal(purge.status, 0, purge.out);
+  assert.deepEqual(readdirSync(join(r.dir, "stripe")), [], "--purge leaves no page, nor any part-written note");
+});
+
+// ---------- where the kit runs from ----------
+// A folder outside the run holding one filed page, and what it holds, to check nothing there is read or removed.
+const outsideWithPage = (name) => {
+  const outside = join(root, name);
+  mkdirSync(join(outside, "stripe"), { recursive: true });
+  const filed = filedName();
+  const page = JSON.stringify(composioAnswer(stripeList(FILED_WEEK)));
+  writeFileSync(join(outside, "stripe", filed), page);
+  return { outside, kept: () => assert.deepEqual(readdirSync(join(outside, "stripe")).map((f) => [f, readFileSync(join(outside, "stripe", f), "utf8")]), [[filed, page]], `${name} is left as it was`) };
+};
+
+test("the kit bounds --pages only from film/ as a folder: film/ a link to a copy outside, or the kit run from another folder, is refused", () => {
+  // film/ a link to a kit copy outside: the folder that holds the copy is not the run's.
+  const { outside, kept } = outsideWithPage("p8-kit-link-outside");
+  cpSync(KIT, join(outside, "film"), { recursive: true });
+  const { dir } = filedFolder("p8-kit-link", FILED_PAGES.map(composioAnswer));
+  rmSync(join(dir, "film"), { recursive: true });
+  symlinkSync(join(outside, "film"), join(dir, "film"));
+  for (const a of [["scan", "--pages", join(outside, "stripe"), "--purge"], ["compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", join(outside, "stripe"), "--film", "film"]]) {
+    const r = kitIn(dir, ...a);
+    assert.equal(r.status, 3, `${a[0]} through a linked film/: ${r.out}`);
+    assert.match(r.stderr, /read and removed nothing/, a[0]);
+    assert.match(r.stderr, /film\/ in the run's folder/, `${a[0]} says where the kit runs from`);
+    kept();
+    assert.ok(!existsSync(join(outside, "film", "data.json")), `${a[0]} wrote no figures`);
+  }
+  // The kit copied to the run's own folder: its parent (where sibling runs are) would be the run's.
+  const sibling = outsideWithPage("p8-kit-sibling");
+  const top = join(root, "p8-kit-top");
+  mkdirSync(join(top, "stripe"), { recursive: true });
+  cpSync(join(KIT, "metrics.mjs"), join(top, "metrics.mjs"));
+  const t = spawnSync(process.execPath, [join(top, "metrics.mjs"), "scan", "--pages", join(sibling.outside, "stripe"), "--purge"], { encoding: "utf8", cwd: top });
+  assert.equal(t.status, 3, `a kit not in film/: ${t.stdout}${t.stderr}`);
+  assert.match(t.stderr, /film\/ in the run's folder/);
+  sibling.kept();
+});
+
+test("the run's folder is fixed when the kit starts: the run's folder moved aside for a link to another, mid-purge, nothing there goes", () => {
+  const { dir } = filedFolder("p8-ancestor", FILED_PAGES.map(composioAnswer));
+  const { outside, kept } = outsideWithPage("p8-ancestor-outside");
+  const r = spawnSync(process.execPath, ["--import", swapPreload(), join(dir, "film", "metrics.mjs"), "scan", "--pages", join(dir, "stripe"), "--purge"], {
+    encoding: "utf8", cwd: dir, env: { ...process.env, MV_SWAP: "ancestor", MV_RUN: dir, MV_OUTSIDE: outside },
+  });
+  const out = r.stdout + r.stderr;
+  assert.ok(existsSync(`${dir}-moved`), `the swap happened: ${out}`);
+  kept();
+  assert.equal(r.status, 2, `the pages it could not reach are named: ${out}`);
+  assert.equal(pagesIn(`${dir}-moved`).length, 2, "the run's own pages, never reached through the link, are left for the run to purge again");
+});
+
+test("--purge enters only the folder it checked, even one inside the run: stripe/ swapped for a link to another folder of the run, nothing there goes", () => {
+  const { dir } = filedFolder("p8-race-enter-inside", FILED_PAGES.map(composioAnswer));
+  // A folder of the run that holds a page-named file: inside the run's folder, so only the folder's device and inode,
+  // compared once entered, tell it from the stripe/ checked.
+  const other = join(dir, "other");
+  mkdirSync(other, { recursive: true });
+  const otherName = filedName();
+  writeFileSync(join(other, otherName), "the run's own file");
+  const r = spawnSync(process.execPath, ["--import", swapPreload(), join(dir, "film", "metrics.mjs"), "scan", "--pages", "stripe", "--purge"], {
+    encoding: "utf8", cwd: dir, env: { ...process.env, MV_SWAP: "enter", MV_RUN: dir, MV_OUTSIDE: other },
+  });
+  const out = r.stdout + r.stderr;
+  assert.ok(existsSync(join(dir, "stripe-moved")), `the swap happened: ${out}`);
+  assert.deepEqual(readdirSync(other), [otherName], `the other folder's file stays: ${out}`);
+  assert.equal(r.status, 2, `the pages it could not reach are named: ${out}`);
+  assert.match(r.stderr, /changed after it was checked/, out);
+  assert.equal(readdirSync(join(dir, "stripe-moved")).filter((f) => FILED.test(f)).length, 2, "the folder checked is never reached through another");
+});
+
+// ---------- place writes only the kit's scenes ----------
+test("place takes only the kit's scene names from film/data.json: a scene named with ../ never rewrites a file outside film/", () => {
+  const outside = join(root, "p8-place-outside");
+  mkdirSync(outside, { recursive: true });
+  const html = '<div data-mv-span data-duration="1"></div>\n';
+  writeFileSync(join(outside, "x.html"), html);
+  for (const [what, name] of [["../ to a file outside film/", "../../../p8-place-outside/x"], ["a name that is not one of the kit's", "intro"], ["a name in capitals", "Endcard"]]) {
+    const as = `p8-place-${what.replace(/[^a-z]+/gi, "-")}`;
+    compute(as, FILED_WEEK, "2026-11-23");
+    const film = join(root, as, "film");
+    const dataPath = join(film, "data.json");
+    const data = JSON.parse(readFileSync(dataPath, "utf8"));
+    data.plan.scenes.at(-1).name = name;
+    writeFileSync(dataPath, JSON.stringify(data));
+    const index = readFileSync(join(film, "index.html"), "utf8");
+    const r = spawnSync(process.execPath, [join(film, "metrics.mjs"), "place", "--film", film], { encoding: "utf8", cwd: join(root, as) });
+    assert.equal(r.status, 2, `${what}: ${r.stdout}${r.stderr}`);
+    assert.match(r.stderr, /scene/, what);
+    assert.equal(readFileSync(join(outside, "x.html"), "utf8"), html, `${what}: the file outside film/ is as it was`);
+    assert.equal(readFileSync(join(film, "index.html"), "utf8"), index, `${what}: nothing is written`);
+  }
+});
+
+// ---------- a note's copy a kill left ----------
+// The note is written whole under .<page>.note-<12 hex> in the pages folder, then renamed over the page. A kill between
+// the two leaves that copy, the customers' values in it.
+const NOTE_COPY = /^\.STRIPE_LIST_BALANCE_TRANSACTIONS-.+\.json\.note-[0-9a-f]{12}$/;
+
+test("a note's copy a kill left in the pages folder is no file the run wrote: the --final run again, its files clean, exits 0 and removes it", () => {
+  const saved = { NODE_OPTIONS: process.env.NODE_OPTIONS, MV_SWAP: undefined };
+  let r;
+  try {
+    r = fixtureRun("week-over-week", "2026-11-23", {
+      items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)],
+      as: "p9-kill-resume",
+      answer: KEPT_CODE,
+      beforeFinal: () => Object.assign(process.env, { NODE_OPTIONS: `${saved.NODE_OPTIONS ?? ""} --import ${swapPreload()}`.trim(), MV_SWAP: "kill" }),
+    });
+  } finally {
+    for (const [k, v] of Object.entries(saved)) if (v === undefined) delete process.env[k]; else process.env[k] = v;
+  }
+  assert.equal(r.final.status, null, `the kit was killed while it wrote the note: ${r.final.out}`);
+  const copies = readdirSync(join(r.dir, "stripe")).filter((f) => NOTE_COPY.test(f));
+  assert.equal(copies.length, 1, "the kill left the note's copy");
+  assert.match(readFileSync(join(r.dir, "stripe", copies[0]), "utf8"), /Marisol Quintero/, "and it holds a customer's value");
+  // The run's own files clean: the answer without the tool word that warned.
+  const answerPath = join(r.dir, "media", "answer.json");
+  const answer = JSON.parse(readFileSync(answerPath, "utf8"));
+  delete answer.checks;
+  writeFileSync(answerPath, JSON.stringify(answer));
+  const again = finalIn(r.dir);
+  assert.equal(again.status, 0, `the --final again, the run's files clean: ${again.out}`);
+  assert.doesNotMatch(again.out, /note-[0-9a-f]{12} holds/, "the copy is never searched as a file the run wrote");
+  assert.deepEqual(readdirSync(join(r.dir, "stripe")), [], "the pages and the copy are removed");
+});
+
+test("a file named as a note's copy outside the pages folder is searched as any file the run wrote: its name hides nothing", () => {
+  const items = [described("Commission for Marisol Quintero")];
+  const name = ".STRIPE_LIST_BALANCE_TRANSACTIONS-2026-11-23T07-00-01-000Z-0a1b2c3d.json.note-0123456789ab";
+  for (const folder of ["media", "media/stripe"]) {
+    const r = scanRun(`p9-copy-name-${folder.replace("/", "-")}`, items, { "media/vo.txt": CLEAN, [`${folder}/${name}`]: "Thank you, Marisol Quintero." });
+    assert.equal(r.status, 2, `${folder}: ${r.out}`);
+    assert.ok(r.out.includes(`${folder}/${name} holds a value`), `${folder}: the file is named: ${r.out}`);
+  }
 });
