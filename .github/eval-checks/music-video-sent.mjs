@@ -37,7 +37,9 @@
 //   film/plan.json and the file's rates, which must be in their bands (offBand); the file's lines and plan_usd must be
 //   that price, and that price at or under max_fal_usd. Each paid call sent under the run's stem is priced from those
 //   lines, as cost bills it (a remake at its shot's still, from the reserve): a call the plan has no line for fails,
-//   naming it, and the calls sent come to at most max_fal_usd.
+//   naming it, and the calls sent come to at most max_fal_usd;
+// - max_fal_usd is the user's: the case's own prompt.md input in this repo (never the run's copy or its record), or
+//   null when it sets none. film/price.json's max_fal_usd, and film/ceiling.json's when it is there, must be it.
 // Prints one line: `SENT PASS n=<calls checked> (repo check; serve's grade is separate; stopgap for agentrun #3824)`
 // (exit 0), `SENT FAIL <the first reason> [(and N more)] (...the same)` (exit 1), or `SENT VOID <why>` when it can't
 // find its inputs or has nothing to check (exit 2: no verdict; a live run on real fal has no fake log).
@@ -103,6 +105,30 @@ const grader = join(EVALS, String(caseName), "graders", "clips-negative.md");
 if (!existsSync(grader)) voided(`case ${caseName} has no clips-negative grader (templates/music-video/evals/${caseName}/graders/clips-negative.md): this check covers the fake-fal cases that make a film`);
 const shots = Number(readFileSync(grader, "utf8").match(/^count:\s*(\d+)\s*$/m)?.[1]);
 if (!Number.isSafeInteger(shots) || shots < 1) voided(`${grader} holds no count of clips`);
+// The user's ceiling: the case's own prompt.md input max_fal_usd in this repo (never the run's copy, never the run's
+// record of it), or null when the input sets none.
+const ceiling = (() => {
+  const path = join(EVALS, String(caseName), "prompt.md");
+  let text;
+  try {
+    text = readFileSync(path, "utf8");
+  } catch (error) {
+    voided(`the case's prompt.md can't be read (${error.message.split("\n")[0]})`);
+  }
+  const front = text.match(/^---\n([\s\S]*?)\n---(?:\n|$)/)?.[1];
+  if (front === undefined) voided(`${path} has no front matter`);
+  const fm = front.split("\n");
+  const at = fm.findIndex((l) => /^input:\s*$/.test(l));
+  let value;
+  for (const l of at < 0 ? [] : fm.slice(at + 1)) {
+    if (!/^\s/.test(l)) break;
+    const m = l.match(/^\s+max_fal_usd:\s*(.*?)\s*(?:#.*)?$/);
+    if (m) value = m[1];
+  }
+  if (value === undefined || ["", "null", "~"].includes(value)) return null;
+  if (!/^\d+(\.\d+)?$/.test(value)) voided(`${path}'s input max_fal_usd ${value} is not a number`);
+  return Number(value);
+})();
 // The run's work folder: the folder given, when it holds media/; else the run's folder inside a serve's data folder.
 function workFolder() {
   if (existsSync(join(where, "media"))) return where;
@@ -363,6 +389,21 @@ function checkClips(data, bad) {
     }
   }
   if (p !== undefined) checkPrice(p, bad);
+  if (isObj(p)) checkCeiling(p, bad);
+}
+// The ceiling the run priced against and recorded is the case's input, null only when it sets none.
+function checkCeiling(p, bad) {
+  if (p.max_fal_usd !== ceiling) bad(`film/price.json's max_fal_usd is ${show(p.max_fal_usd)}, not the case's input max_fal_usd ${show(ceiling)} (its prompt.md)`);
+  const path = join(work, "film", "ceiling.json");
+  if (!existsSync(path)) return;
+  let c;
+  try {
+    c = JSON.parse(readFileSync(path, "utf8"));
+  } catch {
+    c = undefined;
+  }
+  if (!isObj(c) || !("max_fal_usd" in c)) bad("film/ceiling.json is not what the kit's price writes");
+  else if (c.max_fal_usd !== ceiling) bad(`film/ceiling.json records max_fal_usd ${show(c.max_fal_usd)}, not the case's input max_fal_usd ${show(ceiling)} (its prompt.md)`);
 }
 function checkPrice(p, bad) {
   if (!isObj(p) || typeof p.plan_usd !== "number" || !Array.isArray(p.lines) || !(p.max_fal_usd === null || typeof p.max_fal_usd === "number")) return bad("film/price.json is not what the kit's price writes");
@@ -391,8 +432,8 @@ function checkPrice(p, bad) {
   const at = [...Array(Math.max(want.length, p.lines.length)).keys()].find((i) => !isDeepStrictEqual(p.lines[i], want[i]));
   if (at !== undefined) bad(`film/price.json's lines are not the plan's at its rates: ${want[at]?.step ?? `line ${at + 1}`} is ${show(p.lines[at])}, not ${show(want[at])}`);
   else if (p.plan_usd !== price.total) bad(`film/price.json's plan_usd ${p.plan_usd} is not the plan's price at its rates, ${price.total}`);
-  const max = p.max_fal_usd;
-  if (max !== null && price.total > max + 1e-9) bad(`film/price.json's plan_usd ${price.total} is over its max_fal_usd ${max}`);
+  const max = ceiling;
+  if (max !== null && price.total > max + 1e-9) bad(`film/price.json's plan_usd ${price.total} is over the case's max_fal_usd ${max} (its prompt.md input)`);
   // The paid calls sent, each at the plan's own line (a remake at its shot's still, from the reserve), as beats.mjs
   // cost bills them. A call sent under the run's stem that the plan has no line for fails, naming it.
   const { stem } = runStem();
@@ -413,7 +454,7 @@ function checkPrice(p, bad) {
     total += line.usd;
   }
   total = Math.round(total * 1000) / 1000;
-  if (max !== null && total > max + 1e-9) bad(`the calls sent come to $${total} at film/price.json's rates, over its max_fal_usd ${max}`);
+  if (max !== null && total > max + 1e-9) bad(`the calls sent come to $${total} at film/price.json's rates, over the case's max_fal_usd ${max}`);
 }
 
 if (lines.length) {
