@@ -13,7 +13,7 @@
 //   media/stills.json  which shots were remade; media/clips.json: each still's URL as fal answered it
 //   film/placed.json   what place put on screen for each shot (its clip, or its still and why)
 //   media/check.json   the check's errors and warnings; media/film.mp4: its length and canvas, read with ffprobe
-//   film/cost.json     fal_cost_usd as beats.mjs cost wrote it; media/run-keys.json: the key stem
+//   film/cost.json     fal_cost_usd as beats.mjs cost wrote it (its unsent steps billed nothing); media/run-keys.json: the key stem
 //   media/still-<n>.png, still-<n>-2.png, clip-<n>.mp4, song.*, lyrics.vtt, transcript.json: the files saved
 // The facts file (JSON) holds the rest:
 //   status, failed_step, error          the run's outcome, error in fal's (or the refusal's) own words
@@ -195,15 +195,14 @@ if (placed && (placed.shots.length !== planShots.length || placed.shots.some((s,
   stop("film/placed.json is not this plan's shots: run beats.mjs place again");
 const stillsRecord = readJson("media/stills.json", "it is written by beats.mjs stills only", (r) => isObj(r) && Array.isArray(r.stills) && r.stills.every(isObj));
 const clipsRecord = readJson("media/clips.json", "it is written by beats.mjs clips only", (r) => isObj(r) && Array.isArray(r.clips) && r.clips.every(isObj));
-// The remakes sent; a remake counts as the shot's still only when its file was saved.
-const remakeSent = new Set((stillsRecord?.stills ?? []).filter((s) => s.remake === true).map((s) => s.n));
 const check = readJson("media/check.json", "write it again with hyperframes check --json (the skill's step 5)", isObj);
 
-let cost = readJson("film/cost.json", "run beats.mjs cost again", (c) => isObj(c) && Array.isArray(c.steps) && c.steps.every(isObj) && typeof c.total === "number");
+let cost = readJson("film/cost.json", "run beats.mjs cost again", (c) => isObj(c) && Array.isArray(c.steps) && c.steps.every(isObj) && typeof c.total === "number" && (c.unsent === undefined || (Array.isArray(c.unsent) && c.unsent.every((s) => typeof s === "string"))));
 if (!cost) {
   if (stem) stop("film/cost.json is missing: run beats.mjs cost with every paid step the run sent (the skill's step 8); it writes the file");
   cost = { steps: [], total: 0 };
 }
+const unsent = cost.unsent ?? [];
 for (const s of cost.steps) if (stem && s.key !== `mu-${stem}-${s.step}`) problems.push(`film/cost.json: ${s.step}'s key is not mu-${stem}-${s.step}: run beats.mjs cost again with --stem ${stem}`);
 // Each still and clip the records hold is billed exactly once; no step is billed twice, and none the records don't hold
 // (isolate and transcript the run sends itself).
@@ -216,8 +215,17 @@ for (const s of cost.steps) if (stem && s.key !== `mu-${stem}-${s.step}`) proble
   for (const s of cost.steps) times.set(s.step, (times.get(s.step) ?? 0) + 1);
   for (const [step, n] of times) if (n > 1) problems.push(`film/cost.json bills ${named(step)} ${n} times: run beats.mjs cost again with each step sent once`);
   for (const step of times.keys()) if (!recorded.has(step) && !["isolate", "transcript"].includes(step)) problems.push(`film/cost.json bills ${named(step)}, which neither media/stills.json nor media/clips.json records: run beats.mjs cost again with the steps sent`);
-  for (const [step, { key, file }] of recorded) if (!times.has(step)) problems.push(`film/cost.json has no step for ${key}, which ${file} records: run beats.mjs cost again with every still and clip sent`);
+  // A recorded step the run never sent is in cost's unsent list instead: billed nothing, never also a step.
+  for (const step of unsent) {
+    if (unsent.indexOf(step) !== unsent.lastIndexOf(step)) problems.push(`film/cost.json lists ${named(step)} as never sent twice: run beats.mjs cost again`);
+    if (times.has(step)) problems.push(`film/cost.json bills ${named(step)} and lists it as never sent: run beats.mjs cost again with it in --sent or --unsent, not both`);
+    if (!recorded.has(step)) problems.push(`film/cost.json lists ${named(step)} as never sent, which neither media/stills.json nor media/clips.json records: run beats.mjs cost again`);
+  }
+  for (const [step, { key, file }] of recorded) if (!times.has(step) && !unsent.includes(step)) problems.push(`film/cost.json has no step for ${key}, which ${file} records: run beats.mjs cost again with every still and clip sent (or --unsent, when the run never sent it)`);
 }
+// The remakes sent (one the run never sent is no attempt); a remake counts as the shot's still only when its file was
+// saved.
+const remakeSent = new Set((stillsRecord?.stills ?? []).filter((s) => s.remake === true && !unsent.includes(`still-${s.n}-2`)).map((s) => s.n));
 // A remake's outcome as cost billed it: failed (0), pending, or made (billed in full).
 const remakeStep = (n) => cost.steps.find((s) => s.step === `still-${n}-2`);
 
@@ -378,6 +386,7 @@ if (cost.steps.length) {
   const rows = cost.steps.map((s) => `| ${s.step} | ${s.key ?? "none"} | ${s.units} ${s.unit} | ${s.rate_usd} | ${s.usd}${s.pending ? " (pending)" : ""} |`);
   out.push(`### Cost on fal\n\n| Step | Key | Units | Rate (USD) | USD |\n|---|---|---|---|---|\n${rows.join("\n")}\n| Total | | | | ${cost.total} |\n\nEstimates from fal's rates, not fal's invoice.${cost.steps.some((s) => s.pending) ? " A step still pending when the run stopped waiting counts at its full price: fal may yet finish and bill it." : ""}`);
 } else out.push("**Cost on fal:** nothing was paid, $0.");
+if (unsent.length) out.push(`Built by the kit and never sent, so not billed: ${unsent.map((s) => `\`${stem ? `mu-${stem}-${s}` : s}\``).join(", ")}.`);
 if (film.path) {
   const warns = sum("warningCount");
   out.push(`**Checks:** ${checkErrors} check errors and ${warns} warning${warns === 1 ? "" : "s"} from hyperframes check; ${facts.renders} render${facts.renders === 1 ? "" : "s"}.${warningsKept.length ? `\nWarnings kept:\n${warningsKept.map((x) => `- ${x}`).join("\n")}` : ""}${reviewFixes.length ? `\nReview fixes:\n${reviewFixes.map((x) => `- ${x}`).join("\n")}` : ""}`);
@@ -398,7 +407,7 @@ const answer = {
   shots,
   lyrics,
   plan_usd: price ? price.plan_usd : null,
-  fal_cost_usd: cost,
+  fal_cost_usd: { steps: cost.steps, total: cost.total },
   key_stem: stem,
   held_keys: held,
   film,

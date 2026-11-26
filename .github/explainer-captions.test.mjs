@@ -17,13 +17,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { tempRoot } from "./temp-root.mjs";
 
 const KIT = new URL("../templates/explainer-video/skills/explainer-video/kit/build-captions.mjs", import.meta.url).pathname;
 const TAKES = JSON.parse(readFileSync(new URL("./explainer-captions.fixtures.json", import.meta.url), "utf8"));
-const root = mkdtempSync(join(tmpdir(), "ev-captions-"));
+const root = tempRoot("ev-captions-");
 let n = 0;
 
 /** Runs the kit on `script` (and `timestamps` when given) and answers its exit status, its first stdout line, the
