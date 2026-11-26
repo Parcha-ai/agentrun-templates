@@ -3,7 +3,9 @@
 // this script decodes the song with FFmpeg, finds its beats, tempo and bar lines, measures each bar's energy, picks
 // the cut, splits it into shots on bar lines, prices the plan from fal's rates, maps the lyrics' word times into the
 // cut, writes the film's scene list and reads it back. Nothing here guesses a figure it cannot work out: that is an
-// error, never an estimate. It uses only node's fs, path and child_process, and runs only ffmpeg and ffprobe.
+// error, never an estimate. It uses only node's fs, path, url and child_process, and runs only ffmpeg and ffprobe. A
+// check may import it for buildStills, addRemake and buildClips (to rebuild what the kit builds), and answer.mjs for the
+// plan's own words; then it runs no command.
 //
 //   node beats.mjs plan   --song media/song.mp3 --film film [--cut 60] [--start 42.5] [--aspect 16:9] [--lyrics true]
 //   node beats.mjs price  --film film --rates isolation=0.1,transcript=0.03,still=0.15,clip=0.14 [--max 20]
@@ -11,7 +13,7 @@
 //   node beats.mjs place  --film film
 //   node beats.mjs stem   --file media/run-keys.json
 //   node beats.mjs stills --film film --storyboard storyboard.md --stem <stem> --file media/stills.json
-//   node beats.mjs remake --file media/stills.json --shot <n> --picture "<the fixed picture>"
+//   node beats.mjs remake --film film --file media/stills.json --shot <n> --picture "<the fixed picture>"
 //   node beats.mjs clips  --film film --storyboard storyboard.md --stem <stem> --stills <url-1>,...,<url-N> --file media/clips.json
 //   node beats.mjs cost   --film film --stem <stem> --sent isolate,transcript,still-1,...,clip-12 [--failed clip-5,...] [--pending clip-7,...]
 //
@@ -26,7 +28,8 @@
 // price   the plan priced from get_pricing's rates (isolation and transcript per minute of the song, a still per image,
 //         a clip per second), with two stills held in reserve for remakes. --max is the user's own ceiling
 //         (max_fal_usd), given only when they set one: a plan over it prints OVER YOUR CEILING. Without --max nothing is
-//         over. It writes film/price.json.
+//         over. It writes film/price.json. A rate outside its endpoint's band (a quarter to four times fal's list price,
+//         RATE_BANDS) is a misread answer: an error naming the endpoint and the band, and nothing is priced.
 // lyrics  speech-to-text's words (fal's answer, written to a file as fal gave it) mapped into the cut: lines, the lyric
 //         under each shot, film/lyrics.json, the WebVTT file and film/compositions/lyrics.html (the captions scene).
 // place   writes each shot into film/index.html on the cut's clock (its clip, or its still with a slow push-in when
@@ -36,6 +39,9 @@
 //         extracts every video of a film at once, and six clips' extractions together run a 4 GiB sandbox out of memory.
 // stem    prints the run's key stem: the one in the file when it holds one (a resumed run), else a new one from the
 //         sandbox's random bytes, written there first. A model never makes one.
+// stills, remake and clips build nothing until the plan is priced and fits: film/price.json with fits true and the
+//         sha256 of film/plan.json as priced. Over the user's ceiling, never priced, or priced for a plan since changed,
+//         each exits 2 and prints nothing to send. plan removes film/price.json when it writes a different plan.
 // stills  every still's submit_job, built from the storyboard and the plan: shot n's prompt is the style line, its
 //         storyboard picture word for word and "No text, no lettering, no logos.", with the fixed fields (one image, the
 //         plan's aspect, 1K, png, no web search). It prints one `submit_job {...}` line per still, to send as printed,
@@ -52,17 +58,19 @@
 //         `submit_job {...}` line per clip, to send as printed, and writes them to --file: the fixed fields once, then
 //         one short line per clip, so the record reaches a grader whole where a run's calls are cut to fit. A
 //         storyboard that doesn't hold the plan's shots in order, a shot with no motion, or a still list that doesn't
-//         match the shots is an error, and nothing is printed or written.
+//         match the shots is an error, and nothing is printed or written. Run again on a resumed run, it keeps --file
+//         when it is the same and prints the same calls; when anything differs it refuses, naming the shot.
 // cost    the answer's fal_cost_usd from the steps sent (a failed or refused one at 0; one still pending when the run
 //         stopped waiting at its full price, pending true, since fal may yet finish and bill it), at the rates price
-//         used, each with its key mu-<stem>-<step>.
+//         used, each with its key mu-<stem>-<step>. It writes film/cost.json, which answer.mjs reads.
 //
 // Exit 2: wrong arguments, or a film whose files don't match the plan (place reads every shot back after writing it;
 // the message names the shot); 3: the song can't be decoded, is too short, or has no beat to cut on; 0: done.
 import { spawnSync } from "node:child_process";
-import { randomBytes } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { createHash, randomBytes } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const SR = 11025; // decode rate: enough for kick, snare and hats
 const HOP = 64; // onset frames every 5.8 ms
@@ -83,13 +91,23 @@ const LINE_WORDS = 7;
 const FPS = 30; // the film's frame rate: HyperFrames renders at 30 by default
 const JOIN_THREADS = "2"; // the sandbox's CPUs; FFmpeg's own choice follows the host's CPU count, and its memory with it
 
+// Run as a command (node beats.mjs <command> ...), or imported by a check that rebuilds what the kit builds
+// (buildStills, addRemake, buildClips): then an error is thrown with its words, never a process exit.
+const MAIN = (() => {
+  try {
+    return import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href;
+  } catch {
+    return false;
+  }
+})();
 function fail(code, message) {
+  if (!MAIN) throw Object.assign(new Error(message), { exitCode: code });
   console.error(message);
   process.exit(code);
 }
 
 // ---------- arguments ----------
-const [command, ...rest] = process.argv.slice(2);
+const [command, ...rest] = MAIN ? process.argv.slice(2) : [];
 const args = {};
 for (let i = 0; i < rest.length; i++) {
   const a = rest[i];
@@ -446,20 +464,36 @@ function plan() {
     aspect, width, height, lyrics_on: lyricsOn,
   };
   mkdirSync(film, { recursive: true });
-  writeFileSync(join(film, "plan.json"), JSON.stringify(data, null, 1) + "\n");
+  // A price is of one plan: a plan that changes removes the price of the old one, so price runs again before anything
+  // is built (stills, remake and clips also check the plan's hash against the one price recorded).
+  const planPath = join(film, "plan.json"), pricePath = join(film, "price.json");
+  const bytes = JSON.stringify(data, null, 1) + "\n";
+  const changed = !existsSync(planPath) || readFileSync(planPath, "utf8") !== bytes;
+  writeFileSync(planPath, bytes);
   const out = [];
+  if (changed && existsSync(pricePath)) {
+    rmSync(pricePath);
+    out.push(`${pricePath} removed: the plan changed since it was priced; run price again`);
+  }
   out.push(`song: ${data.song.seconds} s (${songPath})`);
   out.push(`beats: ${data.beats.bpm} BPM, ${data.beats.count} beats, the first at ${data.beats.first_beat_s} s, bar lines (4/4) from ${data.beats.first_downbeat_s} s every ${data.beats.bar_s} s; tempo ${data.beats.tempo} (grid fit ${data.beats.fit_ms} ms, beat confidence ${data.beats.confidence})`);
-  if (data.beats.confidence < 0.2 || data.beats.tempo === "drifting") out.push("NOTE: the beat is weak or drifts here: the cuts land on the computed grid, which may sit off the music in places; say so in the report");
+  const note = weakBeat(data);
+  if (note) out.push(note);
   out.push(`bars (dB): ${data.bars.map((b) => `${b.n}@${b.start_s}:${b.db}`).join(" ")}`);
-  const how = { whole_song: `the song whole (it is shorter than the ${cutAsked} s asked)`, start_s: `from the bar line nearest ${startAsked} s${cut.shortened ? `, SHORTENED to the ${cut.bars} whole bars left before the song ends (say so in the answer)` : ""}`, loudest: `the loudest ${cut.bars} bars that start on a bar line` }[cut.chosen_by];
-  out.push(`cut: ${cut.start_s} s to ${cut.end_s} s of the song, ${cut.seconds} s, ${how}`);
+  out.push(`cut: ${cut.start_s} s to ${cut.end_s} s of the song, ${cut.seconds} s, ${cutHow(data)}`);
   for (const s of cut.shots) out.push(`shot ${s.n}: ${r3(s.start_s - cut.start_s)} to ${r3(s.end_s - cut.start_s)} s of the film (${s.start_s} to ${s.end_s} s of the song), ${s.seconds} s, ${s.bars} bar${s.bars === 1 ? "" : "s"}${s.partial ? " with the song's lead-in or tail" : ""}, clip ${s.clip_seconds} s`);
   out.push(`plan: ${cut.shots.length} shots, ${cut.shots.length + RESERVE} stills priced (${RESERVE} in reserve), ${cut.shots.reduce((t, s) => t + s.clip_seconds, 0)} s of clips, film ${cut.seconds} s at ${width}x${height}, lyrics ${lyricsOn ? "on" : "off"}`);
   out.push(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify(answerFields(data))}`);
   console.log(out.join("\n"));
 }
-function answerFields(data) {
+// The plan's own words for a weak beat and for how the cut was chosen: plan prints them, answer.mjs puts them in the
+// report.
+export const weakBeat = (data) => (data.beats.confidence < 0.2 || data.beats.tempo === "drifting" ? "NOTE: the beat is weak or drifts here: the cuts land on the computed grid, which may sit off the music in places; say so in the report" : null);
+export function cutHow(data) {
+  const cut = data.cut;
+  return { whole_song: `the song whole (it is shorter than the ${cut.asked_s} s asked)`, start_s: `from the bar line nearest ${cut.start_asked_s} s${cut.shortened ? `, SHORTENED to the ${cut.bars} whole bars left before the song ends (say so in the answer)` : ""}`, loudest: `the loudest ${cut.bars} bars that start on a bar line` }[cut.chosen_by];
+}
+export function answerFields(data) {
   return {
     song_seconds: data.song.seconds,
     beats: { bpm: data.beats.bpm, meter: data.beats.meter, count: data.beats.count, first_downbeat_s: data.beats.first_downbeat_s, bar_s: data.beats.bar_s, tempo: data.beats.tempo, confidence: data.beats.confidence },
@@ -475,6 +509,16 @@ const readPlan = (film) => {
 
 // ---------- the price ----------
 const STEP_RATES = ["isolation", "transcript", "still", "clip"];
+// A sanity band per endpoint for the rates the run copies from get_pricing's answer: a quarter of fal's list price to
+// four times it. A rate outside its band is a misread answer (a slipped digit prices a plan under a ceiling it is
+// over), so price refuses it. List prices: audio-isolation $0.10 a minute, speech-to-text $0.03 a minute, Nano Banana
+// Pro $0.15 an image at 1K, Kling 3.0 Pro image to video $0.112 a second with audio off.
+const RATE_BANDS = {
+  isolation: { endpoint_id: "fal-ai/elevenlabs/audio-isolation", list: 0.1, unit: "a minute" },
+  transcript: { endpoint_id: "fal-ai/elevenlabs/speech-to-text", list: 0.03, unit: "a minute" },
+  still: { endpoint_id: "fal-ai/nano-banana-pro", list: 0.15, unit: "an image" },
+  clip: { endpoint_id: "fal-ai/kling-video/v3/pro/image-to-video", list: 0.112, unit: "a second" },
+};
 function priceOf(shots, minutes, lyricsOn, r) {
   const lines = [];
   if (lyricsOn) {
@@ -500,6 +544,10 @@ function price() {
     r[k] = Number(v);
   }
   for (const k of STEP_RATES) if (r[k] === undefined) fail(2, `--rates is missing ${k}`);
+  for (const k of STEP_RATES) {
+    const b = RATE_BANDS[k], low = b.list / 4, high = b.list * 4;
+    if (r[k] < low - 1e-12 || r[k] > high + 1e-12) fail(2, `--rates ${k}=${r[k]}: ${b.endpoint_id}'s rate is outside ${low} to ${high} USD ${b.unit} (a quarter to four times its list price, ${b.list}): copy the rate from get_pricing's answer again`);
+  }
   // --max is max_fal_usd, given only when the user set one: their own ceiling. Without it nothing is refused for
   // price, and the price is information for the answer.
   const max = num("max", null);
@@ -507,7 +555,9 @@ function price() {
   const minutes = data.song.minutes;
   const p = priceOf(data.cut.shots, minutes, data.lyrics_on, r);
   const fits = max === null || p.total <= max + 1e-9;
-  const out = { rates: r, max_fal_usd: max, lines: p.lines, plan_usd: p.total, fits };
+  // The plan priced, by its bytes' hash, and the ceiling it was judged against: stills, remake and clips build only on
+  // a price of the plan as it is now.
+  const out = { rates: r, max_fal_usd: max, lines: p.lines, plan_usd: p.total, fits, plan_sha256: planHash(film) };
   writeFileSync(join(film, "price.json"), JSON.stringify(out, null, 1) + "\n");
   const lines = [];
   for (const l of p.lines) lines.push(`${l.step}${l.reserve ? " (reserve)" : ""}: ${l.units} ${l.unit} x $${l.rate_usd} = $${l.usd}`);
@@ -785,10 +835,10 @@ const NANO = "fal-ai/nano-banana-pro";
 const ENDING = "No text, no lettering, no logos.";
 const REMAKES = 2;
 const STEM = /^[a-z0-9]{8}$/;
-const tidy = (text) => text.trim().replace(/[\s.,;:]+$/, "");
+export const tidy = (text) => text.trim().replace(/[\s.,;:]+$/, "");
 // The shot lines of a storyboard (`<n> | ... | picture: <what the still shows> | motion: <move>`), checked against the
 // plan's shots: one line per shot, in order.
-function shotLines(board, shots) {
+export function shotLines(board, shots) {
   if (!existsSync(board)) fail(2, `${board} is missing: write the storyboard first`);
   const text = readFileSync(board, "utf8");
   const lines = text.split("\n").filter((l) => /^\s*\d+\s*\|/.test(l));
@@ -806,36 +856,68 @@ function writeStills(file, record) {
   const top = Object.entries(head).map(([k, v]) => `${JSON.stringify(k)}: ${JSON.stringify(v)}`).join(",\n ");
   writeFileSync(file, `{${top},\n "stills": [\n${record.stills.map((s) => `  ${JSON.stringify(s)}`).join(",\n")}\n]}\n`);
 }
-function stills() {
-  const film = need("film"), board = need("storyboard"), file = need("file"), stem = need("stem");
+// Nothing is built for fal until the plan is priced and fits: price writes film/price.json, and stills, remake and
+// clips read it first. Over the user's ceiling, or never priced, they print nothing to send.
+const planHash = (film) => createHash("sha256").update(readFileSync(join(film, "plan.json"))).digest("hex");
+function priced(film) {
+  const path = join(film, "price.json");
+  let p = null;
+  try {
+    p = existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : null;
+  } catch {
+    p = null;
+  }
+  if (p === null || typeof p !== "object") fail(2, "the plan is over the ceiling you set (or not priced yet): nothing is built");
+  if (!existsSync(join(film, "plan.json")) || p.plan_sha256 !== planHash(film)) fail(2, "the plan changed since it was priced: run price again (nothing is built)");
+  if (p.fits !== true) fail(2, "the plan is over the ceiling you set (or not priced yet): nothing is built");
+}
+const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
+const never = (what) => `a record of ${what} that may have been sent is never replaced`;
+// A record a run already holds: parsed, an object whose `list` is a list of objects; else an error in words.
+function readRecord(file, list, command) {
+  let kept;
+  try {
+    kept = JSON.parse(readFileSync(file, "utf8"));
+  } catch (error) {
+    fail(2, `${file} is there and is not the record ${command} wrote (${error.message.split("\n")[0]}): ${never(list)}`);
+  }
+  if (!isObj(kept) || !Array.isArray(kept[list]) || !kept[list].every(isObj)) fail(2, `${file} is there and is not the record ${command} wrote (no list of ${list}, each an object): ${never(list)}`);
+  return kept;
+}
+// A storyboard line's picture: what follows "| picture:", up to its last "| motion:".
+export function pictureOf(line) {
+  const at = line.indexOf("| picture:");
+  const end = line.lastIndexOf("| motion:");
+  return at < 0 ? "" : tidy(line.slice(at + "| picture:".length, end > at ? end : undefined));
+}
+// The stills record from the plan and the storyboard: what stills prints and writes, and what a check rebuilds.
+export function buildStills(film, board, stem) {
   if (!STEM.test(stem)) fail(2, "--stem is the run's key stem from media/run-keys.json: 8 lowercase letters and digits");
   const plan = readPlan(film);
   const { text, lines } = shotLines(board, plan.cut.shots);
   const styleLine = text.split("\n").find((l) => /^\s*Style:/i.test(l));
   const style = styleLine === undefined ? "" : tidy(styleLine.replace(/^\s*Style:/i, ""));
   if (!style) fail(2, `${board} has no style line: its first line is \`Style: <one look for every shot>\``);
-  const record = {
+  return {
     endpoint_id: NANO,
     style,
     each_prompt: `<style>. <picture>. ${ENDING}`,
     every_still: { num_images: 1, aspect_ratio: plan.aspect, resolution: "1K", output_format: "png", enable_web_search: false },
     stills: plan.cut.shots.map((s, i) => {
-      const at = lines[i].indexOf("| picture:");
-      const end = lines[i].lastIndexOf("| motion:");
-      const picture = at < 0 ? "" : tidy(lines[i].slice(at + "| picture:".length, end > at ? end : undefined));
+      const picture = pictureOf(lines[i]);
       if (!picture) fail(2, `shot ${s.n}: its storyboard line has no picture (\`| picture: <what the still shows>\`)`);
       return { n: s.n, key: `mu-${stem}-still-${s.n}`, picture };
     }),
   };
+}
+function stills() {
+  const film = need("film"), board = need("storyboard"), file = need("file"), stem = need("stem");
+  priced(film);
+  const record = buildStills(film, board, stem);
   // A resumed run may run stills again after some stills were sent and remade: the record they were sent with is kept
   // whole (its remakes too, which the remake limits count) when the inputs are the same, and never replaced when not.
   if (existsSync(file)) {
-    let kept;
-    try {
-      kept = JSON.parse(readFileSync(file, "utf8"));
-    } catch (error) {
-      fail(2, `${file} is there and is not the record stills wrote (${error.message}): it is never replaced`);
-    }
+    const kept = readRecord(file, "stills", "stills");
     keptSame(file, kept, record);
     for (const s of kept.stills.filter((t) => !t.remake)) console.log(`submit_job ${JSON.stringify(stillCall(kept, s))}`);
     return;
@@ -845,31 +927,36 @@ function stills() {
 }
 // The record a run already holds against the one stills would write now: the same, or an error naming what differs.
 function keptSame(file, kept, record) {
-  const never = "a record of stills that may have been sent is never replaced: remake a shot to change its still";
-  if (kept === null || typeof kept !== "object" || !Array.isArray(kept.stills)) fail(2, `${file} is there and is not the record stills wrote: ${never}`);
-  if (kept.style !== record.style) fail(2, `${file} already holds the stills with another style (${JSON.stringify(kept.style)}); ${never}`);
+  const no = `${never("stills")}: remake a shot to change its still`;
+  if (kept.style !== record.style) fail(2, `${file} already holds the stills with another style (${JSON.stringify(kept.style)}); ${no}`);
   for (const field of ["endpoint_id", "each_prompt", "every_still"]) {
-    if (JSON.stringify(kept[field]) !== JSON.stringify(record[field])) fail(2, `${file} already holds the stills with another ${field} (${JSON.stringify(kept[field])}); ${never}`);
+    if (JSON.stringify(kept[field]) !== JSON.stringify(record[field])) fail(2, `${file} already holds the stills with another ${field} (${JSON.stringify(kept[field])}); ${no}`);
   }
   const firsts = kept.stills.filter((s) => !s.remake);
-  if (firsts.length !== record.stills.length) fail(2, `${file} already holds ${firsts.length} first takes, the plan ${record.stills.length} shots; ${never}`);
+  if (firsts.length !== record.stills.length) fail(2, `${file} already holds ${firsts.length} first takes, the plan ${record.stills.length} shots; ${no}`);
   record.stills.forEach((s, i) => {
     for (const field of ["n", "key", "picture"]) {
-      if (firsts[i][field] !== s[field]) fail(2, `shot ${s.n}: ${file} already holds its still with another ${field} (${JSON.stringify(firsts[i][field])}); ${never}`);
+      if (firsts[i][field] !== s[field]) fail(2, `shot ${s.n}: ${file} already holds its still with another ${field} (${JSON.stringify(firsts[i][field])}); ${no}`);
     }
   });
 }
-function remake() {
-  const file = need("file"), n = Number(need("shot")), picture = tidy(args.picture ?? "");
-  if (!existsSync(file)) fail(2, `${file} is missing: run stills first`);
-  const record = JSON.parse(readFileSync(file, "utf8"));
+// One still's second take, added to the record: the remake rules, for the remake command and a check's rebuild.
+export function addRemake(record, n, picture, file, shot = String(n)) {
   const first = record.stills.find((s) => s.n === n && !s.remake);
-  if (!first) fail(2, `shot ${need("shot")} is not in ${file}: give the shot number of a still it holds`);
+  if (!first) fail(2, `shot ${shot} is not in ${file}: give the shot number of a still it holds`);
   if (!picture) fail(2, "--picture is the fixed picture for the remake: what its still shows, with what broke a rule taken out");
   if (record.stills.some((s) => s.n === n && s.remake)) fail(2, `shot ${n} has had its remake: never a third take of one shot`);
   if (record.stills.filter((s) => s.remake).length >= REMAKES) fail(2, `two remakes are the most a run makes (the reserve the price held)`);
   const again = { n, key: `${first.key}-2`, picture, remake: true };
   record.stills.push(again);
+  return again;
+}
+function remake() {
+  const film = need("film"), file = need("file"), shot = need("shot"), picture = tidy(args.picture ?? "");
+  priced(film);
+  if (!existsSync(file)) fail(2, `${file} is missing: run stills first`);
+  const record = readRecord(file, "stills", "stills");
+  const again = addRemake(record, Number(shot), picture, file, shot);
   writeStills(file, record);
   console.log(`submit_job ${JSON.stringify(stillCall(record, again))}`);
 }
@@ -877,24 +964,45 @@ function remake() {
 // ---------- the clips ----------
 const KLING = "fal-ai/kling-video/v3/pro/image-to-video";
 const NEGATIVE = "text, letters, words, captions, subtitles, logo, watermark, signage, brand, real person, celebrity, blur, distortion, low quality";
-function clips() {
-  const film = need("film"), board = need("storyboard"), file = need("file"), stem = need("stem");
+// The clips record from the plan, the storyboard and fal's still URLs (in shot order): what clips prints and writes,
+// and what a check rebuilds.
+export function buildClips(film, board, stem, urls) {
   if (!STEM.test(stem)) fail(2, "--stem is the run's key stem from media/run-keys.json: 8 lowercase letters and digits");
   const shots = readPlan(film).cut.shots;
   // A shot's motion is what follows its line's last "| motion:".
   const { lines } = shotLines(board, shots);
-  const urls = need("stills").split(",").map((u) => u.trim());
   if (urls.length !== shots.length) fail(2, `--stills holds ${urls.length} URLs, the plan ${shots.length} shots: each shot's still URL, in shot order`);
-  const built = shots.map((s, i) => {
+  const clips = shots.map((s, i) => {
     const at = lines[i].lastIndexOf("| motion:");
     const motion = at < 0 ? "" : tidy(lines[i].slice(at + "| motion:".length));
     if (!motion) fail(2, `shot ${s.n}: its storyboard line has no motion (\`| motion: <the camera or subject move>\` at its end)`);
     if (!/^https:\/\/\S+$/.test(urls[i])) fail(2, `shot ${s.n}: its still URL ${urls[i] || "(empty)"} is not an https URL: give fal's URL for its still, as fal answered it`);
     return { n: s.n, key: `mu-${stem}-clip-${s.n}`, duration: String(s.clip_seconds), prompt: `${motion}, the scene as it is`, start_image_url: urls[i] };
   });
-  const every = { generate_audio: false, negative_prompt: NEGATIVE };
-  writeFileSync(file, `{"endpoint_id": ${JSON.stringify(KLING)},\n "every_clip": ${JSON.stringify(every)},\n "clips": [\n${built.map((c) => `  ${JSON.stringify(c)}`).join(",\n")}\n]}\n`);
-  for (const c of built) console.log(`submit_job ${JSON.stringify({ endpoint_id: KLING, submission_key: c.key, input: { prompt: c.prompt, start_image_url: c.start_image_url, duration: c.duration, ...every } })}`);
+  return { endpoint_id: KLING, every_clip: { generate_audio: false, negative_prompt: NEGATIVE }, clips };
+}
+const clipCall = (record, c) => ({ endpoint_id: record.endpoint_id, submission_key: c.key, input: { prompt: c.prompt, start_image_url: c.start_image_url, duration: c.duration, ...record.every_clip } });
+function clips() {
+  const film = need("film"), board = need("storyboard"), file = need("file"), stem = need("stem");
+  priced(film);
+  const record = buildClips(film, board, stem, need("stills").split(",").map((u) => u.trim()));
+  // Run again on a resumed run: the record the clips were sent with is kept when it is the same, never replaced.
+  if (existsSync(file)) {
+    const kept = readRecord(file, "clips", "clips");
+    const no = `${never("clips")}: the clips are sent as recorded`;
+    for (const field of ["endpoint_id", "every_clip"]) {
+      if (JSON.stringify(kept[field]) !== JSON.stringify(record[field])) fail(2, `${file} already holds the clips with another ${field} (${JSON.stringify(kept[field])}); ${no}`);
+    }
+    if (kept.clips.length !== record.clips.length) fail(2, `${file} already holds ${kept.clips.length} clips, the plan ${record.clips.length} shots; ${no}`);
+    record.clips.forEach((c, i) => {
+      for (const field of ["n", "key", "duration", "prompt", "start_image_url"]) {
+        if (kept.clips[i][field] !== c[field]) fail(2, `shot ${c.n}: ${file} already holds its clip with another ${field} (${JSON.stringify(kept.clips[i][field])}); ${no}`);
+      }
+    });
+  } else {
+    writeFileSync(file, `{"endpoint_id": ${JSON.stringify(record.endpoint_id)},\n "every_clip": ${JSON.stringify(record.every_clip)},\n "clips": [\n${record.clips.map((c) => `  ${JSON.stringify(c)}`).join(",\n")}\n]}\n`);
+  }
+  for (const c of record.clips) console.log(`submit_job ${JSON.stringify(clipCall(record, c))}`);
 }
 
 // ---------- the cost ----------
@@ -919,10 +1027,12 @@ function cost() {
   const remakes = sent.filter((s) => /^still-\d+-2$/.test(s)).length;
   if (remakes > RESERVE) fail(2, `--sent holds ${remakes} remade stills: at most ${RESERVE}`);
   const total = usd(steps.reduce((t, s) => t + s.usd, 0));
+  writeFileSync(join(film, "cost.json"), JSON.stringify({ steps, total }, null, 1) + "\n");
   console.log(`answer fields (copy each into the answer exactly as printed): ${JSON.stringify({ fal_cost_usd: { steps, total } })}`);
 }
 
-if (command === "plan") plan();
+if (!MAIN);
+else if (command === "plan") plan();
 else if (command === "price") price();
 else if (command === "lyrics") lyrics();
 else if (command === "place") place();
