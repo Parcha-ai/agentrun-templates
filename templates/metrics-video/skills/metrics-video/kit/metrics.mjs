@@ -49,7 +49,9 @@
 //          every other file, in what a voice says, and for an identity field's name anywhere, it exits 2, as whole
 //          values, pairs and emails do. The first --final that only warns keeps the filed pages, notes the files and
 //          lines inside each page (MARK, never a file of the run's own) and exits 4 ("clean": false): the agent takes
-//          a customer's name out of the answer and runs --final once more, whether it edited or not. That run is the
+//          a customer's name out of the answer and runs --final once more, whether it edited or not. When no page can
+//          carry the note (each a link, or holding no JSON object), that --final would be a first again, every time:
+//          it stops instead (exit 3, failed_step "stripe"), the pages removed, links as links. Otherwise that run is the
 //          last: a word may warn again and that's fine, anything else found stops the film, and the filed pages are
 //          removed on every exit (its own, a refused argument, bad pages, a throw, SIGTERM, SIGINT or SIGHUP). A first
 //          --final removes them on every exit but two, which keep them for its retry: a value found (exit 2: take it
@@ -1370,6 +1372,7 @@ function scan() {
     // An error answer filed as text (no JSON object) holds no note; the lists do. A page-named link (or anything not a
     // file) is never written: the note would land wherever it points. It is skipped, and said.
     const skipped = [];
+    let noted = 0;
     for (const path of raw) {
       try {
         if (!lstatSync(path).isFile()) {
@@ -1388,8 +1391,11 @@ function scan() {
       if (page === null || typeof page !== "object" || Array.isArray(page)) continue;
       page[MARK] = { warned: [...warnings.values()] };
       writeFileSync(path, JSON.stringify(page));
+      noted++;
     }
     if (skipped.length) console.error(`not marked: ${skipped.join(", ")} (a link, or not a file: the note is never written through one)`);
+    // No note written: the next --final would be a first again, and warn and exit 4 again, for ever. It stops here.
+    if (noted === 0) stop(`no page could carry the note the next --final needs (each was a link, or held no list), so the run's files can't be checked again: make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`);
     console.log(stats(false, true));
     keep = true;
     fail(4, "exit 4, not done: the filed pages are kept for one more --final. Read each line named above; if it holds a customer's name, take the name out of media/answer.json; then run scan --pages stripe --final once more, whether you edited or not. That run is the last.");
