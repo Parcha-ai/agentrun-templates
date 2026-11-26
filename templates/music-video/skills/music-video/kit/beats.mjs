@@ -56,7 +56,8 @@
 //         Run again on a resumed run, it keeps --file as it is (its remakes too) when the inputs are the same and
 //         prints the first takes again; when they differ it refuses, naming the shot, and never replaces the record.
 // remake  one still's second take: the same input with its picture fixed, key `<its key>-2`, added to --file and
-//         printed as one `submit_job {...}` line. Never a second remake of a shot, never more than two in a run.
+//         printed as one `submit_job {...}` line. Never a second remake of a shot, never more than two in a run. One
+//         remake at a time: it holds <--file>.lock while it reads and writes the record, and refuses when it is held.
 // clips   every clip's submit_job, built from the storyboard and the plan: shot n's prompt is its storyboard motion
 //         and ", the scene as it is", its still the n-th of --stills (fal's URL, as fal answered it), its duration the
 //         plan's clip seconds, then the fixed fields (no audio, the one negative prompt). It prints one
@@ -78,7 +79,7 @@
 // the message names the shot); 3: the song can't be decoded, is too short, or has no beat to cut on; 0: done.
 import { spawnSync } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -1003,10 +1004,27 @@ function remake() {
   const film = need("film"), file = need("file"), shot = need("shot"), picture = tidy(args.picture ?? "");
   priced(film);
   if (!existsSync(file)) fail(2, `${file} is missing: run stills first`);
-  const record = readRecord(file, "stills", "stills");
-  const again = addRemake(record, Number(shot), picture, file, shot);
-  writeStills(file, record);
-  console.log(`submit_job ${JSON.stringify(stillCall(record, again))}`);
+  // One remake at a time: two at once would both read the record before either wrote it, both pass the remake limit,
+  // and the second write would drop the first one's entry. The lock is an exclusive create beside the record; one held
+  // refuses at once (no wait), and this remake removes its own however it ends.
+  const lock = `${file}.lock`;
+  try {
+    closeSync(openSync(lock, "wx"));
+  } catch (error) {
+    if (error.code !== "EEXIST") throw error;
+    fail(2, `${lock} is there: another remake is writing ${file} now, and nothing is sent or written. Run this remake again when it is done; if none is running, one stopped mid-write left it: remove ${lock}, then run this again`);
+  }
+  const release = () => rmSync(lock, { force: true });
+  process.once("exit", release);
+  try {
+    const record = readRecord(file, "stills", "stills");
+    const again = addRemake(record, Number(shot), picture, file, shot);
+    writeStills(file, record);
+    console.log(`submit_job ${JSON.stringify(stillCall(record, again))}`);
+  } finally {
+    release();
+    process.removeListener("exit", release);
+  }
 }
 
 // ---------- the clips ----------
