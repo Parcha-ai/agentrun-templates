@@ -1957,3 +1957,22 @@ test("the run's folder is fixed when the kit starts: the run's folder moved asid
   assert.equal(r.status, 2, `the pages it could not reach are named: ${out}`);
   assert.equal(pagesIn(`${dir}-moved`).length, 2, "the run's own pages, never reached through the link, are left for the run to purge again");
 });
+
+test("--purge enters only the folder it checked, even one inside the run: stripe/ swapped for a link to another folder of the run, nothing there goes", () => {
+  const { dir } = filedFolder("p8-race-enter-inside", FILED_PAGES.map(composioAnswer));
+  // A folder of the run that holds a page-named file: inside the run's folder, so only the folder's device and inode,
+  // compared once entered, tell it from the stripe/ checked.
+  const other = join(dir, "other");
+  mkdirSync(other, { recursive: true });
+  const otherName = filedName();
+  writeFileSync(join(other, otherName), "the run's own file");
+  const r = spawnSync(process.execPath, ["--import", swapPreload(), join(dir, "film", "metrics.mjs"), "scan", "--pages", "stripe", "--purge"], {
+    encoding: "utf8", cwd: dir, env: { ...process.env, MV_SWAP: "enter", MV_RUN: dir, MV_OUTSIDE: other },
+  });
+  const out = r.stdout + r.stderr;
+  assert.ok(existsSync(join(dir, "stripe-moved")), `the swap happened: ${out}`);
+  assert.deepEqual(readdirSync(other), [otherName], `the other folder's file stays: ${out}`);
+  assert.equal(r.status, 2, `the pages it could not reach are named: ${out}`);
+  assert.match(r.stderr, /changed after it was checked/, out);
+  assert.equal(readdirSync(join(dir, "stripe-moved")).filter((f) => FILED.test(f)).length, 2, "the folder checked is never reached through another");
+});
