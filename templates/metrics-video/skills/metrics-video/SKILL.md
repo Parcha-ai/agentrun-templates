@@ -73,7 +73,7 @@ node film/metrics.mjs compute --today <today> --timezone <timezone> [--week-of <
 Exit 3 names what is wrong with the pages. When it asks for the next page, call the tool with `starting_after` as it
 says (AgentRun files that page too) and run `compute` again, at most twice; that exit, and one asking for the run's
 date as `--today`, keep the pages. Any other exit 3 (a page the run wrote, no answer filed, every answer an error,
-items that don't check) removes them first: answer `failed`, `failed_step: "stripe"`, nothing paid. An exit 3 that
+items that don't check, a page empty or cut short) removes them first: answer `failed`, `failed_step: "stripe"`, nothing paid. An exit 3 that
 refuses `--pages` itself removes nothing: run `node film/metrics.mjs scan --pages stripe --purge` from the run's
 folder first. A next page still missing after two: the same answer, after `scan --pages stripe --purge`. Never write
 or edit a page to make it pass. It writes `film/data.json`, the one data module, into `film/index.html` as `window.MV`

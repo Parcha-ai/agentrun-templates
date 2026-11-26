@@ -129,7 +129,7 @@ right before this one, and reads that week again from Stripe.
 
 Stripe can't be read (the summary shows `successful: false` or an error, more than 10 pages), or the script refuses
 the pages (an exit 3 that says to answer failed: a page the run wrote, answers that were not filed, items that don't
-check): make nothing, pay nothing, `status: "failed"`, `failed_step: "stripe"` (or `"figures"` when the script says
+check, a page empty or cut short): make nothing, pay nothing, `status: "failed"`, `failed_step: "stripe"` (or `"figures"` when the script says
 so), and the error in your words. That exit has already removed Stripe's pages. An exit 3 that refuses `--pages`
 itself removes nothing: run `node film/metrics.mjs scan --pages stripe --purge` from the run's folder first. An exit 3
 asking for the next page, or for the run's date as `--today`, keeps them: do what it says and run `compute` again. Call
