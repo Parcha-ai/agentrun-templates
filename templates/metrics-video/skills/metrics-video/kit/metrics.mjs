@@ -1173,7 +1173,8 @@ function scan() {
   // pages hold that note is the last: it removes them on every exit, a value found included, and on a signal too
   // (SIGTERM, SIGINT, SIGHUP: it ends with 128 + the signal's number). A signal on a first --final leaves them, for its
   // retry. Each page is removed on its own, best effort. Only a SIGKILL (which no process can catch) leaves them.
-  // A cut page stops here too: it could have held the note, or the values the --final must look for.
+  // A cut page holds no note here; it could have held the note, or the values the --final must look for, and
+  // customerValues (below, for every --final with pages) stops on it.
   const marked = (f) => {
     let read;
     try {
@@ -1181,7 +1182,6 @@ function scan() {
     } catch {
       return false;
     }
-    if (read.cut) stop(cutPage(dir, f));
     return read.page !== null && typeof read.page === "object" && Object.hasOwn(read.page, MARK);
   };
   const rerun = final && pageFiles().some(marked);
