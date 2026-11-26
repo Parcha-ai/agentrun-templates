@@ -497,7 +497,9 @@ test("the sent check fails records that don't hold the case's shots or the exact
   const { dir, calls } = sentRun();
   const twelve = check(reportOf(dir, calls, { name: "sixty-seconds" }), dir);
   assert.equal(twelve.status, 1);
-  assert.match(twelve.stdout, /^SENT FAIL stills: media\/stills\.json holds 8 first takes, the case 12 shots \(and 1 more\)\n$/);
+  // The storyboard is read first: the plan's 8 shots against the case's 12, then its 4 missing lines, then the records:
+  // 8 first takes and 8 clips, each short of the case's 12.
+  assert.match(twelve.stdout, /^SENT FAIL storyboard: film\/plan\.json holds 8 shots, the case 12 \(and 6 more\)\n$/);
   const path = join(dir, "media", "clips.json");
   const record = JSON.parse(readFileSync(path, "utf8"));
   record.every_clip.negative_prompt = "text";
@@ -1833,4 +1835,133 @@ test("cost over the recorded ceiling with nothing sent writes no steps and $0, s
   assert.equal(changed.status, 2, changed.stdout);
   assert.match(changed.stderr, /the plan changed since it was priced/);
   assert.equal(existsSync(costPath), false);
+});
+
+// ---------- the grouped read's handles: the repo check holds them, from the case's own fake ----------
+// A grader's prompt is cut to its cap, and the fake's calls lose their middles first: a submit_job's answer (its
+// request_id, status_url and response_url) is the part a cut takes. The repo check reads the fake's answers whole from
+// the case's fixtures/fal-mcp.json in this repo. The first wait_for_jobs that reads a still lists every still's own
+// three handles exactly as its submit_job answered them, and any read of a job lists that job's own handles.
+const SHORT_FAKE = JSON.parse(readFileSync(new URL("../templates/music-video/evals/short-song/fixtures/fal-mcp.json", import.meta.url), "utf8"));
+// short-song's fake answer to a submit_job, as the fake picks it: the answer whose when matches the endpoint and key.
+function answered(endpoint_id, key) {
+  const a = SHORT_FAKE.tools.submit_job.answers.find((x) => x.when.endpoint_id === endpoint_id && new RegExp(`^(?:${x.when.submission_key.$pattern})$`).test(key));
+  const { request_id, status_url, response_url } = JSON.parse(a.result.content[0].text);
+  return { endpoint_id, request_id, status_url, response_url };
+}
+// The run's calls with its grouped read of the stills right after the last still is sent: every still, in shot order.
+function withStillRead(calls) {
+  const stills = calls.filter((c) => c.tool === "mcp:fal/submit_job" && c.arguments.endpoint_id === NANO);
+  const at = calls.indexOf(stills.at(-1)) + 1;
+  const read = { tool: "mcp:fal/wait_for_jobs", arguments: { jobs: stills.map((c, index) => ({ index, ...answered(NANO, c.arguments.submission_key) })) } };
+  return [...calls.slice(0, at), read, ...calls.slice(at)];
+}
+const firstStillRead = (calls) => calls.find((c) => c.tool === "mcp:fal/wait_for_jobs" && c.arguments.jobs.some((j) => j.endpoint_id === NANO));
+const changeJob = (calls, key, change) => {
+  const read = structuredClone(firstStillRead(calls));
+  const { request_id } = answered(NANO, key);
+  read.arguments.jobs = change(read.arguments.jobs, read.arguments.jobs.findIndex((j) => j.request_id === request_id));
+  return calls.map((c) => (c === firstStillRead(calls) ? read : c));
+};
+test("the sent check holds the first wait_for_jobs that reads a still to every still's own handles as its submit_job answered them", () => {
+  const { dir, calls } = sentRun();
+  const read = withStillRead(calls);
+  assert.equal(check(reportOf(dir, read), dir).stdout, "SENT PASS n=16\n", "every still's own handles: it holds");
+  const three = answered(NANO, "mu-abcd1234-still-3");
+  const cases = [
+    ["shot 3's response_url changed", changeJob(read, "mu-abcd1234-still-3", (jobs, i) => jobs.with(i, { ...jobs[i], response_url: `${three.response_url}x` })),
+      `SENT FAIL read: the first wait_for_jobs that reads a still gives shot 3's response_url as ${JSON.stringify(`${three.response_url}x`)}, not ${JSON.stringify(three.response_url)} as its submit_job answered\n`],
+    ["shot 3's status_url changed", changeJob(read, "mu-abcd1234-still-3", (jobs, i) => jobs.with(i, { ...jobs[i], status_url: `${three.status_url}x` })),
+      `SENT FAIL read: the first wait_for_jobs that reads a still gives shot 3's status_url as ${JSON.stringify(`${three.status_url}x`)}, not ${JSON.stringify(three.status_url)} as its submit_job answered\n`],
+    ["shot 3's request_id changed", changeJob(read, "mu-abcd1234-still-3", (jobs, i) => jobs.with(i, { ...jobs[i], request_id: "00000000-0000-0000-0000-000000000000" })),
+      `SENT FAIL read: the first wait_for_jobs that reads a still gives shot 3's request_id as "00000000-0000-0000-0000-000000000000", not ${JSON.stringify(three.request_id)} as its submit_job answered\n`],
+    ["shot 5's still left out", changeJob(read, "mu-abcd1234-still-5", (jobs, i) => jobs.toSpliced(i, 1)),
+      `SENT FAIL read: the first wait_for_jobs that reads a still leaves out shot 5's still (request ${answered(NANO, "mu-abcd1234-still-5").request_id})\n`],
+  ];
+  for (const [what, sentCalls, line] of cases) {
+    const r = check(reportOf(dir, sentCalls), dir);
+    assert.equal(r.status, 1, `${what}: ${r.stdout}`);
+    assert.equal(r.stdout, line, what);
+  }
+  // A later read of one job (a clip still pending, read alone) lists its own handles too.
+  const clip2 = answered(KLING, "mu-abcd1234-clip-2");
+  const alone = (job) => [...read, { tool: "mcp:fal/wait_for_jobs", arguments: { jobs: [{ index: 0, ...job }] } }];
+  assert.equal(check(reportOf(dir, alone(clip2)), dir).stdout, "SENT PASS n=16\n", "a clip read alone with its own handles: it holds");
+  const r = check(reportOf(dir, alone({ ...clip2, status_url: `${clip2.status_url}x` })), dir);
+  assert.equal(r.status, 1, r.stdout);
+  assert.equal(r.stdout, `SENT FAIL read: a wait_for_jobs reads mu-abcd1234-clip-2 (request ${clip2.request_id}) with its status_url ${JSON.stringify(`${clip2.status_url}x`)}, not ${JSON.stringify(clip2.status_url)} as its submit_job answered\n`);
+});
+
+// ---------- the storyboard against the plan: the repo check holds it ----------
+// A grader's prompt is cut to its cap, and on a sixty-second film's run the files are cut too: the storyboard's middle
+// and the plan's shots. The repo check reads the run's storyboard.md and film/plan.json whole, with the kit's own
+// storyboard parser: the style line first, then one line per shot of the case in order, each line's times and seconds
+// the plan's (film times: its start_s and end_s less cut.start_s); and where film/lyrics.json has no words under a
+// shot, its lyric is empty, none or (no words): no lyric made up.
+const boardPath = (dir) => join(dir, "storyboard.md");
+function editBoard(dir, change) {
+  const lines = readFileSync(boardPath(dir), "utf8").split("\n");
+  writeFileSync(boardPath(dir), change(lines).join("\n"));
+}
+const shotLineAt = (lines, n) => lines.findIndex((l) => l.startsWith(`${n} |`));
+// Each edit on its own copy of one built run: its records and calls stay the kit's, so only the storyboard differs.
+function boardCase(edit) {
+  const { dir, calls } = sentRun();
+  edit(dir);
+  return check(reportOf(dir, calls), dir);
+}
+test("the sent check holds storyboard.md to the case's shots in order, each line's times and seconds the plan's", () => {
+  // short-song's 8 shots of 4 s (2 bars of 2 s), from 8.254 s of the song: shot n is film time 4(n-1) to 4n.
+  assert.equal(boardCase(() => {}).stdout, "SENT PASS n=16\n", "the storyboard as written: it holds");
+  const exact = [
+    ["shot 8 a bar late", (lines) => lines.with(shotLineAt(lines, 8), lines[shotLineAt(lines, 8)].replace("8 | 28-32 s", "8 | 30-32 s")),
+      "SENT FAIL storyboard: shot 8's start is 30 s, not the plan's 28 s (film/plan.json: its start_s 36.254 less cut.start_s 8.254)\n"],
+    ["shot 8 ends a bar early", (lines) => lines.with(shotLineAt(lines, 8), lines[shotLineAt(lines, 8)].replace("8 | 28-32 s | 4 s", "8 | 28-30 s | 4 s")),
+      "SENT FAIL storyboard: shot 8's end is 30 s, not the plan's 32 s (film/plan.json: its end_s 40.254 less cut.start_s 8.254)\n"],
+    ["shot 8's seconds a bar short", (lines) => lines.with(shotLineAt(lines, 8), lines[shotLineAt(lines, 8)].replace("8 | 28-32 s | 4 s", "8 | 28-32 s | 2 s")),
+      "SENT FAIL storyboard: shot 8's seconds is 2 s, not the plan's 4 s (film/plan.json: its seconds)\n"],
+    ["shots 3 and 4's times swapped, their numbers in place", (lines) => lines.with(shotLineAt(lines, 3), lines[shotLineAt(lines, 3)].replace("3 | 8-12 s", "3 | 12-16 s")).with(shotLineAt(lines, 4), lines[shotLineAt(lines, 4)].replace("4 | 12-16 s", "4 | 8-12 s")),
+      "SENT FAIL storyboard: shot 3's start is 12 s, not the plan's 8 s (film/plan.json: its start_s 16.254 less cut.start_s 8.254) (and 3 more)\n"],
+    ["the style line after shot 1", (lines) => [lines[1], lines[0], ...lines.slice(2)],
+      "SENT FAIL storyboard: storyboard.md's first line is not its style line (`Style: <one look for every shot>`)\n"],
+  ];
+  for (const [what, change, line] of exact) {
+    const r = boardCase((dir) => editBoard(dir, change));
+    assert.equal(r.status, 1, `${what}: ${r.stdout}`);
+    assert.equal(r.stdout, line, what);
+  }
+  // A line too many, a line missing, two lines swapped whole and no storyboard: the kit can't rebuild the stills from
+  // that storyboard either, so more reasons follow; the storyboard's comes first, naming the shot.
+  const first = [
+    ["a 13th line", (lines) => lines.toSpliced(shotLineAt(lines, 8) + 1, 0, '13 | 32-36 s | 4 s | lyric: "none" | picture: a paper ferry 13 on teal water, wide | motion: slow push in 13'),
+      /^SENT FAIL storyboard: storyboard\.md has a line for shot 13; the case has 8 shots \(and \d+ more\)\n$/],
+    ["shot 5's line missing", (lines) => lines.toSpliced(shotLineAt(lines, 5), 1), /^SENT FAIL storyboard: storyboard\.md has no line for shot 5 \(and \d+ more\)\n$/],
+    ["shots 3 and 4 swapped whole", (lines) => lines.with(shotLineAt(lines, 3), lines[shotLineAt(lines, 4)]).with(shotLineAt(lines, 4), lines[shotLineAt(lines, 3)]),
+      /^SENT FAIL storyboard: storyboard\.md's line for shot 4 comes before shot 3's \(and \d+ more\)\n$/],
+    ["shot 6 twice", (lines) => lines.toSpliced(shotLineAt(lines, 6) + 1, 0, lines[shotLineAt(lines, 6)]), /^SENT FAIL storyboard: storyboard\.md has 2 lines for shot 6 \(and \d+ more\)\n$/],
+  ];
+  for (const [what, change, line] of first) {
+    const r = boardCase((dir) => editBoard(dir, change));
+    assert.equal(r.status, 1, `${what}: ${r.stdout}`);
+    assert.match(r.stdout, line, what);
+  }
+  const none = boardCase((dir) => rmSync(boardPath(dir)));
+  assert.equal(none.status, 1, none.stdout);
+  assert.match(none.stdout, /^SENT FAIL storyboard: the run left no storyboard\.md \(and \d+ more\)\n$/);
+});
+test("the sent check: where film/lyrics.json has no words under a shot, its storyboard lyric is empty, none or (no words)", () => {
+  // As the kit writes it when speech-to-text found no words: every shot's lyric empty.
+  const noWords = (dir) => writeFileSync(join(dir, "film", "lyrics.json"), JSON.stringify({ words_in_song: 0, words_in_cut: 0, lines: [], under_shots: Array.from({ length: SHORT }, (_, i) => ({ n: i + 1, lyric: "" })) }));
+  assert.equal(boardCase(noWords).stdout, "SENT PASS n=16\n", "every lyric none: it holds");
+  const forms = boardCase((dir) => {
+    noWords(dir);
+    editBoard(dir, (lines) => lines.map((l) => l.replace('2 | 4-8 s | 4 s | lyric: "none"', '2 | 4-8 s | 4 s | lyric: ""').replace('3 | 8-12 s | 4 s | lyric: "none"', '3 | 8-12 s | 4 s | lyric: "(no words)"')));
+  });
+  assert.equal(forms.stdout, "SENT PASS n=16\n", "empty and (no words), as the kit prints a shot with no words: it holds");
+  const made = boardCase((dir) => {
+    noWords(dir);
+    editBoard(dir, (lines) => lines.map((l) => l.replace('2 | 4-8 s | 4 s | lyric: "none"', '2 | 4-8 s | 4 s | lyric: "dancing in the rain"')));
+  });
+  assert.equal(made.status, 1, made.stdout);
+  assert.equal(made.stdout, 'SENT FAIL storyboard: shot 2\'s lyric is "dancing in the rain"; film/lyrics.json has no words under shot 2, so its lyric is empty, none or (no words)\n');
 });
