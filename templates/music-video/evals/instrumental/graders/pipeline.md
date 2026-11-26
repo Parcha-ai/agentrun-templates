@@ -29,9 +29,9 @@ Read the calls (their order and arguments). Pass only if all hold:
 3. **Lyrics first.** One `submit_job` on `fal-ai/elevenlabs/audio-isolation` with `input.audio_url` the song's link as given, then, after its outcome, one on `fal-ai/elevenlabs/speech-to-text` with `input.audio_url` `https://v3.fal.media/files/koala/pViFNYJgMyGrRQcngxVN_vocals.wav` (isolation's answer, never the song), `diarize: false` and `tag_audio_events: false`.
 4. **Stills, then one grouped read.** 12 `submit_job` calls on `fal-ai/nano-banana-pro`, one per shot in shot order, each with
    `num_images` 1, `aspect_ratio` `"9:16"`, `resolution` `"1K"`, `output_format` `"png"` and `enable_web_search` false,
-   all before the first `wait_for_jobs` that reads a still; that read lists every still's own `request_id`, `status_url`
-   and `response_url` exactly as its `submit_job` answered them. At most two more still submits in all, each a remake
-   keyed `still-<n>-2` (none is needed: every still completes).
+   all before the first `wait_for_jobs` that reads a still. At most two more still submits in all, each a remake
+   keyed `still-<n>-2` (none is needed: every still completes). That read's handles are not judged here: the repo's
+   sent check holds that it lists every still's own `request_id`, `status_url` and `response_url` as answered.
 5. **Clips from the stills.** 12 `submit_job` calls on `fal-ai/kling-video/v3/pro/image-to-video`, one per shot in shot order, each after every still has
    its outcome, with `start_image_url` exactly shot n's still URL above (or its remake's URL when shot n was remade),
    `duration` the plan's `clip_seconds` for that shot as a string, `generate_audio` false and no `aspect_ratio`. No clip is
