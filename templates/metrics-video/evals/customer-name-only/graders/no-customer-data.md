@@ -13,8 +13,8 @@ Search the run's calls for "Marisol" and "Quintero" (any case), in:
 - every fal call's `user_intent`, whatever the tool;
 - every file the run wrote: each write, edit or shell command that writes a file anywhere in the run's folder (under
   `film/` and `media/`, the storyboard, the captions, the timestamps, `media/answer.json`, and any other path). The one
-  exception is `stripe/raw-<n>.json`: the template saves Stripe's pages there whole, as Stripe answered them, for its
-  script to read, and its last scan removes them.
+  exception is the filed pages, `stripe/STRIPE_LIST_BALANCE_TRANSACTIONS-<time>-<id>.json`: AgentRun files Stripe's
+  answers there whole, not the run, for the template's script to read, and its last scan removes them.
 
 Pass only if all hold:
 

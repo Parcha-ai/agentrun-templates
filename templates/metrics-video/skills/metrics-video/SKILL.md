@@ -1,12 +1,12 @@
 ---
 name: metrics-video
-description: Make the weekly revenue film from Stripe's balance transactions with HyperFrames (HTML rendered to video) in the run's sandbox. Covers the week's bounds in the owner's time zone, reading Stripe and saving its pages for the kit's script, the script that works out every figure (revenue net of refunds and Stripe fees, per currency, day by day, against the carried week before, refunds and disputes), the narration from the script's words, the kit (a data-driven project whose scenes read one data module), placing scenes on the voice, captions, the check, review and render loop, and keeping customer data out. Use for the weekly metrics film and for a film of one past week by hand.
+description: Make the weekly revenue film from Stripe's balance transactions with HyperFrames (HTML rendered to video) in the run's sandbox. Covers the week's bounds in the owner's time zone, reading Stripe (AgentRun files its answers for the kit's script), the script that works out every figure (revenue net of refunds and Stripe fees, per currency, day by day, against the carried week before, refunds and disputes), the narration from the script's words, the kit (a data-driven project whose scenes read one data module), placing scenes on the voice, captions, the check, review and render loop, and keeping customer data out. Use for the weekly metrics film and for a film of one past week by hand.
 ---
 
 # The weekly metrics film
 
 You make a film of one week of revenue. Code works out every number: the kit's `metrics.mjs` in the sandbox, from
-Stripe's own answers that you save as files. You never add, subtract, round or convert a figure yourself, and the
+Stripe's own answers, which AgentRun files in the run's folder. You never add, subtract, round or convert a figure yourself, and the
 film and the voice say only the figures the script printed, in the words it gave for each. fal makes the voice and the
 music; HyperFrames renders the film in the sandbox.
 
@@ -17,17 +17,17 @@ on screen: read it once before you change a scene.
 ## 1. The kit and the week
 
 ```sh
-mkdir -p film stripe media && cp -r .agents/skills/metrics-video/kit/. film/ && mkdir -p film/assets && ls film film/compositions
+mkdir -p film media && cp -r .agents/skills/metrics-video/kit/. film/ && mkdir -p film/assets && ls film film/compositions
 ```
 
 **Today** is the run's date in the time zone, as `YYYY-MM-DD`: on a scheduled run, the date in the line that ends its
 message (`(Started by the schedule "weekly-film" for Nov 23, 2026, 7:00 AM ...)`, written in the schedule's zone); on
 a run by hand, the date your environment line gives ("Today is Monday 23 November 2026"). Never the sandbox's clock.
 When the run was handed the last film's result, `write` its `carried` object, exactly as handed, to
-`stripe/carried.json`. Then:
+`carried.json` in the run's folder (never under `stripe/`). Then:
 
 ```sh
-node film/metrics.mjs weeks --today <today> --timezone <timezone> [--week-of <week_of>] [--carried stripe/carried.json]
+node film/metrics.mjs weeks --today <today> --timezone <timezone> [--week-of <week_of>] [--carried carried.json]
 ```
 
 It prints `week` (the week to film: Monday 00:00 to the next Monday 00:00 in the time zone, the last whole week unless
@@ -35,31 +35,30 @@ It prints `week` (the week to film: Monday 00:00 to the next Monday 00:00 in the
 `compare` (whether the carried figures are compared, and why not when they aren't) and `read` (the window to read:
 `created_gte` and `created_lt`, Unix seconds). A `week_of` whose week is not over is refused: answer `failed`.
 
-## 2. Read Stripe and save its pages
+## 2. Read Stripe: AgentRun files its pages
 
-Composio's tools answer `{"data": ..., "successful": ..., "error": ...}`: read `data`, and treat `successful: false`
-as a failed call. `STRIPE_LIST_BALANCE_TRANSACTIONS` with `created: {"gte": <created_gte>, "lt": <created_lt>}` and
-`limit: 100` (never `expand`: it adds customers' billing details and no figure needs them), then again with
-`starting_after` (the last item's `id`) while `has_more` is true and the page's last
-(oldest) item is not before `created_gte`, at most 10 pages. Stripe lists newest first; whatever its filter returned,
-the script keeps only what falls in the weeks.
-
-After each page, `write` Stripe's list, the `data` of Composio's answer, to `stripe/raw-<n>.json` (from 1, in the
-order read), whole and exactly as it answered:
+`STRIPE_LIST_BALANCE_TRANSACTIONS` with `created: {"gte": <created_gte>, "lt": <created_lt>}` and `limit: 100` (never
+`expand`: it adds customers' billing details, no figure needs them, and the owner's pin leaves it out). AgentRun files
+each answer whole, Composio's `{"data": <Stripe's list>, "successful": ..., "error": ...}` as it came, at
+`stripe/STRIPE_LIST_BALANCE_TRANSACTIONS-<time>-<id>.json`, and the tool's result is a summary of it: its size and its
+path, then these values alone, and its shape:
 
 ```json
-{"object": "list", "data": [{"id": "txn_...", "object": "balance_transaction", "amount": 120000, "created": 1763337600, "currency": "usd", "description": "...", "fee": 3510, "fee_details": [...], "net": 116490, "reporting_category": "charge", "source": "ch_...", "status": "available", "type": "charge"}], "has_more": true, "url": "/v1/balance_transactions"}
+{"successful": true, "error": null, "data.has_more": true, "data.data.-1.id": "txn_...", "data.data.-1.created": 1763337600}
 ```
 
-Every item, in order, with every field it has: never cut an item down, retype a number or leave a field out. A page
-with no items is written too. The script takes the eight fields the figures use (`id`, `created`, `type`,
-`reporting_category`, `currency`, `amount`, `fee`, `net`) itself, checks each item (`net` must be `amount - fee`, and a
-whole item says `"object": "balance_transaction"`) and tells you which page to save again.
+`successful: false` or an `error` is a failed call. While `data.has_more` is true and `data.data.-1.created` (the
+page's last, oldest item) is not before `created_gte`, call it again with `starting_after` the shown
+`data.data.-1.id`, at most 10 pages. Stripe lists newest first; whatever its filter returned, the script keeps only
+what falls in the weeks, and a transaction on two pages (a call made again) counts once.
 
-These pages hold customers' details: a charge's `description` can name the customer or hold an email. Only the
-script reads them. Never copy anything from one into another file, and never `read` one back to write the
-narration: the script prints every figure you need. `scan` (steps 4 and 9) checks every file for their values, and its
-`--final` run removes them.
+These pages hold customers' details: a charge's `description` can name the customer or hold an email. The tool's
+result never holds a page, and only the script reads them. Never `read`, `write` or `edit` anything under `stripe/`,
+and never open a page with `bash` (`cat`, `grep`, `head`, `jq`, a script of your own): the tool's result keeps the
+page out of what you see, but `bash` can still open it, so that is this rule, with the scan behind it, not a lock.
+Never write a page yourself either: the script reads only the pages AgentRun filed, and refuses one the run wrote
+(exit 3: the answers were not filed). You need nothing from a page: the script prints every figure. `scan` (steps 4 and
+9) checks every file for their values, and its `--final` run removes them.
 
 The balance list is the only Stripe tool the template has. Charge search, which returns customers' names and emails, is
 left out: no figure of the film needs it.
@@ -67,12 +66,14 @@ left out: no figure of the film needs it.
 ## 3. Work out the figures
 
 ```sh
-node film/metrics.mjs compute --today <today> --timezone <timezone> [--week-of <week_of>] [--carried stripe/carried.json] \
+node film/metrics.mjs compute --today <today> --timezone <timezone> [--week-of <week_of>] [--carried carried.json] \
   --pages stripe --film film [--business "<business_name>"]
 ```
 
-Exit 3 names what is wrong with the pages: save those pages again whole from Stripe's answers (never edit a number to
-make it pass) and run it again, at most twice; still failing: answer `failed`, `failed_step: "stripe"`, nothing paid. It
+Exit 3 names what is wrong with the pages. When it asks for the next page, call the tool with `starting_after` as it
+says (AgentRun files that page too) and run `compute` again, at most twice. Any other exit 3 (a page the run wrote, no
+answer filed, every answer an error, items that don't check) and a next page still missing after two: answer
+`failed`, `failed_step: "stripe"`, nothing paid. Never write or edit a page to make it pass. It
 writes `film/data.json`, the one data module, into `film/index.html` as `window.MV` (every scene reads it) and
 places the scenes at the plan's times. It prints, per currency:
 
@@ -228,11 +229,11 @@ word of a name found alone stops the film here too, in what it says and shows (a
 word of an identity field's name (a billing or shipping name) stops it in the answer as well. Only in
 `media/answer.json` does a description's name word found alone warn (`warning: a customer's word may be in
 media/answer.json line <n>`), as the answer keeps tool words on purpose (a kept warning's code). That `--final` exits 4:
-not done, the raw pages are kept for one more. Read the line it names; if it holds a customer's name, take the name out
+not done, the filed pages are kept for one more. Read the line it names; if it holds a customer's name, take the name out
 of `media/answer.json`. Then run `--final` once more, whether you edited or not: a word may warn again and that's fine.
-That run is the last: a name pair, a whole description or an email found there stops the film, and the raw pages are
-removed on every exit (a refused argument, a fault, a signal). A `--final` that exits 0 has removed
-`stripe/raw-<n>.json` and prints what it removed; exit 0 always means no raw page is left. A file's name is read too,
+That run is the last: a name pair, a whole description or an email found there stops the film, and the filed pages are
+removed on every exit (a refused argument, a fault, a signal). A `--final` that exits 0 has removed Stripe's filed
+pages and prints what it removed (`raw_pages_removed`); exit 0 always means no filed page is left. A file's name is read too,
 below the folders the kit names (a path this skill names is no one's), and never printed when it holds a customer's word. Never answer on exit 4, and never touch `stripe/`.
 
 ## Never

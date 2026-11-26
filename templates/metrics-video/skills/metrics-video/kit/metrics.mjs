@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // metrics.mjs: every number of the weekly metrics film, worked out by code from Stripe's balance transactions.
-// The agent saves Stripe's answers as files; this script does the calendar, the sums, the differences, the
+// AgentRun files Stripe's answers in the run's folder (the template's `file` setting); this script does the calendar, the sums, the differences, the
 // percentages, the rounding and the words the voice says for each figure, and writes the one data module every scene
 // reads. Nothing here guesses: a figure it cannot work out is an error, never an estimate.
 //
-//   node metrics.mjs weeks   --today YYYY-MM-DD --timezone <IANA> [--week-of YYYY-MM-DD] [--carried stripe/carried.json]
-//   node metrics.mjs compute --today YYYY-MM-DD --timezone <IANA> [--week-of YYYY-MM-DD] [--carried stripe/carried.json]
+//   node metrics.mjs weeks   --today YYYY-MM-DD --timezone <IANA> [--week-of YYYY-MM-DD] [--carried carried.json]
+//   node metrics.mjs compute --today YYYY-MM-DD --timezone <IANA> [--week-of YYYY-MM-DD] [--carried carried.json]
 //                            --pages stripe --film film [--business "Name"]
 //   node metrics.mjs place   --film film [--at revenue=5.2,change=14.0,...] [--seconds 47]
 //   node metrics.mjs stem    --file media/run-keys.json --today YYYY-MM-DD --timezone <IANA> [--week-of YYYY-MM-DD]
@@ -16,7 +16,8 @@
 // weeks    prints the week to film (Monday 00:00 to the next Monday 00:00 in the time zone), the week before it, and
 //          the window to read from Stripe: both weeks when the carried figures are for the week before (they are
 //          compared), else the week alone.
-// compute  reads every stripe/raw-<n>.json the agent saved, takes eight fields of each item (id, created, type,
+// compute  reads every answer of STRIPE_LIST_BALANCE_TRANSACTIONS AgentRun filed in stripe/, in name order (an error
+//          answer passed over, a transaction on two pages counted once), takes eight fields of each item (id, created, type,
 //          reporting_category, currency, amount, fee, net) and nothing else, checks each (net = amount - fee), keeps the
 //          revenue categories, adds each week up per currency (never across currencies), compares the week before
 //          with the carried figures, and writes film/data.json and the same object into film/index.html (window.MV).
@@ -25,7 +26,7 @@
 //          the film's length, the captions host and the music (kept only when film/assets/music.mp3 exists).
 // stem     prints the run's key stem: the one in the file when it was made for this week, else a new one from the
 //          sandbox's random bytes, written there first. A model never makes one.
-// scan     looks for customer data in every file the run wrote: each string a raw page's items hold (a description, a
+// scan     looks for customer data in every file the run wrote: each string a filed page's items hold (a description, a
 //          name, an email, an id; not Stripe's enum fields, its fee lines or a single word alone), each name in one (a
 //          pair of capitalised words, or two through an initial; in any case, with or without the initial), each
 //          pair of lower-case words in one, neither a common word nor Stripe's (in any case), a name in an identity
@@ -45,22 +46,25 @@
 //          kit phrase. With --final (after billing), a word of a description's name found alone in media/answer.json
 //          only warns on stderr, naming the file and line, never the word: the answer keeps tool words on purpose. In
 //          every other file, in what a voice says, and for an identity field's name anywhere, it exits 2, as whole
-//          values, pairs and emails do. The first --final that only warns keeps the raw pages, notes the files and
+//          values, pairs and emails do. The first --final that only warns keeps the filed pages, notes the files and
 //          lines inside each page (MARK, never a file of the run's own) and exits 4 ("clean": false): the agent takes
 //          a customer's name out of the answer and runs --final once more, whether it edited or not. That run is the
-//          last: a word may warn again and that's fine, anything else found stops the film, and the raw pages are
+//          last: a word may warn again and that's fine, anything else found stops the film, and the filed pages are
 //          removed on every exit (its own, a refused argument, bad pages, a throw, SIGTERM, SIGINT or SIGHUP). A
-//          --final that exits 0 has removed every raw page. Found only where the whole description is written as it is: a word of a lower-case pair alone,
+//          --final that exits 0 has removed every filed page. Found only where the whole description is written as it is: a word of a lower-case pair alone,
 //          a name with a lower-case particle ("da Silva", "van Gogh", "de la Cruz"), one given name alone in a
 //          longer description ("Tip from Sarah"), a pair in mixed case ("Marisol quintero"). Not found: a
 //          description of one word, a name spelled another way.
 //
-// A raw page is Stripe's list exactly as Composio answered it ({"object": "list", "data": [...], "has_more": ...}),
-// or Composio's whole answer around it. It holds customers' details (a charge's description can name one), so only
-// compute and scan read it, and scan --final removes it. Exit 2: wrong arguments, a film whose files don't match the
-// kit (place reads every host and scene back after writing them; the message names the scene), or customer data in a
-// file (scan names the file and the item, never the value); 3: the pages are wrong or incomplete (the message says
-// what to fix); 4: scan --final only warned, the raw pages are kept for one more --final (not done); 0: done.
+// A filed page is Composio's whole answer as AgentRun filed it ({"data": <Stripe's list>, "successful": ...}), or
+// Stripe's list alone ({"object": "list", "data": [...], "has_more": ...}), at
+// stripe/STRIPE_LIST_BALANCE_TRANSACTIONS-<time>-<id>.json. It holds customers' details (a charge's description can name
+// one), so only compute and scan read it, scan never searches it as a file the run wrote, and scan --final removes it.
+// The tool's result the model gets never holds it; the model's own bash can still open it, so the skill says never to.
+// A page the run wrote itself (stripe/raw-<n>.json) is refused by both, exit 3: the answers were not filed.
+// Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
+// them; the message names the scene), or customer data in a file (scan names the file and the item, never the value);
+// 3: the pages are wrong or incomplete, or a page is the run's own (the message says what to do); 4: scan --final only warned, the filed pages are kept for one more --final (not done); 0: done.
 import { createHash, randomBytes } from "node:crypto";
 import { existsSync, lstatSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -302,33 +306,66 @@ function percent(change, before) {
 // ---------- Stripe's pages ----------
 // The eight fields the figures use; the script takes them from each item itself, and nothing else of an item is kept.
 const FIELDS = ["id", "created", "type", "reporting_category", "currency", "amount", "fee", "net"];
-const rawFiles = (dir) => readdirSync(dir).filter((f) => /^raw-\d+\.json$/.test(f)).sort((a, b) => parseInt(a.slice(4)) - parseInt(b.slice(4)));
-// A raw page as the agent saved it: Stripe's list ({"object": "list", "data": [...], "has_more": ...}), or Composio's
-// whole answer around it ({"data": <that list>, "successful": true, ...}).
+// The pages are Stripe's answers as AgentRun files them: the template's `file` setting on the balance list has serve
+// write each answer whole, scrubbed, at <folder>/STRIPE_LIST_BALANCE_TRANSACTIONS-<time>-<id>.json before the model gets
+// its turn back, and the model gets only a summary (its bytes, the path, the values at the show paths, the shape). The
+// time is an ISO instant with ":" and "." as "-", so the names sort in the order the answers came. Nothing else in the
+// folder is a page: not carried.json, not a file the run wrote.
+const TOOL = "STRIPE_LIST_BALANCE_TRANSACTIONS";
+const FILED = /^STRIPE_LIST_BALANCE_TRANSACTIONS-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z-[A-Za-z0-9]+\.json$/;
+const rawFiles = (dir) => readdirSync(dir).filter((f) => FILED.test(f)).sort();
+// A page the run wrote itself (stripe/raw-<n>.json, as this kit once had the agent save them): refused, never read.
+const OWN_PAGE = /^raw-\d+\.json$/;
+const notFiled = (dir, own) =>
+  `${own.map((f) => `${dir}/${f}`).join(", ")}: a page the run wrote itself. Stripe's answers were not filed by AgentRun: the owner removed the agent's file setting on ${TOOL}, or the call was not made through it. The kit reads only the answers AgentRun files (${dir}/${TOOL}-<time>-<id>.json) and never a page the run wrote: make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`;
+function refuseOwnPages(dir) {
+  const own = existsSync(dir) ? readdirSync(dir).filter((f) => OWN_PAGE.test(f)).sort() : [];
+  if (own.length) fail(3, notFiled(dir, own));
+}
+// A page: Stripe's list ({"object": "list", "data": [...], "has_more": ...}), or Composio's whole answer around it
+// ({"data": <that list>, "successful": true, ...}).
 function listOf(page) {
   if (Array.isArray(page?.data) && typeof page.has_more === "boolean") return page;
   if (page && typeof page === "object" && "successful" in page && Array.isArray(page.data?.data) && typeof page.data.has_more === "boolean") return page.data;
   return null;
 }
-function readRaw(dir) {
-  if (!existsSync(dir)) fail(3, `${dir} does not exist: save each page Stripe answered to ${dir}/raw-1.json, raw-2.json ...`);
-  const files = rawFiles(dir);
-  if (!files.length) fail(3, `no raw-<n>.json in ${dir}: save each page Stripe answered there, exactly as it answered`);
-  if (files.length > MAX_PAGES) fail(3, `${files.length} pages: this film reads at most ${MAX_PAGES} pages (${MAX_PAGES * 100} transactions)`);
-  files.forEach((f, i) => {
-    if (f !== `raw-${i + 1}.json`) fail(3, `the pages are numbered from 1 with no gap: found ${files.join(", ")}`);
-  });
-  return files.map((f) => {
-    let page;
-    try {
-      page = JSON.parse(readFileSync(join(dir, f), "utf8"));
-    } catch (e) {
-      fail(3, `${dir}/${f} is not JSON (${e.message}): save it again exactly as Stripe answered`);
+// An answer that is an error, filed as every answer is: Composio's `successful: false`, a tool error's text that is no
+// JSON, or JSON that says isError. The model saw `successful` and `error` in the summary; the kit passes it over, and
+// the check that the pages reach the window's start still holds without it.
+const errorAnswer = (text) => {
+  let page;
+  try {
+    page = JSON.parse(text);
+  } catch {
+    return true;
+  }
+  return page !== null && typeof page === "object" && (page.successful === false || page.isError === true);
+};
+// Each filed page's list, in name order, and how many filed answers were errors. A page the run wrote is refused; a
+// filed answer that is neither a list nor an error is too.
+function filedPages(dir) {
+  refuseOwnPages(dir);
+  const pages = [];
+  let errors = 0;
+  for (const f of existsSync(dir) ? rawFiles(dir) : []) {
+    const text = readFileSync(join(dir, f), "utf8");
+    if (errorAnswer(text)) {
+      errors++;
+      continue;
     }
-    const list = listOf(page);
-    if (!list) fail(3, `${dir}/${f} must be Stripe's list as it answered ({"object": "list", "data": [...], "has_more": true|false})`);
-    return { file: f, list };
-  });
+    const list = listOf(JSON.parse(text));
+    if (!list) fail(3, `${dir}/${f} is not Stripe's list ({"object": "list", "data": [...], "has_more": true|false}) nor Composio's answer around it: the film can't be made from it. Answer failed, failed_step "stripe".`);
+    pages.push({ file: f, list });
+  }
+  return { pages, errors };
+}
+// compute's pages: at least one list, at most MAX_PAGES.
+function readRaw(dir) {
+  const { pages, errors } = filedPages(dir);
+  if (!pages.length && !errors) fail(3, `no answer of ${TOOL} is filed in ${dir}: call the tool (AgentRun files each answer there, whole). If you called it and nothing was filed, the owner removed the agent's file setting on it: make nothing and answer failed, failed_step "stripe".`);
+  if (!pages.length) fail(3, `every answer of ${TOOL} filed in ${dir} is an error (${errors}): nothing to work out. Answer failed, failed_step "stripe", with the error the tool's result showed.`);
+  if (pages.length > MAX_PAGES) fail(3, `${pages.length} pages: this film reads at most ${MAX_PAGES} pages (${MAX_PAGES * 100} transactions). Answer failed, failed_step "stripe".`);
+  return Object.assign(pages, { errors });
 }
 function readPages(dir) {
   const problems = [];
@@ -340,14 +377,15 @@ function readPages(dir) {
       const at = `${f} item ${i + 1}`;
       const t = Object.fromEntries(FIELDS.map((k) => [k, item?.[k]]));
       // A whole item always says what it is. One cut down to a few fields would hide its description from the scan.
-      if (item?.object !== "balance_transaction") problems.push(`${at}: "object": "balance_transaction" is missing: save each item whole, as Stripe gave it, never a part of it`);
+      if (item?.object !== "balance_transaction") problems.push(`${at}: "object": "balance_transaction" is missing: not a whole balance transaction`);
       if (typeof t.id !== "string" || !t.id) problems.push(`${at}: id is missing`);
       for (const k of ["created", "amount", "fee", "net"]) if (!Number.isInteger(t[k])) problems.push(`${at}: ${k} is not a whole number as Stripe gives it`);
       for (const k of ["type", "reporting_category", "currency"]) if (typeof t[k] !== "string") problems.push(`${at}: ${k} is missing`);
       if (typeof t.currency === "string" && !/^[a-z]{3}$/.test(t.currency)) problems.push(`${at}: currency ${t.currency} is not Stripe's three lower-case letters`);
       if (Number.isInteger(t.amount) && Number.isInteger(t.fee) && Number.isInteger(t.net) && t.net !== t.amount - t.fee) {
-        problems.push(`${at} (${t.id}): net ${t.net} is not amount ${t.amount} - fee ${t.fee}: a number was saved wrong`);
+        problems.push(`${at} (${t.id}): net ${t.net} is not amount ${t.amount} - fee ${t.fee}`);
       }
+      // A transaction on two pages (a call made again, a page asked for twice) is the same transaction: counted once.
       if (typeof t.id === "string" && byId.has(t.id)) {
         const a = JSON.stringify(byId.get(t.id));
         if (a !== JSON.stringify(t)) problems.push(`${at}: ${t.id} appears twice with different values`);
@@ -357,8 +395,10 @@ function readPages(dir) {
     }
     last = list;
   }
-  if (problems.length) fail(3, `the pages need fixing (save these pages again exactly as Stripe answered):\n- ${problems.slice(0, 20).join("\n- ")}`);
-  return { transactions: [...byId.values()], lastHasMore: last.has_more, pages: raw.length };
+  // Serve files Stripe's answers whole: an item that fails these checks is Stripe's (or Composio's) as it answered, and
+  // nothing the run does can fix it.
+  if (problems.length) fail(3, `Stripe's answers as filed don't check, so the film can't be made from them. Answer failed, failed_step "stripe", with these lines:\n- ${problems.slice(0, 20).join("\n- ")}`);
+  return { transactions: [...byId.values()], lastHasMore: last.has_more, pages: raw.length, errors: raw.errors };
 }
 
 // ---------- the figures ----------
@@ -437,13 +477,13 @@ function compute() {
   const w = weeks();
   const film = need("film");
   if (!existsSync(join(film, "index.html"))) fail(2, `${film}/index.html is missing: copy the kit into ${film}/ first`);
-  const { transactions, lastHasMore, pages } = readPages(need("pages"));
+  const { transactions, lastHasMore, pages, errors } = readPages(need("pages"));
   const oldest = Math.min(...transactions.map((t) => t.created));
   if (lastHasMore && !(oldest < w.read.created_gte)) {
-    fail(3, `Stripe said has_more on the last page and the oldest transaction read (${new Date(oldest * 1000).toISOString()}) is not before the window's start (${new Date(w.read.created_gte * 1000).toISOString()}): read the next page (starting_after the last id) and save it as raw-${pages + 1}.json`);
+    fail(3, `Stripe said has_more on the last page filed and the oldest transaction read (${new Date(oldest * 1000).toISOString()}) is not before the window's start (${new Date(w.read.created_gte * 1000).toISOString()}): call ${TOOL} again with starting_after the last id its result showed (AgentRun files that page too), then compute again`);
   }
   const late = transactions.filter((t) => t.created >= w.end_of_today_unix);
-  if (late.length) fail(3, `${late.length} transaction(s) are dated after ${w.today} in ${w.timezone}: a created value was copied wrong (${late.slice(0, 3).map((t) => t.id).join(", ")})`);
+  if (late.length) fail(3, `${late.length} transaction(s) are dated after ${w.today} in ${w.timezone}: --today must be the run's date (${late.slice(0, 3).map((t) => t.id).join(", ")})`);
 
   const thisWeek = addUp(transactions, w.week);
   const before = w.week_before ? addUp(transactions, w.week_before) : null;
@@ -580,7 +620,7 @@ function compute() {
 
   // What the agent reads: every figure with its words, the plan, the carry.
   const out = [];
-  out.push(`week: ${data.week.label} (${data.week.start} to ${data.week.end}, ${w.timezone}); read ${pages} page(s), ${transactions.length} transactions`);
+  out.push(`week: ${data.week.label} (${data.week.start} to ${data.week.end}, ${w.timezone}); read ${pages} page(s), ${transactions.length} transactions${errors ? `; ${errors} error answer(s) filed and passed over` : ""}`);
   out.push(`metric: ${METRIC.label}`);
   out.push(`source line: ${data.source_line}`);
   out.push(`compare: ${compare.state}: ${compare.reason}`);
@@ -831,7 +871,7 @@ function customerValues(dir) {
     } else if (Array.isArray(value)) value.forEach((v) => walk(v, key, where, owner));
     else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) walk(v, k, where, key);
   };
-  for (const { file, list } of readRaw(dir)) list.data.forEach((item, i) => walk(item, "item", `${file} item ${i + 1} (${item?.id ?? "no id"})`, undefined));
+  for (const { file, list } of filedPages(dir).pages) list.data.forEach((item, i) => walk(item, "item", `${file} item ${i + 1} (${item?.id ?? "no id"})`, undefined));
   return { found, alone };
 }
 // The words of a text, in lower case: a name's word alone is found in any case ("Marisol", "marisol", "MARISOL").
@@ -848,7 +888,7 @@ const TOOL_OUTPUT = [/^media\/check\.json$/, /^media\/render\.log$/, /^media\/re
 const WARN_ONLY = new Set(["media/answer.json"]);
 // The paths the kit and the skill name, whose words ("media", "review", "timestamps") are not a customer's when a
 // file's name is read for one. With the kit's shipped files' paths (kit/compositions/open.html), in scan.
-const NAMED_PATHS = ["media/vo.txt", "media/music.txt", "media/answer.json", "media/film.vtt", "media/film.mp4", "media/voiceover.mp3", "media/voiceover-2.mp3", "media/voiceover-timestamps.json", "media/voiceover-2-timestamps.json", "media/music.mp3", "media/check.json", "media/render.log", "media/review/snapshot.log", "media/review-2/snapshot.log", "media/run-keys.json", "film/STORYBOARD.md", "film/data.json", "film/words.json", "film/compositions/captions.html", "film/assets/voiceover.mp3", "film/assets/music.mp3", "stripe/carried.json", "evidence/fal"];
+const NAMED_PATHS = ["media/vo.txt", "media/music.txt", "media/answer.json", "media/film.vtt", "media/film.mp4", "media/voiceover.mp3", "media/voiceover-2.mp3", "media/voiceover-timestamps.json", "media/voiceover-2-timestamps.json", "media/music.mp3", "media/check.json", "media/render.log", "media/review/snapshot.log", "media/review-2/snapshot.log", "media/run-keys.json", "film/STORYBOARD.md", "film/data.json", "film/words.json", "film/compositions/captions.html", "film/assets/voiceover.mp3", "film/assets/music.mp3", "carried.json", "evidence/fal"];
 // The note the first --final that warns keeps, inside each raw page (a key of the page's own object, which compute and
 // scan never read as an item): the files and lines it warned on, never a word. It lives and goes with the pages, so no
 // file of the run's own (a media cleanup, another --root) can make a later --final a first again.
@@ -944,6 +984,9 @@ function scan() {
     });
     for (const [signal, code] of [["SIGTERM", 143], ["SIGINT", 130], ["SIGHUP", 129]]) process.on(signal, () => process.exit(code));
   }
+  // A page the run wrote itself: refused, as compute refuses it. Its values would never be looked for (only filed pages
+  // give them), so a scan beside one is never clean.
+  refuseOwnPages(dir);
   // No pages (removed by an earlier scan --final, or never saved): nothing to look for, and nothing to remove.
   const pages = pageFiles();
   const { found, alone } = pages.length ? customerValues(dir) : { found: new Map(), alone: new Map() };
@@ -1001,7 +1044,7 @@ function scan() {
   const computeWords = [METRIC.label, ...Object.values(SAYS).flatMap((t) => t.split("{}").map((x) => x.trim())), ...Object.values(STATE), ...Object.values(DIRECTION), NUMBER_WORDS.minus, NUMBER_WORDS.point, ...NUMBER_WORDS.scales.map(([, name]) => name)];
   const kitHtml = [...shipped].filter(([rel]) => /^kit\/.*\.html?$/i.test(rel)).flatMap(([, f]) => shownText(f.text).split("\n").map((x) => squash(x).trim()));
   const codes = new Set();
-  if (pages.length) for (const { list } of readRaw(dir)) for (const item of list.data) if (typeof item?.currency === "string") codes.add(item.currency.toLowerCase());
+  if (pages.length) for (const { list } of filedPages(dir).pages) for (const item of list.data) if (typeof item?.currency === "string") codes.add(item.currency.toLowerCase());
   const phrases = [...new Set([...Object.values(UNIT).flat(), ...[...codes].flatMap((c) => { try { return [unitWords(c, 1), unitWords(c, 2)]; } catch { return []; } }), "Composio", "ElevenLabs", "HyperFrames", "fal", "Stripe", zone, ...computeWords, ...kitHtml])]
     .filter((x) => /\p{L}/u.test(x))
     .sort((a, b) => b.length - a.length);
@@ -1175,20 +1218,27 @@ function scan() {
     if (rerun) {
       removeAll();
       console.log(stats(false, false));
-      fail(2, `customer data in the run's files, found by the last --final: the film stops here (the raw pages are removed):\n${list}`);
+      fail(2, `customer data in the run's files, found by the last --final: the film stops here (the filed pages are removed):\n${list}`);
     }
     fail(2, `customer data in the run's files: remove each from the file (and from anything made from it: the voiceover, the film), then scan again:\n${list}`);
   }
   const again = final && warnings.size > 0 && !rerun && raw.size > 0;
   if (again) {
     // The note goes into each raw page (MARK), never a file of the run's: the next --final is the last.
+    // An error answer filed as text (no JSON object) holds no note; the lists do.
     for (const path of raw) {
-      const page = JSON.parse(readFileSync(path, "utf8"));
+      let page;
+      try {
+        page = JSON.parse(readFileSync(path, "utf8"));
+      } catch {
+        continue;
+      }
+      if (page === null || typeof page !== "object" || Array.isArray(page)) continue;
       page[MARK] = { warned: [...warnings.values()] };
       writeFileSync(path, JSON.stringify(page));
     }
     console.log(stats(false, true));
-    fail(4, "exit 4, not done: the raw pages are kept for one more --final. Read each line named above; if it holds a customer's name, take the name out of media/answer.json; then run scan --pages stripe --final once more, whether you edited or not. That run is the last.");
+    fail(4, "exit 4, not done: the filed pages are kept for one more --final. Read each line named above; if it holds a customer's name, take the name out of media/answer.json; then run scan --pages stripe --final once more, whether you edited or not. That run is the last.");
   } else if (final) removeAll();
   console.log(stats(!again, again));
 }
