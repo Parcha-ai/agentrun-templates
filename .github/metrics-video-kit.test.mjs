@@ -1601,13 +1601,15 @@ test("the first --final's note skips a page-named hard link, and names it: the f
 
 // A preload that swaps a name between the kit's check and its use, as a run's own process could: MV_SWAP=folder swaps
 // stripe/ for a link to MV_OUTSIDE at the first listing (after --purge has checked the folder), MV_SWAP=enter as the kit
-// first changes into a folder named stripe (after the same check); MV_SWAP=page swaps the
+// first changes into a folder named stripe (after the same check), MV_SWAP=parent swaps the folder nested (stripe's
+// parent) for a link to MV_OUTSIDE once the kit has resolved it MV_NTH times, MV_SWAP=short makes the first write
+// to an opened file short and the rest fail (ENOSPC); MV_SWAP=page swaps the
 // page MV_PAGE for a link to MV_TARGET once it has been looked at (lstat), as it is opened or written by name.
 const SWAP = String.raw`import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
 import { basename } from "node:path";
-const { MV_SWAP, MV_RUN, MV_OUTSIDE, MV_PAGE, MV_TARGET } = process.env;
-const { readdirSync, writeFileSync, lstatSync, openSync, renameSync, symlinkSync } = fs;
+const { MV_SWAP, MV_RUN, MV_OUTSIDE, MV_PAGE, MV_TARGET, MV_NTH } = process.env;
+const { readdirSync, writeFileSync, writeSync, lstatSync, openSync, realpathSync, renameSync, symlinkSync } = fs;
 let done = false;
 if (MV_SWAP === "folder") {
   fs.readdirSync = function (...a) {
@@ -1628,6 +1630,40 @@ if (MV_SWAP === "enter") {
       symlinkSync(MV_OUTSIDE, MV_RUN + "/stripe");
     }
     return chdir.call(this, p, ...a);
+  };
+}
+if (MV_SWAP === "parent") {
+  // Once the MV_NTH resolution of MV_RUN/nested has returned (the kit's real path for it), nested becomes a link.
+  let seen = 0;
+  const swapped = function (p, ...a) {
+    const real = realpathSync.call(this, p, ...a);
+    if (!done && typeof p === "string" && p.endsWith("/nested") && ++seen === Number(MV_NTH)) {
+      done = true;
+      renameSync(MV_RUN + "/nested", MV_RUN + "/nested-moved");
+      symlinkSync(MV_OUTSIDE, MV_RUN + "/nested");
+    }
+    return real;
+  };
+  swapped.native = realpathSync.native;
+  fs.realpathSync = swapped;
+}
+if (MV_SWAP === "short") {
+  // The first write to a file the kit opened writes half its bytes; every write after it fails, as on a full disk.
+  let calls = 0;
+  fs.writeSync = function (fd, data, ...a) {
+    if (fd <= 2) return writeSync.call(this, fd, data, ...a);
+    if (++calls > 1) throw Object.assign(new Error("ENOSPC: no space left on device, write"), { code: "ENOSPC", errno: -28, syscall: "write" });
+    let bytes;
+    let at;
+    if (typeof data === "string") {
+      bytes = Buffer.from(data, typeof a[1] === "string" ? a[1] : "utf8");
+      at = a[0];
+    } else {
+      const offset = a[0] ?? 0;
+      bytes = data.subarray(offset, offset + (a[1] ?? data.length - offset));
+      at = a[2];
+    }
+    return writeSync.call(this, fd, bytes, 0, Math.max(1, bytes.length >> 1), at ?? null);
   };
 }
 if (MV_SWAP === "page") {
@@ -1704,12 +1740,59 @@ test("the note goes through the page it opened: a page swapped for a link after 
   assert.equal(readFileSync(target, "utf8"), body, `the note never goes through the swapped-in link: ${r.final.out}`);
 });
 
+test("--purge removes only in a folder that is inside the run's once entered: stripe's parent swapped for a link after it was resolved, nothing outside goes", () => {
+  const { dir } = filedFolder("p7-race-parent", []);
+  mkdirSync(join(dir, "nested", "stripe"), { recursive: true });
+  const inside = filedName();
+  writeFileSync(join(dir, "nested", "stripe", inside), JSON.stringify(composioAnswer(stripeList(FILED_WEEK))));
+  const outside = join(root, "p7-race-parent-outside");
+  mkdirSync(join(outside, "stripe"), { recursive: true });
+  const outsideName = filedName();
+  writeFileSync(join(outside, "stripe", outsideName), "outside");
+  // The first resolution is the entry check's; the second is the removal's own check, just before it enters.
+  const r = spawnSync(process.execPath, ["--import", swapPreload(), join(dir, "film", "metrics.mjs"), "scan", "--pages", "nested/stripe", "--purge"], {
+    encoding: "utf8", cwd: dir, env: { ...process.env, MV_SWAP: "parent", MV_NTH: "2", MV_RUN: dir, MV_OUTSIDE: outside },
+  });
+  const out = r.stdout + r.stderr;
+  assert.ok(existsSync(join(dir, "nested-moved")), `the swap happened: ${out}`);
+  assert.deepEqual(readdirSync(join(outside, "stripe")), [outsideName], `nothing outside is removed: ${out}`);
+  assert.equal(r.status, 2, `the pages it could not reach are named: ${out}`);
+  assert.match(r.stderr, /changed after it was checked/, out);
+  assert.deepEqual(readdirSync(join(dir, "nested-moved", "stripe")), [inside], "the run's own page, never reached through the link, is left for the run to purge again");
+});
+
+test("a note that can't be written whole is never counted: a short write then ENOSPC stops the run (exit 3) and removes the pages", () => {
+  const saved = { NODE_OPTIONS: process.env.NODE_OPTIONS, MV_SWAP: undefined };
+  let r;
+  try {
+    r = fixtureRun("week-over-week", "2026-11-23", {
+      items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)],
+      as: "p7-short-write",
+      answer: KEPT_CODE,
+      beforeFinal: () => Object.assign(process.env, { NODE_OPTIONS: `${saved.NODE_OPTIONS ?? ""} --import ${swapPreload()}`.trim(), MV_SWAP: "short" }),
+    });
+  } finally {
+    for (const [k, v] of Object.entries(saved)) if (v === undefined) delete process.env[k]; else process.env[k] = v;
+  }
+  assert.equal(r.final.status, 3, r.final.out);
+  assert.match(r.final.err, /the note could not be written/, r.final.out);
+  assert.match(r.final.err, /failed_step "stripe"/, r.final.out);
+  assert.deepEqual(pagesIn(r.dir), [], "no page is left, broken or whole");
+});
+
 test("agent.md and SKILL.md say an exit 3 refusing --pages removes nothing, and to purge the run's stripe/ first", () => {
   const T = new URL("../templates/metrics-video/", import.meta.url).pathname;
   const agent = readFileSync(join(T, "agent.md"), "utf8");
   const skill = readFileSync(join(T, "skills", "metrics-video", "SKILL.md"), "utf8");
-  const section = (text, n) => text.slice(text.indexOf(`## ${n}. `), text.indexOf(`## ${n + 1}. `));
+  const section = (text, n) => {
+    const from = text.indexOf(`## ${n}. `);
+    assert.ok(from >= 0, `## ${n}.`);
+    const to = text.indexOf("\n## ", from + 1);
+    return text.slice(from, to < 0 ? undefined : to);
+  };
   assert.match(section(agent, 1), saidAs(PURGE_FIRST), "agent.md section 1");
+  assert.match(section(agent, 8), saidAs(PURGE_FIRST), "agent.md section 8");
+  assert.doesNotMatch(section(agent, 8), /\(a\s+refused\s+argument,\s+a\s+page\s+the\s+run\s+wrote,\s+a\s+fault\)\s+removes\s+the\s+pages/, "section 8 no longer says every refused argument removes the pages");
   assert.match(section(skill, 3), saidAs(PURGE_FIRST), "SKILL.md step 3");
   assert.match(section(skill, 9), saidAs(PURGE_FIRST), "SKILL.md step 9");
   assert.doesNotMatch(section(skill, 9), /\(a refused argument, a page the run wrote, a fault\) removes the pages/, "step 9 no longer says every refused argument removes the pages");
