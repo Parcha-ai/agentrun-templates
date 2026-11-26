@@ -386,7 +386,14 @@ function sentRun({ shots = Array(SHORT).fill(4) } = {}) {
   const c = kit(dir, "clips", "--film", "film", "--storyboard", "storyboard.md", "--stem", "abcd1234", "--stills", urls.join(","), "--file", "media/clips.json");
   assert.equal(c.status, 0, c.stderr);
   const calls = [...sent(s.stdout), ...sent(c.stdout)].map((args) => ({ tool: "mcp:fal/submit_job", arguments: args }));
+  costed(dir);
   return { dir, calls: [{ tool: "mcp:fal/get_pricing", arguments: {} }, ...calls, { tool: "mcp:fal/wait_for_jobs", arguments: { jobs: [] } }] };
+}
+// The run's cost as the agent runs it (the skill's step 8): every still and clip the records hold, sent.
+function costed(dir) {
+  const held = [...JSON.parse(recordOf(dir, "stills.json")).stills, ...JSON.parse(recordOf(dir, "clips.json")).clips];
+  const r = kit(dir, "cost", "--film", "film", "--stem", "abcd1234", "--sent", held.map((x) => x.key.replace(/^mu-abcd1234-/, "")).join(","));
+  assert.equal(r.status, 0, r.stderr);
 }
 function reportOf(dir, calls, { name = "short-song", runs, data } = {}) {
   const report = join(dir, `report-${++runs_}.json`);
@@ -396,11 +403,32 @@ function reportOf(dir, calls, { name = "short-song", runs, data } = {}) {
 let runs_ = 0;
 const checkRaw = (...args) => spawnSync(process.execPath, [CHECK, ...args], { encoding: "utf8" });
 // Every verdict line ends with the label that says it is the repo's check; the tests below match what comes before it.
-const check = (...args) => {
-  const r = checkRaw(...args);
+const checkAt = (path, ...args) => {
+  const r = spawnSync(process.execPath, [path, ...args], { encoding: "utf8" });
   if (r.status !== 2) assert.ok(r.stdout.endsWith(`${LABEL}\n`), `no label: ${r.stdout}`);
   return { ...r, stdout: r.stdout.replace(LABEL, "") };
 };
+const check = (...args) => checkAt(CHECK, ...args);
+// The check reads the user's ceiling from the case's own prompt.md in its repo. short-song sets none, so a run with a
+// ceiling is checked by a copy of the check, the kit and short-song (fixtures and graders as they are) whose prompt.md
+// input sets max_fal_usd: one copy per ceiling.
+const ceilingChecks = new Map();
+function checkWithCeiling(max) {
+  if (ceilingChecks.has(max)) return ceilingChecks.get(max);
+  const repo = join(root, `repo-max-${++runs}`);
+  const REPO = new URL("../", import.meta.url).pathname;
+  cpSync(join(REPO, ".github", "eval-checks"), join(repo, ".github", "eval-checks"), { recursive: true });
+  cpSync(KIT, join(repo, "templates", "music-video", "skills", "music-video", "kit"), { recursive: true });
+  const cased = join(repo, "templates", "music-video", "evals", "short-song");
+  cpSync(join(REPO, "templates", "music-video", "evals", "short-song"), cased, { recursive: true });
+  const prompt = join(cased, "prompt.md");
+  const text = readFileSync(prompt, "utf8");
+  assert.match(text, /^input:\n/m);
+  writeFileSync(prompt, text.replace(/^input:\n/m, `input:\n  max_fal_usd: ${max}\n`));
+  const path = join(repo, ".github", "eval-checks", "music-video-sent.mjs");
+  ceilingChecks.set(max, path);
+  return path;
+}
 const edit = (calls, key, change) => calls.map((c) => (c.arguments.submission_key === key ? { ...c, arguments: change(structuredClone(c.arguments)) } : c));
 
 test("the sent check passes a run whose sent stills and clips equal their records, in one line that says it is the repo's check", () => {
@@ -436,6 +464,7 @@ test("the sent check passes a remake sent as recorded, and fails one sent but no
   const r = kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "3", "--picture", "a teal quay at dusk");
   assert.equal(r.status, 0, r.stderr);
   const remake = { tool: "mcp:fal/submit_job", arguments: sent(r.stdout)[0] };
+  costed(dir);
   assert.match(check(reportOf(dir, [...calls, remake]), dir).stdout, /^SENT PASS n=17\n$/);
   const stray = structuredClone(remake);
   stray.arguments.submission_key = "mu-abcd1234-still-4-2";
@@ -787,6 +816,7 @@ test("the sent check fails a record in the kit's shape, its calls sent to match,
   // The kit's own records, sent as printed, still pass; so does a remake the kit made.
   const { dir } = sentRun();
   assert.equal(kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", "3", "--picture", "a teal quay at dusk").status, 0);
+  costed(dir);
   assert.equal(check(reportOf(dir, callsFrom(dir)), dir).stdout, "SENT PASS n=17\n");
   // No media/run-keys.json: the records can't be tied to the run's stem.
   const nokeys = sentRun();
@@ -1466,6 +1496,7 @@ function remadeRun(urlFor3) {
   const urls = SHORT_STILLS.map((u, i) => (i === 2 ? urlFor3 : u));
   const c = kit(dir, "clips", "--film", "film", "--storyboard", "storyboard.md", "--stem", "abcd1234", "--stills", urls.join(","), "--file", "media/clips.json");
   assert.equal(c.status, 0, c.stderr);
+  costed(dir);
   return dir;
 }
 test("the sent check ties each clip's still URL to its shot's still as the fake fal made it: the remake's when it was saved", () => {
@@ -1490,26 +1521,31 @@ test("the sent check reads film/price.json: there, of the plan rebuilt, fitting 
     ["no price", (d) => rmSync(pricePath(d)), "SENT FAIL price: the run left no film/price.json\n"],
     ["a plan edited after its price", (d) => writeFileSync(join(d, "film", "plan.json"), readFileSync(join(d, "film", "plan.json"), "utf8") + " "), "SENT FAIL price: film/price.json's plan_sha256 is not film/plan.json's: the price is of another plan\n"],
     ["fits false", (d) => rewriteJson(pricePath(d), (p) => ({ ...p, fits: false })), "SENT FAIL price: film/price.json's fits is false, not true\n"],
-    ["fits true over its ceiling", (d) => rewriteJson(pricePath(d), (p) => ({ ...p, max_fal_usd: 1 })), /^SENT FAIL price: film\/price\.json's plan_usd 6\.153 is over its max_fal_usd 1 \(and 1 more\)\n$/],
+    // The user's ceiling is the case's (its prompt.md input, here 1); the run's price and record say 1 by hand.
+    ["fits true over its ceiling", (d) => {
+      rewriteJson(pricePath(d), (p) => ({ ...p, max_fal_usd: 1 }));
+      writeFileSync(join(d, "film", "ceiling.json"), JSON.stringify({ max_fal_usd: 1 }) + "\n");
+    }, /^SENT FAIL price: film\/price\.json's plan_usd 6\.153 is over the case's max_fal_usd 1 \(its prompt\.md input\) \(and 1 more\)\n$/, 1],
   ];
-  for (const [what, change, line] of cases) {
+  for (const [what, change, line, max] of cases) {
     const { dir, calls } = sentRun();
     change(dir);
-    const r = check(reportOf(dir, calls), dir);
+    const r = checkAt(max === undefined ? CHECK : checkWithCeiling(max), reportOf(dir, calls), dir);
     assert.equal(r.status, 1, `${what}: ${r.stdout}`);
     if (typeof line === "string") assert.equal(r.stdout, line, what);
     else assert.match(r.stdout, line, what);
   }
-  // Priced at a ceiling equal to the plan: the calls the records hold fit; five isolations sent go over it (each at
-  // its line's price, as cost bills it: 8 x 0.15 + 32 x 0.14 + 5 x 0.133).
+  // Priced at a ceiling equal to the plan, the case's input: the calls the records hold fit; five isolations sent go
+  // over it (each at its line's price, as cost bills it: 8 x 0.15 + 32 x 0.14 + 5 x 0.133).
   const { dir, calls } = sentRun();
   const plan = JSON.parse(readFileSync(pricePath(dir), "utf8")).plan_usd;
+  const at = checkWithCeiling(plan);
   assert.match(kit(dir, "price", "--film", "film", "--rates", RATES, "--max", String(plan)).stdout, /: FITS\n/);
-  assert.equal(check(reportOf(dir, calls), dir).stdout, "SENT PASS n=16\n");
+  assert.equal(checkAt(at, reportOf(dir, calls), dir).stdout, "SENT PASS n=16\n");
   const isolate = { tool: "mcp:fal/submit_job", arguments: { endpoint_id: "fal-ai/elevenlabs/audio-isolation", submission_key: "mu-abcd1234-isolate", input: { audio_url: SONG_URL } } };
-  const over = check(reportOf(dir, [...calls, ...Array(5).fill(isolate)]), dir);
+  const over = checkAt(at, reportOf(dir, [...calls, ...Array(5).fill(isolate)]), dir);
   assert.equal(over.status, 1, over.stdout);
-  assert.match(over.stdout, new RegExp(`^SENT FAIL price: the calls sent come to \\$6\\.345 at film/price\\.json's rates, over its max_fal_usd ${String(plan).replace(".", "\\.")}\\n$`));
+  assert.match(over.stdout, new RegExp(`^SENT FAIL price: the calls sent come to \\$6\\.345 at film/price\\.json's rates, over the case's max_fal_usd ${String(plan).replace(".", "\\.")}\\n$`));
 });
 
 // ---------- review of the sent check's price: it prices the calls sent from the plan, never from the file's lines ----------
@@ -1518,49 +1554,220 @@ test("the sent check reads film/price.json: there, of the plan rebuilt, fitting 
 // that isn't a number, lines under the plan's price at rates in band, rates under list, or a call the plan has no line
 // for all fail.
 const ISOLATE_CALL = (key = "mu-abcd1234-isolate") => ({ tool: "mcp:fal/submit_job", arguments: { endpoint_id: "fal-ai/elevenlabs/audio-isolation", submission_key: key, input: { audio_url: SONG_URL } } });
-// A run priced at a ceiling equal to its plan: the calls the records hold fit it exactly.
+// A run priced at a ceiling equal to its plan, the case's input: the calls the records hold fit it exactly.
 function fittedRun() {
   const run = sentRun();
   const plan = JSON.parse(readFileSync(join(run.dir, "film", "price.json"), "utf8")).plan_usd;
+  const at = checkWithCeiling(plan);
   assert.match(kit(run.dir, "price", "--film", "film", "--rates", RATES, "--max", String(plan)).stdout, /: FITS\n/);
-  assert.equal(check(reportOf(run.dir, run.calls), run.dir).stdout, "SENT PASS n=16\n");
-  return { ...run, path: join(run.dir, "film", "price.json") };
+  assert.equal(checkAt(at, reportOf(run.dir, run.calls), run.dir).stdout, "SENT PASS n=16\n");
+  return { ...run, at, path: join(run.dir, "film", "price.json") };
 }
-function sentFails(dir, calls, first, more) {
-  const r = check(reportOf(dir, calls), dir);
+function sentFails(dir, calls, first, more, at = CHECK) {
+  const r = checkAt(at, reportOf(dir, calls), dir);
   assert.equal(r.status, 1, r.stdout);
   assert.match(r.stdout, first);
   if (more) assert.match(r.stdout, more);
 }
 test("the sent check: a price.json with no lines fails, and the calls sent are priced from the plan, over its ceiling", () => {
-  const { dir, calls, path } = fittedRun();
+  const { dir, calls, at, path } = fittedRun();
   rewriteJson(path, (p) => ({ ...p, lines: [] }));
-  sentFails(dir, [...calls, ...Array(5).fill(ISOLATE_CALL())], /^SENT FAIL price: film\/price\.json's lines are not the plan's at its rates/, /\(and 1 more\)/);
+  sentFails(dir, [...calls, ...Array(5).fill(ISOLATE_CALL())], /^SENT FAIL price: film\/price\.json's lines are not the plan's at its rates/, /\(and 1 more\)/, at);
 });
 test("the sent check: a price line whose usd is not a number fails, naming its step", () => {
-  const { dir, calls, path } = fittedRun();
+  const { dir, calls, at, path } = fittedRun();
   rewriteJson(path, (p) => ({ ...p, lines: p.lines.map((l) => (l.step === "still-1" ? { ...l, usd: "0.15" } : l)) }));
-  sentFails(dir, calls, /^SENT FAIL price: film\/price\.json's lines are not the plan's at its rates: still-1 /);
+  sentFails(dir, calls, /^SENT FAIL price: film\/price\.json's lines are not the plan's at its rates: still-1 /, undefined, at);
 });
 test("the sent check: lines under the plan's price at rates in band fail, and the plan's own price is over the file's ceiling", () => {
-  const { dir, calls, path } = fittedRun();
+  const { dir, calls, at, path } = fittedRun();
   rewriteJson(path, (p) => {
     const lines = p.lines.map((l) => (l.step.startsWith("clip-") ? { ...l, usd: Math.round(l.usd * 100) / 1000 } : l));
     const low = Math.round(lines.reduce((t, l) => t + l.usd, 0) * 1000) / 1000;
     return { ...p, lines, plan_usd: low, max_fal_usd: low };
   });
-  sentFails(dir, calls, /^SENT FAIL price: film\/price\.json's lines are not the plan's at its rates: clip-1 /, /\(and [1-9]\d* more\)/);
+  sentFails(dir, calls, /^SENT FAIL price: film\/price\.json's lines are not the plan's at its rates: clip-1 /, /\(and [1-9]\d* more\)/, at);
 });
 test("the sent check: rates under list fail, naming the rate, even with lines and a ceiling worked out from them", () => {
-  const { dir, calls, path } = fittedRun();
+  const { dir, calls, at, path } = fittedRun();
   rewriteJson(path, (p) => {
     const lines = p.lines.map((l) => (l.step.startsWith("clip-") ? { ...l, rate_usd: 0.03, usd: Math.round(l.units * 0.03 * 1000) / 1000 } : l));
     const total = Math.round(lines.reduce((t, l) => t + l.units * l.rate_usd, 0) * 1000) / 1000;
     return { ...p, rates: { ...p.rates, clip: 0.03 }, lines, plan_usd: total, max_fal_usd: total };
   });
-  sentFails(dir, calls, /^SENT FAIL price: film\/price\.json's rates: --rates clip=0\.03: fal-ai\/kling-video\/v3\/pro\/image-to-video's rate is outside 0\.112 to 0\.448 USD/);
+  sentFails(dir, calls, /^SENT FAIL price: film\/price\.json's rates: --rates clip=0\.03: fal-ai\/kling-video\/v3\/pro\/image-to-video's rate is outside 0\.112 to 0\.448 USD/, undefined, at);
 });
 test("the sent check: a call sent under the run's stem that the plan has no line for fails, naming the call", () => {
-  const { dir, calls } = fittedRun();
-  sentFails(dir, [...calls, ISOLATE_CALL("mu-abcd1234-isolate-2")], /^SENT FAIL price: the call sent as mu-abcd1234-isolate-2 has no line in the plan's price/);
+  const { dir, calls, at } = fittedRun();
+  sentFails(dir, [...calls, ISOLATE_CALL("mu-abcd1234-isolate-2")], /^SENT FAIL price: the call sent as mu-abcd1234-isolate-2 has no line in the plan's price/, undefined, at);
+});
+
+// ---------- review of #48: the ceiling is the case's, cost bills what the plan prices, unsent steps, one remake at once ----------
+// The run's first price records whatever --max the model gave it, none included, so the sent check reads the user's
+// ceiling from the case's own prompt.md in this repo (never the run's copy): film/price.json's max_fal_usd, and
+// film/ceiling.json's when it is there, must be that input's (null only when it sets none), and the plan and the calls
+// sent are held to it.
+test("the sent check holds the run to the case's own max_fal_usd from its prompt.md, never the run's record of it", () => {
+  // The case sets 6 and the run's first price left --max out: priced with no ceiling, $6.153 built and sent.
+  const six = sentRun();
+  const r6 = checkAt(checkWithCeiling(6), reportOf(six.dir, six.calls), six.dir);
+  assert.equal(r6.status, 1, r6.stdout);
+  assert.match(r6.stdout, /^SENT FAIL price: film\/price\.json's plan_usd 6\.153 is over the case's max_fal_usd 6 \(its prompt\.md input\) \(and \d+ more\)\n$/);
+  // The case sets 7, which the plan fits, and the price was still judged against no ceiling.
+  const seven = sentRun();
+  const at7 = checkWithCeiling(7);
+  const r7 = checkAt(at7, reportOf(seven.dir, seven.calls), seven.dir);
+  assert.equal(r7.status, 1, r7.stdout);
+  assert.match(r7.stdout, /^SENT FAIL price: film\/price\.json's max_fal_usd is null, not the case's input max_fal_usd 7 \(its prompt\.md\)/);
+  // Priced at 7, as the run should: it passes. film/ceiling.json then says another ceiling: it fails, naming the file.
+  assert.match(kit(seven.dir, "price", "--film", "film", "--rates", RATES, "--max", "7").stdout, /: FITS\n/);
+  assert.equal(checkAt(at7, reportOf(seven.dir, seven.calls), seven.dir).stdout, "SENT PASS n=16\n");
+  writeFileSync(join(seven.dir, "film", "ceiling.json"), JSON.stringify({ max_fal_usd: null }) + "\n");
+  const ceiled = checkAt(at7, reportOf(seven.dir, seven.calls), seven.dir);
+  assert.equal(ceiled.status, 1, ceiled.stdout);
+  assert.equal(ceiled.stdout, "SENT FAIL price: film/ceiling.json records max_fal_usd null, not the case's input max_fal_usd 7 (its prompt.md)\n");
+  // short-song sets none: a price at a ceiling the user never set is not the input's.
+  const none = sentRun();
+  assert.match(kit(none.dir, "price", "--film", "film", "--rates", RATES, "--max", "100").stdout, /: FITS\n/);
+  const r0 = check(reportOf(none.dir, none.calls), none.dir);
+  assert.equal(r0.status, 1, r0.stdout);
+  assert.match(r0.stdout, /^SENT FAIL price: film\/price\.json's max_fal_usd is 100, not the case's input max_fal_usd null \(its prompt\.md\)/);
+  // A prompt.md whose max_fal_usd is not a number: no verdict.
+  const r = spawnSync(process.execPath, [checkWithCeiling("six"), reportOf(none.dir, none.calls), none.dir], { encoding: "utf8" });
+  assert.equal(r.status, 2, r.stdout);
+  assert.match(r.stdout, /^SENT VOID .*prompt\.md.*max_fal_usd/);
+});
+
+// cost bills from the plan priced again at film/price.json's rates, after the checks stills, remake and clips make
+// (the plan's hash, the rates in band, the recorded ceiling, the plan fitting it): never from the file's own lines.
+test("cost bills the plan's price at the price's rates after the same checks the builders make, never the file's lines", () => {
+  const steps = stepsOf(full.shots);
+  const costOf = (dir) => kit(dir, "cost", "--film", "film", "--stem", "abcd1234", "--sent", steps.join(","));
+  const pricePath = (dir) => join(dir, "film", "price.json");
+  const costPath = (dir) => join(dir, "film", "cost.json");
+  const real = readFileSync(costPath(full.dir), "utf8");
+  // The clip lines at $0 by hand, the hash, rates, max and fits untouched: billed at the plan's price all the same.
+  const zero = copyOf("cost-zero-lines");
+  rewriteJson(pricePath(zero), (p) => ({ ...p, lines: p.lines.map((l) => (l.step.startsWith("clip-") ? { ...l, usd: 0 } : l)) }));
+  const z = costOf(zero);
+  assert.equal(z.status, 0, z.stderr);
+  assert.deepEqual(JSON.parse(readFileSync(costPath(zero), "utf8")), JSON.parse(real));
+  const refused = [
+    ["no lines", (d) => rewriteJson(pricePath(d), ({ lines, ...p }) => p), /film\/price\.json/],
+    ["not JSON", (d) => writeFileSync(pricePath(d), "{"), /film\/price\.json/],
+    ["a plan edited after its price", (d) => writeFileSync(join(d, "film", "plan.json"), readFileSync(join(d, "film", "plan.json"), "utf8") + " "), /the plan changed since it was priced/],
+    ["rates under list", (d) => rewriteJson(pricePath(d), (p) => ({ ...p, rates: { ...p.rates, clip: 0.03 } })), /--rates clip=0\.03/],
+    ["a ceiling the run never recorded", (d) => rewriteJson(pricePath(d), (p) => ({ ...p, max_fal_usd: 1000 })), /film\/ceiling\.json/],
+    ["fits false", (d) => rewriteJson(pricePath(d), (p) => ({ ...p, fits: false })), /over the ceiling you set/],
+  ];
+  for (const [what, change, why] of refused) {
+    const dir = copyOf("cost-judged");
+    change(dir);
+    const before = readFileSync(costPath(dir), "utf8");
+    const r = costOf(dir);
+    assert.equal(r.status, 2, `${what}: ${r.status} ${r.stdout}${r.stderr}`);
+    assert.equal(r.stdout, "", what);
+    assert.match(r.stderr, why, what);
+    assert.doesNotMatch(r.stderr, /TypeError|at file:/, `${what}: an error in words, never a stack`);
+    assert.equal(readFileSync(costPath(dir), "utf8"), before, `${what}: film/cost.json is left as it was`);
+  }
+});
+
+// A run that stops after a builder wrote its record, before every call was sent, says which recorded steps were never
+// sent: --unsent bills them nothing and keeps them out of --sent. The answer never calls them paid, and the sent check
+// ties film/cost.json's steps to the calls sent.
+test("cost --unsent names a recorded still or clip the run never sent: billed nothing, never also --sent, only recorded ones", () => {
+  const steps = stepsOf(full.shots);
+  const last = `clip-${full.shots.at(-1).n}`;
+  const billed = JSON.parse(readFileSync(join(full.dir, "film", "cost.json"), "utf8"));
+  const dir = copyOf("cost-unsent");
+  const costPath = join(dir, "film", "cost.json");
+  const r = kit(dir, "cost", "--film", "film", "--stem", "abcd1234", "--sent", steps.filter((s) => s !== last).join(","), "--unsent", last);
+  assert.equal(r.status, 0, r.stderr);
+  const c = JSON.parse(readFileSync(costPath, "utf8"));
+  assert.equal(c.steps.some((s) => s.step === last), false);
+  assert.deepEqual(c.unsent, [last]);
+  assert.equal(c.total, Math.round((billed.total - billed.steps.find((s) => s.step === last).usd) * 1000) / 1000);
+  // The answer field it prints is the schema's: steps and total.
+  const printed = JSON.parse(r.stdout.slice(r.stdout.indexOf("{")));
+  assert.deepEqual(Object.keys(printed.fal_cost_usd).sort(), ["steps", "total"]);
+  const written = readFileSync(costPath, "utf8");
+  const cases = [
+    ["in both --sent and --unsent", ["--sent", steps.join(","), "--unsent", last], new RegExp(`mu-abcd1234-${last}`)],
+    ["a still the records don't hold", ["--sent", steps.join(","), "--unsent", "still-99"], /mu-abcd1234-still-99/],
+    ["the isolation, which no record holds", ["--sent", steps.filter((s) => s !== "isolate").join(","), "--unsent", "isolate"], /mu-abcd1234-isolate/],
+    ["named twice", ["--sent", steps.filter((s) => s !== last).join(","), "--unsent", `${last},${last}`], new RegExp(`mu-abcd1234-${last}`)],
+  ];
+  for (const [what, flags, key] of cases) {
+    const no = kit(dir, "cost", "--film", "film", "--stem", "abcd1234", ...flags);
+    assert.equal(no.status, 2, `${what}: ${no.stdout}`);
+    assert.equal(no.stdout, "", what);
+    assert.match(no.stderr, key, what);
+    assert.equal(readFileSync(costPath, "utf8"), written, `${what}: film/cost.json is left as it was`);
+  }
+});
+
+test("answer: a step film/cost.json lists as never sent is billed nothing and never called paid", () => {
+  const dir = copyOf("answer-unsent");
+  factsAt(dir, DONE);
+  const last = `clip-${full.shots.at(-1).n}`;
+  const path = join(dir, "film", "cost.json");
+  const c = JSON.parse(readFileSync(path, "utf8"));
+  const gone = c.steps.find((s) => s.step === last);
+  const unsentCost = { steps: c.steps.filter((s) => s !== gone), total: Math.round((c.total - gone.usd) * 1000) / 1000, unsent: [last] };
+  writeFileSync(path, JSON.stringify(unsentCost));
+  const a = replyOf(answerOf(dir));
+  assert.deepEqual(a.fal_cost_usd, { steps: unsentCost.steps, total: unsentCost.total });
+  assert.doesNotMatch(a.report_markdown, new RegExp(`^\\| ${last} \\|`, "m"), "no cost row for it");
+  assert.match(a.report_markdown, new RegExp(`never sent[^\\n]*mu-abcd1234-${last}`));
+  const variants = [
+    ["listed as never sent and billed", { ...c, unsent: [last] }],
+    ["a step the records don't hold", { ...unsentCost, unsent: [last, "still-99"] }],
+  ];
+  for (const [what, cost] of variants) {
+    writeFileSync(path, JSON.stringify(cost));
+    assert.match(refusedBy(answerOf(dir), what), /film\/cost\.json/, what);
+  }
+});
+
+test("the sent check reads film/cost.json: every step it bills was sent under its key, and every call sent under the run's stem is billed there", () => {
+  const costPath = (d) => join(d, "film", "cost.json");
+  const cases = [
+    ["no cost", (d) => rmSync(costPath(d)), /^SENT FAIL cost: the run left no film\/cost\.json/],
+    ["a call sent that cost leaves out", (d) => rewriteJson(costPath(d), (c) => ({ ...c, steps: c.steps.filter((s) => s.step !== "clip-2") })), /^SENT FAIL cost: the call sent as mu-abcd1234-clip-2 is not in film\/cost\.json's steps\n$/],
+    ["a call sent that cost lists as never sent", (d) => rewriteJson(costPath(d), (c) => ({ ...c, steps: c.steps.filter((s) => s.step !== "clip-2"), unsent: ["clip-2"] })), /^SENT FAIL cost: the call sent as mu-abcd1234-clip-2 is not in film\/cost\.json's steps \(it lists it as never sent\)\n$/],
+    ["a step billed that was never sent", (d) => rewriteJson(costPath(d), (c) => ({ ...c, steps: [...c.steps, { ...c.steps[0], step: "isolate", key: "mu-abcd1234-isolate" }] })), /^SENT FAIL cost: film\/cost\.json bills mu-abcd1234-isolate as sent, and no call was sent under that key\n$/],
+  ];
+  for (const [what, change, line] of cases) {
+    const { dir, calls } = sentRun();
+    change(dir);
+    const r = check(reportOf(dir, calls), dir);
+    assert.equal(r.status, 1, `${what}: ${r.stdout}`);
+    assert.match(r.stdout, line, what);
+  }
+});
+
+// Two remakes at once both read the record before either wrote it: both pass the limit and the second write drops the
+// first one's entry. remake takes media/stills.json.lock (an exclusive create) for its read and write, and removes it
+// when done; a lock that is there refuses, naming it, with nothing sent or written.
+test("remake takes an exclusive lock on media/stills.json: a lock held refuses with nothing printed or written, and remake always removes its own", () => {
+  const dir = stillsDir({ shots: [4, 4, 4, 4] });
+  assert.equal(stillsOf(dir).status, 0);
+  const file = join(dir, "media", "stills.json");
+  const lock = `${file}.lock`;
+  const before = readFileSync(file, "utf8");
+  const remakeOf = (n) => kit(dir, "remake", "--film", "film", "--file", "media/stills.json", "--shot", String(n), "--picture", "a teal quay at dusk");
+  writeFileSync(lock, "");
+  const held = remakeOf(1);
+  assert.equal(held.status, 2, held.stdout);
+  assert.equal(held.stdout, "", "nothing to send");
+  assert.match(held.stderr, /media\/stills\.json\.lock/);
+  assert.equal(readFileSync(file, "utf8"), before, "the record is left as it was");
+  assert.ok(existsSync(lock), "another run's lock is never removed");
+  rmSync(lock);
+  assert.equal(remakeOf(1).status, 0);
+  assert.equal(existsSync(lock), false, "a remake done removes its lock");
+  const again = remakeOf(1);
+  assert.equal(again.status, 2, "never a second remake of a shot");
+  assert.equal(existsSync(lock), false, "a remake refused removes its lock");
 });
