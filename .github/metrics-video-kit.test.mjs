@@ -13,6 +13,10 @@ import vm from "node:vm";
 const KIT = new URL("../templates/metrics-video/skills/metrics-video/kit/", import.meta.url).pathname;
 const root = mkdtempSync(join(tmpdir(), "mv-kit-"));
 let seq = 0;
+// One answer of Stripe's balance list as AgentRun files it (the template's `file` setting on the tool):
+// stripe/STRIPE_LIST_BALANCE_TRANSACTIONS-<time>-<id>.json. The kit reads these, never a page the run wrote.
+const PAGE = "STRIPE_LIST_BALANCE_TRANSACTIONS-2026-11-23T07-00-01-000Z-0a1b2c3d.json";
+const FILED = /^STRIPE_LIST_BALANCE_TRANSACTIONS-.+\.json$/;
 
 // One balance transaction, whole as Stripe lists it (the fields the kit reads, and `object`).
 const txn = (created, currency, reporting_category, amount, fee = 0) => ({
@@ -28,7 +32,7 @@ function compute(name, items, today, carried) {
   const film = join(dir, "film");
   mkdirSync(pages, { recursive: true });
   cpSync(KIT, film, { recursive: true });
-  writeFileSync(join(pages, "raw-1.json"), JSON.stringify({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more: false }));
+  writeFileSync(join(pages, PAGE), JSON.stringify({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more: false }));
   const args = [join(KIT, "metrics.mjs"), "compute", "--today", today, "--timezone", "UTC", "--pages", pages, "--film", film];
   if (carried) {
     writeFileSync(join(dir, "carried.json"), JSON.stringify(carried));
@@ -123,7 +127,7 @@ test("a week in more currencies than the answer can hold is refused in words, ne
   const pages = join(dir, "stripe");
   mkdirSync(pages, { recursive: true });
   cpSync(KIT, join(dir, "film"), { recursive: true });
-  writeFileSync(join(pages, "raw-1.json"), JSON.stringify({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more: false }));
+  writeFileSync(join(pages, PAGE), JSON.stringify({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more: false }));
   const r = spawnSync(process.execPath, [join(KIT, "metrics.mjs"), "compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", pages, "--film", join(dir, "film")], { encoding: "utf8" });
   assert.notEqual(r.status, 0, `21 currencies in one week: ${r.stdout.slice(0, 300)}`);
   assert.match(r.stderr, /21 currencies/);
@@ -158,7 +162,7 @@ test("a week with more kinds of movement than the answer can hold is refused in 
   const pages = join(dir, "stripe");
   mkdirSync(pages, { recursive: true });
   cpSync(KIT, join(dir, "film"), { recursive: true });
-  writeFileSync(join(pages, "raw-1.json"), JSON.stringify({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more: false }));
+  writeFileSync(join(pages, PAGE), JSON.stringify({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more: false }));
   const r = spawnSync(process.execPath, [join(KIT, "metrics.mjs"), "compute", "--today", "2026-11-23", "--timezone", "UTC", "--pages", pages, "--film", join(dir, "film")], { encoding: "utf8" });
   assert.notEqual(r.status, 0, `41 kinds of movement left out in one week: ${r.stdout.slice(0, 300)}`);
   assert.match(r.stderr, /41 kinds of movement/);
@@ -273,7 +277,7 @@ function scanRun(name, items, files, extra = [], skill) {
   const dir = join(root, name);
   mkdirSync(join(dir, "stripe"), { recursive: true });
   if (skill) cpSync(skill, join(dir, ".agents", "skills", "metrics-video"), { recursive: true });
-  writeFileSync(join(dir, "stripe", "raw-1.json"), JSON.stringify({ object: "list", data: items, has_more: false }));
+  writeFileSync(join(dir, "stripe", PAGE), JSON.stringify({ object: "list", data: items, has_more: false }));
   for (const [path, body] of Object.entries(files)) {
     mkdirSync(join(dir, path, ".."), { recursive: true });
     writeFileSync(join(dir, path), typeof body === "string" ? body : JSON.stringify(body));
@@ -305,7 +309,7 @@ function wordWarned(r, file, why) {
 const MARK = "metrics_video_final_warned";
 const markOf = (dir) => {
   try {
-    return JSON.parse(readFileSync(join(dir, "stripe", "raw-1.json"), "utf8"))[MARK];
+    return JSON.parse(readFileSync(join(dir, "stripe", PAGE), "utf8"))[MARK];
   } catch {
     return undefined;
   }
@@ -378,7 +382,7 @@ function fixtureRun(name, today, { items = [], said = "", as = name, edit, befor
   mkdirSync(join(dir, "media"), { recursive: true });
   cpSync(SKILL, join(dir, ".agents", "skills", "metrics-video"), { recursive: true });
   cpSync(KIT, join(dir, "film"), { recursive: true });
-  writeFileSync(join(dir, "stripe", "raw-1.json"), JSON.stringify({ object: "list", data: [...items, ...fixtureItems(name)], has_more: false }));
+  writeFileSync(join(dir, "stripe", PAGE), JSON.stringify({ object: "list", data: [...items, ...fixtureItems(name)], has_more: false }));
   const node = (...a) => spawnSync(process.execPath, [join(dir, "film", a[0]), ...a.slice(1)], { encoding: "utf8", cwd: dir });
   const c = node("metrics.mjs", "compute", "--today", today, "--timezone", "UTC", "--pages", join(dir, "stripe"), "--film", join(dir, "film"), "--business", "Larkspur Ceramics");
   assert.equal(c.status, 0, `compute ${name}: ${c.stderr}${c.stdout}`);
@@ -394,7 +398,7 @@ function fixtureRun(name, today, { items = [], said = "", as = name, edit, befor
   const scan = (...final) => {
     const r = node("metrics.mjs", "scan", "--pages", join(dir, "stripe"), "--root", dir, ...final);
     // Exit 0 from a --final always means the raw pages are gone.
-    if (final.length && r.status === 0) assert.deepEqual(readdirSync(join(dir, "stripe")).filter((f) => /^raw-\d+\.json$/.test(f)), [], `${as}: a --final that exits 0 leaves no raw page`);
+    if (final.length && r.status === 0) assert.deepEqual(readdirSync(join(dir, "stripe")).filter((f) => FILED.test(f)), [], `${as}: a --final that exits 0 leaves no filed page`);
     return { status: r.status, out: r.stdout + r.stderr, err: r.stderr };
   };
   const first = scan();
@@ -759,11 +763,11 @@ test("after billing a word alone only warns, naming the file and line; a name st
   assert.doesNotMatch(r.final.err, /track/i, "the warning never prints the word");
   // The first --final that warns keeps the raw pages for one more --final after the agent's edit, notes the files and
   // lines it warned on (never a word), and says so; it is not the clean last scan.
-  assert.ok(existsSync(join(r.dir, "stripe", "raw-1.json")), "the raw pages stay for the one rerun");
+  assert.ok(existsSync(join(r.dir, "stripe", PAGE)), "the raw pages stay for the one rerun");
   const said = JSON.parse(r.final.out.split("\n").find((l) => l.startsWith("{")));
   assert.equal(said.clean, false, "the first --final that warns is not the clean last scan");
   assert.deepEqual(said.raw_pages_removed, []);
-  assert.deepEqual(JSON.parse(readFileSync(join(r.dir, "stripe", "raw-1.json"), "utf8"))[MARK], { warned: [{ file: "media/answer.json", line }] }, "the note is in the raw pages");
+  assert.deepEqual(JSON.parse(readFileSync(join(r.dir, "stripe", PAGE), "utf8"))[MARK], { warned: [{ file: "media/answer.json", line }] }, "the note is in the raw pages");
   assert.ok(!existsSync(join(r.dir, "media", "final-warned.json")), "no note the run's own files hold");
   assert.match(r.final.err, /run scan --pages stripe --final once more/);
   // On a line that holds a key and its string ("note": "..."), the line is still found, its value read unescaped.
@@ -775,7 +779,7 @@ test("after billing a word alone only warns, naming the file and line; a name st
   const named = fixtureRun("week-over-week", "2026-11-23", { items: [described("Track Day Pass", 6500), described("Commission for Marisol Quintero", 20000)], as: "named-after-billing", answer: { ...kept, thanks: "Thank you, Marisol Quintero." } });
   assert.equal(named.first.status, 0, `the first scan: ${named.first.out}`);
   customerData(named.final, `the last scan, a name pair in the answer: ${named.final.out}`);
-  assert.ok(existsSync(join(named.dir, "stripe", "raw-1.json")), "the raw pages stay when the film is stopped");
+  assert.ok(existsSync(join(named.dir, "stripe", PAGE)), "the raw pages stay when the film is stopped");
   // Before billing, a word alone still stops the film.
   customerData(scanRun("word-before-billing", [described("Commission for Marisol Quintero", 20000)], { "media/vo.txt": "Thanks, Marisol." }), "the first scan, a first name alone in the narration");
 });
@@ -794,7 +798,7 @@ test("after a warning, one more --final checks the agent's edit and is the last"
     const path = join(dir, "media", "answer.json");
     writeFileSync(path, JSON.stringify(change(JSON.parse(readFileSync(path, "utf8"))), null, 1));
   };
-  const pages = (dir) => existsSync(join(dir, "stripe", "raw-1.json"));
+  const pages = (dir) => existsSync(join(dir, "stripe", PAGE));
   const marker = (dir) => markOf(dir) !== undefined;
   const warnedRun = (as, answer) => {
     const r = fixtureRun("week-over-week", "2026-11-23", { items, as, answer });
@@ -839,7 +843,7 @@ test("after a warning, one more --final checks the agent's edit and is the last"
 });
 
 // ---------- the HARD read r3 ----------
-const pagesLeft = (dir) => readdirSync(join(dir, "stripe")).filter((f) => /^raw-\d+\.json$/.test(f));
+const pagesLeft = (dir) => readdirSync(join(dir, "stripe")).filter((f) => FILED.test(f));
 const finalIn = (dir, ...extra) => {
   const r = spawnSync(process.execPath, [join(dir, "film", "metrics.mjs"), "scan", "--pages", join(dir, "stripe"), "--root", dir, "--final", ...extra], { encoding: "utf8", cwd: dir });
   return { status: r.status, out: r.stdout + r.stderr, err: r.stderr };
@@ -889,18 +893,18 @@ test("a re-voice's script is scanned before it is sent: agent.md's step 6 runs t
   assert.match(r.out, /media\/vo\.txt/);
 });
 
-test("the last --final removes the raw pages on every exit: a refused --business, a page gap, a throw, a signal", async () => {
+test("the last --final removes the filed pages on every exit: a refused --business, a page the run wrote, a throw, a signal", async () => {
   // A --business that isn't compute's (exit 2).
   const business = warnedOnce("r3-exit-business");
   const a = finalIn(business, "--business", "Someone Else");
   assert.equal(a.status, 2, a.out);
   assert.deepEqual(pagesLeft(business), [], "a refused --business on the last --final");
-  // A gap in the pages (exit 3, from reading them).
+  // A page the run wrote itself beside the filed one (exit 3, refused).
   const gap = warnedOnce("r3-exit-gap");
-  writeFileSync(join(gap, "stripe", "raw-3.json"), readFileSync(join(gap, "stripe", "raw-1.json")));
+  writeFileSync(join(gap, "stripe", "raw-3.json"), readFileSync(join(gap, "stripe", PAGE)));
   const b = finalIn(gap);
   assert.equal(b.status, 3, b.out);
-  assert.deepEqual(pagesLeft(gap), [], "a page gap on the last --final: every page goes");
+  assert.deepEqual(pagesLeft(gap), [], "a page the run wrote, on the last --final: every filed page goes");
   // A throw: a run file it can't read (EACCES). Root reads it anyway, so the row needs a user that isn't.
   if (process.getuid?.() !== 0) {
     const thrown = warnedOnce("r3-exit-throw");
@@ -966,7 +970,7 @@ test("exit 0 means the raw pages are gone: the first warn-only --final exits 4, 
   // What does reset it: rewriting Stripe's raw page without the note (the skill never touches stripe/). The next
   // --final is a first again: it warns, keeps the pages and exits 4, never 0.
   const rewritten = warnedOnce("r3-mark-rewritten");
-  const page = join(rewritten, "stripe", "raw-1.json");
+  const page = join(rewritten, "stripe", PAGE);
   const { [MARK]: _, ...bare } = JSON.parse(readFileSync(page, "utf8"));
   writeFileSync(page, JSON.stringify(bare));
   const c = finalIn(rewritten);
@@ -1051,15 +1055,16 @@ test("code the run writes outside film/ is read for a name's words; the film's o
 const TOOL = "STRIPE_LIST_BALANCE_TRANSACTIONS";
 let filedClock = Date.parse("2026-11-23T07:00:00.000Z");
 const filedName = () => `${TOOL}-${new Date((filedClock += 1234)).toISOString().replace(/[:.]/g, "-")}-${createHash("sha256").update(String(filedClock)).digest("hex").slice(0, 8)}.json`;
-const FILED = /^STRIPE_LIST_BALANCE_TRANSACTIONS-.+\.json$/;
 const composioAnswer = (list) => ({ data: list, successful: true, error: null });
 const stripeList = (items, has_more = false) => ({ object: "list", data: [...items].sort((a, b) => b.created - a.created), has_more, url: "/v1/balance_transactions" });
 // A run folder with these answers filed in stripe/ (each an object written as serve writes the tool's text, or a string
-// written as it is), the kit in film/. Returns the folder and each filed name, in the order filed.
+// written as it is), the skill installed and the kit in film/, as a run has them. Returns the folder and each filed
+// name, in the order filed.
 function filedFolder(name, answers) {
   const dir = join(root, `filed-${name}`);
   mkdirSync(join(dir, "stripe"), { recursive: true });
   mkdirSync(join(dir, "media"), { recursive: true });
+  cpSync(SKILL, join(dir, ".agents", "skills", "metrics-video"), { recursive: true });
   cpSync(KIT, join(dir, "film"), { recursive: true });
   const names = answers.map((a) => {
     const n = filedName();
