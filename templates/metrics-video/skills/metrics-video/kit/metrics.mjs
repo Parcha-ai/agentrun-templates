@@ -71,16 +71,17 @@
 // The tool's result the model gets never holds it; the model's own bash can still open it, so the skill says never to.
 // A page the run wrote itself (stripe/raw-<n>.json) is refused by both, exit 3: the answers were not filed.
 // Every exit 3 that says to answer failed removes every page first (filed, or the run's own), so no copy of Stripe's
-// answers outlives a run that stops there. Exit 3 asking for the next page, or for the run's --today, keeps them for
+// answers outlives a run that stops there; but one, the refusal of --pages itself, which removes nothing and says to run
+// scan --pages stripe --purge from the run's folder first. Exit 3 asking for the next page, or for the run's --today, keeps them for
 // the compute that follows. A page is removed by its name in the folder: a link goes, never what it points at; a folder
 // is never entered, nor a pages folder that is itself a link.
 // --pages names a folder inside the run's folder, wherever its links lead: compute and scan refuse any other (exit 3),
 // read nothing there and remove nothing. The run's folder is the one that holds the kit's own folder (film/ in a run),
 // never where the kit runs nor scan's --root: the run chooses both. It is never the pages folder itself.
-// The first --final's note is written only into a page that is a file of its own, never a link (nor a hard link: its file
-// has another name). Removal and the note work from
-// inside the folder checked (the same device and inode), and the note opens each page without following a link and
-// checks the open file is the one looked at: a name swapped after the check is never followed.
+// The first --final's note is written only into a page that is a file of its own, never a link (nor a hard link: its
+// file has another name). Removal and the note work from inside the folder checked (the same device and inode), and
+// the note opens each page without following a link and checks the open file is the one looked at: a name swapped
+// after the check is never followed.
 // A throw in compute removes the pages too, as its refusals do.
 // Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
 // them; the message names the scene), or customer data in a file (scan names the file and the item, never the value);
@@ -458,7 +459,7 @@ function inPagesFolder(dir, fn) {
 function checkPages(dir) {
   const { at, refused } = pagesFolder(dir);
   pagesAt = at;
-  if (refused) fail(3, `--pages ${dir}: ${refused}. The kit reads and removes pages only in a folder inside the run's (the folder that holds film/), never through a link, so it read and removed nothing. AgentRun files Stripe's answers in stripe/ in the run's folder: run from there with --pages stripe. Otherwise make nothing, pay nothing, and answer failed, failed_step "stripe", with these words.`);
+  if (refused) fail(3, `--pages ${dir}: ${refused}. The kit reads and removes pages only in a folder inside the run's (the folder that holds film/), never through a link, so it read and removed nothing. AgentRun files Stripe's answers in stripe/ in the run's folder: run from there with --pages stripe. Otherwise make nothing and pay nothing; this exit removed no page, so when stripe/ in the run's folder holds pages, run \`node film/metrics.mjs scan --pages stripe --purge\` from the run's folder first (with this --pages it would be refused too), then answer failed, failed_step "stripe", with these words.`);
 }
 // A refusal that ends the run's use of the pages (the message says to answer failed): every page goes before it exits,
 // so no copy of Stripe's answers outlives a run that stops here.
