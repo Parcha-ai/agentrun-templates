@@ -88,7 +88,8 @@
 // open file is the one looked at: a name swapped after the check, the folder's or a parent's, is never followed. A note
 // that can't be written whole (a short write, a full disk) stops the run: exit 3, every page removed. It is written whole
 // under a dot name of its own in that folder and renamed over the page, so a kill mid-write leaves the page as it was
-// (and that name, which --purge and every removal take with the pages). compute and scan stop (exit 3, every page
+// (and that name, which --purge and every removal take with the pages, and no scan searches there as a file the run
+// wrote). compute and scan stop (exit 3, every page
 // removed) on a page that is empty or JSON cut short: it is neither a list nor a filed error answer.
 // A throw in compute removes the pages too, as its refusals do.
 // Exit 2: wrong arguments, a film whose files don't match the kit (place reads every host and scene back after writing
@@ -1122,7 +1123,18 @@ const shownText = (t) =>
 const wordsIn = (text) => new Set((text.match(/\p{L}+/gu) ?? []).map((w) => w.toLowerCase()));
 // Every file the run wrote under `root`: dot-folders (the skills, the harness's own state) and node_modules are not
 // the run's, the raw pages are where the values come from, a binary file (audio, video, images) holds no text, and a
-// link is not followed (it points at a file the walk reaches anyway, or outside the run).
+// link is not followed (it points at a file the walk reaches anyway, or outside the run). A note's copy a killed --final
+// left (noteTemp's name) in the pages folder checked holds a page's values, not the run's words, and goes with the pages:
+// it is not searched there, and only there (the folder's real path is where checkPages found the pages). The same name
+// anywhere else is searched as any file the run wrote.
+const noteCopyHere = (dir, name) => {
+  if (!noteTemp(name) || pagesAt === null) return false;
+  try {
+    return realpathSync(dir) === pagesAt;
+  } catch {
+    return false;
+  }
+};
 function runFiles(root, raw) {
   const out = [];
   const walk = (dir) => {
@@ -1131,7 +1143,7 @@ function runFiles(root, raw) {
       const st = lstatSync(path);
       if (st.isDirectory()) {
         if (!name.startsWith(".") && name !== "node_modules") walk(path);
-      } else if (st.isFile() && !raw.has(path) && st.size <= 50e6) {
+      } else if (st.isFile() && !raw.has(path) && !noteCopyHere(dir, name) && st.size <= 50e6) {
         const bytes = readFileSync(path);
         if (!bytes.subarray(0, 8000).includes(0)) out.push({ path, text: bytes.toString("utf8") });
       }
