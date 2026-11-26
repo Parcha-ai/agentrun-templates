@@ -1901,7 +1901,7 @@ function editBoard(dir, change) {
   const lines = readFileSync(boardPath(dir), "utf8").split("\n");
   writeFileSync(boardPath(dir), change(lines).join("\n"));
 }
-const lineOf = (lines, n) => lines.findIndex((l) => l.startsWith(`${n} |`));
+const shotLineAt = (lines, n) => lines.findIndex((l) => l.startsWith(`${n} |`));
 // Each edit on its own copy of one built run: its records and calls stay the kit's, so only the storyboard differs.
 function boardCase(edit) {
   const { dir, calls } = sentRun();
@@ -1912,13 +1912,13 @@ test("the sent check holds storyboard.md to the case's shots in order, each line
   // short-song's 8 shots of 4 s (2 bars of 2 s), from 8.254 s of the song: shot n is film time 4(n-1) to 4n.
   assert.equal(boardCase(() => {}).stdout, "SENT PASS n=16\n", "the storyboard as written: it holds");
   const exact = [
-    ["shot 8 a bar late", (lines) => lines.with(lineOf(lines, 8), lines[lineOf(lines, 8)].replace("8 | 28-32 s", "8 | 30-32 s")),
+    ["shot 8 a bar late", (lines) => lines.with(shotLineAt(lines, 8), lines[shotLineAt(lines, 8)].replace("8 | 28-32 s", "8 | 30-32 s")),
       "SENT FAIL storyboard: shot 8's start is 30 s, not the plan's 28 s (film/plan.json: its start_s 36.254 less cut.start_s 8.254)\n"],
-    ["shot 8 ends a bar early", (lines) => lines.with(lineOf(lines, 8), lines[lineOf(lines, 8)].replace("8 | 28-32 s | 4 s", "8 | 28-30 s | 4 s")),
+    ["shot 8 ends a bar early", (lines) => lines.with(shotLineAt(lines, 8), lines[shotLineAt(lines, 8)].replace("8 | 28-32 s | 4 s", "8 | 28-30 s | 4 s")),
       "SENT FAIL storyboard: shot 8's end is 30 s, not the plan's 32 s (film/plan.json: its end_s 40.254 less cut.start_s 8.254)\n"],
-    ["shot 8's seconds a bar short", (lines) => lines.with(lineOf(lines, 8), lines[lineOf(lines, 8)].replace("8 | 28-32 s | 4 s", "8 | 28-32 s | 2 s")),
+    ["shot 8's seconds a bar short", (lines) => lines.with(shotLineAt(lines, 8), lines[shotLineAt(lines, 8)].replace("8 | 28-32 s | 4 s", "8 | 28-32 s | 2 s")),
       "SENT FAIL storyboard: shot 8's seconds is 2 s, not the plan's 4 s (film/plan.json: its seconds)\n"],
-    ["shots 3 and 4's times swapped, their numbers in place", (lines) => lines.with(lineOf(lines, 3), lines[lineOf(lines, 3)].replace("3 | 8-12 s", "3 | 12-16 s")).with(lineOf(lines, 4), lines[lineOf(lines, 4)].replace("4 | 12-16 s", "4 | 8-12 s")),
+    ["shots 3 and 4's times swapped, their numbers in place", (lines) => lines.with(shotLineAt(lines, 3), lines[shotLineAt(lines, 3)].replace("3 | 8-12 s", "3 | 12-16 s")).with(shotLineAt(lines, 4), lines[shotLineAt(lines, 4)].replace("4 | 12-16 s", "4 | 8-12 s")),
       "SENT FAIL storyboard: shot 3's start is 12 s, not the plan's 8 s (film/plan.json: its start_s 16.254 less cut.start_s 8.254) (and 3 more)\n"],
     ["the style line after shot 1", (lines) => [lines[1], lines[0], ...lines.slice(2)],
       "SENT FAIL storyboard: storyboard.md's first line is not its style line (`Style: <one look for every shot>`)\n"],
@@ -1931,12 +1931,12 @@ test("the sent check holds storyboard.md to the case's shots in order, each line
   // A line too many, a line missing, two lines swapped whole and no storyboard: the kit can't rebuild the stills from
   // that storyboard either, so more reasons follow; the storyboard's comes first, naming the shot.
   const first = [
-    ["a 13th line", (lines) => lines.toSpliced(lineOf(lines, 8) + 1, 0, '13 | 32-36 s | 4 s | lyric: "none" | picture: a paper ferry 13 on teal water, wide | motion: slow push in 13'),
+    ["a 13th line", (lines) => lines.toSpliced(shotLineAt(lines, 8) + 1, 0, '13 | 32-36 s | 4 s | lyric: "none" | picture: a paper ferry 13 on teal water, wide | motion: slow push in 13'),
       /^SENT FAIL storyboard: storyboard\.md has a line for shot 13; the case has 8 shots \(and \d+ more\)\n$/],
-    ["shot 5's line missing", (lines) => lines.toSpliced(lineOf(lines, 5), 1), /^SENT FAIL storyboard: storyboard\.md has no line for shot 5 \(and \d+ more\)\n$/],
-    ["shots 3 and 4 swapped whole", (lines) => lines.with(lineOf(lines, 3), lines[lineOf(lines, 4)]).with(lineOf(lines, 4), lines[lineOf(lines, 3)]),
+    ["shot 5's line missing", (lines) => lines.toSpliced(shotLineAt(lines, 5), 1), /^SENT FAIL storyboard: storyboard\.md has no line for shot 5 \(and \d+ more\)\n$/],
+    ["shots 3 and 4 swapped whole", (lines) => lines.with(shotLineAt(lines, 3), lines[shotLineAt(lines, 4)]).with(shotLineAt(lines, 4), lines[shotLineAt(lines, 3)]),
       /^SENT FAIL storyboard: storyboard\.md's line for shot 4 comes before shot 3's \(and \d+ more\)\n$/],
-    ["shot 6 twice", (lines) => lines.toSpliced(lineOf(lines, 6) + 1, 0, lines[lineOf(lines, 6)]), /^SENT FAIL storyboard: storyboard\.md has 2 lines for shot 6 \(and \d+ more\)\n$/],
+    ["shot 6 twice", (lines) => lines.toSpliced(shotLineAt(lines, 6) + 1, 0, lines[shotLineAt(lines, 6)]), /^SENT FAIL storyboard: storyboard\.md has 2 lines for shot 6 \(and \d+ more\)\n$/],
   ];
   for (const [what, change, line] of first) {
     const r = boardCase((dir) => editBoard(dir, change));
