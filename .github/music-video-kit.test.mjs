@@ -9,13 +9,13 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { tempRoot } from "./temp-root.mjs";
 
 const KIT = new URL("../templates/music-video/skills/music-video/kit/", import.meta.url).pathname;
 const which = (bin) => spawnSync("sh", ["-c", `command -v ${bin}`], { encoding: "utf8" }).stdout.trim();
 const REAL_FFMPEG = which("ffmpeg");
-const root = mkdtempSync(join(tmpdir(), "mu-kit-"));
+const root = tempRoot("mu-kit-");
 
 // A PATH shim for ffmpeg: one JSON line per call with its start and end (monotonic), whether another call was running
 // when it started, and the call's peak resident memory (the child's ru_maxrss, in KiB).
@@ -1181,10 +1181,14 @@ test("answer: missing lyrics say why: lyrics off, no words in the song, the isol
   assert.ok(c.report_markdown.includes(said));
 });
 
+// A copy of a finished run for a test that changes it. film/assets (the joined shots.mp4 and the clips and stills place
+// read, about 126 MB a copy) is left out: only place reads it, and no test runs place on a copy.
+const copyRun = (from, dir) => cpSync(from, dir, { recursive: true, filter: (src) => src !== join(from, "film", "assets") });
+
 test("answer: unreadable or missing input exits non-zero with words and prints no answer", () => {
   const variant = (name, change) => {
     const dir = join(root, `broken-${name}-${++runs}`);
-    cpSync(full.dir, dir, { recursive: true });
+    copyRun(full.dir, dir);
     factsAt(dir, DONE);
     change(dir);
     const r = answerOf(dir);
@@ -1213,7 +1217,7 @@ const rewriteJson = (path, change) => writeFileSync(path, JSON.stringify(change(
 const KIT_SCHEMA = join(KIT, "music-video.schema.json");
 const copyOf = (name, from = full.dir) => {
   const dir = join(root, `${name}-${++runs}`);
-  cpSync(from, dir, { recursive: true });
+  copyRun(from, dir);
   return dir;
 };
 const refusedBy = (r, name) => {
