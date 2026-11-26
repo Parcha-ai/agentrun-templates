@@ -10,8 +10,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { tempRoot } from "./temp-root.mjs";
 
 const KIT = new URL("../templates/news-show/skills/news-show/kit/answer.mjs", import.meta.url).pathname;
 const EVALS = new URL("../templates/news-show/evals/", import.meta.url).pathname;
@@ -26,8 +26,10 @@ const SCRIPT = (name) => `${name}: ${"x".repeat(125 - name.length - 2)}`;
 const RATES = "still=0.15,voice=0.1,fabric=0.08";
 const SENT = ["anchor-image", ...ORDER.map((s) => `voice-${s}`), ...ANCHOR.map((s) => `anchor-${s}`)].join(",");
 
+// Every run folder is made inside one temp root, which is removed when the file ends.
+const root = tempRoot("ns-answer-");
 function folder() {
-  const dir = mkdtempSync(join(tmpdir(), "ns-answer-"));
+  const dir = mkdtempSync(join(root, "run-"));
   mkdirSync(join(dir, "film"));
   mkdirSync(join(dir, "media"));
   writeFileSync(join(dir, "film/show.json"), JSON.stringify({ segments: ORDER.map((name) => ({ name, script: SCRIPT(name) })) }));

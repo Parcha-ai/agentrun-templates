@@ -5,13 +5,13 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { appendFileSync, chmodSync, closeSync, constants, cpSync, existsSync, linkSync, mkdirSync, mkdtempSync, openSync, readdirSync, readFileSync, symlinkSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { appendFileSync, chmodSync, closeSync, constants, cpSync, existsSync, linkSync, mkdirSync, openSync, readdirSync, readFileSync, symlinkSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
 import { join } from "node:path";
+import { tempRoot } from "./temp-root.mjs";
 import vm from "node:vm";
 
 const KIT = new URL("../templates/metrics-video/skills/metrics-video/kit/", import.meta.url).pathname;
-const root = mkdtempSync(join(tmpdir(), "mv-kit-"));
+const root = tempRoot("mv-kit-");
 let seq = 0;
 // One answer of Stripe's balance list as AgentRun files it (the template's `file` setting on the tool):
 // stripe/STRIPE_LIST_BALANCE_TRANSACTIONS-<time>-<id>.json. The kit reads these, never a page the run wrote.
