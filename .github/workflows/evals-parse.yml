@@ -54,6 +54,9 @@ jobs:
       # The explainer's run keys, node only: code makes the one 8-character stem and each step's key, a resumed run
       # reuses it, and a run-keys file holding anything else is refused and never overwritten.
       - run: node --test .github/explainer-run-key.test.mjs
+      # The explainer's cost, node only: each step's fal_cost_usd from get_pricing's rates and the units, a step refused,
+      # failed or not run at 0, 3 decimals half up, and the total the sum of the listed steps.
+      - run: node --test .github/explainer-cost.test.mjs
       # The news show kit's answer script, on synthetic answers and media: the cost is worked out in code and its total is
       # the sum of the rounded steps; the check fails a typed total, a summary report, a report that is not media/report.md
       # byte for byte, a missing section or story link, and an error not quoted; R1's added rubric fact
