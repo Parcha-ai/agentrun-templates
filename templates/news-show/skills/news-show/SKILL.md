@@ -98,8 +98,9 @@ captions are measured) and say so in `notes`.
 It reads every voice's and clip's real length with ffprobe, lays the nine segments end to end (an anchor segment as
 long as its clip or voice, a voiceover segment 0.35 s of air either side), adds a 3 s end card, and writes
 `film/index.html`, `film/compositions/<segment>.html`, `film/compositions/endcard.html`,
-`film/compositions/captions.html`, `film/card/index.html`, `film/words.json`, `film/timeline.json` and
-`media/show.vtt`. It prints one JSON line: `method` is `captions_timing` in the answer; `segments` gives each
+`film/compositions/captions.html`, `film/card/index.html`, `film/words.json`, `film/timeline.json`,
+`film/captions-source.json` (each segment's method and the request_id its timestamps came from; the build's record,
+never written or edited by hand) and `media/show.vtt`. It prints one JSON line: `method` is `captions_timing` in the answer; `segments` gives each
 segment's `start` and `end` (the answer's `start_s` and `end_s`) and its mode (`video`, `panel` for an anchor image that
 is not 16:9, `desk`); `disclosure` gives the cold open's AI sentence and the second it ends. A warning that the
 sentence ends after 10 s means the cold open is too long before it: shorten it and voice it again (with a ceiling set,

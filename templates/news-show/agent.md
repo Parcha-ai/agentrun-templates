@@ -222,7 +222,8 @@ to follow what a voice says. The answer's `stories` and each segment's `script` 
 Save as each is done, with `web_save`: each voice's `audio.url` to `media/voice-<segment>.mp3`, the still to
 `media/anchor.png`. Never `write` a voice's timestamps: the run files each completed job's whole result at
 `evidence/fal/<request_id>.json`, and each segment's `timestamps` in `film/show.json` is that file, with the request_id
-fal answered for its voice's job. Only when the build says this server files none, write them as it says. With an
+fal answered for its voice's job. Only when the build says this server files none, write them as it says. Never
+`write` or edit `film/captions-source.json`: the build records there where each segment's timestamps came from. With an
 anchor image, `web_save` it to `media/anchor.<its extension>` once: it is the owner's own and is never changed. A voice's length V is `web_save`'s `duration_s` (none: `ffprobe` it, as the skill says).
 
 ## 6. The anchor speaks

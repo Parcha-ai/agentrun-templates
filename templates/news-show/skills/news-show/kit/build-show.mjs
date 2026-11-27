@@ -29,12 +29,16 @@
 // words share the time between the first letter's start and the last letter's end), measured (no timestamps: the words
 // share the voice's length). None of them is an error; the printed `method` is the weakest a segment used. A
 // timestamps file that is named but isn't there, isn't fal's chunks, is uneven, is a result object outside the run's
-// evidence/fal/ or another job's result stops the build first: exit 3, nothing written, and the message says what to pass.
+// evidence/fal/ (or a link there to one outside) or another job's result stops the build first: exit 3, nothing written,
+// and the message says what to pass.
+// It writes film/captions-source.json, one line per segment: its method and where its timestamps came from, the
+// request_id of the filed result it read ("bare list" for a list, null for none). Small, so a grader's cut input shows
+// it whole.
 // It prints one line of JSON: the method, the film's length, each segment's start, end, voice, clip and mode, and when
 // the cold open's AI sentence ends.
 import { spawnSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { dirname, extname, join, resolve } from "node:path";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from "node:fs";
+import { basename, dirname, extname, join, relative, resolve } from "node:path";
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, a, i, all) => (a.startsWith("--") ? [...acc, [a.slice(2), all[i + 1]]] : acc), []),
@@ -93,9 +97,11 @@ const refuse = (g, message) => {
 };
 const filedResults = () => (existsSync(RUN_FAL) ? readdirSync(RUN_FAL).filter((f) => f.endsWith(".json")) : []);
 const holds = (there) => `evidence/fal/ holds ${there.slice(0, 20).join(", ")}${there.length > 20 ? ", ..." : ""}`;
+// Each segment's timestamps and where they came from: the request_id of the filed result the build read (the file a
+// link in evidence/fal/ points at, never the name show.json gives), "bare list", or null.
 function readTimestamps(g) {
   const path = g.timestamps;
-  if (path === null || path === undefined || path === "") return [];
+  if (path === null || path === undefined || path === "") return { list: [], from: null };
   if (typeof path !== "string") refuse(g, `timestamps names a file, never holds fal's list. ${PASS}`);
   const filed = dirname(resolve(path)) === RUN_FAL;
   const bad = (why) => {
@@ -126,10 +132,14 @@ function readTimestamps(g) {
     bad(e.message);
   }
   let list;
+  let from = "bare list";
   if (Array.isArray(raw)) list = raw;
   else if (raw && typeof raw === "object" && !("characters" in raw)) {
     // A result object: fal's answer for one job, {audio, timestamps} for a voice.
     if (!filed) refuse(g, `${path} is a result object, which the kit takes only as the run filed it from fal's answer. ${PASS}`);
+    const read = realpathSync(path);
+    if (dirname(read) !== realpathSync(RUN_FAL)) refuse(g, `${path} is a link to ${relative(process.cwd(), read)}, a result object the run did not file. ${PASS}`);
+    from = basename(read, ".json");
     if (!("audio" in raw) && !("timestamps" in raw)) refuse(g, `${path} is not a voice's result (it holds ${Object.keys(raw).join(", ") || "nothing"}): pass this voice's request_id.`);
     list = raw.timestamps ?? [];
     if (!Array.isArray(list)) bad("its timestamps is not a list");
@@ -141,9 +151,9 @@ function readTimestamps(g) {
     if (st.length !== c.characters.length || en.length !== c.characters.length) bad(`chunk ${i + 1} has ${c.characters.length} characters, ${st.length} starts and ${en.length} ends`);
     if (![...st, ...en].every((x) => typeof x === "number" && Number.isFinite(x))) bad(`chunk ${i + 1} has a time that is not a number`);
   });
-  return list;
+  return { list, from };
 }
-for (const g of segs) g.chunks = readTimestamps(g);
+for (const g of segs) ({ list: g.chunks, from: g.from } = readTimestamps(g));
 
 // --- Lengths, from the files.
 function probe(path) {
@@ -486,5 +496,9 @@ const report = {
   cues: cues.length,
 };
 writeFileSync(join(filmDir, "timeline.json"), JSON.stringify(report, null, 1));
+writeFileSync(
+  join(filmDir, "captions-source.json"),
+  `{\n${timed.map((x) => ` ${JSON.stringify(x.g.name)}: ${JSON.stringify({ method: x.method, request_id: x.g.from })}`).join(",\n")}\n}\n`,
+);
 if (!disclosure || disclosure.spoken_by_s > 10) console.error(`build-show: the cold open's AI sentence ${disclosure ? `ends at ${disclosure.spoken_by_s} s` : "is missing"}: it must be said by 10 s`);
 console.log(JSON.stringify(report));
