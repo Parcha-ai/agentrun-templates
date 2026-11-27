@@ -168,7 +168,7 @@ test("nothing run (over the user's ceiling): every step 0 and the total 0", () =
   assert.equal(out.fal_cost_usd, 0);
 });
 
-test("rounding: 3 decimals, half up, so 1005 characters at $0.10 per 1000 is 0.101 (0.1005), not 0.1", () => {
+test("rounding: 3 decimals, half up: 1005 characters at $0.10 per 1000 is 0.101, and a $0.5005 portrait 0.501", () => {
   const out = cost(runDir({ "script.txt": chars(1005) }), ...STANDARD, "--portrait", "not_run", "--voiceover", "done", "--avatar", "not_run");
   assert.equal(step(out, "voiceover").fal_cost_usd, 0.101);
   // 0.5005 is stored as 0.50049999...: half up still makes it 0.501.
