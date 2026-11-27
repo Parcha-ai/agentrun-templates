@@ -270,14 +270,14 @@ const VOICE_ID = "b2c3d4e5-2222-4b3c-9d4e-1f2a3b4c5d6e";
 const audio = { url: "https://v3.fal.media/files/zebra/voice.mp3", content_type: "audio/mpeg", file_name: "output.mp3", file_size: 395200 };
 
 /** Runs the kit from a run's folder, as the agent does: take3's script, and `value` filed at `rel` (a path in that
- *  folder) unless it is undefined, given as --timestamps `rel`. */
-function fromRun(rel, value, audioSeconds = 24.7) {
+ *  folder) unless it is undefined, given as --timestamps `rel`. `also` files more results, by path. */
+function fromRun(rel, value, audioSeconds = 24.7, also = {}) {
   const dir = join(root, String(n++));
   mkdirSync(join(dir, "work"), { recursive: true });
   writeFileSync(join(dir, "work/script.txt"), TAKES.take3.script);
-  if (value !== undefined) {
-    mkdirSync(join(dir, dirname(rel)), { recursive: true });
-    writeFileSync(join(dir, rel), JSON.stringify(value));
+  for (const [at, one] of Object.entries(value === undefined ? also : { ...also, [rel]: value })) {
+    mkdirSync(join(dir, dirname(at)), { recursive: true });
+    writeFileSync(join(dir, at), JSON.stringify(one));
   }
   const r = spawnSync(process.execPath, [KIT, "--script", "work/script.txt", "--timestamps", rel, "--audio-seconds", String(audioSeconds), "--vtt", "media/explainer.vtt"], { encoding: "utf8", cwd: dir });
   const vttPath = join(dir, "media/explainer.vtt");
@@ -319,6 +319,15 @@ test("a filed result that is not in the run's files: exit 3, no file, and it say
   assert.equal(r.vtt, null);
   assert.match(r.stderr, /not in the run's files/);
   assert.match(r.stderr, /work\/voiceover-timestamps\.json/);
+});
+
+test("a filed result not there while other results are: exit 3, it lists them, and it never says to write a copy", () => {
+  const portrait = "a1b2c3d4-1111-4a2b-8c3d-0e1f2a3b4c5d";
+  const r = fromRun(`evidence/fal/${VOICE_ID}.json`, undefined, 24.7, { [`evidence/fal/${portrait}.json`]: { images: [], description: "" } });
+  assert.equal(r.status, 3, `exit ${r.status}: ${r.line} ${r.stderr}`);
+  assert.equal(r.vtt, null);
+  assert.match(r.stderr, new RegExp(`holds ${portrait}\\.json`));
+  assert.doesNotMatch(r.stderr, /voiceover-timestamps/);
 });
 
 test("a filed result whose chunks are uneven: exit 3 and no file, never cues timed from V", () => {

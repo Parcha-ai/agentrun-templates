@@ -4,10 +4,13 @@
 // the agent never times a cue itself. Ported from release-film's kit, with this template's cue and timing rules.
 //
 //   node .agents/skills/explainer-video/kit/build-captions.mjs --script work/script.txt \
-//     --timestamps work/voiceover-timestamps.json --audio-seconds 29.2 --vtt media/explainer.vtt
+//     --timestamps evidence/fal/<request_id>.json --audio-seconds 29.2 --vtt media/explainer.vtt
 //
 // --script         the exact text sent to ElevenLabs v3, audio tags included
-// --timestamps     fal's `timestamps` value as it answered it: a list of chunks, each {characters,
+// --timestamps     the voiceover's result as the run filed it from fal's answer, evidence/fal/<request_id>.json
+//                  ({audio, timestamps}): the kit takes its `timestamps`, so the model never retypes them. A result
+//                  object is taken only from evidence/fal/. Or, on a server that files no fal results, fal's
+//                  `timestamps` value as it answered it: a list of chunks, each {characters,
 //                  character_start_times_seconds, character_end_times_seconds}. Missing, null or [] is allowed.
 // --audio-seconds  V, the voiceover's length (its file_size x 8 / 128000, or its last character's end). Times never
 //                  pass it; without usable timestamps the cues run from 0 to V.
@@ -23,11 +26,12 @@
 // 2. anchored: the chunks are there but don't spell the script (another take, a stand-in). The start anchor is the
 //    first letter's start, the end anchor the last letter's end; each word lasts P = span / W (W the spoken words,
 //    a hyphenated word is one), and the cues run back to back by their word counts.
-// 3. measured: no timestamps (no --timestamps file, or an empty list); the same, between 0 and V.
+// 3. measured: no timestamps (no --timestamps file, or an empty or null list); the same, between 0 and V.
 // It prints one line of JSON (the method and the cue count), then the WebVTT file it wrote. None of them is an error.
-// Exit 2: nothing to caption or no length. Exit 3: a --timestamps file that isn't fal's chunks (it is never ignored).
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { dirname } from "node:path";
+// Exit 2: nothing to caption or no length. Exit 3: a --timestamps file that isn't fal's chunks or the voiceover's
+// filed result (it is never ignored); its message says what to pass.
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { basename, dirname, resolve } from "node:path";
 
 const MAX_LINE = 42;
 const args = Object.fromEntries(
@@ -46,22 +50,65 @@ const V = args["audio-seconds"] === undefined ? NaN : Number(args["audio-seconds
 
 // A timestamps file that can't be read as fal's chunks is a copy gone wrong, never "no timestamps": timing from the
 // length instead would put every cue off its letters. Exit 3, write nothing, and say what to fix.
-const badTimestamps = (why) => {
-  console.error(
-    `${args.timestamps} is not fal's timestamps as fal answered them (${why}). No captions written: write the file ` +
-      "again, copied exactly from fal's answer, and run the kit again.",
-  );
+const refuse = (message) => {
+  console.error(`${message} No captions written.`);
   process.exit(3);
 };
+const FILED = "evidence/fal/<request_id>.json";
+const path = args.timestamps;
+// The run files fal's answer itself under evidence/fal/; a result object anywhere else was written by the model.
+const filed = Boolean(path) && basename(dirname(resolve(path))) === "fal" && basename(dirname(dirname(resolve(path)))) === "evidence";
+const badTimestamps = (why) =>
+  refuse(
+    filed
+      ? `${path} does not hold fal's timestamps as chunks (${why}): it is the run's own copy of fal's answer, so ` +
+          "don't write another. Check it is the voiceover's request_id."
+      : `${path} is not fal's timestamps as fal answered them (${why}): write the file again, copied exactly from ` +
+          "fal's answer, and run the kit again.",
+  );
 let chunks = [];
-if (args.timestamps) {
+if (path) {
+  let text;
+  try {
+    text = readFileSync(path, "utf8");
+  } catch (e) {
+    if (filed && e.code === "ENOENT") {
+      const folder = dirname(path);
+      const there = existsSync(folder) ? readdirSync(folder).filter((f) => f.endsWith(".json")) : [];
+      refuse(
+        there.length
+          ? `${path} is not in the run's files; ${folder}/ holds ${there.slice(0, 12).join(", ")}${there.length > 12 ? ", ..." : ""}. ` +
+              "Pass the one named by the request_id fal answered for the voiceover's job."
+          : `${path} is not in the run's files, and the run has no fal results in ${folder}/: this server files none. ` +
+              "Write fal's `timestamps` value exactly as fal answered it, the whole list, to work/voiceover-timestamps.json " +
+              "and pass that instead.",
+      );
+    }
+    badTimestamps(e.message);
+  }
   let raw;
   try {
-    raw = JSON.parse(readFileSync(args.timestamps, "utf8"));
+    raw = JSON.parse(text);
   } catch (e) {
     badTimestamps(e.message);
   }
-  const list = Array.isArray(raw) ? raw : Array.isArray(raw?.timestamps) ? raw.timestamps : raw ? [raw] : [];
+  let list;
+  if (Array.isArray(raw)) list = raw;
+  else if (raw && typeof raw === "object" && !("characters" in raw)) {
+    // A result object: fal's answer for one job, {audio, timestamps} for a voiceover.
+    if (!filed) {
+      refuse(
+        `${path} is a result object, which the kit takes only as the run filed it from fal's answer: pass ` +
+          `--timestamps ${FILED}, the request_id fal answered for the voiceover's job, and write no copy of it.`,
+      );
+    }
+    if (!("audio" in raw) && !("timestamps" in raw)) {
+      const keys = Object.keys(raw).join(", ") || "nothing";
+      refuse(`${path} is not a voiceover's result (it holds ${keys}): pass the voiceover's request_id.`);
+    }
+    list = raw.timestamps ?? [];
+    if (!Array.isArray(list)) badTimestamps("its timestamps is not a list");
+  } else list = raw ? [raw] : [];
   list.forEach((c, i) => {
     const st = c?.character_start_times_seconds;
     const en = c?.character_end_times_seconds;
