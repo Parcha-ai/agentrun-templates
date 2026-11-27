@@ -21,8 +21,9 @@ Read the answer's last fenced `json` block, `<link-check>` and the run's calls i
    the anchor or show is AI-generated and `disclosure.spoken_by_s` is at most 10; `disclosure.on_screen_from_s` is 0.
 4. **Show.** `status` is `completed` (or `partial` naming a failed fal step); `film.path` is `media/show.mp4`,
    1920x1080 (the kit's `answer.mjs final` sets the size from its own probe), `film.seconds` between 80 and 115.
-5. **Cost.** `fal_cost_usd.steps` lists each paid call the run sent (each `submit_job`, by its endpoint and key);
-   `total` is their sum, between 2.3 and 3.4.
+5. **Cost.** `fal_cost_usd.steps` has one entry for each `submit_job` the run sent: its `step` is the call's
+   `submission_key` after the run's `ns-<stem>-`, its `endpoint_id` is the call's; `total` is their sum, between 2.3
+   and 3.4.
 6. **Files and memory.** `files` names the show, its captions, the share card, the still, the nine voices and the
    animated clips; `stories_shown` is today's three dated the run's date; `report_markdown` embeds the show first and
    links each story's page.
