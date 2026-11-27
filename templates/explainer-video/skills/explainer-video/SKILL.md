@@ -1,6 +1,6 @@
 ---
 name: explainer-video
-description: The explainer's kit. kit/check-script.mjs holds the script's spoken-word cap before the voiceover is sent; kit/run-key.mjs makes each paid job's submission_key; kit/build-captions.mjs turns the voiceover's script and fal's ElevenLabs v3 character timestamps into the explainer's WebVTT captions, with every cue cut and timed in code. Use for the script check, the run keys and the captions step of an explainer video.
+description: The explainer's kit. kit/check-script.mjs holds the script's spoken-word cap before the voiceover is sent; kit/run-key.mjs makes each paid job's submission_key; kit/cost.mjs works out the answer's steps and fal_cost_usd; kit/build-captions.mjs turns the voiceover's script and fal's ElevenLabs v3 character timestamps into the explainer's WebVTT captions, with every cue cut and timed in code. Use for the script check, the run keys, the captions step and the cost of an explainer video.
 ---
 
 # The script check
@@ -33,6 +33,24 @@ one stem (8 random lowercase letters and digits) and writes it to `media/run-key
 reuse it. Never write that file or make a stem yourself. A file holding anything else is refused (exit 3) and never
 replaced, since a second stem would orphan the jobs already sent under the first; an unknown step exits 2. A refusal
 writes nothing: send no paid job.
+
+# The cost
+
+The answer's `steps` and `fal_cost_usd` are arithmetic on `get_pricing`'s rates and each step's units, so code does it:
+never compute a cost, a count or a sum yourself. Once every step's status is known, run with `bash`:
+
+```sh
+node .agents/skills/explainer-video/kit/cost.mjs --quality <standard|premium> \
+  --rates image=<nano-banana per image>,voice=<eleven-v3 per 1000 characters>,avatar=<the avatar model per second> \
+  --portrait <status> --voiceover <status> [--revoice <status>] --avatar <status> [--audio-seconds <audio_seconds>]
+```
+
+Each status is `done`, `pending`, `failed`, `refused` or `not_run`; pass `--revoice` only when a re-voice was made, and
+`--audio-seconds` (the answer's `audio_seconds`) whenever it is known. The portrait is 1 image, a voiceover its script's
+characters (`work/script.txt`, the re-voice `work/script-2.txt`, tags included), the avatar the audio seconds. A step
+done or pending costs units × rate, rounded to 3 decimals, half up; refused, failed or not run costs 0. It prints one
+line, `{"steps":[...],"fal_cost_usd":<the sum of the listed steps>}`: copy `steps` and `fal_cost_usd` into the answer
+exactly, adding each step's `request_id`. Missing or bad input exits 2 and prints no cost; it writes nothing.
 
 # The caption kit
 

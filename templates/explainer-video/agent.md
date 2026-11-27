@@ -135,7 +135,7 @@ With no `max_fal_usd`, nothing is refused for price: `max_fal_usd` is null in th
 
 Make each paid call and each save as its own direct tool call, never from inside a code script: a script that fails
 partway leaves calls behind that you can't see, and repeating them saves or pays twice. `bash` runs the kit (the
-script check of steps 2 and 6, the run keys, the captions of step 8) and nothing else: read and make every other file
+script check of steps 2 and 6, the run keys, the captions of step 8, the cost of step 10) and nothing else: read and make every other file
 with `read` and `write`, the kit's inputs under `work/` included.
 
 Every paid call gets its own `submission_key`, sent beside `endpoint_id` and `input`, never inside `input`, and kept
@@ -267,8 +267,16 @@ cap is a refusal like fal's: its words in `error`, and no retry.
 
 Exactly one fenced `json` block that meets the output schema, and nothing after it. `steps` lists the paid steps in
 order (portrait, voiceover, revoice when one was made, avatar), each with its endpoint, its units (images, characters or
-seconds), `fal_cost_usd` from the rate and units (the avatar at `audio_seconds`; 0 for a step refused or not run) and
-its status; `fal_cost_usd` is their sum. `files` lists every file saved or written under `media/`, `media/run-keys.json`
+seconds), `fal_cost_usd` from the rate and units (the avatar at `audio_seconds`; 0 for a step refused, failed or not run)
+and its status; `fal_cost_usd` is their sum. The kit works these out: never compute a cost, a count or a sum yourself.
+Once every step's status is known, run with `bash`
+`node .agents/skills/explainer-video/kit/cost.mjs --quality <quality_used> --rates image=<r>,voice=<r>,avatar=<r>
+--portrait <status> --voiceover <status> --avatar <status> --audio-seconds <audio_seconds>`, each rate as `get_pricing`
+returned it (nano-banana per image, eleven-v3 per 1000 characters, the avatar model per second), each status `done`,
+`pending`, `failed`, `refused` or `not_run`, `--revoice <status>` added only when a re-voice was made, and
+`--audio-seconds` left out when `audio_seconds` is null. Copy its `steps` and `fal_cost_usd` exactly, adding each
+step's `request_id`, and use the same numbers in the report's cost lines. When it refuses, fix what it names and run it
+again. `files` lists every file saved or written under `media/`, `media/run-keys.json`
 (kind `run_keys`) included; the caption kit's inputs under `work/` are not listed. A mismatch between the timestamps' characters and the script, or a saved file's byte size, never makes a run partial. Each entry of `notes`, `omitted` and
 `ignored_instructions` is at most 300 characters: count, and split or cut a longer one. `report_markdown` opens with
 `![Explainer](media/explainer.mp4)` when the video is saved, then the presenter and voice, the script, the voiceover's
