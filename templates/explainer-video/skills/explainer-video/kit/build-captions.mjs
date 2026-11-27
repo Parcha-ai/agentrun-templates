@@ -32,6 +32,7 @@
 // filed result (it is never ignored); its message says what to pass.
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import { norm, spokenWords } from "./spoken-words.mjs";
 
 const MAX_LINE = 42;
 const args = Object.fromEntries(
@@ -132,24 +133,13 @@ if (path) {
   chunks = list;
 }
 
-function norm(s) {
-  return s.normalize("NFKD").toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
-}
-
-// The words as spoken: tags out, split on whitespace, punctuation kept for display. A token with no letter or digit
-// (a lone dash) is not a word: it rides on the word before it.
-const tokens = script.replace(/\[[^\]]*\]/g, " ").replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
-const words = [];
-for (const t of tokens) {
-  const key = norm(t);
-  if (key.length || !words.length) words.push({ text: t, key });
-  else words[words.length - 1].text += ` ${t}`;
-}
-if (!words.length || !words.some((w) => w.key.length)) {
+// The words as spoken, counted once for the word cap and the captions (spoken-words.mjs): tags out, split on
+// whitespace, punctuation kept for display; a lone dash rides on the word before it.
+const { words, W } = spokenWords(script);
+if (!W) {
   console.error("the script has no spoken words");
   process.exit(2);
 }
-const W = words.filter((w) => w.key.length).length;
 
 // fal's characters joined in order, tags dropped, letters and digits only, each with its own times.
 const letters = [];

@@ -9,7 +9,8 @@ eleven-v3 job, which fal answered as request e5f6a7b8-5555-4e6f-8a7b-4c5d6e7f8a9
 Read the calls in order. Pass only if both hold:
 
 1. **From fal's file.** The `bash` call that runs `build-captions.mjs` and writes `media/explainer.vtt` passes
-   `--timestamps evidence/fal/e5f6a7b8-5555-4e6f-8a7b-4c5d6e7f8a9b.json`.
+   `--timestamps evidence/fal/e5f6a7b8-5555-4e6f-8a7b-4c5d6e7f8a9b.json` and `--script work/script-2.txt`, the
+   re-voice's script.
 2. **Never copied.** No `write` call, to any path, holds fal's timestamps: chunks of `characters`,
    `character_start_times_seconds` and `character_end_times_seconds`.
 

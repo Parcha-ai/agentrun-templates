@@ -74,8 +74,10 @@ Spoken by the presenter to camera, as the fal-audio skill says for the ear:
   "Settings, then Storage"): no digit is left in the script. Each part of a version is said as a whole number, never
   digit by digit: 1.23 is "one twenty-three" or "one point twenty-three", never "one point two three"; 3.13 is "three
   point thirteen".
-- About 2.4 spoken words a second: at most 75 words for 30 s, 110 for 45 s, 135 for 60 s, a hard cap. Count the
-  spoken words (tags not counted) before you send the script; over the cap, cut and count again: never send one over.
+- About 2.4 spoken words a second: at most 75 words for 30 s, 110 for 45 s, 135 for 60 s, a hard cap the kit holds.
+  `write` the script to `work/script.txt` and run `node .agents/skills/explainer-video/kit/check-script.mjs --script
+  work/script.txt --length <length>` with `bash`; its `words` is `word_count`. When it refuses (a non-zero exit), cut,
+  write and check again: never send a script it refused.
   When the doc says more, keep what matters most and list each point left out in `omitted`. Before you send the
   script, go through the doc sentence by sentence: each fact, step, figure or date it gives that the script doesn't
   say is a point left out, with its own entry in `omitted`. Part of a sentence counts too: a script that keeps "alerts are
@@ -132,9 +134,9 @@ With no `max_fal_usd`, nothing is refused for price: `max_fal_usd` is null in th
 ## 5. Portrait and voiceover, in parallel
 
 Make each paid call and each save as its own direct tool call, never from inside a code script: a script that fails
-partway leaves calls behind that you can't see, and repeating them saves or pays twice. `bash` runs the caption kit
-(step 8) and nothing else: read and make every file with `read` and `write`, `media/run-keys.json` and the kit's
-inputs under `work/` included.
+partway leaves calls behind that you can't see, and repeating them saves or pays twice. `bash` runs the kit (the
+script check of steps 2 and 6, the captions of step 8) and nothing else: read and make every file with `read` and
+`write`, `media/run-keys.json` and the kit's inputs under `work/` included.
 
 Every paid call gets its own `submission_key`, sent beside `endpoint_id` and `input`, never inside `input`, and kept
 for that job's retries. The keys share one stem per run:
@@ -152,9 +154,9 @@ for that job's retries. The keys share one stem per run:
 Send both jobs before reading either:
 - `submit_job` on `fal-ai/nano-banana`: `prompt` the portrait prompt, `aspect_ratio` "16:9", `num_images` 1,
   `output_format` "png".
-- `submit_job` on `fal-ai/elevenlabs/tts/eleven-v3`: `text` the script, `voice`, `stability` 0.5, `output_format`
-  "mp3_44100_128" (a constant 128 kbps, so the file's size gives its length) and `timestamps` true (fal then answers
-  when each character is spoken, in `timestamps`, beside `audio`).
+- `submit_job` on `fal-ai/elevenlabs/tts/eleven-v3`: `text` the script exactly as in `work/script.txt` when the check
+  passed it, `voice`, `stability` 0.5, `output_format` "mp3_44100_128" (a constant 128 kbps, so the file's size gives
+  its length) and `timestamps` true (fal then answers when each character is spoken, in `timestamps`, beside `audio`).
 
 Then ONE `wait_for_jobs` with both: `{"jobs": [{"index": 0, <the portrait's endpoint_id, request_id, status_url,
 response_url>}, {"index": 1, <the voiceover's>}]}`, the handles copied exactly as fal returned them. When it answers
@@ -192,8 +194,11 @@ stays saved as `media/voiceover.mp3` and listed in `files` (save it first if it 
 checks allow: for OmniHuman 60; with a ceiling, B = (`max_fal_usd` − spent − the new voiceover's price) ÷ the avatar
 rate, and T is B, or the lesser of B and 60 for OmniHuman. Cut the script to at most its spoken words × T ÷ V × 0.9 words (0.9 is the margin; 110 words
 at V 47.0 s with T 40 → 110 × 40 ÷ 47.0 × 0.9 = 84 words), keeping what matters most and adding each point cut to
-`omitted` (or to `omitted_more` past 10), with the rules of step 2. Count again before you send it. Send it with `submit_job` on
-`fal-ai/elevenlabs/tts/eleven-v3`, key `ev-<stem>-voiceover-2`, the same `voice`, `stability`,
+`omitted` (or to `omitted_more` past 10), with the rules of step 2. `write` it to `work/script-2.txt` (the first stays in
+`work/script.txt`) and check it with that word count, not `--length`:
+`node .agents/skills/explainer-video/kit/check-script.mjs --script work/script-2.txt --max <words>` (`--max 84` in the
+example); never send one it refused. Send that file's script with `submit_job` on `fal-ai/elevenlabs/tts/eleven-v3`,
+key `ev-<stem>-voiceover-2`, the same `voice`, `stability`,
 `output_format` and `timestamps`. Follow it with a one-item `wait_for_jobs` whose item has `"index": 2` and the
 handles this `submit_job` answered, copied as they are. Save it to `media/voiceover-2.mp3`. `script` and `word_count` are then the new script's. Check its V the same way, counting both
 voiceovers as spent. It holds: animate with it. It fails again: submit no avatar and nothing else that costs; answer
@@ -228,12 +233,12 @@ Once the video job has ended (or failed, or was not sent), make `media/explainer
 voiceover's length is unknown (step 6). Code cuts and times every cue from fal's character timestamps: never time,
 cut or edit a cue yourself, and never `write` the captions file.
 
-1. `write` `work/script.txt`: the exact text of the voiceover last made (the re-voice's when there was one), as sent
-   to ElevenLabs, audio tags included.
+1. The voiceover captioned is the re-voice when it was made and sent to the avatar, otherwise the first. Its script, as
+   sent to ElevenLabs with audio tags, is `work/script-2.txt` for the re-voice and `work/script.txt` for the first.
 2. Run it with `bash`:
 
 ```sh
-node .agents/skills/explainer-video/kit/build-captions.mjs --script work/script.txt \
+node .agents/skills/explainer-video/kit/build-captions.mjs --script <its script file> \
   --timestamps evidence/fal/<request_id>.json --audio-seconds <V> --vtt media/explainer.vtt
 ```
 
