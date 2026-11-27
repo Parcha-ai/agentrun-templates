@@ -145,7 +145,8 @@ face and over no caption, no fact or headline runs off the frame, and the end ca
 
 ## 8. Render
 
-A render takes longer than one `bash` call may run (600 s at most, whatever `timeout` it asks), so start it with
+Render only when step 7 is done: every review sheet looked at with `read`, and every fix made and checked. A render
+takes longer than one `bash` call may run (600 s at most, whatever `timeout` it asks), so start it with
 `bash_background` and wait for it in turns. Start this command, as written, with `bash_background`:
 
 ```sh
@@ -159,13 +160,15 @@ line to its log, so wait for that line in one foreground `bash` call with a `tim
 for i in $(seq 1 54); do grep -q '^render exit' media/render.log && break; sleep 10; done; tail -c 400 media/render.log
 ```
 
-Then call `bash_output` with `{"id": "<id>"}`, `<id>` being the render's id: it says whether the render still runs
-and, once it has ended, its exit code. That exit code is the render's result; the log's line only ends the wait.
-While it still runs, wait again the same way: at most 3 waits in all, about 27 minutes. A render still running after
-the third wait is stuck: end it with `bash_signal` `{"id": "<id>", "signal": "TERM"}`, render nothing more, and the
-render failed (`partial`, `failed_step: "render"`, `error` saying the render did not finish in 27 minutes). Never
-start a render while one runs, and never start one in `bash` with `&`, `nohup` or `setsid`: the sandbox ends those
-when the `bash` call returns, part way through the capture.
+After each wait, call `bash_output` with `{"id": "<id>"}`, `<id>` being the render's id, even when the log says
+`render exit`: it says whether the render still runs and, once it has ended, its exit code. That exit code is the
+render's result; the log's line only ends the wait. While the render runs, make no other call but these: no `read` of
+a sheet, no edit in `film/` (the render reads it as it goes). While it still runs, wait again the same way: at most 3
+waits in all, about 27 minutes. A render still running after the third wait is stuck: end it with `bash_signal`
+`{"id": "<id>", "signal": "TERM"}`, render nothing more, and the render failed (`partial`, `failed_step: "render"`,
+`error` saying the render did not finish in 27 minutes). Never start a render while one runs, and never start one in
+`bash` with `&`, `nohup` or `setsid`: the sandbox ends those when the `bash` call returns, part way through the
+capture.
 
 `--video-frame-format jpg` extracts the anchor clips' frames as JPEG, HyperFrames' choice for camera footage, at a
 fraction of PNG's size on the sandbox's disk. A 90 second show takes several minutes (capture runs a few frames a
