@@ -1,6 +1,6 @@
 ---
 name: explainer-video
-description: The explainer's kit. kit/check-script.mjs holds the script's spoken-word cap before the voiceover is sent; kit/run-key.mjs makes each paid job's submission_key; kit/cost.mjs works out the answer's steps and fal_cost_usd; kit/build-captions.mjs turns the voiceover's script and fal's ElevenLabs v3 character timestamps into the explainer's WebVTT captions, with every cue cut and timed in code. Use for the script check, the run keys, the captions step and the cost of an explainer video.
+description: The explainer's kit. kit/check-script.mjs holds the script's spoken-word cap before the voiceover is sent; kit/run-key.mjs makes each paid job's submission_key; kit/answer.mjs prints the plan's price and every answer field that is a copy or arithmetic (script, word count, audio seconds, steps, costs, files); kit/build-captions.mjs turns the voiceover's script and fal's ElevenLabs v3 character timestamps into the explainer's WebVTT captions, with every cue cut and timed in code. Use for the script check, the run keys, the plan, the captions step and the answer of an explainer video.
 ---
 
 # The script check
@@ -34,23 +34,44 @@ reuse it. Never write that file or make a stem yourself. A file holding anything
 replaced, since a second stem would orphan the jobs already sent under the first; an unknown step exits 2. A refusal
 writes nothing: send no paid job.
 
-# The cost
+# The answer kit
 
-The answer's `steps` and `fal_cost_usd` are arithmetic on `get_pricing`'s rates and each step's units, so code does it:
-never compute a cost, a count or a sum yourself. Once every step's status is known, run with `bash`:
+The answer's computed fields are copies of what was sent and arithmetic on `get_pricing`'s rates, so code does them:
+never write, count or compute them yourself. In step 4, before any paid call, price the plan:
 
 ```sh
-node .agents/skills/explainer-video/kit/cost.mjs --quality <standard|premium> \
+node .agents/skills/explainer-video/kit/answer.mjs --plan --quality <standard|premium> \
   --rates image=<nano-banana per image>,voice=<eleven-v3 per 1000 characters>,avatar=<the avatar model per second> \
-  --portrait <status> --voiceover <status> [--revoice <status>] --avatar <status> [--audio-seconds <audio_seconds>]
+  --length <30|45|60>
 ```
 
-Each status is `done`, `pending`, `failed`, `refused` or `not_run`; pass `--revoice` only when a re-voice was made, and
-`--audio-seconds` (the answer's `audio_seconds`) whenever it is known. The portrait is 1 image, a voiceover its script's
-characters (`work/script.txt`, the re-voice `work/script-2.txt`, tags included), the avatar the audio seconds. A step
-done or pending costs units × rate, rounded to 3 decimals, half up; refused, failed or not run costs 0. It prints one
-line, `{"steps":[...],"fal_cost_usd":<the sum of the listed steps>}`: copy `steps` and `fal_cost_usd` into the answer
-exactly, adding each step's `request_id`. Missing or bad input exits 2 and prints no cost; it writes nothing.
+It prints `{"plan_usd","quality_used","avatar_model","resolution"}`: the portrait, `work/script.txt`'s voiceover twice
+(the re-voice reserve) and `length` seconds of the avatar. For the answer, once every paid step has ended, been refused
+or not run, run it again without `--plan`, adding each step's status and the request_id fal answered for its job:
+
+```sh
+node .agents/skills/explainer-video/kit/answer.mjs --quality <q> --rates <as above> --length <30|45|60> \
+  --portrait <status>[:<request_id>] --voiceover <status>[:<request_id>] [--revoice <status>[:<request_id>]] \
+  --avatar <status>[:<request_id>]
+```
+
+Each status is `done`, `pending`, `failed`, `refused` or `not_run`; a `done` step needs its request_id, and `--revoice`
+is passed only when a re-voice was made. A done step's result is read from `evidence/fal/<request_id>.json`, where the
+run files fal's answer (on a server that files none, write the job's result exactly as fal answered it to
+`work/fal/<request_id>.json`). It prints one line holding `script`, `word_count`, `audio_seconds`,
+`audio_seconds_source`, `quality_used`, `avatar_model`, `resolution`, `plan_usd`, `steps`, `fal_cost_usd` and `files`:
+- `script`: the exact text of the voiceover described, `work/script-2.txt` when a re-voice was made and sent to the
+  avatar, else `work/script.txt` (outer whitespace aside, every tag as sent); `word_count`: its spoken words, as the
+  script check counts them.
+- `audio_seconds`: the avatar result's `duration` when it states one (source `avatar`), else that voiceover's
+  `file_size` × 8 ÷ 128000 to one decimal (`file_size`), else its last character's end (`timestamps`), else null.
+- `steps`: portrait (1 image), voiceover and revoice (their scripts' characters, tags included), avatar
+  (`audio_seconds`), each with its request_id. Done or pending costs units × rate, rounded to 3 decimals, half up;
+  refused, failed or not run costs 0. `fal_cost_usd` is the sum of the listed steps.
+- `files`: each fal output made, by its saved path under `media/` (null when the save failed) and fal's URL, then
+  `media/explainer.vtt` and `media/run-keys.json` when they exist.
+
+Copy each into the answer exactly. Missing or bad input exits 2 and prints nothing; it writes nothing.
 
 # The caption kit
 
