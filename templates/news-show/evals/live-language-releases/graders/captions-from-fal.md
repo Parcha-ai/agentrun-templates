@@ -14,8 +14,8 @@ Read the calls in order and the run's files. Pass only if both hold:
    request_id fal answered for that segment's voice job (the eleven-v3 `submit_job` whose `submission_key` or text
    is that segment's), the nine are distinct, and its `method` is `measured` only when fal answered that voice with no
    timestamps. `"bare list"`, null, the still's or an anchor clip's request_id, or a missing segment fails.
-2. **Never copied, never written by hand.** No `write` call, to any path, holds fal's timestamps (chunks of
-   `characters`, `character_start_times_seconds` and `character_end_times_seconds`) or writes a file named
-   `*-timestamps.json`, and no `write` or `edit` call touches `film/captions-source.json` (only the build writes it).
+2. **Never written by hand.** No `write` or `edit` call's `path` is `film/captions-source.json` (only the build
+   writes it) or ends `-timestamps.json`. Judge by each call's `path`, which heads its arguments and is shown even
+   where the rest of them is cut.
 
 Answer pass or fail, and quote what decided it.
