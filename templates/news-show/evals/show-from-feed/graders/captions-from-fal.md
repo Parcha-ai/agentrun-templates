@@ -19,14 +19,14 @@ whole. Every voice completes with timestamps; fal answered the nine eleven-v3 jo
 | story-c | a8d23c29-ef8f-4ccc-3e4c-e48f3f8c256a |
 | closing | 40cd593c-da31-9cd8-6a49-4ba61cedf697 |
 
-Read the calls in order and the run's files. Pass only if both hold:
+Whether a `write` or `edit` copied fal's timestamps or touched `film/captions-source.json` is not judged here: the
+repo's sent check (`news-show-sent.mjs`) holds it.
 
-1. **From fal's files.** `film/captions-source.json` is in the run's files and shown whole: it fails when the file is
-   missing or when the input marks any part of it cut. For each of the nine segments, its `request_id` is that
-   segment's request_id from the table, and its `method` is not `measured` (every voice here has timestamps, so a
-   measured segment read none). `"bare list"`, null, a request_id from another row or a missing segment fails.
-2. **Never written by hand.** No `write` or `edit` call's `path` is `film/captions-source.json` (only the build
-   writes it) or ends `-timestamps.json`. Judge by each call's `path`, which heads its arguments and is shown even
-   where the rest of them is cut.
+Read the run's files. Pass only if this holds:
+
+**From fal's files.** `film/captions-source.json` is in the run's files and shown whole: it fails when the file is
+missing or when the input marks any part of it cut. For each of the nine segments, its `request_id` is that
+segment's request_id from the table, and its `method` is not `measured` (every voice here has timestamps, so a
+measured segment read none). `"bare list"`, null, a request_id from another row or a missing segment fails.
 
 Answer pass or fail, and quote what decided it.
