@@ -5,6 +5,10 @@
 // and report_markdown must be that file byte for byte. These tests hold what the fix depends on: the cost is
 // worked out in code, the total is the sum of the rounded steps, and check exits 1 on each of those answers and 0 on a
 // clean one. A last test holds the rubric fix: R1's added fact is a substring of each fixture's R1 page.
+// `final` probes the rendered show and the share card itself: the answer's film size and length are the probe's, and a
+// show that is not 1920x1080, a card that is not 1200x630, or a file that will not probe is refused with nothing
+// written. A grader reads those figures from the answer, which reaches it whole, instead of a probe's call result,
+// which its input can cut.
 // They need ffmpeg and ffprobe on PATH (the evals-parse workflow installs ffmpeg). Every input is synthetic.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -41,6 +45,18 @@ function folder() {
   return dir;
 }
 const kit = (dir, ...args) => spawnSync("node", [KIT, ...args], { cwd: dir, encoding: "utf8" });
+
+// A real show and share card for final's probe, made with ffmpeg: the show w x h for 2.4 s (12 frames at 5 a second),
+// the card cw x ch.
+const SHOW_SECONDS = 2.4;
+function media(dir, { w = 1920, h = 1080 } = {}, { cw = 1200, ch = 630 } = {}) {
+  const ff = (...a) => {
+    const r = spawnSync("ffmpeg", ["-v", "error", "-nostdin", "-y", ...a], { encoding: "utf8" });
+    assert.equal(r.status, 0, r.stderr);
+  };
+  ff("-f", "lavfi", "-i", `color=c=black:s=${w}x${h}:r=5`, "-t", String(SHOW_SECONDS), "-c:v", "mpeg4", "-f", "mp4", join(dir, "media/show.mp4"));
+  ff("-f", "lavfi", "-i", `color=c=black:s=${cw}x${ch}`, "-frames:v", "1", "-f", "image2", join(dir, "media/share-card.png"));
+}
 
 const STORIES = [
   { slot: "A", title: "Airport rail link passes one million riders", url: "https://transitwire.example/2026/11/23/airport-link-one-million" },
@@ -202,6 +218,7 @@ test("final: the reply is one json block whose report_markdown is media/report.m
   const dir = folder();
   kit(dir, "cost", "--rates", RATES, "--sent", SENT);
   answer(dir, (a) => ((a.report_markdown = PLACEHOLDER), a), report(JSON.parse(readFileSync(join(dir, "film/cost.json"), "utf8"))));
+  media(dir);
   const r = kit(dir, "final", "media/answer.json");
   assert.equal(r.status, 0, r.stdout + r.stderr);
   const m = /^```json\n([\s\S]*)\n```\n?$/.exec(r.stdout);
@@ -215,10 +232,74 @@ test("final: an answer with problems prints them, not a reply", () => {
   const dir = folder();
   kit(dir, "cost", "--rates", RATES, "--sent", SENT);
   answer(dir, (a) => ((a.fal_cost_usd.total = 3.846), a));
+  media(dir);
   const r = kit(dir, "final", "media/answer.json");
   assert.equal(r.status, 1);
   assert.doesNotMatch(r.stdout, /```json/);
   assert.match(r.stdout, /fal_cost_usd is not what `answer\.mjs cost` printed/);
+});
+
+// An answer file final must not touch when it refuses: report_markdown the placeholder, the film as the run typed it.
+function refusable(dir) {
+  kit(dir, "cost", "--rates", RATES, "--sent", SENT);
+  const cost = JSON.parse(readFileSync(join(dir, "film/cost.json"), "utf8"));
+  answer(dir, (a) => ((a.report_markdown = PLACEHOLDER), (a.film = { path: "media/show.mp4", seconds: 97.5, width: 1920, height: 1080 }), a), report(cost));
+  return readFileSync(join(dir, "media/answer.json"), "utf8");
+}
+function refused(dir, before, r, why) {
+  assert.equal(r.status, 1, `final answered: ${r.stdout}`);
+  assert.doesNotMatch(r.stdout, /```json/);
+  assert.match(r.stdout, why);
+  assert.equal(readFileSync(join(dir, "media/answer.json"), "utf8"), before, "a refused final writes nothing");
+}
+
+test("final: the film's width, height and seconds are the probe's, whatever the answer file held", () => {
+  const dir = folder();
+  kit(dir, "cost", "--rates", RATES, "--sent", SENT);
+  answer(dir, (a) => ((a.film = { path: "media/show.mp4", seconds: 97.5, width: 1280, height: 720 }), a));
+  media(dir);
+  const r = kit(dir, "final", "media/answer.json");
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  const sent = JSON.parse(/^```json\n([\s\S]*)\n```\n?$/.exec(r.stdout)[1]);
+  const film = { path: "media/show.mp4", seconds: SHOW_SECONDS, width: 1920, height: 1080 };
+  assert.deepEqual(sent.film, film);
+  assert.deepEqual(JSON.parse(readFileSync(join(dir, "media/answer.json"), "utf8")).film, film, "the answer file carries the probe's figures too");
+});
+
+test("final: a show that is not 1920x1080 is refused, and nothing is written", () => {
+  const dir = folder();
+  const before = refusable(dir);
+  media(dir, { w: 1280, h: 720 });
+  refused(dir, before, kit(dir, "final", "media/answer.json"), /media\/show\.mp4 is 1280x720.*1920x1080/);
+});
+
+test("final: a show that will not probe, or is missing, is refused, and nothing is written", () => {
+  const dir = folder();
+  const before = refusable(dir);
+  media(dir);
+  writeFileSync(join(dir, "media/show.mp4"), "not a video");
+  refused(dir, before, kit(dir, "final", "media/answer.json"), /media\/show\.mp4.*(probe|read)/);
+  rmSync(join(dir, "media/show.mp4"));
+  refused(dir, before, kit(dir, "final", "media/answer.json"), /media\/show\.mp4.*missing/);
+});
+
+test("final: a share card that is not 1200x630 is refused, and nothing is written", () => {
+  const dir = folder();
+  const before = refusable(dir);
+  media(dir, {}, { cw: 1080, ch: 1080 });
+  refused(dir, before, kit(dir, "final", "media/answer.json"), /media\/share-card\.png is 1080x1080.*1200x630/);
+});
+
+test("final: a show not rendered is not probed, and its film stays null", () => {
+  const dir = folder();
+  kit(dir, "cost", "--sent", "none");
+  const film = { path: null, seconds: null, width: null, height: null };
+  answer(dir, (a) => ((a.status = "over_budget"), (a.film = film), (a.stories_shown = []), a));
+  rmSync(join(dir, "media/show.mp4"));
+  rmSync(join(dir, "media/share-card.png"));
+  const r = kit(dir, "final", "media/answer.json");
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.deepEqual(JSON.parse(/^```json\n([\s\S]*)\n```\n?$/.exec(r.stdout)[1]).film, film);
 });
 
 test("schema: a rendered show's report_markdown must open with the show's embed, so the runtime refuses the placeholder", () => {
@@ -257,6 +338,7 @@ test("cost: a voice whose save failed is priced on the length the run measured (
   assert.match(r.stderr, /anchor-lead-b .*--seconds lead-b=5\.4.*media\/voice-lead-b\.mp3 is missing/);
   const f = answer(dir, (a) => ((a.status = "not_saved"), (a.notes = ["media/voice-lead-b.mp3 was not saved"]), a));
   assert.equal(f.status, 0, f.stdout);
+  media(dir);
   const fin = kit(dir, "final", "media/answer.json");
   assert.equal(fin.status, 0, fin.stdout);
   assert.match(fin.stdout, /^```json\n/);
@@ -274,6 +356,7 @@ test("final and schema: a show name with brackets is escaped in the embed, and t
   assert.equal(rough.status, 1);
   assert.ok(rough.stdout.includes(embed), `check names the escaped embed: ${rough.stdout}`);
   answer(dir, (a) => ((a.show_name = name), (a.report_markdown = a.report_markdown.replace("![The Daily Desk, 2026-11-23](media/show.mp4)", embed)), a));
+  media(dir);
   const fin = kit(dir, "final", "media/answer.json");
   assert.equal(fin.status, 0, fin.stdout);
   const sent = JSON.parse(/^```json\n([\s\S]*)\n```\n?$/.exec(fin.stdout)[1]);
