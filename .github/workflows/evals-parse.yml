@@ -48,6 +48,9 @@ jobs:
       # or two lines of at most 42 characters, timed in code (aligned to fal's letters, anchored, or measured), and a
       # voice with no timestamps and no length exits 2.
       - run: node --test .github/explainer-captions.test.mjs
+      # The explainer's script check, node only: the spoken-word cap of each length (and the re-voice's --max) is held in
+      # code, one word over is refused and nothing written, and its count is the caption kit's W on tricky scripts.
+      - run: node --test .github/explainer-script-check.test.mjs
       # The news show kit's answer script, on synthetic answers and media: the cost is worked out in code and its total is
       # the sum of the rounded steps; the check fails a typed total, a summary report, a report that is not media/report.md
       # byte for byte, a missing section or story link, and an error not quoted; R1's added rubric fact
