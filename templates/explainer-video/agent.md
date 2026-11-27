@@ -135,17 +135,16 @@ With no `max_fal_usd`, nothing is refused for price: `max_fal_usd` is null in th
 
 Make each paid call and each save as its own direct tool call, never from inside a code script: a script that fails
 partway leaves calls behind that you can't see, and repeating them saves or pays twice. `bash` runs the kit (the
-script check of steps 2 and 6, the captions of step 8) and nothing else: read and make every file with `read` and
-`write`, `media/run-keys.json` and the kit's inputs under `work/` included.
+script check of steps 2 and 6, the run keys, the captions of step 8) and nothing else: read and make every other file
+with `read` and `write`, the kit's inputs under `work/` included.
 
 Every paid call gets its own `submission_key`, sent beside `endpoint_id` and `input`, never inside `input`, and kept
-for that job's retries. The keys share one stem per run:
-- Before the first paid call, `read` `media/run-keys.json`. If it holds `{"stem": "<8 lowercase letters and digits>"}`
-  (a resumed run), use that stem. Otherwise make one stem of 8 random lowercase letters and digits and `write` it there
-  as `{"stem": "<stem>"}` before any paid call. Never make a second stem in a run: a retry and a resume reuse it.
-- Keys are `ev-<stem>-<step>`, `<step>` one of `portrait`, `voiceover`, `voiceover-2` (only for step 6's re-voice),
-  `avatar`. No date and no source in a key. With the stem `k3v9q2xa` (an example: make your own), the portrait's
-  key is `ev-k3v9q2xa-portrait` and the voiceover's `ev-k3v9q2xa-voiceover`.
+for that job's retries. The kit makes the keys, all on one stem per run:
+- Before a step's first `submit_job`, run `node .agents/skills/explainer-video/kit/run-key.mjs --step <step>` with
+  `bash`, `<step>` one of `portrait`, `voiceover`, `voiceover-2` (only for step 6's re-voice), `avatar`, and send the
+  `key` it prints (`ev-<stem>-<step>`), copied exactly. Its first call makes the stem in `media/run-keys.json`; later
+  calls and a resumed run reuse it. Never write that file or make a stem yourself. When it refuses, send no paid job:
+  the step is failed, with its message in `error`.
 - If fal refuses a key because it already holds a job for other inputs (a resumed run whose script or prompt
   changed), the run before already sent that step's job, and fal may have billed it. Never send it again under
   another key, and never take that job's output either: it was made from other inputs. The step is failed, and
@@ -198,7 +197,7 @@ at V 47.0 s with T 40 → 110 × 40 ÷ 47.0 × 0.9 = 84 words), keeping what mat
 `work/script.txt`) and check it with that word count, not `--length`:
 `node .agents/skills/explainer-video/kit/check-script.mjs --script work/script-2.txt --max <words>` (`--max 84` in the
 example); never send one it refused. Send that file's script with `submit_job` on `fal-ai/elevenlabs/tts/eleven-v3`,
-key `ev-<stem>-voiceover-2`, the same `voice`, `stability`,
+with the `run-key.mjs --step voiceover-2` key, the same `voice`, `stability`,
 `output_format` and `timestamps`. Follow it with a one-item `wait_for_jobs` whose item has `"index": 2` and the
 handles this `submit_job` answered, copied as they are. Save it to `media/voiceover-2.mp3`. `script` and `word_count` are then the new script's. Check its V the same way, counting both
 voiceovers as spent. It holds: animate with it. It fails again: submit no avatar and nothing else that costs; answer
@@ -211,7 +210,7 @@ with its numbers. A voiceover that fails a check is never sent to an avatar.
 last character's end; both null when V is unknown, step 6). OmniHuman's result states the seconds it billed in `duration`: when it does, that is
 `audio_seconds` (source "avatar"), and the avatar's cost uses it.
 
-`submit_job`, with key `ev-<stem>-avatar` beside `endpoint_id` and `input`, on the plan's avatar model, with the portrait's URL and
+`submit_job`, with the `run-key.mjs --step avatar` key beside `endpoint_id` and `input`, on the plan's avatar model, with the portrait's URL and
 the URL of the voiceover that passed the check, both from fal's results:
 - standard, `veed/fabric-1.0`: `image_url`, `audio_url`, `resolution` "480p";
 - premium, `fal-ai/bytedance/omnihuman/v1.5`: `image_url`, `audio_url`, `resolution` "720p" (never 1080p: it takes

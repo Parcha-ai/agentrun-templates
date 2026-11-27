@@ -1,5 +1,5 @@
 ---
-description: 'fal''s reply to the voiceover''s submit_job is lost after the request was sent. The run keys every job ev-<stem>-<step> from the one stem it wrote to media/run-keys.json before paying, no date and no source in a key; it reads the voiceover back with get_submission under the same key, follows the handles it answers, never submits the voiceover again, and finishes the explainer. Pass 2 of 2.'
+description: 'fal''s reply to the voiceover''s submit_job is lost after the request was sent. The run keys every job ev-<stem>-<step> from the one stem the kit wrote to media/run-keys.json before paying, no date and no source in a key; it reads the voiceover back with get_submission under the same key, follows the handles it answers, never submits the voiceover again, and finishes the explainer. Pass 2 of 2.'
 runs: 2
 max_cost_usd: 3.50
 input:
