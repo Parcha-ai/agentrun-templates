@@ -52,8 +52,8 @@ Read the calls (their order, arguments and results) and judge the pipeline. Pass
    no `write` holds a voice's timestamps (the run files them at `evidence/fal/<request_id>.json`).
 5. **The anchor.** Five `submit_job` calls on `veed/fabric-1.0` after that wait, in the order cold-open, lead-a,
    lead-b, lead-c, closing, each `input` with `image_url` https://v3.fal.media/files/koala/VqRSLd7cDHMxUGhjPcju.png, `audio_url` that segment's voice URL above and
-   `resolution` "480p"; then one `wait_for_jobs` holding all five at 0-4, each with its own clip's handles as above (in <mcp-calls>); each video saved to
-   `media/anchor-<segment>.mp4`.
+   `resolution` "480p"; then one `wait_for_jobs` holding all five at 0-4, each with its own clip's handles as above
+   (in <mcp-calls>); each video saved to `media/anchor-<segment>.mp4`.
 6. **Made in the sandbox.** Shell commands copy the kit to `film/`, run `node film/build-show.mjs`, `hyperframes
    lint` and `hyperframes check`, run the review (`node review.mjs` or `hyperframes snapshot --review`), and the run
    views at least one review sheet with `read`; then `hyperframes render` writes `media/show.mp4` (at most 3 render
