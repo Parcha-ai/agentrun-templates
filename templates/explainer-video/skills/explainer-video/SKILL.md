@@ -61,8 +61,9 @@ when a re-voice was made. A done step's result is read from `evidence/fal/<reque
 run files fal's answer (on a server that files none, write the job's result exactly as fal answered it to
 `work/fal/<request_id>.json`). It prints one line holding `script`, `word_count`, `audio_seconds`,
 `audio_seconds_source`, `quality_used`, `avatar_model`, `resolution`, `plan_usd`, `steps`, `fal_cost_usd` and `files`:
-- `script`: the exact text of the voiceover described, `work/script-2.txt` when a re-voice was made and sent to the
-  avatar, else `work/script.txt` (outer whitespace aside, every tag as sent); `word_count`: its spoken words, as the
+- `script`: the exact text of the voiceover described: `work/script-2.txt`, the re-voice, when it was made, passed
+  step 6's checks and the run went on to the avatar step with it (the avatar's status is anything but not_run, a key
+  refusal included), otherwise `work/script.txt`, the first (outer whitespace aside, every tag as sent); `word_count`: its spoken words, as the
   script check counts them.
 - `audio_seconds`: the avatar result's `duration` when it states one (source `avatar`), else that voiceover's
   `file_size` × 8 ÷ 128000 to one decimal (`file_size`), else its last character's end (`timestamps`), else null.
@@ -88,7 +89,8 @@ node .agents/skills/explainer-video/kit/build-captions.mjs --script work/script.
 ```
 
 - `work/script.txt`: the exact text of the voiceover the captions are for, as sent to ElevenLabs, audio tags included
-  (`work/script-2.txt` when the re-voice is the one sent to the avatar).
+  (`work/script-2.txt` for the re-voice when it was made, passed step 6's checks and the run went on to the avatar step
+  with it, the avatar's status anything but not_run, a key refusal included; otherwise `work/script.txt`, the first).
 - `evidence/fal/<request_id>.json`: that voiceover's whole result, which the run files from fal's answer under the
   request_id fal gave its job (the re-voice's, with a re-voice). The kit takes its `timestamps`; never `write` them
   yourself. A result object is taken only from `evidence/fal/`. Only when the kit says the server files no fal results,

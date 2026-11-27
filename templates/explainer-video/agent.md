@@ -205,7 +205,9 @@ at V 47.0 s with T 40 → 110 × 40 ÷ 47.0 × 0.9 = 84 words), keeping what mat
 example); never send one it refused. Send that file's script with `submit_job` on `fal-ai/elevenlabs/tts/eleven-v3`,
 with the `run-key.mjs --step voiceover-2` key, the same `voice`, `stability`,
 `output_format` and `timestamps`. Follow it with a one-item `wait_for_jobs` whose item has `"index": 2` and the
-handles this `submit_job` answered, copied as they are. Save it to `media/voiceover-2.mp3`. Once it is sent to the avatar, `script` and `word_count` are the new script's (the kit prints them, step 10). Check its V the same way, counting both
+handles this `submit_job` answered, copied as they are. Save it to `media/voiceover-2.mp3`. When it was made, passed step 6's checks and the run went on to the avatar step
+with it (the avatar's status is anything but not_run, a key refusal included), `script` and `word_count` are the new
+script's (the kit prints them, step 10). Check its V the same way, counting both
 voiceovers as spent. It holds: animate with it. It fails again: submit no avatar and nothing else that costs; answer
 `status: "partial"` with `failed_step` "avatar", the avatar step `not_run` at 0, and in `error` which check failed
 with its numbers. A voiceover that fails a check is never sent to an avatar.
@@ -238,7 +240,8 @@ Once the video job has ended (or failed, or was not sent), make `media/explainer
 voiceover's length is unknown (step 6). Code cuts and times every cue from fal's character timestamps: never time,
 cut or edit a cue yourself, and never `write` the captions file.
 
-1. The voiceover captioned is the re-voice when it was made and sent to the avatar, otherwise the first. Its script, as
+1. The voiceover captioned is the re-voice when it was made, passed step 6's checks and the run went on to the avatar
+   step with it (the avatar's status is anything but not_run, a key refusal included), otherwise the first. Its script, as
    sent to ElevenLabs with audio tags, is `work/script-2.txt` for the re-voice and `work/script.txt` for the first.
 2. Run it with `bash`:
 

@@ -19,9 +19,11 @@
 //             evidence/fal/<request_id>.json, where the run files fal's answer; on a server that files none, from
 //             work/fal/<request_id>.json, written as fal answered it.
 //
-// The voiceover described is the re-voice when one was made and sent to the avatar (any avatar status but not_run),
-// else the first. `script` is its file's text (work/script-2.txt or work/script.txt) without the outer whitespace, and
-// `word_count` its spoken words, counted as the script check counts them. `audio_seconds`: the avatar result's
+// The voiceover described is the re-voice when it was made, passed step 6's checks and the run went on to the avatar
+// step with it (the avatar's status is anything but not_run, a key refusal included), otherwise the first. Step 6 leaves
+// the avatar not_run when the re-voice fails its checks; a run whose portrait failed never reaches the avatar either.
+// `script` is its file's text (work/script-2.txt or work/script.txt) without the outer whitespace, and `word_count` its
+// spoken words, counted as the script check counts them. `audio_seconds`: the avatar result's
 // `duration` when it states one (source "avatar"), else that voiceover's audio.file_size x 8 / 128000 to one decimal
 // ("file_size"), else its last character's end in timestamps ("timestamps"), else null. Units: the portrait 1 image, a
 // voiceover its script's characters, the avatar audio_seconds (0 when null). Done or pending costs units x rate;
@@ -143,7 +145,7 @@ const second = revoice ? scriptOf("work/script-2.txt") : "";
 if (billed(voiceover.status) && !first) refuse(`--voiceover ${voiceover.status} needs its script in work/script.txt, the text that was sent, and it is missing or empty.`);
 if (revoice && billed(revoice.status) && !second) refuse(`--revoice ${revoice.status} needs its script in work/script-2.txt, the text that was sent, and it is missing or empty.`);
 
-// The voiceover described: the re-voice once it was made and sent to the avatar, else the first.
+// The voiceover described: the re-voice when it was made and the run went on to the avatar step with it.
 const revoiceSent = revoice?.status === "done" && avatar.status !== "not_run";
 const script = revoiceSent ? second : first;
 const described = revoiceSent ? res.revoice : res.voiceover;

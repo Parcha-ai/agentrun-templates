@@ -4,9 +4,9 @@
 // never had. The kit reads the scripts the run sent, fal's results as the run filed them (evidence/fal/<request_id>.json)
 // and the files saved under media/, and prints every computed field in one line. These tests hold what the template and
 // its graders depend on:
-// - `script` is the exact text of the voiceover the avatar was sent (work/script-2.txt when a re-voice was made and sent
-//   to the avatar, else work/script.txt), outer whitespace aside: no tag added, none dropped; `word_count` is the script
-//   check's count of it;
+// - `script` is the exact text of the voiceover described (work/script-2.txt when a re-voice was made, passed step 6's
+//   checks and the run went on to the avatar step with it, whatever the avatar's fate, else work/script.txt), outer
+//   whitespace aside: no tag added, none dropped; `word_count` is the script check's count of it;
 // - `audio_seconds`: OmniHuman's billed `duration` when its result states one (source "avatar"), else that voiceover's
 //   file_size x 8 / 128000 to one decimal ("file_size"), else its last character's end ("timestamps"), else null;
 // - each step's fal_cost_usd is its units x get_pricing's rate (1 image, the characters sent, the avatar at
@@ -268,6 +268,28 @@ test("a re-voice sent to an avatar that fal refused is still the voiceover descr
   assert.equal(out.audio_seconds, 52.8);
   assert.equal(step(out, "avatar").fal_cost_usd, 0);
   assert.ok(!out.files.some((f) => f.kind === "video"));
+});
+
+test("a completed re-voice, then an avatar key refusal (--avatar failed, no id): script is work/script-2.txt's, audio_seconds the re-voice's", () => {
+  const dir = revoiced(omniResult, ["portrait.png", "voiceover.mp3", "voiceover-2.mp3", "run-keys.json"]);
+  const out = answer(dir, ...PREMIUM, "--portrait", `done:${P}`, "--voiceover", `done:${V1}`, "--revoice", `done:${V2}`, "--avatar", "failed");
+  assert.equal(out.script, read(dir, "work/script-2.txt").trim());
+  assert.equal(out.word_count, checkWords(dir, "work/script-2.txt"));
+  // The re-voice's file_size (844800 x 8 / 128000), not the first voiceover's 63.4.
+  assert.equal(out.audio_seconds, 52.8);
+  assert.equal(out.audio_seconds_source, "file_size");
+  assert.deepEqual(step(out, "avatar"), { step: "avatar", endpoint: "fal-ai/bytedance/omnihuman/v1.5", units: 52.8, unit: "seconds", fal_cost_usd: 0, status: "failed", request_id: null });
+});
+
+test("a completed re-voice and a failed portrait, so the avatar step is never reached (not_run): the first script", () => {
+  const dir = revoiced(omniResult, ["voiceover.mp3", "voiceover-2.mp3", "run-keys.json"]);
+  const out = answer(dir, ...PREMIUM, "--portrait", `failed:${P}`, "--voiceover", `done:${V1}`, "--revoice", `done:${V2}`, "--avatar", "not_run");
+  assert.equal(out.script, chars(641));
+  assert.equal(out.word_count, checkWords(dir, "work/script.txt"));
+  assert.equal(out.audio_seconds, 63.4);
+  assert.equal(out.audio_seconds_source, "file_size");
+  assert.equal(step(out, "portrait").fal_cost_usd, 0);
+  assert.equal(step(out, "revoice").fal_cost_usd, 0.052);
 });
 
 test("no file_size: audio_seconds is the last character's end in timestamps, and the avatar is billed on it", () => {
