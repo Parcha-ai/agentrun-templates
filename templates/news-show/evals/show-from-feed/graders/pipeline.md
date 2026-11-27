@@ -48,9 +48,10 @@ the answer's last fenced `json` block, and judge the pipeline. Pass only if all 
    there: `film/captions-source.json` and `film/timeline.json` are among the run's files (the build writes them only
    when it succeeds). Shell commands run `hyperframes lint` and `hyperframes check` and the review (`node review.mjs`
    or `hyperframes snapshot --review`), and the run views at least one review sheet with `read`; then `hyperframes
-   render` writes `media/show.mp4` (at most 3 render commands), and the share card is made with `hyperframes
-   snapshot`. The answer's `film` is 1920x1080: the kit's `answer.mjs final` sets it from its own probe of the show,
-   and refuses a show that is not 1920x1080 or a card that is not 1200x630.
+   render`, started with `bash` or `bash_background`, writes `media/show.mp4` (at most 3 render commands, counting
+   both tools), and the share card is made with `hyperframes snapshot`. The answer's `film` is 1920x1080: the kit's
+   `answer.mjs final` sets it from its own probe of the show, and refuses a show that is not 1920x1080 or a card that
+   is not 1200x630.
 6. **Paid once.** No job is submitted twice and no fal endpoint but these three is called.
 7. **One stem.** Before the first `submit_job` the run `write`s `media/run-keys.json` as `{"stem": "<stem>"}`, the
    stem 8 lowercase letters and digits, and every `submit_job` key is `ns-<that stem>-<step>`, with no date in it.

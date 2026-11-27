@@ -17,7 +17,7 @@ model:
 effort: medium
 computer: [shell]
 needs: [chrome, ffmpeg, ffprobe, hyperframes]
-tools: [read, write, edit, bash, web_search, web_fetch, web_save]
+tools: [read, write, edit, bash, bash_background, bash_output, bash_signal, web_search, web_fetch, web_save]
 mcp:
   - source: url
     toolkit: fal
@@ -262,7 +262,8 @@ second it ends (from `film/words.json`).
   send it again. `partial`, `failed_step: "anchor-<segment>"` (the first that failed), fal's words in `error`.
 - **A job the run refuses for its spend cap** is a refusal like fal's: its words in `error`, no retry.
 - **The render fails**: read its error, fix and render again, at most 3 renders; still failing: `partial`,
-  `failed_step: "render"`, the project folder kept.
+  `failed_step: "render"`, the project folder kept. A render still running after the skill's three waits is ended
+  and not started again: the same `partial`.
 - **A save fails**: keep going, list it in `files` with `saved_path: null`; `not_saved` when everything else worked.
 - Never make the show any other way: no fal composition, no other renderer.
 

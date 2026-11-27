@@ -153,18 +153,36 @@ face and over no caption, no fact or headline runs off the frame, and the end ca
 
 ## 8. Render
 
+Render only when step 7 is done: every review sheet looked at with `read`, and every fix made and checked. A render
+takes longer than one `bash` call may run (600 s at most, whatever `timeout` it asks), so start it with
+`bash_background` and wait for it in turns. Start this command, as written, with `bash_background`:
+
 ```sh
-(cd film && hyperframes render --quality looks --video-frame-format jpg -o ../media/show.mp4 > ../media/render.log 2>&1; echo "render exit $?"); tail -c 400 media/render.log
+cd film && hyperframes render --quality looks --video-frame-format jpg -o ../media/show.mp4 > ../media/render.log 2>&1; c=$?; echo "render exit $c" >> ../media/render.log; exit $c
 ```
 
-Run it as written, in one `bash` call in the foreground with a `timeout` of 1200, and wait for it. The sandbox ends
-every process a call started when the call returns, so a render started in the background (`&`, `nohup`, `setsid`)
-is killed part way and its log stops mid-capture. `--video-frame-format jpg` extracts the anchor clips' frames as
-JPEG, HyperFrames' choice for camera footage, at a fraction of PNG's size on the sandbox's disk. A 90 second show
-takes several minutes (capture runs a few frames a second on software GL; the log's "BeginFrame did not run" line is
-expected).
+It answers the render's id at once (`"1"`, or the next number). The command's last act is to add a `render exit`
+line to its log, so wait for that line in one foreground `bash` call with a `timeout` of 590:
 
-Then probe the film in its own `bash` call, after the render's call returns:
+```sh
+for i in $(seq 1 54); do grep -q '^render exit' media/render.log && break; sleep 10; done; tail -c 400 media/render.log
+```
+
+After each wait, call `bash_output` with `{"id": "<id>"}`, `<id>` being the render's id, even when the log says
+`render exit`: it says whether the render still runs and, once it has ended, its exit code. That exit code is the
+render's result; the log's line only ends the wait. While the render runs, make no other call but these: no `read` of
+a sheet, no edit in `film/` (the render reads it as it goes). While it still runs, wait again the same way: at most 3
+waits in all, about 27 minutes. A render still running after the third wait is stuck: end it with `bash_signal`
+`{"id": "<id>", "signal": "TERM"}`, render nothing more, and the render failed (`partial`, `failed_step: "render"`,
+`error` saying the render did not finish in 27 minutes). Never start a render while one runs, and never start one in
+`bash` with `&`, `nohup` or `setsid`: the sandbox ends those when the `bash` call returns, part way through the
+capture.
+
+`--video-frame-format jpg` extracts the anchor clips' frames as JPEG, HyperFrames' choice for camera footage, at a
+fraction of PNG's size on the sandbox's disk. A 90 second show takes several minutes (capture runs a few frames a
+second on software GL; the log's "BeginFrame did not run" line is expected).
+
+Once it has exited with code 0, probe the film in its own `bash` call:
 
 ```sh
 ffprobe -v error -show_entries format=duration:stream=width,height -of json media/show.mp4
@@ -172,8 +190,8 @@ ffprobe -v error -show_entries format=duration:stream=width,height -of json medi
 
 Its short answer is the proof of the film's size and length, so keep it apart from the render's long log. It must
 show 1920x1080 and the root's duration (`film_s` from the build), within a frame. A failed render
-(`render exit` not 0): read the log's error, fix, render again (at most 3 renders in all, counted in
-`checks.renders`).
+(exit code not 0): read the log's error, fix, render again (at most 3 renders in all, each one `bash_background`
+start, counted in `checks.renders`).
 
 ## 9. The share card
 
