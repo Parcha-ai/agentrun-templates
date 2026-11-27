@@ -10,12 +10,15 @@ whole. The voices are the nine eleven-v3 jobs, each with the request_id fal answ
 Whether a `write` or `edit` copied fal's timestamps or touched `film/captions-source.json` is not judged here: the
 repo's sent check (`news-show-sent.mjs`) holds it.
 
-Read the calls and the run's files. Pass only if this holds:
+On a live run the grader's input cuts fal's answers, so whether each `request_id` is its own segment's voice job,
+and whether a `measured` segment's voice came back with no timestamps, are not judged here. The repo's sent check
+(`news-show-sent.mjs`) holds the first when it is run on the report.
+
+Read the run's files. Pass only if this holds:
 
 **From fal's files.** `film/captions-source.json` is in the run's files and shown whole: it fails when the file is
-missing or when the input marks any part of it cut. For each of the nine segments, its `request_id` is the
-request_id fal answered for that segment's voice job (the eleven-v3 `submit_job` whose `submission_key` or text
-is that segment's), the nine are distinct, and its `method` is `measured` only when fal answered that voice with no
-timestamps. `"bare list"`, null, the still's or an anchor clip's request_id, or a missing segment fails.
+missing or when the input marks any part of it cut. It has a line for each of the nine segments; the nine
+`request_id`s are distinct, and each names a filed result: `evidence/fal/<request_id>.json` is among the run's files
+(shown in `<files>`, or named in its list of files not shown). `"bare list"`, null or a missing segment fails.
 
 Answer pass or fail, and quote what decided it.
