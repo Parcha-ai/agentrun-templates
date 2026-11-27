@@ -5,14 +5,16 @@
 // one that was not fal's chunks timed that segment's captions as `measured`, and nothing said so. These tests hold:
 // - a voice's filed result captions exactly as the bare list does; null timestamps (in show.json or in the result) are
 //   measured, as before;
-// - a result object outside the run's evidence/fal/ (work/evidence/fal/ included), another job's result, a named file
-//   that isn't there, a list that isn't fal's chunks or whose chunks are uneven, and a list typed into show.json: exit 3,
-//   nothing written, and the message says what to pass.
+// - a result object outside the run's evidence/fal/ (work/evidence/fal/ included, or reached through a link there),
+//   another job's result, a named file that isn't there, a list that isn't fal's chunks or whose chunks are uneven, and a
+//   list typed into show.json: exit 3, nothing written, and the message says what to pass;
+// - a build that succeeds writes film/captions-source.json: each segment's method and the request_id of the result it
+//   read ("bare list" for a list, null for none), small enough that a grader's cut input shows it whole.
 // They need ffmpeg and ffprobe on PATH (the evals-parse workflow installs ffmpeg). Every input is synthetic.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { tempRoot } from "./temp-root.mjs";
 
@@ -65,8 +67,9 @@ for (const name of ORDER) {
 let n = 0;
 /** A run's folder with the kit copied to film/ as the skill does, the voices in media/, `files` (path in the folder to
  *  JSON value) written, and film/show.json whose segment `name` has `timestamps: at(name)`. Runs the build from that
- *  folder, as the agent does. */
-function build(at, files = {}) {
+ *  folder, as the agent does. `links` (path in the folder to the path it points at, relative to the link's folder) are
+ *  made after the files. */
+function build(at, files = {}, links = {}) {
   const dir = join(root, `run-${n++}`);
   mkdirSync(join(dir, "media"), { recursive: true });
   cpSync(KIT, join(dir, "film"), { recursive: true });
@@ -74,6 +77,10 @@ function build(at, files = {}) {
   for (const [rel, value] of Object.entries(files)) {
     mkdirSync(join(dir, dirname(rel)), { recursive: true });
     writeFileSync(join(dir, rel), typeof value === "string" ? value : JSON.stringify(value));
+  }
+  for (const [rel, target] of Object.entries(links)) {
+    mkdirSync(join(dir, dirname(rel)), { recursive: true });
+    symlinkSync(target, join(dir, rel));
   }
   const segments = ORDER.map((name) => {
     const g = { name, script: SCRIPTS[name], voice: `media/voice-${name}.mp3`, timestamps: at(name) };
@@ -95,8 +102,9 @@ function build(at, files = {}) {
     vtt: read("media/show.vtt"),
     words: read("film/words.json"),
     captions: read("film/compositions/captions.html"),
+    source: read("film/captions-source.json"),
     // What a refused build must not have written: any of the project's outputs.
-    wrote: ["media/show.vtt", "film/index.html", "film/words.json", "film/timeline.json", "film/assets", "film/compositions", "film/card"].filter((p) => existsSync(join(dir, p))),
+    wrote: ["media/show.vtt", "film/index.html", "film/words.json", "film/timeline.json", "film/captions-source.json", "film/assets", "film/compositions", "film/card"].filter((p) => existsSync(join(dir, p))),
   };
 }
 const allFiled = () => Object.fromEntries(ORDER.map((name) => [filedPath(name), resultOf(name)]));
@@ -208,5 +216,60 @@ test("fal's list typed into show.json instead of a path: exit 3, nothing written
   const r = build((name) => (name === "cold-open" ? chunksOf(SCRIPTS[name]) : filedPath(name)), allFiled());
   refused(r);
   assert.match(r.stderr, /cold-open/);
+  assert.match(r.stderr, /evidence\/fal\/<request_id>\.json/);
+});
+
+// film/captions-source.json is what a grader reads to see where each segment's timestamps came from. The other files a
+// grader is shown are cut to a share of its input (about 1,380 characters each in a news-show run with fal's results
+// filed); a file under 1,000 bytes is shown whole.
+const SOURCE_MAX_BYTES = 1000;
+const sourceOf = (r) => {
+  assert.notEqual(r.source, null, "the build wrote no film/captions-source.json");
+  return JSON.parse(r.source);
+};
+
+test("film/captions-source.json: each segment's method and the request_id of the result it read, under the size a grader shows whole", () => {
+  const r = build(filedPath, allFiled());
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual(sourceOf(r), Object.fromEntries(ORDER.map((name) => [name, { method: "aligned", request_id: ID[name] }])));
+  assert.ok(Buffer.byteLength(r.source) <= SOURCE_MAX_BYTES, `film/captions-source.json is ${Buffer.byteLength(r.source)} bytes`);
+});
+
+test("film/captions-source.json says \"bare list\" for a list, null for no timestamps, and keeps a result's request_id when fal gave it none", () => {
+  const files = allFiled();
+  files[filedPath("story-b")] = { audio: audioOf("story-b"), timestamps: null };
+  files[listPath("lead-a")] = chunksOf(SCRIPTS["lead-a"]);
+  const r = build((name) => (name === "lead-c" ? null : name === "lead-a" ? listPath(name) : filedPath(name)), files);
+  assert.equal(r.status, 0, r.stderr);
+  const source = sourceOf(r);
+  assert.deepEqual(source["lead-a"], { method: "aligned", request_id: "bare list" });
+  assert.deepEqual(source["lead-c"], { method: "measured", request_id: null });
+  assert.deepEqual(source["story-b"], { method: "measured", request_id: ID["story-b"] });
+  assert.deepEqual(source["story-a"], { method: "aligned", request_id: ID["story-a"] });
+  // The worst case for its size: the longest method on every segment, each with a full request_id.
+  const worst = build(filedPath, Object.fromEntries(ORDER.map((name) => [filedPath(name), { audio: audioOf(name), timestamps: null }])));
+  assert.equal(worst.status, 0, worst.stderr);
+  assert.deepEqual(sourceOf(worst), Object.fromEntries(ORDER.map((name) => [name, { method: "measured", request_id: ID[name] }])));
+  assert.ok(Buffer.byteLength(worst.source) <= SOURCE_MAX_BYTES, `film/captions-source.json is ${Buffer.byteLength(worst.source)} bytes`);
+});
+
+test("film/captions-source.json names the result the build read, not the name show.json gives: a filed name that links to another filed result", () => {
+  // lead-b's voice was answered twice (a retried job). show.json names the first request_id, and that name in
+  // evidence/fal/ is a link to the second job's result, the file the build reads.
+  const second = "6d6d6d6d-aaaa-4bbb-8ccc-000000000002";
+  const files = { ...allFiled(), [`evidence/fal/${second}.json`]: resultOf("lead-b") };
+  delete files[filedPath("lead-b")];
+  const r = build(filedPath, files, { [filedPath("lead-b")]: `${second}.json` });
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual(sourceOf(r)["lead-b"], { method: "aligned", request_id: second });
+});
+
+test("a filed name that links to a result outside evidence/fal/ (a copy under media/): exit 3, nothing written", () => {
+  const files = allFiled();
+  delete files[filedPath("story-c")];
+  files["media/story-c-result.json"] = resultOf("story-c");
+  const r = build(filedPath, files, { [filedPath("story-c")]: "../../media/story-c-result.json" });
+  refused(r);
+  assert.match(r.stderr, /story-c/);
   assert.match(r.stderr, /evidence\/fal\/<request_id>\.json/);
 });
