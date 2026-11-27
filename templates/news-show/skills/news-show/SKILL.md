@@ -155,7 +155,6 @@ face and over no caption, no fact or headline runs off the frame, and the end ca
 
 ```sh
 (cd film && hyperframes render --quality looks --video-frame-format jpg -o ../media/show.mp4 > ../media/render.log 2>&1; echo "render exit $?"); tail -c 400 media/render.log
-ffprobe -v error -show_entries format=duration:stream=width,height -of json media/show.mp4
 ```
 
 Run it as written, in one `bash` call in the foreground with a `timeout` of 1200, and wait for it. The sandbox ends
@@ -165,7 +164,14 @@ JPEG, HyperFrames' choice for camera footage, at a fraction of PNG's size on the
 takes several minutes (capture runs a few frames a second on software GL; the log's "BeginFrame did not run" line is
 expected).
 
-The ffprobe must show 1920x1080 and the root's duration (`film_s` from the build), within a frame. A failed render
+Then probe the film in its own `bash` call, after the render's call returns:
+
+```sh
+ffprobe -v error -show_entries format=duration:stream=width,height -of json media/show.mp4
+```
+
+Its short answer is the proof of the film's size and length, so keep it apart from the render's long log. It must
+show 1920x1080 and the root's duration (`film_s` from the build), within a frame. A failed render
 (`render exit` not 0): read the log's error, fix, render again (at most 3 renders in all, counted in
 `checks.renders`).
 
