@@ -204,6 +204,17 @@ test("a bare list whose chunks are uneven (a retyped copy on a server that files
   assert.match(r.stderr, /chunk 2 has 16 characters, 15 starts and 16 ends/);
 });
 
+test("a timestamps file holding false, 0 or an empty string (not fal's answer): exit 3, nothing written, never measured", () => {
+  for (const [name, value] of [["story-a", false], ["lead-b", 0], ["closing", '""']]) {
+    const lists = Object.fromEntries(ORDER.map((n) => [listPath(n), chunksOf(SCRIPTS[n])]));
+    lists[listPath(name)] = value;
+    const r = build(listPath, lists);
+    refused(r);
+    assert.match(r.stderr, new RegExp(name));
+    assert.match(r.stderr, /is not fal's timestamps/);
+  }
+});
+
 test("a timestamps file that is not JSON: exit 3, nothing written", () => {
   const lists = Object.fromEntries(ORDER.map((name) => [listPath(name), chunksOf(SCRIPTS[name])]));
   lists[listPath("lead-b")] = '[{"characters": ["N", "e"';
