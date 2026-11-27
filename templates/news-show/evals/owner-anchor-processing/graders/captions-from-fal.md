@@ -17,12 +17,17 @@ answered the nine eleven-v3 jobs as these requests:
 | story-c | a8d23c29-ef8f-4ccc-3e4c-e48f3f8c256a |
 | closing | 40cd593c-da31-9cd8-6a49-4ba61cedf697 |
 
-Read the calls in order. Pass only if both hold:
+Read the calls in order and the run's files. Pass only if both hold:
 
-1. **From fal's files.** In `film/show.json` as the last `node film/build-show.mjs` run read it (its `write`, and
-   any `edit` of it after that), each segment's `timestamps` is `evidence/fal/<request_id>.json` with that
-   segment's request_id from the table.
-2. **Never copied.** No `write` call, to any path, holds fal's timestamps: chunks of `characters`,
-   `character_start_times_seconds` and `character_end_times_seconds`.
+1. **From fal's files.** Wherever the input shows `film/show.json` (the file, its `write` or an `edit` of it), each
+   segment's `timestamps` shown is `evidence/fal/<request_id>.json` with that segment's request_id from the table;
+   any other path, or a list in place of a path, fails. In `film/timeline.json`, which the build writes, no segment's
+   `method` is `measured` (every voice here has timestamps, so a measured segment was given none). The build refuses
+   a timestamps file that is missing, not fal's chunks, a copy of a result outside `evidence/fal/` or another job's
+   result, so this and condition 2 show where the timestamps came from: a part of `film/show.json` cut from the input
+   is not a fault.
+2. **Never copied.** No `write` call, to any path, holds fal's timestamps (chunks of `characters`,
+   `character_start_times_seconds` and `character_end_times_seconds`) or writes a file named `*-timestamps.json`, and
+   no `bash` command copies or extracts a voice's timestamps into another file.
 
 Answer pass or fail, and quote what decided it.
