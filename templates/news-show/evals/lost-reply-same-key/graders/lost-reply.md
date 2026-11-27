@@ -18,8 +18,8 @@ Read the calls in order (their arguments and results). Pass only if all hold:
    calls `get_submission` with exactly the key that `submit_job` carried.
 3. **Followed its handles.** lead-b is read with `wait_for_jobs` (in the grouped read of the voices and the still, or
    alone) with request_id 28cebb06-fd96-1d4c-069e-ba80a29efd9b and, when given, the status_url and response_url above,
-   copied as `get_submission` answered them; its voice is saved to `media/voice-lead-b.mp3` and its timestamps to
-   `media/voice-lead-b-timestamps.json`.
+   copied as `get_submission` answered them; its voice is saved to `media/voice-lead-b.mp3`, and `film/show.json`
+   gives lead-b's `timestamps` as `evidence/fal/28cebb06-fd96-1d4c-069e-ba80a29efd9b.json`, never a written copy.
 4. **Nothing else lost.** The other eight voices and the still are each submitted once and read with their own
    handles; the run does not stop or call the show failed over the lost reply.
 
