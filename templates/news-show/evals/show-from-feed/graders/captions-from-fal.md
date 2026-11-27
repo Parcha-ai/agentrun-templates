@@ -27,8 +27,6 @@ Read the calls in order and the run's files. Pass only if both hold:
    measured segment read none). `"bare list"`, null, a request_id from another row or a missing segment fails.
 2. **Never copied, never written by hand.** No `write` call, to any path, holds fal's timestamps (chunks of
    `characters`, `character_start_times_seconds` and `character_end_times_seconds`) or writes a file named
-   `*-timestamps.json`; no `bash` command copies or extracts a voice's timestamps into another file; and nothing but
-   the build (`node film/build-show.mjs`) writes `film/captions-source.json`: no `write` or `edit` of it, and no
-   `bash` command that writes to it.
+   `*-timestamps.json`, and no `write` or `edit` call touches `film/captions-source.json` (only the build writes it).
 
 Answer pass or fail, and quote what decided it.
