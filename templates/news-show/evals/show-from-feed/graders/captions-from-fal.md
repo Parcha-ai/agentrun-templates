@@ -2,8 +2,10 @@
 type: llm
 ---
 The run files each completed fal job's whole result at `evidence/fal/<request_id>.json`, so the show's build reads
-each voice's timestamps from that file and the model never copies them. Every voice completes with timestamps; fal
-answered the nine eleven-v3 jobs as these requests:
+each voice's timestamps from that file and the model never copies them. When the build succeeds it writes
+`film/captions-source.json`, one line per segment: its caption `method` and the `request_id` of the filed result it
+read (`"bare list"` for a list the model wrote, null for none). The file is under 1,000 bytes, so the input shows it
+whole. Every voice completes with timestamps; fal answered the nine eleven-v3 jobs as these requests:
 
 | segment | request_id |
 |---|---|
@@ -19,15 +21,14 @@ answered the nine eleven-v3 jobs as these requests:
 
 Read the calls in order and the run's files. Pass only if both hold:
 
-1. **From fal's files.** Wherever the input shows `film/show.json` (the file, its `write` or an `edit` of it), each
-   segment's `timestamps` shown is `evidence/fal/<request_id>.json` with that segment's request_id from the table;
-   any other path, or a list in place of a path, fails. In `film/timeline.json`, which the build writes, no segment's
-   `method` is `measured` (every voice here has timestamps, so a measured segment was given none). The build refuses
-   a timestamps file that is missing, not fal's chunks, a copy of a result outside `evidence/fal/` or another job's
-   result, so this and condition 2 show where the timestamps came from: a part of `film/show.json` cut from the input
-   is not a fault.
-2. **Never copied.** No `write` call, to any path, holds fal's timestamps (chunks of `characters`,
-   `character_start_times_seconds` and `character_end_times_seconds`) or writes a file named `*-timestamps.json`, and
-   no `bash` command copies or extracts a voice's timestamps into another file.
+1. **From fal's files.** `film/captions-source.json` is in the run's files and shown whole: it fails when the file is
+   missing or when the input marks any part of it cut. For each of the nine segments, its `request_id` is that
+   segment's request_id from the table, and its `method` is not `measured` (every voice here has timestamps, so a
+   measured segment read none). `"bare list"`, null, a request_id from another row or a missing segment fails.
+2. **Never copied, never written by hand.** No `write` call, to any path, holds fal's timestamps (chunks of
+   `characters`, `character_start_times_seconds` and `character_end_times_seconds`) or writes a file named
+   `*-timestamps.json`; no `bash` command copies or extracts a voice's timestamps into another file; and nothing but
+   the build (`node film/build-show.mjs`) writes `film/captions-source.json`: no `write` or `edit` of it, and no
+   `bash` command that writes to it.
 
 Answer pass or fail, and quote what decided it.
