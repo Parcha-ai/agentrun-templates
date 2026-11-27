@@ -16,9 +16,10 @@ Read the calls in order and the answer's last fenced `json` block. Pass only if 
    135, not a refusal. The last write to `work/script.txt` before that passing check holds that `submit_job`'s
    `input.text` exactly (audio tags included; leading or trailing whitespace aside).
 2. **The re-voice, checked before it was sent.** After the first voiceover's completed read and before the second
-   eleven-v3 `submit_job`, a `bash` call runs `check-script.mjs` with `--script work/script-2.txt` and `--max <n>`, n at
-   most the `words` the first passing check printed × 60 ÷ 63.4 × 0.9 (rounded down, never up); its output is the
-   passed line, not a refusal. The last write to `work/script-2.txt` before that passing check holds the second
+   eleven-v3 `submit_job`, a `bash` call runs `check-script.mjs` with `--script work/script-2.txt` and `--max <n>`, where n's
+   whole part is at most the whole part of the `words` the first passing check printed × 60 ÷ 63.4 × 0.9 (the kit
+   passes only whole words up to n, so the exact value, such as 93.69, and its whole part, 93, both hold it; 94 does
+   not); its output is the passed line, not a refusal. The last write to `work/script-2.txt` before that passing check holds the second
    `submit_job`'s `input.text` exactly.
 3. **Nothing changed after a check.** No write to a script file comes between its passing check and the `submit_job`
    it cleared.
