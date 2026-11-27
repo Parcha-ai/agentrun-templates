@@ -11,7 +11,9 @@
 //             "anchor_image": "media/anchor.png" or null },
 //   "segments": [ nine, in order: cold-open, headlines, lead-a, story-a, lead-b, story-b, lead-c, story-c, closing;
 //     every one: { "name", "script": the exact text sent to fal, tags included, "voice": "media/voice-<name>.mp3",
-//                  "timestamps": "media/voice-<name>-timestamps.json" or null },
+//                  "timestamps": "evidence/fal/<request_id>.json", the voice's result as the run filed it from fal's
+//                  answer ({audio, timestamps}: the kit takes its timestamps, so the model never retypes them), or null;
+//                  on a server that files no fal results, a file holding fal's `timestamps` list as it answered it },
 //     an anchor segment also: { "anchor": "media/anchor-<name>.mp4" or null (a desk card), "chyron": at most 40 characters,
 //                               "tag": optional, the strap's tag (the cold open's and the closing's are the AI label) },
 //     headlines also: { "lines": [three lines, A to C] },
@@ -25,12 +27,18 @@
 // and lasts the voice plus 0.7 s; the end card follows the closing for 3 s.
 // Captions, per segment, in order of preference: aligned (fal's characters spell the script), anchored (they don't: the
 // words share the time between the first letter's start and the last letter's end), measured (no timestamps: the words
-// share the voice's length). None of them is an error; the printed `method` is the weakest a segment used.
+// share the voice's length). None of them is an error; the printed `method` is the weakest a segment used. A
+// timestamps file that is named but isn't there, isn't fal's chunks, is uneven, is a result object outside the run's
+// evidence/fal/ (or a link there to one outside) or another job's result stops the build first: exit 3, nothing written,
+// and the message says what to pass.
+// It writes film/captions-source.json, one line per segment: its method and where its timestamps came from, the
+// request_id of the filed result it read ("bare list" for a list, null for none). Small, so a grader's cut input shows
+// it whole.
 // It prints one line of JSON: the method, the film's length, each segment's start, end, voice, clip and mode, and when
 // the cold open's AI sentence ends.
 import { spawnSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, extname, join } from "node:path";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from "node:fs";
+import { basename, dirname, extname, join, relative, resolve } from "node:path";
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, a, i, all) => (a.startsWith("--") ? [...acc, [a.slice(2), all[i + 1]]] : acc), []),
@@ -75,6 +83,80 @@ for (const g of segs) {
     if (!Array.isArray(g.facts) || g.facts.length < 1 || g.facts.length > 2) fail(`${g.name}: facts must be one or two {text, label}`);
   }
 }
+
+// --- Each voice's timestamps, read before anything is written. The run files fal's answer itself under evidence/fal/ in
+// the run's folder, where this runs; a result object anywhere else (work/evidence/fal/ included) was written by the
+// model. A file that can't be read as fal's chunks is a copy gone wrong, never "no timestamps": timing that segment
+// another way would put its captions off its words. Exit 3, write nothing, and say what to pass.
+const RUN_FAL = resolve("evidence", "fal");
+const FILED = "evidence/fal/<request_id>.json";
+const PASS = `Pass ${FILED}, the request_id fal answered for this voice's job, as its timestamps, and write no copy.`;
+const refuse = (g, message) => {
+  console.error(`build-show: ${g.name}: ${message} Nothing written.`);
+  process.exit(3);
+};
+const filedResults = () => (existsSync(RUN_FAL) ? readdirSync(RUN_FAL).filter((f) => f.endsWith(".json")) : []);
+const holds = (there) => `evidence/fal/ holds ${there.slice(0, 20).join(", ")}${there.length > 20 ? ", ..." : ""}`;
+// Each segment's timestamps and where they came from: the request_id of the filed result the build read (the file a
+// link in evidence/fal/ points at, never the name show.json gives), "bare list", or null.
+function readTimestamps(g) {
+  const path = g.timestamps;
+  if (path === null || path === undefined || path === "") return { list: [], from: null };
+  if (typeof path !== "string") refuse(g, `timestamps names a file, never holds fal's list. ${PASS}`);
+  const filed = dirname(resolve(path)) === RUN_FAL;
+  const bad = (why) => {
+    if (filed) refuse(g, `${path} does not hold fal's timestamps as chunks (${why}): it is the run's own copy of fal's answer, so don't write another. Check it is this voice's request_id.`);
+    const there = filedResults();
+    refuse(g, `${path} is not fal's timestamps as fal answered them (${why}). ${there.length ? `${holds(there)}. ${PASS}` : "Write it again, copied exactly from fal's answer, and build again."}`);
+  };
+  let text;
+  try {
+    text = readFileSync(path, "utf8");
+  } catch (e) {
+    if (e.code === "ENOENT") {
+      // Whatever path was named, the run's own evidence/fal/ says which file to pass, or that this server files none.
+      const there = filedResults();
+      if (there.length) refuse(g, `${path} is not in the run's files; ${holds(there)}. ${PASS}`);
+      refuse(
+        g,
+        `${path} is not in the run's files, and the run has no fal results in evidence/fal/: this server files none. Write ` +
+          `fal's \`timestamps\` value for this voice exactly as fal answered it, the whole list, to media/voice-${g.name}-timestamps.json and name that.`,
+      );
+    }
+    bad(e.message);
+  }
+  let raw;
+  try {
+    raw = JSON.parse(text);
+  } catch (e) {
+    bad(e.message);
+  }
+  let list;
+  let from = "bare list";
+  if (Array.isArray(raw)) list = raw;
+  else if (raw && typeof raw === "object" && !("characters" in raw)) {
+    // A result object: fal's answer for one job, {audio, timestamps} for a voice.
+    if (!filed) refuse(g, `${path} is a result object, which the kit takes only as the run filed it from fal's answer. ${PASS}`);
+    const read = realpathSync(path);
+    if (dirname(read) !== realpathSync(RUN_FAL)) refuse(g, `${path} is a link to ${relative(process.cwd(), read)}, a result object the run did not file. ${PASS}`);
+    from = basename(read, ".json");
+    if (!("audio" in raw) && !("timestamps" in raw)) refuse(g, `${path} is not a voice's result (it holds ${Object.keys(raw).join(", ") || "nothing"}): pass this voice's request_id.`);
+    list = raw.timestamps ?? [];
+    if (!Array.isArray(list)) bad("its timestamps is not a list");
+  } else if (raw === null) list = [];
+  else if (typeof raw === "object") list = [raw];
+  // false, 0, "" or any other bare value is no answer fal gives for timestamps: refuse it, never caption it as measured.
+  else bad(`it holds ${JSON.stringify(raw)}`);
+  list.forEach((c, i) => {
+    const st = c?.character_start_times_seconds;
+    const en = c?.character_end_times_seconds;
+    if (!Array.isArray(c?.characters) || !Array.isArray(st) || !Array.isArray(en)) bad(`chunk ${i + 1} lacks characters, character_start_times_seconds or character_end_times_seconds`);
+    if (st.length !== c.characters.length || en.length !== c.characters.length) bad(`chunk ${i + 1} has ${c.characters.length} characters, ${st.length} starts and ${en.length} ends`);
+    if (![...st, ...en].every((x) => typeof x === "number" && Number.isFinite(x))) bad(`chunk ${i + 1} has a time that is not a number`);
+  });
+  return { list, from };
+}
+for (const g of segs) ({ list: g.chunks, from: g.from } = readTimestamps(g));
 
 // --- Lengths, from the files.
 function probe(path) {
@@ -123,16 +205,7 @@ const RANK = { aligned: 0, anchored: 1, measured: 2 };
 function timeWords(g) {
   const spoken = g.script.replace(/\[[^\]]*\]/g, " ").replace(/\s+/g, " ").trim();
   const words = spoken.split(" ").filter(Boolean).map((text) => ({ text, key: norm(text), seg: g.name }));
-  let chunks = [];
-  if (g.timestamps && existsSync(g.timestamps)) {
-    try {
-      const raw = JSON.parse(readFileSync(g.timestamps, "utf8"));
-      const list = Array.isArray(raw) ? raw : Array.isArray(raw?.timestamps) ? raw.timestamps : raw ? [raw] : [];
-      chunks = list.filter((c) => c && Array.isArray(c.characters));
-    } catch {
-      chunks = [];
-    }
-  }
+  const chunks = g.chunks;
   const letters = [];
   let inTag = false;
   for (const c of chunks) {
@@ -426,5 +499,9 @@ const report = {
   cues: cues.length,
 };
 writeFileSync(join(filmDir, "timeline.json"), JSON.stringify(report, null, 1));
+writeFileSync(
+  join(filmDir, "captions-source.json"),
+  `{\n${timed.map((x) => ` ${JSON.stringify(x.g.name)}: ${JSON.stringify({ method: x.method, request_id: x.g.from })}`).join(",\n")}\n}\n`,
+);
 if (!disclosure || disclosure.spoken_by_s > 10) console.error(`build-show: the cold open's AI sentence ${disclosure ? `ends at ${disclosure.spoken_by_s} s` : "is missing"}: it must be said by 10 s`);
 console.log(JSON.stringify(report));

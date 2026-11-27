@@ -10,10 +10,10 @@
     "status": { "enum": ["saved", "partial", "over_budget", "failed", "not_saved"], "description": "saved: the video and every file are in the run's files; partial: a step failed or was stopped and what exists is saved; over_budget: the plan is over the fal ceiling the user set (max_fal_usd) and nothing was made; failed: nothing was made; not_saved: the video was made and its save failed" },
     "source": { "type": "string", "maxLength": 2000, "description": "the doc's url, or \"text\" for pasted text" },
     "doc_read": { "type": "boolean", "description": "whether the doc was read (the text given, or the page fetched)" },
-    "script": { "type": "string", "maxLength": 2000, "description": "the exact text of the last voiceover sent to ElevenLabs (the re-voice's when there was one), audio tags included; empty when none was written" },
+    "script": { "type": "string", "maxLength": 2000, "description": "the exact text of the voiceover described: the re-voice when it was made, passed step 6's checks and the run went on to the avatar step with it (the avatar's status is anything but not_run, a key refusal included), otherwise the first; audio tags included; empty when none was written" },
     "word_count": { "type": "integer", "minimum": 0, "maximum": 200, "description": "spoken words in `script`, audio tags not counted" },
     "length_s": { "enum": [30, 45, 60], "description": "the length asked for" },
-    "audio_seconds": { "type": ["number", "null"], "minimum": 0, "description": "the length of the voiceover animated (or last made): its file_size x 8 / 128000 seconds, its last character's end in timestamps, or as OmniHuman billed it; null when there is none, or when fal stated neither its file_size nor its timestamps" },
+    "audio_seconds": { "type": ["number", "null"], "minimum": 0, "description": "the length of the voiceover in `script`, the re-voice when it was made, passed step 6's checks and the run went on to the avatar step with it (the avatar's status is anything but not_run, a key refusal included), otherwise the first: its file_size x 8 / 128000 seconds, its last character's end in timestamps, or as OmniHuman billed it; null when there is none, or when fal stated neither its file_size nor its timestamps" },
     "audio_seconds_source": { "enum": ["file_size", "avatar", "timestamps", null], "description": "file_size: the MP3's file_size x 8 / 128000 (128 kbps); avatar: the duration OmniHuman billed; timestamps: the last character's end time in timestamps when file_size is null; null when there is no voiceover, or when fal gave neither file_size nor timestamps (its length unknown)" },
     "presenter": { "type": "string", "maxLength": 400, "description": "the made-up presenter as described for the portrait" },
     "portrait_prompt": { "type": "string", "maxLength": 1200, "description": "the exact prompt sent to fal-ai/nano-banana; empty when none was sent" },
@@ -36,12 +36,12 @@
           "endpoint": { "type": "string" },
           "units": { "type": "number", "minimum": 0 },
           "unit": { "enum": ["images", "characters", "seconds"] },
-          "fal_cost_usd": { "type": "number", "minimum": 0, "description": "estimated from the rate and the units; 0 when refused or not run" },
+          "fal_cost_usd": { "type": "number", "minimum": 0, "description": "estimated from the rate and the units; 0 when refused, failed or not run" },
           "status": { "enum": ["done", "failed", "refused", "pending", "not_run"] },
           "request_id": { "type": ["string", "null"] }
         }
       },
-      "description": "the paid steps in order (revoice only when the first voiceover failed the length check); empty when none ran"
+      "description": "the paid steps in order (revoice only when the first voiceover failed the length check), exactly as the answer kit printed them, over_budget included (each step not_run at 0); empty only for a run that stopped before step 4 priced anything, with no kit run"
     },
     "fal_cost_usd": { "type": "number", "minimum": 0, "description": "the steps' sum" },
     "files": {

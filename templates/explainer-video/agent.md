@@ -116,7 +116,8 @@ Leave `user_intent` out of every fal call, `get_pricing` included: the person's 
 words, and fal needs none of it.
 
 Call `get_pricing` once with every endpoint of the pipeline: `fal-ai/nano-banana,fal-ai/elevenlabs/tts/eleven-v3,
-veed/fabric-1.0,fal-ai/bytedance/omnihuman/v1.5`. Price each step from its rate and units:
+veed/fabric-1.0,fal-ai/bytedance/omnihuman/v1.5`. The plan prices each step from its rate and units, and the kit does
+the arithmetic:
 - portrait: one image (`fal-ai/nano-banana`, about $0.04);
 - voiceover: the script's characters, tags included, ÷ 1000 × the rate (about $0.10 per 1000);
 - re-voice reserve: the voiceover's price once more. A voiceover that runs too long for the avatar is voiced again,
@@ -125,17 +126,22 @@ veed/fabric-1.0,fal-ai/bytedance/omnihuman/v1.5`. Price each step from its rate 
   `get_pricing` gives is the 480p one; 720p is $0.15 and is never used). Premium is `fal-ai/bytedance/omnihuman/v1.5`
   at 720p, $0.16 a second. The avatar bills the voiceover's real length, which step 6 checks again before it is sent.
 
+Run `node .agents/skills/explainer-video/kit/answer.mjs --plan --quality <quality> --rates image=<r>,voice=<r>,avatar=<r>
+--length <length>` with `bash`, each rate as `get_pricing` returned it (nano-banana per image, eleven-v3 per 1000
+characters, the plan's avatar model per second). Its `plan_usd` is `plan_usd`: never price the plan yourself.
+
 `plan_usd` is the sum, reserve included: what the run will cost on fal, said in the report as information, not a
 gate. The plan is the input's `quality` (`quality_used`), never changed for price. Only when the user set
-`max_fal_usd` and `plan_usd` is over it: make nothing, call nothing that costs, and answer `status: "over_budget"`
-with the plan you priced, saying in `report_markdown` that it is over the user's ceiling and what ceiling runs it.
+`max_fal_usd` and `plan_usd` is over it: make nothing, call nothing that costs, and answer `status: "over_budget"`,
+saying in `report_markdown` that it is over the user's ceiling and what ceiling runs it. Its fields still come from
+the answer kit of step 10, each step `not_run`: `steps` is the three steps it prints, `not_run` at 0, never empty.
 With no `max_fal_usd`, nothing is refused for price: `max_fal_usd` is null in the answer.
 
 ## 5. Portrait and voiceover, in parallel
 
 Make each paid call and each save as its own direct tool call, never from inside a code script: a script that fails
 partway leaves calls behind that you can't see, and repeating them saves or pays twice. `bash` runs the kit (the
-script check of steps 2 and 6, the run keys, the captions of step 8) and nothing else: read and make every other file
+script check of steps 2 and 6, the run keys, the plan of step 4, the captions of step 8, the answer of step 10) and nothing else: read and make every other file
 with `read` and `write`, the kit's inputs under `work/` included.
 
 Every paid call gets its own `submission_key`, sent beside `endpoint_id` and `input`, never inside `input`, and kept
@@ -199,7 +205,9 @@ at V 47.0 s with T 40 → 110 × 40 ÷ 47.0 × 0.9 = 84 words), keeping what mat
 example); never send one it refused. Send that file's script with `submit_job` on `fal-ai/elevenlabs/tts/eleven-v3`,
 with the `run-key.mjs --step voiceover-2` key, the same `voice`, `stability`,
 `output_format` and `timestamps`. Follow it with a one-item `wait_for_jobs` whose item has `"index": 2` and the
-handles this `submit_job` answered, copied as they are. Save it to `media/voiceover-2.mp3`. `script` and `word_count` are then the new script's. Check its V the same way, counting both
+handles this `submit_job` answered, copied as they are. Save it to `media/voiceover-2.mp3`. When it was made, passed step 6's checks and the run went on to the avatar step
+with it (the avatar's status is anything but not_run, a key refusal included), `script` and `word_count` are the new
+script's (the kit prints them, step 10). Check its V the same way, counting both
 voiceovers as spent. It holds: animate with it. It fails again: submit no avatar and nothing else that costs; answer
 `status: "partial"` with `failed_step` "avatar", the avatar step `not_run` at 0, and in `error` which check failed
 with its numbers. A voiceover that fails a check is never sent to an avatar.
@@ -232,7 +240,8 @@ Once the video job has ended (or failed, or was not sent), make `media/explainer
 voiceover's length is unknown (step 6). Code cuts and times every cue from fal's character timestamps: never time,
 cut or edit a cue yourself, and never `write` the captions file.
 
-1. The voiceover captioned is the re-voice when it was made and sent to the avatar, otherwise the first. Its script, as
+1. The voiceover captioned is the re-voice when it was made, passed step 6's checks and the run went on to the avatar
+   step with it (the avatar's status is anything but not_run, a key refusal included), otherwise the first. Its script, as
    sent to ElevenLabs with audio tags, is `work/script-2.txt` for the re-voice and `work/script.txt` for the first.
 2. Run it with `bash`:
 
@@ -265,11 +274,19 @@ cap is a refusal like fal's: its words in `error`, and no retry.
 
 ## 10. Answer
 
-Exactly one fenced `json` block that meets the output schema, and nothing after it. `steps` lists the paid steps in
-order (portrait, voiceover, revoice when one was made, avatar), each with its endpoint, its units (images, characters or
-seconds), `fal_cost_usd` from the rate and units (the avatar at `audio_seconds`; 0 for a step refused or not run) and
-its status; `fal_cost_usd` is their sum. `files` lists every file saved or written under `media/`, `media/run-keys.json`
-(kind `run_keys`) included; the caption kit's inputs under `work/` are not listed. A mismatch between the timestamps' characters and the script, or a saved file's byte size, never makes a run partial. Each entry of `notes`, `omitted` and
+Exactly one fenced `json` block that meets the output schema, and nothing after it. Once every paid step has ended,
+been refused or not run, run the answer kit with `bash`:
+`node .agents/skills/explainer-video/kit/answer.mjs --quality <quality_used> --rates image=<r>,voice=<r>,avatar=<r>
+--length <length> --portrait <status>:<request_id> --voiceover <status>:<request_id> --avatar <status>:<request_id>`,
+the rates as in step 4, each status `done`, `pending`, `failed`, `refused` or `not_run` with the request_id fal answered
+for that job. A job fal refused or one never sent has no request_id: write its status alone, as `--avatar not_run` or
+`--avatar refused`. Add `--revoice <status>:<request_id>` only when a re-voice was made. From the scripts sent, fal's results as the run filed them and the files saved, it prints `script`,
+`word_count`, `audio_seconds`, `audio_seconds_source`, `quality_used`, `avatar_model`, `resolution`, `plan_usd`, `steps`
+(each with its units, `fal_cost_usd` and `request_id`; 0 for a step refused, failed or not run), `fal_cost_usd` (their
+sum) and `files`. Copy each into the answer exactly, and use the same script and numbers in the report: never write,
+count or compute any of them yourself. When it refuses, fix what it names and run it again. `steps` is always the
+kit's, over_budget included. Only a run that stopped before step 4 priced anything runs no kit: `steps` and `files`
+empty, `fal_cost_usd` 0, `plan_usd` and `quality_used` null. A mismatch between the timestamps' characters and the script, or a saved file's byte size, never makes a run partial. Each entry of `notes`, `omitted` and
 `ignored_instructions` is at most 300 characters: count, and split or cut a longer one. `report_markdown` opens with
 `![Explainer](media/explainer.mp4)` when the video is saved, then the presenter and voice, the script, the voiceover's
 length check, the files, and a cost line per step.
