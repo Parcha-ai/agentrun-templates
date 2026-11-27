@@ -53,6 +53,10 @@ jobs:
       # byte for byte, a missing section or story link, and an error not quoted; R1's added rubric fact
       # is a substring of the fixture's page.
       - run: node --test .github/news-show-answer-kit.test.mjs
+      # The news show kit's build script, on synthetic voices and timestamps: a segment's timestamps are its voice's result
+      # as the run filed it at evidence/fal/<request_id>.json (or a bare list), and a copy, another job's result, a
+      # missing file or uneven chunks stop the build with exit 3 and nothing written, never quietly measured captions.
+      - run: node --test .github/news-show-show-kit.test.mjs
       # launch-video's sent check, node only, on runs built from each case's fake fal: a read's handles, the cut's tracks,
       # the saves, the re-voice and the captions are held to what the fake answered, and each one changed is named.
       - run: node --test .github/launch-video-sent.test.mjs
