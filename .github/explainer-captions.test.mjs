@@ -330,6 +330,21 @@ test("a filed result not there while other results are: exit 3, it lists them, a
   assert.doesNotMatch(r.stderr, /voiceover-timestamps/);
 });
 
+test("a result object under a nested evidence/fal/ (work/evidence/fal/) is not the run's: exit 3, no file, names the file to pass", () => {
+  const r = fromRun(`work/evidence/fal/${VOICE_ID}.json`, { audio, timestamps: TAKES.take3.timestamps });
+  assert.equal(r.status, 3, `exit ${r.status}: ${r.line} ${r.stderr}`);
+  assert.equal(r.vtt, null);
+  assert.match(r.stderr, /evidence\/fal\/<request_id>\.json/);
+});
+
+test("a missing file while the run's evidence/fal/ holds results: exit 3, it lists them, and it never says to write a copy", () => {
+  const r = fromRun(`work/evidence/fal/${VOICE_ID}.json`, undefined, 24.7, { [`evidence/fal/${VOICE_ID}.json`]: { audio, timestamps: TAKES.take3.timestamps } });
+  assert.equal(r.status, 3, `exit ${r.status}: ${r.line} ${r.stderr}`);
+  assert.equal(r.vtt, null);
+  assert.match(r.stderr, new RegExp(`holds ${VOICE_ID}\\.json`));
+  assert.doesNotMatch(r.stderr, /voiceover-timestamps|write the file again/);
+});
+
 test("a filed result whose chunks are uneven: exit 3 and no file, never cues timed from V", () => {
   const cut = structuredClone(TAKES.take3.timestamps);
   cut[2].character_end_times_seconds.pop();
