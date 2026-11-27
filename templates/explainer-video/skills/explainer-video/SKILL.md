@@ -1,7 +1,22 @@
 ---
 name: explainer-video
-description: The explainer's caption kit. kit/build-captions.mjs turns the voiceover's script and fal's ElevenLabs v3 character timestamps into the explainer's WebVTT captions, with every cue cut and timed in code. Use for the captions step of an explainer video.
+description: The explainer's kit. kit/check-script.mjs holds the script's spoken-word cap before the voiceover is sent; kit/build-captions.mjs turns the voiceover's script and fal's ElevenLabs v3 character timestamps into the explainer's WebVTT captions, with every cue cut and timed in code. Use for the script check and the captions step of an explainer video.
 ---
+
+# The script check
+
+The word cap is held in code, since a model counting its own words miscounts. Before each voiceover's `submit_job`,
+`write` the script to `work/script.txt` and run with `bash`:
+
+```sh
+node .agents/skills/explainer-video/kit/check-script.mjs --script work/script.txt --length <30|45|60>
+```
+
+`--length` caps it at 75, 110 or 135 spoken words; the re-voice (step 6) passes `--max <words>` instead. It counts the
+spoken words as the caption kit does (`kit/spoken-words.mjs`: tags out, a lone dash rides on the word before, a
+hyphenated word is one) and writes nothing. Within the cap it prints `{"script_check":"passed","words":<n>,"max":<cap>}`
+and exits 0: send that file's text. Over the cap it exits 1 and says how many words over; a missing, empty or tag-only
+script, or no cap, exits 2. Never send a script it refused: cut, write and check again.
 
 # The caption kit
 
