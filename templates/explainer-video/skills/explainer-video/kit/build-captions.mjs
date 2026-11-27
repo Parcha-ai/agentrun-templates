@@ -31,7 +31,7 @@
 // Exit 2: nothing to caption or no length. Exit 3: a --timestamps file that isn't fal's chunks or the voiceover's
 // filed result (it is never ignored); its message says what to pass.
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { basename, dirname, resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 
 const MAX_LINE = 42;
 const args = Object.fromEntries(
@@ -56,8 +56,10 @@ const refuse = (message) => {
 };
 const FILED = "evidence/fal/<request_id>.json";
 const path = args.timestamps;
-// The run files fal's answer itself under evidence/fal/; a result object anywhere else was written by the model.
-const filed = Boolean(path) && basename(dirname(resolve(path))) === "fal" && basename(dirname(dirname(resolve(path)))) === "evidence";
+// The run files fal's answer itself under evidence/fal/ in the run's folder, where the agent runs this kit; a result
+// object anywhere else (work/evidence/fal/ included) was written by the model.
+const RUN_FAL = resolve("evidence", "fal");
+const filed = Boolean(path) && dirname(resolve(path)) === RUN_FAL;
 const badTimestamps = (why) =>
   refuse(
     filed
@@ -72,17 +74,22 @@ if (path) {
   try {
     text = readFileSync(path, "utf8");
   } catch (e) {
-    if (filed && e.code === "ENOENT") {
-      const folder = dirname(path);
-      const there = existsSync(folder) ? readdirSync(folder).filter((f) => f.endsWith(".json")) : [];
-      refuse(
-        there.length
-          ? `${path} is not in the run's files; ${folder}/ holds ${there.slice(0, 12).join(", ")}${there.length > 12 ? ", ..." : ""}. ` +
-              "Pass the one named by the request_id fal answered for the voiceover's job."
-          : `${path} is not in the run's files, and the run has no fal results in ${folder}/: this server files none. ` +
-              "Write fal's `timestamps` value exactly as fal answered it, the whole list, to work/voiceover-timestamps.json " +
-              "and pass that instead.",
-      );
+    if (e.code === "ENOENT") {
+      // Whatever path was passed, the run's own evidence/fal/ says which file to pass, or that this server files none.
+      const there = existsSync(RUN_FAL) ? readdirSync(RUN_FAL).filter((f) => f.endsWith(".json")) : [];
+      if (there.length) {
+        refuse(
+          `${path} is not in the run's files; evidence/fal/ holds ${there.slice(0, 12).join(", ")}${there.length > 12 ? ", ..." : ""}. ` +
+            "Pass evidence/fal/<request_id>.json, the request_id fal answered for the voiceover's job, and write no copy.",
+        );
+      }
+      if (filed) {
+        refuse(
+          `${path} is not in the run's files, and the run has no fal results in evidence/fal/: this server files none. ` +
+            "Write fal's `timestamps` value exactly as fal answered it, the whole list, to work/voiceover-timestamps.json " +
+            "and pass that instead.",
+        );
+      }
     }
     badTimestamps(e.message);
   }
