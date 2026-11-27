@@ -282,8 +282,10 @@ empty one too:
    what it prints, copied exactly: never add a sum yourself.
 2. **The check.** `write` the whole report to `media/report.md` and the answer's JSON to `media/answer.json` (leave
    `report_markdown` empty: the kit fills it from the report file), then `node .agents/skills/news-show/kit/answer.mjs
-   final media/answer.json`. Fix each problem it lists in those files and run it again, until it prints one json
-   block. The check decides: don't argue with it or judge the report yourself.
+   final media/answer.json`. It probes the show and the share card itself, sets `film`'s size and length from that
+   probe, and refuses a show that is not 1920x1080 or a card that is not 1200x630. Fix each problem it lists in those
+   files and run it again, until it prints one json block. The check decides: don't argue with it or judge the report
+   yourself.
 3. **The reply.** Exactly the json block `final` printed, every character of it, with nothing before or after it.
    Never shorten, summarize or replace a field of it, `report_markdown` least of all: the reply is the report.
 
@@ -297,7 +299,8 @@ The answer meets the output schema:
   `resolution` (`480p`, or null when nothing was animated).
 - `plan`, `plans_priced` (step 4); `captions_timing` as the build script printed it (`anchored` or
   `measured` is still a correct timing, never a fault).
-- `film`: `path`, `seconds`, `width`, `height` as ffprobe read them (null when nothing was rendered); `checks`.
+- `film`: `path`, `seconds`, `width`, `height` (null when nothing was rendered; `final` sets the size and length from
+  its own probe); `checks`.
 - `fal_cost_usd`: exactly as the kit's `cost` printed it: one step per paid call made (`anchor-image`,
   `voice-<segment>`, `anchor-<segment>`) with its units (images, thousands of characters, or seconds = that
   segment's V rounded up to a whole second) and the rate from `get_pricing`, `usd` to 3 decimals, a failed or refused
