@@ -60,6 +60,10 @@ jobs:
       # launch-video's sent check, node only, on runs built from each case's fake fal: a read's handles, the cut's tracks,
       # the saves, the re-voice and the captions are held to what the fake answered, and each one changed is named.
       - run: node --test .github/launch-video-sent.test.mjs
+      # news-show's sent check, node only, on runs built from each case's fake fal (and one live run): no write holds fal's
+      # timestamps or touches film/captions-source.json, each read carries the handles fal answered, no held job is sent
+      # again, show-from-feed's ten are sent and read as one group, and captions-source.json names each voice's request.
+      - run: node --test .github/news-show-sent.test.mjs
       # `latest` is the dist-tag every AgentRun release is published under.
       - run: npm install --prefix "$RUNNER_TEMP/serve" --no-save --no-audit --no-fund --ignore-scripts @parcha/agentrun-serve@latest
       - run: node .github/parse-evals.mjs "$RUNNER_TEMP/serve"
