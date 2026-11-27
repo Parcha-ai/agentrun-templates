@@ -17,7 +17,7 @@ model:
 effort: medium
 computer: [shell]
 needs: [chrome, ffmpeg, ffprobe, hyperframes]
-tools: [read, write, edit, bash, web_save]
+tools: [read, write, edit, bash, bash_background, bash_output, bash_signal, web_save]
 mcp:
   - source: url
     toolkit: fal
@@ -260,8 +260,8 @@ there is no clip), and the run is `partial`, with `failed_step` `"clip-<n>"` (th
 
 Follow the skill's steps 4 to 7: the stills and the saved clips into `film/assets/`, `beats.mjs place`, `hyperframes
 lint`, `check --json`, the kit's review, fixes, and the render to `media/film.mp4` (the skill's command, with
-`--video-frame-format jpg`, in one foreground `bash` call with a `timeout` of 1200: never in the background, since the
-sandbox ends a call's processes when it returns). `place` (its own call, `timeout` 600) joins the clips into one
+`--video-frame-format jpg`, started with `bash_background` once the review's fixes are done, and waited for in turns,
+since one `bash` call runs for at most 600 s). `place` (its own call, `timeout` 600) joins the clips into one
 video, so HyperFrames extracts one file, cuts the song's segment with FFmpeg as the film's only audio, puts each shot
 on the cut's clock, and reads back what it wrote. Its `STILL` lines name every shot shown as its still:
 each one is in the answer (`used: "still"`) and the report.
@@ -269,7 +269,8 @@ each one is in the answer (`used: "still"`) and the report.
 ## When a step fails
 
 - **The render fails**: read its error, fix the composition and render again, at most 3 renders in all; still failing:
-  `partial`, `failed_step: "render"`, its last error, and the source folder kept.
+  `partial`, `failed_step: "render"`, its last error, and the source folder kept. A render still running after the
+  skill's three waits is ended and not started again: the same `partial`.
 - **Every still fails**: no clip is made and no film; `status: "failed"`, `failed_step: "stills"`, fal's words.
 - **Every clip fails**: the film is made from the stills alone, each with its push-in; `partial`, `failed_step` the first
   clip.
