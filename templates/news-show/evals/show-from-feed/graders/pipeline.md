@@ -47,8 +47,8 @@ Read the calls (their order, arguments and results) and judge the pipeline. Pass
    `media/anchor-<segment>.mp4`.
 6. **Made in the sandbox.** Shell commands copy the kit to `film/`, run `node film/build-show.mjs`, `hyperframes
    lint` and `hyperframes check`, run the review (`node review.mjs` or `hyperframes snapshot --review`), and the run
-   views at least one review sheet with `read`; then `hyperframes render` writes `media/show.mp4` (at most 3 render
-   commands) and an `ffprobe` of it shows 1920x1080. The share card is made with `hyperframes snapshot` and its probe
+   views at least one review sheet with `read`; then `hyperframes render`, started with `bash` or `bash_background`,
+   writes `media/show.mp4` (at most 3 render commands, counting both tools) and an `ffprobe` of it shows 1920x1080. The share card is made with `hyperframes snapshot` and its probe
    shows 1200x630.
 7. **Paid once.** No job is submitted twice and no fal endpoint but these three is called.
 8. **One stem.** Before the first `submit_job` the run `write`s `media/run-keys.json` as `{"stem": "<stem>"}`, the
