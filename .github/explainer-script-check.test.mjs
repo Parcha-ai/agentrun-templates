@@ -181,3 +181,21 @@ test("one count: the check and the caption kit agree on every generated script",
     assert.equal(captionWords(words(count)), count);
   }
 });
+
+test("the re-voice's own file: work/script-2.txt is checked and captioned beside an untouched work/script.txt", () => {
+  const dir = runDir(words(20));
+  writeFileSync(join(dir, "work", "script-2.txt"), words(12));
+  const before = tree(dir);
+  const ok = spawnSync(process.execPath, [CHECK, "--script", "work/script-2.txt", "--max", "12"], { cwd: dir, encoding: "utf8" });
+  assert.equal(ok.status, 0, ok.stderr);
+  assert.equal(JSON.parse(ok.stdout).words, 12);
+  const over = spawnSync(process.execPath, [CHECK, "--script", "work/script-2.txt", "--max", "11"], { cwd: dir, encoding: "utf8" });
+  assert.equal(over.status, 1);
+  assert.match(over.stderr, /work\/script-2\.txt has 12 spoken words, 1 over/);
+  assert.deepEqual(tree(dir), before, "the check writes nothing");
+  for (const [file, count] of [["work/script.txt", 20], ["work/script-2.txt", 12]]) {
+    const r = spawnSync(process.execPath, [CAPTIONS, "--script", file, "--audio-seconds", "30", "--vtt", "media/explainer.vtt"], { cwd: dir, encoding: "utf8" });
+    assert.equal(r.status, 0, r.stderr);
+    assert.equal(JSON.parse(r.stdout.split("\n")[0]).words, count);
+  }
+});

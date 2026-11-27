@@ -194,10 +194,11 @@ stays saved as `media/voiceover.mp3` and listed in `files` (save it first if it 
 checks allow: for OmniHuman 60; with a ceiling, B = (`max_fal_usd` − spent − the new voiceover's price) ÷ the avatar
 rate, and T is B, or the lesser of B and 60 for OmniHuman. Cut the script to at most its spoken words × T ÷ V × 0.9 words (0.9 is the margin; 110 words
 at V 47.0 s with T 40 → 110 × 40 ÷ 47.0 × 0.9 = 84 words), keeping what matters most and adding each point cut to
-`omitted` (or to `omitted_more` past 10), with the rules of step 2. `write` it to `work/script.txt` and check it with
-that word count, not `--length`: `node .agents/skills/explainer-video/kit/check-script.mjs --script work/script.txt
---max <words>` (`--max 84` in the example); never send one it refused. Send it with `submit_job`
-on `fal-ai/elevenlabs/tts/eleven-v3`, key `ev-<stem>-voiceover-2`, the same `voice`, `stability`,
+`omitted` (or to `omitted_more` past 10), with the rules of step 2. `write` it to `work/script-2.txt` (the first stays in
+`work/script.txt`) and check it with that word count, not `--length`:
+`node .agents/skills/explainer-video/kit/check-script.mjs --script work/script-2.txt --max <words>` (`--max 84` in the
+example); never send one it refused. Send that file's script with `submit_job` on `fal-ai/elevenlabs/tts/eleven-v3`,
+key `ev-<stem>-voiceover-2`, the same `voice`, `stability`,
 `output_format` and `timestamps`. Follow it with a one-item `wait_for_jobs` whose item has `"index": 2` and the
 handles this `submit_job` answered, copied as they are. Save it to `media/voiceover-2.mp3`. `script` and `word_count` are then the new script's. Check its V the same way, counting both
 voiceovers as spent. It holds: animate with it. It fails again: submit no avatar and nothing else that costs; answer
@@ -232,12 +233,12 @@ Once the video job has ended (or failed, or was not sent), make `media/explainer
 voiceover's length is unknown (step 6). Code cuts and times every cue from fal's character timestamps: never time,
 cut or edit a cue yourself, and never `write` the captions file.
 
-1. `work/script.txt` holds the exact text of the voiceover last made (the re-voice's when there was one), as sent
-   to ElevenLabs, audio tags included: steps 2 and 6 wrote it.
+1. The voiceover captioned is the re-voice when it was made and sent to the avatar, otherwise the first. Its script, as
+   sent to ElevenLabs with audio tags, is `work/script-2.txt` for the re-voice and `work/script.txt` for the first.
 2. Run it with `bash`:
 
 ```sh
-node .agents/skills/explainer-video/kit/build-captions.mjs --script work/script.txt \
+node .agents/skills/explainer-video/kit/build-captions.mjs --script <its script file> \
   --timestamps evidence/fal/<request_id>.json --audio-seconds <V> --vtt media/explainer.vtt
 ```
 
