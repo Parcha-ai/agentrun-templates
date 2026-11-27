@@ -15,8 +15,9 @@
 //             the portrait, work/script.txt's voiceover twice (the re-voice reserve) and --length seconds of the avatar.
 // --portrait, --voiceover, --revoice (only when one was made), --avatar
 //             each step's status, done, pending, failed, refused or not_run, with ":<request_id>" when fal answered one
-//             (needed for done). A done step's result is read from evidence/fal/<request_id>.json, where the run files
-//             fal's answer; on a server that files none, from work/fal/<request_id>.json, written as fal answered it.
+//             (needed for done; nothing after the colon is no id). A done step's result is read from
+//             evidence/fal/<request_id>.json, where the run files fal's answer; on a server that files none, from
+//             work/fal/<request_id>.json, written as fal answered it.
 //
 // The voiceover described is the re-voice when one was made and sent to the avatar (any avatar status but not_run),
 // else the first. `script` is its file's text (work/script-2.txt or work/script.txt) without the outer whitespace, and
@@ -93,7 +94,8 @@ const stepArg = (name, optional = false) => {
   if (raw === undefined && optional) return undefined;
   const at = String(raw ?? "").indexOf(":");
   const status = at === -1 ? raw : raw.slice(0, at);
-  const id = at === -1 ? null : raw.slice(at + 1);
+  // Nothing after the colon is no request id: `not_run:` is `not_run`, and `done:` is refused below.
+  const id = at === -1 || at === raw.length - 1 ? null : raw.slice(at + 1);
   if (!STATUSES.includes(status)) refuse(`--${name} ${raw ?? "(none)"} is not one of done, pending, failed, refused or not_run (with :<request_id>).`);
   if (id !== null && !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(id)) refuse(`--${name}'s request id ${JSON.stringify(id)} is not a request id fal answered.`);
   if (status === "done" && !id) refuse(`--${name} done needs :<request_id>, the request_id fal answered for its job.`);

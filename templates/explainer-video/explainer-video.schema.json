@@ -36,12 +36,12 @@
           "endpoint": { "type": "string" },
           "units": { "type": "number", "minimum": 0 },
           "unit": { "enum": ["images", "characters", "seconds"] },
-          "fal_cost_usd": { "type": "number", "minimum": 0, "description": "estimated from the rate and the units; 0 when refused or not run" },
+          "fal_cost_usd": { "type": "number", "minimum": 0, "description": "estimated from the rate and the units; 0 when refused, failed or not run" },
           "status": { "enum": ["done", "failed", "refused", "pending", "not_run"] },
           "request_id": { "type": ["string", "null"] }
         }
       },
-      "description": "the paid steps in order (revoice only when the first voiceover failed the length check); empty when none ran"
+      "description": "the paid steps in order (revoice only when the first voiceover failed the length check), exactly as the answer kit printed them, over_budget included (each step not_run at 0); empty only for a run that stopped before step 4 priced anything, with no kit run"
     },
     "fal_cost_usd": { "type": "number", "minimum": 0, "description": "the steps' sum" },
     "files": {

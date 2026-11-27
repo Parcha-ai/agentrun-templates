@@ -55,8 +55,9 @@ node .agents/skills/explainer-video/kit/answer.mjs --quality <q> --rates <as abo
   --avatar <status>[:<request_id>]
 ```
 
-Each status is `done`, `pending`, `failed`, `refused` or `not_run`; a `done` step needs its request_id, and `--revoice`
-is passed only when a re-voice was made. A done step's result is read from `evidence/fal/<request_id>.json`, where the
+Each status is `done`, `pending`, `failed`, `refused` or `not_run`; a `done` step needs its request_id, a step with
+none is written as its status alone (`--avatar not_run`; `not_run:` reads the same), and `--revoice` is passed only
+when a re-voice was made. A done step's result is read from `evidence/fal/<request_id>.json`, where the
 run files fal's answer (on a server that files none, write the job's result exactly as fal answered it to
 `work/fal/<request_id>.json`). It prints one line holding `script`, `word_count`, `audio_seconds`,
 `audio_seconds_source`, `quality_used`, `avatar_model`, `resolution`, `plan_usd`, `steps`, `fal_cost_usd` and `files`:
@@ -67,7 +68,8 @@ run files fal's answer (on a server that files none, write the job's result exac
   `file_size` × 8 ÷ 128000 to one decimal (`file_size`), else its last character's end (`timestamps`), else null.
 - `steps`: portrait (1 image), voiceover and revoice (their scripts' characters, tags included), avatar
   (`audio_seconds`), each with its request_id. Done or pending costs units × rate, rounded to 3 decimals, half up;
-  refused, failed or not run costs 0. `fal_cost_usd` is the sum of the listed steps.
+  refused, failed or not run costs 0. `fal_cost_usd` is the sum of the listed steps. The answer's `steps` is always
+  these, over_budget included (each `not_run` at 0).
 - `files`: each fal output made, by its saved path under `media/` (null when the save failed) and fal's URL, then
   `media/explainer.vtt` and `media/run-keys.json` when they exist.
 

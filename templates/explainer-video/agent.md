@@ -132,8 +132,9 @@ characters, the plan's avatar model per second). Its `plan_usd` is `plan_usd`: n
 
 `plan_usd` is the sum, reserve included: what the run will cost on fal, said in the report as information, not a
 gate. The plan is the input's `quality` (`quality_used`), never changed for price. Only when the user set
-`max_fal_usd` and `plan_usd` is over it: make nothing, call nothing that costs, and answer `status: "over_budget"`
-with the plan you priced, saying in `report_markdown` that it is over the user's ceiling and what ceiling runs it.
+`max_fal_usd` and `plan_usd` is over it: make nothing, call nothing that costs, and answer `status: "over_budget"`,
+saying in `report_markdown` that it is over the user's ceiling and what ceiling runs it. Its fields still come from
+the answer kit of step 10, each step `not_run`: `steps` is the three steps it prints, `not_run` at 0, never empty.
 With no `max_fal_usd`, nothing is refused for price: `max_fal_usd` is null in the answer.
 
 ## 5. Portrait and voiceover, in parallel
@@ -275,13 +276,14 @@ been refused or not run, run the answer kit with `bash`:
 `node .agents/skills/explainer-video/kit/answer.mjs --quality <quality_used> --rates image=<r>,voice=<r>,avatar=<r>
 --length <length> --portrait <status>:<request_id> --voiceover <status>:<request_id> --avatar <status>:<request_id>`,
 the rates as in step 4, each status `done`, `pending`, `failed`, `refused` or `not_run` with the request_id fal answered
-for that job (none for a job fal refused or one never sent), and `--revoice <status>:<request_id>` added only when a
-re-voice was made. From the scripts sent, fal's results as the run filed them and the files saved, it prints `script`,
+for that job. A job fal refused or one never sent has no request_id: write its status alone, as `--avatar not_run` or
+`--avatar refused`. Add `--revoice <status>:<request_id>` only when a re-voice was made. From the scripts sent, fal's results as the run filed them and the files saved, it prints `script`,
 `word_count`, `audio_seconds`, `audio_seconds_source`, `quality_used`, `avatar_model`, `resolution`, `plan_usd`, `steps`
 (each with its units, `fal_cost_usd` and `request_id`; 0 for a step refused, failed or not run), `fal_cost_usd` (their
 sum) and `files`. Copy each into the answer exactly, and use the same script and numbers in the report: never write,
-count or compute any of them yourself. When it refuses, fix what it names and run it again. A run that failed before
-step 4 priced nothing: `steps` and `files` empty, `fal_cost_usd` 0, `plan_usd` and `quality_used` null. A mismatch between the timestamps' characters and the script, or a saved file's byte size, never makes a run partial. Each entry of `notes`, `omitted` and
+count or compute any of them yourself. When it refuses, fix what it names and run it again. `steps` is always the
+kit's, over_budget included. Only a run that stopped before step 4 priced anything runs no kit: `steps` and `files`
+empty, `fal_cost_usd` 0, `plan_usd` and `quality_used` null. A mismatch between the timestamps' characters and the script, or a saved file's byte size, never makes a run partial. Each entry of `notes`, `omitted` and
 `ignored_instructions` is at most 300 characters: count, and split or cut a longer one. `report_markdown` opens with
 `![Explainer](media/explainer.mp4)` when the video is saved, then the presenter and voice, the script, the voiceover's
 length check, the files, and a cost line per step.
