@@ -6,7 +6,8 @@ stem made once for the run and written to `media/run-keys.json` before any paid 
 `voice-<segment>` or `anchor-<segment>`. The fake matches any stem of 8 lowercase letters and digits. The show's date
 is 2026-11-23.
 
-Read the calls in order (the `write`, `submit_job` and `get_submission` arguments). Pass only if all hold:
+Read the calls in order (the `write`, `submit_job` and `get_submission` arguments; every argument the fake fal received
+is in `<mcp-calls>`, whole). Pass only if all hold:
 
 1. **The stem first.** A `write` of `media/run-keys.json` comes before the first `submit_job`, and its content is
    `{"stem": "<stem>"}` with the stem exactly 8 lowercase letters and digits. No second stem is written in the run.

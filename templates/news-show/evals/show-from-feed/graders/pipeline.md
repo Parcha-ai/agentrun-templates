@@ -31,7 +31,8 @@ The still (`ns-<stem>-anchor-image`, `fal-ai/nano-banana-pro`): https://v3.fal.m
 The handles each `wait_for_jobs` item carries, and the nine voices and the still sent and read as one group of ten, are
 not judged here: the repo's sent check (`news-show-sent.mjs`) holds them.
 
-Read the calls (their order, arguments and results) and judge the pipeline. Pass only if all hold:
+Read the calls in order (every argument the fake fal received is in `<mcp-calls>`, whole), the run's file names and
+the answer's last fenced `json` block, and judge the pipeline. Pass only if all hold:
 
 1. **Research.** The feed https://transitwire.example/feed.xml is read with one `web_fetch`, and each of the three chosen stories' pages with one
    `web_fetch` (at most 6 story pages in all). No `web_search` (the feed gives three new stories).
@@ -43,11 +44,13 @@ Read the calls (their order, arguments and results) and judge the pipeline. Pass
    the order cold-open, lead-a, lead-b, lead-c, closing, each `input` with `image_url` https://v3.fal.media/files/koala/VqRSLd7cDHMxUGhjPcju.png, `audio_url` that segment's voice URL above and
    `resolution` "480p"; then one `wait_for_jobs` holding all five at 0-4; each video saved to
    `media/anchor-<segment>.mp4`.
-5. **Made in the sandbox.** Shell commands copy the kit to `film/`, run `node film/build-show.mjs`, `hyperframes
-   lint` and `hyperframes check`, run the review (`node review.mjs` or `hyperframes snapshot --review`), and the run
-   views at least one review sheet with `read`; then `hyperframes render` writes `media/show.mp4` (at most 3 render
-   commands) and an `ffprobe` of it shows 1920x1080. The share card is made with `hyperframes snapshot` and its probe
-   shows 1200x630.
+5. **Made in the sandbox.** The kit is copied to `film/` (`film/build-show.mjs` is among the run's files) and built
+   there: `film/captions-source.json` and `film/timeline.json` are among the run's files (the build writes them only
+   when it succeeds). Shell commands run `hyperframes lint` and `hyperframes check` and the review (`node review.mjs`
+   or `hyperframes snapshot --review`), and the run views at least one review sheet with `read`; then `hyperframes
+   render` writes `media/show.mp4` (at most 3 render commands), and the share card is made with `hyperframes
+   snapshot`. The answer's `film` is 1920x1080: the kit's `answer.mjs final` sets it from its own probe of the show,
+   and refuses a show that is not 1920x1080 or a card that is not 1200x630.
 6. **Paid once.** No job is submitted twice and no fal endpoint but these three is called.
 7. **One stem.** Before the first `submit_job` the run `write`s `media/run-keys.json` as `{"stem": "<stem>"}`, the
    stem 8 lowercase letters and digits, and every `submit_job` key is `ns-<that stem>-<step>`, with no date in it.

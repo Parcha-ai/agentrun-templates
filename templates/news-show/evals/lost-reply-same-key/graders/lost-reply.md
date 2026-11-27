@@ -13,7 +13,8 @@ https://v3.fal.media/files/zebra/QSdhGV7fFTvQQvystYRE_output.mp3 (5.4 s).
 The handles each `wait_for_jobs` item carries are not judged here: the repo's sent check (`news-show-sent.mjs`) holds
 them.
 
-Read the calls in order (their arguments and results). Pass only if all hold:
+Read the calls in order (every argument the fake fal received is in `<mcp-calls>`, whole; the fake's answers are as
+above) and the answer's last fenced `json` block. Pass only if all hold:
 
 1. **Sent once.** Exactly one `submit_job` carries lead-b's voice: one call whose key ends `-voice-lead-b`, and no
    other `submit_job` with lead-b's script as its `text`, under any key (no `-b` after it, no new stem).

@@ -23,7 +23,8 @@ for this more than anything else". N3: about 3,100 regional rail workers vote on
 pay; result due December 6; union secretary Ada Brennan: "No one wants a strike before the holidays, but our offer has
 been on the table since June".
 
-Read the answer's last fenced `json` block and the run's `submit_job` calls. Pass only if all hold:
+Read the answer's last fenced `json` block and the run's `submit_job` calls (in `<mcp-calls>`, which holds every
+argument the fake fal received, whole). Pass only if all hold:
 
 1. **Stories.** `stories` has three: A is N1 (https://transitwire.example/2026/11/23/airport-link-one-million); B is N2 (https://transitwire.example/2026/11/22/n9-night-bus-every-15-minutes) and C is R1 (https://transitwire.example/2026/11/21/line-4-extension-opens):
    newest first, R1 dated by its own page (2026-11-21), not the gallery's. No story is G, O, R2, R3 or N3. Each story's `url` is its own page, `source` names TransitWire, and

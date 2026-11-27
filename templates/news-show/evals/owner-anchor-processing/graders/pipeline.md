@@ -34,7 +34,8 @@ completes it.
 The handles each `wait_for_jobs` item carries are not judged here: the repo's sent check (`news-show-sent.mjs`) holds
 them.
 
-Read the calls in order. Pass only if all hold:
+Read the calls in order (every argument the fake fal received is in `<mcp-calls>`, whole; the fake's answers are as
+above). Pass only if all hold:
 
 1. **No still.** No `submit_job` on `fal-ai/nano-banana-pro`. The owner's image is saved once with `web_save`.
 2. **Voices.** Nine voice `submit_job` calls in segment order, then one `wait_for_jobs` with the nine at 0-8.
