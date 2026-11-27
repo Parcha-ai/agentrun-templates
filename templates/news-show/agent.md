@@ -209,8 +209,7 @@ reply, `get_submission` with its key; `not_found` never authorizes a new paid ca
 
 **Every fal call and every save is its own direct tool call**, never one made from inside a code script (codemode or
 any other): a script's calls are calls too, and a script that reads the jobs again to save them reads them twice. A
-job read `completed` is never read again: save each voice, its timestamps and the still from that one answer, one
-call each.
+job read `completed` is never read again: save each voice and the still from that one answer, one call each.
 
 **A job `wait_for_jobs` answers `completed` with a result is done: use it.** A voice is its segment's voice and a
 still is the anchor's still. Never read a voice's timestamps to check its words against the script (another take
@@ -220,10 +219,11 @@ refuses a still with none, and "When a step fails" below says what the show does
 as written: never reorder the stories, swap their slots, or rewrite a script, a line or a chyron in `film/show.json`
 to follow what a voice says. The answer's `stories` and each segment's `script` are what step 3 wrote and sent.
 
-Save as each is done, with `web_save`: each voice's `audio.url` to `media/voice-<segment>.mp3`, and in the same step
-`write` its `timestamps` value, exactly as fal answered it, to `media/voice-<segment>-timestamps.json`; the still to
-`media/anchor.png`. With an anchor image, `web_save` it to `media/anchor.<its extension>` once: it is the owner's own
-and is never changed. A voice's length V is `web_save`'s `duration_s` (none: `ffprobe` it, as the skill says).
+Save as each is done, with `web_save`: each voice's `audio.url` to `media/voice-<segment>.mp3`, the still to
+`media/anchor.png`. Never `write` a voice's timestamps: the run files each completed job's whole result at
+`evidence/fal/<request_id>.json`, and each segment's `timestamps` in `film/show.json` is that file, with the request_id
+fal answered for its voice's job. Only when the build says this server files none, write them as it says. With an
+anchor image, `web_save` it to `media/anchor.<its extension>` once: it is the owner's own and is never changed. A voice's length V is `web_save`'s `duration_s` (none: `ffprobe` it, as the skill says).
 
 ## 6. The anchor speaks
 
@@ -242,8 +242,8 @@ failed). `web_save` each video to `media/anchor-<segment>.mp4`.
 ## 7. Build, check and render the show
 
 Follow the skill's sandbox loop: copy the kit to `film/`, write `film/show.json` (the segments, their scripts, voices,
-timestamps, anchor clips and words on screen), run the kit's build script (it lays the segments end to end on the
-voices' real lengths, writes every scene, the captions and `media/show.vtt`), then `hyperframes lint`,
+timestamps from step 5, anchor clips and words on screen), run the kit's build script (it lays the segments end to end
+on the voices' real lengths, writes every scene, the captions and `media/show.vtt`), then `hyperframes lint`,
 `hyperframes check --json` and the kit's review script, look at the sheets, fix what they find, and render
 `media/show.mp4`. Then the share card, `media/share-card.png`. The exact commands are in the skill.
 
@@ -302,7 +302,7 @@ The answer meets the output schema:
   segment's V rounded up to a whole second) and the rate from `get_pricing`, `usd` to 3 decimals, a failed or refused
   job at 0, and `total` the sum of the listed steps. Estimates from fal's rates, not fal's invoice.
 - `files`: every file of the run: `media/show.mp4`, `media/show.vtt`, `media/share-card.png`, the still or anchor
-  image, each voice and its timestamps, each anchor clip, `film/STORYBOARD.md` and `film/` (the composition folder).
+  image, each voice, each anchor clip, `film/STORYBOARD.md` and `film/` (the composition folder).
 - `report_markdown`: the whole report, `media/report.md`'s text, which the kit copies in: never a summary of it or a
   pointer to it. The show first, its first line exactly
   `![<show_name>, <show_date>](media/show.mp4)` (when rendered; a `[`, `]` or `\` in the name escaped with a `\`), the

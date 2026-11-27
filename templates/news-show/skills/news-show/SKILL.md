@@ -81,12 +81,19 @@ Then `write` `film/show.json` in the shape of `film/show.example.json`: the show
 (`date_label`, like "Monday, November 23"), the anchor's name and image (`media/anchor.png` or the owner's
 `media/anchor.<ext>`; null when there is none), and the nine segments with the exact scripts you sent to fal, their
 voice files and timestamps, each anchor segment's clip (`media/anchor-<segment>.mp4`, or null when its job failed,
-or the plan leaves it out: that segment becomes the desk card) and the words on screen. Every
-placeholder starts with `KIT`, and the build refuses any left. Then build:
+or the plan leaves it out: that segment becomes the desk card) and the words on screen. A segment's `timestamps` is
+its voice's result as the run filed it, `evidence/fal/<request_id>.json` with the request_id fal answered for that
+voice's job: the build reads fal's timestamps from it, so never `write` them yourself (null when fal answered none).
+Every placeholder starts with `KIT`, and the build refuses any left. Then build:
 
 ```sh
 node film/build-show.mjs --show film/show.json --film film --vtt media/show.vtt
 ```
+
+When it exits 3 it wrote nothing: a segment's timestamps file is missing, not fal's, or not that voice's, and its
+message says what to pass (or, on a server that files no fal results, what to write). Fix `film/show.json` as it says
+and build again. Only when it still exits 3 for that segment after two fixes, set its `timestamps` to null (its
+captions are measured) and say so in `notes`.
 
 It reads every voice's and clip's real length with ffprobe, lays the nine segments end to end (an anchor segment as
 long as its clip or voice, a voiceover segment 0.35 s of air either side), adds a 3 s end card, and writes
