@@ -332,6 +332,39 @@ test("nothing run (over the user's ceiling): every step 0, the total 0, no files
   assert.equal(out.audio_seconds, null);
 });
 
+// A step with no request id may be written with or without the colon. Two eval runs wrote `--avatar refused:` and
+// `--avatar not_run:`, and the kit refused both, costing each run a second call.
+for (const status of ["refused", "not_run", "failed", "pending"]) {
+  test(`--avatar ${status}: (an empty id after the colon) is no request id: the same answer as --avatar ${status}`, () => {
+    const dir = happy({ media: ["portrait.png", "voiceover.mp3", "explainer.vtt", "run-keys.json"] });
+    const head = [...STANDARD, "--portrait", `done:${P}`, "--voiceover", `done:${V1}`, "--avatar"];
+    const colon = answer(dir, ...head, `${status}:`);
+    assert.deepEqual(colon, answer(dir, ...head, status));
+    assert.equal(step(colon, "avatar").status, status);
+    assert.equal(step(colon, "avatar").request_id, null);
+  });
+}
+
+test("over the ceiling with every step written not_run: : three not_run steps at 0 and no request ids", () => {
+  const dir = runDir({ work: { "script.txt": chars(641) } });
+  const out = answer(dir, ...PREMIUM, "--portrait", "not_run:", "--voiceover", "not_run:", "--avatar", "not_run:");
+  assert.deepEqual(
+    out.steps.map((s) => [s.step, s.status, s.fal_cost_usd, s.request_id]),
+    [
+      ["portrait", "not_run", 0, null],
+      ["voiceover", "not_run", 0, null],
+      ["avatar", "not_run", 0, null],
+    ],
+  );
+  assert.equal(out.fal_cost_usd, 0);
+});
+
+test("done with an empty id after the colon is refused because done needs the request_id fal answered", () => {
+  const args = [...STANDARD, "--portrait", `done:${P}`, "--voiceover", `done:${V1}`, "--avatar", "done:"];
+  const r = refused(happy(), args, "--avatar done:");
+  assert.match(r.stderr, /--avatar done needs :<request_id>/);
+});
+
 test("--plan, before any paid call: plan_usd and the plan's model, nothing else", () => {
   const dir = runDir({ work: { "script.txt": chars(641) } });
   assert.deepEqual(answer(dir, "--plan", ...STANDARD), { plan_usd: 2.568, quality_used: "standard", avatar_model: "veed/fabric-1.0", resolution: "480p" });
