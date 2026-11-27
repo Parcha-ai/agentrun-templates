@@ -171,6 +171,10 @@ test("nothing run (over the user's ceiling): every step 0 and the total 0", () =
 test("rounding: 3 decimals, half up, so 1005 characters at $0.10 per 1000 is 0.101 (0.1005), not 0.1", () => {
   const out = cost(runDir({ "script.txt": chars(1005) }), ...STANDARD, "--portrait", "not_run", "--voiceover", "done", "--avatar", "not_run");
   assert.equal(step(out, "voiceover").fal_cost_usd, 0.101);
+  // 0.5005 is stored as 0.50049999...: half up still makes it 0.501.
+  const odd = cost(runDir({ "script.txt": chars(641) }), "--quality", "standard", "--rates", "image=0.5005,voice=0.1,avatar=0.08", "--portrait", "done", "--voiceover", "not_run", "--avatar", "not_run");
+  assert.equal(step(odd, "portrait").fal_cost_usd, 0.501);
+  assert.equal(odd.fal_cost_usd, 0.501);
 });
 
 test("the total is the sum of the listed (rounded) steps, not the rounded sum of the raw costs", () => {
