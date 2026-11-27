@@ -1,6 +1,6 @@
 ---
 name: explainer-video
-description: The explainer's kit. kit/check-script.mjs holds the script's spoken-word cap before the voiceover is sent; kit/build-captions.mjs turns the voiceover's script and fal's ElevenLabs v3 character timestamps into the explainer's WebVTT captions, with every cue cut and timed in code. Use for the script check and the captions step of an explainer video.
+description: The explainer's kit. kit/check-script.mjs holds the script's spoken-word cap before the voiceover is sent; kit/run-key.mjs makes each paid job's submission_key; kit/build-captions.mjs turns the voiceover's script and fal's ElevenLabs v3 character timestamps into the explainer's WebVTT captions, with every cue cut and timed in code. Use for the script check, the run keys and the captions step of an explainer video.
 ---
 
 # The script check
@@ -18,6 +18,21 @@ lone dash rides on the word before, a hyphenated word is one) and writes nothing
 `{"script_check":"passed","words":<n>,"max":<cap>}` and exits 0: send that file's text. Over the cap it exits 1 and
 says how many words over; a missing, empty or tag-only script, or no cap, exits 2. Never send a script it refused: cut,
 write and check again.
+
+# Run keys
+
+Every paid `submit_job` carries a `submission_key` the kit makes, so no key is typed by hand. Before a step's first
+`submit_job`, run with `bash`:
+
+```sh
+node .agents/skills/explainer-video/kit/run-key.mjs --step <portrait|voiceover|voiceover-2|avatar>
+```
+
+It prints `{"key":"ev-<stem>-<step>","stem":"<stem>"}`: send that `key`, copied exactly. Its first call makes the run's
+one stem (8 random lowercase letters and digits) and writes it to `media/run-keys.json`; later calls and a resumed run
+reuse it. Never write that file or make a stem yourself. A file holding anything else is refused (exit 3) and never
+replaced, since a second stem would orphan the jobs already sent under the first; an unknown step exits 2. A refusal
+writes nothing: send no paid job.
 
 # The caption kit
 
