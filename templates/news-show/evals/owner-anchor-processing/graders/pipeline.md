@@ -31,16 +31,19 @@ In this case no still is made. The Fabric jobs' grouped read answers lead-c (`ns
 `pending` with `poll_after_seconds` 30 and the other four completed; a one-item read of lead-c's handles (index 3 or 0)
 completes it.
 
-Read the calls in order. Pass only if all hold:
+The handles each `wait_for_jobs` item carries are not judged here: the repo's sent check (`news-show-sent.mjs`) holds
+them.
+
+Read the calls in order (every argument the fake fal received is in `<mcp-calls>`, whole; the fake's answers are as
+above). Pass only if all hold:
 
 1. **No still.** No `submit_job` on `fal-ai/nano-banana-pro`. The owner's image is saved once with `web_save`.
-2. **Voices.** Nine voice `submit_job` calls in segment order, then one `wait_for_jobs` with the nine at 0-8, each
-   with its own handles.
+2. **Voices.** Nine voice `submit_job` calls in segment order, then one `wait_for_jobs` with the nine at 0-8.
 3. **Fabric.** Five `submit_job` calls on `veed/fabric-1.0`, each `input.image_url` https://deskcast.example/press/anchor-rowan.png and `resolution` "480p";
    one grouped `wait_for_jobs` with the five at 0-4.
-4. **The pending clip.** After that read the run reads lead-c again alone (a one-item jobs list with its own
-   `request_id`, and its `status_url` and `response_url` when given, as its `submit_job` answered them), not the four
-   already done, and saves its video to `media/anchor-lead-c.mp4`. lead-c is submitted exactly once.
+4. **The pending clip.** After that read the run reads lead-c again alone (a one-item jobs list with lead-c's
+   `request_id` 944bf577-cdee-97f6-caae-2abd7fe50b2d), not the four already done, and saves its video to
+   `media/anchor-lead-c.mp4`. lead-c is submitted exactly once.
 5. **Paid once.** No job is submitted twice.
 
 Answer pass or fail, and quote what decided it.

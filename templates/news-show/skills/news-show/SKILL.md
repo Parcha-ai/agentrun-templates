@@ -81,18 +81,26 @@ Then `write` `film/show.json` in the shape of `film/show.example.json`: the show
 (`date_label`, like "Monday, November 23"), the anchor's name and image (`media/anchor.png` or the owner's
 `media/anchor.<ext>`; null when there is none), and the nine segments with the exact scripts you sent to fal, their
 voice files and timestamps, each anchor segment's clip (`media/anchor-<segment>.mp4`, or null when its job failed,
-or the plan leaves it out: that segment becomes the desk card) and the words on screen. Every
-placeholder starts with `KIT`, and the build refuses any left. Then build:
+or the plan leaves it out: that segment becomes the desk card) and the words on screen. A segment's `timestamps` is
+its voice's result as the run filed it, `evidence/fal/<request_id>.json` with the request_id fal answered for that
+voice's job: the build reads fal's timestamps from it, so never `write` them yourself (null when fal answered none).
+Every placeholder starts with `KIT`, and the build refuses any left. Then build:
 
 ```sh
 node film/build-show.mjs --show film/show.json --film film --vtt media/show.vtt
 ```
 
+When it exits 3 it wrote nothing: a segment's timestamps file is missing, not fal's, or not that voice's, and its
+message says what to pass (or, on a server that files no fal results, what to write). Fix `film/show.json` as it says
+and build again. Only when it still exits 3 for that segment after two fixes, set its `timestamps` to null (its
+captions are measured) and say so in `notes`.
+
 It reads every voice's and clip's real length with ffprobe, lays the nine segments end to end (an anchor segment as
 long as its clip or voice, a voiceover segment 0.35 s of air either side), adds a 3 s end card, and writes
 `film/index.html`, `film/compositions/<segment>.html`, `film/compositions/endcard.html`,
-`film/compositions/captions.html`, `film/card/index.html`, `film/words.json`, `film/timeline.json` and
-`media/show.vtt`. It prints one JSON line: `method` is `captions_timing` in the answer; `segments` gives each
+`film/compositions/captions.html`, `film/card/index.html`, `film/words.json`, `film/timeline.json`,
+`film/captions-source.json` (each segment's method and the request_id its timestamps came from; the build's record,
+never written or edited by hand) and `media/show.vtt`. It prints one JSON line: `method` is `captions_timing` in the answer; `segments` gives each
 segment's `start` and `end` (the answer's `start_s` and `end_s`) and its mode (`video`, `panel` for an anchor image that
 is not 16:9, `desk`); `disclosure` gives the cold open's AI sentence and the second it ends. A warning that the
 sentence ends after 10 s means the cold open is too long before it: shorten it and voice it again (with a ceiling set,
@@ -147,7 +155,6 @@ face and over no caption, no fact or headline runs off the frame, and the end ca
 
 ```sh
 (cd film && hyperframes render --quality looks --video-frame-format jpg -o ../media/show.mp4 > ../media/render.log 2>&1; echo "render exit $?"); tail -c 400 media/render.log
-ffprobe -v error -show_entries format=duration:stream=width,height -of json media/show.mp4
 ```
 
 Run it as written, in one `bash` call in the foreground with a `timeout` of 1200, and wait for it. The sandbox ends
@@ -157,7 +164,14 @@ JPEG, HyperFrames' choice for camera footage, at a fraction of PNG's size on the
 takes several minutes (capture runs a few frames a second on software GL; the log's "BeginFrame did not run" line is
 expected).
 
-The ffprobe must show 1920x1080 and the root's duration (`film_s` from the build), within a frame. A failed render
+Then probe the film in its own `bash` call, after the render's call returns:
+
+```sh
+ffprobe -v error -show_entries format=duration:stream=width,height -of json media/show.mp4
+```
+
+Its short answer is the proof of the film's size and length, so keep it apart from the render's long log. It must
+show 1920x1080 and the root's duration (`film_s` from the build), within a frame. A failed render
 (`render exit` not 0): read the log's error, fix, render again (at most 3 renders in all, counted in
 `checks.renders`).
 
@@ -187,8 +201,10 @@ owner's image, only the plan's anchor segments, none not sent (a voice over 30 s
 paid. `cost` reads the scripts from `film/show.json` (write it first, its scripts exactly as sent) and each voice's
 length with ffprobe (a voice whose save failed: `--seconds <segment>=<s>`, the length you measured on its `audio.url`,
 which it says it used), prints `fal_cost_usd` and keeps it in `film/cost.json`. `final` reads the answer file. It
-sets `report_markdown` to `media/report.md`'s text itself (write the whole report there first) and writes the answer
-file back. It then confirms that `fal_cost_usd` matches `cost` and that the report's cost table has a row for each
+first probes the show `film.path` names and `media/share-card.png` with ffprobe, and refuses, writing nothing, a show
+that will not probe or is not 1920x1080, or a card that is not 1200x630 (render or snapshot it again, then run `final`
+again). It sets `film`'s `width`, `height` and `seconds` to the probe's and `report_markdown` to `media/report.md`'s
+text itself (write the whole report there first), and writes the answer file back. It then confirms that `fal_cost_usd` matches `cost` and that the report's cost table has a row for each
 step and a total row. When the show is
 rendered, it confirms that `report_markdown` opens with the show's embed (a bracket or backslash in the name escaped) and holds the share card, the AI disclosure
 and the checks. It also confirms that every story's page is linked, that `error` is quoted word for word, and that a

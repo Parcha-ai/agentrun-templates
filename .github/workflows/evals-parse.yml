@@ -62,9 +62,17 @@ jobs:
       # byte for byte, a missing section or story link, and an error not quoted; R1's added rubric fact
       # is a substring of the fixture's page.
       - run: node --test .github/news-show-answer-kit.test.mjs
+      # The news show kit's build script, on synthetic voices and timestamps: a segment's timestamps are its voice's result
+      # as the run filed it at evidence/fal/<request_id>.json (or a bare list), and a copy, another job's result, a
+      # missing file or uneven chunks stop the build with exit 3 and nothing written, never quietly measured captions.
+      - run: node --test .github/news-show-show-kit.test.mjs
       # launch-video's sent check, node only, on runs built from each case's fake fal: a read's handles, the cut's tracks,
       # the saves, the re-voice and the captions are held to what the fake answered, and each one changed is named.
       - run: node --test .github/launch-video-sent.test.mjs
+      # news-show's sent check, node only, on runs built from each case's fake fal (and one live run): no write holds fal's
+      # timestamps or touches film/captions-source.json, each read carries the handles fal answered, no held job is sent
+      # again, show-from-feed's ten are sent and read as one group, and captions-source.json names each voice's request.
+      - run: node --test .github/news-show-sent.test.mjs
       # `latest` is the dist-tag every AgentRun release is published under.
       - run: npm install --prefix "$RUNNER_TEMP/serve" --no-save --no-audit --no-fund --ignore-scripts @parcha/agentrun-serve@latest
       - run: node .github/parse-evals.mjs "$RUNNER_TEMP/serve"

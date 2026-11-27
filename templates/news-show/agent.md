@@ -209,8 +209,7 @@ reply, `get_submission` with its key; `not_found` never authorizes a new paid ca
 
 **Every fal call and every save is its own direct tool call**, never one made from inside a code script (codemode or
 any other): a script's calls are calls too, and a script that reads the jobs again to save them reads them twice. A
-job read `completed` is never read again: save each voice, its timestamps and the still from that one answer, one
-call each.
+job read `completed` is never read again: save each voice and the still from that one answer, one call each.
 
 **A job `wait_for_jobs` answers `completed` with a result is done: use it.** A voice is its segment's voice and a
 still is the anchor's still. Never read a voice's timestamps to check its words against the script (another take
@@ -220,10 +219,12 @@ refuses a still with none, and "When a step fails" below says what the show does
 as written: never reorder the stories, swap their slots, or rewrite a script, a line or a chyron in `film/show.json`
 to follow what a voice says. The answer's `stories` and each segment's `script` are what step 3 wrote and sent.
 
-Save as each is done, with `web_save`: each voice's `audio.url` to `media/voice-<segment>.mp3`, and in the same step
-`write` its `timestamps` value, exactly as fal answered it, to `media/voice-<segment>-timestamps.json`; the still to
-`media/anchor.png`. With an anchor image, `web_save` it to `media/anchor.<its extension>` once: it is the owner's own
-and is never changed. A voice's length V is `web_save`'s `duration_s` (none: `ffprobe` it, as the skill says).
+Save as each is done, with `web_save`: each voice's `audio.url` to `media/voice-<segment>.mp3`, the still to
+`media/anchor.png`. Never `write` a voice's timestamps: the run files each completed job's whole result at
+`evidence/fal/<request_id>.json`, and each segment's `timestamps` in `film/show.json` is that file, with the request_id
+fal answered for its voice's job. Only when the build says this server files none, write them as it says. Never
+`write` or edit `film/captions-source.json`: the build records there where each segment's timestamps came from. With an
+anchor image, `web_save` it to `media/anchor.<its extension>` once: it is the owner's own and is never changed. A voice's length V is `web_save`'s `duration_s` (none: `ffprobe` it, as the skill says).
 
 ## 6. The anchor speaks
 
@@ -242,8 +243,8 @@ failed). `web_save` each video to `media/anchor-<segment>.mp4`.
 ## 7. Build, check and render the show
 
 Follow the skill's sandbox loop: copy the kit to `film/`, write `film/show.json` (the segments, their scripts, voices,
-timestamps, anchor clips and words on screen), run the kit's build script (it lays the segments end to end on the
-voices' real lengths, writes every scene, the captions and `media/show.vtt`), then `hyperframes lint`,
+timestamps from step 5, anchor clips and words on screen), run the kit's build script (it lays the segments end to end
+on the voices' real lengths, writes every scene, the captions and `media/show.vtt`), then `hyperframes lint`,
 `hyperframes check --json` and the kit's review script, look at the sheets, fix what they find, and render
 `media/show.mp4`. Then the share card, `media/share-card.png`. The exact commands are in the skill.
 
@@ -281,8 +282,10 @@ empty one too:
    what it prints, copied exactly: never add a sum yourself.
 2. **The check.** `write` the whole report to `media/report.md` and the answer's JSON to `media/answer.json` (leave
    `report_markdown` empty: the kit fills it from the report file), then `node .agents/skills/news-show/kit/answer.mjs
-   final media/answer.json`. Fix each problem it lists in those files and run it again, until it prints one json
-   block. The check decides: don't argue with it or judge the report yourself.
+   final media/answer.json`. It probes the show and the share card itself, sets `film`'s size and length from that
+   probe, and refuses a show that is not 1920x1080 or a card that is not 1200x630. Fix each problem it lists in those
+   files and run it again, until it prints one json block. The check decides: don't argue with it or judge the report
+   yourself.
 3. **The reply.** Exactly the json block `final` printed, every character of it, with nothing before or after it.
    Never shorten, summarize or replace a field of it, `report_markdown` least of all: the reply is the report.
 
@@ -296,13 +299,14 @@ The answer meets the output schema:
   `resolution` (`480p`, or null when nothing was animated).
 - `plan`, `plans_priced` (step 4); `captions_timing` as the build script printed it (`anchored` or
   `measured` is still a correct timing, never a fault).
-- `film`: `path`, `seconds`, `width`, `height` as ffprobe read them (null when nothing was rendered); `checks`.
+- `film`: `path`, `seconds`, `width`, `height` (null when nothing was rendered; `final` sets the size and length from
+  its own probe); `checks`.
 - `fal_cost_usd`: exactly as the kit's `cost` printed it: one step per paid call made (`anchor-image`,
   `voice-<segment>`, `anchor-<segment>`) with its units (images, thousands of characters, or seconds = that
   segment's V rounded up to a whole second) and the rate from `get_pricing`, `usd` to 3 decimals, a failed or refused
   job at 0, and `total` the sum of the listed steps. Estimates from fal's rates, not fal's invoice.
 - `files`: every file of the run: `media/show.mp4`, `media/show.vtt`, `media/share-card.png`, the still or anchor
-  image, each voice and its timestamps, each anchor clip, `film/STORYBOARD.md` and `film/` (the composition folder).
+  image, each voice, each anchor clip, `film/STORYBOARD.md` and `film/` (the composition folder).
 - `report_markdown`: the whole report, `media/report.md`'s text, which the kit copies in: never a summary of it or a
   pointer to it. The show first, its first line exactly
   `![<show_name>, <show_date>](media/show.mp4)` (when rendered; a `[`, `]` or `\` in the name escaped with a `\`), the

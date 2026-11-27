@@ -23,8 +23,11 @@
 //          linked in report_markdown; `error`, when set, is quoted in report_markdown word for word; a show that was
 //          not rendered remembers none of today's stories; report_markdown is media/report.md byte for byte, with its
 //          cost total and its checks. It prints "answer ok" (exit 0) or each problem (exit 1).
-// final    the reply: report_markdown set to media/report.md's text by code and the answer file written back, then the
-//          same checks. It prints the reply to send, the answer file as one json block (exit 0), or each problem (exit 1).
+// final    the reply: first it probes the show the answer names (film.path) and media/share-card.png with ffprobe, and
+//          refuses, writing nothing, a show that will not probe or is not 1920x1080, or a card that is not 1200x630.
+//          Then film's width, height and seconds set to the probe's, report_markdown set to media/report.md's text, the
+//          answer file written back, and the same checks. It prints the reply to send, the answer file as one json block
+//          (exit 0), or each problem (exit 1). A show not rendered (film.path null) is not probed.
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
@@ -101,8 +104,46 @@ function cost() {
   console.log(JSON.stringify(out));
 }
 
-// `final` fills report_markdown from media/report.md itself and writes the answer file back, so the report the reply
-// carries is the file, by code; then it checks the answer and prints the reply: the answer file as one json block.
+// The size and length of a rendered file, as ffprobe reads its first video stream; `why` when it will not probe.
+function probe(path) {
+  if (!existsSync(path)) return { why: `${path} is missing` };
+  const p = spawnSync("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height:format=duration", "-of", "json", path], { encoding: "utf8" });
+  let j;
+  try {
+    j = JSON.parse(p.stdout ?? "");
+  } catch {
+    j = undefined;
+  }
+  const s = j?.streams?.[0];
+  if (p.status !== 0 || !Number.isInteger(s?.width) || !Number.isInteger(s?.height))
+    return { why: `${path} will not probe (ffprobe: ${(p.stderr ?? "").trim() || "no video stream"})` };
+  const seconds = Number(j?.format?.duration);
+  return { width: s.width, height: s.height, seconds: Number.isFinite(seconds) ? r3(seconds) : null };
+}
+
+// What final reads from the files before it writes anything: the rendered show's probe (set into film) and the card's.
+// Each problem refuses the reply with nothing written.
+function probed(a) {
+  const problems = [];
+  const path = a?.film?.path;
+  if (typeof path === "string" && path) {
+    const show = probe(path);
+    if (show.why) problems.push(`${show.why}: the show must be rendered (step 8) before the reply; render it, then run final again`);
+    else if (show.width !== 1920 || show.height !== 1080) problems.push(`${path} is ${show.width}x${show.height}: the show must be 1920x1080; render it again as step 8 says`);
+    else if (show.seconds === null) problems.push(`ffprobe read no duration for ${path}: render it again as step 8 says`);
+    else a.film = { ...a.film, width: show.width, height: show.height, seconds: show.seconds };
+  }
+  if (existsSync("media/share-card.png")) {
+    const card = probe("media/share-card.png");
+    if (card.why) problems.push(`${card.why}: make the share card again as step 9 says`);
+    else if (card.width !== 1200 || card.height !== 630) problems.push(`media/share-card.png is ${card.width}x${card.height}: the card must be 1200x630; make it again as step 9 says`);
+  }
+  return problems;
+}
+
+// `final` probes the show and the card first (probed), then fills film's size and length from the probe and
+// report_markdown from media/report.md itself and writes the answer file back, so the figures and the report the reply
+// carries are the files', by code; then it checks the answer and prints the reply: the answer file as one json block.
 function check(final) {
   const file = rest.find((a) => !a.startsWith("--"));
   if (!file) fail(`usage: answer.mjs ${final ? "final" : "check"} media/answer.json`);
@@ -115,8 +156,14 @@ function check(final) {
     console.log(`answer: 1 problem\n- ${file} is not valid JSON: ${e.message}`);
     process.exit(1);
   }
-  if (final && a && typeof a === "object" && existsSync("media/report.md")) {
-    a.report_markdown = readFileSync("media/report.md", "utf8");
+  if (final && a && typeof a === "object") {
+    const refused = probed(a);
+    if (refused.length) {
+      console.log(`answer: ${refused.length} problem${refused.length === 1 ? "" : "s"} (nothing written)`);
+      for (const p of refused) console.log(`- ${p}`);
+      process.exit(1);
+    }
+    if (existsSync("media/report.md")) a.report_markdown = readFileSync("media/report.md", "utf8");
     writeFileSync(file, `${JSON.stringify(a, null, 1)}\n`);
   }
   for (const k of REQUIRED) if (!(k in a)) problems.push(`the field ${k} is missing`);

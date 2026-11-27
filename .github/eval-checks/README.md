@@ -163,3 +163,48 @@ node .github/eval-checks/launch-video-sent.mjs <report.json> <the run's work fol
 | 2 | `SENT VOID <why>` | no verdict, never a failure: bad arguments, or the report, a run's folder, the fake log, the case's fake, clip count or `prompt.md` input can't be found or read |
 
 Node built-ins only. `.github/launch-video-sent.test.mjs` covers it.
+
+## news-show-sent.mjs
+
+A stopgap: it is removed when agentrun #3824 lands and serve's grade can compare a call to what fal answered it.
+
+A news-show run sends nine voices, a still and up to five anchor clips, reads each job with the handles fal answered,
+and builds its captions from the voices' results the run filed at `evidence/fal/<request_id>.json`. The build records
+where each segment's timestamps came from in `film/captions-source.json`. On a big run, serve cuts what a grader reads
+to fit its prompt: fal's answers and the contents of long writes go first. This check holds the parts a cut hides,
+from the report's whole call log and the run's own files:
+
+- **writes:** no `write` or `edit` holds fal's timestamp chunks (`character_start_times_seconds` or
+  `character_end_times_seconds`), names a `*-timestamps.json`, or touches `film/captions-source.json` (only the build
+  writes it);
+- **reads** (show-from-feed, owner-anchor-processing, lost-reply-same-key): every job a `wait_for_jobs` lists is one fal
+  answered the run with handles (a `submit_job` or a `get_submission`), listed after that answer, with its own
+  `request_id`, and its `status_url` and `response_url`, when given, exactly as answered. No `submission_key` is sent
+  again once fal holds its job: an earlier send was answered with handles, or fal's `get_submission` finds it (after a
+  lost reply, too);
+- **grouped read** (show-from-feed): the first ten `submit_job`s are the nine voices in segment order and then the
+  still, with no other call of the run's between them. A `get_pricing` with a single `endpoint_id` just before an
+  endpoint's first `submit_job` is the server's spend meter and is not counted. Then one `wait_for_jobs`, the only one
+  that reads any of the ten, lists the ten at indexes 0-9 in that order, each with its own `request_id`, `status_url`
+  and `response_url`;
+- **captions** (the four cases above and live-language-releases): `film/captions-source.json`, read whole from the
+  run's folder, has one entry per voice the run sent, and each entry's `request_id` is the request fal answered that
+  segment's eleven-v3 voice with (its `submit_job`, or `get_submission` after a lost reply), a request that completed.
+
+fal's answers come from the case's own fake in this repo (`templates/news-show/evals/<case>/fixtures/fal-mcp.json`,
+never the run's copy), whole, and the calls the fake got are the report's `mcp_calls`. live-language-releases has no
+fake: its fal calls are the report's `calls`, fal's answers their results (a `submit_job`'s answer is short and reaches
+the report whole), and a request completed when the run filed it at `evidence/fal/<request_id>.json`. The eval runner
+calls the check on fixture runs; a live report can be checked by hand.
+
+What a rubric must judge stays in the rubric: the order of the other calls, the inputs sent, the saves, the film and
+the answer. Each part that moved says so in one sentence.
+
+```sh
+node .github/eval-checks/news-show-sent.mjs <report.json> <the run's work folder, or the serve's data folder>
+```
+
+The arguments, the run's folder and the exits are as for launch-video-sent.mjs above. A case the check holds nothing
+for is `SENT VOID`.
+
+Node built-ins only. `.github/news-show-sent.test.mjs` covers it.
