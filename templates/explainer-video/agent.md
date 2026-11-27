@@ -194,8 +194,9 @@ stays saved as `media/voiceover.mp3` and listed in `files` (save it first if it 
 checks allow: for OmniHuman 60; with a ceiling, B = (`max_fal_usd` − spent − the new voiceover's price) ÷ the avatar
 rate, and T is B, or the lesser of B and 60 for OmniHuman. Cut the script to at most its spoken words × T ÷ V × 0.9 words (0.9 is the margin; 110 words
 at V 47.0 s with T 40 → 110 × 40 ÷ 47.0 × 0.9 = 84 words), keeping what matters most and adding each point cut to
-`omitted` (or to `omitted_more` past 10), with the rules of step 2. `write` it to `work/script.txt` and run step 2's
-check on it, with `--max` that word count in place of `--length`; never send one it refused. Send it with `submit_job`
+`omitted` (or to `omitted_more` past 10), with the rules of step 2. `write` it to `work/script.txt` and check it with
+that word count, not `--length`: `node .agents/skills/explainer-video/kit/check-script.mjs --script work/script.txt
+--max <words>` (`--max 84` in the example); never send one it refused. Send it with `submit_job`
 on `fal-ai/elevenlabs/tts/eleven-v3`, key `ev-<stem>-voiceover-2`, the same `voice`, `stability`,
 `output_format` and `timestamps`. Follow it with a one-item `wait_for_jobs` whose item has `"index": 2` and the
 handles this `submit_job` answered, copied as they are. Save it to `media/voiceover-2.mp3`. `script` and `word_count` are then the new script's. Check its V the same way, counting both
