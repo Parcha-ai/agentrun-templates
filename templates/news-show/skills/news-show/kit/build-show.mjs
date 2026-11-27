@@ -143,7 +143,10 @@ function readTimestamps(g) {
     if (!("audio" in raw) && !("timestamps" in raw)) refuse(g, `${path} is not a voice's result (it holds ${Object.keys(raw).join(", ") || "nothing"}): pass this voice's request_id.`);
     list = raw.timestamps ?? [];
     if (!Array.isArray(list)) bad("its timestamps is not a list");
-  } else list = raw ? [raw] : [];
+  } else if (raw === null) list = [];
+  else if (typeof raw === "object") list = [raw];
+  // false, 0, "" or any other bare value is no answer fal gives for timestamps: refuse it, never caption it as measured.
+  else bad(`it holds ${JSON.stringify(raw)}`);
   list.forEach((c, i) => {
     const st = c?.character_start_times_seconds;
     const en = c?.character_end_times_seconds;

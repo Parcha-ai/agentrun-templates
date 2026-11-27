@@ -215,6 +215,15 @@ test("a timestamps file holding false, 0 or an empty string (not fal's answer): 
   }
 });
 
+test("a timestamps file holding null (fal answered no timestamps, on a server that files none): that segment is measured", () => {
+  const lists = Object.fromEntries(ORDER.map((n) => [listPath(n), chunksOf(SCRIPTS[n])]));
+  lists[listPath("story-c")] = null;
+  const r = build(listPath, lists);
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(r.methods["story-c"], "measured");
+  assert.equal(r.methods["story-b"], "aligned");
+});
+
 test("a timestamps file that is not JSON: exit 3, nothing written", () => {
   const lists = Object.fromEntries(ORDER.map((name) => [listPath(name), chunksOf(SCRIPTS[name])]));
   lists[listPath("lead-b")] = '[{"characters": ["N", "e"';
