@@ -230,24 +230,24 @@ cut or edit a cue yourself, and never `write` the captions file.
 
 1. `write` `work/script.txt`: the exact text of the voiceover last made (the re-voice's when there was one), as sent
    to ElevenLabs, audio tags included.
-2. When fal answered that voiceover's `timestamps` (a list of chunks), `write` that value exactly as fal answered it,
-   the whole list, to `work/voiceover-timestamps.json` (`work/voiceover-2-timestamps.json` for the re-voice). Copy
-   it; never retype, shorten or round it.
-3. Run it with `bash`:
+2. Run it with `bash`:
 
 ```sh
 node .agents/skills/explainer-video/kit/build-captions.mjs --script work/script.txt \
-  --timestamps work/voiceover-timestamps.json --audio-seconds <V> --vtt media/explainer.vtt
+  --timestamps evidence/fal/<request_id>.json --audio-seconds <V> --vtt media/explainer.vtt
 ```
 
-`<V>` is that voiceover's V from step 6, and the `--timestamps` file is the one you wrote (leave the option out when
-fal answered no timestamps). The kit writes `media/explainer.vtt` and prints one JSON line, then the file. Its
-`captions_timing` is `aligned` (fal's letters spell the script), `anchored` (they don't: the cues share the span by
-words) or `measured` (no timestamps: from 0 to V): each is a correct timing, never a fault, and goes in `notes`. When
-it exits 2 it wrote nothing: say why in `notes`, from its message. When it exits 3, the timestamps file you wrote is
-not fal's answer (its message says where): `write` it again, copied exactly from fal's answer, and run the kit again.
-Never leave `--timestamps` out to get past exit 3. If it still exits 3 after two rewrites, write no captions and say
-so in `notes`. `.agents/skills/explainer-video/SKILL.md` says more; you don't need to read it to run the kit.
+`<request_id>` is the one fal answered for that voiceover's job, and `<V>` its V from step 6. The run files each
+completed fal job's whole result at `evidence/fal/<request_id>.json`, and the kit reads the timestamps from it: never
+`write` them yourself. Only when the kit says this server files no fal results (an older server), `write` fal's
+`timestamps` value exactly as fal answered it, the whole list, to `work/voiceover-timestamps.json` and pass that
+instead (leave `--timestamps` out when fal answered none). The kit writes `media/explainer.vtt` and prints one JSON
+line, then the file. Its `captions_timing` is `aligned` (fal's letters spell the script), `anchored` (they don't: the
+cues share the span by words) or `measured` (no timestamps: from 0 to V): each is a correct timing, never a fault, and
+goes in `notes`. When it exits 2 it wrote nothing: say why in `notes`, from its message. When it exits 3, its message
+says what is wrong and what to pass or write: follow it and run the kit again. Never leave `--timestamps` out to get
+past exit 3. If it still exits 3 after two tries, write no captions and say so in `notes`.
+`.agents/skills/explainer-video/SKILL.md` says more; you don't need to read it to run the kit.
 
 ## 9. Failures
 

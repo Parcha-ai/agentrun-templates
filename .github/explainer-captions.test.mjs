@@ -12,13 +12,16 @@
 // - every cue is one or two lines of at most 42 characters, in the script's order, with audio tags dropped. A word
 //   longer than a line is cut after a hyphen or slash, else at 42, and its pieces keep its timing.
 // - no length at all: exit 2, no file.
+// - fal's whole result, filed by the run at evidence/fal/<request_id>.json: the kit takes its `timestamps` (null is no
+//   timestamps), so the model never retypes them. A result object anywhere else, another job's result or a file that
+//   isn't there: exit 3, no file, and the message says what to pass.
 // They need only node. explainer-captions.fixtures.json holds the three takes, each the script sent and fal's
 // `timestamps` as it answered them.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { tempRoot } from "./temp-root.mjs";
 
 const KIT = new URL("../templates/explainer-video/skills/explainer-video/kit/build-captions.mjs", import.meta.url).pathname;
@@ -258,6 +261,97 @@ test("a word longer than a line keeps its timing: aligned pieces on their own le
     assert.ok(Math.abs(c.end - c.start - (share / W) * V) < 0.002, `${c.lines.join(" / ")}: ${c.end - c.start} s for ${share} of ${W} words`);
   });
   assert.equal(measured.cues.at(-1).end, V);
+});
+
+// The run files each completed fal job's whole result at evidence/fal/<request_id>.json, so the kit reads the
+// voiceover's timestamps from that file and the model never retypes them. A live run's model retyped a long list of
+// per-character times, its copy drifted (a chunk of 32 characters with 31 starts), and the run ended with no captions.
+const VOICE_ID = "b2c3d4e5-2222-4b3c-9d4e-1f2a3b4c5d6e";
+const audio = { url: "https://v3.fal.media/files/zebra/voice.mp3", content_type: "audio/mpeg", file_name: "output.mp3", file_size: 395200 };
+
+/** Runs the kit from a run's folder, as the agent does: take3's script, and `value` filed at `rel` (a path in that
+ *  folder) unless it is undefined, given as --timestamps `rel`. `also` files more results, by path. */
+function fromRun(rel, value, audioSeconds = 24.7, also = {}) {
+  const dir = join(root, String(n++));
+  mkdirSync(join(dir, "work"), { recursive: true });
+  writeFileSync(join(dir, "work/script.txt"), TAKES.take3.script);
+  for (const [at, one] of Object.entries(value === undefined ? also : { ...also, [rel]: value })) {
+    mkdirSync(join(dir, dirname(at)), { recursive: true });
+    writeFileSync(join(dir, at), JSON.stringify(one));
+  }
+  const r = spawnSync(process.execPath, [KIT, "--script", "work/script.txt", "--timestamps", rel, "--audio-seconds", String(audioSeconds), "--vtt", "media/explainer.vtt"], { encoding: "utf8", cwd: dir });
+  const vttPath = join(dir, "media/explainer.vtt");
+  return { status: r.status, stderr: r.stderr, line: r.stdout.split("\n")[0], vtt: existsSync(vttPath) ? readFileSync(vttPath, "utf8") : null };
+}
+
+test("fal's result filed at evidence/fal/<request_id>.json: the kit takes its timestamps and captions as from the list", () => {
+  const list = kit(TAKES.take3.script, TAKES.take3.timestamps, 24.7);
+  const filed = fromRun(`evidence/fal/${VOICE_ID}.json`, { audio, timestamps: TAKES.take3.timestamps });
+  assert.equal(filed.status, 0, filed.stderr);
+  assert.equal(JSON.parse(filed.line).captions_timing, "aligned");
+  assert.equal(filed.vtt, list.vtt);
+});
+
+test("a filed result whose timestamps fal answered null: cues measured from 0 to V, not an error", () => {
+  const r = fromRun(`evidence/fal/${VOICE_ID}.json`, { audio, timestamps: null });
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(JSON.parse(r.line).captions_timing, "measured");
+  assert.equal(JSON.parse(r.line).last_cue_end_s, 24.7);
+});
+
+test("a result object outside evidence/fal/ is refused: exit 3, no file, and it names the file to pass", () => {
+  const r = fromRun("work/voiceover-timestamps.json", { audio, timestamps: TAKES.take3.timestamps });
+  assert.equal(r.status, 3, `exit ${r.status}: ${r.line} ${r.stderr}`);
+  assert.equal(r.vtt, null);
+  assert.match(r.stderr, /evidence\/fal\/<request_id>\.json/);
+});
+
+test("another job's filed result (the portrait's): exit 3, no file, and it says it is not a voiceover's", () => {
+  const r = fromRun(`evidence/fal/${VOICE_ID}.json`, { images: [{ url: "https://v3.fal.media/files/koala/p.png" }], description: "" });
+  assert.equal(r.status, 3, `exit ${r.status}: ${r.line} ${r.stderr}`);
+  assert.equal(r.vtt, null);
+  assert.match(r.stderr, /not a voiceover's result/);
+});
+
+test("a filed result that is not in the run's files: exit 3, no file, and it says what to do on a server that files none", () => {
+  const r = fromRun(`evidence/fal/${VOICE_ID}.json`, undefined);
+  assert.equal(r.status, 3, `exit ${r.status}: ${r.line} ${r.stderr}`);
+  assert.equal(r.vtt, null);
+  assert.match(r.stderr, /not in the run's files/);
+  assert.match(r.stderr, /work\/voiceover-timestamps\.json/);
+});
+
+test("a filed result not there while other results are: exit 3, it lists them, and it never says to write a copy", () => {
+  const portrait = "a1b2c3d4-1111-4a2b-8c3d-0e1f2a3b4c5d";
+  const r = fromRun(`evidence/fal/${VOICE_ID}.json`, undefined, 24.7, { [`evidence/fal/${portrait}.json`]: { images: [], description: "" } });
+  assert.equal(r.status, 3, `exit ${r.status}: ${r.line} ${r.stderr}`);
+  assert.equal(r.vtt, null);
+  assert.match(r.stderr, new RegExp(`holds ${portrait}\\.json`));
+  assert.doesNotMatch(r.stderr, /voiceover-timestamps/);
+});
+
+test("a result object under a nested evidence/fal/ (work/evidence/fal/) is not the run's: exit 3, no file, names the file to pass", () => {
+  const r = fromRun(`work/evidence/fal/${VOICE_ID}.json`, { audio, timestamps: TAKES.take3.timestamps });
+  assert.equal(r.status, 3, `exit ${r.status}: ${r.line} ${r.stderr}`);
+  assert.equal(r.vtt, null);
+  assert.match(r.stderr, /evidence\/fal\/<request_id>\.json/);
+});
+
+test("a missing file while the run's evidence/fal/ holds results: exit 3, it lists them, and it never says to write a copy", () => {
+  const r = fromRun(`work/evidence/fal/${VOICE_ID}.json`, undefined, 24.7, { [`evidence/fal/${VOICE_ID}.json`]: { audio, timestamps: TAKES.take3.timestamps } });
+  assert.equal(r.status, 3, `exit ${r.status}: ${r.line} ${r.stderr}`);
+  assert.equal(r.vtt, null);
+  assert.match(r.stderr, new RegExp(`holds ${VOICE_ID}\\.json`));
+  assert.doesNotMatch(r.stderr, /voiceover-timestamps|write the file again/);
+});
+
+test("a filed result whose chunks are uneven: exit 3 and no file, never cues timed from V", () => {
+  const cut = structuredClone(TAKES.take3.timestamps);
+  cut[2].character_end_times_seconds.pop();
+  const r = fromRun(`evidence/fal/${VOICE_ID}.json`, { audio, timestamps: cut });
+  assert.equal(r.status, 3, `exit ${r.status}: ${r.line} ${r.stderr}`);
+  assert.equal(r.vtt, null);
+  assert.match(r.stderr, /chunk 3 has/);
 });
 
 test("no timestamps and no length: exit 2, and no captions file", () => {
