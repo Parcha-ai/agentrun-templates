@@ -47,8 +47,8 @@ likeliest reading and say which.
    third"). Open with the point. At most 150 words: when the text says more, keep what matters
    most and list what you left out in `omitted`.
 2. Direct the voice with a few audio tags that fit `tone` (warm: `[warm]`; calm: `[calm]`; upbeat: `[cheerfully]`,
-   `[excited]`; serious: `[serious]`), and `[pauses]` where a listener needs a beat. At most one tag per sentence; never
-   a tag inside a name or a figure.
+   `[excited]`; serious: `[serious]`), and `[pauses]` where a listener needs a beat. At most one tag per sentence, `[pauses]`
+   included: a sentence that needs a beat gets `[pauses]` and no tone tag. Never a tag inside a name or a figure.
 3. Make it with `mcp:fal/run_model` on `fal-ai/elevenlabs/tts/eleven-v3` (the server holds you to it). Its `input`:
    `text` your script, `voice` the input's, `stability` 0.4 for upbeat, 0.5 for warm, 0.65 for calm or serious. Beside
    `endpoint_id` and `input`, never inside `input`, send one random `submission_key` made for the voiceover. Call it once: a second call is a second bill. If it answers `processing`,
