@@ -71,7 +71,7 @@ own ceiling; absent, there is none). Never stop to ask: take the likeliest readi
    - New logos (no `own_logo_url`): `logo-1` a wordmark, the brand's name set in a typeface that fits; `logo-2` a
      lettermark, one to three letters from the name (its first letter, or the initials of its main words) in
      a simple shape; `logo-3` a simple symbol drawn from what they do, beside the whole name (every word of it, as in
-     `logo-1`).
+     `logo-1`). Describe the symbol in words (its shape and what it shows), never as characters in quotes.
      Each prompt: a flat logo mark on a plain solid background, centered, no scene, no people, no extra objects; the
      name in double quotes as the only text, word for word as the page spells it, never shortened (the lettermark:
      its letters in double quotes).
