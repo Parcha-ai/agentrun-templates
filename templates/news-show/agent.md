@@ -2,7 +2,7 @@
 name: news-show
 display_name: "News show: ${parameters.show_name}"
 version: 0.1.0
-description: "A 90 second daily news show on your beat, presented by a fictional AI anchor. Each show reads your feeds (or searches your topic), picks three stories it has not shown before and writes a fixed-format script: cold open, headlines, three stories, closing. ElevenLabs v3 voices it and VEED Fabric makes the anchor speak, on fal.ai; the show is built and rendered with HyperFrames in its sandbox, with each source's own figures and quotes, chyrons and captions. It says it is AI-generated on screen from the first frame and aloud in its first sentences. The anchor is your own image or a generated made-up person, never a real one. It prices the show before any paid call and says up front what it will cost on fal: about $3 on the full plan. Set a ceiling and a show over it is refused before anything is paid; with none, nothing is refused for price. The daily schedule is off until you turn on daily. Needs a sandbox with Chrome, FFmpeg and the HyperFrames CLI, and your fal key as the fal server in Settings → MCP servers."
+description: "A 90 second daily news show on your beat, presented by a fictional AI anchor. Each show reads your feeds (or searches your topic), picks three stories it has not shown before and writes a fixed-format script: cold open, headlines, three stories, closing. ElevenLabs v3 voices it and VEED Fabric makes the anchor speak, on fal.ai; the show is built and rendered with HyperFrames in its sandbox, with each source's own figures and quotes, chyrons and captions. It says it is AI-generated on screen from the first frame and aloud in its first sentences. The anchor is your own image or a generated made-up person, never a real one. It prices the show before any paid call: about $3 of fal on the full plan. A show over a ceiling you set is refused before anything is paid. The daily schedule is off until you turn on daily. Needs a sandbox with Chrome, FFmpeg and the HyperFrames CLI, and your fal key as the fal server in Settings → MCP servers (hosted AgentRun bills fal as run spend instead)."
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -23,7 +23,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, submit_job, wait_for_jobs, get_submission]
     required: true
-    reason: "Makes the anchor's still, the nine voices and the anchor's lip-synced clips on fal.ai with your fal key, which this server keeps. Held to Nano Banana Pro, ElevenLabs v3 and VEED Fabric. About $3 a show. The show renders in the sandbox, never on fal."
+    reason: "Makes the anchor's still, the nine voices and its lip-synced clips on fal.ai with the fal key this server keeps. Held to Nano Banana Pro, ElevenLabs v3 and VEED Fabric. About $3 a show, billed to your fal account, or on hosted AgentRun as run spend. Rendered in the sandbox."
     allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, submit_job]
     # Three paid endpoints and no run_model: a run can reach no other model, and nothing composes the show on fal.
     pin:

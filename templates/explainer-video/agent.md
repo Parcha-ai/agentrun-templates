@@ -2,7 +2,7 @@
 name: explainer-video
 display_name: Explainer video
 version: 0.1.0
-description: Give it a doc (a public link, or pasted text) and get a 30 to 60 second talking-head explainer in the run's files, presented by a made-up presenter who never looks or sounds like a real person. It writes a spoken script from the doc alone, makes the presenter's portrait (Nano Banana) and the voiceover (ElevenLabs v3) in parallel on fal.ai, checks the voiceover's real length (one too long for the video model, or for your ceiling when you set one, is voiced again, shorter, once), animates the portrait to speak it (VEED Fabric, or OmniHuman 1.5 for premium) and writes captions from the voiceover's character timestamps, all saved under media/. A 30-second standard explainer costs about $2.50 of fal, a premium one about $4.90; it prices the whole plan first, a re-voice included, and says what the run will cost on fal. Set max_fal_usd for a ceiling, and a plan over it is refused before any paid call. Needs a sandbox with Node for the captions, and your fal key, added as the fal server in Settings → MCP servers.
+description: Give it a doc (a public link, or pasted text) and get a 30 to 60 second talking-head explainer in the run's files, presented by a made-up presenter who never looks or sounds like a real person. It writes a spoken script from the doc alone, makes the presenter's portrait (Nano Banana) and the voiceover (ElevenLabs v3) in parallel on fal.ai, checks the voiceover's real length (one too long for the video model, or for your ceiling when you set one, is voiced again, shorter, once), animates the portrait to speak it (VEED Fabric, or OmniHuman 1.5 for premium) and writes captions from the voiceover's character timestamps, all saved under media/. A 30-second standard explainer costs about $2.50 of fal, a premium one about $4.90; it prices the whole plan first, a re-voice included. A plan over max_fal_usd, if set, is refused before any paid call. Needs a sandbox with Node for the captions, and your fal key, added as the fal server in Settings → MCP servers (hosted AgentRun bills fal as run spend instead).
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -20,7 +20,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, submit_job, wait_for_jobs, get_submission]
     required: true
-    reason: "Makes the portrait, voiceover and talking-head video on fal.ai with your fal key, which this server keeps: the agent never sees it. Held to this pipeline's four models. Billed per image, character and second of video; price, schema and job reads are free."
+    reason: "Makes the portrait, voiceover and talking-head video on fal.ai with the fal key this server keeps: the agent never sees it. Held to this pipeline's four models. Billed per image, character and second of video, to your fal account, or on hosted AgentRun as run spend."
     allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, submit_job]
     # The pipeline's models only, whatever the agent asks for: a run can't reach another video model.
     pin:
@@ -32,7 +32,7 @@ inputs:
   voice: { type: string, required: false, enum: [Rachel, Aria, Sarah, Laura, Charlotte, Alice, Matilda, Jessica, Lily, Roger, Charlie, George, Callum, River, Liam, Will, Eric, Chris, Brian, Daniel, Bill], title: "Voice", description: "An ElevenLabs voice by name. Blank: one that fits the presenter." }
   length: { type: integer, required: false, enum: [30, 45, 60], default: 30, title: "Length (seconds)", description: "About how long the explainer runs." }
   quality: { type: string, required: false, enum: [standard, premium], default: standard, title: "Quality", description: "standard: VEED Fabric at 480p, $0.08 per second. premium: OmniHuman 1.5 at 720p, $0.16 per second, more natural motion." }
-  max_fal_usd: { type: number, required: false, minimum: 0, title: "Your fal ceiling (USD)", description: "Optional. The most you want this run to bill your fal account: a plan priced over it is refused before any paid call. Blank: no ceiling, and nothing is refused for price." }
+  max_fal_usd: { type: number, required: false, minimum: 0, title: "Your fal ceiling (USD)", description: "Optional. The most you want this run to spend on fal: a plan priced over it is refused before any paid call. Blank: no ceiling, and nothing is refused for price." }
 # The $1,000 accident guard, not a tuned number: it stops a runaway run. The run's real fal cost is priced in step 4
 # and said up front; a ceiling, when wanted, is the user's max_fal_usd.
 budget: { per_run_usd: 1000 }

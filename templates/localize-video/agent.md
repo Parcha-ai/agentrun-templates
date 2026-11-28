@@ -2,7 +2,7 @@
 name: localize-video
 display_name: Localize a video
 version: 0.2.0
-description: "Give it a public video with narration (up to 2 minutes) and one to five languages, and get it dubbed into each in the run's files, with captions and, when you ask, the speaker's lips matched to each dub. It reads the video's length first and prices the whole plan before anything is paid, then transcribes the voice on ElevenLabs, dubs every language at once on fal.ai and writes captions from each dub's voice. Dubbing keeps the speaker's voice: only a voice you own or an AI one. Lipsync (sync-lipsync v2, off by default) moves the face: only your own face, or an AI or stock face you have the rights to, stated in face_rights; never a celebrity, a stranger or a clip you found. A 1-minute video costs about $0.86 of fal in one language with captions, $3.78 in five, $18.78 in five with lipsync (each dub bills whole minutes). The run states the price before anything is paid, and refuses for price only over a max_fal_usd you set. Needs your fal key, added as the fal server in Settings → MCP servers."
+description: "Give it a public video with narration (up to 2 minutes) and one to five languages, and get it dubbed into each in the run's files, with captions and, when you ask, the speaker's lips matched to each dub. It reads the video's length first and prices the whole plan before anything is paid, then transcribes the voice on ElevenLabs, dubs every language at once on fal.ai and writes captions from each dub's voice. Dubbing keeps the speaker's voice: only a voice you own or an AI one. Lipsync (sync-lipsync v2, off by default) moves the face: only your own face, or an AI or stock face you have the rights to, stated in face_rights; never a celebrity, a stranger or a clip you found. A 1-minute video costs about $0.86 of fal in one language with captions, $3.78 in five, $18.78 in five with lipsync (each dub bills whole minutes). It refuses for price only over a max_fal_usd you set. Needs your fal key, added as the fal server in Settings → MCP servers (hosted AgentRun bills fal as run spend instead)."
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -17,7 +17,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, submit_job, run_model, wait_for_jobs, get_submission]
     required: true
-    reason: "Transcripts, dubs and lipsync on fal.ai with your fal key, which this server keeps: the agent never sees it. Held to ElevenLabs isolation, speech-to-text, dubbing and sync-lipsync v2. About $0.86 a minute per language with captions, $3 more for lipsync, billed to you."
+    reason: "Transcripts, dubs and lipsync on fal.ai with the fal key this server keeps. Held to ElevenLabs isolation, speech-to-text, dubbing and sync-lipsync v2. About $0.86 a minute a language, $3 more with lipsync, billed to your fal account, or on hosted AgentRun as run spend."
     allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, submit_job, run_model]
     # The dubs and the lipsyncs queue on submit_job; the voice tracks and transcripts run on run_model: a run can't reach
     # any other model (sync-lipsync v3 included).

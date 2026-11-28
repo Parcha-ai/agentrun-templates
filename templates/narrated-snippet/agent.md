@@ -2,7 +2,7 @@
 name: narrated-snippet
 display_name: Narrated snippet
 version: 0.1.0
-description: Paste a short text (release notes, an update, a paragraph of a post) and get it back as a spoken voiceover in the run's files, read by an ElevenLabs v3 voice on fal.ai. It rewrites the text for the ear first (short sentences, numbers spelled out, a little direction for the voice), keeps every fact, and caps it at about a minute. Needs your fal key, added as the fal server in Settings → MCP servers; each voiceover bills your fal account by characters.
+description: Paste a short text (release notes, an update, a paragraph of a post) and get it back as a spoken voiceover in the run's files, read by an ElevenLabs v3 voice on fal.ai. It rewrites the text for the ear first (short sentences, numbers spelled out, a little direction for the voice), keeps every fact, and caps it at about a minute. Each voiceover costs fal by its characters. Needs your fal key, added as the fal server in Settings → MCP servers (hosted AgentRun bills fal as run spend instead).
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -17,7 +17,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, run_model, wait_for_jobs, get_submission]
     required: true
-    reason: "Reads the script aloud on fal.ai with your fal key, which this server keeps: the agent never sees it. Held to ElevenLabs v3 text to speech. One voiceover per run, billed to your fal account by characters; price, schema and job reads cost nothing."
+    reason: "Reads the script aloud on fal.ai with the fal key this server keeps: the agent never sees it. Held to ElevenLabs v3 text to speech. One voiceover per run, billed by characters to your fal account, or on hosted AgentRun as run spend; reads are free."
     allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, run_model]
     # One model, whatever the agent asks for: a run can't reach a music or video model.
     pin:

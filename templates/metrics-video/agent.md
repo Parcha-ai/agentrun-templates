@@ -2,7 +2,7 @@
 name: metrics-video
 display_name: "Weekly revenue film"
 version: 0.1.0
-description: "Every Monday morning, a 45 second film of last week's revenue from your Stripe account, read through Composio. The figure, named on the film: revenue net of refunds and Stripe fees, per currency, never converted or added across currencies. The film shows the week, its days, the change on the week before (read again from Stripe, and a figure Stripe changed since is said), and refunds and disputes with their counts. A script works out every number; the voice and the screen say exactly those. It checks every file and what the voice says for customer data; a name it can't tell from common words can get past it. ElevenLabs v3 narrates and ElevenLabs Music scores it on fal.ai; HyperFrames renders it in the sandbox. You get film.mp4, the voiceover, the music, captions and the film's source folder. About $0.57 of fal a film, billed to your fal account. Needs the media sandbox (Chrome, FFmpeg, HyperFrames), Stripe connected through Composio (read only), and your fal key as the fal server in Settings → MCP servers."
+description: "Every Monday morning, a 45 second film of last week's revenue from your Stripe account, read through Composio. The figure, named on the film: revenue net of refunds and Stripe fees, per currency, never converted or added across currencies. The film shows the week, its days, the change on the week before (read again from Stripe, and a figure Stripe changed since is said), and refunds and disputes with their counts. A script works out every number; voice and screen say exactly those. It checks every file and what the voice says for customer data; a name it can't tell from common words can get past it. ElevenLabs v3 narrates and ElevenLabs Music scores it on fal.ai; HyperFrames renders it in the sandbox. You get film.mp4, the voiceover, music, captions and the film's source. About $0.57 of fal a film. Needs the media sandbox (Chrome, FFmpeg, HyperFrames), Stripe connected through Composio (read only), and your fal key as the fal server in Settings → MCP servers (hosted AgentRun bills fal as run spend instead)."
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -42,7 +42,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, submit_job, wait_for_jobs, get_submission]
     required: true
-    reason: "Makes the voiceover and the music bed on fal.ai with your fal key, which this server keeps. Held to ElevenLabs v3 and ElevenLabs Music. About $0.57 a film, billed to your fal account. The film itself renders in the sandbox, never on fal."
+    reason: "Makes the voiceover and the music bed on fal.ai with the fal key this server keeps. Held to ElevenLabs v3 and ElevenLabs Music. About $0.57 a film, billed to your fal account, or on hosted AgentRun as run spend. The film itself renders in the sandbox, never on fal."
     allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, submit_job]
     # Two paid endpoints and no run_model: a run can reach no other model, and nothing composes the film on fal.
     pin:

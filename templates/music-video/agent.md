@@ -2,7 +2,7 @@
 name: music-video
 display_name: Music video
 version: 0.1.0
-description: "Give it a public link to a song you own or have licensed, and get a music video cut to its beat: up to 90 seconds of the song (60 by default), its loudest stretch or from a second you choose, in 16:9 or 9:16. A script finds the beats and bar lines in the song and cuts every shot on a bar line. The lyrics are transcribed on ElevenLabs and set as captions. Each shot is a still made from words on Nano Banana Pro, moved on Kling 3.0 Pro; HyperFrames cuts the film in the sandbox with the song as its only sound. A clip that fails shows its still with a slow push-in. You get film.mp4, the storyboard, the stills and clips, the lyrics as WebVTT and the source folder. A 60 second cut with 12 shots costs about $9 of fal, billed to your fal account, priced before anything is paid. Needs the media sandbox (Chrome, FFmpeg, HyperFrames) and your fal key as the fal server in Settings → MCP servers."
+description: "Give it a public link to a song you own or have licensed, and get a music video cut to its beat: up to 90 seconds of the song (60 by default), its loudest stretch or from a second you choose, in 16:9 or 9:16. A script finds the beats and bar lines in the song and cuts every shot on a bar line. The lyrics are transcribed on ElevenLabs and set as captions. Each shot is a still made from words on Nano Banana Pro, moved on Kling 3.0 Pro; HyperFrames cuts the film in the sandbox with the song as its only sound. A clip that fails shows its still with a slow push-in. You get film.mp4, the storyboard, the stills and clips, the lyrics as WebVTT and the source folder. A 60 second cut with 12 shots costs about $9 of fal, priced before anything is paid. Needs the media sandbox (Chrome, FFmpeg, HyperFrames) and your fal key as the fal server in Settings → MCP servers (hosted AgentRun bills fal as run spend instead)."
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -23,7 +23,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, submit_job, wait_for_jobs, get_submission]
     required: true
-    reason: "Transcribes the lyrics, makes the stills and moves them into clips on fal.ai with your fal key, which this server keeps. Held to ElevenLabs isolation and speech-to-text, Nano Banana Pro and Kling 3.0 Pro. About $9 a 60 s film, billed to you. The film is cut in the sandbox."
+    reason: "Transcribes the lyrics, makes the stills and clips on fal.ai with the fal key this server keeps. Held to ElevenLabs isolation and speech-to-text, Nano Banana Pro and Kling 3.0 Pro. About $9 a 60 s film, billed to your fal account, or on hosted AgentRun as run spend."
     allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, submit_job]
     # Four paid endpoints, each job on its own submit_job, and no run_model: a run can reach no other model. submit_jobs
     # is left out: its nested requests can't be pinned. The inputs a pin can't reach (generate_audio false, resolution

@@ -2,7 +2,7 @@
 name: launch-video
 display_name: Launch video
 version: 0.1.0
-description: Give it a product or release page and get a 30 or 45 second launch video in the run's files. It reads the page, writes a voiceover script that only says what the page says and a shot list of b-roll scenes, then makes the clips on Kling 2.5 Turbo, the voiceover on ElevenLabs v3 and a music bed on ElevenLabs Music, all at once on fal.ai, and cuts them together with fal's FFmpeg compose, with captions timed to the spoken words beside the video. A voiceover too long for the cut is voiced once more from a shorter script (a few cents), never cut mid-sentence. Every clip, the voice, the music and the final cut are saved. It prices the whole plan before any paid call and says up front what the run will cost on fal. A 30 second video is about $2.50 on Kling or about $1.70 on Hailuo 02 if you pick it, 45 seconds about $3.70 on Kling. Set a ceiling and a plan over it is refused before anything is paid; with none, nothing is refused for price. Needs your fal key, added as the fal server in Settings → MCP servers.
+description: Give it a product or release page and get a 30 or 45 second launch video in the run's files. It reads the page, writes a voiceover script that only says what the page says and a shot list of b-roll scenes, then makes the clips on Kling 2.5 Turbo, the voiceover on ElevenLabs v3 and a music bed on ElevenLabs Music, all at once on fal.ai, and cuts them together with fal's FFmpeg compose, with captions timed to the spoken words beside the video. A voiceover too long for the cut is voiced once more from a shorter script (a few cents), never cut mid-sentence. Every clip, the voice, the music and the final cut are saved. It prices the whole plan and states the cost before any paid call. A 30 second video is about $2.50 on Kling or about $1.70 on Hailuo 02 if you pick it, 45 seconds about $3.70 on Kling. A plan over a ceiling you set is refused before anything is paid. Needs your fal key, added as the fal server in Settings → MCP servers (hosted AgentRun bills fal as run spend instead).
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -17,7 +17,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, submit_job, run_model, wait_for_jobs, get_submission]
     required: true
-    reason: "Makes the clips, voice, music and cut on fal.ai with your fal key, which this server keeps: the agent never sees it. Held to the five models below. About $2.50 a run on the default plan, billed to your fal account; price, schema and job reads cost nothing."
+    reason: "Makes the clips, voice, music and cut on fal.ai with the fal key this server keeps: the agent never sees it. Held to the five models below. About $2.50 a run on the default plan, billed to your fal account, or on hosted AgentRun as run spend; reads are free."
     allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, submit_job, run_model]
     # The generators queue on submit_job, the cut runs on run_model: a run can't reach any other model.
     pin:

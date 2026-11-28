@@ -2,7 +2,7 @@
 name: brand-kit
 display_name: Brand kit from your homepage
 version: 0.1.0
-description: "For your own brand only. Give it your homepage and get a starter brand kit in the run's files: media/brand-kit.md with a five-color palette, a Google Fonts pairing, your voice in three lines and a do and don't list, plus three logo concepts and three 16:9 hero images (Ideogram 3, one hero with a headline in your page's own words) and a 5-second promo clip animated from a hero (Kling 2.5 Turbo), all made on fal.ai. Give your own logo's URL and it makes three variants of that logo instead (mono, on dark, app icon, with Nano Banana edit). It prices the whole plan before it spends and tells you up front what the run will cost on fal. A run usually bills your fal account about 53 cents: 9 for the logos, 9 for the heroes, 35 for the clip. Want a ceiling? Set max_fal_usd: a plan over it is refused before any paid call. Needs your fal key, added as the fal server in Settings → MCP servers."
+description: "For your own brand only. Give it your homepage and get a starter brand kit in the run's files: media/brand-kit.md with a five-color palette, a Google Fonts pairing, your voice in three lines and a do and don't list, plus three logo concepts and three 16:9 hero images (Ideogram 3, one hero with a headline in your page's own words) and a 5-second promo clip animated from a hero (Kling 2.5 Turbo), all made on fal.ai. Give your own logo's URL and it makes three variants of that logo instead (mono, on dark, app icon, with Nano Banana edit). It prices the whole plan before it spends and tells you up front what the run will cost on fal. A run usually costs about 53 cents of fal: 9 for the logos, 9 for the heroes, 35 for the clip. Want a ceiling? Set max_fal_usd: a plan over it is refused before any paid call. Needs your fal key, added as the fal server in Settings → MCP servers (hosted AgentRun bills fal as run spend instead)."
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -17,7 +17,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, submit_job, wait_for_jobs, get_submission]
     required: true
-    reason: "Makes the logos, heroes and clip on fal.ai with your fal key, which this server keeps: the agent never sees it. Held to three models, so a run can't reach a costlier one. About $0.53 a run on your fal account; price, schema and job reads cost nothing."
+    reason: "Makes the logos, heroes and clip on fal.ai with the fal key this server keeps: the agent never sees it. Held to three models, so a run can't reach a costlier one. About $0.53 a run, billed to your fal account, or on hosted AgentRun as run spend; reads are free."
     allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, submit_job]
     # The three models of the kit, whatever the agent asks for: one of these or the call is refused.
     pin:

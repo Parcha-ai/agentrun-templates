@@ -2,7 +2,7 @@
 name: link-social-card
 display_name: Social card for a link
 version: 0.1.0
-description: Give it a public link (a blog post, a launch page, a doc) and get a share image for it in the run's files, a 16:9 card with a short headline set in the picture, made on fal.ai with Ideogram 3, which draws text cleanly. It reads the page, takes the headline from what the page itself says, and gives you the headline, the alt text and the prompt it used. Needs your fal key, added as the fal server in Settings → MCP servers; each card bills your fal account a few cents.
+description: Give it a public link (a blog post, a launch page, a doc) and get a share image for it in the run's files, a 16:9 card with a short headline set in the picture, made on fal.ai with Ideogram 3, which draws text cleanly. It reads the page, takes the headline from what the page itself says, and gives you the headline, the alt text and the prompt it used. Each card costs a few cents of fal. Needs your fal key, added as the fal server in Settings → MCP servers (hosted AgentRun bills fal as run spend instead).
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -17,7 +17,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, run_model, wait_for_jobs, get_submission]
     required: true
-    reason: "Draws the card on fal.ai with your fal key, which this server keeps: the agent never sees it. Held to Ideogram 3, so a run can't pick a costly model. One card per run, billed to your fal account; price, schema and job reads cost nothing."
+    reason: "Draws the card on fal.ai with the fal key this server keeps: the agent never sees it. Held to Ideogram 3, so a run can't pick a costly model. One card per run, billed to your fal account, or on hosted AgentRun as run spend; reads are free."
     allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, run_model]
     # One model, whatever the agent asks for: a run can't reach a video model.
     pin:
