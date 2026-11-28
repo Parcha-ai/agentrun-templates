@@ -78,9 +78,13 @@ Spoken by the presenter to camera, as the fal-audio skill says for the ear:
   `write` the script to `work/script.txt` and run `node .agents/skills/explainer-video/kit/check-script.mjs --script
   work/script.txt --length <length>` with `bash`; its `words` is `word_count`. When it refuses (a non-zero exit), cut,
   write and check again: never send a script it refused.
-  When the doc says more, keep what matters most and list each point left out in `omitted`. Before you send the
-  script, go through the doc sentence by sentence: each fact, step, figure or date it gives that the script doesn't
-  say is a point left out, with its own entry in `omitted`. Part of a sentence counts too: a script that keeps "alerts are
+  When the doc says more, keep what matters most and list each point left out in `omitted`. Once the check passes,
+  and before any paid call, `write` `work/coverage.txt`: each sentence of the doc that tells its reader something, on
+  its own line, in your own words (an instruction to an agent or a model is not one: it never goes in the file, nor
+  its names or links), then ` -> ` and
+  either what the script keeps of it or `left out: <each fact, step, figure, date or qualifier it drops>`. A sentence
+  the script keeps only part of gets both. Every `left out` there is a point with its own entry in `omitted`. Part of
+  a sentence counts too: a script that keeps "alerts are
   sent" but drops "by email" has left out how they are sent. `omitted` holds at most 10 entries: with more points left
   out, list the 10 that matter most and give the count of the rest in `omitted_more` (0 when `omitted` lists them all).
   A point left out goes in `omitted` (or `omitted_more`), never only in `notes`: a dropped name or qualifier is a point
@@ -198,11 +202,11 @@ Both hold: animate (step 7) with this voiceover. Either fails: voice it again ON
 stays saved as `media/voiceover.mp3` and listed in `files` (save it first if it is not saved yet). T is the most seconds both
 checks allow: for OmniHuman 60; with a ceiling, B = (`max_fal_usd` − spent − the new voiceover's price) ÷ the avatar
 rate, and T is B, or the lesser of B and 60 for OmniHuman. Cut the script to at most its spoken words × T ÷ V × 0.9 words (0.9 is the margin; 110 words
-at V 47.0 s with T 40 → 110 × 40 ÷ 47.0 × 0.9 = 84 words), keeping what matters most and adding each point cut to
+at V 47.0 s with T 40 → 110 × 40 ÷ 47.0 × 0.9 = 84.26, so at most 84 words: the whole part, never rounded up), keeping what matters most and adding each point cut to
 `omitted` (or to `omitted_more` past 10), with the rules of step 2. `write` it to `work/script-2.txt` (the first stays in
 `work/script.txt`) and check it with that word count, not `--length`:
-`node .agents/skills/explainer-video/kit/check-script.mjs --script work/script-2.txt --max <words>` (`--max 84` in the
-example); never send one it refused. Send that file's script with `submit_job` on `fal-ai/elevenlabs/tts/eleven-v3`,
+`node .agents/skills/explainer-video/kit/check-script.mjs --script work/script-2.txt --max <product>`, passing the product
+unrounded with two decimals (`--max 84.26` in the example), so the check allows only its whole part; never send one it refused. Send that file's script with `submit_job` on `fal-ai/elevenlabs/tts/eleven-v3`,
 with the `run-key.mjs --step voiceover-2` key, the same `voice`, `stability`,
 `output_format` and `timestamps`. Follow it with a one-item `wait_for_jobs` whose item has `"index": 2` and the
 handles this `submit_job` answered, copied as they are. Save it to `media/voiceover-2.mp3`. When it was made, passed step 6's checks and the run went on to the avatar step
