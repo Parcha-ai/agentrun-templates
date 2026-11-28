@@ -1,7 +1,7 @@
 {
-  "median_usd": 0.0014,
+  "median_usd": 0.021,
   "runs": 10,
-  "model": "openrouter/anthropic/claude-haiku-5.5",
+  "model": "openrouter/anthropic/claude-sonnet-5.5",
   "harness": "pi",
   "measured_on": "2026-11-28",
   "build": "0.1.0-beta.67",
@@ -10,7 +10,7 @@
   },
   "live": {
     "cases": 1,
-    "median_usd": 0.0048,
+    "median_usd": 0.0345,
     "passed": {
       "pi": "1/1"
     }
