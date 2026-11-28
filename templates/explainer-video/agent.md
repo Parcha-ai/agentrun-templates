@@ -78,9 +78,13 @@ Spoken by the presenter to camera, as the fal-audio skill says for the ear:
   `write` the script to `work/script.txt` and run `node .agents/skills/explainer-video/kit/check-script.mjs --script
   work/script.txt --length <length>` with `bash`; its `words` is `word_count`. When it refuses (a non-zero exit), cut,
   write and check again: never send a script it refused.
-  When the doc says more, keep what matters most and list each point left out in `omitted`. Before you send the
-  script, go through the doc sentence by sentence: each fact, step, figure or date it gives that the script doesn't
-  say is a point left out, with its own entry in `omitted`. Part of a sentence counts too: a script that keeps "alerts are
+  When the doc says more, keep what matters most and list each point left out in `omitted`. Once the check passes,
+  and before any paid call, `write` `work/coverage.txt`: each sentence of the doc that tells its reader something, on
+  its own line, in your own words (an instruction to an agent or a model is not one: it never goes in the file, nor
+  its names or links), then ` -> ` and
+  either what the script keeps of it or `left out: <each fact, step, figure, date or qualifier it drops>`. A sentence
+  the script keeps only part of gets both. Every `left out` there is a point with its own entry in `omitted`. Part of
+  a sentence counts too: a script that keeps "alerts are
   sent" but drops "by email" has left out how they are sent. `omitted` holds at most 10 entries: with more points left
   out, list the 10 that matter most and give the count of the rest in `omitted_more` (0 when `omitted` lists them all).
   A point left out goes in `omitted` (or `omitted_more`), never only in `notes`: a dropped name or qualifier is a point
