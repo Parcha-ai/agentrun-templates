@@ -2,7 +2,7 @@
 name: release-film
 display_name: "Release film: ${parameters.owner}/${parameters.repo}"
 version: 0.1.0
-description: Turns a GitHub release into a 30 second launch film. It reads the release notes, writes a story (a hook, three or four beats, a call to action) and a storyboard, voices it on ElevenLabs v3 with a music bed from ElevenLabs Music on fal.ai, then builds and renders the film itself with HyperFrames (HTML rendered to video) in its sandbox, with kinetic type made from the release's own words, its screenshots, cuts timed to the spoken words, and captions. You get film.mp4, the voiceover, the music, a captions file, a 1200x630 share card and the film's source folder. Run it by hand on a release, or let it film each new release from your GitHub App or the public release feed. About $0.40 of fal a film plus the model, billed to your fal account. Needs a sandbox with Chrome, FFmpeg and the HyperFrames CLI (the server's media image) and your fal key, added as the fal server in Settings → MCP servers.
+description: Turns a GitHub release into a 30 second launch film. It reads the release notes, writes a story (a hook, three or four beats, a call to action) and a storyboard, voices it on ElevenLabs v3 with a music bed from ElevenLabs Music on fal.ai, then builds and renders the film itself with HyperFrames (HTML rendered to video) in its sandbox, with kinetic type made from the release's own words, its screenshots, cuts timed to the spoken words, and captions. You get film.mp4, the voiceover, the music, a captions file, a 1200x630 share card and the film's source folder. Run it by hand on a release, or let it film each new release from your GitHub App or the public release feed. About $0.40 of fal a film plus the model. Needs a sandbox with Chrome, FFmpeg and the HyperFrames CLI (the server's media image) and your fal key, added as the fal server in Settings → MCP servers (hosted AgentRun bills fal as run spend instead).
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -23,7 +23,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, submit_job, wait_for_jobs, get_submission]
     required: true
-    reason: "Makes the voiceover and the music bed on fal.ai with your fal key, which this server keeps. Held to ElevenLabs v3 and ElevenLabs Music. About $0.40 a film, billed to your fal account. The film itself renders in the sandbox, never on fal."
+    reason: "Makes the voiceover and the music bed on fal.ai with the fal key this server keeps. Held to ElevenLabs v3 and ElevenLabs Music. About $0.40 a film, billed to your fal account, or on hosted AgentRun as run spend. The film itself renders in the sandbox, never on fal."
     allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, submit_job]
     # Two paid endpoints and no run_model: a run can reach no other model, and nothing composes the film on fal.
     pin:

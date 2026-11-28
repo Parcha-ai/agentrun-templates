@@ -2,7 +2,7 @@
 name: photo-shoot
 display_name: Product photo shoot
 version: 0.1.0
-description: "Give it one photo of your own product and get a lifestyle shoot in the run's files: up to 10 scenes written for your product and made on fal.ai with Nano Banana Pro edit, each one told to keep the product, its label, logo, text, shape and colors exactly as in your photo. It looks at the shots, picks the best 3 with a line on why, and remakes each for ads at 1:1, 4:5, 9:16 and 16:9 (16:9 is the link-ad size: the model has no 1.91:1). On request it adds a 5-second clip of the best shot (Kling 2.5 Turbo). It prices the plan before it spends and says the cost; a plan over a ceiling you set (max_fal_usd) is refused. Then it puts your photo on fal once (a free upload) and makes every shot from that copy; if fal can't read your link, it stops before any paid job. The default shoot, 10 shots and 12 ad images, bills your fal account about $3.30 (22 images at $0.15); the clip adds $0.35. Needs your fal key, added as the fal server in Settings → MCP servers."
+description: "Give it one photo of your own product and get a lifestyle shoot in the run's files: up to 10 scenes written for your product and made on fal.ai with Nano Banana Pro edit, each one told to keep the product, its label, logo, text, shape and colors exactly as in your photo. It looks at the shots, picks the best 3 with a line on why, and remakes each for ads at 1:1, 4:5, 9:16 and 16:9 (16:9 is the link-ad size: the model has no 1.91:1). On request it adds a 5-second clip of the best shot (Kling 2.5 Turbo). It prices the plan before it spends and says the cost; a plan over a ceiling you set (max_fal_usd) is refused. Then it puts your photo on fal once (a free upload) and makes every shot from that copy; if fal can't read your link, it stops before any paid job. The default shoot, 10 shots and 12 ad images, costs about $3.30 of fal (22 images at $0.15); the clip adds $0.35. Needs your fal key, added as the fal server in Settings → MCP servers (hosted AgentRun bills fal as run spend instead)."
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -17,7 +17,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, upload_file, submit_job, wait_for_jobs, get_submission]
     required: true
-    reason: "Puts your photo on fal once (a free upload), then makes the shots, ad sizes and clip on fal.ai with your fal key, which this server keeps: the agent never sees it. Held to two models. About $3.30 a run by default; the upload, prices and reads cost nothing."
+    reason: "Puts your photo on fal once (a free upload), then makes the shots, ad sizes and clip with the fal key this server keeps: the agent never sees it. Held to two models. About $3.30 a run by default, billed to your fal account, or on hosted AgentRun as run spend; reads are free."
     allow: [get_pricing, get_model_schema, upload_file, wait_for_jobs, get_submission, submit_job]
     # The two models of the shoot, whatever the agent asks for: one of these or the call is refused.
     # upload_file from a public URL only: no base64, no signed upload, no extra field (null: the argument left out).
