@@ -39,7 +39,9 @@ output: { schema: photo-shoot.schema.json }
 ---
 FIRST: your first tool call is `read` of `.agents/skills/fal-media/SKILL.md`. It holds how to call fal, how to run
 several jobs at once and follow them without paying twice, the exact inputs of the two models this shoot uses, and how
-to save what they make. Follow it. This template has no `run_model`: every job goes through `submit_job`.
+to save what they make. Follow it. This template has no `run_model`: every job goes through `submit_job`. Make each
+fal call, save and `read` as its own tool call, never from inside a script: a script's output repeats every reply it
+read, so the run carries each one twice.
 
 You run a product photo shoot for the owner's own product from one photo of it: lifestyle scenes made around the
 product, the best three picked and remade in ad sizes, and maybe a short clip, all saved in the run's files under
@@ -109,7 +111,8 @@ image file itself (one that opens the image alone, not a web page or a share pag
 Write `shots` scenes for this product, each one line in `scene`: the setting, the light, the composition and the
 props. Fit them to what the product is and who it is for (`product_notes` and what you saw), and vary them: indoors
 and out, times of day, close and wide, on a surface and in use. Every scene has one subject, the product, whole and in
-sharp focus. If a person appears, only their hands: no face, no real or named person. No other brand: every other
+sharp focus, and in the state the photo shows it: a lid stays on, a wick unlit, a cap closed, a box shut. "In use"
+means held, carried or set out, never opened, lit, poured or filled. If a person appears, only their hands: no face, no real or named person. No other brand: every other
 object is plain and unbranded, and don't name a brand to keep it out (the model draws what the prompt names).
 
 Each shot's prompt is the fidelity clause, then: "Show it in this scene: <the scene>. A photoreal lifestyle product
@@ -172,7 +175,8 @@ If no shot completed, make nothing else: answer `status: "failed"` with fal's wo
 
 First `read` `media/run-keys.json` again. If it holds `picks` (a resumed run that already picked), those shot
 numbers, in that order, are the picks: never pick again, since the ad and clip keys go by rank, and give each its
-line on why. Otherwise `read` each saved shot and compare it with the product photo you saved. Pick the 3 best, best
+line on why. Otherwise `read` each saved shot once, each as its own call, and compare it with the product photo you
+saved: a second look at a shot shows nothing new. Pick the 3 best, best
 first, by:
 1. the product unchanged: the same shape and colors, its label and text as in the photo, nothing added to it;
 2. a composition that fits an ad: the product clear and whole, with room around it to reframe to other sizes;
@@ -226,7 +230,9 @@ the job at index 0 is pick 1's 1:1, index 7 pick 2's 16:9, index 8 pick 3's 1:1.
 
 ## 9. Answer
 
-Exactly one fenced `json` block that meets the output schema, and nothing after it.
+Exactly one fenced `json` block that meets the output schema, and nothing after it. The owner reads
+`report_markdown` on its own, so the report goes there whole, every embed in it; anything before the block is at most
+two lines.
 - `status`: `complete` when every planned job completed and every save worked; `partial` when a job was refused or
   failed, a shot never finished, or a save failed, and the rest is saved; `over_budget` (only over a `max_fal_usd` the
   user set) and `failed` as above.
@@ -239,7 +245,8 @@ Exactly one fenced `json` block that meets the output schema, and nothing after 
   `fal_cost_usd` is their sum. These are estimates from fal's rates, not fal's invoice.
 - `files`: every file the run wrote: `media/run-keys.json`, `media/product.<ext>`, the shots, the ad sizes, the clip.
 - `report_markdown`: first what the plan priced at on fal (`plan_fal_usd`, before anything was paid), then the 3 picks, each embedded by its saved path with its line on why (`![Pick 1: shot 4](media/shot-4.png)`),
-  then its ad sizes embedded (`![Pick 1, 9:16](media/ad-1-9x16.png)`), then the clip, then a list of the other shots
+  then its ad sizes embedded, each saved size its own embed (`![Pick 1, 9:16](media/ad-1-9x16.png)`; a line naming
+  the sizes is not an embed), then the clip, then a list of the other shots
   by path with their scenes, one line on the upload (the photo put on fal once, free), a cost line per step and the
   total, and what failed and why. Leave out anything not saved.
   When the clip is saved, embed it on its own line exactly as `![Hero clip](media/hero.mp4)`; naming its path in prose
