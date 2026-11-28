@@ -2,7 +2,7 @@
 name: quick-image
 display_name: Quick image
 version: 0.1.0
-description: Describe a picture and get one image back in the run's files, made on FLUX.1 schnell, one of fal.ai's fastest and cheapest image models. It sharpens your words into a prompt the model draws well, makes the image once, saves it under media/, and tells you the prompt it sent so you can make it again or change it. Needs your fal key, added as the fal server in Settings → MCP servers; each image bills your fal account.
+description: Describe a picture and get one image back in the run's files, made on FLUX.1 schnell, one of fal.ai's fastest and cheapest image models. It sharpens your words into a prompt the model draws well, makes the image once, saves it under media/, and tells you the prompt it sent so you can make it again or change it. On your own server it needs your fal key, added as the fal server in Settings → MCP servers, and each image bills your fal account; on hosted AgentRun each image is billed as the run's spend.
 license: Apache-2.0
 author: { name: Parcha Labs }
 repository: https://github.com/Parcha-ai/agentrun-templates
@@ -17,7 +17,7 @@ mcp:
     toolkit: fal
     tools: [get_pricing, get_model_schema, run_model, wait_for_jobs, get_submission]
     required: true
-    reason: "Makes the image on fal.ai with your fal key, which this server keeps: the agent never sees it. Held to FLUX.1 schnell, so a run can't pick a costly model. One image per run, billed to your fal account; price, schema and job reads cost nothing."
+    reason: "Makes the image on fal.ai with the fal key this server keeps: the agent never sees it. Held to FLUX.1 schnell, so a run can't pick a costly model. One image per run, billed to your fal account, or on hosted AgentRun as run spend; price, schema and job reads cost nothing."
     allow: [get_pricing, get_model_schema, wait_for_jobs, get_submission, run_model]
     # One model, whatever the agent asks for: an unattended run can't reach a video model that costs dollars.
     pin:
