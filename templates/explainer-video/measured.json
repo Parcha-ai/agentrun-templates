@@ -6,7 +6,7 @@
   "measured_on": "2026-11-28",
   "build": "0.1.0-beta.67",
   "passed": {
-    "pi": "8/9"
+    "pi": "9/9"
   },
   "live": {
     "cases": 1,
