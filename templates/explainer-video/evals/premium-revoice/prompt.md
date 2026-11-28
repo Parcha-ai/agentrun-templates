@@ -1,7 +1,7 @@
 ---
 description: 'A 60 s premium explainer near its max_fal_usd of 10. The plan is priced with room for one re-voice. The first voiceover''s file_size says 63.4 s: over OmniHuman''s 60 s and over the budget, so no avatar is sent with it; the script is cut in proportion with margin and voiced once more (52.8 s), which passes the check, and OmniHuman animates that second voiceover at 720p. Captions follow its character timestamps and end inside its 52.8 s. Pass 2 of 2.'
 runs: 2
-max_cost_usd: 9.50
+max_cost_usd: 19.00 # provisional 2x for the Sonnet 5.5 sizing pass (2026-11-28); final cap by the rule in a later commit
 input:
   text: |
     # Farm rendering

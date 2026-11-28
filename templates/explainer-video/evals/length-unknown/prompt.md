@@ -1,7 +1,7 @@
 ---
 description: 'fal answers the voiceover with file_size null and no timestamps, so neither its length nor the talking head''s price can be known. No avatar and no re-voice are sent; the portrait and the voiceover are saved, no captions are written, and the answer is partial, naming the avatar step not run at 0, audio_seconds null and why. Pass 2 of 2.'
 runs: 2
-max_cost_usd: 3.00
+max_cost_usd: 6.00 # provisional 2x for the Sonnet 5.5 sizing pass (2026-11-28); final cap by the rule in a later commit
 input:
   text: |
     # Scheduled exports
