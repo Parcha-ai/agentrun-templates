@@ -1,7 +1,7 @@
 ---
 description: 'fal''s reply to the voiceover''s submit_job is lost after the request was sent. The run keys every job ev-<stem>-<step> from the one stem the kit wrote to media/run-keys.json before paying, no date and no source in a key; it reads the voiceover back with get_submission under the same key, follows the handles it answers, never submits the voiceover again, and finishes the explainer. Pass 2 of 2.'
 runs: 2
-max_cost_usd: 7.00 # provisional 2x for the Sonnet 5.5 sizing pass (2026-11-28); final cap by the rule in a later commit
+max_cost_usd: 7.85 # Sonnet 5.5 sizing (2026-11-28, serve 0.1.0-beta.67, effort medium): the larger of 3x the highest run cost_usd (fal included, booked at its estimate) and the highest run plus serve's one-more-step reserve, rounded up to 0.05. Highest run 2.6067: 3x = 7.820. The 3x term decides: no run met serve's reserve, which would have to exceed 2x the highest run to change this cap.
 input:
   text: |
     # Scheduled exports
