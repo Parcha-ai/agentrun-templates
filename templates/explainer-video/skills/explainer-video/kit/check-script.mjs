@@ -8,6 +8,7 @@
 // --script  the exact text to send to ElevenLabs v3, audio tags included
 // --length  30, 45 or 60: the cap is 75, 110 or 135 spoken words (about 2.4 a second)
 // --max     the re-voice's cap, step 6's spoken words x T / V x 0.9; with --length too, the lesser holds
+//           (pass it unrounded, e.g. 84.26: a whole word count over it is refused, so 84 words is the most)
 //
 // Within the cap: one JSON line, {"script_check":"passed","words":<n>,"max":<cap>}, exit 0. Over it: exit 1, saying
 // how many words over and that nothing may be sent. A missing, empty or tag-only script, or no cap: exit 2. It writes
