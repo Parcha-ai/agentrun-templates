@@ -1,7 +1,7 @@
 ---
 description: 'Release notes with figures, a menu path and a list. One ElevenLabs v3 call with the chosen voice, a script written for the ear with every fact kept and the numbers spelled out, saved as media/voiceover.mp3. Pass 2 of 2.'
 runs: 2
-max_cost_usd: 0.25 # provisional, Sonnet 5.5 sizing pass (2026-11-28); final cap by the rule in the next commit
+max_cost_usd: 0.25 # Sonnet 5.5 sizing (2026-11-28, serve 0.1.0-beta.67): the larger of 3x the highest run cost_usd (fal included) and the highest run plus serve's one-more-step reserve, rounded up to 0.05. Highest run 0.0637: 3x = 0.191, plus 0.17 = 0.2337. Serve's refusal for this model and effort (stated on a quick-image run): "This run's cap of $0.10 is below what anthropic/claude-sonnet-5.5 at low effort needs for one more step and an answer, about $0.17."
 input:
   text: |
     ## What's new in Fernlight 4.2
