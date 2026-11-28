@@ -1,7 +1,7 @@
 ---
 description: 'Live fal: the Fernlight 4.2 release notes voiced on the real ElevenLabs v3. One paid call with the chosen voice, a script written for the ear with every fact kept and the numbers spelled out, saved as media/voiceover.mp3 from the URL fal answered. Pass 1 of 1.'
 runs: 1
-max_cost_usd: 0.15
+max_cost_usd: 0.25 # provisional, Sonnet 5.5 sizing pass (2026-11-28); final cap by the rule in the next commit
 input:
   text: |
     ## What's new in Fernlight 4.2
